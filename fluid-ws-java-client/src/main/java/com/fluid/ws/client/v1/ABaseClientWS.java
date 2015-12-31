@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import com.fluid.GitDescribe;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -780,5 +781,14 @@ public class ABaseClientWS {
      */
     protected final boolean isEmpty(String textParam) {
         return (textParam == null) ? true : textParam.trim().isEmpty();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getFluidAPIVersion()
+    {
+        return GitDescribe.GIT_DESCRIBE;
     }
 }
