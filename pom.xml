@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.fluid</groupId>
+    <artifactId>fluid-root</artifactId>
+    <packaging>pom</packaging>
+    <version>${version.fluid.root}</version>
+    <name>Fluid Root</name>
+    <description>Parent pom providing default setups for all application and admin servers modules.</description>
+
+    <properties>
+        <!-- Explicitly declaring the source encoding eliminates the following
+                message: -->
+        <!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered
+          resources, i.e. build is platform dependent! -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.compiler.plugin>2.3.2</version.compiler.plugin>
+        <version.surefire.plugin>2.4.3</version.surefire.plugin>
+
+        <!-- maven-compiler-plugin -->
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+
+        <!--Fluid-->
+        <version.fluid.root>1.0-SNAPSHOT</version.fluid.root>
+        <version.fluid.api>1.0-SNAPSHOT</version.fluid.api>
+        <version.fluid.ws-java-client>1.0-SNAPSHOT</version.fluid.ws-java-client>
+
+        <!--Maven Dependency Versions-->
+        <version.junit>4.12</version.junit>
+        <version.slf4j>1.7.12</version.slf4j>
+
+        <!--Org.JSON-->
+        <version.org.json>20141113</version.org.json>
+
+        <!--JBoss Resteasy-->
+        <version.jboss.resteasy.jackson>2.2.1.GA</version.jboss.resteasy.jackson>
+
+        <version.apache.commons.lang3>3.3.2</version.apache.commons.lang3>
+        <version.google.guava>18.0</version.google.guava>
+        <version.apache.httpcomponents.httpclient>4.5</version.apache.httpcomponents.httpclient>
+
+        <!--Koekiebox Git Maven Plugin-->
+        <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>
+    </properties>
+
+    <!--Repos-->
+    <repositories>
+        <repository>
+            <id>Local Repo</id>
+            <name>Local Maven Repository</name>
+            <url>file:${user.home}/.m2/repository</url>
+        </repository>
+    </repositories>
+
+    <!--Plugin Repos-->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>Local Repo</id>
+            <name>Local Maven Repository</name>
+            <url>file:${user.home}/.m2/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!--Modules-->
+    <modules>
+        <module>fluid-api</module>
+        <module>fluid-ws-java-client</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--JUnit-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!--JSON Library API-->
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${version.org.json}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--Jackson Provider-->
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson-provider</artifactId>
+                <version>${version.jboss.resteasy.jackson}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--Commons-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${version.apache.commons.lang3}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--Google Guava-->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${version.google.guava}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--HTTP Components-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.apache.httpcomponents.httpclient}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- *** FLUID *** -->
+            <!--Fluid API Dependencies-->
+            <dependency>
+                <groupId>com.fluid</groupId>
+                <artifactId>fluid-api</artifactId>
+                <version>${version.fluid.api}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--Fluid WS Java Client-->
+            <dependency>
+                <groupId>com.fluid</groupId>
+                <artifactId>fluid-ws-java-client</artifactId>
+                <version>${version.fluid.ws-java-client}</version>
+                <scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

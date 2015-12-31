@@ -14,4 +14,14 @@ Components include;
 *   The full Fluid API `Java Web-Service` for Flow, Form Definition, Field.
 *   The full Fluid API `JUnit Web-Service` test suite.
 
+## Source Type
 
+*   Java `1.7`
+*   Maven `3.2.2`
+ 
+## Project Build
+
+1. Clone the repo: `git clone git@github.com:Koekiebox-PTY-LTD/Fluid.git` 
+2. Install [Maven](https://maven.apache.org/install.html).
+3. Navigate to local project folder: `cd Fluid`
+3. Run `mvn clean install`

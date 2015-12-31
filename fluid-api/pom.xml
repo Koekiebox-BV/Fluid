@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>fluid-root</artifactId>
+        <groupId>com.fluid</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <!--Fluid API-->
+    <artifactId>fluid-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Fluid API</name>
+    <description>Used for the Custom Program Step and Custom Actions in Fluid.</description>
+
+    <!--Dependencies-->
+    <dependencies>
+        <!--JSON Library-->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--Resteasy Jackson Provider-->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>

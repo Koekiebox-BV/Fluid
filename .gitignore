@@ -14,4 +14,8 @@ hs_err_pid*
 # IDEA Project Files #
 
 /.idea
+*.iml
 
+# Maven Target
+/fluid-api/target
+/fluid-ws-java-client/target
