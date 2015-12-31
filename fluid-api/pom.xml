@@ -33,4 +33,29 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!--First the 'git describe'-->
+            <plugin>
+                <groupId>com.koekiebox</groupId>
+                <artifactId>git-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>git_describe</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--Property that will be set during initialization-->
+                    <makeUseOfJavaFile>true</makeUseOfJavaFile>
+                    <classPathToJavaFile>com.fluid.GitDescribe</classPathToJavaFile>
+                    <constantToChange>GIT_DESCRIBE</constantToChange>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -19,3 +19,6 @@ hs_err_pid*
 # Maven Target
 /fluid-api/target
 /fluid-ws-java-client/target
+
+# Git Describe #
+fluid-api/src/main/java/com/fluid/GitDescribe.java
