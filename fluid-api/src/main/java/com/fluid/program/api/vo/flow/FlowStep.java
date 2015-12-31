@@ -15,9 +15,11 @@
 
 package com.fluid.program.api.vo.flow;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -132,6 +134,31 @@ public class FlowStep extends ABaseFluidJSONObject {
         public void setValue(String valueParam) {
             this.value = valueParam;
         }
+
+        /**
+         *
+         * @return
+         * @throws org.json.JSONException
+         */
+        @Override
+        public JSONObject toJsonObject() throws JSONException
+        {
+            JSONObject returnVal = super.toJsonObject();
+
+            //Name...
+            if(this.getName() != null)
+            {
+                returnVal.put(JSONMapping.NAME,this.getName());
+            }
+
+            //Value...
+            if(this.getValue() != null)
+            {
+                returnVal.put(JSONMapping.VALUE,this.getValue());
+            }
+
+            return returnVal;
+        }
     }
 
     /**
@@ -158,8 +185,89 @@ public class FlowStep extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.NAME)) {
             this.setName(this.jsonObject.getString(JSONMapping.NAME));
         }
-    }
 
+        //Description...
+        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
+            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
+        }
+
+        //Date Created...
+        if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
+            this.setDateCreated(
+                    this.getLongAsDateFromJson(this.jsonObject.getLong(JSONMapping.DATE_CREATED)));
+        }
+
+        //Date Last Updated...
+        if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
+            this.setDateCreated(
+                    this.getLongAsDateFromJson(this.jsonObject.getLong(JSONMapping.DATE_LAST_UPDATED)));
+        }
+
+        //Flow...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW)) {
+            this.setFlow(new Flow(this.jsonObject.getJSONObject(JSONMapping.FLOW)));
+        }
+
+        //Flow Step Type...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_TYPE)) {
+            this.setFlowStepType(this.jsonObject.getString(JSONMapping.FLOW_STEP_TYPE));
+        }
+
+        //Entry Rules...
+        if (!this.jsonObject.isNull(JSONMapping.ENTRY_RULES)) {
+
+            JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.ENTRY_RULES);
+
+            List<FlowStepRule> listOfRules = new ArrayList<FlowStepRule>();
+            for(int index = 0;index < entryRules.length();index++)
+            {
+                listOfRules.add(new FlowStepRule(entryRules.getJSONObject(index)));
+            }
+
+            this.setEntryRules(listOfRules);
+        }
+
+        //Exit Rules...
+        if (!this.jsonObject.isNull(JSONMapping.EXIT_RULES)) {
+
+            JSONArray exitRules = this.jsonObject.getJSONArray(JSONMapping.EXIT_RULES);
+
+            List<FlowStepRule> listOfRules = new ArrayList<FlowStepRule>();
+            for(int index = 0;index < exitRules.length();index++)
+            {
+                listOfRules.add(new FlowStepRule(exitRules.getJSONObject(index)));
+            }
+
+            this.setExitRules(listOfRules);
+        }
+
+        //View Rules...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_RULES)) {
+
+            JSONArray viewRules = this.jsonObject.getJSONArray(JSONMapping.VIEW_RULES);
+
+            List<FlowStepRule> listOfRules = new ArrayList<FlowStepRule>();
+            for(int index = 0;index < viewRules.length();index++)
+            {
+                listOfRules.add(new FlowStepRule(viewRules.getJSONObject(index)));
+            }
+
+            this.setViewRules(listOfRules);
+        }
+
+        //Step Properties...
+        if (!this.jsonObject.isNull(JSONMapping.STEP_PROPERTIES)) {
+            JSONArray stepProperties = this.jsonObject.getJSONArray(JSONMapping.STEP_PROPERTIES);
+
+            List<StepProperty> listOfStepProps = new ArrayList<StepProperty>();
+            for(int index = 0;index < stepProperties.length();index++)
+            {
+                listOfStepProps.add(new StepProperty(stepProperties.getJSONObject(index)));
+            }
+
+            this.setStepProperties(listOfStepProps);
+        }
+    }
 
     /**
      *
@@ -175,6 +283,12 @@ public class FlowStep extends ABaseFluidJSONObject {
         if(this.getName() != null)
         {
             returnVal.put(JSONMapping.NAME,this.getName());
+        }
+
+        //Description...
+        if(this.getDescription() != null)
+        {
+            returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
         }
 
         return returnVal;
@@ -212,67 +326,131 @@ public class FlowStep extends ABaseFluidJSONObject {
         this.description = descriptionParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getDateCreated() {
-        return dateCreated;
+        return this.dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    /**
+     *
+     * @param dateCreatedParam
+     */
+    public void setDateCreated(Date dateCreatedParam) {
+        this.dateCreated = dateCreatedParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public Date getDateLastUpdated() {
-        return dateLastUpdated;
+        return this.dateLastUpdated;
     }
 
-    public void setDateLastUpdated(Date dateLastUpdated) {
-        this.dateLastUpdated = dateLastUpdated;
+    /**
+     *
+     * @param dateLastUpdatedParam
+     */
+    public void setDateLastUpdated(Date dateLastUpdatedParam) {
+        this.dateLastUpdated = dateLastUpdatedParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public Flow getFlow() {
-        return flow;
+        return this.flow;
     }
 
-    public void setFlow(Flow flow) {
-        this.flow = flow;
+    /**
+     *
+     * @param flowParam
+     */
+    public void setFlow(Flow flowParam) {
+        this.flow = flowParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFlowStepType() {
-        return flowStepType;
+        return this.flowStepType;
     }
 
-    public void setFlowStepType(String flowStepType) {
-        this.flowStepType = flowStepType;
+    /**
+     *
+     * @param flowStepTypeParam
+     */
+    public void setFlowStepType(String flowStepTypeParam) {
+        this.flowStepType = flowStepTypeParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<FlowStepRule> getEntryRules() {
-        return entryRules;
+        return this.entryRules;
     }
 
-    public void setEntryRules(List<FlowStepRule> entryRules) {
-        this.entryRules = entryRules;
+    /**
+     *
+     * @param entryRulesParam
+     */
+    public void setEntryRules(List<FlowStepRule> entryRulesParam) {
+        this.entryRules = entryRulesParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<FlowStepRule> getExitRules() {
-        return exitRules;
+        return this.exitRules;
     }
 
-    public void setExitRules(List<FlowStepRule> exitRules) {
-        this.exitRules = exitRules;
+    /**
+     *
+     * @param exitRulesParam
+     */
+    public void setExitRules(List<FlowStepRule> exitRulesParam) {
+        this.exitRules = exitRulesParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<FlowStepRule> getViewRules() {
-        return viewRules;
+        return this.viewRules;
     }
 
-    public void setViewRules(List<FlowStepRule> viewRules) {
-        this.viewRules = viewRules;
+    /**
+     *
+     * @param viewRulesParam
+     */
+    public void setViewRules(List<FlowStepRule> viewRulesParam) {
+        this.viewRules = viewRulesParam;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<StepProperty> getStepProperties() {
-        return stepProperties;
+        return this.stepProperties;
     }
 
-    public void setStepProperties(List<StepProperty> stepProperties) {
-        this.stepProperties = stepProperties;
+    /**
+     *
+     * @param stepPropertiesParam
+     */
+    public void setStepProperties(List<StepProperty> stepPropertiesParam) {
+        this.stepProperties = stepPropertiesParam;
     }
 }
