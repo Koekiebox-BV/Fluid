@@ -16,9 +16,12 @@ hs_err_pid*
 /.idea
 *.iml
 
-# Maven Target
+# Maven Target #
 /fluid-api/target
 /fluid-ws-java-client/target
+
+# Maven Surefire Reports #
+!/fluid-ws-java-client/target/surefire-reports/
 
 # Git Describe #
 fluid-api/src/main/java/com/fluid/GitDescribe.java
