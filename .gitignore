@@ -12,15 +12,14 @@
 hs_err_pid*
 
 # IDEA Project Files #
-
-/.idea
+/.idea/
 *.iml
 
 # Maven Target #
-/fluid-api/target
-/fluid-ws-java-client/target
+/fluid-api/target/
+/fluid-ws-java-client/target/
 
-# Maven Surefire Reports #
+# Include Maven Surefire Reports #
 !/fluid-ws-java-client/target/surefire-reports/*.xml
 !/fluid-ws-java-client/target/surefire-reports/*.txt
 
