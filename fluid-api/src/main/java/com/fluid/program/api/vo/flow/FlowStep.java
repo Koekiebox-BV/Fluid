@@ -124,6 +124,13 @@ public class FlowStep extends ABaseFluidJSONObject {
 
         /**
          *
+         */
+        public StepProperty() {
+            super();
+        }
+
+        /**
+         *
          * @param nameParam
          * @param valueParam
          */
@@ -261,7 +268,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
         //Date Last Updated...
         if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
-            this.setDateCreated(
+            this.setDateLastUpdated(
                     this.getLongAsDateFromJson(this.jsonObject.getLong(JSONMapping.DATE_LAST_UPDATED)));
         }
 
@@ -443,7 +450,7 @@ public class FlowStep extends ABaseFluidJSONObject {
         //Flow Step Type...
         if(this.getFlowStepType() != null)
         {
-            returnVal.put(JSONMapping.FLOW,this.getFlowStepType());
+            returnVal.put(JSONMapping.FLOW_STEP_TYPE,this.getFlowStepType());
         }
 
         //Entry Rules...

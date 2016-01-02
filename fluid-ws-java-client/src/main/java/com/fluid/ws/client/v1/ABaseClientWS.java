@@ -487,6 +487,7 @@ public class ABaseClientWS {
         }
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
+        String responseBody = null;
 
         try {
             HttpUriRequest uriRequest = null;
@@ -555,7 +556,7 @@ public class ABaseClientWS {
             ResponseHandler<String> responseHandler = this.getJsonResponseHandler(
                     endpointUrl.concat(postfixUrlParam));
 
-            String responseBody = this.executeHttp(httpclient, uriRequest,
+            responseBody = this.executeHttp(httpclient, uriRequest,
                     responseHandler, postfixUrlParam);;
 
             if(responseBody == null || responseBody.trim().isEmpty())
@@ -587,7 +588,16 @@ public class ABaseClientWS {
         //Invalid JSON Body...
         catch (JSONException jsonExcept)
         {
-            throw new FluidClientException(jsonExcept.getMessage(),
+            if(responseBody != null && !responseBody.trim().isEmpty())
+            {
+                throw new FluidClientException(
+                        jsonExcept.getMessage() + "\n Response Body is: \n\n" +
+                                responseBody,
+                        jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+            }
+
+            throw new FluidClientException(
+                    jsonExcept.getMessage(),
                     jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
         }
         //Fluid Client Exception...
