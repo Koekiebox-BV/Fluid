@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="4" failures="0" name="com.fluid.ws.client.v1.form.TestFormDefinitionClient" time="1.768" errors="0" skipped="0">
+<testsuite tests="4" failures="0" name="com.fluid.ws.client.v1.form.TestFormDefinitionClient" time="1.803" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib"/>
@@ -63,8 +63,8 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testFormDefinitionSystem_Mail" time="0.262"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testDuplicateCreateData" time="0.361"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testFormDefinitionCRUD" time="0.805"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testInvalidCreateData" time="0.34"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testFormDefinitionSystem_Mail" time="0.278"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testDuplicateCreateData" time="0.384"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testFormDefinitionCRUD" time="0.803"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormDefinitionClient" name="testInvalidCreateData" time="0.338"/>
 </testsuite>

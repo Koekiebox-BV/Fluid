@@ -16,6 +16,7 @@ hs_err_pid*
 *.iml
 
 # Maven Target #
+/target/
 /fluid-api/target/
 /fluid-ws-java-client/target/
 

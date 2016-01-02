@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="5" failures="0" name="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" time="0.734" errors="0" skipped="0">
+<testsuite tests="5" failures="0" name="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" time="0.73" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib"/>
@@ -63,9 +63,9 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_TextMasked" time="0.141"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_MultiChoicePlain" time="0.146"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_NoFieldDescription" time="0.144"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_NoFieldName" time="0.162"/>
-  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_TextBarcode" time="0.141"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_TextMasked" time="0.147"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_MultiChoicePlain" time="0.15"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_NoFieldDescription" time="0.145"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_NoFieldName" time="0.144"/>
+  <testcase classname="com.fluid.ws.client.v1.form.TestFormFieldClientInvalids" name="testFormFieldInvalid_TextBarcode" time="0.144"/>
 </testsuite>

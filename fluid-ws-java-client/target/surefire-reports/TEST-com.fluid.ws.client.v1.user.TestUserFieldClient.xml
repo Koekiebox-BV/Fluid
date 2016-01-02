@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="9" failures="0" name="com.fluid.ws.client.v1.user.TestUserFieldClient" time="2.67" errors="0" skipped="0">
+<testsuite tests="9" failures="0" name="com.fluid.ws.client.v1.user.TestUserFieldClient" time="2.723" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_25.jdk/Contents/Home/jre/lib"/>
@@ -63,13 +63,13 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_MultiChoiceSelectMany_CRUD" time="0.309"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_DateTimeDateAndTime_CRUD" time="0.29"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_DateTimeDate_CRUD" time="0.289"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_MultiChoiceSelectMany_CRUD" time="0.308"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_DateTimeDateAndTime_CRUD" time="0.294"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_DateTimeDate_CRUD" time="0.288"/>
   <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_ParagraphTextPlain_CRUD" time="0.29"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_MultiChoicePlain_CRUD" time="0.304"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_ParagraphTextHTML_CRUD" time="0.289"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_DecimalPlain_CRUD" time="0.294"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_TrueFalse_CRUD" time="0.306"/>
-  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testRouteField_TextPlain_CRUD" time="0.299"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_MultiChoicePlain_CRUD" time="0.312"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_ParagraphTextHTML_CRUD" time="0.317"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_DecimalPlain_CRUD" time="0.303"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testFormField_TrueFalse_CRUD" time="0.294"/>
+  <testcase classname="com.fluid.ws.client.v1.user.TestUserFieldClient" name="testRouteField_TextPlain_CRUD" time="0.317"/>
 </testsuite>

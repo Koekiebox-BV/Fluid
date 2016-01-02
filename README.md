@@ -25,3 +25,8 @@ Components include;
 2. Install [Maven](https://maven.apache.org/install.html).
 3. Navigate to local project folder: `cd Fluid`
 3. Run `mvn clean install`
+
+## Test Results and Package Info
+
+* [Surefire Report](fluid-ws-java-client/target/site/surefire-report.html) ran via command ` mvn surefire-report:report`
+* [Release Information](target/site/index.html)
