@@ -29,4 +29,5 @@ Components include;
 ## Test Results and Package Info
 
 * [Surefire Report](fluid-ws-java-client/target/site/surefire-report.html) ran via command ` mvn surefire-report:report`
-* [Release Information](target/site/index.html)
+* [Release Information for Fluid API](fluid-api/target/site/index.html)
+* [Release Information for Fluid Web Service Client](fluid-ws-java-client/target/site/index.html)

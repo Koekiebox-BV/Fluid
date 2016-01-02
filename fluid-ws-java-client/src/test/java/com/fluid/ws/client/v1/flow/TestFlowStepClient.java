@@ -17,6 +17,7 @@ package com.fluid.ws.client.v1.flow;
 
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.flow.FlowStep;
+import com.fluid.program.api.vo.flow.FlowStepRule;
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -58,8 +59,29 @@ public class TestFlowStepClient extends ABaseTestCase {
             public static final String PROP_PERFORMMEASUREEXPECTEDDAILY_HIGH = "5";
             public static final String PROP_PERFORMMEASUREEXPECTEDDAILY_LOW = "2";
 
-            public static final String PROP_ROUTE_FIELDS = "Zool, Badool";
+            public static final String PROP_ROUTE_FIELDS = "Zool,Badool";
             public static final String PROP_VIEW_GROUP = "The View";
+
+            public static final int VIEW_RULES_COUNT_CREATE = 2;
+
+            //Update...
+
+            public static final String PROP_ITEM_TIMEOUT_DAYS_UPDATE = "4";
+            public static final String PROP_ITEM_TIMEOUT_HOURS_UPDATE = "5";
+            public static final String PROP_ITEM_TIMEOUT_MINUTES_UPDATE = "6";
+
+            public static final String PROP_USER_ITEM_TIMEOUT_DAYS_UPDATE = "4";
+            public static final String PROP_USER_ITEM_TIMEOUT_HOURS_UPDATE = "5";
+            public static final String PROP_USER_ITEM_TIMEOUT_MINUTES_UPDATE = "6";
+
+            public static final String PROP_PERFORMMEASUREEXPECTEDDAILY_ABSURD_UPDATE = "15";
+            public static final String PROP_PERFORMMEASUREEXPECTEDDAILY_HIGH_UPDATE = "10";
+            public static final String PROP_PERFORMMEASUREEXPECTEDDAILY_LOW_UPDATE = "4";
+
+            public static final String PROP_ROUTE_FIELDS_UPDATE = "Zool";
+            public static final String PROP_VIEW_GROUP_UPDATE = "The View Updated";
+
+            public static final int VIEW_RULES_COUNT_UPDATE = 3;
         }
 
 
@@ -190,28 +212,127 @@ public class TestFlowStepClient extends ABaseTestCase {
         TestCase.assertEquals("'PerformMeasureExpectedDailyLow' mismatch.",
                 TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_LOW,
                 createdFlowStep.getStepProperty(FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyLow));
+        TestCase.assertEquals("'ViewGroup' mismatch.",
+                TestStatics.Assignment.PROP_VIEW_GROUP,
+                createdFlowStep.getStepProperty(FlowStep.StepProperty.PropName.ViewGroup));
+        TestCase.assertEquals("'ViewGroup' mismatch.",
+                TestStatics.Assignment.PROP_ROUTE_FIELDS,
+                createdFlowStep.getStepProperty(FlowStep.StepProperty.PropName.RouteFields));
+
+        TestCase.assertNotNull("'ViewRules' mismatch.",
+                createdFlowStep.getViewRules());
+        TestCase.assertEquals("'ViewRules' mismatch.",
+                TestStatics.Assignment.VIEW_RULES_COUNT_CREATE,
+                createdFlowStep.getViewRules().size());
 
         //3. Update...
-        /*createdFlowStep.setName(TestStatics.FLOW_STEP_NAME_UPDATE);
+        createdFlowStep.setName(TestStatics.FLOW_STEP_NAME_UPDATE);
         createdFlowStep.setDescription(TestStatics.FLOW_STEP_DESCRIPTION_UPDATE);
+        createdFlowStep.setFlow(createdFlow);
+        createdFlowStep.setFlowStepType(FlowStep.StepType.ASSIGNMENT);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.ItemTimeoutDays,
+                TestStatics.Assignment.PROP_ITEM_TIMEOUT_DAYS_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.ItemTimeoutHours,
+                TestStatics.Assignment.PROP_ITEM_TIMEOUT_HOURS_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.ItemTimeoutMinutes,
+                TestStatics.Assignment.PROP_ITEM_TIMEOUT_MINUTES_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.UserItemTimeoutDays,
+                TestStatics.Assignment.PROP_USER_ITEM_TIMEOUT_DAYS_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.UserItemTimeoutHours,
+                TestStatics.Assignment.PROP_USER_ITEM_TIMEOUT_HOURS_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.UserItemTimeoutMinutes,
+                TestStatics.Assignment.PROP_USER_ITEM_TIMEOUT_MINUTES_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyAbsurd,
+                TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_ABSURD_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyHigh,
+                TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_HIGH_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyLow,
+                TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_LOW_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.RouteFields,
+                TestStatics.Assignment.PROP_ROUTE_FIELDS_UPDATE);
+        createdFlowStep.setStepProperty(
+                FlowStep.StepProperty.PropName.ViewGroup,
+                TestStatics.Assignment.PROP_VIEW_GROUP_UPDATE);
+
+        FlowStepRule viewRuleToAdd = new FlowStepRule();
+        viewRuleToAdd.setRule("VIEW 'JUnit Test Awesome'");
+        createdFlowStep.getViewRules().add(viewRuleToAdd);
+
         FlowStep updatedFlowStep = flowStepClient.updateFlowStep(createdFlowStep);
 
+        TestCase.assertEquals("UPDATE: 'Id' mismatch.", createdFlowStep.getId(), updatedFlowStep.getId());
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedFlowStep.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FLOW_STEP_NAME_UPDATE, updatedFlowStep.getName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FLOW_STEP_DESCRIPTION_UPDATE,
                 updatedFlowStep.getDescription());
         TestCase.assertNotNull("UPDATE: The 'Date Created' needs to be set.", updatedFlowStep.getDateCreated());
         TestCase.assertNotNull("UPDATE: The 'Date Last Updated' needs to be set.", updatedFlowStep.getDateLastUpdated());
-        */
+
+        TestCase.assertEquals("UPDATE: 'ItemTimeoutDays' mismatch.",
+                TestStatics.Assignment.PROP_ITEM_TIMEOUT_DAYS_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.ItemTimeoutDays));
+        TestCase.assertEquals("UPDATE: 'ItemTimeoutHours' mismatch.",
+                TestStatics.Assignment.PROP_ITEM_TIMEOUT_HOURS_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.ItemTimeoutHours));
+        TestCase.assertEquals("UPDATE: 'ItemTimeoutMinutes' mismatch.",
+                TestStatics.Assignment.PROP_ITEM_TIMEOUT_MINUTES_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.ItemTimeoutMinutes));
+
+        TestCase.assertEquals("UPDATE: 'UserItemTimeoutDays' mismatch.",
+                TestStatics.Assignment.PROP_USER_ITEM_TIMEOUT_DAYS_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.UserItemTimeoutDays));
+        TestCase.assertEquals("UPDATE: 'UserItemTimeoutHours' mismatch.",
+                TestStatics.Assignment.PROP_USER_ITEM_TIMEOUT_HOURS_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.UserItemTimeoutHours));
+        TestCase.assertEquals("UPDATE: 'UserItemTimeoutMinutes' mismatch.",
+                TestStatics.Assignment.PROP_USER_ITEM_TIMEOUT_MINUTES_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.UserItemTimeoutMinutes));
+
+        TestCase.assertEquals("UPDATE: 'PerformMeasureExpectedDailyAbsurd' mismatch.",
+                TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_ABSURD_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyAbsurd));
+        TestCase.assertEquals("UPDATE: 'PerformMeasureExpectedDailyHigh' mismatch.",
+                TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_HIGH_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyHigh));
+        TestCase.assertEquals("UPDATE: 'PerformMeasureExpectedDailyLow' mismatch.",
+                TestStatics.Assignment.PROP_PERFORMMEASUREEXPECTEDDAILY_LOW_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.PerformMeasureExpectedDailyLow));
+        TestCase.assertEquals("UPDATE: 'ViewGroup' mismatch.",
+                TestStatics.Assignment.PROP_VIEW_GROUP_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.ViewGroup));
+        TestCase.assertEquals("UPDATE: 'ViewGroup' mismatch.",
+                TestStatics.Assignment.PROP_ROUTE_FIELDS_UPDATE,
+                updatedFlowStep.getStepProperty(FlowStep.StepProperty.PropName.RouteFields));
+
+        TestCase.assertNotNull("UPDATE: 'ViewRules' mismatch.",
+                updatedFlowStep.getViewRules());
+        TestCase.assertEquals("UPDATE: 'ViewRules' mismatch.",
+                TestStatics.Assignment.VIEW_RULES_COUNT_UPDATE,
+                updatedFlowStep.getViewRules().size());
+
 
         //4. Get by Id...
         FlowStep byIdFlowStep = flowStepClient.getFlowStepById(
-                createdFlowStep.getId(), FlowStep.StepType.ASSIGNMENT);
+                updatedFlowStep.getId(), FlowStep.StepType.ASSIGNMENT);
 
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdFlowStep.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdFlowStep.getName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdFlowStep.getDescription());
         TestCase.assertNotNull("BY_ID: The 'Date Created' needs to be set.", byIdFlowStep.getDateCreated());
+        //TODO Need to double check this TestCase.assertEquals(
+                //"BY_ID: The 'Date Created' must match original create date.",
+                //createdFlowStep.getDateCreated().getTime(),
+                //byIdFlowStep.getDateCreated().getTime());
         TestCase.assertNotNull("BY_ID: The 'Date Last Updated' needs to be set.", byIdFlowStep.getDateLastUpdated());
 
         //5. Delete...
