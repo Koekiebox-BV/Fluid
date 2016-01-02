@@ -26,6 +26,10 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * @author jasonbruwer
+ * @since 2014-07-01
+ *
+ * Represents a step in the <code>Flow</code> process.
  *
  */
 public class FlowStep extends ABaseFluidJSONObject {
@@ -46,7 +50,7 @@ public class FlowStep extends ABaseFluidJSONObject {
     private List<StepProperty> stepProperties;
 
     /**
-     *
+     * JSON Mapping for the object.
      */
     public static class JSONMapping
     {
@@ -63,7 +67,24 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * The Type of Step to create or update.
+     */
+    public static class StepType {
+        public static final String INTRODUCTION = "Introduction";
+        public static final String RE_route = "Re Route";
+        public static final String EXIT = "Exit";
+        public static final String ASSIGNMENT = "Assignment";
+        public static final String MAIL_CAPTURE = "Mail Capture";
+        public static final String DATABASE_CAPTURE = "Database Capture";
+        public static final String SEND_MAIL = "Send Mail";
+        public static final String TWEET = "Tweet";
+        public static final String JAVA_PROGRAM = "Java Program";
+        public static final String CLONE_ITEM = "Clone Item";
+
+    }
+
+    /**
+     * Additional properties appicable to specrific <code>FlowStep</code> types.
      */
     public static class StepProperty extends ABaseFluidJSONObject
     {
@@ -71,7 +92,29 @@ public class FlowStep extends ABaseFluidJSONObject {
         private String value;
 
         /**
-         *
+         * A list of the available properties to set.
+         */
+        public static class PropName
+        {
+            //Assignment Step...
+            public static final String ItemTimeoutDays = "ItemTimeoutDays";
+            public static final String ItemTimeoutHours = "ItemTimeoutHours";
+            public static final String ItemTimeoutMinutes = "ItemTimeoutMinutes";
+
+            public static final String UserItemTimeoutDays = "UserItemTimeoutDays";
+            public static final String UserItemTimeoutHours = "UserItemTimeoutHours";
+            public static final String UserItemTimeoutMinutes = "UserItemTimeoutMinutes";
+
+            public static final String PerformMeasureExpectedDailyAbsurd = "PerformMeasureExpectedDailyAbsurd";
+            public static final String PerformMeasureExpectedDailyHigh = "PerformMeasureExpectedDailyHigh";
+            public static final String PerformMeasureExpectedDailyLow = "PerformMeasureExpectedDailyLow";
+
+            public static final String RouteFields = "RouteFields";
+            public static final String ViewGroup = "ViewGroup";
+        }
+
+        /**
+         * JSON Mapping for the object.
          */
         public static class JSONMapping
         {
@@ -79,6 +122,16 @@ public class FlowStep extends ABaseFluidJSONObject {
             public static final String VALUE = "value";
         }
 
+        /**
+         *
+         * @param nameParam
+         * @param valueParam
+         */
+        public StepProperty(String nameParam, String valueParam) {
+
+            this.setName(nameParam);
+            this.setValue(valueParam);
+        }
 
         /**
          *
@@ -148,13 +201,13 @@ public class FlowStep extends ABaseFluidJSONObject {
             //Name...
             if(this.getName() != null)
             {
-                returnVal.put(JSONMapping.NAME,this.getName());
+                returnVal.put(JSONMapping.NAME, this.getName());
             }
 
             //Value...
             if(this.getValue() != null)
             {
-                returnVal.put(JSONMapping.VALUE,this.getValue());
+                returnVal.put(JSONMapping.VALUE, this.getValue());
             }
 
             return returnVal;
@@ -168,6 +221,15 @@ public class FlowStep extends ABaseFluidJSONObject {
         super();
     }
 
+    /**
+     *
+     * @param flowStepIdParam
+     */
+    public FlowStep(Long flowStepIdParam) {
+        super();
+
+        this.setId(flowStepIdParam);
+    }
 
     /**
      *
@@ -271,6 +333,73 @@ public class FlowStep extends ABaseFluidJSONObject {
 
     /**
      *
+     * @param nameParam
+     * @param valueParam
+     */
+    public void setStepProperty(
+            String nameParam, String valueParam)
+    {
+        if(this.getStepProperties() == null)
+        {
+            this.setStepProperties(new ArrayList<StepProperty>());
+        }
+
+        if(nameParam == null || nameParam.trim().isEmpty())
+        {
+            return;
+        }
+
+        if(valueParam.trim().isEmpty())
+        {
+            return;
+        }
+
+        String paramLower = nameParam.toLowerCase();
+
+        for(StepProperty existingProp : this.getStepProperties())
+        {
+            if(existingProp.getName().toLowerCase().equals(paramLower))
+            {
+                existingProp.setValue(valueParam);
+                return;
+            }
+        }
+
+        this.getStepProperties().add(new StepProperty(nameParam, valueParam));
+    }
+
+    /**
+     *
+     * @param nameParam
+     * @return
+     */
+    public String getStepProperty(String nameParam)
+    {
+        if(this.getStepProperties() == null || this.getStepProperties().isEmpty())
+        {
+            return null;
+        }
+
+        if(nameParam == null || nameParam.trim().isEmpty())
+        {
+            return null;
+        }
+
+        String paramLower = nameParam.toLowerCase();
+
+        for(StepProperty stepProperty : this.getStepProperties())
+        {
+            if(stepProperty.getName().toLowerCase().equals(paramLower))
+            {
+                return stepProperty.getValue();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *
      * @return
      * @throws org.json.JSONException
      */
@@ -289,6 +418,84 @@ public class FlowStep extends ABaseFluidJSONObject {
         if(this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
+        }
+
+        //Date Created...
+        if(this.getDateCreated() != null)
+        {
+            returnVal.put(JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated()));
+        }
+
+        //Date Last Updated...
+        if(this.getDateLastUpdated() != null)
+        {
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        }
+
+        //Flow...
+        if(this.getFlow() != null)
+        {
+            returnVal.put(JSONMapping.FLOW,this.getFlow().toJsonObject());
+        }
+
+        //Flow Step Type...
+        if(this.getFlowStepType() != null)
+        {
+            returnVal.put(JSONMapping.FLOW,this.getFlowStepType());
+        }
+
+        //Entry Rules...
+        if(this.getEntryRules() != null && !this.getEntryRules().isEmpty())
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(FlowStepRule rule : this.getEntryRules())
+            {
+                jsonArray.put(rule.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.ENTRY_RULES, jsonArray);
+        }
+
+        //Exit Rules...
+        if(this.getExitRules() != null && !this.getExitRules().isEmpty())
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(FlowStepRule rule : this.getExitRules())
+            {
+                jsonArray.put(rule.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.EXIT_RULES, jsonArray);
+        }
+
+        //View Rules...
+        if(this.getViewRules() != null && !this.getViewRules().isEmpty())
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(FlowStepRule rule : this.getViewRules())
+            {
+                jsonArray.put(rule.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.VIEW_RULES, jsonArray);
+        }
+
+        //Step Properties...
+        if(this.getStepProperties() != null && !this.getStepProperties().isEmpty())
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(StepProperty stepProperty : this.getStepProperties())
+            {
+                jsonArray.put(stepProperty.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.STEP_PROPERTIES, jsonArray);
         }
 
         return returnVal;

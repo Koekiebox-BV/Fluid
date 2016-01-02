@@ -82,6 +82,24 @@ public class FlowStepClient extends ABaseClientWS {
 
     /**
      *
+     * @param flowIdParam
+     * @return
+     */
+    public FlowStep getFlowStepById(Long flowIdParam)
+    {
+        FlowStep flow = new FlowStep(flowIdParam);
+
+        if(this.serviceTicket != null)
+        {
+            flow.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStep(this.postJson(
+                flow, WS.Path.FlowStep.Version1.getById()));
+    }
+
+    /**
+     *
      * @param flowStepParam
      * @return
      */
