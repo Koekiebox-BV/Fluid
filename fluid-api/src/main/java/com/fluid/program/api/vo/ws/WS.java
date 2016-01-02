@@ -246,6 +246,89 @@ public class WS {
         /**
          *
          */
+        public static final class UserField
+        {
+            /**
+             *
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/user_field");
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+
+
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String formFieldCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String formFieldDelete()
+                {
+                    return formFieldDelete(false);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String formFieldDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String formFieldUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+            }
+        }
+
+        /**
+         *
+         */
         public static final class FormDefinition
         {
             /**
