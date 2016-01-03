@@ -329,10 +329,10 @@ public class TestFlowStepClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdFlowStep.getName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdFlowStep.getDescription());
         TestCase.assertNotNull("BY_ID: The 'Date Created' needs to be set.", byIdFlowStep.getDateCreated());
-        //TODO Need to double check this TestCase.assertEquals(
-                //"BY_ID: The 'Date Created' must match original create date.",
-                //createdFlowStep.getDateCreated().getTime(),
-                //byIdFlowStep.getDateCreated().getTime());
+        TestCase.assertEquals(
+                "BY_ID: The 'Date Created' must match original create date.",
+                createdFlowStep.getDateCreated().toString(),
+                byIdFlowStep.getDateCreated().toString());
         TestCase.assertNotNull("BY_ID: The 'Date Last Updated' needs to be set.", byIdFlowStep.getDateLastUpdated());
 
         //5. Delete...
