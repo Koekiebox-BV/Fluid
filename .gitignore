@@ -20,11 +20,12 @@ hs_err_pid*
 /fluid-api/target/
 /fluid-ws-java-client/target/
 
-# Include Maven Surefire Reports #
-!/fluid-ws-java-client/target/site/
-# Include the Fluid-API Java Documents #
-!/fluid-api/target/site/apidocs/
-!/fluid-api/target/site/surefire-report.html
-
 # Git Describe #
 fluid-api/src/main/java/com/fluid/GitDescribe.java
+
+# Include Maven Java WS Client Target Resources #
+!/fluid-ws-java-client/target/site/apidocs/**
+!/fluid-ws-java-client/target/site/surefire-report.html
+# Include Maven Java API Target Resources #
+!/fluid-api/target/site/apidocs/**
+!/fluid-api/target/site/surefire-report.html
