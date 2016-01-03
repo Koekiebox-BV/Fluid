@@ -15,10 +15,14 @@
 
 package com.fluid.program.api.vo.flow;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -31,6 +35,8 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     private Flow flow;
     private FlowStep flowStep;
 
+    private List<String> nextValidSyntaxWords;
+
     /**
      *
      */
@@ -40,6 +46,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         public static final String RULE = "rule";
         public static final String FLOW = "flow";
         public static final String FLOW_STEP = "flowStep";
+        public static final String NEXT_VALID_SYNTAX_WORDS = "nextValidSyntaxWords";
     }
 
     /**
@@ -92,6 +99,22 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP)) {
             this.setFlowStep(new FlowStep(this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP)));
         }
+
+        //Next Valid Syntax Words...
+        if (!this.jsonObject.isNull(JSONMapping.NEXT_VALID_SYNTAX_WORDS)) {
+
+            JSONArray listOfValidWordsArray =
+                    this.jsonObject.getJSONArray(JSONMapping.NEXT_VALID_SYNTAX_WORDS);
+
+            List<String> validWordsString = new ArrayList<String>();
+
+            for(int index = 0;index < listOfValidWordsArray.length();index++)
+            {
+                validWordsString.add(listOfValidWordsArray.getString(index));
+            }
+
+            this.setNextValidSyntaxWords(validWordsString);
+        }
     }
 
     /**
@@ -126,6 +149,19 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         if(this.getFlowStep() != null)
         {
             returnVal.put(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
+        }
+
+        //Next Valid Syntax Words...
+        if(this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty())
+        {
+            JSONArray jsonArrayOfValidWords = new JSONArray();
+
+            for(String validWord : this.getNextValidSyntaxWords())
+            {
+                jsonArrayOfValidWords.put(validWord);
+            }
+
+            returnVal.put(JSONMapping.NEXT_VALID_SYNTAX_WORDS, jsonArrayOfValidWords);
         }
 
         return returnVal;
@@ -192,5 +228,21 @@ public class FlowStepRule extends ABaseFluidJSONObject {
      */
     public void setFlowStep(FlowStep flowStepParam) {
         this.flowStep = flowStepParam;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<String> getNextValidSyntaxWords() {
+        return this.nextValidSyntaxWords;
+    }
+
+    /**
+     *
+     * @param nextValidSyntaxWordsParam
+     */
+    public void setNextValidSyntaxWords(List<String> nextValidSyntaxWordsParam) {
+        this.nextValidSyntaxWords = nextValidSyntaxWordsParam;
     }
 }

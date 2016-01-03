@@ -20,37 +20,46 @@ import java.util.List;
 import com.fluid.program.api.vo.FluidItem;
 
 /**
- * @author jasonbruwer
- * @since 2015-05-15
- *
- * Implement this interface when you want Fluid to execute
- * a custom action when performing actions from a Form.
+ * Implement this <code>interface</code> when you want Fluid to execute
+ * a custom action when performing actions from a {@code Form}.
  *
  * Default action is <code>Save</code>.
  *
  * The schedules are configured within Fluid.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ * @see com.fluid.program.api.vo.Form
+ * @see com.fluid.program.api.vo.FluidItem
+ *
  */
 public interface ICustomWebAction extends IActionBase {
 
     /**
-     * May be 'Form Save' to apply when saving a Form.
+     * May be <code>'Save'</code> to apply when saving a Form.
+     * Any other <code>ActionIdentifier</code> will be part of an
+     * additional action that would not necessarily safe the form.
      *
-     * @return
+     * @return The Fluid Implementation <code>Unique Action Identifier</code>.
+     *
      */
     public abstract String getActionIdentifier();
 
     /**
      *
-     * @return
+     *
+     * @return The {@code List<String>} of Fluid <code>Form Definition / Form Types</code>
+     *         That will be applicable to the <code>Custom Web Action</code>.
      */
     public abstract List<String> getAllowedFormDefinitions();
 
     /**
      * <code>Execute Order (2)</code>
      *
-     * @param fluidItemParam
-     * @return
-     * @throws Exception
+     * @param fluidItemParam The current open {@code FluidItem}.
+     * @return A {@code List<FluidItem>} that may include new Fluid Items to create or update.
+     * @throws Exception If
+     * @see FluidItem
      */
     public abstract List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;
 }

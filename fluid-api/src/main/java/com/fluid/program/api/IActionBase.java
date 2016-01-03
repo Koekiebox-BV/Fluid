@@ -20,18 +20,28 @@ import java.util.List;
 import javax.sql.DataSource;
 
 /**
- * @author jasonbruwer
+ * The base <code>interface</code> for all Fluid Java Custom Programs.
  *
- * Base action class for all Fluid internal operations.
+ * @author jasonbruwer
+ * @since v1.0
+ * @see ICustomProgram
+ * @see ICustomScheduledAction
+ * @see ICustomWebAction
  */
 public interface IActionBase extends Serializable {
 
     /**
-     * Acts as a constructor that provides.
+     * Acts as a constructor that provides a list of configured {@code dataSourcesParam}
+     * in Fluid. Including the <code>Datasource</code> to the <code>Fluid Core</code> {@code DataSource}.
+     *
+     * This method will always be <code>executed</code> first when the Fluid Third Party Library
+     * executes any of the sub Custom Programs.
      *
      * <code>Execute Order (1)</code>
      *
+     * @see javax.sql.DataSource
      * @param dataSourcesParam A list of created JDBC Data Sources in the system.
+     *
      */
     public abstract void init(List<DataSource> dataSourcesParam);
 }

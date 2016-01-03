@@ -146,6 +146,58 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
     /**
      *
+     * @param entryRuleSyntaxParam
+     * @return
+     */
+    public FlowStepRule compileFlowStepEntryRule(String entryRuleSyntaxParam)
+    {
+
+        FlowStepRule flowStepRule = new FlowStepRule();
+        flowStepRule.setRule(entryRuleSyntaxParam);
+
+        if(this.serviceTicket != null)
+        {
+            flowStepRule.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepRule(this.postJson(
+                flowStepRule, WS.Path.FlowStepRule.Version1.compileEntrySyntax()));
+    }
+
+    /**
+     *
+     * @param flowStepRuleParam
+     * @return
+     */
+    public FlowStepRule moveFlowStepEntryRuleUp(FlowStepRule flowStepRuleParam)
+    {
+        if(flowStepRuleParam != null && this.serviceTicket != null)
+        {
+            flowStepRuleParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepRule(this.postJson(
+                flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleMoveEntryUp()));
+    }
+
+    /**
+     *
+     * @param flowStepRuleParam
+     * @return
+     */
+    public FlowStepRule moveFlowStepEntryRuleDown(FlowStepRule flowStepRuleParam)
+    {
+        if(flowStepRuleParam != null && this.serviceTicket != null)
+        {
+            flowStepRuleParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepRule(this.postJson(
+                flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleMoveEntryDown()));
+    }
+
+    /**
+     *
      * @param flowStepRuleParam
      * @return
      */

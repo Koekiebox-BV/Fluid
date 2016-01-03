@@ -585,9 +585,9 @@ public class WS {
             {
                 public static final String ROOT = ("/flow_step_rule");
 
-                public static final String ROOT_ENTRY = (ROOT.concat("/entry"));
-                public static final String ROOT_EXIT = (ROOT.concat("/exit"));
-                public static final String ROOT_VIEW = (ROOT.concat("/view"));
+                public static final String ROOT_ENTRY = "/flow_step_rule/entry";
+                public static final String ROOT_EXIT = "/flow_step_rule/exit";
+                public static final String ROOT_VIEW = "/flow_step_rule/view";
 
                 //Create...
                 public static final String CREATE = ("/");
@@ -597,9 +597,13 @@ public class WS {
 
                 //Update...
                 public static final String UPDATE = ("/update");
+                public static final String MOVE_UP = ("/move_up");
+                public static final String MOVE_DOWN = ("/move_down");
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String GET_NEXT_VALID_SYNTAX = ("/get_next_valid_syntax");
+                public static final String COMPILE_SYNTAX = ("/compile_syntax");
 
                 @Override
                 public String toString() {
@@ -673,6 +677,24 @@ public class WS {
                  *
                  * @return
                  */
+                public static final String flowStepRuleMoveEntryUp()
+                {
+                    return Version.VERSION_1.concat(ROOT_ENTRY).concat(MOVE_UP);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String flowStepRuleMoveEntryDown()
+                {
+                    return Version.VERSION_1.concat(ROOT_ENTRY).concat(MOVE_DOWN);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
                 public static final String flowStepRuleUpdateExit()
                 {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(UPDATE);
@@ -700,6 +722,24 @@ public class WS {
                  *
                  * @return
                  */
+                public static final String getNextValidEntrySyntax()
+                {
+                    return Version.VERSION_1.concat(ROOT_ENTRY).concat(GET_NEXT_VALID_SYNTAX);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String compileEntrySyntax()
+                {
+                    return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
                 public static final String getExitById()
                 {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(READ);
@@ -709,9 +749,45 @@ public class WS {
                  *
                  * @return
                  */
+                public static final String getNextValidExitSyntax()
+                {
+                    return Version.VERSION_1.concat(ROOT_EXIT).concat(GET_NEXT_VALID_SYNTAX);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String compileExitSyntax()
+                {
+                    return Version.VERSION_1.concat(ROOT_EXIT).concat(COMPILE_SYNTAX);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
                 public static final String getViewById()
                 {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(READ);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String getNextValidViewSyntax()
+                {
+                    return Version.VERSION_1.concat(ROOT_VIEW).concat(GET_NEXT_VALID_SYNTAX);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String compileViewSyntax()
+                {
+                    return Version.VERSION_1.concat(ROOT_VIEW).concat(COMPILE_SYNTAX);
                 }
             }
         }

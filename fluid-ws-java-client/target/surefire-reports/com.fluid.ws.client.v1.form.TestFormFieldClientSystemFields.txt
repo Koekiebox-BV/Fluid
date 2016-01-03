@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.fluid.ws.client.v1.form.TestFormFieldClientSystemFields
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.626 sec
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 sec

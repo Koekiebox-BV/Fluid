@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.fluid.ws.client.v1.form.TestFormFieldClientInvalids
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.73 sec
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 sec

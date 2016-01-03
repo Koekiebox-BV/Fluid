@@ -320,7 +320,6 @@ public class TestFlowStepClient extends ABaseTestCase {
                 TestStatics.Assignment.VIEW_RULES_COUNT_UPDATE,
                 updatedFlowStep.getViewRules().size());
 
-
         //4. Get by Id...
         FlowStep byIdFlowStep = flowStepClient.getFlowStepById(
                 updatedFlowStep.getId(), FlowStep.StepType.ASSIGNMENT);
