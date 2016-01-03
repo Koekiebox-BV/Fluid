@@ -36,6 +36,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     private FlowStep flowStep;
 
     private List<String> nextValidSyntaxWords;
+    private String currentTypedSyntax;
 
     /**
      *
@@ -46,7 +47,9 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         public static final String RULE = "rule";
         public static final String FLOW = "flow";
         public static final String FLOW_STEP = "flowStep";
+
         public static final String NEXT_VALID_SYNTAX_WORDS = "nextValidSyntaxWords";
+        public static final String CURRENT_TYPED_SYNTAX = "currentTypedSyntax";
     }
 
     /**
@@ -88,6 +91,11 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         //Rule...
         if (!this.jsonObject.isNull(JSONMapping.RULE)) {
             this.setRule(this.jsonObject.getString(JSONMapping.RULE));
+        }
+
+        //Current Typed Syntax...
+        if (!this.jsonObject.isNull(JSONMapping.CURRENT_TYPED_SYNTAX)) {
+            this.setCurrentTypedSyntax(this.jsonObject.getString(JSONMapping.CURRENT_TYPED_SYNTAX));
         }
 
         //Flow...
@@ -137,6 +145,13 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         if(this.getRule() != null)
         {
             returnVal.put(JSONMapping.RULE, this.getRule());
+        }
+
+        //Current Typed Syntax...
+        if(this.getCurrentTypedSyntax() != null)
+        {
+            returnVal.put(JSONMapping.CURRENT_TYPED_SYNTAX,
+                    this.getCurrentTypedSyntax());
         }
 
         //Flow...
@@ -228,6 +243,22 @@ public class FlowStepRule extends ABaseFluidJSONObject {
      */
     public void setFlowStep(FlowStep flowStepParam) {
         this.flowStep = flowStepParam;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getCurrentTypedSyntax() {
+        return this.currentTypedSyntax;
+    }
+
+    /**
+     *
+     * @param currentTypedSyntaxParam
+     */
+    public void setCurrentTypedSyntax(String currentTypedSyntaxParam) {
+        this.currentTypedSyntax = currentTypedSyntaxParam;
     }
 
     /**
