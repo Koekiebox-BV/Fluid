@@ -36,17 +36,18 @@ import com.fluid.program.api.vo.FluidItem;
 public interface ICustomWebAction extends IActionBase {
 
     /**
+     * <code>Execute Order (2)</code>
+     *
      * May be <code>'Save'</code> to apply when saving a Form.
      * Any other <code>ActionIdentifier</code> will be part of an
      * additional action that would not necessarily safe the form.
      *
      * @return The Fluid Implementation <code>Unique Action Identifier</code>.
-     *
      */
     public abstract String getActionIdentifier();
 
     /**
-     *
+     * <code>Execute Order (3)</code>
      *
      * @return The {@code List<String>} of Fluid <code>Form Definition / Form Types</code>
      *         That will be applicable to the <code>Custom Web Action</code>.
@@ -54,11 +55,12 @@ public interface ICustomWebAction extends IActionBase {
     public abstract List<String> getAllowedFormDefinitions();
 
     /**
-     * <code>Execute Order (2)</code>
+     * <code>Execute Order (4)</code>
      *
      * @param fluidItemParam The current open {@code FluidItem}.
      * @return A {@code List<FluidItem>} that may include new Fluid Items to create or update.
-     * @throws Exception If
+     * @throws Exception If any problems occur during execution.
+     *         The FlowItem will be moved into an <code>Erroneous</code> state.
      * @see FluidItem
      */
     public abstract List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;

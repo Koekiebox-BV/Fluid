@@ -21,65 +21,104 @@ import com.fluid.program.api.vo.User;
 import com.fluid.program.api.vo.mail.MailMessage;
 
 /**
- * @author jasonbruwer
- * @since 2015-05-15
- *
  * Implement this interface when you want Fluid to execute
  * a custom scheduled job action.
  *
  * The schedules are configured within Fluid.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ * @see ICustomProgram
+ * @see ICustomWebAction
+ * @see com.fluid.program.api.vo.Form
+ * @see com.fluid.program.api.vo.FluidItem
+ * @see com.fluid.program.api.vo.flow.Flow
+ * @see com.fluid.program.api.vo.flow.FlowStep
+ * @see com.fluid.program.api.vo.flow.FlowStepRule
  */
 public interface ICustomScheduledAction extends IActionBase {
 
     /**
-     * <code>Execute Order (1)</code>
+     * <code>Execute Order (2)</code>
      *
+     * <p>
      * The Unique Schedule Action Identifier.
+     * </p>
      *
-     * @return
+     * @return The Fluid Implementation <code>Unique Action Identifier</code>.
      */
     public abstract String getActionIdentifier();
 
     /**
      * <code>Execute Order (3)</code>
      *
-     * The Query <code>java.lang.String</code> to use for the
-     * <code>List<FluidItem> execute(List<FluidItem> fluidItemsParam)</code> method.
+     * <p>
+     * The Query {@code String} to use for the {@code execute(List<FluidItem> fluidItemsParam)}
+     * method.
+     * </p>
      *
-     * @return
-     * @throws Exception
+     * <p>Examples: </p>
+     *
+     * <p>[id] = '850354', [Last Name] = 'Creep'</p>
+     * <p>[Form Type] = 'Email', [Last Name] = 'Creep'</p>
+     *
+     * @return A query {@code String} in Fluid UserQuery format.
+     * @throws Exception When a exception is {@code throw}, the Fluid Workitem will move into an error state.
      */
     public abstract String fluidItemQuery() throws Exception;
 
     /**
      * <code>Execute Order (4)</code>
      *
+     * <p>
+     * Once can make use of the {@code ICustomScheduledAction} to perform mass
+     * updates on a lot of Workflow entries at once.
+     *
+     * This is ideal for performing updates on a whole set of Forms such as daily calculated
+     * interest rates or leave accumulated.
+     * </p>
+     *
      * @param fluidItemsParam The <code>String fluidItemQuery()</code> result.
-     * @return
-     * @throws Exception
+     * @return A {@code List<FluidItem>} that may include new Fluid Items to create or update.
+     * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
      */
     public abstract List<FluidItem> execute(List<FluidItem> fluidItemsParam) throws Exception;
 
     /**
      * <code>Execute Order (5)</code>
      *
+     * <p>
+     * Override this <code>method</code> to make changes to Fluid users.
+     * </p>
+     *
      * @param usersParam The list of users in the system.
      * @return The updated users by the custom program. If a <code>null</code> is returned.
      * The update will be ignored.
-     * @throws Exception
+     * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
+     * @see User
      */
     public abstract List<User> executeUsers(List<User> usersParam) throws Exception;
 
     /**
      * <code>Execute Order (6)</code>
      *
-     * @return
-     * @throws Exception
+     * <p>
+     * Override this <code>method</code> to send emails after
+     * the processing of the scheduled job.
+     * </p>
+     *
+     * @return A {@code MailMessage} that may include emails to be sent after processing.
+     * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
+     * @see MailMessage
      */
     public abstract List<MailMessage> getMailMessagesToSend() throws Exception;
 
     /**
      * <code>Execute Order (7)</code>
+     *
+     * <p>
+     * Trace data to be stored at the time of Schedule Task execution for auditing purposes.
+     * </p>
      *
      * @return The execution result to be stored after the execution of all tasks
      * are completed successfully.
