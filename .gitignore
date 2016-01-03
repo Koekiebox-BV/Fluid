@@ -24,8 +24,6 @@ hs_err_pid*
 fluid-api/src/main/java/com/fluid/GitDescribe.java
 
 # Include Maven Java WS Client Target Resources #
-!/fluid-ws-java-client/target/site/apidocs/**
-!/fluid-ws-java-client/target/site/surefire-report.html
+!/fluid-ws-java-client/target/site/**
 # Include Maven Java API Target Resources #
-!/fluid-api/target/site/apidocs/**
-!/fluid-api/target/site/surefire-report.html
+!/fluid-api/target/site/**
