@@ -36,9 +36,11 @@ public interface ICustomProgram extends IActionBase {
     /**
      * <code>Execute Order (2)</code>
      *
+     * <p>
      * The Task Identifier when selecting the Program to Execute
      * at the relevant {@code FlowStep}.
-     * 
+     * </p>
+     *
      * @return The Fluid Implementation <code>Unique Action Identifier</code>.
      * @see com.fluid.program.api.vo.flow.FlowStep
      */
@@ -46,6 +48,10 @@ public interface ICustomProgram extends IActionBase {
 
     /**
      * <code>Execute Order (3)</code>
+     *
+     * <p>
+     * Execute the custom functionality and change properties on {@code fluidItemParam}.
+     * </p>
      * 
      * @param fluidItemParam The original Fluid workflow item at the Fluid Java Program Step with
      *                       all its properties and states.
@@ -56,11 +62,13 @@ public interface ICustomProgram extends IActionBase {
     public abstract List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;
 
     /**
+     * <code>Execute Order (4)</code>
+     *
+     * <p>
      * Generate a {@code UserQuery} {@code String} that may be executed against
      * previous data stored in Fluid's workflow.
      * This is ideal for identifying and preventing the creation of duplicated data.
-     *
-     * <code>Execute Order (4)</code>
+     * </p>
      *
      * @param fluidItemParam The {@code FluidItem}
      *
@@ -80,8 +88,10 @@ public interface ICustomProgram extends IActionBase {
     /**
      * <code>Execute Order (5)</code>
      *
+     * <p>
      * If a <code>null</code> is returned, the item will be completely ignored.
      * No Creates or Updates will be performed.
+     * </p>
      *
      * @param fluidItemParam Each of the original items from <code>execute(FluidItem fluidItemParam)</code>. There is an option to set
      *                       a parent for the Fluid item that most likely would originate from the <code>executePerFluidItemQueryResultParam</code>.

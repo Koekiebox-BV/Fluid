@@ -16,14 +16,14 @@ hs_err_pid*
 *.iml
 
 # Maven Target #
-/target/
-/fluid-api/target/
-/fluid-ws-java-client/target/
+target/
+fluid-api/target/
+fluid-ws-java-client/target/
 
 # Git Describe #
 fluid-api/src/main/java/com/fluid/GitDescribe.java
 
 # Include Maven Java WS Client Target Resources #
-!/fluid-ws-java-client/target/site/**
+!fluid-ws-java-client/target/site/
 # Include Maven Java API Target Resources #
-!/fluid-api/target/site/**
+!fluid-api/target/site/
