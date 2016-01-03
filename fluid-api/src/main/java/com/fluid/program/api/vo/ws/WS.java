@@ -602,8 +602,9 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
-                public static final String GET_NEXT_VALID_SYNTAX = ("/get_next_valid_syntax");
                 public static final String COMPILE_SYNTAX = ("/compile_syntax");
+                public static final String GET_NEXT_VALID_SYNTAX = ("/get_next_valid_syntax");
+                public static final String COMPILE_SYNTAX_AND_EXECUTE = ("/compile_syntax_and_execute");
 
                 @Override
                 public String toString() {
@@ -734,6 +735,15 @@ public class WS {
                 public static final String compileEntrySyntax()
                 {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX);
+                }
+
+                /**
+                 *
+                 * @return
+                 */
+                public static final String compileSyntaxAndExecute()
+                {
+                    return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX_AND_EXECUTE);
                 }
 
                 /**
