@@ -23,7 +23,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * <p>
+ *     Represents a {@code MultiChoice} value at any level (Form, Route, User and Global).
+ * </p>
  *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Field
+ * @see Field#setFieldValue(Object)
  */
 public class MultiChoice extends ABaseFluidJSONObject {
 
@@ -31,7 +39,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
     private List<String> selectedMultiChoices;
 
     /**
-     *
+     * The JSON mapping for the {@code MultiChoice} object.
      */
     public static class JSONMapping
     {
@@ -40,15 +48,16 @@ public class MultiChoice extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public MultiChoice() {
         super();
     }
 
     /**
+     * Sets the Selected MultiChoices for when multiple selections are supported.
      *
-     * @param selectedMultiChoicesParam
+     * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
      */
     public MultiChoice(List<String> selectedMultiChoicesParam)
     {
@@ -56,12 +65,13 @@ public class MultiChoice extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Selected MultiChoices for when multiple selections are supported.
      *
-     * @param selectedMultiChoiceValueParam
+     * @param selectedMultiChoiceValueParam Selected {@code MultiChoices} {@code String} value.
      */
     public MultiChoice(String selectedMultiChoiceValueParam)
     {
-        this.selectedMultiChoices = new ArrayList<String>();
+        this.selectedMultiChoices = new ArrayList<>();
         if(selectedMultiChoiceValueParam != null)
         {
             this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
@@ -69,8 +79,9 @@ public class MultiChoice extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public MultiChoice(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
@@ -86,7 +97,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
             JSONArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_MULTI_CHOICES);
 
-            this.availableMultiChoices = new ArrayList<String>();
+            this.availableMultiChoices = new ArrayList<>();
 
             for(int index = 0;index < arrayOfString.length();index++)
             {
@@ -100,7 +111,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
             JSONArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.SELECTED_MULTI_CHOICES);
 
-            this.selectedMultiChoices = new ArrayList<String>();
+            this.selectedMultiChoices = new ArrayList<>();
 
             for(int index = 0;index < arrayOfString.length();index++)
             {
@@ -110,9 +121,12 @@ public class MultiChoice extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws org.json.JSONException
+     * @return {@code JSONObject} representation of {@code MultiChoice}.
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException
@@ -136,42 +150,12 @@ public class MultiChoice extends ABaseFluidJSONObject {
         return returnVal;
     }
 
-
     /**
+     * Constructs a {@code String} value for the selected MultiChoices.
      *
-     * @return
-     */
-    public List<String> getAvailableMultiChoices() {
-        return this.availableMultiChoices;
-    }
-
-    /**
+     * @return Comma separated list of Selected MultiChoices.
      *
-     * @param availableMultiChoices
-     */
-    public void setAvailableMultiChoices(List<String> availableMultiChoices) {
-        this.availableMultiChoices = availableMultiChoices;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<String> getSelectedMultiChoices() {
-        return this.selectedMultiChoices;
-    }
-
-    /**
-     *
-     * @param selectedMultiChoices
-     */
-    public void setSelectedMultiChoices(List<String> selectedMultiChoices) {
-        this.selectedMultiChoices = selectedMultiChoices;
-    }
-
-    /**
-     *
-     * @return
+     * @see MultiChoice#getSelectedMultiChoices()
      */
     @Override
     public String toString() {
@@ -200,5 +184,41 @@ public class MultiChoice extends ABaseFluidJSONObject {
         }
 
         return toString;
+    }
+
+    /**
+     * Gets Available MultiChoices.
+     *
+     * @return {@code List} of available multi choices.
+     */
+    public List<String> getAvailableMultiChoices() {
+        return this.availableMultiChoices;
+    }
+
+    /**
+     * Sets Available MultiChoices.
+     *
+     * @param availableMultiChoices {@code List} of available multi choices.
+     */
+    public void setAvailableMultiChoices(List<String> availableMultiChoices) {
+        this.availableMultiChoices = availableMultiChoices;
+    }
+
+    /**
+     * Gets Selected MultiChoices.
+     *
+     * @return {@code List} of selected multi choices.
+     */
+    public List<String> getSelectedMultiChoices() {
+        return this.selectedMultiChoices;
+    }
+
+    /**
+     * Sets Selected MultiChoices.
+     *
+     * @param selectedMultiChoices {@code List} of selected multi choices.
+     */
+    public void setSelectedMultiChoices(List<String> selectedMultiChoices) {
+        this.selectedMultiChoices = selectedMultiChoices;
     }
 }

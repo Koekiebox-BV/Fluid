@@ -15,6 +15,19 @@
     <packaging>jar</packaging>
     <name>Fluid RESTful Web Service Client</name>
     <description>The Fluid Restful Web Service Java Client.</description>
+    <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
+
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/Koekiebox-PTY-LTD/Fluid/tree/develop/fluid-ws-java-client</url>
+    </scm>
 
     <dependencies>
         <dependency>

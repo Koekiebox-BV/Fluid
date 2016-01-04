@@ -24,7 +24,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Represents an Fluid Field for Form, User, Route and Global.
  *
+ * {@code Field} can be part of Electronic Form or Form Definition in Fluid.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Form
+ * @see FluidItem
  */
 public class Field extends ABaseFluidJSONObject {
 
@@ -36,7 +44,7 @@ public class Field extends ABaseFluidJSONObject {
     private String typeMetaData;
 
     /**
-     *
+     * The JSON mapping for the {@code Field} object.
      */
     public static class JSONMapping
     {
@@ -48,7 +56,44 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
-	 *
+     * <p>
+     *     The types of Fields and Value type mapping is;
+     *
+     *     <table>
+     *         <caption>Field Fluid vs Java mapping</caption>
+     *         <tr>
+     *             <th>Field Type in Fluid</th>
+     *             <th>Field Type value in Java</th>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code Text}</td>
+     *             <td>{@code String}</td>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code TrueFalse}</td>
+     *             <td>{@code Boolean}</td>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code DateTime}</td>
+     *             <td>{@code Date}</td>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code Decimal}</td>
+     *             <td>{@code java.lang.Double}</td>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code MultipleChoice}</td>
+     *             <td>{@code MultiChoice}</td>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code ParagraphText}</td>
+     *             <td>{@code String}</td>
+     *         </tr>
+     *         <tr>
+     *             <td>{@code Table}</td>
+     *             <td>{@code com.fluid.program.api.vo.TableField}</td>
+     *         </tr>
+     *     </table>
 	 */
     public static enum Type {
         Text,
@@ -316,9 +361,12 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code Field}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException

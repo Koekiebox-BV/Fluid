@@ -18,7 +18,16 @@ package com.fluid.program.api.vo;
 import java.io.Serializable;
 
 /**
- * User: jasonbruwer Date: 2014/07/07 Time: 10:01 AM
+ * <p>
+ *     Base Value Object for any Fluid Value Object.
+ *
+ *     Contains common properties such as {@code id} and {@code serviceTicket}.
+ * </p>
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Serializable
  */
 public class ABaseFluidVO implements Serializable {
 
@@ -37,7 +46,7 @@ public class ABaseFluidVO implements Serializable {
     }
 
     /**
-	 * 
+	 * Default constructor.
 	 */
     public ABaseFluidVO() {
         super();

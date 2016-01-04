@@ -47,11 +47,11 @@ public class ServiceTicket extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public ServiceTicket(JSONObject jsonObjectParam) throws JSONException {
+    public ServiceTicket(JSONObject jsonObjectParam) {
         super();
 
         //Client...
@@ -76,9 +76,10 @@ public class ServiceTicket extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code ServiceTicket}
+     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

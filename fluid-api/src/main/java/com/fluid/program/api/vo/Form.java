@@ -26,7 +26,15 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.flow.Flow;
 
 /**
+ * <p>
+ * Represents an Electronic Form and Form Definition in Fluid.
  *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see FormFlowHistoricDataContainer
+ * @see Field
+ * @see Flow
  */
 public class Form extends ABaseFluidJSONObject {
 
@@ -44,6 +52,23 @@ public class Form extends ABaseFluidJSONObject {
     private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
 
     /**
+     * The JSON mapping for the {@code Form} object.
+     */
+    public static class JSONMapping
+    {
+        public static final String FORM_TYPE = "formType";
+        public static final String FORM_DESCRIPTION = "formDescription";
+        public static final String TITLE = "title";
+
+        public static final String DATE_CREATED = "dateCreated";
+        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+
+        public static final String FORM_FIELDS = "formFields";
+        public static final String ASSOCIATED_FLOWS = "associatedFlows";
+    }
+
+    /**
+     * Default constructor.
 	 * 
 	 */
     public Form() {
@@ -51,8 +76,9 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Id associated with either the Form or Form Definition.
      *
-     * @param fieldIdParam
+     * @param fieldIdParam Form / Form Definition Id.
      */
     public Form(Long fieldIdParam) {
         super();
@@ -61,11 +87,17 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public Form(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
+
+        if(this.jsonObject == null)
+        {
+            return;
+        }
 
         //Form Description...
         if (!this.jsonObject.isNull(JSONMapping.FORM_DESCRIPTION)) {
@@ -102,7 +134,7 @@ public class Form extends ABaseFluidJSONObject {
             JSONArray associatedJobsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ASSOCIATED_FLOWS);
 
-            List<Flow> assFlowsObj = new ArrayList<Flow>();
+            List<Flow> assFlowsObj = new ArrayList<>();
             for(int index = 0;index < associatedJobsArr.length();index++)
             {
                 assFlowsObj.add(new Flow(associatedJobsArr.getJSONObject(index)));
@@ -117,7 +149,7 @@ public class Form extends ABaseFluidJSONObject {
             JSONArray formFieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.FORM_FIELDS);
 
-            List<Field> assFormFields = new ArrayList<Field>();
+            List<Field> assFormFields = new ArrayList<>();
             for(int index = 0;index < formFieldsArr.length();index++)
             {
                 assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
@@ -127,153 +159,35 @@ public class Form extends ABaseFluidJSONObject {
         }
     }
 
-
     /**
+     * Constructor that also sets The Form Definition
+     * associated with the {@code Form}.
      *
-     * @param formTypeParam
+     * @param formTypeParam The Form Definition.
      */
     public Form(String formTypeParam) {
         this.setFormType(formTypeParam);
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     */
-    public static class JSONMapping
-    {
-        public static final String FORM_TYPE = "formType";
-        public static final String FORM_DESCRIPTION = "formDescription";
-        public static final String TITLE = "title";
-
-        public static final String DATE_CREATED = "dateCreated";
-        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
-
-        public static final String FORM_FIELDS = "formFields";
-        public static final String ASSOCIATED_FLOWS = "associatedFlows";
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public List<Field> getFormFields() {
-        return this.formFields;
-    }
-
-    /**
-     * 
-     * @param formFieldsParam
-     */
-    public void setFormFields(List<Field> formFieldsParam) {
-        this.formFields = formFieldsParam;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public String getFormType() {
-        return this.formType;
-    }
-
-    /**
-     * 
-     * @param formTypeParam
-     */
-    public void setFormType(String formTypeParam) {
-        this.formType = formTypeParam;
-    }
-
-    /**
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
      *
-     * @return
-     */
-    public String getTitle() {
-        return this.title;
-    }
-
-    /**
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
      *
-     * @param titleParam
-     */
-    public void setTitle(String titleParam) {
-        if(titleParam == null || titleParam.trim().isEmpty())
-        {
-            this.title = EMPTY_TITLE_MARKER;
-            return;
-        }
-
-        this.title = titleParam;
-    }
-
-    /**
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as one of the {@code Field.Type}s.
      *
-     * @return
-     */
-    public Date getDateCreated() {
-        return this.dateCreated;
-    }
-
-    /**
-     *
-     * @param dateCreatedParam
-     */
-    public void setDateCreated(Date dateCreatedParam) {
-        this.dateCreated = dateCreatedParam;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Date getDateLastUpdated() {
-        return this.dateLastUpdated;
-    }
-
-    /**
-     *
-     * @param dateLastUpdatedParam
-     */
-    public void setDateLastUpdated(Date dateLastUpdatedParam) {
-        this.dateLastUpdated = dateLastUpdatedParam;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getFormDescription() {
-        return this.formDescription;
-    }
-
-    /**
-     *
-     * @param formDescriptionParam
-     */
-    public void setFormDescription(String formDescriptionParam) {
-        this.formDescription = formDescriptionParam;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<Flow> getAssociatedFlows() {
-        return this.associatedFlows;
-    }
-
-    /**
-     *
-     * @param associatedFlowsParam
-     */
-    public void setAssociatedFlows(List<Flow> associatedFlowsParam) {
-        this.associatedFlows = associatedFlowsParam;
-    }
-
-    /**
-     *
-     * @param fieldNameParam
-     * @return
+     * @see com.fluid.program.api.vo.Field.Type
      */
     public Object getFieldValueForField(String fieldNameParam) {
 
@@ -307,9 +221,24 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code String}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Text
      */
     public String getFieldValueAsString(String fieldNameParam)
     {
@@ -324,9 +253,24 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code TableField}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Table
      */
     public TableField getFieldValueAsTableField(String fieldNameParam)
     {
@@ -346,9 +290,24 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code Date}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#DateTime
      */
     public Date getFieldValueAsDate(String fieldNameParam)
     {
@@ -368,9 +327,24 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code Boolean}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#TrueFalse
      */
     public Boolean getFieldValueAsBoolean(String fieldNameParam)
     {
@@ -390,9 +364,24 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code Double}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
     public Double getFieldValueAsDouble(String fieldNameParam)
     {
@@ -412,9 +401,25 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *         <li>Field Value is not of type {@code Number}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code Integer}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
     public Integer getFieldValueAsInt(String fieldNameParam)
     {
@@ -425,40 +430,38 @@ public class Form extends ABaseFluidJSONObject {
             return null;
         }
 
-        if(obj instanceof Short)
+        if(obj instanceof Number)
         {
             return ((Short)obj).intValue();
-        }
-
-        if(obj instanceof Integer)
-        {
-            return (Integer)obj;
-        }
-
-        if(obj instanceof Long)
-        {
-            return ((Long)obj).intValue();
-        }
-
-        if(obj instanceof Float)
-        {
-            return ((Float)obj).intValue();
-        }
-
-        if(obj instanceof Double)
-        {
-            return ((Double)obj).intValue();
         }
 
         return null;
     }
 
     /**
+     * <p>
+     *     Sets the value of the {@code fieldNameParam} requested.
+     * <p>
+     *     If there is an existing value, the value will be override with
+     *     the value of {@code fieldValueParam}.
      *
-     * @param fieldNameParam
-     * @param fieldValueParam
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     The value won't be set if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @param fieldValueParam The value of the {@code Field}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
-    public void setFieldValue(String fieldNameParam,Object fieldValueParam)
+    public void setFieldValue(String fieldNameParam, Object fieldValueParam)
     {
         if(fieldNameParam == null || fieldNameParam.trim().length() == 0)
         {
@@ -467,12 +470,10 @@ public class Form extends ABaseFluidJSONObject {
 
         if(this.getFormFields() == null || this.getFormFields().isEmpty())
         {
-            this.setFormFields(new ArrayList<Field>());
+            this.setFormFields(new ArrayList<>());
         }
 
         String fieldNameParamLower = fieldNameParam.toLowerCase();
-
-        boolean fieldFound = false;
 
         for(Field field : this.getFormFields())
         {
@@ -485,23 +486,40 @@ public class Form extends ABaseFluidJSONObject {
             if(fieldNameParamLower.equals(fieldNameLower))
             {
                 field.setFieldValue(fieldValueParam);
-                fieldFound = true;
-                break;
+                return;
             }
         }
 
-        //When the Field is not added...
-        if(!fieldFound)
-        {
-            this.getFormFields().add(new Field(fieldNameParam,fieldValueParam));
-        }
+        //When the Field is not added previously...
+        this.getFormFields().add(new Field(fieldNameParam,fieldValueParam));
     }
 
     /**
+     * <p>
+     *     Sets the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @param fieldValueParam
-     * @param typeParam
+     * <p>
+     *     If there is an existing value, the value will be override with
+     *     the value of {@code fieldValueParam}.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <br>
+     *
+     * <p>
+     *     The value won't be set if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @param fieldValueParam The value of the {@code Field}.
+     * @param typeParam The {@code Field.Type} of {@code Field}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
     public void setFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
         if (fieldNameParam == null) {
@@ -509,7 +527,7 @@ public class Form extends ABaseFluidJSONObject {
         }
 
         if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
-            this.setFormFields(new ArrayList<Field>());
+            this.setFormFields(new ArrayList<>());
         }
 
         String paramLower = fieldNameParam.toLowerCase().trim();
@@ -542,18 +560,21 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Determine whether the current {@code Form} Type / Definition is
+     *     of type {@code formTypeParam}
      *
-     * @param formTypeParam
-     * @return
+     * <p>
+     *     If the {@code formTypeParam} is {@code null} or empty, {@code false}
+     *     will be returned.
+     *
+     * @param formTypeParam String value of the Form Definition.
+     * @return Whether the {@code Form} is of type {@code formTypeParam}
      */
     public boolean isFormType(String formTypeParam) {
-        //
-        if (formTypeParam == null || formTypeParam.trim().isEmpty()) {
-            return false;
-        }
 
-        //
-        if (this.getFormType() == null || this.getFormType().trim().isEmpty()) {
+        if ((formTypeParam == null || formTypeParam.trim().isEmpty()) ||
+                (this.getFormType() == null || this.getFormType().trim().isEmpty())) {
             return false;
         }
 
@@ -561,9 +582,12 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws org.json.JSONException
+     * @return {@code JSONObject} representation of {@code Form}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException
@@ -630,6 +654,8 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * Prints all the Fields and their values to the standard
+     * {@code System.out}.
      *
      */
     public void printFormFields()
@@ -661,5 +687,157 @@ public class Form extends ABaseFluidJSONObject {
                 }
             }
         }
+    }
+
+    /**
+     * Gets all the {@code Form} {@code Field}s.
+     *
+     * @return All the Form Fields.
+     *
+     * @see Field
+     */
+    public List<Field> getFormFields() {
+        return this.formFields;
+    }
+
+    /**
+     * Sets all the {@code Form}{@code Field}s.
+     *
+     * @param formFieldsParam The new {@code Form}{@code Field}s.
+     *
+     * @see Field
+     */
+    public void setFormFields(List<Field> formFieldsParam) {
+        this.formFields = formFieldsParam;
+    }
+
+    /**
+     * Gets the Form Type / Form Definition of {@code this} {@code Form}.
+     *
+     * @return Form Type / Form Definition.
+     */
+    public String getFormType() {
+        return this.formType;
+    }
+
+    /**
+     * Sets the Form Type / Form Definition of {@code this} {@code Form}.
+     * 
+     * @param formTypeParam Form Type / Form Definition.
+     */
+    public void setFormType(String formTypeParam) {
+        this.formType = formTypeParam;
+    }
+
+    /**
+     * Gets the Form Title as in Fluid.
+     *
+     * @return Form Title.
+     */
+    public String getTitle() {
+        return this.title;
+    }
+
+    /**
+     * <p>Sets the Form Title as in Fluid.
+     *
+     * <p>
+     *     If {@code titleParam} is {@code null} or empty, the
+     *     Title will be set to <br>
+     *     "[No Title from Custom Program]"
+     *
+     * @param titleParam Form Title.
+     */
+    public void setTitle(String titleParam) {
+
+        if(titleParam == null || titleParam.trim().isEmpty())
+        {
+            this.title = EMPTY_TITLE_MARKER;
+            return;
+        }
+
+        this.title = titleParam;
+    }
+
+    /**
+     * Gets The {@code Date} the Electronic Form / Form Definition
+     * was created.
+     *
+     * @return Date Created.
+     */
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    /**
+     * Sets The {@code Date} the Electronic Form / Form Definition
+     * was created.
+     *
+     * @param dateCreatedParam Date Created.
+     */
+    public void setDateCreated(Date dateCreatedParam) {
+        this.dateCreated = dateCreatedParam;
+    }
+
+    /**
+     * Gets The {@code Date} the Electronic Form / Form Definition
+     * was last updated.
+     *
+     * @return Date Last Updated.
+     */
+    public Date getDateLastUpdated() {
+        return this.dateLastUpdated;
+    }
+
+    /**
+     * Sets The {@code Date} the Electronic Form / Form Definition
+     * was last updated.
+     *
+     * @param dateLastUpdatedParam Date Last Updated.
+     */
+    public void setDateLastUpdated(Date dateLastUpdatedParam) {
+        this.dateLastUpdated = dateLastUpdatedParam;
+    }
+
+    /**
+     * Gets the Electronic Form description.
+     *
+     * @return Electronic Form description.
+     */
+    public String getFormDescription() {
+        return this.formDescription;
+    }
+
+    /**
+     * Sets the Electronic Form description.
+     *
+     * @param formDescriptionParam Electronic Form description.
+     */
+    public void setFormDescription(String formDescriptionParam) {
+        this.formDescription = formDescriptionParam;
+    }
+
+    /**
+     * Gets the {@code List<Flow>} of Flows associated with {@code this}
+     * Form Type.
+     *
+     * @return List of Associated Flows.
+     *
+     * @see Flow
+     */
+    public List<Flow> getAssociatedFlows() {
+        return this.associatedFlows;
+    }
+
+    /**
+     * Sets the {@code List<Flow>} of Flows associated with {@code this}
+     * Form Type.
+     *
+     * @param associatedFlowsParam List of Associated Flows.
+     *
+     * @see Flow
+     */
+    public void setAssociatedFlows(List<Flow> associatedFlowsParam) {
+        this.associatedFlows = associatedFlowsParam;
     }
 }

@@ -16,6 +16,7 @@
 package com.fluid.program.api.vo;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,7 +28,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * 
+ * Represents an Electronic Form with all possible Meta-Data.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Form
+ * @see Field
+ * @see Attachment
+ * @see FlowState
  */
 public class FluidItem extends ABaseFluidJSONObject {
 
@@ -51,34 +60,202 @@ public class FluidItem extends ABaseFluidJSONObject {
     private String tableFieldNameOnParentForm;
 
     /**
-     *
+     * The JSON mapping for the {@code FluidItem} object.
      */
     public static class JSONMapping
     {
         public static final String CUSTOM_PROPERTIES = "customProperties";
+
         public static final String USER_FIELDS = "userFields";
         public static final String ROUTE_FIELDS = "routeFields";
         public static final String GLOBAL_FIELDS = "globalFields";
+
         public static final String FORM = "form";
+
         public static final String ATTACHMENTS = "attachments";
         public static final String FLOW_STATE = "flowState";
-
         public static final String FLOW = "flow";
     }
 
     /**
-     *
+     * Additional properties for {@code this} <code>FluidItem</code>.
+     */
+    public static class FluidItemProperty extends ABaseFluidJSONObject
+    {
+        private String name;
+        private String value;
+
+        /**
+         * The JSON mapping for the {@code FluidItemProperty} object.
+         */
+        public static class JSONMapping
+        {
+            public static final String NAME = "name";
+            public static final String VALUE = "value";
+        }
+
+        /**
+         * Default constructor.
+         */
+        public FluidItemProperty() {
+            super();
+        }
+
+        /**
+         * Sets the Name and Value of the property.
+         *
+         * @param nameParam The Property Name.
+         * @param valueParam The Property Value.
+         */
+        public FluidItemProperty(String nameParam, String valueParam) {
+
+            this.setName(nameParam);
+            this.setValue(valueParam);
+        }
+
+        /**
+         * Populates local variables with {@code jsonObjectParam}.
+         *
+         * @param jsonObjectParam The JSON Object.
+         */
+        public FluidItemProperty(JSONObject jsonObjectParam) {
+            super(jsonObjectParam);
+
+            if(this.jsonObject == null)
+            {
+                return;
+            }
+
+            //Name...
+            if (!this.jsonObject.isNull(JSONMapping.NAME)) {
+                this.setName(this.jsonObject.getString(JSONMapping.NAME));
+            }
+
+            //Value...
+            if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
+                this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
+            }
+        }
+
+        /**
+         * Conversion to {@code JSONObject} from Java Object.
+         *
+         * @return {@code JSONObject} representation of {@code StepProperty}
+         * @throws JSONException If there is a problem with the JSON Body.
+         *
+         * @see ABaseFluidJSONObject#toJsonObject()
+         */
+        @Override
+        public JSONObject toJsonObject() throws JSONException
+        {
+            JSONObject returnVal = super.toJsonObject();
+
+            //Name...
+            if(this.getName() != null)
+            {
+                returnVal.put(JSONMapping.NAME, this.getName());
+            }
+
+            //Value...
+            if(this.getValue() != null)
+            {
+                returnVal.put(JSONMapping.VALUE, this.getValue());
+            }
+
+            return returnVal;
+        }
+
+        /**
+         * Gets the Name of the Property.
+         *
+         * @return Property Name.
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * Sets the Name of the Property.
+         *
+         * @param nameParam Property Name.
+         */
+        public void setName(String nameParam) {
+            this.name = nameParam;
+        }
+
+        /**
+         * Gets the Value of the Property.
+         *
+         * @return Property Value.
+         */
+        public String getValue() {
+            return this.value;
+        }
+
+        /**
+         * Sets the Value of the Property.
+         *
+         * @param valueParam
+         */
+        public void setValue(String valueParam) {
+            this.value = valueParam;
+        }
+    }
+
+    /**
+     * The {@code FlowState} that a {@code FluidItem}
+     * is currently in in terms of the Workflow.
+     */
+    public enum FlowState {
+        NotInFlow,
+        WorkInProgress,
+        UserSend,
+        UserSendWorkInProgress,
+        Archive;
+
+        /**
+         * Returns the {@code FlowState} based on {@code flowStateStringParam}.
+         *
+         * The {@code flowStateStringParam} value is <b>not</b> case sensitive.
+         *
+         * @param flowStateStringParam The name of the {@code enum} {@code FlowState}.
+         * @return {@code FlowState}, if {@code enum} from {@code flowStateStringParam}
+         * is not found, {@code null} will be returned.
+         */
+        public static FlowState valueOfSafe(String flowStateStringParam)
+        {
+            if(flowStateStringParam == null || flowStateStringParam.trim().isEmpty())
+            {
+                return null;
+            }
+
+            String paramLower = flowStateStringParam.trim().toLowerCase();
+
+            for(FlowState flowState : FlowState.values())
+            {
+                if(paramLower.equals(flowState.name().toLowerCase()))
+                {
+                    return flowState;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    /**
+     * Default constructor.
      */
     public FluidItem() {
         super();
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public FluidItem(JSONObject jsonObjectParam) throws JSONException {
+    public FluidItem(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -90,35 +267,225 @@ public class FluidItem extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.CUSTOM_PROPERTIES)) {
             JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_PROPERTIES);
 
-            for(int customPropIndex = 0;customPropIndex < jsonPropArray.length();customPropIndex++)
+            List<FluidItemProperty> fluidItemProperties = new ArrayList<>();
+
+            for(int index = 0;index < jsonPropArray.length();index++)
             {
-                Object objAtIndex = jsonPropArray.get(customPropIndex);
-
-
+                fluidItemProperties.add(
+                        new FluidItemProperty(jsonPropArray.getJSONObject(index)));
             }
+
+            //Add as Properties...
+            for(FluidItemProperty itemProp :fluidItemProperties)
+            {
+                this.customProperties = new Properties();
+                this.customProperties.put(itemProp.getName(), itemProp.getValue());
+            }
+        }
+
+        //User Fields...
+        if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
+
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(
+                    JSONMapping.USER_FIELDS);
+
+            List<Field> assUserFields = new ArrayList<>();
+            for(int index = 0;index < fieldsArr.length();index++)
+            {
+                assUserFields.add(new Field(fieldsArr.getJSONObject(index)));
+            }
+
+            this.setUserFields(assUserFields);
+        }
+
+        //Route Fields...
+        if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELDS)) {
+
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(
+                    JSONMapping.ROUTE_FIELDS);
+
+            List<Field> assRouteFields = new ArrayList<>();
+            for(int index = 0;index < fieldsArr.length();index++)
+            {
+                assRouteFields.add(new Field(fieldsArr.getJSONObject(index)));
+            }
+
+            this.setRouteFields(assRouteFields);
+        }
+
+        //Global Fields...
+        if (!this.jsonObject.isNull(JSONMapping.GLOBAL_FIELDS)) {
+
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(
+                    JSONMapping.GLOBAL_FIELDS);
+
+            List<Field> assGlobalFields = new ArrayList<>();
+            for(int index = 0;index < fieldsArr.length();index++)
+            {
+                assGlobalFields.add(new Field(fieldsArr.getJSONObject(index)));
+            }
+
+            this.setGlobalFields(assGlobalFields);
+        }
+
+        //Attachments...
+        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS)) {
+
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(
+                    JSONMapping.ATTACHMENTS);
+
+            List<Attachment> assAttachments = new ArrayList<>();
+            for(int index = 0;index < fieldsArr.length();index++)
+            {
+                assAttachments.add(new Attachment(fieldsArr.getJSONObject(index)));
+            }
+
+            this.setAttachments(assAttachments);
+        }
+
+        //Form...
+        if (!this.jsonObject.isNull(JSONMapping.FORM)) {
+            this.setForm(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM)));
+        }
+
+        //Flow...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW)) {
+            this.setFlow(this.jsonObject.getString(JSONMapping.FLOW));
+        }
+
+        //Flow State...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW_STATE)) {
+            this.setFlowState(this.jsonObject.getString(JSONMapping.FLOW_STATE));
         }
     }
 
     /**
-	 * 
-	 */
-    public enum FlowState {
-        NotInFlow,
-        WorkInProgress,
-        UserSend,
-        UserSendWorkInProgress,
-        Archive
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code FluidItem}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException
+    {
+        JSONObject returnVal = super.toJsonObject();
+
+        //Custom Properties...
+        if(this.getCustomProperties() != null)
+        {
+            Properties properties = this.getCustomProperties();
+            Enumeration propNames = properties.propertyNames();
+
+            JSONArray customProps = new JSONArray();
+
+            while(propNames.hasMoreElements())
+            {
+                String propertyName = propNames.nextElement().toString();
+                String propertyValue = properties.get(propertyName).toString();
+
+                customProps.put(new FluidItemProperty(
+                        propertyName,propertyValue).toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.CUSTOM_PROPERTIES, customProps);
+        }
+
+        //Flow...
+        if(this.getFlow() != null)
+        {
+            returnVal.put(JSONMapping.FLOW,this.getFlow());
+        }
+
+        //Form...
+        if(this.getForm() != null)
+        {
+            returnVal.put(JSONMapping.FORM,this.getForm().toJsonObject());
+        }
+
+        //User Fields...
+        if(this.getUserFields() != null && !this.getUserFields().isEmpty())
+        {
+            JSONArray fieldsArr = new JSONArray();
+            for(Field toAdd :this.getUserFields())
+            {
+                fieldsArr.put(toAdd.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.USER_FIELDS, fieldsArr);
+        }
+
+        //Route Fields...
+        if(this.getRouteFields() != null && !this.getRouteFields().isEmpty())
+        {
+            JSONArray fieldsArr = new JSONArray();
+            for(Field toAdd :this.getRouteFields())
+            {
+                fieldsArr.put(toAdd.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.ROUTE_FIELDS, fieldsArr);
+        }
+
+        //Global Fields...
+        if(this.getGlobalFields() != null && !this.getGlobalFields().isEmpty())
+        {
+            JSONArray fieldsArr = new JSONArray();
+            for(Field toAdd :this.getGlobalFields())
+            {
+                fieldsArr.put(toAdd.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.GLOBAL_FIELDS, fieldsArr);
+        }
+
+        //Attachments...
+        if(this.getAttachments() != null)
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(Attachment toAdd : this.getAttachments())
+            {
+                jsonArray.put(toAdd.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.ATTACHMENTS, jsonArray);
+        }
+
+        //Flow State...
+        if(this.getFlowState() != null)
+        {
+            returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState().toString());
+        }
+
+        return returnVal;
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the User Field as in Fluid.
+     * @return The value for the User Field as {@code String}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Text
      */
     public String getUserFieldValueAsString(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(
-                fieldNameParam,this.getUserFields());
+                fieldNameParam, this.getUserFields());
 
         if(obj == null)
         {
@@ -129,9 +496,24 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the User Field as in Fluid.
+     * @return The value for the User Field as {@code Object}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
     public Object getUserFieldValue(String fieldNameParam)
     {
@@ -139,9 +521,24 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Route Field as in Fluid.
+     * @return The value for the Route Field as {@code Object}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
     public Object getRouteFieldValue(String fieldNameParam)
     {
@@ -149,9 +546,24 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @return The value for the Global Field as {@code Object}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
     public Object getGlobalFieldValue(String fieldNameParam)
     {
@@ -159,9 +571,24 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Route Field as in Fluid.
+     * @return The value for the Route Field as {@code String}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Text
      */
     public String getRouteFieldValueAsString(String fieldNameParam)
     {
@@ -177,9 +604,24 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Route Field as in Fluid.
+     * @return The value for the Route Field as {@code Double}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
     public Double getRouteFieldValueAsDouble(String fieldNameParam)
     {
@@ -190,18 +632,33 @@ public class FluidItem extends ABaseFluidJSONObject {
             return null;
         }
 
-        if(obj instanceof Double)
+        if(obj instanceof Number)
         {
-            return (Double)obj;
+            return ((Number)obj).doubleValue();
         }
 
         return null;
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @return The value for the Global Field as {@code String}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Text
      */
     public String getGlobalFieldValueAsString(String fieldNameParam)
     {
@@ -217,9 +674,24 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @return The value for the Global Field as {@code Double}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
     public Double getGlobalFieldValueAsDouble(String fieldNameParam)
     {
@@ -230,18 +702,33 @@ public class FluidItem extends ABaseFluidJSONObject {
             return null;
         }
 
-        if(obj instanceof Double)
+        if(obj instanceof Number)
         {
-            return (Double)obj;
+            return ((Number)obj).doubleValue();
         }
 
         return null;
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @return The value for the Global Field as {@code Integer}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
     public Integer getGlobalFieldValueAsInt(String fieldNameParam)
     {
@@ -252,40 +739,38 @@ public class FluidItem extends ABaseFluidJSONObject {
             return null;
         }
 
-        if(obj instanceof Short)
+        if(obj instanceof Number)
         {
-            return ((Short)obj).intValue();
-        }
-
-        if(obj instanceof Integer)
-        {
-            return (Integer)obj;
-        }
-
-        if(obj instanceof Long)
-        {
-            return ((Long)obj).intValue();
-        }
-
-        if(obj instanceof Float)
-        {
-            return ((Float)obj).intValue();
-        }
-
-        if(obj instanceof Double)
-        {
-            return ((Double)obj).intValue();
+            return ((Number)obj).intValue();
         }
 
         return null;
     }
 
     /**
+     * <p>
+     *     Sets the value of the {@code fieldNameParam} requested.
+     * <p>
+     *     If there is an existing value, the value will be override with
+     *     the value of {@code fieldValueParam}.
      *
-     * @param fieldNameParam
-     * @param fieldValueParam
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     The value won't be set if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @param fieldValueParam The value of the {@code Field}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
-    public void setGlobalFieldValue(String fieldNameParam,Object fieldValueParam)
+    public void setGlobalFieldValue(String fieldNameParam, Object fieldValueParam)
     {
         if(fieldNameParam == null || fieldNameParam.trim().length() == 0)
         {
@@ -325,10 +810,87 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Sets the value of the {@code fieldNameParam} requested.
+     * <p>
+     *     If there is an existing value, the value will be override with
+     *     the value of {@code fieldValueParam}.
      *
-     * @param fieldNameParam
-     * @param fieldValueParam
-     * @param typeParam
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     The value won't be set if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getRouteFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Route Field as in Fluid.
+     * @param fieldValueParam The value of the {@code Field}.
+     * @param typeParam The {@code Field.Type} of {@code Field}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
+     */
+    public void setRouteFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
+        if (fieldNameParam == null) {
+            return;
+        }
+
+        if (this.routeFields == null) {
+            this.routeFields = new ArrayList<Field>();
+        }
+
+        String paramLower = fieldNameParam.toLowerCase().trim();
+
+        boolean valueFound = false;
+
+        //Iterate the Route Fields...
+        for (Field existingField : this.routeFields) {
+            String toCheckNameLower = existingField.getFieldName();
+            if (toCheckNameLower == null || toCheckNameLower.trim().isEmpty()) {
+                continue;
+            }
+
+            toCheckNameLower = toCheckNameLower.trim().toLowerCase();
+            if (paramLower.equals(toCheckNameLower)) {
+                valueFound = true;
+
+                existingField.setTypeAsEnum(typeParam);
+                existingField.setFieldValue(fieldValueParam);
+                break;
+            }
+        }
+
+        if (!valueFound) {
+            this.routeFields.add(new Field(fieldNameParam, fieldValueParam, typeParam));
+        }
+    }
+
+    /**
+     * <p>
+     *     Sets the value of the {@code fieldNameParam} requested.
+     * <p>
+     *     If there is an existing value, the value will be override with
+     *     the value of {@code fieldValueParam}.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     The value won't be set if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @param fieldValueParam The value of the {@code Field}.
+     * @param typeParam The {@code Field.Type} of {@code Field}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type
      */
     public void setGlobalFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
         if (fieldNameParam == null) {
@@ -369,13 +931,31 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
      *
-     * @param fieldNameParam
-     * @param toGetPropertyFromParam
-     * @return
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>{@code toGetPropertyFromParam} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Global Field as in Fluid.
+     * @param toGetPropertyFromParam The {@code List<Field>} where the value
+     *                               will be retrieved from.
+     *
+     * @return The value for the Field as {@code Object}.
+     *
+     * @see Field
      */
     public Object getFieldValueForField(
-            String fieldNameParam,List<Field> toGetPropertyFromParam) {
+            String fieldNameParam, List<Field> toGetPropertyFromParam) {
 
         if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
             return null;
@@ -405,26 +985,32 @@ public class FluidItem extends ABaseFluidJSONObject {
         return null;
     }
 
-
     /**
+     * Gets the attachments.
      *
-     * @return
+     * @return {@code List<Attachment>} of attachments.
+     *
+     * @see Attachment
      */
     public List<Attachment> getAttachments() {
         return this.attachments;
     }
 
     /**
+     * Sets the attachments.
      *
-     * @param attachmentsParam
+     * @param attachmentsParam {@code List<Attachment>} of attachments.
      */
     public void setAttachments(List<Attachment> attachmentsParam) {
         this.attachments = attachmentsParam;
     }
 
     /**
+     * Adds {@code toAddParam} to the list of {@code Attachment}s.
      *
-     * @param toAddParam
+     * @param toAddParam {@code Attachment} to add.
+     *
+     * @see Attachment
      */
     public void addAttachment(Attachment toAddParam) {
         if (!this.containsAttachments()) {
@@ -435,40 +1021,55 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets all the {@code User} {@code Field}s.
      *
-     * @return
+     * @return All the User Fields.
+     *
+     * @see Field
      */
     public List<Field> getUserFields() {
         return this.userFields;
     }
 
     /**
+     * Sets all the {@code User}{@code Field}s.
      *
-     * @param userFieldsParam
+     * @param userFieldsParam The new {@code User}{@code Field}s.
+     *
+     * @see Field
      */
     public void setUserFields(List<Field> userFieldsParam) {
         this.userFields = userFieldsParam;
     }
 
     /**
+     * Gets all the {@code Route} {@code Field}s.
      *
-     * @return
+     * @return All the Route Fields.
+     *
+     * @see Field
      */
     public List<Field> getRouteFields() {
         return this.routeFields;
     }
 
     /**
+     * Sets all the {@code Route}{@code Field}s.
      *
-     * @param routeFieldsParam
+     * @param routeFieldsParam The new {@code Route}{@code Field}s.
+     *
+     * @see Field
      */
     public void setRouteFields(List<Field> routeFieldsParam) {
         this.routeFields = routeFieldsParam;
     }
 
     /**
+     * Sets all the {@code Route}{@code Field}s.
      *
-     * @param routeFieldsParam
+     * @param routeFieldsParam The new {@code Route}{@code Field}s.
+     *
+     * @see Field
      */
     @JsonIgnore
     @XmlTransient
@@ -477,91 +1078,119 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets all the {@code Global} {@code Field}s.
      *
-     * @return
+     * @return All the Global Fields.
+     *
+     * @see Field
      */
     public List<Field> getGlobalFields() {
         return this.globalFields;
     }
 
     /**
+     * Sets all the {@code Global}{@code Field}s.
      *
-     * @param globalFieldsParam
+     * @param globalFieldsParam The new {@code Global}{@code Field}s.
+     *
+     * @see Field
      */
     public void setGlobalFields(List<Field> globalFieldsParam) {
         this.globalFields = globalFieldsParam;
     }
 
     /**
+     * Gets the Form for {@code this}
      *
-     * @return
+     * @return {@code Form} associated with the {@code FluidItem}.
      */
     public Form getForm() {
         return this.form;
     }
 
     /**
+     * Sets the Form for {@code this}
      *
-     * @param formParam
+     * @param formParam {@code Form} associated with the {@code FluidItem}.
      */
     public void setForm(Form formParam) {
         this.form = formParam;
     }
 
     /**
+     * Gets all the {@code Properties}.
      *
-     * @return
+     * @return {@code Properties} for the {@code FluidItem}.
+     *
+     * @see Properties
      */
     public Properties getCustomProperties() {
         return this.customProperties;
     }
 
     /**
+     * Sets all the {@code Properties}.
      *
-     * @param customPropertiesParam
+     * @param customPropertiesParam {@code Properties} for the {@code FluidItem}.
+     *
+     * @see Properties
      */
     public void setCustomProperties(Properties customPropertiesParam) {
         this.customProperties = customPropertiesParam;
     }
 
     /**
+     * Gets the {@code FlowState}.
      * 
-     * @return
+     * @return {@code FlowState} for {@code this} {@code FluidItem}
+     *
+     * @see FlowState
      */
     public FlowState getFlowState() {
         return this.flowState;
     }
 
     /**
+     * Sets the {@code FlowState}.
      * 
-     * @param flowStateParam
+     * @param flowStateParam {@code FlowState} for {@code this} {@code FluidItem}
+     *
+     * @see FlowState
      */
     public void setFlowState(FlowState flowStateParam) {
         this.flowState = flowStateParam;
     }
 
     /**
-     * 
-     * @param flowStateParam
+     * Sets the {@code FlowState}.
+     *
+     * @param flowStateParam {@code FlowState} for {@code this} {@code FluidItem}
+     *
+     * @see FlowState
      */
     @JsonIgnore
     @XmlTransient
     public void setFlowState(String flowStateParam) {
-        this.flowState = FlowState.valueOf(flowStateParam);
+        this.flowState = FlowState.valueOfSafe(flowStateParam);
     }
 
     /**
-     * 
-     * @return
+     * Checks whether the {@code getAttachments()} is empty.
+     *
+     * @return If the list of attachments is empty.
      */
     public boolean containsAttachments() {
         return (this.attachments == null || this.attachments.isEmpty()) ? false : true;
     }
 
     /**
-     * 
-     * @param propertyNameParam
-     * @return
+     * Checks whether the property with {@code propertyNameParam}
+     * is set. The {@code propertyNameParam} is <b>not</b> case sensitive.
+     *
+     * @param propertyNameParam The name of the Property.
+     * @return If the {@code propertyNameParam} Property is set.
+     *
+     * @see Properties
      */
     public boolean isPropertySet(String propertyNameParam) {
         if (propertyNameParam == null || propertyNameParam.trim().isEmpty()) {
@@ -582,9 +1211,10 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
-     * 
-     * @param propertyNameParam
-     * @return
+     * Gets the {@code String} value of the {@code propertyNameParam}.
+     *
+     * @param propertyNameParam The name of the Property.
+     * @return Property value based on the {@code propertyNameParam}.
      */
     public String getStringProperty(String propertyNameParam) {
         if (this.customProperties == null) {
@@ -595,9 +1225,11 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the {@code String} value of the {@code propertyNameParam} to
+     * {@code propertyValueParam}.
      *
-     * @param propertyNameParam
-     * @param propertyValueParam
+     * @param propertyNameParam The name of the Property.
+     * @param propertyValueParam The value of the Property.
      */
     public void setStringProperty(String propertyNameParam,String propertyValueParam)
     {
@@ -620,151 +1252,112 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
-     * 
-     * @param fieldNameParam
-     * @param fieldValueParam
-     * @param typeParam
-     */
-    public void setRouteFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
-        if (fieldNameParam == null) {
-            return;
-        }
-
-        if (this.routeFields == null) {
-            this.routeFields = new ArrayList<Field>();
-        }
-
-        String paramLower = fieldNameParam.toLowerCase().trim();
-
-        boolean valueFound = false;
-
-        //Iterate the Route Fields...
-        for (Field existingField : this.routeFields) {
-            String toCheckNameLower = existingField.getFieldName();
-            if (toCheckNameLower == null || toCheckNameLower.trim().isEmpty()) {
-                continue;
-            }
-
-            toCheckNameLower = toCheckNameLower.trim().toLowerCase();
-            if (paramLower.equals(toCheckNameLower)) {
-                valueFound = true;
-
-                existingField.setTypeAsEnum(typeParam);
-                existingField.setFieldValue(fieldValueParam);
-                break;
-            }
-        }
-
-        if (!valueFound) {
-            this.routeFields.add(new Field(fieldNameParam, fieldValueParam, typeParam));
-        }
-    }
-
-    /**
+     * Gets the {@code Flow} the {@code FluidItem} is associated with.
      *
-     * @return
+     * @return Name of the {@code Flow}.
+     *
+     * @see com.fluid.program.api.vo.flow.Flow
      */
     public String getFlow() {
         return this.flow;
     }
 
     /**
+     * Sets the {@code Flow} the {@code FluidItem} is associated with.
      *
-     * @param flowParam
+     * @param flowParam Name of the {@code Flow}.
+     *
+     * @see com.fluid.program.api.vo.flow.Flow
      */
     public void setFlow(String flowParam) {
         this.flow = flowParam;
     }
 
     /**
+     * If {@code this} is a newly created {@code FluidItem} as part of the
+     * {@code Flow} {@code ICustomProgram}. This will be used as a "flag" to
+     * make {@code this} {@code FluidItem} a descendant for the "parent"
+     * {@code FluidItem}.
      *
-     * @return
-     * @throws org.json.JSONException
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException
-    {
-        JSONObject returnVal = super.toJsonObject();
-
-        //Custom Properties...
-        if(this.getCustomProperties() != null)
-        {
-            returnVal.put(JSONMapping.CUSTOM_PROPERTIES,this.getCustomProperties());
-        }
-        //Flow...
-        if(this.getFlow() != null)
-        {
-            returnVal.put(JSONMapping.FLOW,this.getFlow());
-        }
-        //Form...
-        if(this.getForm() != null)
-        {
-            returnVal.put(JSONMapping.FORM,this.getForm().toJsonObject());
-        }
-        //Attachments...
-        if(this.getAttachments() != null)
-        {
-            JSONArray jsonArray = new JSONArray();
-
-            for(Attachment toAdd : this.getAttachments())
-            {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-
-            returnVal.put(JSONMapping.ATTACHMENTS,jsonArray);
-        }
-        //Flow State...
-        if(this.getFlowState() != null)
-        {
-            returnVal.put(JSONMapping.FLOW_STATE,this.getFlowState().toString());
-        }
-
-        return returnVal;
-    }
-
-    /**
+     * @return Whether {@code this} {@code FluidItem} should be linked to the "parent"
      *
-     * @return
+     * @see Form
+     * @see com.fluid.program.api.ICustomProgram
      */
     public Boolean getInCaseOfCreateLinkToParent() {
         return this.inCaseOfCreateLinkToParent;
     }
 
     /**
+     * If {@code this} is a newly created {@code FluidItem} as part of the
+     * {@code Flow} {@code ICustomProgram}. This will be used as a "flag" to
+     * make {@code this} {@code FluidItem} a descendant for the "parent"
+     * {@code FluidItem}.
      *
-     * @param inCaseOfCreateLinkToParentParam
+     * @param inCaseOfCreateLinkToParentParam Whether {@code this} {@code FluidItem} should be linked to the "parent"
+     *
+     * @see Form
+     * @see com.fluid.program.api.ICustomProgram
      */
     public void setInCaseOfCreateLinkToParent(Boolean inCaseOfCreateLinkToParentParam) {
         this.inCaseOfCreateLinkToParent = inCaseOfCreateLinkToParentParam;
     }
 
     /**
+     * If {@code this} {@code FluidItem.getForm} is a {@code Field.Type.Table} {@code Field},
+     * the parent {@code Form} / Electronic Form needs to be set to indicate which {@code Form} is
+     * the container {@code Form}.
      *
-     * @return
+     * @return The Table containing {@code Form}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Table
+     * @see Form
      */
     public Form getTableFieldParentForm() {
         return this.tableFieldParentForm;
     }
 
     /**
+     * If {@code this} {@code FluidItem.getForm} is a {@code Field.Type.Table} {@code Field},
+     * the parent {@code Form} / Electronic Form needs to be set to indicate which {@code Form} is
+     * the container {@code Form}.
      *
-     * @param tableFieldParentFormParam
+     * @param tableFieldParentFormParam The Table containing {@code Form}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Table
+     * @see Form
      */
     public void setTableFieldParentForm(Form tableFieldParentFormParam) {
         this.tableFieldParentForm = tableFieldParentFormParam;
     }
 
     /**
+     * If {@code this} {@code TableFieldParentForm} is set.
+     * The name of the {@code Field.Type.Table} {@code Field} also needs to be
+     * provided.
      *
-     * @return
+     * Sets the name of the Table Field.
+     *
+     * @return The Table containing {@code Form}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Table
+     * @see Form
      */
     public String getTableFieldNameOnParentForm() {
         return this.tableFieldNameOnParentForm;
     }
 
     /**
+     * If {@code this} {@code TableFieldParentForm} is set.
+     * The name of the {@code Field.Type.Table} {@code Field} also needs to be
+     * provided.
      *
-     * @param tableFieldNameParam
+     * Sets the name of the Table Field.
+     *
+     * @param tableFieldNameParam The Table containing {@code Form}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Table
+     * @see Form
      */
     public void setTableFieldNameOnParentForm(String tableFieldNameParam) {
         this.tableFieldNameOnParentForm = tableFieldNameParam;

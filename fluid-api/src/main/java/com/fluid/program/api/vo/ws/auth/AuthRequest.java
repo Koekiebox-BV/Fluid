@@ -31,7 +31,7 @@ public class AuthRequest extends ABaseFluidJSONObject {
     private Long lifetime;
 
     /**
-     *
+     * The JSON mapping for the {@code AuthRequest} object.
      */
     public static class JSONMapping {
         public static final String USERNAME = "username";
@@ -71,9 +71,12 @@ public class AuthRequest extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code AuthRequest}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

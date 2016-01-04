@@ -43,11 +43,11 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
     }
 
     /**
-     * 
-     * @param jsonObjectParam
-     * @throws JSONException
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
      */
-    public AuthEncryptedData(JSONObject jsonObjectParam) throws JSONException {
+    public AuthEncryptedData(JSONObject jsonObjectParam) {
         super();
 
         //Role Listing...
@@ -116,9 +116,10 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code AuthEncryptedData}
+     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

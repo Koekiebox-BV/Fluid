@@ -43,7 +43,7 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
     private FluidItem fluidItem;
 
     /**
-     *
+     * The JSON mapping for the {@code FlowItemExecutePacket} object.
      */
     public static class JSONMapping
     {
@@ -86,9 +86,12 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws org.json.JSONException
+     * @return {@code JSONObject} representation of {@code FlowItemExecutePacket}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException

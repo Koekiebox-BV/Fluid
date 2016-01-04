@@ -41,7 +41,7 @@ public class AppRequestToken extends ABaseFluidJSONObject {
     private Long timestamp;
 
     /**
-     *
+     * The JSON mapping for the {@code AppRequestToken} object.
      */
     public static class JSONMapping {
         public static final String ENCRYPTED_DATA_BASE_64 = "encryptedDataBase64";
@@ -63,11 +63,11 @@ public class AppRequestToken extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public AppRequestToken(JSONObject jsonObjectParam) throws JSONException {
+    public AppRequestToken(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
         //Encrypted Data Base64
@@ -245,9 +245,12 @@ public class AppRequestToken extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code AppRequestToken}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

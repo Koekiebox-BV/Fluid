@@ -28,6 +28,7 @@ import com.fluid.program.api.vo.mail.MailMessage;
  *
  * @author jasonbruwer
  * @since v1.0
+ *
  * @see ICustomProgram
  * @see ICustomWebAction
  * @see com.fluid.program.api.vo.Form
@@ -43,7 +44,6 @@ public interface ICustomScheduledAction extends IActionBase {
      *
      * <p>
      * The Unique Schedule Action Identifier.
-     * </p>
      *
      * @return The Fluid Implementation <code>Unique Action Identifier</code>.
      */
@@ -55,9 +55,8 @@ public interface ICustomScheduledAction extends IActionBase {
      * <p>
      * The Query {@code String} to use for the {@code execute(List<FluidItem> fluidItemsParam)}
      * method.
-     * </p>
      *
-     * <p>Examples: </p>
+     * <p>Examples:
      *
      * <p>[id] = '850354', [Last Name] = 'Creep'</p>
      * <p>[Form Type] = 'Email', [Last Name] = 'Creep'</p>
@@ -76,7 +75,6 @@ public interface ICustomScheduledAction extends IActionBase {
      *
      * This is ideal for performing updates on a whole set of Forms such as daily calculated
      * interest rates or leave accumulated.
-     * </p>
      *
      * @param fluidItemsParam The <code>String fluidItemQuery()</code> result.
      * @return A {@code List<FluidItem>} that may include new Fluid Items to create or update.
@@ -89,7 +87,6 @@ public interface ICustomScheduledAction extends IActionBase {
      *
      * <p>
      * Override this <code>method</code> to make changes to Fluid users.
-     * </p>
      *
      * @param usersParam The list of users in the system.
      * @return The updated users by the custom program. If a <code>null</code> is returned.
@@ -105,7 +102,6 @@ public interface ICustomScheduledAction extends IActionBase {
      * <p>
      * Override this <code>method</code> to send emails after
      * the processing of the scheduled job.
-     * </p>
      *
      * @return A {@code MailMessage} that may include emails to be sent after processing.
      * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
@@ -118,7 +114,6 @@ public interface ICustomScheduledAction extends IActionBase {
      *
      * <p>
      * Trace data to be stored at the time of Schedule Task execution for auditing purposes.
-     * </p>
      *
      * @return The execution result to be stored after the execution of all tasks
      * are completed successfully.

@@ -33,9 +33,8 @@ import com.fluid.program.api.vo.FluidItem;
  */
 public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
-
     /**
-     *
+     * The JSON mapping for the {@code FlowItemExecuteResult} object.
      */
     public static class JSONMapping
     {
@@ -78,9 +77,12 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code FlowItemExecuteResult}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException

@@ -33,7 +33,7 @@ public class Flow extends ABaseFluidJSONObject {
     private Date dateLastUpdated;
 
     /**
-     *
+     * The JSON mapping for the {@code Flow} object.
      */
     public static class JSONMapping
     {
@@ -162,9 +162,12 @@ public class Flow extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws org.json.JSONException
+     * @return {@code JSONObject} representation of {@code Flow}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException

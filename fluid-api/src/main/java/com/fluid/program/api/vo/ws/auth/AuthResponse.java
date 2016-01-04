@@ -39,7 +39,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
     private String serviceTicketBase64;
 
     /**
-     *
+     * The JSON mapping for the {@code AuthResponse} object.
      */
     public static class JSONMapping {
         public static final String SALT = "salt";
@@ -58,10 +58,11 @@ public class AuthResponse extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
-    public AuthResponse(JSONObject jsonObjectParam) throws JSONException {
+    public AuthResponse(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         //Salt...
@@ -192,8 +193,12 @@ public class AuthResponse extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
+     * @return {@code JSONObject} representation of {@code AuthResponse}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

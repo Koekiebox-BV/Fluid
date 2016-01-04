@@ -32,8 +32,7 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
     private String code;
 
     /**
-     *
-     *
+     * The JSON mapping for the {@code AccessTokenRequest} object.
      */
     public static class JSONMapping
     {
@@ -52,11 +51,11 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public AccessTokenRequest(JSONObject jsonObjectParam) throws JSONException {
+    public AccessTokenRequest(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -171,9 +170,12 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code AccessTokenRequest}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

@@ -15,14 +15,14 @@
 
 package com.fluid.program.api.vo.flow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -39,7 +39,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     private String currentTypedSyntax;
 
     /**
-     *
+     * The JSON mapping for the {@code FlowStepRule} object.
      */
     public static class JSONMapping
     {
@@ -126,9 +126,12 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws org.json.JSONException
+     * @return {@code JSONObject} representation of {@code FlowStepRule}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException

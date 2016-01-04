@@ -6,27 +6,31 @@
     <groupId>com.fluid</groupId>
     <artifactId>fluid-root</artifactId>
     <packaging>pom</packaging>
-    <version>${version.fluid.root}</version>
+    <version>1.0</version>
     <name>Fluid Root</name>
     <description>Parent pom providing default setups for all application and admin servers modules.</description>
+    <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
+
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/Koekiebox-PTY-LTD/Fluid/tree/develop</url>
+    </scm>
 
     <properties>
-        <!-- Explicitly declaring the source encoding eliminates the following
-                message: -->
-        <!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered
-          resources, i.e. build is platform dependent! -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.compiler.plugin>2.3.2</version.compiler.plugin>
         <version.surefire.plugin>2.4.3</version.surefire.plugin>
 
         <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.source>1.7</maven.compiler.source>
-
-        <!--Fluid-->
-        <version.fluid.root>1.0-SNAPSHOT</version.fluid.root>
-        <version.fluid.api>1.0-SNAPSHOT</version.fluid.api>
-        <version.fluid.ws-java-client>1.0-SNAPSHOT</version.fluid.ws-java-client>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
 
         <!--Maven Dependency Versions-->
         <version.junit>4.12</version.junit>
@@ -70,6 +74,7 @@
         <module>fluid-ws-java-client</module>
     </modules>
 
+    <!--Dependencies-->
     <dependencyManagement>
         <dependencies>
             <!--JUnit-->
@@ -119,24 +124,6 @@
                 <version>${version.apache.httpcomponents.httpclient}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <!-- *** FLUID *** -->
-            <!--Fluid API Dependencies-->
-            <dependency>
-                <groupId>com.fluid</groupId>
-                <artifactId>fluid-api</artifactId>
-                <version>${version.fluid.api}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--Fluid WS Java Client-->
-            <dependency>
-                <groupId>com.fluid</groupId>
-                <artifactId>fluid-ws-java-client</artifactId>
-                <version>${version.fluid.ws-java-client}</version>
-                <scope>compile</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>

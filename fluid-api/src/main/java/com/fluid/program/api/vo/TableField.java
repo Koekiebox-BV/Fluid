@@ -18,23 +18,42 @@ package com.fluid.program.api.vo;
 import java.util.List;
 
 /**
+ * <p>
+ *     Represents a {@code Form} Table Field.
+ *     Table fields have the ability to store other {@code Field}s inside itself.
+ *     This allows for a much richer Electronic Form.
+ * </p>
  *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Field
+ * @see com.fluid.program.api.util.sql.impl.SQLFormFieldUtil
  */
 public class TableField extends ABaseFluidVO {
 
     private List<Form> tableRecords;
 
     /**
+     * Default constructor.
+     */
+    public TableField() {
+        super();
+    }
+
+    /**
+     * Gets List of Table Records for {@code TableField}.
      *
-     * @return
+     * @return {@code List} of {@code Form}s for {@code TableField}.
      */
     public List<Form> getTableRecords() {
         return this.tableRecords;
     }
 
     /**
+     * Gets List of Table Records for {@code TableField}.
      *
-     * @param tableRecordsParam
+     * @param tableRecordsParam {@code List} of {@code Form}s for {@code TableField}.
      */
     public void setTableRecords(List<Form> tableRecordsParam) {
         this.tableRecords = tableRecordsParam;

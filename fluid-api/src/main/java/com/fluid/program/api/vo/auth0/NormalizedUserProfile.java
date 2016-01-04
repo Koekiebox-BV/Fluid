@@ -42,7 +42,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     private List<Identity> identities;
 
     /**
-     *
+     * The JSON mapping for the {@code NormalizedUserProfile} object.
      */
     public static class JSONMapping
     {
@@ -73,9 +73,8 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         private String connection;
         private boolean isSocial;
 
-
         /**
-         *
+         * The JSON mapping for the {@code Identity} object.
          */
         public static class JSONMapping
         {
@@ -217,9 +216,12 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         }
 
         /**
+         * Conversion to {@code JSONObject} from Java Object.
          *
-         * @return
-         * @throws JSONException
+         * @return {@code JSONObject} representation of {@code Identity}
+         * @throws JSONException If there is a problem with the JSON Body.
+         *
+         * @see ABaseFluidJSONObject#toJsonObject()
          */
         @Override
         public JSONObject toJsonObject() throws JSONException {
@@ -265,11 +267,11 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public NormalizedUserProfile(JSONObject jsonObjectParam) throws JSONException {
+    public NormalizedUserProfile(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -497,9 +499,12 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code NormalizedUserProfile}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

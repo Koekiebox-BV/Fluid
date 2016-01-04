@@ -15,21 +15,44 @@
 
 package com.fluid.program.api.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by jasonbruwer on 2015/12/28.
+ * <p>
+ *     Functions as a container object for {@code List} of {@code FormFlowHistoricData}s.
+ *
+ *     Makes it easier to create an expected message format when dealing with
+ *     messages conversions in RESTful Web Services.
+ * </p>
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see FormFlowHistoricData
  */
 public class FormFlowHistoricDataContainer extends ABaseFluidJSONObject {
 
     private List<FormFlowHistoricData> formFlowHistoricDatas;
 
     /**
+     * The JSON mapping for the {@code FormFlowHistoricDataContainer} object.
+     */
+    public static class JSONMapping
+    {
+        public static final String FORM_FLOW_HISTORIC_DATAS = "formFlowHistoricDatas";
+    }
+
+    /**
+     * Sets FormFlowHistoricData.
      *
-     * @param formFlowHistoricDatasParam
+     * @param formFlowHistoricDatasParam {@code List} of {@code FormFlowHistoricData}.
+     *
+     * @see FormFlowHistoricData
      */
     public FormFlowHistoricDataContainer(
             List<FormFlowHistoricData> formFlowHistoricDatasParam) {
@@ -39,11 +62,11 @@ public class FormFlowHistoricDataContainer extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public FormFlowHistoricDataContainer(JSONObject jsonObjectParam) throws JSONException {
+    public FormFlowHistoricDataContainer(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -51,28 +74,68 @@ public class FormFlowHistoricDataContainer extends ABaseFluidJSONObject {
             return;
         }
 
-        //TODO add the fields...
+        //Form Flow Historic Data...
+        if (!this.jsonObject.isNull(JSONMapping.FORM_FLOW_HISTORIC_DATAS)) {
+
+            JSONArray arrayOfObjects =
+                    this.jsonObject.getJSONArray(JSONMapping.FORM_FLOW_HISTORIC_DATAS);
+
+            this.formFlowHistoricDatas = new ArrayList<>();
+
+            for(int index = 0;index < arrayOfObjects.length();index++)
+            {
+                this.formFlowHistoricDatas.add(new FormFlowHistoricData(
+                        arrayOfObjects.getJSONObject(index)));
+            }
+        }
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
+     * @return {@code JSONObject} representation of {@code FormFlowHistoricDataContainer}.
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
-    public static class JSONMapping
+    @Override
+    public JSONObject toJsonObject() throws JSONException
     {
-        public static final String DATE_CREATED = "formFlowHistoricDatas";
+        JSONObject returnVal = super.toJsonObject();
+
+        //Form Flow Historic Data...
+        if(this.getFormFlowHistoricDatas() != null && !this.getFormFlowHistoricDatas().isEmpty())
+        {
+            JSONArray arrayOfHistoricData = new JSONArray();
+
+            for(FormFlowHistoricData historyData : this.getFormFlowHistoricDatas())
+            {
+                arrayOfHistoricData.put(historyData.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.FORM_FLOW_HISTORIC_DATAS, arrayOfHistoricData);
+        }
+
+        return returnVal;
     }
 
     /**
+     * Gets FormFlowHistoricData.
      *
-     * @return
+     * @return {@code List} of {@code FormFlowHistoricData}.
+     *
+     * @see FormFlowHistoricData
      */
     public List<FormFlowHistoricData> getFormFlowHistoricDatas() {
         return this.formFlowHistoricDatas;
     }
 
     /**
+     * Sets FormFlowHistoricData.
      *
-     * @param formFlowHistoricDatasParam
+     * @param formFlowHistoricDatasParam {@code List} of {@code FormFlowHistoricData}.
+     *
+     * @see FormFlowHistoricData
      */
     public void setFormFlowHistoricDatas(List<FormFlowHistoricData> formFlowHistoricDatasParam) {
         this.formFlowHistoricDatas = formFlowHistoricDatasParam;

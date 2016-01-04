@@ -21,14 +21,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * <p>
+ *     The Base class for any sub-class that wants to make use of the
+ *     JSON based message format used by the Fluid RESTful Web Service.
+ * </p>
  *
+ * @author jasonbruwer
+ * @since v1.0
  */
 public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
     protected JSONObject jsonObject;
 
     /**
-     *
+     * The JSON mapping for the {@code ABaseFluidJSONObject} object.
      */
     public static class JSONMapping
     {
@@ -37,15 +43,16 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public ABaseFluidJSONObject() {
         super();
     }
 
     /**
+     * Populates local variables Id and Service Ticket with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public ABaseFluidJSONObject(JSONObject jsonObjectParam) {
         this();
@@ -67,9 +74,15 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     }
 
     /**
+     * <p>
+     * Base {@code toJsonObject} that creates a {@code JSONObject}
+     * with the Id and ServiceTicket set.
+     * </p>
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code ABaseFluidJSONObject}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see org.json.JSONObject
      */
     public JSONObject toJsonObject() throws JSONException
     {
@@ -90,9 +103,13 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     }
 
     /**
+     * Converts the {@code Long} timestamp into a {@code Date} object.
      *
-     * @param longValueParam
-     * @return
+     * Returns {@code null} if {@code longValueParam} is {@code null}.
+     *
+     * @param longValueParam The milliseconds since January 1, 1970, 00:00:00 GMT
+     * @return {@code Date} Object from {@code longValueParam}
+     *
      */
     public Date getLongAsDateFromJson(Long longValueParam)
     {
@@ -101,13 +118,16 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
             return null;
         }
 
-        return new Date(longValueParam.longValue());
+        return new Date(longValueParam);
     }
 
     /**
+     * Converts the {@code Date} object into a {@code Long} timestamp.
      *
-     * @param dateValueParam
-     * @return
+     * Returns {@code null} if {@code dateValueParam} is {@code null}.
+     *
+     * @param dateValueParam {@code Long} Object from {@code dateValueParam}
+     * @return The milliseconds since January 1, 1970, 00:00:00 GMT
      */
     public Long getDateAsLongFromJson(Date dateValueParam)
     {

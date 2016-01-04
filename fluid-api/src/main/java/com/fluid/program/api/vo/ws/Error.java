@@ -25,9 +25,8 @@ public class Error extends ABaseFluidJSONObject {
     private int errorCode;
     private String errorMessage;
 
-
     /**
-     *
+     * The JSON mapping for the {@code Error} object.
      */
     public static class JSONMapping
     {

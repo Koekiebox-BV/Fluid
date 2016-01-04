@@ -33,7 +33,7 @@ public class Attachment extends ABaseFluidJSONObject {
     private String attachmentDataBase64;
 
     /**
-     *
+     * The JSON mapping for the {@code Attachment} object.
      */
     public static class JSONMapping {
         public static final String VERSION = "version";
@@ -43,6 +43,9 @@ public class Attachment extends ABaseFluidJSONObject {
         public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
     }
 
+    /**
+     *
+     */
     public Attachment() {
         super();
     }
@@ -70,6 +73,25 @@ public class Attachment extends ABaseFluidJSONObject {
         if(theFile.exists() && theFile.isFile())
         {
             this.setName(theFile.getName());
+        }
+    }
+
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public Attachment(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+
+        if(this.jsonObject == null)
+        {
+            return;
+        }
+
+        //Name...
+        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
+            this.setName(this.jsonObject.getString(JSONMapping.NAME));
         }
     }
 
@@ -175,9 +197,12 @@ public class Attachment extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return {@code JSONObject} representation of {@code Attachment}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

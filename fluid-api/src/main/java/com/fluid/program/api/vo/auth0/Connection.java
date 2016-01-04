@@ -42,7 +42,7 @@ public class Connection extends ABaseFluidJSONObject {
     private List<Client> identities;
 
     /**
-     *
+     * The JSON mapping for the {@code Connection} object.
      */
     public static class JSONMapping
     {
@@ -75,7 +75,7 @@ public class Connection extends ABaseFluidJSONObject {
 
 
         /**
-         *
+         * The JSON mapping for the {@code Client} object.
          */
         public static class JSONMapping
         {
@@ -217,9 +217,12 @@ public class Connection extends ABaseFluidJSONObject {
         }
 
         /**
+         * Conversion to {@code JSONObject} from Java Object.
          *
-         * @return
-         * @throws JSONException
+         * @return {@code JSONObject} representation of {@code Client}
+         * @throws JSONException If there is a problem with the JSON Body.
+         *
+         * @see ABaseFluidJSONObject#toJsonObject()
          */
         @Override
         public JSONObject toJsonObject() throws JSONException {
@@ -265,11 +268,11 @@ public class Connection extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
-     * @throws JSONException
+     * @param jsonObjectParam The JSON Object.
      */
-    public Connection(JSONObject jsonObjectParam) throws JSONException {
+    public Connection(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -497,9 +500,12 @@ public class Connection extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws JSONException
+     * @return @return {@code JSONObject} representation of {@code Connection}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {

@@ -50,7 +50,7 @@ public class FlowStep extends ABaseFluidJSONObject {
     private List<StepProperty> stepProperties;
 
     /**
-     * JSON Mapping for the object.
+     * The JSON mapping for the {@code FlowStep} object.
      */
     public static class JSONMapping
     {
@@ -114,7 +114,7 @@ public class FlowStep extends ABaseFluidJSONObject {
         }
 
         /**
-         * JSON Mapping for the object.
+         * The JSON mapping for the {@code StepProperty} object.
          */
         public static class JSONMapping
         {
@@ -196,9 +196,12 @@ public class FlowStep extends ABaseFluidJSONObject {
         }
 
         /**
+         * Conversion to {@code JSONObject} from Java Object.
          *
-         * @return
-         * @throws org.json.JSONException
+         * @return {@code JSONObject} representation of {@code StepProperty}
+         * @throws JSONException If there is a problem with the JSON Body.
+         *
+         * @see ABaseFluidJSONObject#toJsonObject()
          */
         @Override
         public JSONObject toJsonObject() throws JSONException
@@ -406,9 +409,12 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return
-     * @throws org.json.JSONException
+     * @return {@code JSONObject} representation of {@code FlowStep}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JSONObject toJsonObject() throws JSONException
