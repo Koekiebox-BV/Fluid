@@ -107,8 +107,9 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Id associated with a Field.
      *
-     * @param fieldIdParam
+     * @param fieldIdParam Field Id.
      */
     public Field(Long fieldIdParam) {
         super();
@@ -117,9 +118,11 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
-     * 
-     * @param fieldNameParam
-     * @param fieldValueParam
+     * Constructor to set the Field Name, Value and Type.
+     *
+     * @param fieldNameParam Sets Field Name.
+     * @param fieldValueParam Sets Field Value.
+     * @param fieldTypeParam Sets Field Type.
      */
     public Field(String fieldNameParam, Object fieldValueParam, Type fieldTypeParam) {
         this.setFieldName(fieldNameParam);
@@ -128,9 +131,10 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Constructor to set the Field Name, Value.
      *
-     * @param fieldNameParam
-     * @param fieldValueParam
+     * @param fieldNameParam Sets Field Name.
+     * @param fieldValueParam Sets Field Value.
      */
     public Field(String fieldNameParam, Object fieldValueParam) {
         this.setFieldName(fieldNameParam);
@@ -139,13 +143,13 @@ public class Field extends ABaseFluidJSONObject {
         this.setFieldValue(fieldValueParam);
     }
 
-
     /**
+     * Constructor to set the Field Name and {@code MultiChoice} Value.
      *
-     * @param fieldNameParam
-     * @param multiChoiceParam
+     * @param fieldNameParam Sets Field Name.
+     * @param multiChoiceParam Sets Field Value as {@code MultiChoice}.
      */
-    public Field(String fieldNameParam,MultiChoice multiChoiceParam) {
+    public Field(String fieldNameParam, MultiChoice multiChoiceParam) {
 
         this.setFieldName(fieldNameParam);
         this.setFieldValue(multiChoiceParam);
@@ -153,8 +157,9 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public Field(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
@@ -212,55 +217,65 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
-	 *
+	 * Default constructor.
 	 */
     public Field() {
         super();
     }
 
     /**
-     * 
-     * @return
+     * Gets the name of {@code this} {@code Field}.
+     *
+     * @return The Field Name.
      */
     public String getFieldName() {
         return this.fieldName;
     }
 
     /**
+     * Sets the name of {@code this} {@code Field}.
      * 
-     * @param fieldNameParam
+     * @param fieldNameParam The New Field Name.
      */
     public void setFieldName(String fieldNameParam) {
         this.fieldName = fieldNameParam;
     }
 
     /**
-     * 
-     * @return
-     */
-    public Object getFieldValue() {
-        return this.fieldValue;
-    }
-
-    /**
+     * Gets the description of {@code this} {@code Field}.
      *
-     * @return
+     * @return The Field Description.
      */
     public String getFieldDescription() {
         return this.fieldDescription;
     }
 
     /**
+     * Sets the description of {@code this} {@code Field}.
      *
-     * @param fieldDescriptionParam
+     * @param fieldDescriptionParam The Field Description.
      */
     public void setFieldDescription(String fieldDescriptionParam) {
         this.fieldDescription = fieldDescriptionParam;
     }
 
     /**
-     * 
-     * @param fieldValueParam
+     * Gets the value of {@code this} {@code Field}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    public Object getFieldValue() {
+        return this.fieldValue;
+    }
+
+    /**
+     * Sets the value of {@code this} {@code Field}.
+     *
+     * @param fieldValueParam The New Field Value.
+     *
+     * @see Type
      */
     public void setFieldValue(Object fieldValueParam) {
         this.fieldValue = fieldValueParam;
@@ -296,24 +311,33 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Type of {@code this} {@code Field}.
      *
-     * @return
+     * @return The Field Type.
+     *
+     * @see Type
      */
     public String getType() {
         return this.type;
     }
 
     /**
+     * Sets the Type of {@code this} {@code Field} as {@code String}.
      *
-     * @param typeParam
+     * @param typeParam The Field type.
+     *
+     * @see Type
      */
     public void setType(String typeParam) {
         this.type = typeParam;
     }
 
     /**
-     * 
-     * @param typeParam
+     * Sets the Type of {@code this} {@code Field} as {@code enum}.
+     *
+     * @param typeParam The Field type.
+     *
+     * @see Type
      */
     @JsonIgnore
     @XmlTransient
@@ -329,8 +353,11 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Type of {@code this} {@code Field} as {@code enum}.
      *
-     * @return
+     * @return The Field type.
+     *
+     * @see Type
      */
     @JsonIgnore
     @XmlTransient
@@ -345,16 +372,38 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     * Gets the Meta-Data of {@code this} {@code Field}.
      *
-     * @return
+     * <p>
+     * Also referred to as Field Type sub-data.
+     * This defines the {@code Field} even further.
+     *
+     * <p>
+     * Example: Text field may be {@code Plain}, {@code Masked}, {@code Latitude and Longitude}.
+     *
+     * @return The Field Meta-Data.
+     *
+     * @see Type
      */
     public String getTypeMetaData() {
         return this.typeMetaData;
     }
 
     /**
+     * <p>
+     * Gets the Meta-Data of {@code this} {@code Field}.
      *
-     * @param typeMetaDataParam
+     * <p>
+     * Also referred to as Field Type sub-data.
+     * This defines the {@code Field} even further.
+     *
+     * <p>
+     * Example: Text field may be {@code Plain}, {@code Masked}, {@code Latitude and Longitude}.
+     *
+     * @param typeMetaDataParam The Field Meta-Data.
+     *
+     * @see Type
      */
     public void setTypeMetaData(String typeMetaDataParam) {
         this.typeMetaData = typeMetaDataParam;

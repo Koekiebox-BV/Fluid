@@ -141,8 +141,9 @@ public class FlowStep extends ABaseFluidJSONObject {
         }
 
         /**
+         * Populates local variables with {@code jsonObjectParam}.
          *
-         * @param jsonObjectParam
+         * @param jsonObjectParam The JSON Object.
          */
         public StepProperty(JSONObject jsonObjectParam) {
             super(jsonObjectParam);
@@ -242,8 +243,9 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public FlowStep(JSONObject jsonObjectParam) {
         super(jsonObjectParam);

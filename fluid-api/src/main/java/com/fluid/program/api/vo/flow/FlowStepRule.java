@@ -71,8 +71,9 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public FlowStepRule(JSONObject jsonObjectParam) {
         super(jsonObjectParam);

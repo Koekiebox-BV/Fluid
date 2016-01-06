@@ -170,9 +170,7 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
         entryRule.setFlowStep(createdFlowStep);
         entryRule.setRule(TestStatics.EntryRules.Pass.Set.PASS_01);
 
-        FlowStepRule createdEntryRule = flowStepRuleClient.createFlowStepEntryRule(
-                entryRule);
-
+        FlowStepRule createdEntryRule = flowStepRuleClient.createFlowStepEntryRule(entryRule);
 
 
         //4. Get by Id...
@@ -180,14 +178,8 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
                 createdFlowStep.getId(), FlowStep.StepType.ASSIGNMENT);
 
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdFlowStep.getId());
-        TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdFlowStep.getName());
-        TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdFlowStep.getDescription());
-        TestCase.assertNotNull("BY_ID: The 'Date Created' needs to be set.", byIdFlowStep.getDateCreated());
-        TestCase.assertEquals(
-                "BY_ID: The 'Date Created' must match original create date.",
-                createdFlowStep.getDateCreated().toString(),
-                byIdFlowStep.getDateCreated().toString());
-        TestCase.assertNotNull("BY_ID: The 'Date Last Updated' needs to be set.", byIdFlowStep.getDateLastUpdated());
+
+        //TODO @Jason, need to look at the rules within...
 
         //5. Delete...
         flowStepClient.deleteFlowStep(byIdFlowStep);

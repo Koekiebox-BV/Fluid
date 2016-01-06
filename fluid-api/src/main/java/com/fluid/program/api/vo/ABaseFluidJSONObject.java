@@ -24,10 +24,12 @@ import org.json.JSONObject;
  * <p>
  *     The Base class for any sub-class that wants to make use of the
  *     JSON based message format used by the Fluid RESTful Web Service.
- * </p>
  *
  * @author jasonbruwer
  * @since v1.0
+ *
+ * @see ABaseFluidVO
+ * @see JSONObject
  */
 public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 

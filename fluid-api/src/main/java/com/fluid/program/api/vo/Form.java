@@ -29,6 +29,23 @@ import com.fluid.program.api.vo.flow.Flow;
  * <p>
  * Represents an Electronic Form and Form Definition in Fluid.
  *
+ * Depending on whether the {@code Form} is used for the;
+ *
+ * <ul>
+ *     <li>
+ *         Web Service for Document creation.
+ *     </li>
+ *     <li>
+ *         Web Service for Form Definition adjustment.
+ *     </li>
+ *     <li>
+ *         Third Party class loader for Flow Programs.
+ *     </li>
+ *     <li>
+ *         Third Party class loader for Web Form Actions.
+ *     </li>
+ * </ul>
+ *
  * @author jasonbruwer
  * @since v1.0
  *
@@ -78,12 +95,12 @@ public class Form extends ABaseFluidJSONObject {
     /**
      * Sets the Id associated with either the Form or Form Definition.
      *
-     * @param fieldIdParam Form / Form Definition Id.
+     * @param formIdParam Form / Form Definition Id.
      */
-    public Form(Long fieldIdParam) {
+    public Form(Long formIdParam) {
         super();
 
-        this.setId(fieldIdParam);
+        this.setId(formIdParam);
     }
 
     /**

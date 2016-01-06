@@ -28,7 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Represents an Electronic Form with all possible Meta-Data.
+ * Represents an Electronic Form with all possible Meta-Data for an item
+ * in {@code Flow} / Workflow.
  *
  * @author jasonbruwer
  * @since v1.0
@@ -37,6 +38,7 @@ import org.json.JSONObject;
  * @see Field
  * @see Attachment
  * @see FlowState
+ * @see Properties
  */
 public class FluidItem extends ABaseFluidJSONObject {
 
@@ -205,6 +207,42 @@ public class FluidItem extends ABaseFluidJSONObject {
     /**
      * The {@code FlowState} that a {@code FluidItem}
      * is currently in in terms of the Workflow.
+     *
+     * <table>
+     *     <caption>Flow States for an {@code FluidItem}.</caption>
+     *     <tr>
+     *         <th>Flow State</th>
+     *         <th>Description</th>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code NotInFlow}</td>
+     *         <td>Item that is not currently in Flow. Item could have been in flow
+     *         previously.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code WorkInProgress}</td>
+     *         <td>Item that is currently part of a {@code Flow} and needs attention.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code UserSend}</td>
+     *         <td>Electronic Form that is not currently part of a {@code Flow}, but shared with a
+     *         colleague.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code UserSend}</td>
+     *         <td>Electronic Form that is <b>not</b> currently part of a {@code Flow}, but shared with a
+     *         colleague.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code UserSendWorkInProgress}</td>
+     *         <td>Electronic Form that is currently part of a {@code Flow}, and shared with a
+     *         colleague.</td>
+     *     </tr>
+     *     <tr>
+     *         <td>{@code Archive}</td>
+     *         <td>Electronic Form that has been completed and Archived for long term storage.</td>
+     *     </tr>
+     * </table>
      */
     public enum FlowState {
         NotInFlow,
@@ -779,7 +817,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 
         if(this.getGlobalFields() == null || this.getGlobalFields().isEmpty())
         {
-            this.setGlobalFields(new ArrayList<Field>());
+            this.setGlobalFields(new ArrayList<>());
         }
 
         String fieldNameParamLower = fieldNameParam.toLowerCase();
@@ -898,7 +936,7 @@ public class FluidItem extends ABaseFluidJSONObject {
         }
 
         if (this.getGlobalFields() == null || this.getGlobalFields().isEmpty()) {
-            this.setGlobalFields(new ArrayList<Field>());
+            this.setGlobalFields(new ArrayList<>());
         }
 
         String paramLower = fieldNameParam.toLowerCase().trim();
@@ -1014,7 +1052,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      */
     public void addAttachment(Attachment toAddParam) {
         if (!this.containsAttachments()) {
-            this.setAttachments(new ArrayList<Attachment>());
+            this.setAttachments(new ArrayList<>());
         }
 
         this.getAttachments().add(toAddParam);
@@ -1180,7 +1218,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @return If the list of attachments is empty.
      */
     public boolean containsAttachments() {
-        return (this.attachments == null || this.attachments.isEmpty()) ? false : true;
+        return (this.attachments != null && !this.attachments.isEmpty());
     }
 
     /**
@@ -1193,11 +1231,9 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @see Properties
      */
     public boolean isPropertySet(String propertyNameParam) {
-        if (propertyNameParam == null || propertyNameParam.trim().isEmpty()) {
-            return false;
-        }
+        if ((propertyNameParam == null || propertyNameParam.trim().isEmpty()) ||
+                (this.customProperties == null || this.customProperties.isEmpty())) {
 
-        if (this.customProperties == null || this.customProperties.isEmpty()) {
             return false;
         }
 
@@ -1248,7 +1284,7 @@ public class FluidItem extends ABaseFluidJSONObject {
             propertyValueParam = "";
         }
 
-        this.customProperties.setProperty(propertyNameParam,propertyValueParam);
+        this.customProperties.setProperty(propertyNameParam, propertyValueParam);
     }
 
     /**

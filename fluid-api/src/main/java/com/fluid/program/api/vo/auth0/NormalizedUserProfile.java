@@ -93,8 +93,9 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         }
 
         /**
+         * Populates local variables with {@code jsonObjectParam}.
          *
-         * @param jsonObjectParam
+         * @param jsonObjectParam The JSON Object.
          */
         public Identity(JSONObject jsonObjectParam) {
             super(jsonObjectParam);

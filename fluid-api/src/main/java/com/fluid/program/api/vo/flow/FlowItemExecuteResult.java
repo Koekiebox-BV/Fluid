@@ -50,8 +50,9 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     }
 
     /**
+     * Populates local variables with {@code jsonObjectParam}.
      *
-     * @param jsonObjectParam
+     * @param jsonObjectParam The JSON Object.
      */
     public FlowItemExecuteResult(JSONObject jsonObjectParam) {
         super(jsonObjectParam);

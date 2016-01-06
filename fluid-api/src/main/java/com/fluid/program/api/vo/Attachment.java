@@ -21,7 +21,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Represents an Fluid Field for Form, User, Route and Global.
  *
+ * {@code Field} can be part of Electronic Form or Form Definition in Fluid.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Form
+ * @see FluidItem
+ * @see com.fluid.program.api.vo.mail.MailMessage
+ * @see com.fluid.program.api.vo.mail.MailMessageAttachment
  */
 public class Attachment extends ABaseFluidJSONObject {
 
@@ -36,24 +46,26 @@ public class Attachment extends ABaseFluidJSONObject {
      * The JSON mapping for the {@code Attachment} object.
      */
     public static class JSONMapping {
-        public static final String VERSION = "version";
         public static final String NAME = "name";
         public static final String PATH = "path";
+
+        public static final String VERSION = "version";
         public static final String CONTENT_TYPE = "contentType";
         public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
     }
 
     /**
-     *
+     * Default constructor.
      */
     public Attachment() {
         super();
     }
 
     /**
+     * Sets the Path and Name of {@code this} {@code Attachment}.
      *
-     * @param attachmentPath
-     * @param attachmentNameParam
+     * @param attachmentPath Sets the {@code Attachment} path.
+     * @param attachmentNameParam Sets the {@code Attachment} name.
      */
     public Attachment(String attachmentPath, String attachmentNameParam) {
         super();
@@ -62,8 +74,9 @@ public class Attachment extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Path {@code this} {@code Attachment}.
      *
-     * @param attachmentPath
+     * @param attachmentPath The path to the {@code Attachment}.
      */
     public Attachment(String attachmentPath) {
         super();
@@ -93,92 +106,135 @@ public class Attachment extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.NAME)) {
             this.setName(this.jsonObject.getString(JSONMapping.NAME));
         }
+
+        //Path...
+        if (!this.jsonObject.isNull(JSONMapping.PATH)) {
+            this.setPath(this.jsonObject.getString(JSONMapping.PATH));
+        }
+
+        //Version...
+        if (!this.jsonObject.isNull(JSONMapping.VERSION)) {
+            this.setVersion(this.jsonObject.getString(JSONMapping.VERSION));
+        }
+
+        //Content Type...
+        if (!this.jsonObject.isNull(JSONMapping.CONTENT_TYPE)) {
+            this.setContentType(this.jsonObject.getString(JSONMapping.CONTENT_TYPE));
+        }
+
+        //Attachment Data...
+        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DATA_BASE64)) {
+            this.setAttachmentDataBase64(this.jsonObject.getString(
+                    JSONMapping.ATTACHMENT_DATA_BASE64));
+        }
     }
 
     /**
+     * Gets the version of {@code this} {@code Attachment}.
      *
-     * @return
+     * @return Attachment version.
      */
     public String getVersion() {
         return this.version;
     }
 
     /**
+     * Sets the version of {@code this} {@code Attachment}.
      *
-     * @param versionParam
+     * @param versionParam Attachment version.
      */
     public void setVersion(String versionParam) {
         this.version = versionParam;
     }
 
     /**
+     * Gets the name of {@code this} {@code Attachment}.
      *
-     * @return
+     * @return Attachment name.
      */
     public String getName() {
         return this.name;
     }
 
     /**
+     * Sets the name of {@code this} {@code Attachment}.
      *
-     * @param nameParam
+     * @param nameParam Attachment name.
      */
     public void setName(String nameParam) {
         this.name = nameParam;
     }
 
     /**
+     * Gets the path of {@code this} {@code Attachment}.
      *
-     * @return
+     * @return Attachment path.
      */
     public String getPath() {
         return this.path;
     }
 
     /**
+     * Sets the path of {@code this} {@code Attachment}.
      *
-     * @param pathParam
+     * @param pathParam Attachment path.
      */
     public void setPath(String pathParam) {
         this.path = pathParam;
     }
 
     /**
+     * Gets the content-type of {@code this} {@code Attachment}.
      *
-     * @return
+     * @return Attachment Content / Mime Type.
      */
     public String getContentType() {
         return this.contentType;
     }
 
     /**
+     * Sets the content-type of {@code this} {@code Attachment}.
      *
-     * @param contentTypeParam
+     * @param contentTypeParam Attachment Content / Mime Type.
      */
     public void setContentType(String contentTypeParam) {
         this.contentType = contentTypeParam;
     }
 
     /**
+     * <p>
+     * The data for {@code this} {@code Attachment} in Base-64 encoding.
      *
-     * @return
+     * <p>
+     * Find out more at;
+     * https://en.wikipedia.org/wiki/Base64
+     *
+     * @return Attachment Data in Base-64 encoding.
      */
     public String getAttachmentDataBase64() {
         return this.attachmentDataBase64;
     }
 
     /**
+     * <p>
+     * The data for {@code this} {@code Attachment} in Base-64 encoding.
      *
-     * @param attachmentDataBase64Param
+     * <p>
+     * Find out more at;
+     * https://en.wikipedia.org/wiki/Base64
+     *
+     * @param attachmentDataBase64Param Attachment Data in Base-64 encoding.
      */
     public void setAttachmentDataBase64(String attachmentDataBase64Param) {
         this.attachmentDataBase64 = attachmentDataBase64Param;
     }
 
     /**
+     * Checks to see whether {@code this} {@code Attachment} name contains
+     * the value {@code containingTextParam}.
      *
-     * @param containingTextParam
-     * @return
+     * @param containingTextParam The text to check for <b>(not case sensitive)</b>.
+     * @return Whether the {@code Attachment} name contains {@code containingTextParam}.
      */
     public boolean doesNameContain(String containingTextParam) {
         if (this.getName() == null || this.getName().trim().isEmpty()) {

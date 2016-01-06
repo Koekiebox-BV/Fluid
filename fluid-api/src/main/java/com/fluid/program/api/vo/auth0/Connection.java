@@ -94,8 +94,9 @@ public class Connection extends ABaseFluidJSONObject {
         }
 
         /**
+         * Populates local variables with {@code jsonObjectParam}.
          *
-         * @param jsonObjectParam
+         * @param jsonObjectParam The JSON Object.
          */
         public Client(JSONObject jsonObjectParam) {
             super(jsonObjectParam);

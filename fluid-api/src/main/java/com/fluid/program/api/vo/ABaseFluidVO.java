@@ -21,13 +21,15 @@ import java.io.Serializable;
  * <p>
  *     Base Value Object for any Fluid Value Object.
  *
+ * <p>
  *     Contains common properties such as {@code id} and {@code serviceTicket}.
- * </p>
  *
  * @author jasonbruwer
  * @since v1.0
  *
  * @see Serializable
+ * @see User
+ * @see com.fluid.program.api.vo.ws.auth.ServiceTicket
  */
 public class ABaseFluidVO implements Serializable {
 
@@ -37,8 +39,9 @@ public class ABaseFluidVO implements Serializable {
     private User loggedInUserFromTicket;
 
     /**
-     * 
-     * @param idParam
+     * Sets the Id associated with any Fluid entity.
+     *
+     * @param idParam Unique Identifier.
      */
     public ABaseFluidVO(Long idParam) {
         super();
@@ -53,48 +56,64 @@ public class ABaseFluidVO implements Serializable {
     }
 
     /**
-     * 
-     * @return
+     * Gets the Id associated with any Fluid entity.
+     *
+     * @return Id associated with {@code this} entity.
      */
     public Long getId() {
         return this.id;
     }
 
     /**
+     * Sets the Id associated with any Fluid entity.
      * 
-     * @param idParam
+     * @param idParam Id associated with {@code this} entity.
      */
     public void setId(Long idParam) {
         this.id = idParam;
     }
 
     /**
+     * Gets the Service Ticket associated with the Fluid session.
      *
-     * @return
+     * @return Service Ticket of Fluid session.
+     *
+     * @see com.fluid.program.api.vo.ws.auth.ServiceTicket
      */
     public String getServiceTicket() {
         return this.serviceTicket;
     }
 
     /**
+     * Sets the Service Ticket associated with the Fluid session.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam Service Ticket of Fluid session.
+     *
+     * @see com.fluid.program.api.vo.ws.auth.ServiceTicket
      */
     public void setServiceTicket(String serviceTicketParam) {
         this.serviceTicket = serviceTicketParam;
     }
 
     /**
+     * Gets the {@code User} associated with the session.
      *
-     * @return
+     * @return The Logged in user associated with the session.
+     *
+     * @see com.fluid.program.api.vo.ws.auth.ServiceTicket
+     * @see User
      */
     public User getLoggedInUserFromTicket() {
         return this.loggedInUserFromTicket;
     }
 
     /**
+     * Sets the {@code User} associated with the session.
      *
-     * @param loggedInUserFromTicket
+     * @param loggedInUserFromTicket The Logged in user associated with the session.
+     *
+     * @see com.fluid.program.api.vo.ws.auth.ServiceTicket
+     * @see User
      */
     public void setLoggedInUserFromTicket(User loggedInUserFromTicket) {
         this.loggedInUserFromTicket = loggedInUserFromTicket;
