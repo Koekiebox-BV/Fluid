@@ -14,7 +14,12 @@
     <artifactId>fluid-api</artifactId>
     <packaging>jar</packaging>
     <name>Fluid API</name>
-    <description>Used for the Custom Program Step and Custom Actions in Fluid.</description>
+    <description>Used for the
+        Custom Program Step,
+        Custom Actions,
+        Scheduled Actions and
+        Fluid API
+        in the Fluid BPM and Content Management system.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
 
     <licenses>
@@ -25,8 +30,18 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Jason Bruwer</name>
+            <email>jason@koekiebox.com</email>
+            <organization>Koekiebox</organization>
+        </developer>
+    </developers>
+
     <scm>
-        <url>https://github.com/Koekiebox-PTY-LTD/Fluid/tree/develop/fluid-api</url>
+        <connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
+        <developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
+        <url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
     </scm>
 
     <!--Dependencies-->
@@ -68,7 +83,34 @@
                     <constantToChange>GIT_DESCRIBE</constantToChange>
                 </configuration>
             </plugin>
+
+            <!--Maven Source Plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--Maven Javadoc Plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

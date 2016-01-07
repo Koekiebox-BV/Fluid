@@ -18,7 +18,18 @@ package com.fluid.program.api.vo.ws;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
- * Created by jasonbruwer on 14/12/22.
+ * <p>
+ *     The Mapping object used for any errors thrown
+ *     from the Fluid Web Service.
+ *
+ *     A check may be added to check whether {@code errorCode}
+ *     is present.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseFluidJSONObject
+ * @see WS
  */
 public class Error extends ABaseFluidJSONObject {
 
@@ -26,7 +37,7 @@ public class Error extends ABaseFluidJSONObject {
     private String errorMessage;
 
     /**
-     * The JSON mapping for the {@code Error} object.
+     * The JSON mapping for {@code this} {@code Error} object.
      */
     public static class JSONMapping
     {
@@ -35,16 +46,17 @@ public class Error extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public Error() {
         super();
     }
 
     /**
+     * Sets the Error Code and Message.
      *
-     * @param errorCode
-     * @param errorMessage
+     * @param errorCode Error Code.
+     * @param errorMessage Error Message.
      */
     public Error(int errorCode, String errorMessage) {
         this.setErrorCode(errorCode);
@@ -52,32 +64,36 @@ public class Error extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Error Code.
      *
-     * @return
+     * @return Error Code.
      */
     public int getErrorCode() {
         return this.errorCode;
     }
 
     /**
+     * Sets the Error Code.
      *
-     * @param errorCode
+     * @param errorCode Error Code.
      */
     public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
     }
 
     /**
+     * Gets the Error Message.
      *
-     * @return
+     * @return Error Message.
      */
     public String getErrorMessage() {
         return this.errorMessage;
     }
 
     /**
+     * Sets the Error Message.
      *
-     * @param errorMessage
+     * @param errorMessage Error Message.
      */
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;

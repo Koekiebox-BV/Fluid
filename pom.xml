@@ -19,8 +19,18 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <name>Jason Bruwer</name>
+            <email>jason@koekiebox.com</email>
+            <organization>Koekiebox</organization>
+        </developer>
+    </developers>
+
     <scm>
-        <url>https://github.com/Koekiebox-PTY-LTD/Fluid/tree/develop</url>
+        <connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
+        <developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
+        <url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
     </scm>
 
     <properties>

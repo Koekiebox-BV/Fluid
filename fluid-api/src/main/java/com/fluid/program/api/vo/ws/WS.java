@@ -18,8 +18,23 @@ package com.fluid.program.api.vo.ws;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.json.JSONObject;
+
+import com.fluid.program.api.vo.ABaseFluidVO;
+
 /**
- * Created by jasonbruwer on 14/12/21.
+ * <p>
+ *     The Mapping class used for all Fluid Representational State Transfer (REST)
+ *     JSON Based Web Services.
+ *
+ *     More can be read at:
+ *     {@code https://docs.oracle.com/javaee/6/tutorial/doc/gijqy.html}
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseFluidVO
+ * @see JSONObject
  */
 public class WS {
 
@@ -27,7 +42,7 @@ public class WS {
     public static final String CONSUMES = "application/json";
 
     /**
-     *
+     * Mapping for frequently used HTTP parameters.
      */
     public static final class QueryParam
     {
@@ -36,24 +51,29 @@ public class WS {
         public static final String ID = "id";
     }
 
-
     /**
-     *
+     * The URL (Universal Resource Locator) Path mappings for Fluid's
+     * Web Services.
      */
     public final static class Path
     {
+        /**
+         * The Version mapping for the Fluid Web Service.
+         */
         public static final class Version
         {
             public static final String VERSION_1 = "v1";
         }
 
         /**
+         * The Electronic Form (Document) Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.Form
          */
         public static final class FormContainer
         {
             /**
-             *
+             * Form Container mappings.
              */
             public static final class Version1
             {
@@ -61,14 +81,20 @@ public class WS {
                 public static final String CRUD = ("/");
 
 
+                /**
+                 * Root for Form Container.
+                 *
+                 * @return {@code /form_container}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Electronic Form create.
                  *
-                 * @return
+                 * @return {@code v1/form_container/}
                  */
                 public static final String formContainerCreate()
                 {
@@ -78,12 +104,14 @@ public class WS {
         }
 
         /**
+         * The Form Field Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.Field
          */
         public static final class FormField
         {
             /**
-             *
+             * Form Field mappings.
              */
             public static final class Version1
             {
@@ -102,15 +130,20 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
-
+                /**
+                 * Root for Form Field.
+                 *
+                 * @return {@code /form_field}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Form Field create.
                  *
-                 * @return
+                 * @return {@code /v1/form_field/}
                  */
                 public static final String formFieldCreate()
                 {
@@ -118,8 +151,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Field delete.
                  *
-                 * @return
+                 * @return {@code v1/form_field/delete} <b>without</b> force.
                  */
                 public static final String formFieldDelete()
                 {
@@ -127,8 +161,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Field delete.
                  *
-                 * @return
+                 * @return {@code v1/form_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String formFieldDelete(boolean forceDeleteParam)
                 {
@@ -141,8 +176,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Field update.
                  *
-                 * @return
+                 * @return {@code v1/form_field/update}
                  */
                 public static final String formFieldUpdate()
                 {
@@ -150,8 +186,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Field get by id.
                  *
-                 * @return
+                 * @return {@code v1/form_field/get_by_id}
                  */
                 public static final String getById()
                 {
@@ -161,12 +198,14 @@ public class WS {
         }
 
         /**
+         * The Route Field Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.Field
          */
         public static final class RouteField
         {
             /**
-             *
+             * Route Field mappings.
              */
             public static final class Version1
             {
@@ -185,35 +224,42 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
-
+                /**
+                 * Root for Route Field.
+                 *
+                 * @return {@code /route_field}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Route Field create.
                  *
-                 * @return
+                 * @return {@code /v1/route_field/}
                  */
-                public static final String formFieldCreate()
+                public static final String routeFieldCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
                 /**
+                 * URL Path for Route Field delete.
                  *
-                 * @return
+                 * @return {@code v1/route_field/delete} <b>without</b> force.
                  */
-                public static final String formFieldDelete()
+                public static final String routeFieldDelete()
                 {
-                    return formFieldDelete(false);
+                    return routeFieldDelete(false);
                 }
 
                 /**
+                 * URL Path for Route Field delete.
                  *
-                 * @return
+                 * @return {@code v1/route_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
-                public static final String formFieldDelete(boolean forceDeleteParam)
+                public static final String routeFieldDelete(boolean forceDeleteParam)
                 {
                     if(forceDeleteParam)
                     {
@@ -224,17 +270,19 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Route Field update.
                  *
-                 * @return
+                 * @return {@code v1/route_field/update}
                  */
-                public static final String formFieldUpdate()
+                public static final String routeFieldUpdate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
                 /**
+                 * URL Path for Route Field get by id.
                  *
-                 * @return
+                 * @return {@code v1/route_field/get_by_id}
                  */
                 public static final String getById()
                 {
@@ -244,12 +292,14 @@ public class WS {
         }
 
         /**
+         * The User Field Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.Field
          */
         public static final class UserField
         {
             /**
-             *
+             * User Field mappings.
              */
             public static final class Version1
             {
@@ -268,35 +318,42 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
-
+                /**
+                 * Root for User Field.
+                 *
+                 * @return {@code /user_field}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for User Field create.
                  *
-                 * @return
+                 * @return {@code /v1/user_field/}
                  */
-                public static final String formFieldCreate()
+                public static final String userFieldCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
                 /**
+                 * URL Path for User Field delete.
                  *
-                 * @return
+                 * @return {@code v1/user_field/delete} <b>without</b> force.
                  */
-                public static final String formFieldDelete()
+                public static final String userFieldDelete()
                 {
-                    return formFieldDelete(false);
+                    return userFieldDelete(false);
                 }
 
                 /**
+                 * URL Path for User Field delete.
                  *
-                 * @return
+                 * @return {@code v1/user_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
-                public static final String formFieldDelete(boolean forceDeleteParam)
+                public static final String userFieldDelete(boolean forceDeleteParam)
                 {
                     if(forceDeleteParam)
                     {
@@ -307,17 +364,19 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for User Field update.
                  *
-                 * @return
+                 * @return {@code v1/user_field/update}
                  */
-                public static final String formFieldUpdate()
+                public static final String userFieldUpdate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
                 /**
+                 * URL Path for User Field get by id.
                  *
-                 * @return
+                 * @return {@code v1/user_field/get_by_id}
                  */
                 public static final String getById()
                 {
@@ -327,12 +386,14 @@ public class WS {
         }
 
         /**
+         * The Form Definition Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.Form
          */
         public static final class FormDefinition
         {
             /**
-             *
+             * Form Definition mappings.
              */
             public static final class Version1
             {
@@ -351,15 +412,20 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
-
+                /**
+                 * Root for Form Definition.
+                 *
+                 * @return {@code /form_definition}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Form Definition create.
                  *
-                 * @return
+                 * @return {@code /v1/form_definition/}
                  */
                 public static final String formDefinitionCreate()
                 {
@@ -367,8 +433,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Definition delete.
                  *
-                 * @return
+                 * @return {@code v1/form_definition/delete} <b>without</b> force.
                  */
                 public static final String formDefinitionDelete()
                 {
@@ -376,8 +443,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Definition delete.
                  *
-                 * @return
+                 * @return {@code v1/form_definition/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String formDefinitionDelete(boolean forceDeleteParam)
                 {
@@ -390,8 +458,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for User Definition update.
                  *
-                 * @return
+                 * @return {@code v1/form_definition/update}
                  */
                 public static final String formDefinitionUpdate()
                 {
@@ -399,8 +468,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Definition get by id.
                  *
-                 * @return
+                 * @return {@code v1/form_definition/get_by_id}
                  */
                 public static final String getById()
                 {
@@ -410,12 +480,14 @@ public class WS {
         }
 
         /**
+         * The Flow Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.flow.Flow
          */
         public static final class Flow
         {
             /**
-             *
+             * Flow mappings.
              */
             public static final class Version1
             {
@@ -434,6 +506,11 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
+                /**
+                 * Root for Form Definition.
+                 *
+                 * @return {@code /flow}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
