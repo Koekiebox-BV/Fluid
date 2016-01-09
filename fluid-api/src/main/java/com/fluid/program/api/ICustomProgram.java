@@ -71,8 +71,8 @@ public interface ICustomProgram extends IActionBase {
      * @param fluidItemParam The {@code FluidItem}
      *
      * @return The Fluid {@code UserQuery} that will be executed once the {@code execute(FluidItem fluidItemParam)}
-     *         <code>method</code> has finished.
-     *         The {@code executePerFluidItemQuery} <code>method</code> will be executed
+     *         {@code method} has finished.
+     *         The {@code executePerFluidItemQuery} {@code method} will be executed
      *         for each of the {@code List<FluidItem>} items returned from the {@code execute} method.
      *         The item must be part of the Workflow to qualify.
      *
@@ -87,11 +87,11 @@ public interface ICustomProgram extends IActionBase {
      * <code>Execute Order (5)</code>
      *
      * <p>
-     * If a <code>null</code> is returned, the item will be completely ignored.
+     * If a {@code null} is returned, the item will be completely ignored.
      * No Creates or Updates will be performed.
      *
-     * @param fluidItemParam Each of the original items from <code>execute(FluidItem fluidItemParam)</code>. There is an option to set
-     *                       a parent for the Fluid item that most likely would originate from the <code>executePerFluidItemQueryResultParam</code>.
+     * @param fluidItemParam Each of the original items from {@code execute(FluidItem fluidItemParam)}. There is an option to set
+     *                       a parent for the Fluid item that most likely would originate from the {@code executePerFluidItemQueryResultParam}.
      *                       This is a way of linking incoming or existing data with existing data in Fluid.
      * @param executePerFluidItemQueryResultParam The {@code executePerFluidItemQuery(FluidItem fluidItemParam)} result. Only
      *                                            attachments can be added <code>(No updates or creation of new or existing FluidItem's)</code>.

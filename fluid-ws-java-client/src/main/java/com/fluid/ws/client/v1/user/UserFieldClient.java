@@ -65,7 +65,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -87,7 +87,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -109,7 +109,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -131,7 +131,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -161,7 +161,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -194,7 +194,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -216,7 +216,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -238,7 +238,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -260,7 +260,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldCreate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**
@@ -282,7 +282,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -304,7 +304,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -326,7 +326,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -348,7 +348,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -382,7 +382,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -416,7 +416,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -438,7 +438,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -460,7 +460,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -482,7 +482,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.UserField.Version1.formFieldUpdate()));
+                formFieldParam, WS.Path.UserField.Version1.userFieldUpdate()));
     }
 
     /**
@@ -515,7 +515,7 @@ public class UserFieldClient extends ABaseFieldClient {
             fieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        return new Field(this.postJson(fieldParam, WS.Path.UserField.Version1.formFieldDelete()));
+        return new Field(this.postJson(fieldParam, WS.Path.UserField.Version1.userFieldDelete()));
     }
 
     /**
@@ -531,7 +531,7 @@ public class UserFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                fieldParam, WS.Path.UserField.Version1.formFieldDelete(true)));
+                fieldParam, WS.Path.UserField.Version1.userFieldDelete(true)));
     }
 
 }

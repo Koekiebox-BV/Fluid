@@ -76,7 +76,7 @@ public interface ICustomScheduledAction extends IActionBase {
      * This is ideal for performing updates on a whole set of Forms such as daily calculated
      * interest rates or leave accumulated.
      *
-     * @param fluidItemsParam The <code>String fluidItemQuery()</code> result.
+     * @param fluidItemsParam The {@code String fluidItemQuery()} result.
      * @return A {@code List<FluidItem>} that may include new Fluid Items to create or update.
      * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
      */
@@ -86,10 +86,10 @@ public interface ICustomScheduledAction extends IActionBase {
      * <code>Execute Order (5)</code>
      *
      * <p>
-     * Override this <code>method</code> to make changes to Fluid users.
+     * Override this {@code method} to make changes to Fluid users.
      *
      * @param usersParam The list of users in the system.
-     * @return The updated users by the custom program. If a <code>null</code> is returned.
+     * @return The updated users by the custom program. If a {@code null} is returned.
      * The update will be ignored.
      * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
      * @see User

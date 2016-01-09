@@ -19,9 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fluid.program.api.vo.Field;
-import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.MultiChoice;
-import com.fluid.program.api.vo.ws.WS;
+import com.fluid.program.api.vo.ws.WS.Path.RouteField.Version1;
 import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseFieldClient;
 
@@ -66,7 +65,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -88,7 +87,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -110,7 +109,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -132,7 +131,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -162,7 +161,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -195,7 +194,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -217,7 +216,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -239,7 +238,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -261,7 +260,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldCreate()));
+                formFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
@@ -283,7 +282,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -305,7 +304,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -327,7 +326,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -349,7 +348,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -383,7 +382,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -417,7 +416,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -439,7 +438,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -461,7 +460,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -483,7 +482,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                formFieldParam, WS.Path.RouteField.Version1.formFieldUpdate()));
+                formFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
@@ -501,7 +500,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                flow, WS.Path.RouteField.Version1.getById()));
+                flow, Version1.getById()));
     }
 
     /**
@@ -516,7 +515,7 @@ public class RouteFieldClient extends ABaseFieldClient {
             fieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        return new Field(this.postJson(fieldParam, WS.Path.RouteField.Version1.formFieldDelete()));
+        return new Field(this.postJson(fieldParam, Version1.routeFieldDelete()));
     }
 
     /**
@@ -532,7 +531,7 @@ public class RouteFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                fieldParam, WS.Path.RouteField.Version1.formFieldDelete(true)));
+                fieldParam, Version1.routeFieldDelete(true)));
     }
 
 }

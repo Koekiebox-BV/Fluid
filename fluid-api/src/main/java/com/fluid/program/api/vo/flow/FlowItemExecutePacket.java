@@ -28,7 +28,7 @@ import com.fluid.program.api.vo.FluidItem;
  * </p>
  *
  * <p>
- *     Purely used to <code>compile</code> and <code>execute</code> a
+ *     Purely used to {@code compile} and {@code execute} a
  *     Fluid Rule against a {@code FluidItem} in realtime.
  * </p>
  *

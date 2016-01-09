@@ -34,6 +34,9 @@
     </scm>
 
     <properties>
+        <!--Fluid Versions-->
+        <version.fluid-api>1.0</version.fluid-api>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.compiler.plugin>2.3.2</version.compiler.plugin>
         <version.surefire.plugin>2.4.3</version.surefire.plugin>
@@ -87,6 +90,14 @@
     <!--Dependencies-->
     <dependencyManagement>
         <dependencies>
+            <!--Fluid Dependencies-->
+            <dependency>
+                <groupId>com.fluid</groupId>
+                <artifactId>fluid-api</artifactId>
+                <scope>provided</scope>
+                <version>${version.fluid-api}</version>
+            </dependency>
+
             <!--JUnit-->
             <dependency>
                 <groupId>junit</groupId>

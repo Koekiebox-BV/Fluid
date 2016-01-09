@@ -80,7 +80,7 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
-     * Additional properties for {@code this} <code>FluidItem</code>.
+     * Additional properties for {@code this} {@code FluidItem}.
      */
     public static class FluidItemProperty extends ABaseFluidJSONObject
     {
