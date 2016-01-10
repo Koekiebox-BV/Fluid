@@ -21,9 +21,17 @@ import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
-
 /**
- * Created by jasonbruwer on 14/12/22.
+ * Authorization request token data.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseFluidJSONObject
+ * @see TokenStatus
+ * @see AuthRequest
+ * @see AuthResponse
+ * @see AuthEncryptedData
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AppRequestToken extends ABaseFluidJSONObject {
@@ -56,7 +64,7 @@ public class AppRequestToken extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public AppRequestToken() {
         super();
@@ -117,131 +125,147 @@ public class AppRequestToken extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Principal Client.
      *
-     * @return
+     * @return Principal Client.
      */
     public String getPrincipalClient() {
         return this.principalClient;
     }
 
     /**
+     * Sets the Principal Client.
      *
-     * @param principalClient
+     * @param principalClient Principal Client.
      */
     public void setPrincipalClient(String principalClient) {
         this.principalClient = principalClient;
     }
 
     /**
+     * Gets the Timestamp.
      *
-     * @return
+     * @return The timestamp milliseconds since January 1, 1970, 00:00:00 GMT
      */
     public Long getTimestamp() {
         return this.timestamp;
     }
 
     /**
+     * Sets the Timestamp.
      *
-     * @param timestamp
+     * @param timestamp The timestamp milliseconds since January 1, 1970, 00:00:00 GMT
      */
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
     /**
+     * Gets the EncryptedData in Base64.
      *
-     * @return
+     * @return EncryptedData in Base64.
      */
     public String getEncryptedDataBase64() {
         return this.encryptedDataBase64;
     }
 
     /**
+     * Sets the EncryptedData in Base64.
      *
-     * @param encryptedDataBase64
+     * @param encryptedDataBase64 EncryptedData in Base64.
      */
     public void setEncryptedDataBase64(String encryptedDataBase64) {
         this.encryptedDataBase64 = encryptedDataBase64;
     }
 
     /**
+     * Gets the EncryptedData for HMAC in Base64.
      *
-     * @return
+     * @return Encrypted Data in Hmac Base64.
      */
     public String getEncryptedDataHmacBase64() {
         return this.encryptedDataHmacBase64;
     }
 
     /**
+     * Sets the EncryptedData for HMAC in Base64.
      *
-     * @param encryptedDataHmacBase64
+     * @param encryptedDataHmacBase64 Encrypted Data in Hmac Base64.
      */
     public void setEncryptedDataHmacBase64(String encryptedDataHmacBase64) {
         this.encryptedDataHmacBase64 = encryptedDataHmacBase64;
     }
 
     /**
+     * Gets the Initialization Vector in Base-64.
      *
-     * @return
+     * @return Initialization Vector in Base-64 format.
      */
     public String getIvBase64() {
         return this.ivBase64;
     }
 
     /**
+     * Sets the Initialization Vector in Base-64.
      *
-     * @param ivBase64
+     * @param ivBase64Param Initialization Vector in Base-64 format.
      */
-    public void setIvBase64(String ivBase64) {
-        this.ivBase64 = ivBase64;
+    public void setIvBase64(String ivBase64Param) {
+        this.ivBase64 = ivBase64Param;
     }
 
     /**
+     * Gets the SEED in Base-64 format.
      *
-     * @return
+     * @return SEED in Base-64 format.
      */
     public String getSeedBase64() {
         return this.seedBase64;
     }
 
     /**
+     * Sets the SEED in Base-64 format.
      *
-     * @param seedBase64
+     * @param seedBase64 SEED in Base-64 format.
      */
     public void setSeedBase64(String seedBase64) {
         this.seedBase64 = seedBase64;
     }
 
     /**
+     * Gets 20 Random ASCII {@code Character}s
      *
-     * @return
+     * @return 20 Random ASCII {@code Character}s paired with the {@code User} password.
      */
     public String getSalt() {
         return this.salt;
     }
 
     /**
+     * Sets 20 Random ASCII {@code Character}s
      *
-     * @param saltParam
+     * @param saltParam 20 Random ASCII {@code Character}s paired with the {@code User} password.
      */
     public void setSalt(String saltParam) {
         this.salt = saltParam;
     }
 
     /**
+     * Gets the role listing separated by ','.
      *
-     * @return
+     * @return List of roles.
      */
     public String getRoleString() {
         return this.roleString;
     }
 
     /**
+     * Sets the role listing separated by ','.
      *
-     * @param roleString
+     * @param roleStringParam List of roles.
      */
-    public void setRoleString(String roleString) {
-        this.roleString = roleString;
+    public void setRoleString(String roleStringParam) {
+        this.roleString = roleStringParam;
     }
 
     /**

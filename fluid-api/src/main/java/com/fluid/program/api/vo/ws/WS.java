@@ -507,9 +507,9 @@ public class WS {
                 public static final String READ = ("/get_by_id");
 
                 /**
-                 * Root for Form Definition.
+                 * Root for Flow.
                  *
-                 * @return {@code /flow}
+                 * @return {@code /flow/}
                  */
                 @Override
                 public String toString() {
@@ -517,8 +517,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow create.
                  *
-                 * @return
+                 * @return {@code /v1/flow/}
                  */
                 public static final String flowCreate()
                 {
@@ -526,8 +527,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow delete.
                  *
-                 * @return
+                 * @return {@code v1/flow/delete} <b>without</b> force.
                  */
                 public static final String flowDelete()
                 {
@@ -535,8 +537,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Definition delete.
                  *
-                 * @return
+                 * @return {@code v1/flow/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String flowDelete(boolean forceDeleteParam)
                 {
@@ -549,8 +552,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow update.
                  *
-                 * @return
+                 * @return {@code v1/flow/update}
                  */
                 public static final String flowUpdate()
                 {
@@ -558,8 +562,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow get by id.
                  *
-                 * @return
+                 * @return {@code v1/flow/get_by_id}
                  */
                 public static final String getById()
                 {
@@ -569,12 +574,14 @@ public class WS {
         }
 
         /**
+         * The Flow Step Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.flow.FlowStep
          */
         public static final class FlowStep
         {
             /**
-             *
+             * Flow Step mappings.
              */
             public static final class Version1
             {
@@ -593,14 +600,20 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
+                /**
+                 * Root for Flow Step.
+                 *
+                 * @return {@code /flow_step/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Flow Step create.
                  *
-                 * @return
+                 * @return {@code /v1/flow_step/}
                  */
                 public static final String flowStepCreate()
                 {
@@ -608,8 +621,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step delete.
                  *
-                 * @return
+                 * @return {@code v1/flow_step/delete} <b>without</b> force.
                  */
                 public static final String flowStepDelete()
                 {
@@ -617,8 +631,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step delete.
                  *
-                 * @return
+                 * @return {@code v1/flow_step/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String flowStepDelete(boolean forceDeleteParam)
                 {
@@ -631,8 +646,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step update.
                  *
-                 * @return
+                 * @return {@code v1/flow_step/update}
                  */
                 public static final String flowStepUpdate()
                 {
@@ -640,8 +656,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step get by id.
                  *
-                 * @return
+                 * @return {@code v1/flow_step/get_by_id}
                  */
                 public static final String getById()
                 {
@@ -651,12 +668,14 @@ public class WS {
         }
 
         /**
+         * The Flow Step Rule Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.flow.FlowStepRule
          */
         public static final class FlowStepRule
         {
             /**
-             *
+             * Flow Step Rule mappings.
              */
             public static final class Version1
             {
@@ -683,14 +702,20 @@ public class WS {
                 public static final String GET_NEXT_VALID_SYNTAX = ("/get_next_valid_syntax");
                 public static final String COMPILE_SYNTAX_AND_EXECUTE = ("/compile_syntax_and_execute");
 
+                /**
+                 * Root for Flow Step Rule.
+                 *
+                 * @return {@code /flow_step_rule/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Flow Step Entry Rule create.
                  *
-                 * @return
+                 * @return {@code /v1/flow_step_rule/entry}
                  */
                 public static final String flowStepRuleEntryCreate()
                 {
@@ -698,8 +723,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Exit Rule create.
                  *
-                 * @return
+                 * @return {@code /v1/flow_step_rule/exit}
                  */
                 public static final String flowStepRuleExitCreate()
                 {
@@ -707,8 +733,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step View Rule create.
                  *
-                 * @return
+                 * @return {@code /v1/flow_step_rule/view}
                  */
                 public static final String flowStepRuleViewCreate()
                 {
@@ -716,8 +743,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry rule delete.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/delete} <b>without</b> force.
                  */
                 public static final String flowStepRuleDeleteEntry()
                 {
@@ -725,8 +753,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Exit rule delete.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/exit/delete} <b>without</b> force.
                  */
                 public static final String flowStepRuleDeleteExit()
                 {
@@ -734,8 +763,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step View rule delete.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/view/delete} <b>without</b> force.
                  */
                 public static final String flowStepRuleDeleteView()
                 {
@@ -743,8 +773,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry update.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/update}
                  */
                 public static final String flowStepRuleUpdateEntry()
                 {
@@ -752,8 +783,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry move up (Order).
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/move_up}
                  */
                 public static final String flowStepRuleMoveEntryUp()
                 {
@@ -761,8 +793,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry move down (Order).
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/move_down}
                  */
                 public static final String flowStepRuleMoveEntryDown()
                 {
@@ -770,8 +803,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Exit update.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/exit/update}
                  */
                 public static final String flowStepRuleUpdateExit()
                 {
@@ -779,8 +813,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step View update.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/view/update}
                  */
                 public static final String flowStepRuleUpdateView()
                 {
@@ -788,8 +823,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry get by id.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/get_by_id}
                  */
                 public static final String getEntryById()
                 {
@@ -797,8 +833,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry get next valid syntax.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/get_next_valid_syntax}
                  */
                 public static final String getNextValidEntrySyntax()
                 {
@@ -806,8 +843,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry {@code compile} syntax.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/compile_syntax}
                  */
                 public static final String compileEntrySyntax()
                 {
@@ -815,8 +853,10 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Entry {@code compile} syntax and then
+                 * {@code execute}.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/entry/compile_syntax_and_execute}
                  */
                 public static final String compileSyntaxAndExecute()
                 {
@@ -824,8 +864,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Exit get by id.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/exit/get_by_id}
                  */
                 public static final String getExitById()
                 {
@@ -833,8 +874,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Exit get next valid syntax.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/exit/get_next_valid_syntax}
                  */
                 public static final String getNextValidExitSyntax()
                 {
@@ -842,8 +884,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step Exit {@code compile} syntax.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/exit/compile_syntax}
                  */
                 public static final String compileExitSyntax()
                 {
@@ -851,8 +894,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step View get by id.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/view/get_by_id}
                  */
                 public static final String getViewById()
                 {
@@ -860,8 +904,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step View get next valid syntax.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/view/get_next_valid_syntax}
                  */
                 public static final String getNextValidViewSyntax()
                 {
@@ -869,8 +914,9 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Flow Step View {@code compile} syntax.
                  *
-                 * @return
+                 * @return {@code v1/flow_step_rule/view/compile_syntax}
                  */
                 public static final String compileViewSyntax()
                 {
@@ -880,27 +926,34 @@ public class WS {
         }
 
         /**
+         * The Fluid Item Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.FluidItem
          */
         public static final class FlowItem
         {
             /**
-             *
+             * Flow Item mappings.
              */
             public static final class Version1
             {
                 public static final String ROOT = ("/flow_item");
                 public static final String CREATE = ("/");
 
-
+                /**
+                 * Root for Flow / Fluid Item.
+                 *
+                 * @return {@code /flow_item/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Flow Item create.
                  *
-                 * @return
+                 * @return {@code /v1/flow_item/}
                  */
                 public static final String flowItemCreate()
                 {
@@ -910,12 +963,14 @@ public class WS {
         }
 
         /**
+         * The Fluid Item History Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.FormFlowHistoricData
          */
         public static final class FlowItemHistory
         {
             /**
-             *
+             * Flow Item History mappings.
              */
             public static final class Version1
             {
@@ -924,14 +979,21 @@ public class WS {
                 //Read...
                 public static final String BY_FORM_CONTAINER = ("/get_by_form_container");
 
+                /**
+                 * Root for Flow / Fluid Item History.
+                 *
+                 * @return {@code /flow_item_history/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * URL Path for Form Container Flow History by
+                 * Form Container.
                  *
-                 * @return
+                 * @return {@code v1/flow_item_history/get_by_form_container}
                  */
                 public static final String getByFormContainer()
                 {
@@ -941,26 +1003,32 @@ public class WS {
         }
 
         /**
-         *
+         * The Test Web Service mappings.
          */
         public static final class Test
         {
             /**
-             *
+             * Test mappings.
              */
             public static final class Version1
             {
                 public static final String ROOT = ("/test");
                 public static final String TEST = ("/");
 
+                /**
+                 * Root for Test.
+                 *
+                 * @return {@code /test/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * Test the connection to the Fluid server.
                  *
-                 * @return
+                 * @return {@code v1/test/}
                  */
                 public static final String testConnection()
                 {
@@ -970,12 +1038,14 @@ public class WS {
         }
 
         /**
+         * The User Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.User
          */
         public static final class User
         {
             /**
-             *
+             * User mappings.
              */
             public static final class Version1
             {
@@ -986,20 +1056,32 @@ public class WS {
                 public static final String TOKEN_STATUS = "/token_status";
                 public static final String INFORMATION = "/info";
 
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
                 public static final class QueryParam
                 {
                     public static final String USERNAME = "username";
                 }
 
-
+                /**
+                 * Root for User.
+                 *
+                 * @return {@code /user/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * Root for User initialise session.
                  *
-                 * @return
+                 * @return {@code /user/init}
+                 *
+                 * @see com.fluid.program.api.vo.auth0.AccessToken
+                 * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
+                 * @see com.fluid.program.api.vo.User
                  */
                 public static final String userInitSession()
                 {
@@ -1007,8 +1089,13 @@ public class WS {
                 }
 
                 /**
+                 * Root for User issuing token.
                  *
-                 * @return
+                 * @return {@code /user/issue_token}
+                 *
+                 * @see com.fluid.program.api.vo.auth0.AccessToken
+                 * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
+                 * @see com.fluid.program.api.vo.User
                  */
                 public static final String userIssueToken()
                 {
@@ -1016,8 +1103,13 @@ public class WS {
                 }
 
                 /**
+                 * Root for User token status.
                  *
-                 * @return
+                 * @return {@code /user/token_status}
+                 *
+                 * @see com.fluid.program.api.vo.auth0.AccessToken
+                 * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
+                 * @see com.fluid.program.api.vo.User
                  */
                 public static final String userTokenStatus()
                 {
@@ -1025,8 +1117,13 @@ public class WS {
                 }
 
                 /**
+                 * Root for User information.
                  *
-                 * @return
+                 * @return {@code /user/info}
+                 *
+                 * @see com.fluid.program.api.vo.auth0.AccessToken
+                 * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
+                 * @see com.fluid.program.api.vo.User
                  */
                 public static final String userInformation()
                 {
@@ -1036,10 +1133,17 @@ public class WS {
         }
 
         /**
+         * The Auth0 Web Service mappings.
          *
+         * @see com.fluid.program.api.vo.auth0.AccessToken
+         * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
+         * @see com.fluid.program.api.vo.User
          */
         public static final class Auth0
         {
+            /**
+             * Auth0 mappings.
+             */
             public static final class Version1
             {
                 public static final String ROOT = ("/oauth");
@@ -1047,20 +1151,32 @@ public class WS {
                 public static final String TOKEN = "/token";
                 public static final String USER_INFO = "/userinfo/?access_token=";
 
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
                 public static final class QueryParam
                 {
                     public static final String USERNAME = "username";
                 }
 
-
+                /**
+                 * Root for 0Auth.
+                 *
+                 * @return {@code /oauth/}
+                 */
                 @Override
                 public String toString() {
                     return ROOT;
                 }
 
                 /**
+                 * Root for User token.
                  *
-                 * @return
+                 * @return {@code /oath/token}
+                 *
+                 * @see com.fluid.program.api.vo.auth0.AccessToken
+                 * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
+                 * @see com.fluid.program.api.vo.User
                  */
                 public static final String userToken()
                 {
@@ -1068,10 +1184,13 @@ public class WS {
                 }
 
                 /**
+                 * Used to get {@code User} information via the
+                 * {@code accessTokenValueParam}.
                  *
-                 * @param accessTokenValueParam
-                 * @return
-                 * @throws UnsupportedEncodingException
+                 * @param accessTokenValueParam The access token to get user
+                 *                              information from.
+                 * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
+                 * @throws UnsupportedEncodingException When UTF-8 is not supported.
                  */
                 public static final String userInfo(String accessTokenValueParam)
                 throws UnsupportedEncodingException
@@ -1088,5 +1207,4 @@ public class WS {
             }
         }
     }
-
 }

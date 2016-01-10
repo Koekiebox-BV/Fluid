@@ -20,7 +20,14 @@ import java.util.Date;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
- * Created by jasonbruwer on 14/12/22.
+ * Status of a previously issued authentication token.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseFluidJSONObject
+ * @see ServiceTicket
+ * @see AppRequestToken
  */
 public class TokenStatus extends ABaseFluidJSONObject {
 
@@ -28,48 +35,53 @@ public class TokenStatus extends ABaseFluidJSONObject {
     private String tokenMessage;
 
     /**
-     *
+     * Default constructor.
      */
     public TokenStatus() {
         super();
     }
 
-
     /**
+     * Gets the Expiration time in millis.
      *
-     * @return
+     * @return Expiration Time.
      */
     public Long getExpirationTime() {
         return this.expirationTime;
     }
 
     /**
+     * Sets the Expiration time in millis.
      *
-     * @param expirationTime
+     * @param expirationTime The expiration time.
      */
     public void setExpirationTime(Long expirationTime) {
         this.expirationTime = expirationTime;
     }
 
     /**
+     * Gets the token message.
      *
-     * @return
+     * @return The token message.
      */
     public String getTokenMessage() {
         return this.tokenMessage;
     }
 
     /**
+     * Sets the token message.
      *
-     * @param tokenMessage
+     * @param tokenMessage The token message to set.
      */
     public void setTokenMessage(String tokenMessage) {
         this.tokenMessage = tokenMessage;
     }
 
     /**
+     * Check the {@code getExpirationTime} to confirm whether
+     * the ticket has expired.
      *
-     * @return
+     * @return Whether the ticket has expired.
      */
     public boolean isExpired()
     {

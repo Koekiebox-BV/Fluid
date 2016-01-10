@@ -21,7 +21,17 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
- * Created by jasonbruwer on 14/12/30.
+ * Authorization encrypted data.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseFluidJSONObject
+ * @see TokenStatus
+ * @see AppRequestToken
+ * @see AuthRequest
+ * @see AuthResponse
+ * @see AuthEncryptedData
  */
 public class AuthEncryptedData extends ABaseFluidJSONObject {
 
@@ -29,6 +39,9 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
     private Long ticketExpires;
     private String roleListing;
 
+    /**
+     * The JSON mapping for the {@code AuthEncryptedData} object.
+     */
     public static final class JsonStructure {
         public static final String ROLE_LISTING = "roleListing";
         public static final String TICKET_EXPIRES = "ticketExpiration";
@@ -36,7 +49,7 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public AuthEncryptedData() {
         super();
@@ -67,49 +80,54 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets when the ticket expires.
      *
-     * @return
+     * @return The time the ticket expires.
      */
     public Long getTicketExpires() {
         return this.ticketExpires;
     }
 
     /**
+     * Sets when the ticket expires.
      *
-     *
-     * @param ticketExpirationParam
+     * @param ticketExpirationParam The time the ticket expires.
      */
     public void setTicketExpires(Long ticketExpirationParam) {
         this.ticketExpires = ticketExpirationParam;
     }
 
     /**
+     * Gets the Session Key in Base-64 format.
      *
-     * @return
+     * @return Session Key.
      */
     public String getSessionKeyBase64() {
         return this.sessionKeyBase64;
     }
 
     /**
+     * Sets the Session Key in Base-64 format.
      *
-     * @param sessionKeyBase64
+     * @param sessionKeyBase64Param Session Key.
      */
-    public void setSessionKeyBase64(String sessionKeyBase64) {
-        this.sessionKeyBase64 = sessionKeyBase64;
+    public void setSessionKeyBase64(String sessionKeyBase64Param) {
+        this.sessionKeyBase64 = sessionKeyBase64Param;
     }
 
     /**
+     * Gets the role listing separated by ','.
      *
-     * @return
+     * @return List of roles.
      */
     public String getRoleListing() {
         return this.roleListing;
     }
 
     /**
+     * Sets the role listing separated by ','.
      *
-     * @param roleListingParam
+     * @param roleListingParam List of roles.
      */
     public void setRoleListing(String roleListingParam) {
         this.roleListing = roleListingParam;

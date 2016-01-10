@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>fluid-root</artifactId>
         <groupId>com.fluid</groupId>
+        <artifactId>fluid-root</artifactId>
         <version>1.0</version>
     </parent>
 

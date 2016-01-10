@@ -22,7 +22,16 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
- * Created by jasonbruwer on 14/12/22.
+ * Request object for authorization.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseFluidJSONObject
+ * @see TokenStatus
+ * @see AppRequestToken
+ * @see AuthResponse
+ * @see AuthEncryptedData
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthRequest extends ABaseFluidJSONObject {
@@ -39,35 +48,43 @@ public class AuthRequest extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Username used for the Authorization request.
      *
-     * @return
+     * @return Username for user authenticating.
      */
     public String getUsername() {
         return this.username;
     }
 
     /**
+     * Sets the Username used for the Authorization request.
      *
-     * @param username
+     * @param username Username for user authenticating.
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
+     * Gets requested lifetime of the user session.
      *
-     * @return
+     * The provided lifetime is not guaranteed.
+     *
+     * @return Lifetime of the session.
      */
     public Long getLifetime() {
         return this.lifetime;
     }
 
     /**
+     * Sets requested lifetime of the user session.
      *
-     * @param lifetime
+     * The provided {@code lifetimeParam} is not guaranteed.
+     *
+     * @param lifetimeParam The duration of the session in milllis.
      */
-    public void setLifetime(Long lifetime) {
-        this.lifetime = lifetime;
+    public void setLifetime(Long lifetimeParam) {
+        this.lifetime = lifetimeParam;
     }
 
     /**
