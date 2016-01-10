@@ -23,14 +23,22 @@ import java.sql.SQLException;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * Base class used for SQL Type operations in Fluid.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Connection
+ * @see javax.sql.DataSource
+ * @see PreparedStatement
+ * @see java.sql.Statement
  */
 public abstract class ABaseSQLUtil {
 
     private Connection connection;
 
     /**
-     *
+     * The type of SQL Database engine.
      */
     public static enum SQLType{
         Unknown(""),
@@ -40,8 +48,9 @@ public abstract class ABaseSQLUtil {
         private String productName;
 
         /**
+         * The Database product name.
          *
-         * @param productNameLowerParam
+         * @param productNameLowerParam Product name in lower case.
          */
         SQLType(String productNameLowerParam)
         {
@@ -49,9 +58,10 @@ public abstract class ABaseSQLUtil {
         }
 
         /**
+         * Get {@code SQLType} by {@code productNameParam}
          *
-         * @param productNameParam
-         * @return
+         * @param productNameParam Product Name.
+         * @return {@code enum} for SQL Type.
          */
         public static SQLType getSQLTypeFromProductName(String productNameParam)
         {
@@ -75,8 +85,9 @@ public abstract class ABaseSQLUtil {
     }
 
     /**
+     * The SQL Connection.
      *
-     * @param connectionParam
+     * @param connectionParam Connection used.
      */
     public ABaseSQLUtil(Connection connectionParam)
     {
@@ -84,7 +95,7 @@ public abstract class ABaseSQLUtil {
     }
 
     /**
-     *
+     * Close the SQL Connection.
      */
     public void closeConnection()
     {
@@ -109,11 +120,10 @@ public abstract class ABaseSQLUtil {
         }
     }
 
-
-
     /**
+     * Retrieves SQLType from the local {@code Connection}.
      *
-     * @return
+     * @return The {@code SQLType} from the {@code Connection}.
      */
     public SQLType getSQLTypeFromConnection()
     {
@@ -130,7 +140,9 @@ public abstract class ABaseSQLUtil {
     }
 
     /**
-     * @return
+     * Gets the local {@code Connection}.
+     *
+     * @return local Connection.
      */
     public Connection getConnection()
     {
@@ -144,9 +156,13 @@ public abstract class ABaseSQLUtil {
     }
 
     /**
+     * Closes the {@code preparedStatementParam} and {@code resultSetParam}.
      *
-     * @param preparedStatementParam
-     * @param resultSetParam
+     * @param preparedStatementParam The SQL Prepared Statement.
+     * @param resultSetParam The SQL ResultSet.
+     *
+     * @see PreparedStatement
+     * @see ResultSet
      */
     protected void closeStatement(PreparedStatement preparedStatementParam,
                                   ResultSet resultSetParam)
@@ -168,8 +184,11 @@ public abstract class ABaseSQLUtil {
     }
 
     /**
+     * Closes the {@code preparedStatementParam}.
      *
-     * @param preparedStatementParam
+     * @param preparedStatementParam The SQL Prepared Statement.
+     *
+     * @see PreparedStatement
      */
     protected void closeStatement(PreparedStatement preparedStatementParam)
     {

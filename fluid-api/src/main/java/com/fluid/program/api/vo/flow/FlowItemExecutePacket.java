@@ -25,12 +25,10 @@ import com.fluid.program.api.vo.FluidItem;
  * <p>
  *     Container <code>POJO</code> used to contain
  *     the {@code FluidItem} and {@code FlowStepRule}.
- * </p>
  *
  * <p>
  *     Purely used to {@code compile} and {@code execute} a
  *     Fluid Rule against a {@code FluidItem} in realtime.
- * </p>
  *
  * @author jasonbruwer
  * @since v1.0
@@ -52,7 +50,7 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public FlowItemExecutePacket() {
         super();
@@ -117,32 +115,44 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the rule to execute.
      *
-     * @return
+     * @return Rule to execute.
+     *
+     * @see FlowStepRule
      */
     public FlowStepRule getFlowStepRule() {
         return this.flowStepRule;
     }
 
     /**
+     * Sets the rule to execute.
      *
-     * @param flowStepRuleParam
+     * @param flowStepRuleParam Rule to execute.
+     *
+     * @see FlowStepRule
      */
     public void setFlowStepRule(FlowStepRule flowStepRuleParam) {
         this.flowStepRule = flowStepRuleParam;
     }
 
     /**
+     * Gets the Fluid item.
      *
-     * @return
+     * @return Fluid item.
+     *
+     * @see FluidItem
      */
     public FluidItem getFluidItem() {
         return this.fluidItem;
     }
 
     /**
+     * Sets the Fluid item.
      *
-     * @param fluidItemParam
+     * @param fluidItemParam Fluid item.
+     *
+     * @see FluidItem
      */
     public void setFluidItem(FluidItem fluidItemParam) {
         this.fluidItem = fluidItemParam;

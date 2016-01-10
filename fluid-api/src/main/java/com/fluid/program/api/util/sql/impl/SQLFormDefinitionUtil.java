@@ -25,15 +25,23 @@ import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 import com.fluid.program.api.util.sql.syntax.ISyntax;
 import com.fluid.program.api.util.sql.syntax.SyntaxFactory;
+import com.fluid.program.api.vo.Form;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * SQL Utility class used for {@code Form} Definition related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseSQLUtil
+ * @see Form
  */
 public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 
     /**
+     * New FormDefinition util instance using {@code connectionParam}.
      *
-     * @param connectionParam
+     * @param connectionParam SQL Connection to use for Fields.
      */
     public SQLFormDefinitionUtil(Connection connectionParam) {
         super(connectionParam);
@@ -41,8 +49,10 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 
 
     /**
+     * Retrieves the Form Definition and Title mapping
+     * currently stored in Fluid.
      *
-     * @return
+     * @return Form Definition Id and Title.
      */
     public Map<Long,String> getFormDefinitionIdAndTitle()
     {
@@ -82,5 +92,4 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 
         return returnVal;
     }
-
 }

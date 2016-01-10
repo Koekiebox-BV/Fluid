@@ -26,11 +26,14 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * Fluid workflow Step that belongs to a Flow.
+ *
  * @author jasonbruwer
- * @since 2014-07-01
+ * @since v1.0
  *
- * Represents a step in the <code>Flow</code> process.
- *
+ * @see Flow
+ * @see FlowStepRule
+ * @see ABaseFluidJSONObject
  */
 public class FlowStep extends ABaseFluidJSONObject {
 
@@ -123,16 +126,17 @@ public class FlowStep extends ABaseFluidJSONObject {
         }
 
         /**
-         *
+         * Default constructor.
          */
         public StepProperty() {
             super();
         }
 
         /**
+         * Sets a step property name and value.
          *
-         * @param nameParam
-         * @param valueParam
+         * @param nameParam The property name.
+         * @param valueParam The property value.
          */
         public StepProperty(String nameParam, String valueParam) {
 
@@ -165,32 +169,36 @@ public class FlowStep extends ABaseFluidJSONObject {
         }
 
         /**
+         * Name of the Step property.
          *
-         * @return
+         * @return Step Property Name.
          */
         public String getName() {
             return this.name;
         }
 
         /**
+         * Name of the Step property.
          *
-         * @param nameParam
+         * @param nameParam Step Property Name.
          */
         public void setName(String nameParam) {
             this.name = nameParam;
         }
 
         /**
+         * Value of the Step property.
          *
-         * @return
+         * @return Step Property Value.
          */
         public String getValue() {
             return this.value;
         }
 
         /**
+         * Value of the Step property.
          *
-         * @param valueParam
+         * @param valueParam Step Property Value.
          */
         public void setValue(String valueParam) {
             this.value = valueParam;
@@ -226,15 +234,16 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
-	 *
+	 * Default constructor.
 	 */
     public FlowStep() {
         super();
     }
 
     /**
+     * Unique identifier of the Flow Step.
      *
-     * @param flowStepIdParam
+     * @param flowStepIdParam Flow Step Primary key.
      */
     public FlowStep(Long flowStepIdParam) {
         super();
@@ -344,9 +353,11 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the property value of the step with
+     * property name {@code nameParam}.
      *
-     * @param nameParam
-     * @param valueParam
+     * @param nameParam The property name.
+     * @param valueParam The property value.
      */
     public void setStepProperty(
             String nameParam, String valueParam)
@@ -381,9 +392,10 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the step property with name {@code nameParam}
      *
-     * @param nameParam
-     * @return
+     * @param nameParam The property to retrieve.
+     * @return Value of the property with name {@code nameParam}.
      */
     public String getStepProperty(String nameParam)
     {
@@ -517,160 +529,196 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets Name of the step.
      *
-     * @return
+     * @return Step name.
      */
     public String getName() {
         return this.name;
     }
 
     /**
+     * Sets Name of the step.
      * 
-     * @param nameParam
+     * @param nameParam Step name.
      */
     public void setName(String nameParam) {
         this.name = nameParam;
     }
 
     /**
+     * Gets Description of the step.
      *
-     * @return
+     * @return Step description.
      */
     public String getDescription() {
         return this.description;
     }
 
     /**
+     * Sets Description of the step.
      *
-     * @param descriptionParam
+     * @param descriptionParam Step description.
      */
     public void setDescription(String descriptionParam) {
         this.description = descriptionParam;
     }
 
     /**
+     * Gets the  date Step was created.
      *
-     * @return
+     * @return Step Creation Timestamp.
+     *
+     * @see Date
      */
     public Date getDateCreated() {
         return this.dateCreated;
     }
 
     /**
+     * Sets the date Step was created.
      *
-     * @param dateCreatedParam
+     * @param dateCreatedParam Step Creation Timestamp.
+     *
+     * @see Date
      */
     public void setDateCreated(Date dateCreatedParam) {
         this.dateCreated = dateCreatedParam;
     }
 
     /**
+     * Gets the date Step was last updated.
      *
-     * @return
+     * @return Step last Update Timestamp.
+     *
+     * @see Date
      */
     public Date getDateLastUpdated() {
         return this.dateLastUpdated;
     }
 
     /**
+     * Sets the date Step was last updated.
      *
-     * @param dateLastUpdatedParam
+     * @param dateLastUpdatedParam Step last Update Timestamp.
+     *
+     * @see Date
      */
     public void setDateLastUpdated(Date dateLastUpdatedParam) {
         this.dateLastUpdated = dateLastUpdatedParam;
     }
 
     /**
+     * Gets the Flow associated with the step.
      *
-     * @return
+     * @return Flow for the Step.
      */
     public Flow getFlow() {
         return this.flow;
     }
 
     /**
+     * Sets the Flow associated with the step.
      *
-     * @param flowParam
+     * @param flowParam Flow for the Step.
      */
     public void setFlow(Flow flowParam) {
         this.flow = flowParam;
     }
 
     /**
+     * Gets the type of Step.
      *
-     * @return
+     * @return Text version of Flow Step type.
+     *
+     * @see StepType
      */
     public String getFlowStepType() {
         return this.flowStepType;
     }
 
     /**
+     * Sets the type of Step.
      *
-     * @param flowStepTypeParam
+     * @param flowStepTypeParam Text version of Flow Step type.
+     *
+     * @see StepType
      */
     public void setFlowStepType(String flowStepTypeParam) {
         this.flowStepType = flowStepTypeParam;
     }
 
     /**
+     * Gets the Entry Rules associated with {@code this} Step.
      *
-     * @return
+     * @return Entry rules for {@code this} Step.
      */
     public List<FlowStepRule> getEntryRules() {
         return this.entryRules;
     }
 
     /**
+     * Sets the Entry Rules associated with {@code this} Step.
      *
-     * @param entryRulesParam
+     * @param entryRulesParam Entry rules for {@code this} Step.
      */
     public void setEntryRules(List<FlowStepRule> entryRulesParam) {
         this.entryRules = entryRulesParam;
     }
 
     /**
+     * Gets the Exit Rules associated with {@code this} Step.
      *
-     * @return
+     * @return Exit rules for {@code this} Step.
      */
     public List<FlowStepRule> getExitRules() {
         return this.exitRules;
     }
 
     /**
+     * Sets the Exit Rules associated with {@code this} Step.
      *
-     * @param exitRulesParam
+     * @param exitRulesParam Exit rules for {@code this} Step.
      */
     public void setExitRules(List<FlowStepRule> exitRulesParam) {
         this.exitRules = exitRulesParam;
     }
 
     /**
+     * Gets the View Rules associated with {@code this} Step.
      *
-     * @return
+     * @return View rules for {@code this} Step.
      */
     public List<FlowStepRule> getViewRules() {
         return this.viewRules;
     }
 
     /**
+     * Sets the View Rules associated with {@code this} Step.
      *
-     * @param viewRulesParam
+     * @param viewRulesParam View rules for {@code this} Step.
      */
     public void setViewRules(List<FlowStepRule> viewRulesParam) {
         this.viewRules = viewRulesParam;
     }
 
     /**
+     * Gets the Step Properties.
      *
-     * @return
+     * @return Step Properties.
+     *
+     * @see StepProperty
      */
     public List<StepProperty> getStepProperties() {
         return this.stepProperties;
     }
 
     /**
+     * Sets the Step Properties.
      *
-     * @param stepPropertiesParam
+     * @param stepPropertiesParam Step Properties.
+     *
+     * @see StepProperty
      */
     public void setStepProperties(List<StepProperty> stepPropertiesParam) {
         this.stepProperties = stepPropertiesParam;

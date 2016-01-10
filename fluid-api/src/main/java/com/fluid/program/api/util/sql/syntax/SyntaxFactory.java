@@ -15,6 +15,8 @@
 
 package com.fluid.program.api.util.sql.syntax;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
@@ -23,13 +25,24 @@ import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluid.program.api.util.sql.syntax.impl.StoredProcedureSyntax;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * Factory class used to construct SQL stored procedures.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Connection
+ * @see javax.sql.DataSource
+ * @see PreparedStatement
+ * @see java.sql.Statement
  */
 public class SyntaxFactory {
     private static SyntaxFactory syntaxFactory;
 
+    public static final String PLAIN = "Plain";
+    public static final String SELECT_MANY = "Select Many";
+
     /**
-     *
+     * Default constructor.
      */
     private SyntaxFactory()
     {
@@ -37,8 +50,9 @@ public class SyntaxFactory {
     }
 
     /**
+     * Gets the single instance of the {@code SyntaxFactory}.
      *
-     * @return
+     * @return single instance of {@code this}.
      */
     public static SyntaxFactory getInstance()
     {
@@ -51,10 +65,15 @@ public class SyntaxFactory {
     }
 
     /**
+     * Returns the {@code ISyntax} from the {@code sqlTypeParam} and {@code aliasParam}.
      *
-     * @param sqlTypeParam
-     * @param aliasParam
-     * @return
+     * @param sqlTypeParam The type of SQL DB engine.
+     * @param aliasParam The alias or stored procedure.
+     *
+     * @return implementation of {@code ISyntax}.
+     *
+     * @see ISyntax
+     * @see com.fluid.program.api.util.sql.ABaseSQLUtil.SQLType
      */
     public ISyntax getSyntaxFor(
             ABaseSQLUtil.SQLType sqlTypeParam,
@@ -74,9 +93,14 @@ public class SyntaxFactory {
     }
 
     /**
+     * Returns the {@code ISyntax} from the {@code sqlTypeParam} and {@code formFieldMappingParam}.
      *
+     * @param sqlTypeParam
      * @param formFieldMappingParam
-     * @return
+     * @return implementation of {@code ISyntax}.
+     *
+     * @see ISyntax
+     * @see com.fluid.program.api.util.sql.impl.SQLFormFieldUtil.FormFieldMapping
      */
     public ISyntax getFieldValueSyntaxFor(
             ABaseSQLUtil.SQLType sqlTypeParam,
@@ -135,17 +159,13 @@ public class SyntaxFactory {
                                 +"' is not supported."));
 
         }
-
     }
 
-
-    public static final String PLAIN = "Plain";
-    public static final String SELECT_MANY = "Select Many";
-
     /**
+     * Checks whether {@code textToCheckParam} is Plain.
      *
-     * @param textToCheckParam
-     * @return
+     * @param textToCheckParam The String to check.
+     * @return Whether the {@code textToCheckParam} is of type Plain.
      */
     private final boolean isPlain(String textToCheckParam)
     {
@@ -160,9 +180,10 @@ public class SyntaxFactory {
     }
 
     /**
+     * Checks whether {@code textToCheckParam} is Select Many.
      *
-     * @param textToCheckParam
-     * @return
+     * @param textToCheckParam The String to check.
+     * @return Whether the {@code textToCheckParam} is of type Select Many.
      */
     private final boolean isSelectMany(String textToCheckParam)
     {

@@ -33,6 +33,9 @@ import com.fluid.program.api.vo.FluidItem;
  */
 public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
+    private FlowStepRule flowStepRule;
+    private FluidItem fluidItem;
+
     /**
      * The JSON mapping for the {@code FlowItemExecuteResult} object.
      */
@@ -43,7 +46,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public FlowItemExecuteResult() {
         super();
@@ -108,34 +111,46 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the rule to execute.
      *
-     * @return
+     * @return Rule to execute.
+     *
+     * @see FlowStepRule
      */
     public FlowStepRule getFlowStepRule() {
-        return null;
+        return this.flowStepRule;
     }
 
     /**
+     * Sets the rule to execute.
      *
-     * @param flowStepRuleParam
+     * @param flowStepRuleParam Rule to execute.
+     *
+     * @see FlowStepRule
      */
     public void setFlowStepRule(FlowStepRule flowStepRuleParam) {
-
+        this.flowStepRule = flowStepRuleParam;
     }
 
     /**
+     * Gets the Fluid item.
      *
-     * @return
+     * @return Fluid item.
+     *
+     * @see FluidItem
      */
     public FluidItem getFluidItem() {
-        return null;
+        return this.fluidItem;
     }
 
     /**
+     * Sets the Fluid item.
      *
-     * @param fluidItemParam
+     * @param fluidItemParam Fluid item.
+     *
+     * @see FluidItem
      */
     public void setFluidItem(FluidItem fluidItemParam) {
-
+        this.fluidItem = fluidItemParam;
     }
 }

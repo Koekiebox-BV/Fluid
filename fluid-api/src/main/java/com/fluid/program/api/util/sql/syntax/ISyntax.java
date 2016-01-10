@@ -15,18 +15,33 @@
 
 package com.fluid.program.api.util.sql.syntax;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 /**
- * Created by jasonbruwer on 15/07/17.
+ * Factory class used to construct SQL stored procedures.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Connection
+ * @see javax.sql.DataSource
+ * @see PreparedStatement
+ * @see java.sql.Statement
+ * @see SyntaxFactory
+ * @see com.fluid.program.api.util.sql.syntax.impl.StoredProcedureSyntax
  */
 public interface ISyntax {
 
     /**
-     *
+     * Mapping of the Fluid internally used Stored Procedures.
      */
     public static final class ProcedureMapping{
 
         /**
+         * Stored Procedures for Form Definitions.
          *
+         * @see com.fluid.program.api.vo.Form
          */
         public static final class FormDefinition{
             public static final String GetFormDefinitions =
@@ -34,7 +49,9 @@ public interface ISyntax {
         }
 
         /**
+         * Stored Procedures for Form.
          *
+         * @see com.fluid.program.api.vo.Form
          */
         public static final class Form{
             public static final String GetFormContainersTableFieldFormContainers =
@@ -48,9 +65,10 @@ public interface ISyntax {
 
         }
 
-
         /**
+         * Stored Procedures for Field.
          *
+         * @see com.fluid.program.api.vo.Field
          */
         public static final class Field{
             public static final String GetFormFieldsForFormContainer =
@@ -83,9 +101,11 @@ public interface ISyntax {
         }
 
         /**
+         * Checks whether stored procedure is
+         * part of the Fluid Stored Procedure mapping.
          *
-         * @param aliasParam
-         * @return
+         * @param aliasParam Stored Procedure.
+         * @return Whether stored procedure is part of {@code this} mapping.
          */
         public static boolean isStoredProcedureMapping(
                 String aliasParam)
@@ -107,8 +127,9 @@ public interface ISyntax {
         }
 
         /**
+         * List of Stored Procedures.
          *
-         * @return
+         * @return Stored Procedure names.
          */
         public static String[] allAliases()
         {
@@ -130,8 +151,9 @@ public interface ISyntax {
         }
 
         /**
+         * Gets the parameter count for Stored Procedure {@code aliasParam}.
          *
-         * @return
+         * @return Number of parameters for Stored Procedure {@code aliasParam}.
          */
         public static int getParamCountForAlias(String aliasParam)
         {
@@ -191,10 +213,12 @@ public interface ISyntax {
         }
     }
 
-
     /**
+     * Gets the SQL Prepared Statement to execute against the DBMS engine.
      *
-     * @return
+     * @return Complete SQL Prepared statement.
+     *
+     * @see PreparedStatement
      */
     public abstract String getPreparedStatement();
 }

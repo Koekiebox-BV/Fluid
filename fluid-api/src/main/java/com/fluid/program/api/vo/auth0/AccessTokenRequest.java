@@ -21,7 +21,15 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * An Auth0 Access Token Request used by Fluid.
  *
+ * See more at: https://auth0.com/
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see NormalizedUserProfile
+ * @see ABaseFluidJSONObject
  */
 public class AccessTokenRequest extends ABaseFluidJSONObject {
 
@@ -44,7 +52,7 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public AccessTokenRequest() {
         super();
@@ -90,80 +98,90 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Client Id.
      *
-     * @return
+     * @return Client Id.
      */
     public String getClientId() {
         return this.clientId;
     }
 
     /**
+     * Sets the Client Id.
      * 
-     * @param clientIdParam
+     * @param clientIdParam Client Id.
      */
     public void setClientId(String clientIdParam) {
         this.clientId = clientIdParam;
     }
 
     /**
+     * Gets the Client Secret.
      *
-     * @return
+     * @return Client Secret.
      */
     public String getClientSecret() {
         return this.clientSecret;
     }
 
     /**
+     * Sets the Client Secret.
      *
-     * @param clientSecretParam
+     * @param clientSecretParam Client Secret.
      */
     public void setClientSecret(String clientSecretParam) {
         this.clientSecret = clientSecretParam;
     }
 
     /**
+     * Gets the redirect URI.
      *
-     * @return
+     * @return Redirect URI.
      */
     public String getRedirectUri() {
         return this.redirectUri;
     }
 
     /**
+     * Sets the redirect URI.
      *
-     * @param redirectUriParam
+     * @param redirectUriParam Redirect URI.
      */
     public void setRedirectUri(String redirectUriParam) {
         this.redirectUri = redirectUriParam;
     }
 
     /**
+     * Gets the Grant Type.
      *
-     * @return
+     * @return Grant Type.
      */
     public String getGrantType() {
         return this.grantType;
     }
 
     /**
+     * Sets the Grant Type.
      *
-     * @param grantTypeParam
+     * @param grantTypeParam Grant Type.
      */
     public void setGrantType(String grantTypeParam) {
         this.grantType = grantTypeParam;
     }
 
     /**
+     * Gets the Code.
      *
-     * @return
+     * @return Code.
      */
     public String getCode() {
         return this.code;
     }
 
     /**
+     * Sets the Code.
      *
-     * @param codeParam
+     * @param codeParam Code.
      */
     public void setCode(String codeParam) {
         this.code = codeParam;

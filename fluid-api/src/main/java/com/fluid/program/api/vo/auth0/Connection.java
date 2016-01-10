@@ -25,7 +25,15 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * An Auth0 connection used by Fluid.
  *
+ * See more at: https://auth0.com/
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see NormalizedUserProfile
+ * @see ABaseFluidJSONObject
  */
 public class Connection extends ABaseFluidJSONObject {
 
@@ -63,7 +71,9 @@ public class Connection extends ABaseFluidJSONObject {
     }
 
     /**
-     * TODO @Jason, always look for at least one client before allowing that type...
+     * Client representation of a client.
+     *
+     * @see ABaseFluidJSONObject
      */
     public static class Client extends ABaseFluidJSONObject
     {
@@ -87,7 +97,7 @@ public class Connection extends ABaseFluidJSONObject {
         }
 
         /**
-         *
+         * Default constructor.
          */
         public Client() {
             super();
@@ -138,80 +148,90 @@ public class Connection extends ABaseFluidJSONObject {
         }
 
         /**
+         * Gets the Access Token.
          *
-         * @return
+         * @return Access Token.
          */
         public String getAccessToken() {
             return this.accessToken;
         }
 
         /**
+         * Sets the Access Token.
          *
-         * @param accessTokenParam
+         * @param accessTokenParam Access Token.
          */
         public void setAccessToken(String accessTokenParam) {
             this.accessToken = accessTokenParam;
         }
 
         /**
+         * Gets the Provider.
          *
-         * @return
+         * @return Provider.
          */
         public String getProvider() {
             return this.provider;
         }
 
         /**
+         * Sets the Provider.
          *
-         * @param providerParam
+         * @param providerParam Provider.
          */
         public void setProvider(String providerParam) {
             this.provider = providerParam;
         }
 
         /**
+         * Gets the User Id.
          *
-         * @return
+         * @return User Id.
          */
         public String getUserId() {
             return this.userId;
         }
 
         /**
+         * Sets the User Id.
          *
-         * @param userIdParam
+         * @param userIdParam User Id.
          */
         public void setUserId(String userIdParam) {
             this.userId = userIdParam;
         }
 
         /**
+         * Gets the Connection.
          *
-         * @return
+         * @return The Connection.
          */
         public String getConnection() {
             return this.connection;
         }
 
         /**
+         * Sets the Connection.
          *
-         * @param connectionParam
+         * @param connectionParam The Connection.
          */
         public void setConnection(String connectionParam) {
             this.connection = connectionParam;
         }
 
         /**
+         * Gets whether the Client is social.
          *
-         * @return
+         * @return Whether the Client is social.
          */
         public boolean isSocial() {
             return this.isSocial;
         }
 
         /**
+         * Sets whether the Client is social.
          *
-         * @param socialParam
+         * @param socialParam Whether the Client is social.
          */
         public void setSocial(boolean socialParam) {
             this.isSocial = socialParam;
@@ -262,7 +282,7 @@ public class Connection extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public Connection() {
         super();
@@ -341,163 +361,209 @@ public class Connection extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the User Id.
      *
-     * @return
+     * @return User Id.
      */
     public String getUserId() {
         return this.userId;
     }
 
     /**
+     * Sets the User Id.
      *
-     * @param userIdParam
+     * @param userIdParam User Id.
      */
     public void setUserId(String userIdParam) {
         this.userId = userIdParam;
     }
 
     /**
+     * Gets the name.
      *
-     * @return
+     * @return The name.
      */
     public String getName() {
         return this.name;
     }
 
     /**
+     * Sets the name.
      *
-     * @param nameParam
+     * @param nameParam The name.
      */
     public void setName(String nameParam) {
         this.name = nameParam;
     }
 
     /**
+     * Gets the Email.
      *
-     * @return
+     * @return The Email.
      */
     public String getEmail() {
         return this.email;
     }
 
     /**
+     * Sets the Email.
      *
-     * @param emailParam
+     * @param emailParam The Email.
      */
     public void setEmail(String emailParam) {
         this.email = emailParam;
     }
 
     /**
+     * Gets whether the email is verified.
      *
-     * @return
+     * @return Email Verified.
      */
     public boolean isEmailVerified() {
         return this.emailVerified;
     }
 
     /**
+     * Sets whether the email is verified.
      *
-     * @param emailVerifiedParam
+     * @param emailVerifiedParam Email Verified.
      */
     public void setEmailVerified(boolean emailVerifiedParam) {
         this.emailVerified = emailVerifiedParam;
     }
 
     /**
+     * Gets the User nickname.
      *
-     * @return
+     * @return User Nickname.
      */
     public String getNickname() {
         return this.nickname;
     }
 
     /**
+     * Sets the User nickname.
      *
-     * @param nicknameParam
+     * @param nicknameParam User Nickname.
      */
     public void setNickname(String nicknameParam) {
         this.nickname = nicknameParam;
     }
 
     /**
+     * Gets URL to the Users picture.
      *
-     * @return
+     * @return Link to picture.
      */
     public String getPicture() {
         return this.picture;
     }
 
     /**
+     * Sets URL to the Users picture.
      *
-     * @param pictureParam
+     * @param pictureParam Link to picture.
      */
     public void setPicture(String pictureParam) {
         this.picture = pictureParam;
     }
 
     /**
+     * Gets the User's given name.
      *
-     * @return
+     * @return Given name.
      */
     public String getGivenName() {
         return this.givenName;
     }
 
     /**
+     * Sets the User's given name.
      *
-     * @param givenNameParam
+     * @param givenNameParam Given name.
      */
     public void setGivenName(String givenNameParam) {
         this.givenName = givenNameParam;
     }
 
     /**
+     * Gets the User's given name.
      *
-     * @return
+     * @return User Family Name.
      */
     public String getFamilyName() {
         return this.familyName;
     }
 
     /**
+     * Sets the User's given name.
      *
-     * @param familyNameParam
+     * @param familyNameParam User Family Name.
      */
     public void setFamilyName(String familyNameParam) {
         this.familyName = familyNameParam;
     }
 
     /**
+     * Gets the User's locale.
      *
-     * @return
+     * @return Users Locale.
      */
     public String getLocale() {
         return this.locale;
     }
 
     /**
+     * Sets the User's locale.
      *
-     * @param localeParam
+     * @param localeParam Users Locale.
      */
     public void setLocale(String localeParam) {
         this.locale = localeParam;
     }
 
     /**
+     * Gets the Identities associated with the user.
      *
-     * @return
+     * @return User's Identities.
      */
     public List<Client> getIdentities() {
         return this.identities;
     }
 
     /**
+     * Sets the Identities associated with the user.
      *
-     * @param identitiesParam
+     * @param identitiesParam User's Identities.
      */
     public void setIdentities(List<Client> identitiesParam) {
         this.identities = identitiesParam;
+    }
+
+    /**
+     * Gets a comma seperated list of providers from {@code Identity}'s.
+     *
+     * @return Text list of Providers for user {@code Identities}.
+     *
+     * @see NormalizedUserProfile#getIdentities()
+     */
+    public String getListOfProvidersFromIdentities()
+    {
+        if(this.getIdentities() == null || this.getIdentities().isEmpty())
+        {
+            return "";
+        }
+
+        StringBuilder returnVal = new StringBuilder();
+
+        for(Client client : this.getIdentities())
+        {
+            returnVal.append(client.getProvider());
+            returnVal.append(",");
+        }
+
+        String toString = returnVal.toString();
+        return toString.substring(0,toString.length() - 1);
     }
 
     /**
@@ -577,28 +643,5 @@ public class Connection extends ABaseFluidJSONObject {
         }
 
         return returnVal;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getListOfProvidersFromIdentities()
-    {
-        if(this.getIdentities() == null || this.getIdentities().isEmpty())
-        {
-            return "";
-        }
-
-        StringBuilder returnVal = new StringBuilder();
-
-        for(Client client : this.getIdentities())
-        {
-            returnVal.append(client.getProvider());
-            returnVal.append(",");
-        }
-
-        String toString = returnVal.toString();
-        return toString.substring(0,toString.length() - 1);
     }
 }

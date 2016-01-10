@@ -21,22 +21,36 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fluid.program.api.vo.ABaseFluidJSONObject;
+import com.fluid.program.api.vo.auth0.AccessTokenRequest;
+import com.fluid.program.api.vo.auth0.NormalizedUserProfile;
+
 /**
- * User: jbruwer Date: 10/1/13 Time: 1:07 PM
+ * Utility class used for executing command line operations.
+ *
+ * See more at: https://auth0.com/
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see NormalizedUserProfile
+ * @see AccessTokenRequest
+ * @see ABaseFluidJSONObject
  */
 public class CommandUtil {
 
     /**
-     *
+     * Result value object when a command line operation is finish.
      */
     public static final class CommandResult {
         private int exitCode;
         private String[] resultLines;
 
         /**
+         * Sets the exit code and result lines.
          *
-         * @param exitCodeParam
-         * @param resultLinesParam
+         * @param exitCodeParam The exit code.
+         * @param resultLinesParam The result lines.
          */
         private CommandResult(int exitCodeParam, String[] resultLinesParam) {
             this.exitCode = exitCodeParam;
@@ -44,24 +58,28 @@ public class CommandUtil {
         }
 
         /**
+         * Gets the exit code.
          *
-         * @return
+         * @return Exit Code.
          */
         public int getExitCode() {
             return this.exitCode;
         }
 
         /**
+         * Gets the result lines.
          *
-         * @return
+         * @return Result lines.
          */
         public String[] getResultLines() {
             return this.resultLines;
         }
 
         /**
+         * Returns the {@code String[]} result lines
+         * as a single {@code String}.
          *
-         * @return
+         * @return Result as a {@code String}.
          */
         @Override
         public String toString() {
@@ -81,9 +99,14 @@ public class CommandUtil {
     }
 
     /**
+     * Executes the {@code commandParams} and returns the result.
      *
-     * @param commandParams
-     * @return
+     * @param commandParams The command and parameters to execute.
+     * @return The result of the execution.
+     *
+     * @throws IOException If execution of the command fails.
+     *
+     * @see CommandResult
      */
     public static CommandResult executeCommand(String... commandParams) throws IOException {
         if (commandParams == null || commandParams.length == 0) {
@@ -139,9 +162,12 @@ public class CommandUtil {
     }
 
     /**
+     * Executes the {@code objectCommandParam} and returns the result.
      *
-     * @param objectCommandParam
-     * @return
+     * @param objectCommandParam The command to execute.
+     * @return The result of the execution.
+     *
+     * @see CommandUtil#executeCommand(String...)
      */
     public static CommandResult executeCommand(String objectCommandParam) throws Exception {
         if (objectCommandParam == null) {

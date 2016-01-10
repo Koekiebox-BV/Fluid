@@ -25,7 +25,12 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * Fluid consolidation of a workflow.
  *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see com.fluid.program.api.vo.User
  */
 public class NormalizedUserProfile extends ABaseFluidJSONObject {
 
@@ -63,7 +68,9 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
+     * Identity related value object.
      *
+     * @see ABaseFluidJSONObject
      */
     public static class Identity extends ABaseFluidJSONObject
     {
@@ -86,7 +93,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         }
 
         /**
-         *
+         * Default constructor.
          */
         public Identity() {
             super();
@@ -137,80 +144,90 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         }
 
         /**
+         * Gets the Access Token.
          *
-         * @return
+         * @return Access Token.
          */
         public String getAccessToken() {
             return this.accessToken;
         }
 
         /**
+         * Sets the Access Token.
          *
-         * @param accessTokenParam
+         * @param accessTokenParam Access Token.
          */
         public void setAccessToken(String accessTokenParam) {
             this.accessToken = accessTokenParam;
         }
 
         /**
+         * Gets the provider.
          *
-         * @return
+         * @return Authentication provider.
          */
         public String getProvider() {
             return this.provider;
         }
 
         /**
+         * Sets the provider.
          *
-         * @param providerParam
+         * @param providerParam Authentication provider.
          */
         public void setProvider(String providerParam) {
             this.provider = providerParam;
         }
 
         /**
+         * Gets the User Unique Id.
          *
-         * @return
+         * @return User Id.
          */
         public String getUserId() {
             return this.userId;
         }
 
         /**
+         * Sets the User Unique Id.
          *
-         * @param userIdParam
+         * @param userIdParam User Id.
          */
         public void setUserId(String userIdParam) {
             this.userId = userIdParam;
         }
 
         /**
+         * Gets the Connection.
          *
-         * @return
+         * @return The Connection.
          */
         public String getConnection() {
             return this.connection;
         }
 
         /**
+         * Sets the Connection.
          *
-         * @param connectionParam
+         * @param connectionParam The Connection.
          */
         public void setConnection(String connectionParam) {
             this.connection = connectionParam;
         }
 
         /**
+         * Is the authenticated server a social one.
          *
-         * @return
+         * @return Whether the connection is a social network connection.
          */
         public boolean isSocial() {
             return this.isSocial;
         }
 
         /**
+         * Sets whether the connection is social.
          *
-         * @param socialParam
+         * @param socialParam Whether the connection is sociall
          */
         public void setSocial(boolean socialParam) {
             this.isSocial = socialParam;
@@ -261,7 +278,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public NormalizedUserProfile() {
         super();
@@ -340,163 +357,209 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the User id.
      *
-     * @return
+     * @return User Id.
      */
     public String getUserId() {
         return this.userId;
     }
 
     /**
+     * Sets the User id.
      *
-     * @param userIdParam
+     * @param userIdParam User Id.
      */
     public void setUserId(String userIdParam) {
         this.userId = userIdParam;
     }
 
     /**
+     * Gets the User name.
      *
-     * @return
+     * @return Name of the User.
      */
     public String getName() {
         return this.name;
     }
 
     /**
+     * Sets the User name.
      *
-     * @param nameParam
+     * @param nameParam Name of the User.
      */
     public void setName(String nameParam) {
         this.name = nameParam;
     }
 
     /**
+     * Gets the users associated email.
      *
-     * @return
+     * @return User Email.
      */
     public String getEmail() {
         return this.email;
     }
 
     /**
+     * Sets the users associated email.
      *
-     * @param emailParam
+     * @param emailParam User Email.
      */
     public void setEmail(String emailParam) {
         this.email = emailParam;
     }
 
     /**
+     * Gets whether the email is verified.
      *
-     * @return
+     * @return Whether email is verified.
      */
     public boolean isEmailVerified() {
         return this.emailVerified;
     }
 
     /**
+     * Sets whether the email is verified.
      *
-     * @param emailVerifiedParam
+     * @param emailVerifiedParam Whether email is verified.
      */
     public void setEmailVerified(boolean emailVerifiedParam) {
         this.emailVerified = emailVerifiedParam;
     }
 
     /**
+     * Gets the User nickname.
      *
-     * @return
+     * @return User Nickname.
      */
     public String getNickname() {
         return this.nickname;
     }
 
     /**
+     * Sets the User nickname.
      *
-     * @param nicknameParam
+     * @param nicknameParam User Nickname.
      */
     public void setNickname(String nicknameParam) {
         this.nickname = nicknameParam;
     }
 
     /**
+     * Gets URL to the Users picture.
      *
-     * @return
+     * @return Link to picture.
      */
     public String getPicture() {
         return this.picture;
     }
 
     /**
+     * Sets URL to the Users picture.
      *
-     * @param pictureParam
+     * @param pictureParam Link to picture.
      */
     public void setPicture(String pictureParam) {
         this.picture = pictureParam;
     }
 
     /**
+     * Gets the User's given name.
      *
-     * @return
+     * @return Given name.
      */
     public String getGivenName() {
         return this.givenName;
     }
 
     /**
+     * Sets the User's given name.
      *
-     * @param givenNameParam
+     * @param givenNameParam Given name.
      */
     public void setGivenName(String givenNameParam) {
         this.givenName = givenNameParam;
     }
 
     /**
+     * Gets the User's given name.
      *
-     * @return
+     * @return User Family Name.
      */
     public String getFamilyName() {
         return this.familyName;
     }
 
     /**
+     * Sets the User's given name.
      *
-     * @param familyNameParam
+     * @param familyNameParam User Family Name.
      */
     public void setFamilyName(String familyNameParam) {
         this.familyName = familyNameParam;
     }
 
     /**
+     * Gets the User's locale.
      *
-     * @return
+     * @return Users Locale.
      */
     public String getLocale() {
         return this.locale;
     }
 
     /**
+     * Sets the User's locale.
      *
-     * @param localeParam
+     * @param localeParam Users Locale.
      */
     public void setLocale(String localeParam) {
         this.locale = localeParam;
     }
 
     /**
+     * Gets the Identities associated with the user.
      *
-     * @return
+     * @return User's Identities.
      */
     public List<Identity> getIdentities() {
         return this.identities;
     }
 
     /**
+     * Sets the Identities associated with the user.
      *
-     * @param identitiesParam
+     * @param identitiesParam User's Identities.
      */
     public void setIdentities(List<Identity> identitiesParam) {
         this.identities = identitiesParam;
+    }
+
+    /**
+     * Gets a comma seperated list of providers from {@code Identity}'s.
+     *
+     * @return Text list of Providers for user {@code Identities}.
+     *
+     * @see NormalizedUserProfile#getIdentities()
+     */
+    public String getListOfProvidersFromIdentities()
+    {
+        if(this.getIdentities() == null || this.getIdentities().isEmpty())
+        {
+            return "";
+        }
+
+        StringBuilder returnVal = new StringBuilder();
+
+        for(Identity identity : this.getIdentities())
+        {
+            returnVal.append(identity.getProvider());
+            returnVal.append(",");
+        }
+
+        String toString = returnVal.toString();
+        return toString.substring(0,toString.length() - 1);
     }
 
     /**
@@ -576,28 +639,5 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         }
 
         return returnVal;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getListOfProvidersFromIdentities()
-    {
-        if(this.getIdentities() == null || this.getIdentities().isEmpty())
-        {
-            return "";
-        }
-
-        StringBuilder returnVal = new StringBuilder();
-
-        for(Identity identity : this.getIdentities())
-        {
-            returnVal.append(identity.getProvider());
-            returnVal.append(",");
-        }
-
-        String toString = returnVal.toString();
-        return toString.substring(0,toString.length() - 1);
     }
 }

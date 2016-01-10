@@ -25,7 +25,15 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * Fluid workflow Step Rule that belongs to,
+ * Entry Step, Exit Step and View.
  *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see Flow
+ * @see FlowStep
+ * @see ABaseFluidJSONObject
  */
 public class FlowStepRule extends ABaseFluidJSONObject {
 
@@ -53,8 +61,16 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     }
 
     /**
+     * Default constructor.
+     */
+    public FlowStepRule() {
+        super();
+    }
+
+    /**
+     * The unique identifier of the Step Rule.
      *
-     * @param flowStepRuleIdParam
+     * @param flowStepRuleIdParam Rule Primary Key.
      */
     public FlowStepRule(Long flowStepRuleIdParam) {
         super();
@@ -63,21 +79,12 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     }
 
     /**
-	 *
-	 */
-    public FlowStepRule() {
-        super();
-    }
-
-
-    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.
      */
     public FlowStepRule(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
-
 
         if(this.jsonObject == null)
         {
@@ -187,95 +194,108 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     }
 
     /**
-     * @return
+     * The order within the Entry, Exit or View.
+     *
+     * @return The order of the rule.
      */
     public Long getOrder() {
         return this.order;
     }
 
     /**
+     * The order within the Entry, Exit or View.
      *
-     * @param orderParam
+     * @param orderParam The order of the rule.
      */
     public void setOrder(Long orderParam) {
         this.order = orderParam;
     }
 
     /**
+     * Gets the Rule as text.
      *
-     * @return
+     * @return Text version of the rule.
      */
     public String getRule() {
         return this.rule;
     }
 
     /**
+     * Sets the Rule as text.
      *
-     * @param ruleParam
+     * @param ruleParam Text version of the rule.
      */
     public void setRule(String ruleParam) {
         this.rule = ruleParam;
     }
 
     /**
+     * The {@code Flow} the rule forms part of.
      *
-     * @return
+     * @return The Flow of the rule.
      */
     public Flow getFlow() {
         return this.flow;
     }
 
     /**
+     * The {@code Flow} the rule forms part of.
      *
-     * @param flowParam
+     * @param flowParam The Flow of the rule.
      */
     public void setFlow(Flow flowParam) {
         this.flow = flowParam;
     }
 
     /**
+     * The {@code FlowStep} the rule forms part of.
      *
-     * @return
+     * @return The Flow Step of the rule.
      */
     public FlowStep getFlowStep() {
         return this.flowStep;
     }
 
     /**
+     * The {@code FlowStep} the rule forms part of.
      *
-     * @param flowStepParam
+     * @param flowStepParam The Flow Step of the rule.
      */
     public void setFlowStep(FlowStep flowStepParam) {
         this.flowStep = flowStepParam;
     }
 
     /**
+     * Typed syntax to provide the {@code getNextValidSyntaxWords}.
      *
-     * @return
+     * @return Text entered to get the next valid syntax words.
      */
     public String getCurrentTypedSyntax() {
         return this.currentTypedSyntax;
     }
 
     /**
+     * Typed syntax to provide the {@code getNextValidSyntaxWords}.
      *
-     * @param currentTypedSyntaxParam
+     * @param currentTypedSyntaxParam Text entered to get the next valid syntax words.
      */
     public void setCurrentTypedSyntax(String currentTypedSyntaxParam) {
         this.currentTypedSyntax = currentTypedSyntaxParam;
     }
 
     /**
+     * The next valid words from {@code getCurrentTypedSyntax}.
      *
-     * @return
+     * @return Next valid syntax.
      */
     public List<String> getNextValidSyntaxWords() {
         return this.nextValidSyntaxWords;
     }
 
     /**
+     * The next valid words from {@code getCurrentTypedSyntax}.
      *
-     * @param nextValidSyntaxWordsParam
+     * @param nextValidSyntaxWordsParam Next valid syntax.
      */
     public void setNextValidSyntaxWords(List<String> nextValidSyntaxWordsParam) {
         this.nextValidSyntaxWords = nextValidSyntaxWordsParam;

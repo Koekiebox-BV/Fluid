@@ -32,29 +32,37 @@ import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * SQL Utility class used for {@code Form} related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseSQLUtil
+ * @see Form
  */
 public class SQLFormUtil extends ABaseSQLUtil {
 
     /**
+     * New instance using provided {@code connectionParam}.
      *
-     * @param connectionParam
+     * @param connectionParam SQL Connection to use.
      */
     public SQLFormUtil(Connection connectionParam) {
         super(connectionParam);
     }
 
     /**
+     * Retrieves the Table field records as {@code List<Form>}.
      *
-     * @param electronicFormIdParam
-     * @param includeFieldDataParam
-     * @return
+     * @param electronicFormIdParam The Form Identifier.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @return {@code List<Form>} records.
      */
     public List<Form> getFormTableForms(
             Long electronicFormIdParam,
             boolean includeFieldDataParam)
     {
-        List<Form> returnVal = new ArrayList<Form>();
+        List<Form> returnVal = new ArrayList<>();
 
         if(electronicFormIdParam == null)
         {
@@ -95,16 +103,13 @@ public class SQLFormUtil extends ABaseSQLUtil {
             {
                 SQLFormFieldUtil fieldUtil = new SQLFormFieldUtil(this.getConnection());
 
-                if(returnVal != null)
+                for(Form form : returnVal)
                 {
-                    for(Form form : returnVal)
-                    {
-                        List<Field> formFields =
-                                fieldUtil.getFormFields(
-                                        form.getId(),
-                                        false);
-                        form.setFormFields(formFields);
-                    }
+                    List<Field> formFields =
+                            fieldUtil.getFormFields(
+                                    form.getId(),
+                                    false);
+                    form.setFormFields(formFields);
                 }
             }
         }
@@ -121,18 +126,21 @@ public class SQLFormUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Gets the descendants for the {@code electronicFormIdParam} Form.
      *
-     * @param electronicFormIdParam
-     * @param includeFieldDataParam
-     * @param includeTableFieldsParam
-     * @return
+     * @param electronicFormIdParam Identifier for the Form.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @return {@code List<Form>} descendants.
+     *
+     * @see Form
      */
     public List<Form> getFormDescendants(
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam)
     {
-        List<Form> returnVal = new ArrayList<Form>();
+        List<Form> returnVal = new ArrayList<>();
 
         if(electronicFormIdParam == null)
         {
@@ -173,16 +181,13 @@ public class SQLFormUtil extends ABaseSQLUtil {
             {
                 SQLFormFieldUtil fieldUtil = new SQLFormFieldUtil(this.getConnection());
 
-                if(returnVal != null)
+                for(Form form : returnVal)
                 {
-                    for(Form form : returnVal)
-                    {
-                        List<Field> formFields =
-                                fieldUtil.getFormFields(
-                                        form.getId(),
-                                        includeTableFieldsParam);
-                        form.setFormFields(formFields);
-                    }
+                    List<Field> formFields =
+                            fieldUtil.getFormFields(
+                                    form.getId(),
+                                    includeTableFieldsParam);
+                    form.setFormFields(formFields);
                 }
             }
         }
@@ -199,23 +204,26 @@ public class SQLFormUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Gets the ancestor for the {@code electronicFormIdParam} Form.
      *
-     * @param electronicFormIdParam
-     * @param includeFieldDataParam
-     * @param includeTableFieldsParam
-     * @return
+     * @param electronicFormIdParam Identifier for the Form.
+     * @param includeFieldDataParam Whether to populate the return {@code Form} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code Form} table fields.
+     * @return {@code Form} descendants.
+     *
+     * @see Form
      */
     public Form getFormAncestor(
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam)
     {
-        Form returnVal = null;
-
         if(electronicFormIdParam == null)
         {
-            return returnVal;
+            return null;
         }
+
+        Form returnVal = null;
 
         SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
 
@@ -274,11 +282,16 @@ public class SQLFormUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Maps the Form to the provided Definition-Id and Title.
      *
-     * @param definitionAndTitleParam
-     * @param resultSetParam
-     * @return
-     * @throws SQLException
+     * @param definitionAndTitleParam Form Definition Id and Title mapping.
+     * @param resultSetParam Result Set used to populate {@code Form} with.
+     *
+     * @return Form
+     *
+     * @throws SQLException If no mapping exists for Form Type.
+     *
+     * @see ResultSet
      */
     private Form mapFormContainerTo(
             Map<Long,String> definitionAndTitleParam,
@@ -288,6 +301,7 @@ public class SQLFormUtil extends ABaseSQLUtil {
         Long formId = resultSetParam.getLong(1);
         String formType = definitionAndTitleParam.get(
                 resultSetParam.getLong(2));
+
         String title = resultSetParam.getString(3);
         Date created = resultSetParam.getDate(4);
         Date lastUpdated = resultSetParam.getDate(5);
@@ -299,6 +313,7 @@ public class SQLFormUtil extends ABaseSQLUtil {
         }
 
         Form toAdd = new Form(formType);
+
         toAdd.setId(formId);
         toAdd.setTitle(title);
         toAdd.setDateCreated(created);

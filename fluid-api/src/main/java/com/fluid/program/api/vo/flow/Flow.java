@@ -23,7 +23,14 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * Fluid consolidation of a workflow.
  *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see FlowStep
+ * @see FlowStepRule
+ * @see ABaseFluidJSONObject
  */
 public class Flow extends ABaseFluidJSONObject {
 
@@ -44,15 +51,16 @@ public class Flow extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public Flow() {
         super();
     }
 
     /**
+     * The unique Flow identifier.
      *
-     * @param flowIdParam
+     * @param flowIdParam The Flow primary key.
      */
     public Flow(Long flowIdParam) {
         super();
@@ -99,64 +107,72 @@ public class Flow extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Name of the Flow.
      *
-     * @return
+     * @return Flow name.
      */
     public String getName() {
         return this.name;
     }
 
     /**
+     * Sets the Name of the Flow.
      *
-     * @param nameParam
+     * @param nameParam Flow name.
      */
     public void setName(String nameParam) {
         this.name = nameParam;
     }
 
     /**
+     * Gets the Description of the Flow.
      *
-     * @return
+     * @return Flow description.
      */
     public String getDescription() {
         return this.description;
     }
 
     /**
+     * Sets the Description of the Flow.
      *
-     * @param descriptionParam
+     * @param descriptionParam Flow description.
      */
     public void setDescription(String descriptionParam) {
         this.description = descriptionParam;
     }
 
     /**
+     * Gets the date the Flow was created.
      *
-     * @return
+     * @return The Flow creation date.
      */
     public Date getDateCreated() {
         return this.dateCreated;
     }
 
     /**
+     * Sets the date the Flow was created.
      *
-     * @param dateCreatedParam
+     * @param dateCreatedParam The Flow creation date.
      */
     public void setDateCreated(Date dateCreatedParam) {
         this.dateCreated = dateCreatedParam;
     }
 
     /**
+     * Gets the date the Flow was last updated.
      *
-     * @return
+     * @return Last Updated Timestamp.
      */
     public Date getDateLastUpdated() {
         return this.dateLastUpdated;
     }
 
     /**
+     * Sets the date the Flow was last updated.
      *
-     * @param dateLastUpdatedParam
+     * @param dateLastUpdatedParam Last Updated Timestamp.
      */
     public void setDateLastUpdated(Date dateLastUpdatedParam) {
         this.dateLastUpdated = dateLastUpdatedParam;

@@ -21,7 +21,16 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
+ * An Auth0 Access Token used by Fluid.
  *
+ * See more at: https://auth0.com/
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see NormalizedUserProfile
+ * @see AccessTokenRequest
+ * @see ABaseFluidJSONObject
  */
 public class AccessToken extends ABaseFluidJSONObject {
 
@@ -40,7 +49,7 @@ public class AccessToken extends ABaseFluidJSONObject {
     }
 
     /**
-     *
+     * Default constructor.
      */
     public AccessToken() {
         super();
@@ -76,48 +85,54 @@ public class AccessToken extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Access Token.
      *
-     * @return
+     * @return Access Token.
      */
     public String getAccessToken() {
         return this.accessToken;
     }
 
     /**
+     * Sets the Access Token.
      *
-     * @param accessTokenParam
+     * @param accessTokenParam Access Token.
      */
     public void setAccessToken(String accessTokenParam) {
         this.accessToken = accessTokenParam;
     }
 
     /**
+     * Gets the Id Token.
      *
-     * @return
+     * @return Id Token.
      */
     public String getIdToken() {
         return this.idToken;
     }
 
     /**
+     * Sets the Id Token.
      *
-     * @param idTokenParam
+     * @param idTokenParam Id Token.
      */
     public void setIdToken(String idTokenParam) {
         this.idToken = idTokenParam;
     }
 
     /**
+     * Gets the Token Type.
      *
-     * @return
+     * @return Token Type.
      */
     public String getTokenType() {
         return this.tokenType;
     }
 
     /**
+     * Sets the Token Type.
      *
-     * @param tokenTypeParam
+     * @param tokenTypeParam Token Type.
      */
     public void setTokenType(String tokenTypeParam) {
         this.tokenType = tokenTypeParam;

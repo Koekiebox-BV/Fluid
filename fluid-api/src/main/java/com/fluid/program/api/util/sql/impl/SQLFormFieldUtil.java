@@ -29,12 +29,20 @@ import com.fluid.program.api.util.sql.syntax.SyntaxFactory;
 import com.fluid.program.api.vo.*;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * SQL Utility class used for {@code Field} related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ABaseSQLUtil
+ * @see Field
  */
 public class SQLFormFieldUtil extends ABaseSQLUtil {
 
     /**
+     * Fluid mapping for a Form Field.
      *
+     * @see ABaseFluidVO
      */
     public static class FormFieldMapping extends ABaseFluidVO{
 
@@ -46,13 +54,16 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         public String description;
 
         /**
+         * Form Field mapping.
          *
-         * @param formDefinitionIdParam
-         * @param formFieldIdParam
-         * @param dataTypeParam
-         * @param metaDataParam
-         * @param nameParam
-         * @param descriptionParam
+         * @param formDefinitionIdParam Form Definition Identifier.
+         * @param formFieldIdParam Form Field Identifier.
+         * @param dataTypeParam Form Field Data Type.
+         * @param metaDataParam Form Field Meta-Data.
+         * @param nameParam Form Field Name.
+         * @param descriptionParam Form Field Description.
+         *
+         * @see com.fluid.program.api.vo.Field.Type
          */
         public FormFieldMapping(
                 Long formDefinitionIdParam,
@@ -71,22 +82,24 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
     }
 
     /**
+     * New FormField util instance using {@code connectionParam}.
      *
-     * @param connectionParam
+     * @param connectionParam SQL Connection to use for Fields.
      */
     public SQLFormFieldUtil(Connection connectionParam) {
         super(connectionParam);
     }
 
     /**
+     * Retrieve the Form Field mappings for Electronic Form {@code electronicFormIdParam}.
      *
-     * @param electronicFormIdParam
-     * @return
+     * @param electronicFormIdParam The Electronic Form to get Form Field mappings for.
+     * @return List of Form Field mappings.
      */
     public List<FormFieldMapping> getFormFieldMappingForForm(
             Long electronicFormIdParam)
     {
-        List<FormFieldMapping> returnVal = new ArrayList<FormFieldMapping>();
+        List<FormFieldMapping> returnVal = new ArrayList<>();
 
         if(electronicFormIdParam == null)
         {
@@ -94,7 +107,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         }
 
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try
         {
             ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
@@ -129,15 +142,17 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Retrieves the Form Fields for the Electronic Form with id {@code electronicFormIdParam}.
      *
-     * @param electronicFormIdParam
-     * @return
+     * @param electronicFormIdParam The Electronic Form to fetch fields for.
+     * @param includeTableFieldsParam Whether to populate the table fields.
+     * @return The Form Fields for Electronic Form {@code electronicFormIdParam}.
      */
     public List<Field> getFormFields(
             Long electronicFormIdParam,
             boolean includeTableFieldsParam)
     {
-        List<Field> returnVal = new ArrayList<Field>();
+        List<Field> returnVal = new ArrayList<>();
 
         if(electronicFormIdParam == null)
         {
@@ -187,24 +202,25 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Retrieves the Form Field value for Electronic Form {@code formContainerIdParam}.
      *
-     * @param formFieldMappingParam
-     * @return
+     * @param formFieldMappingParam The mapping to use.
+     * @param formContainerIdParam The Electronic Form Id.
+     * @return Populated {@code Field} value.
      */
     public Field getFormFieldValueFor(
             FormFieldMapping formFieldMappingParam,
             Long formContainerIdParam)
     {
+        if(formFieldMappingParam == null)
+        {
+            return null;
+        }
 
         Field returnVal = null;
 
-        if(formFieldMappingParam == null)
-        {
-            return returnVal;
-        }
-
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try
         {
             ISyntax syntax = SyntaxFactory.getInstance().getFieldValueSyntaxFor(
@@ -257,7 +273,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 case 4:
                     MultiChoice multiChoice = new MultiChoice();
 
-                    List<String> selectedValues = new ArrayList<String>();
+                    List<String> selectedValues = new ArrayList<>();
                     while(resultSet.next())
                     {
                         selectedValues.add(resultSet.getString(1));
@@ -291,7 +307,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                     }
                 break;
                 case 7:
-                    List<Long> formContainerIds = new ArrayList<Long>();
+                    List<Long> formContainerIds = new ArrayList<>();
                     while(resultSet.next())
                     {
                         formContainerIds.add(resultSet.getLong(1));
@@ -301,7 +317,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                     {
                         TableField tableField = new TableField();
 
-                        List<Form> formRecords = new ArrayList<Form>();
+                        List<Form> formRecords = new ArrayList<>();
                         for(Long formContainerId : formContainerIds)
                         {
                             Form toAdd = new Form();
@@ -335,23 +351,25 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Maps a {@code ResultSet} to a new instance of {@code FormFieldMapping}.
      *
-     * @param resultSetParam
-     * @return
+     * @param resultSetParam The {@code ResultSet} used to create an {@code FormFieldMapping}.
+     * @return FormFieldMapping from {@code ResultSet}.
+     * @throws SQLException
+     *
+     * @see ResultSet
+     * @see FormFieldMapping
      */
     private FormFieldMapping mapFormFieldMapping(ResultSet resultSetParam)
     throws SQLException{
 
-        FormFieldMapping toAdd =
-                new FormFieldMapping(
-                        resultSetParam.getLong(1),
-                        resultSetParam.getLong(2),
-                        resultSetParam.getLong(3),
-                        resultSetParam.getString(4),
-                        resultSetParam.getString(5),
-                        resultSetParam.getString(6));
-
-        return toAdd;
+        return new FormFieldMapping(
+                resultSetParam.getLong(1),
+                resultSetParam.getLong(2),
+                resultSetParam.getLong(3),
+                resultSetParam.getString(4),
+                resultSetParam.getString(5),
+                resultSetParam.getString(6));
     }
 
 }

@@ -19,13 +19,21 @@ import java.sql.SQLException;
 import com.fluid.program.api.util.exception.UtilException;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * Exception class related to SQL Exceptions exclusively.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see UtilException
+ * @see SQLException
  */
 public class FluidSQLException extends UtilException {
 
     /**
+     * Constructor used to wrap a traditional {@code SQLException}
+     * into an {@code FluidSQLException}.
      *
-     * @param sqlExceptionParam
+     * @param sqlExceptionParam Traditional Java SQL Exception.
      */
     public FluidSQLException(SQLException sqlExceptionParam) {
         super("SQL Problem: "+((sqlExceptionParam == null) ? null:

@@ -18,15 +18,22 @@ package com.fluid.program.api.util.sql.syntax.impl;
 import com.fluid.program.api.util.sql.syntax.ISyntax;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * Syntax implementation for Stored Procedures.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see ISyntax
  */
 public class StoredProcedureSyntax implements ISyntax {
+
     private String returnVal = null;
 
     /**
+     * Sets the Stored Procedure name and number of parameters.
      *
-     * @param storedProcedureNameParam
-     * @param numberOfParamsParam
+     * @param storedProcedureNameParam The stored procedure.
+     * @param numberOfParamsParam The number of parameters.
      */
     public StoredProcedureSyntax(
             String storedProcedureNameParam,
@@ -52,8 +59,11 @@ public class StoredProcedureSyntax implements ISyntax {
     }
 
     /**
+     * Implementation call for executing the stored procedure.
      *
-     * @return
+     * @return SQL to Execute with Java {@code PreparedStatement}.
+     *
+     * @see java.sql.PreparedStatement
      */
     @Override
     public String getPreparedStatement() {

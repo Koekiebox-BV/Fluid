@@ -12,17 +12,23 @@
  * Dissemination of this information or reproduction of this material is strictly
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
+
 package com.fluid.program.api.util.exception;
 
 /**
- * Created by jasonbruwer on 15/07/17.
+ * Exception class related to SQL Exceptions exclusively.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see RuntimeException
  */
 public class UtilException extends RuntimeException {
 
     private int errorCode;
 
     /**
-     *
+     * Class for hosting error codes.
      */
     public static final class ErrorCode {
         public static final int GENERAL = 10001;
@@ -34,11 +40,14 @@ public class UtilException extends RuntimeException {
      * cause is not initialized, and may subsequently be initialized by a call
      * to {@link #initCause}.
      *
-     * @param message the detail message. The detail message is saved for later
+     * @param messageParam the detail message. The detail message is saved for later
      *            retrieval by the {@link #getMessage()} method.
+     * @param errorCodeParam Error code of the {@code Exception}.
+     *
+     * @see ErrorCode
      */
-    public UtilException(String message, int errorCodeParam) {
-        super(message);
+    public UtilException(String messageParam, int errorCodeParam) {
+        super(messageParam);
         this.errorCode = errorCodeParam;
     }
 
@@ -48,23 +57,27 @@ public class UtilException extends RuntimeException {
      * <i>not</i> automatically incorporated in this runtime exception's detail
      * message.
      *
-     * @param message the detail message (which is saved for later retrieval by
+     * @param messageParam the detail message (which is saved for later retrieval by
      *            the {@link #getMessage()} method).
-     * @param cause the cause (which is saved for later retrieval by the
+     * @param causeParam the cause (which is saved for later retrieval by the
      *            {@link #getCause()} method). (A <tt>null</tt> value is
      *            permitted, and indicates that the cause is nonexistent or
      *            unknown.)
+     * @param errorCodeParam Error code of the {@code Exception}.
      *
-     * @since 1.4
+     * @see ErrorCode
      */
-    public UtilException(String message, Throwable cause, int errorCodeParam) {
-        super(message, cause);
+    public UtilException(String messageParam, Throwable causeParam, int errorCodeParam) {
+        super(messageParam, causeParam);
         this.errorCode = errorCodeParam;
     }
 
     /**
+     * Gets the error code for {@code this} Exception.
      *
-     * @return
+     * @return Numerical error code category for the exception.
+     *
+     * @see ErrorCode
      */
     public int getErrorCode() {
         return this.errorCode;

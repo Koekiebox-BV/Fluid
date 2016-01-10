@@ -18,7 +18,19 @@ package com.fluid.program.api.vo.mail;
 import com.fluid.program.api.vo.ABaseFluidVO;
 
 /**
+ * Fluid Mail Message Name and Value.
  *
+ * Email Template {{name}} values gets replaced with the
+ * {@code MailMessageNameValue}.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see com.fluid.program.api.vo.Attachment
+ * @see MailMessage
+ * @see MailMessageAttachment
+ * @see com.fluid.program.api.vo.Attachment
+ * @see ABaseFluidVO
  */
 public class MailMessageNameValue extends ABaseFluidVO {
 
@@ -26,15 +38,17 @@ public class MailMessageNameValue extends ABaseFluidVO {
     private String value;
 
     /**
+     * Default constructor.
 	 */
     public MailMessageNameValue() {
         super();
     }
 
     /**
+     * Sets the name and value used against the template.
      *
-     * @param nameParam
-     * @param valueParam
+     * @param nameParam The Name of the value to replace.
+     * @param valueParam The replacement value.
      */
     public MailMessageNameValue(String nameParam, String valueParam) {
         super();
@@ -44,40 +58,45 @@ public class MailMessageNameValue extends ABaseFluidVO {
     }
 
     /**
+     * Sets the id.
      *
-     * @param idParam
+     * @param idParam The Primary Key.
      */
     public MailMessageNameValue(Long idParam) {
         super(idParam);
     }
 
     /**
+     * Gets the name of the name-value to replace.
      *
-     * @return
+     * @return The Name of the value to replace.
      */
     public String getName() {
         return this.name;
     }
 
     /**
+     * Sets the name of the name-value to replace.
      *
-     * @param nameParam
+     * @param nameParam The Name of the value to replace.
      */
     public void setName(String nameParam) {
         this.name = nameParam;
     }
 
     /**
+     * Gets the replacement value.
      *
-     * @return
+     * @return The replacement value.
      */
     public String getValue() {
         return this.value;
     }
 
     /**
+     * Sets the replacement value.
      *
-     * @param valueParam
+     * @param valueParam The replacement value.
      */
     public void setValue(String valueParam) {
         this.value = valueParam;

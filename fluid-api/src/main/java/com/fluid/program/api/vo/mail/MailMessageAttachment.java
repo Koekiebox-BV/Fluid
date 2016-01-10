@@ -18,19 +18,32 @@ package com.fluid.program.api.vo.mail;
 import com.fluid.program.api.vo.ABaseFluidVO;
 
 /**
- * Created by jasonbruwer on 15/05/20.
+ * Fluid representation of a Email message attachment.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see com.fluid.program.api.vo.Attachment
+ * @see MailMessage
+ * @see MailMessageNameValue
+ * @see com.fluid.program.api.vo.Attachment
+ * @see ABaseFluidVO
  */
 public class MailMessageAttachment extends ABaseFluidVO {
 
     private String attachmentPath;
 
+    /**
+     * Default constructor.
+     */
     public MailMessageAttachment() {
         super();
     }
 
     /**
+     * Sets the path to the attachment.
      *
-     * @param attachmentPathParam
+     * @param attachmentPathParam Path to the attachment.
      */
     public MailMessageAttachment(String attachmentPathParam) {
         super();
@@ -39,16 +52,18 @@ public class MailMessageAttachment extends ABaseFluidVO {
     }
 
     /**
+     * Gets the path to the attachment.
      *
-     * @return
+     * @return Path to the attachment.
      */
     public String getAttachmentPath() {
         return this.attachmentPath;
     }
 
     /**
+     * Sets the path to the attachment.
      *
-     * @param attachmentPathParam
+     * @param attachmentPathParam Path to the attachment.
      */
     public void setAttachmentPath(String attachmentPathParam) {
         this.attachmentPath = attachmentPathParam;
