@@ -20,6 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -27,10 +30,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.*;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +66,7 @@ public abstract class ABaseClientWS {
     public static final String APPLICATION_JSON_CHARSET_UTF8 = "application/json; charset=UTF-8";
     public static final String CONTENT_TYPE_HEADER = "Content-type";
 
-    private static String endpointUrl = "http://localhost:8080/fluid-ws/";
+    private static String endpointUrl = "https://localhost:8443/fluid-ws/";
 
     protected String serviceTicket;
 
@@ -69,6 +75,8 @@ public abstract class ABaseClientWS {
 
     private static String REGEX_AMP = "\\&";
     private static String REGEX_EQUALS = "\\=";
+
+    public static boolean IS_IN_JUNIT_TEST_MODE = false;
 
     /**
      * The HTML Form Name and Value mapping.
@@ -227,7 +235,7 @@ public abstract class ABaseClientWS {
                     FluidClientException.ErrorCode.CONNECT_ERROR);
         }
 
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpClient httpclient = this.getClient();
 
         try {
             HttpGet httpGet = new HttpGet(endpointUrl.concat(postfixUrlParam));
@@ -236,7 +244,8 @@ public abstract class ABaseClientWS {
             ResponseHandler<String> responseHandler = this.getJsonResponseHandler(
                     endpointUrl.concat(postfixUrlParam));
 
-            String responseBody = this.executeHttp(httpclient,httpGet,responseHandler,postfixUrlParam);
+            String responseBody = this.executeHttp(
+                    httpclient, httpGet, responseHandler, postfixUrlParam);
 
             if(responseBody == null || responseBody.trim().isEmpty())
             {
@@ -559,7 +568,8 @@ public abstract class ABaseClientWS {
                     FluidClientException.ErrorCode.CONNECT_ERROR);
         }
 
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpClient httpclient = this.getClient();
+
         String responseBody = null;
 
         try {
@@ -909,5 +919,45 @@ public abstract class ABaseClientWS {
     public String getFluidAPIVersion()
     {
         return GitDescribe.GIT_DESCRIBE;
+    }
+
+    /**
+     * Creates a new Http client.
+     *
+     * If part of a test run, the Http client will accept
+     * self signed certificates.
+     *
+     * See flag {@code IS_IN_JUNIT_TEST_MODE}.En
+     *
+     * @return CloseableHttpClient that may or may not accept
+     * self signed certificates.
+     */
+    private CloseableHttpClient getClient()
+    {
+        //Only accept self signed certificate if in Junit test case.
+        if(IS_IN_JUNIT_TEST_MODE)
+        {
+            SSLContextBuilder builder = new SSLContextBuilder();
+
+            try {
+                builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+
+                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
+
+                return HttpClients.custom().setSSLSocketFactory(sslsf).build();
+            }
+            //
+            catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+
+                throw new FluidClientException(
+                        "Unable to load self signed trust material.",
+                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
+            }
+        }
+        //
+        else
+        {
+            return HttpClients.createDefault();
+        }
     }
 }
