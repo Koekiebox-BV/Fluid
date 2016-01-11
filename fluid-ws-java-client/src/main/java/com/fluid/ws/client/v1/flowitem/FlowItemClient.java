@@ -16,6 +16,7 @@
 package com.fluid.ws.client.v1.flowitem;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.ws.WS;
@@ -23,20 +24,28 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Created by jasonbruwer on 15/01/04.
+ * Java Web Service Client for Fluid / Flow Item related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FlowItem
+ * @see FluidItem
  */
 public class FlowItemClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public FlowItemClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FlowItemClient(String serviceTicketParam) {
         super();
@@ -45,9 +54,12 @@ public class FlowItemClient extends ABaseClientWS {
     }
 
     /**
-     * @param flowJobItemParam
-     * @param flowNameParam
-     * @return
+     * Creates a new Fluid Item that will be sent to the {@code flowJobItemParam}
+     * Flow.
+     *
+     * @param flowJobItemParam The Fluid Item to create and send to Workflow.
+     * @param flowNameParam The name of the Flow where the Item must be sent.
+     * @return The created Fluid item.
      */
     public FluidItem createFlowItem(
             FluidItem flowJobItemParam,

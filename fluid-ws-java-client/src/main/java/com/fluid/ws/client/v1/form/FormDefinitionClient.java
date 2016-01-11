@@ -15,25 +15,35 @@
 
 package com.fluid.ws.client.v1.form;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Created by jasonbruwer on 15/01/04.
+ * Java Web Service Client for Form Definition related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FormDefinition
+ * @see Form
  */
 public class FormDefinitionClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public FormDefinitionClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FormDefinitionClient(String serviceTicketParam) {
         super();
@@ -42,9 +52,13 @@ public class FormDefinitionClient extends ABaseClientWS {
     }
 
     /**
+     * Creates a new Form Definition with the Fields inside the definition.
      *
-     * @param formDefinitionParam
-     * @return
+     * @param formDefinitionParam The Definition to create.
+     * @return The Created Form Definition.
+     *
+     * @see com.fluid.program.api.vo.Field
+     * @see Form
      */
     public Form createFormDefinition(Form formDefinitionParam)
     {
@@ -58,9 +72,13 @@ public class FormDefinitionClient extends ABaseClientWS {
     }
 
     /**
+     * Creates an existing Form Definition with the Fields inside the definition.
      *
-     * @param formDefinitionParam
-     * @return
+     * @param formDefinitionParam The Definition to update.
+     * @return The Updated Form Definition.
+     *
+     * @see com.fluid.program.api.vo.Field
+     * @see Form
      */
     public Form updateFormDefinition(Form formDefinitionParam)
     {
@@ -75,9 +93,10 @@ public class FormDefinitionClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves the Form Definition by Primary key.
      *
-     * @param formDefinitionIdParam
-     * @return
+     * @param formDefinitionIdParam The Form Definition primary key.
+     * @return Form by Primary key.
      */
     public Form getFormDefinitionById(Long formDefinitionIdParam)
     {
@@ -93,9 +112,11 @@ public class FormDefinitionClient extends ABaseClientWS {
     }
 
     /**
+     * Deletes the Form Definition provided.
+     * Id must be set on the Form Definition.
      *
-     * @param formDefinitionParam
-     * @return
+     * @param formDefinitionParam The Form Definition to Delete.
+     * @return The deleted Form Definition.
      */
     public Form deleteFormDefinition(Form formDefinitionParam)
     {

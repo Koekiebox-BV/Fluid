@@ -66,7 +66,7 @@ public class AuthRequest extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets requested lifetime of the user session.
+     * Gets requested lifetime of the user session in seconds.
      *
      * The provided lifetime is not guaranteed.
      *
@@ -77,11 +77,11 @@ public class AuthRequest extends ABaseFluidJSONObject {
     }
 
     /**
-     * Sets requested lifetime of the user session.
+     * Sets requested lifetime of the user session in seconds.
      *
      * The provided {@code lifetimeParam} is not guaranteed.
      *
-     * @param lifetimeParam The duration of the session in milllis.
+     * @param lifetimeParam The duration of the session in seconds.
      */
     public void setLifetime(Long lifetimeParam) {
         this.lifetime = lifetimeParam;

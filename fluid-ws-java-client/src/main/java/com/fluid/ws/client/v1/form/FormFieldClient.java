@@ -18,6 +18,8 @@ package com.fluid.ws.client.v1.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.MultiChoice;
@@ -26,20 +28,28 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseFieldClient;
 
 /**
- * Created by jasonbruwer on 15/01/04.
+ * Java Web Service Client for Form Field related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FormField
+ * @see Field
  */
 public class FormFieldClient extends ABaseFieldClient {
 
     /**
-     *
+     * Default constructor.
      */
     public FormFieldClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FormFieldClient(String serviceTicketParam) {
         super();
@@ -48,9 +58,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Plain Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldTextPlain(Field formFieldParam)
     {
@@ -70,9 +81,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
-     * @param formFieldParam
-     * @param maskValueParam
-     * @return
+     * Create a new Text Masked field.
+     *
+     * @param formFieldParam Field to Create.
+     * @param maskValueParam The masked value. Example: (999) 999 xxx.
+     * @return Created Field.
      */
     public Field createFieldTextMasked(
             Field formFieldParam, String maskValueParam)
@@ -98,10 +111,13 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Text Barcode field.
      *
-     * @param formFieldParam
-     * @param barcodeTypeParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param barcodeTypeParam The type of barcode.
+     * @return Created Field.
+     *
+     * @see com.fluid.ws.client.v1.ABaseFieldClient.FieldMetaData.Text
      */
     public Field createFieldTextBarcode(
             Field formFieldParam, String barcodeTypeParam)
@@ -129,9 +145,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Text field with latitude and longitude.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldTextLatitudeAndLongitude(
             Field formFieldParam)
@@ -152,9 +169,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new True False field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldTrueFalse(Field formFieldParam)
     {
@@ -174,9 +192,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Paragraph Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldParagraphTextPlain(Field formFieldParam)
     {
@@ -196,9 +215,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Paragraph HTML field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldParagraphTextHTML(Field formFieldParam)
     {
@@ -218,10 +238,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Multi Choice field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param multiChoiceValuesParam The available multi choice values.
+     * @return Created Field.
      */
     public Field createFieldMultiChoicePlain(
             Field formFieldParam, List<String> multiChoiceValuesParam)
@@ -233,7 +254,7 @@ public class FormFieldClient extends ABaseFieldClient {
 
         if(multiChoiceValuesParam == null)
         {
-            multiChoiceValuesParam = new ArrayList<String>();
+            multiChoiceValuesParam = new ArrayList<>();
         }
 
         if(formFieldParam != null)
@@ -248,10 +269,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Multi Choice field with Search abilities.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param multiChoiceValuesParam The available multi choice values.
+     * @return Created Field.
      */
     public Field createFieldMultiChoicePlainWithSearch(
             Field formFieldParam, List<String> multiChoiceValuesParam)
@@ -281,10 +303,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Multi Choice select Many field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param multiChoiceValuesParam The available multi choice values.
+     * @return Created Field.
      */
     public Field createFieldMultiChoiceSelectMany(
             Field formFieldParam, List<String> multiChoiceValuesParam)
@@ -314,10 +337,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Multi Choice select Many field with Search.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param multiChoiceValuesParam The available multi choice values.
+     * @return Created Field.
      */
     public Field createFieldMultiChoiceSelectManyWithSearch(
             Field formFieldParam, List<String> multiChoiceValuesParam)
@@ -347,9 +371,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Date only field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldDateTimeDate(Field formFieldParam)
     {
@@ -369,9 +394,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Date and time field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldDateTimeDateAndTime(Field formFieldParam)
     {
@@ -391,9 +417,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Decimal field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldDecimalPlain(Field formFieldParam)
     {
@@ -413,9 +440,14 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Decimal Spinner field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     * @param stepFactorParam The increment factor.
+     * @param prefixParam The Prefix of the spinner. Example. $.
+     * @return Created Field.
      */
     public Field createFieldDecimalSpinner(
             Field formFieldParam,
@@ -443,9 +475,13 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Decimal Slider field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     * @param stepFactorParam The increment factor.
+     * @return Created Field.
      */
     public Field createFieldDecimalSlider(
             Field formFieldParam,
@@ -473,9 +509,12 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Decimal Rating field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     * @return Created Field.
      */
     public Field createFieldDecimalRating(
             Field formFieldParam,
@@ -501,11 +540,12 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Creates a new Table Field.
      *
-     * @param formFieldParam
-     * @param formDefinitionParam
-     * @param sumDecimalsParam
-     * @return
+     * @param formFieldParam The Base field to create.
+     * @param formDefinitionParam The Form Definition for the Table Field.
+     * @param sumDecimalsParam Whether decimals should be summed.
+     * @return Table Field.
      */
     public Field createFieldTable(
             Field formFieldParam,
@@ -530,9 +570,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldTextPlain(Field formFieldParam)
     {
@@ -552,9 +593,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Masked Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param maskValueParam The new masked value.
+     * @return Updated Field.
      */
     public Field updateFieldTextMasked(Field formFieldParam, String maskValueParam)
     {
@@ -581,10 +624,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Barcode Text field.
      *
-     * @param formFieldParam
-     * @param barcodeTypeParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param barcodeTypeParam The new type of barcode image.
+     * @return Updated Field.
      */
     public Field updateFieldTextBarcode(Field formFieldParam, String barcodeTypeParam)
     {
@@ -611,9 +655,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Latitude Longitude Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldTextLatitudeAndLongitude(Field formFieldParam)
     {
@@ -633,9 +678,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing True False field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldTrueFalse(Field formFieldParam)
     {
@@ -655,9 +701,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Paragraph Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldParagraphTextPlain(Field formFieldParam)
     {
@@ -677,9 +724,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Paragraph HTML field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldParagraphTextHTML(Field formFieldParam)
     {
@@ -699,10 +747,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Multi Choice field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param multiChoiceValuesParam New available Multi-choices.
+     * @return Updated Field.
      */
     public Field updateFieldMultiChoicePlain(
             Field formFieldParam,
@@ -733,10 +782,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Multi Choice field with Search.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param multiChoiceValuesParam New available Multi-choices.
+     * @return Updated Field.
      */
     public Field updateFieldMultiChoicePlainWithSearch(
             Field formFieldParam,
@@ -767,10 +817,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Multi Choice select many field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param multiChoiceValuesParam New available Multi-choices.
+     * @return Updated Field.
      */
     public Field updateFieldMultiChoiceSelectMany(
             Field formFieldParam,
@@ -801,10 +852,11 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Multi Choice select many field with Search.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param multiChoiceValuesParam New available Multi-choices.
+     * @return Updated Field.
      */
     public Field updateFieldMultiChoiceSelectManyWithSearch(
             Field formFieldParam,
@@ -835,9 +887,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Date field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldDateTimeDate(Field formFieldParam)
     {
@@ -857,9 +910,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Date and Time field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldDateTimeDateAndTime(Field formFieldParam)
     {
@@ -879,9 +933,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Decimal field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldDecimalPlain(Field formFieldParam)
     {
@@ -901,13 +956,15 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Updates the Decimal Spinner field.
      *
-     * @param formFieldParam
-     * @param minParam
-     * @param maxParam
-     * @param stepFactorParam
-     * @param prefixParam
-     * @return
+     * @param formFieldParam The Field.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     * @param stepFactorParam The increments or step factor.
+     * @param prefixParam The prefix to the decimal. Example is $ for currency.
+     *
+     * @return Updated Decimal Spinner.
      */
     public Field updateFieldDecimalSpinner(
             Field formFieldParam,
@@ -935,12 +992,14 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Updates the Decimal Slider field.
      *
-     * @param formFieldParam
-     * @param minParam
-     * @param maxParam
-     * @param stepFactorParam
-     * @return
+     * @param formFieldParam The Field.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     * @param stepFactorParam The increments or step factor.
+     *
+     * @return Updated Decimal Slider.
      */
     public Field updateFieldDecimalSlider(
             Field formFieldParam,
@@ -967,11 +1026,13 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Updates the Decimal Rating field.
      *
-     * @param formFieldParam
-     * @param minParam
-     * @param maxParam
-     * @return
+     * @param formFieldParam The Field.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     *
+     * @return Updated Decimal Rating.
      */
     public Field updateFieldDecimalRating(
             Field formFieldParam,
@@ -997,11 +1058,13 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Updates a Table Field.
      *
-     * @param formFieldParam
-     * @param formDefinitionParam
-     * @param sumDecimalsParam
-     * @return
+     * @param formFieldParam The Field to Update.
+     * @param formDefinitionParam The Form Definition to Update.
+     * @param sumDecimalsParam Whether decimals should be summed.
+     *
+     * @return Updated Field.
      */
     public Field updateFieldTable(
             Field formFieldParam,
@@ -1026,9 +1089,10 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Retrieve a Form Field via Primary key.
      *
-     * @param fieldIdParam
-     * @return
+     * @param fieldIdParam The field Primary Key.
+     * @return Field and properties.
      */
     public Field getFieldById(Long fieldIdParam)
     {
@@ -1044,9 +1108,12 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Deletes the provided field.
      *
-     * @param fieldParam
-     * @return
+     * Ensure that Id is set.
+     *
+     * @param fieldParam The Field to delete.
+     * @return The deleted Field.
      */
     public Field deleteField(Field fieldParam)
     {
@@ -1059,9 +1126,14 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Forcefully deletes the provided field.
      *
-     * @param fieldParam
-     * @return
+     * Ensure that Id is set.
+     *
+     * Only 'admin' is able to forcefully delete a field.
+     *
+     * @param fieldParam The Field to delete.
+     * @return The deleted Field.
      */
     public Field forceDeleteField(Field fieldParam)
     {
@@ -1075,16 +1147,17 @@ public class FormFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Generates the Meta Data for a table field.
      *
-     * @param formDefinitionParam
-     * @param sumDecimalsParam
-     * @return
+     * @param formDefinitionParam The Form Definition to use.
+     * @param sumDecimalsParam Whether decimal values should be summarized.
+     * @return Meta Data for the Table Field.
      */
     private String getMetaDataForTableField(
             Form formDefinitionParam,
             boolean sumDecimalsParam)
     {
-        StringBuffer returnBuffer = new StringBuffer();
+        StringBuilder returnBuffer = new StringBuilder();
 
         Long definitionId =
                 (formDefinitionParam == null) ? -1L:

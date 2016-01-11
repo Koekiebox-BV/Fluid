@@ -197,7 +197,7 @@ public class FluidItem extends ABaseFluidJSONObject {
         /**
          * Sets the Value of the Property.
          *
-         * @param valueParam
+         * @param valueParam The value of the Fluid Item property.
          */
         public void setValue(String valueParam) {
             this.value = valueParam;

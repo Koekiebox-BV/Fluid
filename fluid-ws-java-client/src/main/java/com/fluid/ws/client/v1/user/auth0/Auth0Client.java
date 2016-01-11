@@ -17,6 +17,8 @@ package com.fluid.ws.client.v1.user.auth0;
 
 import java.io.UnsupportedEncodingException;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.auth0.AccessToken;
 import com.fluid.program.api.vo.auth0.AccessTokenRequest;
 import com.fluid.program.api.vo.auth0.NormalizedUserProfile;
@@ -25,52 +27,45 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Created by jasonbruwer on 2015/11/06.
+ * Java Web Service Client for Auth0 related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.Auth0
  */
 public class Auth0Client extends ABaseClientWS {
 
-    /**
-     *
-     */
-    public static final class FormElements
-    {
-        public static final String CLIENT_ID = "client_id";
-        public static final String REDIRECT_URI = "redirect_uri";
-        public static final String CLIENT_SECRET = "client_secret";
-        public static final String CODE = "code";
-        public static final String GRANT_TYPE = "grant_type";
-
-        /**
-         *
-         */
-        public static final class Value
-        {
-            public static final String AUTHORIZATION_CODE = "authorization_code";
-        }
-    }
+    public static final String AUTHORIZATION_CODE = "authorization_code";
 
     /**
-     *
+     * Default constructor.
      */
     public Auth0Client() {
         super();
     }
 
     /**
+     * Constructs Auth0 Client to a provided enpoint.
      *
-     * @param urlToAuth0EndpointParam
+     * @param urlToAuth0EndpointParam The endpoint to connect to.
      */
     public Auth0Client(String urlToAuth0EndpointParam) {
         super(urlToAuth0EndpointParam);
     }
 
     /**
+     * Gets a Access Token from Auth0.
      *
-     * @param clientIdParam
-     * @param clientSecretParam
-     * @param codeParam
-     * @param redirectUrlParam
-     * @return
+     * @param clientIdParam The client id.
+     * @param clientSecretParam The client secret.
+     * @param codeParam The code.
+     * @param redirectUrlParam The redirect URL after successful authentication.
+     *
+     * @return Access Token.
+     *
+     * @see AccessToken
      */
     public AccessToken getAccessToken(
             String clientIdParam,
@@ -105,7 +100,7 @@ public class Auth0Client extends ABaseClientWS {
 
         tokenRequest.setClientId(clientIdParam);
         tokenRequest.setClientSecret(clientSecretParam);
-        tokenRequest.setGrantType(FormElements.Value.AUTHORIZATION_CODE);
+        tokenRequest.setGrantType(AUTHORIZATION_CODE);
         tokenRequest.setCode(codeParam);
         tokenRequest.setRedirectUri(redirectUrlParam);
 
@@ -114,9 +109,14 @@ public class Auth0Client extends ABaseClientWS {
     }
 
     /**
+     * Gets Auth0 Normalized User Profile info.
      *
-     * @param accessTokenParam
-     * @return
+     * @param accessTokenParam The access token used to get
+     *                         user profile info from.
+     * @return User Profile.
+     *
+     * @see NormalizedUserProfile
+     * @see AccessToken
      */
     public NormalizedUserProfile getUserProfileInfo(AccessToken accessTokenParam)
     {

@@ -22,7 +22,6 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import com.fluid.GitDescribe;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -36,17 +35,29 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.GitDescribe;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 import com.fluid.program.api.vo.ws.Error;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.FluidClientException;
 
 /**
- * Created by jasonbruwer on 14/12/21.
+ * Base class for all REST related calls.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see HttpEntity
+ * @see HttpResponse
+ * @see HttpClient
+ * @see ContentType
+ * @see StringEntity
+ * @see WS
  */
-public class ABaseClientWS {
+public abstract class ABaseClientWS {
 
-    public static final String APPLICATION_JSON = "application/json; charset=UTF-8";
+    public static final String APPLICATION_JSON_CHARSET_UTF8 = "application/json; charset=UTF-8";
     public static final String CONTENT_TYPE_HEADER = "Content-type";
 
     private static String endpointUrl = "http://localhost:8080/fluid-ws/";
@@ -56,18 +67,21 @@ public class ABaseClientWS {
     private static String EQUALS = "=";
     private static String AMP = "&";
 
+    private static String REGEX_AMP = "\\&";
+    private static String REGEX_EQUALS = "\\=";
 
     /**
-     *
+     * The HTML Form Name and Value mapping.
      */
     public static class FormNameValue{
         private String name;
         private String value;
 
         /**
+         * Sets the HTML name and value.
          *
-         * @param nameParam
-         * @param valueParam
+         * @param nameParam The HTML name.
+         * @param valueParam The HTML value.
          */
         public FormNameValue(String nameParam, String valueParam) {
             this.name = nameParam;
@@ -76,16 +90,18 @@ public class ABaseClientWS {
         }
 
         /**
+         * Gets the Form Param Name.
          *
-         * @return
+         * @return The Form Param Name.
          */
         public String getName() {
             return this.name;
         }
 
         /**
+         * Gets the Form Param Value.
          *
-         * @return
+         * @return The Form Param Value.
          */
         public String getValue() {
             return value;
@@ -93,23 +109,29 @@ public class ABaseClientWS {
     }
 
     /**
+     * The HTTP Method type to use.
      *
+     * See: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
      */
     private enum HttpMethod
     {
-        GET,POST,PUT,DELETE
+        GET,
+        POST,
+        PUT,
+        DELETE
     }
 
     /**
-     *
+     * Default constructor.
      */
     public ABaseClientWS() {
         super();
     }
 
     /**
+     * Creates a new client and sets the Base Endpoint URL.
      *
-     * @param endpointUrlParam
+     * @param endpointUrlParam URL to base endpoint.
      */
     public ABaseClientWS(String endpointUrlParam) {
         this();
@@ -117,9 +139,64 @@ public class ABaseClientWS {
     }
 
     /**
+     * Performs an HTTP request with {@code postfixUrlParam} on {@code httpClientParam}.
      *
-     * @param postfixUrlParam
-     * @return
+     * @param httpClientParam The Apache Http Client to use.
+     * @param httpUriRequestParam The Apache URI Request.
+     * @param responseHandlerParam The response from the request handler.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see HttpClient
+     * @see HttpUriRequest
+     * @see ResponseHandler
+     */
+    private String executeHttp(
+            HttpClient httpClientParam,
+            HttpUriRequest httpUriRequestParam,
+            ResponseHandler responseHandlerParam,
+            String postfixUrlParam)
+    {
+        try {
+            Object returnedObj = httpClientParam.execute(httpUriRequestParam, responseHandlerParam);
+            if(returnedObj instanceof String)
+            {
+                return (String)returnedObj;
+            }
+
+            throw new FluidClientException(
+                    "Expected 'String' got '"+(
+                            (returnedObj == null) ? null:returnedObj.getClass().getName()),
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+        //
+        catch (IOException e) {
+
+            if(e instanceof UnknownHostException)
+            {
+                throw new FluidClientException(
+                        "Unable to reach host '"+
+                                endpointUrl.concat(postfixUrlParam)+"'. "+e.getMessage(),
+                        FluidClientException.ErrorCode.CONNECT_ERROR);
+            }
+
+            if(e instanceof ConnectException)
+            {
+                throw new FluidClientException(e.getMessage(),
+                        FluidClientException.ErrorCode.CONNECT_ERROR);
+            }
+
+            throw new FluidClientException(e.getMessage(), FluidClientException.ErrorCode.IO_ERROR);
+        }
+    }
+
+    /**
+     * Performs an HTTP-GET request with {@code postfixUrlParam}.
+     *
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
      */
     public JSONObject getJson(
             String postfixUrlParam) {
@@ -127,12 +204,16 @@ public class ABaseClientWS {
         return this.getJson(false,postfixUrlParam);
     }
 
-        /**
-         *
-         * @param skipCheckConnectionValidParam
-         * @param postfixUrlParam
-         * @return
-         */
+    /**
+     * Performs an HTTP-GET request with {@code postfixUrlParam}.
+     *
+     * @param skipCheckConnectionValidParam Skip to check if connection to
+     *                                      base endpoint is valid.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
+     */
     public JSONObject getJson(
             boolean skipCheckConnectionValidParam,
             String postfixUrlParam) {
@@ -205,57 +286,15 @@ public class ABaseClientWS {
     }
 
     /**
+     * Performs an HTTP-POST request with {@code postfixUrlParam}.
      *
-     * @param httpClientParam
-     * @param httpUriRequestParam
-     * @param responseHandlerParam
-     * @param postfixUrlParam
-     * @return
-     */
-    private String executeHttp(
-            HttpClient httpClientParam,
-            HttpUriRequest httpUriRequestParam,
-            ResponseHandler responseHandlerParam,
-            String postfixUrlParam)
-    {
-        try {
-            Object returnedObj = httpClientParam.execute(httpUriRequestParam, responseHandlerParam);
-            if(returnedObj instanceof String)
-            {
-                return (String)returnedObj;
-            }
-
-            throw new FluidClientException(
-                    "Expected 'String' got '"+(
-                            (returnedObj == null) ? null:returnedObj.getClass().getName()),
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
-        //
-        catch (IOException e) {
-
-            if(e instanceof UnknownHostException)
-            {
-                throw new FluidClientException(
-                        "Unable to reach host '"+
-                                endpointUrl.concat(postfixUrlParam)+"'. "+e.getMessage(),
-                        FluidClientException.ErrorCode.CONNECT_ERROR);
-            }
-
-            if(e instanceof ConnectException)
-            {
-                throw new FluidClientException(e.getMessage(),
-                        FluidClientException.ErrorCode.CONNECT_ERROR);
-            }
-
-            throw new FluidClientException(e.getMessage(), FluidClientException.ErrorCode.IO_ERROR);
-        }
-    }
-
-    /**
+     * @param baseDomainParam The base domain to convert to JSON and POST
+     *                        to {@code this} endpoint.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
      *
-     * @param baseDomainParam
-     * @param postfixUrlParam
-     * @return
+     * @see JSONObject
+     * @see ABaseFluidJSONObject
      */
     protected JSONObject postJson(
             ABaseFluidJSONObject baseDomainParam,
@@ -266,11 +305,16 @@ public class ABaseClientWS {
     }
 
     /**
+     * Performs an HTTP-POST request with {@code postfixUrlParam}.
      *
-     * @param checkConnectionValidParam
-     * @param baseDomainParam
-     * @param postfixUrlParam
-     * @return
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param baseDomainParam The base domain to convert to JSON and POST
+     *                        to {@code this} endpoint.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
+     * @see ABaseFluidJSONObject
      */
     protected JSONObject postJson(
             boolean checkConnectionValidParam,
@@ -285,12 +329,15 @@ public class ABaseClientWS {
                 postfixUrlParam);
     }
 
-
     /**
+     * Performs an HTTP-DELETE request with {@code postfixUrlParam}.
      *
-     * @param baseDomainParam
-     * @param postfixUrlParam
-     * @return
+     * @param baseDomainParam The base domain to convert to JSON and DELETE
+     *                        to {@code this} endpoint.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
      */
     protected JSONObject deleteJson(
             ABaseFluidJSONObject baseDomainParam,
@@ -301,11 +348,15 @@ public class ABaseClientWS {
     }
 
     /**
+     * Performs an HTTP-DELETE request with {@code postfixUrlParam}.
      *
-     * @param checkConnectionValidParam
-     * @param baseDomainParam
-     * @param postfixUrlParam
-     * @return
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param baseDomainParam The base domain to convert to JSON and DELETE
+     *                        to {@code this} endpoint.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
      */
     protected JSONObject deleteJson(
             boolean checkConnectionValidParam,
@@ -321,11 +372,13 @@ public class ABaseClientWS {
     }
 
     /**
+     * Performs an HTTP-POST request with {@code postfixUrlParam} making use of
+     * form params as {@code formNameValuesParam}.
      *
-     * @param checkConnectionValidParam
-     * @param formNameValuesParam
-     * @param postfixUrlParam
-     * @return
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param formNameValuesParam The name and value pairs of form data.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
      */
     protected JSONObject postForm(
             boolean checkConnectionValidParam,
@@ -340,13 +393,13 @@ public class ABaseClientWS {
                 postfixUrlParam);
     }
 
-
     /**
+     * Performs an HTTP-PUT request with {@code postfixUrlParam}.
      *
-     * @param checkConnectionValidParam
-     * @param baseDomainParam
-     * @param postfixUrlParam
-     * @return
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param baseDomainParam The JSON object to submit to endpoint as PUT.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
      */
     protected JSONObject putJson(
             boolean checkConnectionValidParam,
@@ -361,12 +414,12 @@ public class ABaseClientWS {
                 postfixUrlParam);
     }
 
-
     /**
+     * Performs an HTTP-PUT request with {@code postfixUrlParam}.
      *
-     * @param baseDomainParam
-     * @param postfixUrlParam
-     * @return
+     * @param baseDomainParam The JSON object to submit to endpoint as PUT.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
      */
     protected JSONObject putJson(
             ABaseFluidJSONObject baseDomainParam,
@@ -377,13 +430,19 @@ public class ABaseClientWS {
     }
 
     /**
+     * Submit a JSON based HTTP request body with JSON as a response.
      *
-     * @param httpMethodParam
-     * @param checkConnectionValidParam
-     * @param baseDomainParam
-     * @param contentTypeParam
-     * @param postfixUrlParam
-     * @return
+     * @param httpMethodParam The HTTP method to use.
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param baseDomainParam The object to convert to JSON and submit as {@code httpMethodParam}.
+     * @param contentTypeParam The Mime / Content type to submit as.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see HttpMethod
+     * @see JSONObject
+     * @see ContentType
+     * @see ABaseFluidJSONObject
      */
     protected JSONObject executeJson(
             HttpMethod httpMethodParam,
@@ -406,13 +465,20 @@ public class ABaseClientWS {
     }
 
     /**
+     * Submit a HTML Form based HTTP request body with JSON as a response.
      *
-     * @param httpMethodParam
-     * @param checkConnectionValidParam
-     * @param formNameValuesParam
-     * @param contentTypeParam
-     * @param postfixUrlParam
-     * @return
+     * @param httpMethodParam The HTTP method to use.
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param formNameValuesParam The Form name and value pairs.
+     * @param contentTypeParam The Mime / Content type to submit as.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     *
+     * @return Return body as JSON.
+     *
+     * @see HttpMethod
+     * @see JSONObject
+     * @see ContentType
+     * @see ABaseFluidJSONObject
      */
     protected JSONObject executeForm(
             HttpMethod httpMethodParam,
@@ -456,22 +522,29 @@ public class ABaseClientWS {
     }
 
     /**
+     * Submit the {@code stringParam} as HTTP request body with JSON as a response.
      *
-     * @param httpMethodParam
-     * @param checkConnectionValidParam
-     * @param baseDomainParam
-     * @param contentTypeParam
-     * @param postfixUrlParam
-     * @return
+     * @param httpMethodParam The HTTP method to use.
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param stringParam The Text to submit.
+     * @param contentTypeParam The Mime / Content type to submit as.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     *
+     * @return Return body as JSON.
+     *
+     * @see HttpMethod
+     * @see JSONObject
+     * @see ContentType
+     * @see ABaseFluidJSONObject
      */
     protected JSONObject executeString(
             HttpMethod httpMethodParam,
             boolean checkConnectionValidParam,
-            String baseDomainParam,
+            String stringParam,
             ContentType contentTypeParam,
             String postfixUrlParam) {
 
-        if(baseDomainParam == null || baseDomainParam.isEmpty())
+        if(stringParam == null || stringParam.isEmpty())
         {
             throw new FluidClientException("No JSON body to post.",
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
@@ -501,7 +574,7 @@ public class ABaseClientWS {
                     RequestBuilder builder = RequestBuilder.post().setUri(
                             endpointUrl.concat(postfixUrlParam));
 
-                    builder = this.addParamsToBuildFromString(builder,baseDomainParam);
+                    builder = this.addParamsToBuildFromString(builder,stringParam);
 
                     uriRequest = builder.build();
                 }
@@ -521,7 +594,7 @@ public class ABaseClientWS {
                     RequestBuilder builder = RequestBuilder.put().setUri(
                             endpointUrl.concat(postfixUrlParam));
 
-                    builder = this.addParamsToBuildFromString(builder, baseDomainParam);
+                    builder = this.addParamsToBuildFromString(builder, stringParam);
                     uriRequest = builder.build();
                 }
                 else
@@ -548,7 +621,7 @@ public class ABaseClientWS {
             //When HttpEntity Enclosing Request Base...
             if(uriRequest instanceof HttpEntityEnclosingRequestBase)
             {
-                HttpEntity httpEntity = new StringEntity(baseDomainParam, contentTypeParam);
+                HttpEntity httpEntity = new StringEntity(stringParam, contentTypeParam);
                 ((HttpEntityEnclosingRequestBase)uriRequest).setEntity(httpEntity);
             }
 
@@ -557,7 +630,7 @@ public class ABaseClientWS {
                     endpointUrl.concat(postfixUrlParam));
 
             responseBody = this.executeHttp(httpclient, uriRequest,
-                    responseHandler, postfixUrlParam);;
+                    responseHandler, postfixUrlParam);
 
             if(responseBody == null || responseBody.trim().isEmpty())
             {
@@ -625,22 +698,23 @@ public class ABaseClientWS {
     }
 
     /**
+     * Add params to the {@code builderParam} and returns {@code builderParam}.
      *
-     * @param builderParam
-     * @param formDataToAddParam
-     * @return
+     * @param builderParam Possible existing builder.
+     * @param formDataToAddParam Form Data as Text.
+     * @return Apache HTTP commons request builder.
      */
     private RequestBuilder addParamsToBuildFromString(
             RequestBuilder builderParam,
             String formDataToAddParam)
     {
-        String[] nameValuePairs = formDataToAddParam.split("\\&");
+        String[] nameValuePairs = formDataToAddParam.split(REGEX_AMP);
 
         if(nameValuePairs != null && nameValuePairs.length > 0)
         {
             for(String nameValuePair : nameValuePairs)
             {
-                String[] nameValuePairArr = nameValuePair.split("\\=");
+                String[] nameValuePairArr = nameValuePair.split(REGEX_EQUALS);
                 if(nameValuePairArr.length > 1)
                 {
                     String name = nameValuePairArr[0];
@@ -655,23 +729,26 @@ public class ABaseClientWS {
     }
 
     /**
+     * Get a text based response handler used mainly for JSON.
      *
-     * @param urlCalledParam
-     * @return
+     * @param urlCalledParam The url called.
+     * @return String based response handler.
      */
     private ResponseHandler<String> getJsonResponseHandler(final String urlCalledParam)
     {
         // Create a custom response handler
         ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-            /**
-             *
-             * @param response
-             * @return
-             * @throws java.io.IOException
-             */
-            public String handleResponse(final HttpResponse response) throws IOException {
 
-                int status = response.getStatusLine().getStatusCode();
+            /**
+             * Process the {@code responseParam} and return text if valid.
+             *
+             * @param responseParam The HTTP response from the server.
+             * @return Text response.
+             * @throws IOException If there are any communication or I/O problems.
+             */
+            public String handleResponse(final HttpResponse responseParam) throws IOException {
+
+                int status = responseParam.getStatusLine().getStatusCode();
                 if (status == 404) {
                     throw new FluidClientException(
                             "Endpoint for Service not found. URL ["+
@@ -680,7 +757,7 @@ public class ABaseClientWS {
                 }
                 //
                 else if (status >= 200 && status < 300) {
-                    HttpEntity entity = response.getEntity();
+                    HttpEntity entity = responseParam.getEntity();
 
                     String responseJsonString = entity != null ?
                             EntityUtils.toString(entity) : null;
@@ -689,7 +766,7 @@ public class ABaseClientWS {
                 }
                 //Bad Request... Server Side Error meant for client...
                 else if (status == 400) {
-                    HttpEntity entity = response.getEntity();
+                    HttpEntity entity = responseParam.getEntity();
 
                     String responseJsonString = entity != null ?
                             EntityUtils.toString(entity) : null;
@@ -698,14 +775,14 @@ public class ABaseClientWS {
                 }
                 //
                 else {
-                    HttpEntity entity = response.getEntity();
+                    HttpEntity entity = responseParam.getEntity();
 
                     String responseString = (entity != null) ?
                             EntityUtils.toString(entity) : null;
 
                     throw new FluidClientException(
                             "Unexpected response status: " + status+". "
-                            +response.getStatusLine().getReasonPhrase()+". \nResponse Text ["+
+                            +responseParam.getStatusLine().getReasonPhrase()+". \nResponse Text ["+
                                     responseString+"]",
                             FluidClientException.ErrorCode.IO_ERROR);
                 }
@@ -716,19 +793,25 @@ public class ABaseClientWS {
     }
 
     /**
+     * Translates a string into {@code application/x-www-form-urlencoded}
+     * format using a specific encoding scheme. This method uses the
+     * supplied encoding scheme to obtain the bytes for unsafe
+     * characters.
      *
-     * @param paramParam
-     * @return
+     * @param textParam The text to URL encode.
+     * @return Encoded text from {@code textParam}.
+     *
+     * @see URLEncoder#encode(String, String)
      */
-    public static String encodeParam(String paramParam)
+    public static String encodeParam(String textParam)
     {
-        if(paramParam == null)
+        if(textParam == null)
         {
             return null;
         }
 
         try {
-            return URLEncoder.encode(paramParam,"UTF-8");
+            return URLEncoder.encode(textParam,"UTF-8");
         }
         //
         catch (UnsupportedEncodingException e) {
@@ -739,8 +822,10 @@ public class ABaseClientWS {
     }
 
     /**
+     * Performs a HTTP Get against the connection test Web Service to
+     * confirm whether the connection is valid.
      *
-     * @return
+     * @return Whether the connection is valid or not.
      */
     public boolean isConnectionValid()
     {
@@ -763,9 +848,14 @@ public class ABaseClientWS {
     }
 
     /**
+     * Inspects the {@code baseDomainParam} to confirm whether
+     * the base domain is of type {@code Error}.
      *
-     * @param baseDomainParam
-     * @return
+     * @param baseDomainParam The domain object to inspect.
+     * @return Whether the {@code baseDomainParam} is of type {@code Error} or error code is greater than 0.
+     *
+     * @see ABaseFluidJSONObject
+     * @see Error
      */
     protected boolean isError(ABaseFluidJSONObject baseDomainParam)
     {
@@ -774,7 +864,7 @@ public class ABaseClientWS {
             return false;
         }
 
-        //
+        //Must be subclass of error and error code greater than 0...
         if(baseDomainParam instanceof Error && ((Error)baseDomainParam).getErrorCode() > 0)
         {
             return true;
@@ -784,33 +874,37 @@ public class ABaseClientWS {
     }
 
     /**
+     * Gets the service ticket.
      *
-     * @return
+     * @return The service ticket.
      */
     public String getServiceTicket() {
         return this.serviceTicket;
     }
 
     /**
+     * Sets the service ticket.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The service ticket.
      */
     public void setServiceTicket(String serviceTicketParam) {
         this.serviceTicket = serviceTicketParam;
     }
 
     /**
+     * Checks whether the {@code textParam} is {@code null} or empty.
      *
-     * @param textParam
-     * @return
+     * @param textParam The text to check.
+     * @return Whether the {@code textParam} is empty.
      */
     protected final boolean isEmpty(String textParam) {
         return (textParam == null) ? true : textParam.trim().isEmpty();
     }
 
     /**
+     * Retrieves the `git describe` outcome.
      *
-     * @return
+     * @return The version of the Fluid API.
      */
     public String getFluidAPIVersion()
     {

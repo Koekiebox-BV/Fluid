@@ -16,6 +16,7 @@
 package com.fluid.ws.client.v1.user;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fluid.program.api.vo.User;
 import com.fluid.program.api.vo.ws.WS;
@@ -23,20 +24,28 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Created by jasonbruwer on 15/01/04.
+ * Java Web Service Client for User related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.User
+ * @see User
  */
 public class UserClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public UserClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public UserClient(String serviceTicketParam) {
         super();
@@ -45,9 +54,12 @@ public class UserClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves user information for the provided {@code usernameParam}.
      *
-     * @param usernameParam
-     * @return
+     * @param usernameParam The username of the user to retrieve info for.
+     * @return User information.
+     *
+     * @see User
      */
     public User getUserInformationWhereUsername(String usernameParam)
     {
@@ -69,6 +81,4 @@ public class UserClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
-
-
 }

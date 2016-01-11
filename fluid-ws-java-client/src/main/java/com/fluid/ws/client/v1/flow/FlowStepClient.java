@@ -15,31 +15,39 @@
 
 package com.fluid.ws.client.v1.flow;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.flow.FlowStep;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Used to change any of the Flow rules and
- * underlying steps and rules.
+ * Used to change any of the Flow Steps.
  *
  * This is ideal for doing automated tests against
  * the Fluid platform.
  *
- * Created by jasonbruwer on 15/12/19.
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FlowStep
+ * @see FlowStep
+ * @see ABaseClientWS
  */
 public class FlowStepClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public FlowStepClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FlowStepClient(String serviceTicketParam) {
         super();
@@ -47,11 +55,11 @@ public class FlowStepClient extends ABaseClientWS {
         this.setServiceTicket(serviceTicketParam);
     }
 
-
     /**
+     * Creates a new Flow Step.
      *
-     * @param flowStepParam
-     * @return
+     * @param flowStepParam The step to create.
+     * @return The created step.
      */
     public FlowStep createFlowStep(FlowStep flowStepParam)
     {
@@ -65,9 +73,10 @@ public class FlowStepClient extends ABaseClientWS {
     }
 
     /**
+     * Updates an existing Flow Step.
      *
-     * @param flowStepParam
-     * @return
+     * @param flowStepParam The updated Flow Step values.
+     * @return The updated Step.
      */
     public FlowStep updateFlowStep(FlowStep flowStepParam)
     {
@@ -81,10 +90,13 @@ public class FlowStepClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves an existing Flow Step via Primary key.
      *
-     * @param flowIdParam
-     * @param flowStepTypeParam
-     * @return
+     * @param flowIdParam The Flow Step Primary Key.
+     * @param flowStepTypeParam The type of step.
+     * @return The Step retrieved by Primary key.
+     *
+     * @see com.fluid.program.api.vo.flow.FlowStep.StepType
      */
     public FlowStep getFlowStepById(
             Long flowIdParam, String flowStepTypeParam)
@@ -102,9 +114,10 @@ public class FlowStepClient extends ABaseClientWS {
     }
 
     /**
+     * Delete an existing Flow Step.
      *
-     * @param flowStepParam
-     * @return
+     * @param flowStepParam The Flow Step to delete.
+     * @return The deleted Flow Step.
      */
     public FlowStep deleteFlowStep(FlowStep flowStepParam)
     {
@@ -118,9 +131,12 @@ public class FlowStepClient extends ABaseClientWS {
     }
 
     /**
+     * Forcefully delete an existing Flow Step.
      *
-     * @param flowStepParam
-     * @return
+     * Only 'admin' can forcefully delete a step.
+     *
+     * @param flowStepParam The Flow Step to delete.
+     * @return The deleted Flow Step.
      */
     public FlowStep forceDeleteFlowStep(FlowStep flowStepParam)
     {

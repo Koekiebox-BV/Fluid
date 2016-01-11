@@ -17,6 +17,8 @@ package com.fluid.ws.client.v1.form;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.FormFlowHistoricData;
 import com.fluid.program.api.vo.FormFlowHistoricDataContainer;
@@ -24,20 +26,28 @@ import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Created by jasonbruwer on 15/01/04.
+ * Java Web Service Client for Electronic Form related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FormContainer
+ * @see Form
  */
 public class FormContainerClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public FormContainerClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FormContainerClient(String serviceTicketParam) {
         super();
@@ -46,9 +56,12 @@ public class FormContainerClient extends ABaseClientWS {
     }
 
     /**
+     * Create a new Form Container / Electronic Forms.
      *
-     * @param formParam
-     * @return
+     * @param formParam The Form to create.
+     * @return Created Form Container / Electronic Form.
+     *
+     * @see com.fluid.program.api.vo.Field
      */
     public Form createFormContainer(Form formParam)
     {
@@ -62,9 +75,12 @@ public class FormContainerClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves Electronic Form Workflow historic information.
      *
-     * @param formParam
-     * @return
+     * The Form Id must be provided.
+     *
+     * @param formParam The form to retrieve historic data for.
+     * @return Electronic Form historic data.
      */
     public List<FormFlowHistoricData> getFormContainerHistoricData(Form formParam)
     {

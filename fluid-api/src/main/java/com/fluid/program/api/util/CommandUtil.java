@@ -168,6 +168,8 @@ public class CommandUtil {
      * @return The result of the execution.
      *
      * @see CommandUtil#executeCommand(String...)
+     *
+     * @throws Exception If anything goes wrong during execution.
      */
     public static CommandResult executeCommand(String objectCommandParam) throws Exception {
         if (objectCommandParam == null) {

@@ -153,6 +153,8 @@ public interface ISyntax {
         /**
          * Gets the parameter count for Stored Procedure {@code aliasParam}.
          *
+         * @param aliasParam The Stored Procedure.
+         *
          * @return Number of parameters for Stored Procedure {@code aliasParam}.
          */
         public static int getParamCountForAlias(String aliasParam)

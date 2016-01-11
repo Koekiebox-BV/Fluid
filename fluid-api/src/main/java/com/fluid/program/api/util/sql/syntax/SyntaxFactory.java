@@ -95,8 +95,8 @@ public class SyntaxFactory {
     /**
      * Returns the {@code ISyntax} from the {@code sqlTypeParam} and {@code formFieldMappingParam}.
      *
-     * @param sqlTypeParam
-     * @param formFieldMappingParam
+     * @param sqlTypeParam The type of SQL DB engine.
+     * @param formFieldMappingParam The Form Field mapping.
      * @return implementation of {@code ISyntax}.
      *
      * @see ISyntax
@@ -165,6 +165,7 @@ public class SyntaxFactory {
      * Checks whether {@code textToCheckParam} is Plain.
      *
      * @param textToCheckParam The String to check.
+     *
      * @return Whether the {@code textToCheckParam} is of type Plain.
      */
     private final boolean isPlain(String textToCheckParam)
@@ -183,6 +184,7 @@ public class SyntaxFactory {
      * Checks whether {@code textToCheckParam} is Select Many.
      *
      * @param textToCheckParam The String to check.
+     *
      * @return Whether the {@code textToCheckParam} is of type Select Many.
      */
     private final boolean isSelectMany(String textToCheckParam)

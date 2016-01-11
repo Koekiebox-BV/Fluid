@@ -15,31 +15,39 @@
 
 package com.fluid.ws.client.v1.flow;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
- * Used to change any of the Flow rules and
- * underlying steps and rules.
+ * Used to change any of the Flow's / Workflows.
  *
  * This is ideal for doing automated tests against
  * the Fluid platform.
  *
- * Created by jasonbruwer on 15/12/19.
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.Flow
+ * @see Flow
+ * @see ABaseClientWS
  */
 public class FlowClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public FlowClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FlowClient(String serviceTicketParam) {
         super();
@@ -47,11 +55,13 @@ public class FlowClient extends ABaseClientWS {
         this.setServiceTicket(serviceTicketParam);
     }
 
-
     /**
+     * Creates a new Flow with an Introduction and Exit basic rule.
      *
-     * @param flowParam
-     * @return
+     * @param flowParam The flow to Create.
+     * @return The created flow.
+     *
+     * @see Flow
      */
     public Flow createFlow(Flow flowParam)
     {
@@ -65,9 +75,12 @@ public class FlowClient extends ABaseClientWS {
     }
 
     /**
+     * Updates an existing Flow.
      *
-     * @param flowParam
-     * @return
+     * @param flowParam The flow to Update.
+     * @return The updated flow.
+     *
+     * @see Flow
      */
     public Flow updateFlow(Flow flowParam)
     {
@@ -81,9 +94,10 @@ public class FlowClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves a Flow by Primary Key.
      *
-     * @param flowIdParam
-     * @return
+     * @param flowIdParam The Flow primary key.
+     * @return The Flow.
      */
     public Flow getFlowById(Long flowIdParam)
     {
@@ -99,9 +113,10 @@ public class FlowClient extends ABaseClientWS {
     }
 
     /**
+     * Delete an existing Flow.
      *
-     * @param flowParam
-     * @return
+     * @param flowParam The Flow to delete.
+     * @return The deleted Flow.
      */
     public Flow deleteFlow(Flow flowParam)
     {
@@ -114,9 +129,12 @@ public class FlowClient extends ABaseClientWS {
     }
 
     /**
+     * Forcefully Delete an existing Flow.
      *
-     * @param flowParam
-     * @return
+     * Only 'admin' can forcefully delete a Flow.
+     *
+     * @param flowParam The Flow to delete.
+     * @return The deleted Flow.
      */
     public Flow forceDeleteFlow(Flow flowParam)
     {

@@ -18,6 +18,8 @@ package com.fluid.ws.client.v1.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.MultiChoice;
 import com.fluid.program.api.vo.ws.WS.Path.RouteField.Version1;
@@ -25,20 +27,29 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseFieldClient;
 
 /**
- * Created by jasonbruwer on 15/01/04.
+ * Java Web Service Client for Route Field related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.RouteField
+ * @see Field
+ * @see ABaseFieldClient
  */
 public class RouteFieldClient extends ABaseFieldClient {
 
     /**
-     *
+     * Default constructor.
      */
     public RouteFieldClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public RouteFieldClient(String serviceTicketParam) {
         super();
@@ -47,9 +58,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Plain Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldTextPlain(Field formFieldParam)
     {
@@ -69,9 +81,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new True False field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldTrueFalse(Field formFieldParam)
     {
@@ -91,9 +104,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Paragraph Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldParagraphTextPlain(Field formFieldParam)
     {
@@ -113,9 +127,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Paragraph HTML field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldParagraphTextHTML(Field formFieldParam)
     {
@@ -135,10 +150,11 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Multi Choice field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param multiChoiceValuesParam The available multi choice values.
+     * @return Created Field.
      */
     public Field createFieldMultiChoicePlain(
             Field formFieldParam, List<String> multiChoiceValuesParam)
@@ -150,7 +166,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 
         if(multiChoiceValuesParam == null)
         {
-            multiChoiceValuesParam = new ArrayList<String>();
+            multiChoiceValuesParam = new ArrayList<>();
         }
 
         if(formFieldParam != null)
@@ -165,10 +181,11 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Multi Choice select Many field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @param multiChoiceValuesParam The available multi choice values.
+     * @return Created Field.
      */
     public Field createFieldMultiChoiceSelectMany(
             Field formFieldParam, List<String> multiChoiceValuesParam)
@@ -198,9 +215,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Date only field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldDateTimeDate(Field formFieldParam)
     {
@@ -220,9 +238,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Date and time field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldDateTimeDateAndTime(Field formFieldParam)
     {
@@ -242,9 +261,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Create a new Decimal field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Create.
+     * @return Created Field.
      */
     public Field createFieldDecimalPlain(Field formFieldParam)
     {
@@ -264,9 +284,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldTextPlain(Field formFieldParam)
     {
@@ -286,9 +307,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing True False field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldTrueFalse(Field formFieldParam)
     {
@@ -308,9 +330,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Paragraph Text field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldParagraphTextPlain(Field formFieldParam)
     {
@@ -330,9 +353,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Paragraph HTML field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldParagraphTextHTML(Field formFieldParam)
     {
@@ -352,10 +376,11 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Multi Choice field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param multiChoiceValuesParam New available Multi-choices.
+     * @return Updated Field.
      */
     public Field updateFieldMultiChoicePlain(
             Field formFieldParam,
@@ -386,10 +411,11 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Multi Choice select many field.
      *
-     * @param formFieldParam
-     * @param multiChoiceValuesParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @param multiChoiceValuesParam New available Multi-choices.
+     * @return Updated Field.
      */
     public Field updateFieldMultiChoiceSelectMany(
             Field formFieldParam,
@@ -420,9 +446,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Date field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldDateTimeDate(Field formFieldParam)
     {
@@ -442,9 +469,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Date and Time field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldDateTimeDateAndTime(Field formFieldParam)
     {
@@ -464,9 +492,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Decimal field.
      *
-     * @param formFieldParam
-     * @return
+     * @param formFieldParam Field to Update.
+     * @return Updated Field.
      */
     public Field updateFieldDecimalPlain(Field formFieldParam)
     {
@@ -486,9 +515,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Retrieves field information by {@code fieldIdParam}.
      *
-     * @param fieldIdParam
-     * @return
+     * @param fieldIdParam The field Primary Key.
+     * @return Field Definition by primary key.
      */
     public Field getFieldById(Long fieldIdParam)
     {
@@ -504,9 +534,10 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Deletes a field from Fluid.
      *
-     * @param fieldParam
-     * @return
+     * @param fieldParam The field to delete. Important that Id is set.
+     * @return Deleted Field.
      */
     public Field deleteField(Field fieldParam)
     {
@@ -519,9 +550,12 @@ public class RouteFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Forcefully Deletes a field from Fluid.
      *
-     * @param fieldParam
-     * @return
+     * Only 'admin' is allowed to make this call.
+     *
+     * @param fieldParam The field to delete. Important that Id is set.
+     * @return Deleted Field.
      */
     public Field forceDeleteField(Field fieldParam)
     {

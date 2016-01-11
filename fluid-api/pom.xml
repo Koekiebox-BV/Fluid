@@ -58,7 +58,6 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-jackson-provider</artifactId>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 

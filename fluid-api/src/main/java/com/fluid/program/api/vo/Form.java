@@ -449,7 +449,9 @@ public class Form extends ABaseFluidJSONObject {
 
         if(obj instanceof Number)
         {
-            return ((Short)obj).intValue();
+            Number casted = ((Number)obj);
+
+            return casted.intValue();
         }
 
         return null;

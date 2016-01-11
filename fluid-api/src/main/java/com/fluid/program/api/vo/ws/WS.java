@@ -163,6 +163,8 @@ public class WS {
                 /**
                  * URL Path for Form Field delete.
                  *
+                 * @param forceDeleteParam Whether to forcefulle delete.
+                 *
                  * @return {@code v1/form_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String formFieldDelete(boolean forceDeleteParam)
@@ -256,6 +258,8 @@ public class WS {
 
                 /**
                  * URL Path for Route Field delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
                  *
                  * @return {@code v1/route_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
@@ -351,6 +355,8 @@ public class WS {
                 /**
                  * URL Path for User Field delete.
                  *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
                  * @return {@code v1/user_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String userFieldDelete(boolean forceDeleteParam)
@@ -444,6 +450,8 @@ public class WS {
 
                 /**
                  * URL Path for Form Definition delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
                  *
                  * @return {@code v1/form_definition/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
@@ -539,6 +547,8 @@ public class WS {
                 /**
                  * URL Path for Form Definition delete.
                  *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
                  * @return {@code v1/flow/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
                 public static final String flowDelete(boolean forceDeleteParam)
@@ -632,6 +642,8 @@ public class WS {
 
                 /**
                  * URL Path for Flow Step delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
                  *
                  * @return {@code v1/flow_step/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */

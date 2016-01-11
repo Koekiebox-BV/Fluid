@@ -15,18 +15,28 @@
 
 package com.fluid.ws.client.v1;
 
+import org.json.JSONObject;
+
 /**
- * Created by jasonbruwer on 2015/12/29.
+ * Base class for all Field REST related calls.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FormField
+ * @see com.fluid.program.api.vo.ws.WS.Path.UserField
+ * @see com.fluid.program.api.vo.ws.WS.Path.RouteField
  */
 public abstract class ABaseFieldClient extends ABaseClientWS{
 
     /**
-     *
+     * Meta-Data types for Field.
      */
     public static final class FieldMetaData
     {
         /**
-         *
+         * Meta-Data types for Text fields specifically.
          */
         public static final class Text
         {
@@ -37,7 +47,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
         }
 
         /**
-         *
+         * Meta-Data types for True False fields specifically.
          */
         public static final class TrueFalse
         {
@@ -45,7 +55,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
         }
 
         /**
-         *
+         * Meta-Data types for Paragraph Text fields specifically.
          */
         public static final class ParagraphText
         {
@@ -54,7 +64,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
         }
 
         /**
-         *
+         * Meta-Data types for Multi Choice fields specifically.
          */
         public static final class MultiChoice
         {
@@ -66,7 +76,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
         }
 
         /**
-         *
+         * Meta-Data types for Date Time fields specifically.
          */
         public static final class DateTime
         {
@@ -75,7 +85,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
         }
 
         /**
-         *
+         * Meta-Data types for Decimal fields specifically.
          */
         public static final class Decimal
         {
@@ -96,7 +106,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
         }
 
         /**
-         *
+         * Meta-Data types for Table Field fields specifically.
          */
         public static final class TableField {
 
@@ -109,8 +119,14 @@ public abstract class ABaseFieldClient extends ABaseClientWS{
     }
 
     /**
+     * Construct the correct Meta-Data from parameters.
      *
-     * @return
+     * @param metaDataPrefixParam Prefix for return val to indicate type. Example; Spinner.
+     * @param minParam The min allowed value.
+     * @param maxParam The max allowed value.
+     * @param stepFactorParam The allowed step increments.
+     * @param prefixParam The prefix for the decimal, like $ for currency.
+     * @return Correctly formatted Decimal type.
      */
     protected String getMetaDataForDecimalAs(
             String metaDataPrefixParam,

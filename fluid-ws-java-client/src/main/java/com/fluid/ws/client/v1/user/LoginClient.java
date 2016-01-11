@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.program.api.vo.User;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.program.api.vo.ws.auth.AuthEncryptedData;
@@ -30,29 +31,44 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 import com.google.common.io.BaseEncoding;
 
 /**
- * Created by jasonbruwer on 14/12/21.
+ * Java Web Service Client for User Login related actions.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.Auth0
+ * @see User
  */
 public class LoginClient extends ABaseClientWS {
 
 
     /**
-     *
+     * Default constructor.
      */
     public LoginClient() {
         super();
     }
 
     /**
-     * @param urlParam
+     * Constructor which sets the login URL.
+     *
+     * @param urlParam The login URL.
      */
     public LoginClient(String urlParam) {
         super(urlParam);
     }
 
     /**
-     * @param usernameParam
-     * @param passwordParam
-     * @return
+     * Performs the necessary login actions against Fluid.
+     *
+     * Please note that the actual password never travels over the wire / connection.
+     *
+     * @param usernameParam The users Username.
+     * @param passwordParam The users password.
+     * @return Session token.
+     *
+     * @see AppRequestToken
      */
     public AppRequestToken login(
             String usernameParam, String passwordParam) {
@@ -62,10 +78,16 @@ public class LoginClient extends ABaseClientWS {
     }
 
     /**
-     * @param usernameParam
-     * @param passwordParam
-     * @param sessionLifespanSecondsParam
-     * @return
+     * Performs the necessary login actions against Fluid.
+     *
+     * Please note that the actual password never travels over the wire / connection.
+     *
+     * @param usernameParam The users Username.
+     * @param passwordParam The users password.
+     * @param sessionLifespanSecondsParam The requested duration of the session in seconds.
+     * @return Session token.
+     *
+     * @see AppRequestToken
      */
     public AppRequestToken login(
             String usernameParam, String passwordParam, Long sessionLifespanSecondsParam) {
@@ -82,7 +104,7 @@ public class LoginClient extends ABaseClientWS {
 
         //Init the session...
         //Init the session to get the salt...
-        AuthResponse authResponse = null;
+        AuthResponse authResponse;
         try {
             authResponse = new AuthResponse(
                     this.postJson(authRequest, WS.Path.User.Version1.userInitSession()));
@@ -108,10 +130,11 @@ public class LoginClient extends ABaseClientWS {
     }
 
     /**
+     * Performs HMAC and encryption to initialize the session.
      *
-     * @param passwordParam
-     * @param authResponseParam
-     * @return
+     * @param passwordParam The user password.
+     * @param authResponseParam Response of the initial authentication request (handshake).
+     * @return Authenticated encrypted data.
      */
     private AuthEncryptedData initializeSession(
             String passwordParam,
@@ -157,11 +180,14 @@ public class LoginClient extends ABaseClientWS {
     }
 
     /**
+     * Issue a new {@code AppRequestToken} from provided params.
      *
-     * @param serviceTicketBase64Param
-     * @param usernameParam
-     * @param authEncryptDataParam
-     * @return
+     * @param serviceTicketBase64Param The service ticket from authentication.
+     * @param usernameParam The users username.
+     * @param authEncryptDataParam The encrypted packet.
+     * @return Request Token.
+     *
+     * @see AppRequestToken
      */
     private AppRequestToken issueAppRequestToken(
             String serviceTicketBase64Param,

@@ -15,6 +15,8 @@
 
 package com.fluid.ws.client.v1.flow;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.flow.FlowStep;
 import com.fluid.program.api.vo.flow.FlowStepRule;
 import com.fluid.program.api.vo.ws.WS;
@@ -27,20 +29,27 @@ import com.fluid.ws.client.v1.ABaseClientWS;
  * This is ideal for doing automated tests against
  * the Fluid platform.
  *
- * Created by jasonbruwer on 15/12/19.
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see JSONObject
+ * @see com.fluid.program.api.vo.ws.WS.Path.FlowStepRule
+ * @see FlowStepRule
+ * @see ABaseClientWS
  */
 public class FlowStepRuleClient extends ABaseClientWS {
 
     /**
-     *
+     * Default constructor.
      */
     public FlowStepRuleClient() {
         super();
     }
 
     /**
+     * Constructor that sets the Service Ticket from authentication.
      *
-     * @param serviceTicketParam
+     * @param serviceTicketParam The Server issued Service Ticket.
      */
     public FlowStepRuleClient(String serviceTicketParam) {
         super();
@@ -49,9 +58,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Create a new Flow Step Entry rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam Rule to create.
+     * @return Created rule.
      */
     public FlowStepRule createFlowStepEntryRule(FlowStepRule flowStepRuleParam)
     {
@@ -65,9 +75,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Create a new Flow Step Exit rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam Rule to create.
+     * @return Created rule.
      */
     public FlowStepRule createFlowStepExitRule(FlowStepRule flowStepRuleParam)
     {
@@ -81,9 +92,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Create a new Flow Step View rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam Rule to create.
+     * @return Created rule.
      */
     public FlowStepRule createFlowStepViewRule(FlowStepRule flowStepRuleParam)
     {
@@ -97,9 +109,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Update an existing Flow Step Entry rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam Rule to update.
+     * @return Updated rule.
      */
     public FlowStepRule updateFlowStepEntryRule(FlowStepRule flowStepRuleParam)
     {
@@ -113,9 +126,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Update an existing Flow Step Exit rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam Rule to update.
+     * @return Updated rule.
      */
     public FlowStepRule updateFlowStepExitRule(FlowStepRule flowStepRuleParam)
     {
@@ -129,9 +143,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Update an existing Flow Step View rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam Rule to update.
+     * @return Updated rule.
      */
     public FlowStepRule updateFlowStepViewRule(FlowStepRule flowStepRuleParam)
     {
@@ -145,13 +160,13 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Compiles the {@code entryRuleSyntaxParam} text within the Fluid workflow engine.
      *
-     * @param entryRuleSyntaxParam
-     * @return
+     * @param entryRuleSyntaxParam The syntax to compile.
+     * @return Compiled rule.
      */
     public FlowStepRule compileFlowStepEntryRule(String entryRuleSyntaxParam)
     {
-
         FlowStepRule flowStepRule = new FlowStepRule();
         flowStepRule.setRule(entryRuleSyntaxParam);
 
@@ -165,9 +180,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Moves an entry rule order one up from the current location.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam The Rule to move up.
+     * @return The result after the move.
      */
     public FlowStepRule moveFlowStepEntryRuleUp(FlowStepRule flowStepRuleParam)
     {
@@ -181,9 +197,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Moves an entry rule order one down from the current location.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam The Rule to move down.
+     * @return The result after the move.
      */
     public FlowStepRule moveFlowStepEntryRuleDown(FlowStepRule flowStepRuleParam)
     {
@@ -197,25 +214,27 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Deletes an Step Entry rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam The rule to delete.
+     * @return The deleted rule.
      */
-    public FlowStep deleteFlowStepEntryRule(FlowStepRule flowStepRuleParam)
+    public FlowStepRule deleteFlowStepEntryRule(FlowStepRule flowStepRuleParam)
     {
         if(flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
 
-        return new FlowStep(this.postJson(
+        return new FlowStepRule(this.postJson(
                 flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteEntry()));
     }
 
     /**
+     * Deletes an Step Exit rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam The rule to delete.
+     * @return The deleted rule.
      */
     public FlowStep deleteFlowStepExitRule(FlowStepRule flowStepRuleParam)
     {
@@ -229,9 +248,10 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Deletes an Step View rule.
      *
-     * @param flowStepRuleParam
-     * @return
+     * @param flowStepRuleParam The rule to delete.
+     * @return The deleted rule.
      */
     public FlowStep deleteFlowStepViewRule(FlowStepRule flowStepRuleParam)
     {

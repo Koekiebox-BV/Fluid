@@ -16,14 +16,19 @@
 package com.fluid.ws.client;
 
 /**
- * Created by jasonbruwer on 15/01/16.
+ * Exception class related to the Fluid Java WS Client.
+ *
+ * @author jasonbruwer
+ * @since v1.0
+ *
+ * @see RuntimeException
  */
-public class FluidClientException extends RuntimeException{
+public class FluidClientException extends RuntimeException {
 
     private int errorCode;
 
     /**
-     *
+     * Mapping of Error codes received from server and local.
      */
     public static final class ErrorCode {
         public static final int STATEMENT_SYNTAX_ERROR = 10001;
@@ -62,6 +67,8 @@ public class FluidClientException extends RuntimeException{
      *
      * @param message the detail message. The detail message is saved for later
      *            retrieval by the {@link #getMessage()} method.
+     * @param errorCodeParam Error code of the {@code Exception}.
+     *
      */
     public FluidClientException(String message, int errorCodeParam) {
         super(message);
@@ -80,8 +87,7 @@ public class FluidClientException extends RuntimeException{
      *            {@link #getCause()} method). (A <tt>null</tt> value is
      *            permitted, and indicates that the cause is nonexistent or
      *            unknown.)
-     *
-     * @since 1.4
+     * @param errorCodeParam Error code of the {@code Exception}.
      */
     public FluidClientException(String message, Throwable cause, int errorCodeParam) {
         super(message, cause);
@@ -89,8 +95,11 @@ public class FluidClientException extends RuntimeException{
     }
 
     /**
+     * Gets the error code for {@code this} Exception.
      *
-     * @return
+     * @return Numerical error code category for the exception.
+     *
+     * @see ErrorCode
      */
     public int getErrorCode() {
         return this.errorCode;

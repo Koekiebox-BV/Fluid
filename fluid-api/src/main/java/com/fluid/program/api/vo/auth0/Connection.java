@@ -569,7 +569,7 @@ public class Connection extends ABaseFluidJSONObject {
     /**
      * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return @return {@code JSONObject} representation of {@code Connection}
+     * @return {@code JSONObject} representation of {@code Connection}.
      * @throws JSONException If there is a problem with the JSON Body.
      *
      * @see ABaseFluidJSONObject#toJsonObject()
