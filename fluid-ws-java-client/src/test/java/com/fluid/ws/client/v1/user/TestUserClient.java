@@ -17,6 +17,7 @@ package com.fluid.ws.client.v1.user;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +42,15 @@ public class TestUserClient extends ABaseTestCase {
 
         //this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
         this.loginClient = new LoginClient();
+    }
+
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
     }
 
     /**

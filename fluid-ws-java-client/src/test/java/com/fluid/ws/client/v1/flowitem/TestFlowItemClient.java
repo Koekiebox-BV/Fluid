@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +65,15 @@ public class TestFlowItemClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         this.loginClient = new LoginClient();
+    }
+
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
     }
 
     /**

@@ -20,6 +20,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -93,6 +94,15 @@ public class TestRouteFieldClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         this.loginClient = new LoginClient();
+    }
+
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
     }
 
     /**

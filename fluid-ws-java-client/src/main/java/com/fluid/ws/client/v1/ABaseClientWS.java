@@ -283,17 +283,6 @@ public abstract class ABaseClientWS {
             throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
-        //
-        finally {
-            try {
-                httpclient.close();
-            }
-            //
-            catch (IOException e) {
-                throw new FluidClientException(e.getMessage(),
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
-        }
     }
 
     /**
@@ -696,17 +685,6 @@ public abstract class ABaseClientWS {
             throw new FluidClientException(otherExcept.getMessage(),
                     otherExcept, FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
-        //
-        finally {
-            try {
-                httpclient.close();
-            }
-            //
-            catch (IOException e) {
-                throw new FluidClientException(e.getMessage(),e,
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
-        }
     }
 
     /**
@@ -970,5 +948,29 @@ public abstract class ABaseClientWS {
         }
 
         return this.closeableHttpClient;
+    }
+
+    /**
+     * If the HTTP Client is set, this will
+     * close and clean any connections that needs to be closed.
+     *
+     * @since v1.1
+     */
+    public void closeAndClean()
+    {
+        if(this.closeableHttpClient != null)
+        {
+            try {
+                this.closeableHttpClient.close();
+            }
+            //
+            catch (IOException e) {
+
+                throw new FluidClientException(
+                        "Unable to close Http Client connection. "+
+                        e.getMessage(),
+                        e, FluidClientException.ErrorCode.IO_ERROR);
+            }
+        }
     }
 }
