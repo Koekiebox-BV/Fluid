@@ -33,6 +33,7 @@ import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.FluidClientException;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
@@ -60,6 +61,8 @@ public class TestFlowItemClient extends ABaseTestCase {
     @Before
     public void init()
     {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         this.loginClient = new LoginClient();
     }
 

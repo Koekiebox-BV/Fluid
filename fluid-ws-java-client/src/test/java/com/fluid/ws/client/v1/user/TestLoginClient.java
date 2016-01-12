@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 
 /**
@@ -35,6 +36,8 @@ public class TestLoginClient extends ABaseTestCase {
      */
     @Before
     public void init() {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         this.loginClient = new LoginClient();
     }
 

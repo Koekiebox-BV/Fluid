@@ -50,14 +50,14 @@
         <version.slf4j>1.7.12</version.slf4j>
 
         <!--Org.JSON-->
-        <version.org.json>20141113</version.org.json>
+        <version.org.json>20151123</version.org.json>
 
         <!--JBoss Resteasy-->
         <version.jboss.resteasy.jackson>2.2.1.GA</version.jboss.resteasy.jackson>
 
         <version.apache.commons.lang3>3.3.2</version.apache.commons.lang3>
         <version.google.guava>18.0</version.google.guava>
-        <version.apache.httpcomponents.httpclient>4.5</version.apache.httpcomponents.httpclient>
+        <version.apache.httpcomponents.httpclient>4.5.1</version.apache.httpcomponents.httpclient>
 
         <!--Koekiebox Git Maven Plugin-->
         <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>

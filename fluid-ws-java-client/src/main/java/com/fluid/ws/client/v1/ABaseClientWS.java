@@ -78,6 +78,8 @@ public abstract class ABaseClientWS {
 
     public static boolean IS_IN_JUNIT_TEST_MODE = false;
 
+    private CloseableHttpClient closeableHttpClient;
+
     /**
      * The HTML Form Name and Value mapping.
      */
@@ -931,9 +933,16 @@ public abstract class ABaseClientWS {
      *
      * @return CloseableHttpClient that may or may not accept
      * self signed certificates.
+     *
+     * @since v1.1
      */
     private CloseableHttpClient getClient()
     {
+        if(this.closeableHttpClient != null)
+        {
+            return this.closeableHttpClient;
+        }
+
         //Only accept self signed certificate if in Junit test case.
         if(IS_IN_JUNIT_TEST_MODE)
         {
@@ -944,7 +953,7 @@ public abstract class ABaseClientWS {
 
                 SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
 
-                return HttpClients.custom().setSSLSocketFactory(sslsf).build();
+                this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
             }
             //
             catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
@@ -954,10 +963,12 @@ public abstract class ABaseClientWS {
                         FluidClientException.ErrorCode.CRYPTOGRAPHY);
             }
         }
-        //
+        //Default HTTP Client...
         else
         {
-            return HttpClients.createDefault();
+            this.closeableHttpClient = HttpClients.createDefault();
         }
+
+        return this.closeableHttpClient;
     }
 }

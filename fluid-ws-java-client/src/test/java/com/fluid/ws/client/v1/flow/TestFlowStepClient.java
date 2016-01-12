@@ -25,6 +25,7 @@ import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.flow.FlowStep;
 import com.fluid.program.api.vo.flow.FlowStepRule;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
 
@@ -94,6 +95,8 @@ public class TestFlowStepClient extends ABaseTestCase {
     @Before
     public void init()
     {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         this.loginClient = new LoginClient();
     }
 
