@@ -35,7 +35,7 @@
 
     <properties>
         <!--Fluid Versions-->
-        <version.fluid-api>1.0</version.fluid-api>
+        <version.fluid-api>1.1</version.fluid-api>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.compiler.plugin>2.3.2</version.compiler.plugin>

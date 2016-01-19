@@ -21,6 +21,7 @@
         Fluid API
         in the Fluid BPM and Content Management system.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
+    <version>${version.fluid-api}</version>
 
     <licenses>
         <license>

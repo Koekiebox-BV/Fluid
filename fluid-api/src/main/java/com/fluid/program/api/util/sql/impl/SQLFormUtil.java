@@ -42,6 +42,8 @@ import com.fluid.program.api.vo.Form;
  */
 public class SQLFormUtil extends ABaseSQLUtil {
 
+    private SQLFormDefinitionUtil formDefUtil = null;
+
     /**
      * New instance using provided {@code connectionParam}.
      *
@@ -49,6 +51,8 @@ public class SQLFormUtil extends ABaseSQLUtil {
      */
     public SQLFormUtil(Connection connectionParam) {
         super(connectionParam);
+
+        this.formDefUtil = new SQLFormDefinitionUtil(connectionParam);
     }
 
     /**
@@ -69,10 +73,8 @@ public class SQLFormUtil extends ABaseSQLUtil {
             return returnVal;
         }
 
-        SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
-
         Map<Long,String> definitionAndTitle =
-                formDefUtl.getFormDefinitionIdAndTitle();
+                this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -147,10 +149,8 @@ public class SQLFormUtil extends ABaseSQLUtil {
             return returnVal;
         }
 
-        SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
-
         Map<Long,String> definitionAndTitle =
-                formDefUtl.getFormDefinitionIdAndTitle();
+                this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -225,10 +225,7 @@ public class SQLFormUtil extends ABaseSQLUtil {
 
         Form returnVal = null;
 
-        SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
-
-        Map<Long,String> definitionAndTitle =
-                formDefUtl.getFormDefinitionIdAndTitle();
+        Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;

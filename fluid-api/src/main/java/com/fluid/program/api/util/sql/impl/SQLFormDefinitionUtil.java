@@ -38,6 +38,8 @@ import com.fluid.program.api.vo.Form;
  */
 public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 
+    private Map<Long,String> localMapping;
+
     /**
      * New FormDefinition util instance using {@code connectionParam}.
      *
@@ -47,7 +49,6 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
         super(connectionParam);
     }
 
-
     /**
      * Retrieves the Form Definition and Title mapping
      * currently stored in Fluid.
@@ -56,40 +57,58 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
      */
     public Map<Long,String> getFormDefinitionIdAndTitle()
     {
-        Map<Long,String> returnVal = new HashMap<Long,String>();
-
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try
+        //Local Mapping...
+        if(this.localMapping == null)
         {
-            ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
-                    this.getSQLTypeFromConnection(),
-                    ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
+            this.localMapping = new HashMap<Long,String>();
+        }
+        //When already cached, use the cached value...
+        else if(this.localMapping != null && !this.localMapping.isEmpty())
+        {
+            return this.localMapping;
+        }
 
-            preparedStatement = this.getConnection().prepareStatement(
-                    syntax.getPreparedStatement());
-
-            resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
-
-            //Iterate each of the form containers...
-            while (resultSet.next())
+        //Only allow one thread to set the local mapping...
+        synchronized (this.localMapping)
+        {
+            if(this.localMapping != null && !this.localMapping.isEmpty())
             {
-                Long id = resultSet.getLong(1);
-                String title = resultSet.getString(2);
-
-                returnVal.put(id,title);
+                return this.localMapping;
             }
-        }
-        //
-        catch (SQLException sqlError) {
-            throw new FluidSQLException(sqlError);
-        }
-        //
-        finally {
-            this.closeStatement(preparedStatement,resultSet);
-        }
 
-        return returnVal;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            try
+            {
+                ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
+                        this.getSQLTypeFromConnection(),
+                        ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
+
+                preparedStatement = this.getConnection().prepareStatement(
+                        syntax.getPreparedStatement());
+
+                resultSet = preparedStatement.executeQuery();
+                resultSet.beforeFirst();
+
+                //Iterate each of the form containers...
+                while (resultSet.next())
+                {
+                    Long id = resultSet.getLong(1);
+                    String title = resultSet.getString(2);
+
+                    this.localMapping.put(id,title);
+                }
+            }
+            //
+            catch (SQLException sqlError) {
+                throw new FluidSQLException(sqlError);
+            }
+            //
+            finally {
+                this.closeStatement(preparedStatement,resultSet);
+            }
+
+            return this.localMapping;
+        }
     }
 }

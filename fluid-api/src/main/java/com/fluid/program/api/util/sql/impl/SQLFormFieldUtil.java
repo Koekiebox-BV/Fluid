@@ -117,7 +117,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             preparedStatement = this.getConnection().prepareStatement(
                     syntax.getPreparedStatement());
 
-            preparedStatement.setLong(1,electronicFormIdParam);
+            preparedStatement.setLong(1, electronicFormIdParam);
 
             resultSet = preparedStatement.executeQuery();
             resultSet.beforeFirst();
