@@ -36,6 +36,7 @@
     <properties>
         <!--Fluid Versions-->
         <version.fluid-api>1.1</version.fluid-api>
+        <version.fluid-ws-java-client>1.0</version.fluid-ws-java-client>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.compiler.plugin>2.3.2</version.compiler.plugin>
@@ -111,14 +112,6 @@
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
                 <version>${version.org.json}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--Jackson Provider-->
-            <dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jackson-provider</artifactId>
-                <version>${version.jboss.resteasy.jackson}</version>
                 <scope>provided</scope>
             </dependency>
 

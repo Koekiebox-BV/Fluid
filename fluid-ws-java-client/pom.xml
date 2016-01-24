@@ -14,6 +14,7 @@
     <artifactId>fluid-ws-java-client</artifactId>
     <packaging>jar</packaging>
     <name>Fluid RESTful Web Service Client</name>
+    <version>${version.fluid-ws-java-client}</version>
     <description>The Fluid Restful Web Service Java Client.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
 

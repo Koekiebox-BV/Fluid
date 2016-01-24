@@ -19,7 +19,6 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -339,7 +338,6 @@ public class Field extends ABaseFluidJSONObject {
      *
      * @see Type
      */
-    @JsonIgnore
     @XmlTransient
     public void setTypeAsEnum(Type typeParam) {
 
@@ -359,7 +357,6 @@ public class Field extends ABaseFluidJSONObject {
      *
      * @see Type
      */
-    @JsonIgnore
     @XmlTransient
     public Type getTypeAsEnum()
     {

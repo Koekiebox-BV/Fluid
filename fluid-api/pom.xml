@@ -14,6 +14,7 @@
     <artifactId>fluid-api</artifactId>
     <packaging>jar</packaging>
     <name>Fluid API</name>
+    <version>${version.fluid-api}</version>
     <description>Used for the
         Custom Program Step,
         Custom Actions,
@@ -21,7 +22,6 @@
         Fluid API
         in the Fluid BPM and Content Management system.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
-    <version>${version.fluid-api}</version>
 
     <licenses>
         <license>
@@ -51,13 +51,6 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <!--Resteasy Jackson Provider-->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson-provider</artifactId>
             <scope>compile</scope>
         </dependency>
     </dependencies>
