@@ -59,6 +59,7 @@
         <version.apache.commons.lang3>3.3.2</version.apache.commons.lang3>
         <version.google.guava>18.0</version.google.guava>
         <version.apache.httpcomponents.httpclient>4.5.1</version.apache.httpcomponents.httpclient>
+        <version.apache.httpcomponents.httpcore>4.4.4</version.apache.httpcomponents.httpcore>
 
         <!--Koekiebox Git Maven Plugin-->
         <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>
@@ -136,6 +137,13 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${version.apache.httpcomponents.httpclient}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${version.apache.httpcomponents.httpcore}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

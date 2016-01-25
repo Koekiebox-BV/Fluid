@@ -23,6 +23,8 @@ import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -31,12 +33,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -927,7 +929,8 @@ public abstract class ABaseClientWS {
             SSLContextBuilder builder = new SSLContextBuilder();
 
             try {
-                builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+                //builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+                builder.loadTrustMaterial(new SSLTrustAll());
 
                 SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
 
@@ -971,6 +974,24 @@ public abstract class ABaseClientWS {
                         e.getMessage(),
                         e, FluidClientException.ErrorCode.IO_ERROR);
             }
+        }
+    }
+
+    /**
+     * Trust all SSL type connections.
+     */
+    private static final class SSLTrustAll implements TrustStrategy
+    {
+        /**
+         *
+         * @param x509Certificates List of X509 certificates.
+         * @param stringParam Text.
+         * @return {@code true}, always trusted.
+         * @throws CertificateException If there is a cert problem.
+         */
+        @Override
+        public boolean isTrusted(X509Certificate[] x509Certificates, String stringParam) throws CertificateException {
+            return true;
         }
     }
 }
