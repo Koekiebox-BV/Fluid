@@ -121,6 +121,43 @@ public abstract class ABaseClientWS {
     }
 
     /**
+     * The HTML Header Name and Value mapping.
+     */
+    public static class HeaderNameValue{
+        private String name;
+        private String value;
+
+        /**
+         * Sets the HTML Header name and value.
+         *
+         * @param nameParam The HTML header name.
+         * @param valueParam The HTML header value.
+         */
+        public HeaderNameValue(String nameParam, String valueParam) {
+            this.name = nameParam;
+            this.value = valueParam;
+        }
+
+        /**
+         * Gets the Form Param Name.
+         *
+         * @return The Form Param Name.
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * Gets the Form Param Value.
+         *
+         * @return The Form Param Value.
+         */
+        public String getValue() {
+            return value;
+        }
+    }
+
+    /**
      * The HTTP Method type to use.
      *
      * See: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
@@ -213,7 +250,7 @@ public abstract class ABaseClientWS {
     public JSONObject getJson(
             String postfixUrlParam) {
 
-        return this.getJson(false,postfixUrlParam);
+        return this.getJson(false, postfixUrlParam);
     }
 
     /**
@@ -222,6 +259,7 @@ public abstract class ABaseClientWS {
      * @param skipCheckConnectionValidParam Skip to check if connection to
      *                                      base endpoint is valid.
      * @param postfixUrlParam URL mapping after the Base endpoint.
+     *
      * @return Return body as JSON.
      *
      * @see JSONObject
@@ -229,6 +267,28 @@ public abstract class ABaseClientWS {
     public JSONObject getJson(
             boolean skipCheckConnectionValidParam,
             String postfixUrlParam) {
+
+        return this.getJson(
+                skipCheckConnectionValidParam,
+                postfixUrlParam, null);
+    }
+
+    /**
+     * Performs an HTTP-GET request with {@code postfixUrlParam}.
+     *
+     * @param skipCheckConnectionValidParam Skip to check if connection to
+     *                                      base endpoint is valid.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @param headerNameValuesParam The HTTP Headers to include.
+     *
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
+     */
+    public JSONObject getJson(
+            boolean skipCheckConnectionValidParam,
+            String postfixUrlParam,
+            List<HeaderNameValue> headerNameValuesParam) {
 
         //
         if(!skipCheckConnectionValidParam && !this.isConnectionValid())
@@ -243,6 +303,24 @@ public abstract class ABaseClientWS {
 
         try {
             HttpGet httpGet = new HttpGet(endpointUrl.concat(postfixUrlParam));
+
+            if(headerNameValuesParam != null && !headerNameValuesParam.isEmpty())
+            {
+                for(HeaderNameValue headerNameVal : headerNameValuesParam)
+                {
+                    if(headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty())
+                    {
+                        continue;
+                    }
+
+                    if(headerNameVal.getValue() == null)
+                    {
+                        continue;
+                    }
+
+                    httpGet.setHeader(headerNameVal.getName(), headerNameVal.getValue());
+                }
+            }
 
             // Create a custom response handler
             ResponseHandler<String> responseHandler = this.getJsonResponseHandler(

@@ -68,6 +68,14 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
+     * The Header mapping for the {@code NormalizedUserProfile} object.
+     */
+    public static class HeaderMapping
+    {
+        public static final String AUTHORIZATION = "Authorization";
+    }
+
+    /**
      * Identity related value object.
      *
      * @see ABaseFluidJSONObject

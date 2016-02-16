@@ -65,7 +65,33 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         {
             //Id...
             if (!this.jsonObject.isNull(JSONMapping.ID)) {
-                this.setId(this.jsonObject.getLong(JSONMapping.ID));
+
+                Object idObject = this.jsonObject.get(JSONMapping.ID);
+
+                //Long Id...
+                if(idObject instanceof Number)
+                {
+                    this.setId(this.jsonObject.getLong(JSONMapping.ID));
+                }
+                //String Id...
+                else if(idObject instanceof String)
+                {
+                    String idStr = this.jsonObject.getString(JSONMapping.ID);
+
+                    try
+                    {
+                        this.setId(Long.parseLong(idStr));
+                    }
+                    catch (NumberFormatException nfe)
+                    {
+                        this.setId(null);
+                    }
+                }
+                else
+                {
+                    throw new IllegalArgumentException(
+                            "Unable to parse Field '"+JSONMapping.ID+"'.");
+                }
             }
 
             //Service Ticket...

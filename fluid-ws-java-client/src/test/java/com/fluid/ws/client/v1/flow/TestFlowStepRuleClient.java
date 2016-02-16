@@ -56,7 +56,23 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
                  *
                  */
                 public static final class Set{
-                    public static final String PASS_01 = "SET ROUTE.Zool TO 'Cool'";
+                    public static final String PASS_01 = "SET ROUTE.Zool JUnit TO 'Cool'";
+
+                    /**
+                     *
+                     */
+                    public static final String[] COMPILE_LIST_PASS =
+                    {
+                        "SET ROUTE.Zool JUnit TO 'Cool'",
+                    };
+
+                    /**
+                     *
+                     */
+                    public static final String[] COMPILE_LIST_FAIL =
+                    {
+                            "SET ROUTE.Zool JUnit TO 'Cool'",
+                    };
                 }
 
                 /**
@@ -90,7 +106,7 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
                  *
                  */
                 public static final class Set{
-                    public static final String PASS_01 = "SET ROUTE.Zool TO 'Cool'";
+                    public static final String PASS_01 = "SET ROUTE.Zool JUnit TO 'Cool'";
                 }
 
                 /**
@@ -159,12 +175,12 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
         createdFlow = flowClient.createFlow(createdFlow);
 
         Field fieldZool = new Field();
-        fieldZool.setFieldName("Zool");
+        fieldZool.setFieldName("Zool JUnit");
         fieldZool.setFieldDescription("Field Description");
         fieldZool = routeFieldClient.createFieldTextPlain(fieldZool);
 
         Field fieldBadool = new Field();
-        fieldBadool.setFieldName("Badool");
+        fieldBadool.setFieldName("Badool JUnit");
         fieldBadool.setFieldDescription("Field Description");
         fieldBadool = routeFieldClient.createFieldTextPlain(fieldBadool);
 
@@ -176,7 +192,7 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
 
         //2. Create...
         FlowStep createdFlowStep = flowStepClient.createFlowStep(toCreate);
-        TestCase.assertNotNull("The 'Id' needs to be set.", createdFlowStep.getId());
+        TestCase.assertNotNull("The 'Id' needs to be set for Step.", createdFlowStep.getId());
 
         //. The Rule...
         FlowStepRule entryRule = new FlowStepRule();
@@ -184,15 +200,13 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
         entryRule.setRule(TestStatics.EntryRules.Pass.Set.PASS_01);
 
         FlowStepRule createdEntryRule = flowStepRuleClient.createFlowStepEntryRule(entryRule);
-
+        TestCase.assertNotNull("The 'Id' needs to be set for Entry rule.", createdEntryRule.getId());
 
         //4. Get by Id...
         FlowStep byIdFlowStep = flowStepClient.getFlowStepById(
                 createdFlowStep.getId(), FlowStep.StepType.ASSIGNMENT);
 
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdFlowStep.getId());
-
-        //TODO @Jason, need to look at the rules within...
 
         //5. Delete...
         flowStepClient.deleteFlowStep(byIdFlowStep);
@@ -204,7 +218,14 @@ public class TestFlowStepRuleClient extends ABaseTestCase {
         routeFieldClient.deleteField(fieldBadool);
     }
 
+    /**
+     *
+     */
+    @Test
+    public void testFlowStepEntryRule_CompileSucceed()
+    {
 
+    }
 
     /**
      *

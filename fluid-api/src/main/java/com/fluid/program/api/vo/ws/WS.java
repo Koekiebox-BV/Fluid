@@ -1161,7 +1161,9 @@ public class WS {
                 public static final String ROOT = ("/oauth");
 
                 public static final String TOKEN = "/token";
-                public static final String USER_INFO = "/userinfo/?access_token=";
+                public static final String USER_INFO_WITH_ACCESS_TOKEN =
+                        "/userinfo/?access_token=";
+                public static final String USER_INFO = "/userinfo";
 
                 /**
                  * Mapping for frequently used HTTP parameters.
@@ -1202,7 +1204,7 @@ public class WS {
                  * @param accessTokenValueParam The access token to get user
                  *                              information from.
                  * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
-                 * @throws UnsupportedEncodingException When UTF-8 is not supported.
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
                 public static final String userInfo(String accessTokenValueParam)
                 throws UnsupportedEncodingException
@@ -1214,7 +1216,20 @@ public class WS {
                         encodedValue = URLEncoder.encode(accessTokenValueParam, "UTF-8");
                     }
 
-                    return ROOT.concat(USER_INFO).concat(encodedValue);
+                    return USER_INFO_WITH_ACCESS_TOKEN.concat(encodedValue);
+                }
+
+                /**
+                 * Used to get {@code User} information via the
+                 * {@code accessTokenValueParam} in the HTTP header.
+                 *
+                 * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+                 */
+                public static final String userInfo()
+                        throws UnsupportedEncodingException
+                {
+                    return USER_INFO;
                 }
             }
         }
