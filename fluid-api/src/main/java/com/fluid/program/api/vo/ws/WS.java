@@ -870,7 +870,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/compile_syntax_and_execute}
                  */
-                public static final String compileSyntaxAndExecute()
+                public static final String compileEntrySyntaxAndExecute()
                 {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX_AND_EXECUTE);
                 }

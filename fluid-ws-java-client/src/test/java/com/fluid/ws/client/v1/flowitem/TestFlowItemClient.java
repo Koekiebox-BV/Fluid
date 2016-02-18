@@ -101,7 +101,6 @@ public class TestFlowItemClient extends ABaseTestCase {
 
         //Fluid Item...
         FluidItem toCreate = new FluidItem();
-
         toCreate.setForm(frm);
 
         //2. Attachments...
