@@ -1068,6 +1068,23 @@ public class WS {
                 public static final String TOKEN_STATUS = "/token_status";
                 public static final String INFORMATION = "/info";
 
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //DeActivate...
+                public static final String DE_ACTIVATE = ("/de_activate");
+
+                //Activate...
+                public static final String ACTIVATE = ("/activate");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+                public static final String READ_BY_USERNAME = ("/get_by_username");
+                public static final String READ_ALL = ("/get_all_users");
+
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
@@ -1140,6 +1157,165 @@ public class WS {
                 public static final String userInformation()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(INFORMATION);
+                }
+
+                /**
+                 * URL Path for User create.
+                 *
+                 * @return {@code /v1/user/}
+                 */
+                public static final String userCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for User update.
+                 *
+                 * @return {@code v1/user/update}
+                 */
+                public static final String userUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for De-Activating a User.
+                 *
+                 * @return {@code v1/user/de_activate}
+                 */
+                public static final String userDeActivate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(DE_ACTIVATE);
+                }
+
+                /**
+                 * URL Path for De-Activating a User.
+                 *
+                 * @return {@code v1/user/activate}
+                 */
+                public static final String userActivate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(ACTIVATE);
+                }
+
+                /**
+                 * URL Path for User get by id.
+                 *
+                 * @return {@code v1/user/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for User get by username.
+                 *
+                 * @return {@code v1/user/get_by_username}
+                 */
+                public static final String getByUsername()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_BY_USERNAME);
+                }
+
+                /**
+                 * URL Path for User get by id.
+                 *
+                 * @return {@code v1/user/get_all_users}
+                 */
+                public static final String getAllUsers()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+            }
+        }
+
+        /**
+         * The Role Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.role.Role
+         */
+        public static final class Role
+        {
+            /**
+             * Role mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/role");
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+                public static final String READ_ALL = ("/get_all_roles");
+
+                /**
+                 * Root for Role.
+                 *
+                 * @return {@code /role/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Role create.
+                 *
+                 * @return {@code /v1/role/}
+                 */
+                public static final String roleCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Role update.
+                 *
+                 * @return {@code v1/role/update}
+                 */
+                public static final String roleUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a Role.
+                 *
+                 * @return {@code v1/role/delete}
+                 */
+                public static final String roleDelete()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 * URL Path for Role get by id.
+                 *
+                 * @return {@code v1/role/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Role get all.
+                 *
+                 * @return {@code v1/role/get_all_roles}
+                 */
+                public static final String getAllRoles()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
             }
         }

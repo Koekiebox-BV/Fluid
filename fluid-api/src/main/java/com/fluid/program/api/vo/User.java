@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.program.api.vo.role.Role;
+
 /**
  * <p>
  *     Represents a Fluid User.
@@ -41,7 +43,8 @@ public class User extends ABaseFluidJSONObject {
     private String username;
     private String passwordSha256;
     private String salt;
-    private List<String> roles;
+    private List<Role> roles;
+    private List<String> emailAddresses;
     private List<Field> userFields;
 
     /**
@@ -52,6 +55,7 @@ public class User extends ABaseFluidJSONObject {
         public static final String USERNAME = "username";
         public static final String PASSWORD_SHA_256 = "passwordSha256";
         public static final String ROLES = "roles";
+        public static final String EMAIL_ADDRESSES = "emailAddresses";
         public static final String SALT = "salt";
         public static final String USER_FIELDS = "userFields";
     }
@@ -96,14 +100,30 @@ public class User extends ABaseFluidJSONObject {
 
             JSONArray roleListing = this.jsonObject.getJSONArray(JSONMapping.ROLES);
 
-            List<String> roleListingList = new ArrayList<>();
+            List<Role> roleListingList = new ArrayList<>();
 
             for(int index = 0;index < roleListing.length();index++)
             {
-                roleListingList.add(roleListing.getString(index));
+                roleListingList.add(new Role(roleListing.getJSONObject(index)));
             }
 
             this.setRoles(roleListingList);
+        }
+
+        //Email Addresses...
+        if (!this.jsonObject.isNull(JSONMapping.EMAIL_ADDRESSES)) {
+
+            JSONArray emailListing =
+                    this.jsonObject.getJSONArray(JSONMapping.EMAIL_ADDRESSES);
+
+            List<String> emailAddressList = new ArrayList<>();
+
+            for(int index = 0;index < emailListing.length();index++)
+            {
+                emailAddressList.add(emailListing.getString(index));
+            }
+
+            this.setEmailAddresses(emailAddressList);
         }
 
         //User Fields...
@@ -160,21 +180,43 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets List of Roles for user.
+     * Gets List of {@code Role}s for user.
      *
      * @return {@code List} of Roles for {@code User}.
+     *
+     * @see Role
      */
-    public List<String> getRoles() {
+    public List<Role> getRoles() {
         return this.roles;
     }
 
     /**
-     * Sets List of Roles for user.
+     * Sets List of {@code Role}s for user.
      *
      * @param rolesParam {@code List} of roles associated with a {@code User}.
+     *
+     * @see Role
      */
-    public void setRoles(List<String> rolesParam) {
+    public void setRoles(List<Role> rolesParam) {
         this.roles = rolesParam;
+    }
+
+    /**
+     * Gets List of Email Addresses for a user.
+     *
+     * @return {@code List} of Emails for the {@code User}.
+     */
+    public List<String> getEmailAddresses() {
+        return this.emailAddresses;
+    }
+
+    /**
+     * Sets List of Email addresses for user.
+     *
+     * @param emailAddressesParam {@code List} of email addresses for a {@code User}.
+     */
+    public void setEmailAddresses(List<String> emailAddressesParam) {
+        this.emailAddresses = emailAddressesParam;
     }
 
     /**
@@ -249,12 +291,25 @@ public class User extends ABaseFluidJSONObject {
         if(this.getRoles() != null && !this.getRoles().isEmpty())
         {
             JSONArray rolesArr = new JSONArray();
-            for(String toAdd :this.getRoles())
+            for(Role toAdd :this.getRoles())
             {
-                rolesArr.put(toAdd);
+                rolesArr.put(toAdd.toJsonObject());
             }
 
             returnVal.put(JSONMapping.ROLES,rolesArr);
+        }
+
+        //Email Addresses...
+        if(this.getEmailAddresses() != null &&
+                !this.getEmailAddresses().isEmpty())
+        {
+            JSONArray emailArr = new JSONArray();
+            for(String toAdd :this.getEmailAddresses())
+            {
+                emailArr.put(toAdd);
+            }
+
+            returnVal.put(JSONMapping.EMAIL_ADDRESSES, emailArr);
         }
 
         //User Fields...
