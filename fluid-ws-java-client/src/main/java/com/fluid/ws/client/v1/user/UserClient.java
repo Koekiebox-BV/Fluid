@@ -95,8 +95,7 @@ public class UserClient extends ABaseClientWS {
         }
 
         return new User(this.postJson(
-                userParam,
-                WS.Path.User.Version1.userUpdate()));
+                userParam, WS.Path.User.Version1.userUpdate()));
     }
 
     /**
@@ -163,7 +162,8 @@ public class UserClient extends ABaseClientWS {
 
         try {
             return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.userInformation()));
+                    userToGetInfoFor,
+                    WS.Path.User.Version1.userInformation()));
         }
         //
         catch (JSONException jsonExcept) {
@@ -248,7 +248,8 @@ public class UserClient extends ABaseClientWS {
 
         try {
             return new UserListing(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.getAllUsers()));
+                    userToGetInfoFor,
+                    WS.Path.User.Version1.getAllUsers()));
         }
         //
         catch (JSONException jsonExcept) {
