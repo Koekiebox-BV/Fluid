@@ -23,7 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
-import com.fluid.program.api.vo.User;
+import com.fluid.program.api.vo.user.User;
 import com.fluid.program.api.vo.userquery.UserQuery;
 
 /**

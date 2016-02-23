@@ -17,6 +17,8 @@ package com.fluid.program.api.vo;
 
 import java.io.Serializable;
 
+import com.fluid.program.api.vo.user.User;
+
 /**
  * <p>
  *     Base Value Object for any Fluid Value Object.

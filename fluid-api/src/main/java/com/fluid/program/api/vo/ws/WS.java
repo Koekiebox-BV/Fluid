@@ -1052,7 +1052,7 @@ public class WS {
         /**
          * The User Web Service mappings.
          *
-         * @see com.fluid.program.api.vo.User
+         * @see com.fluid.program.api.vo.user.User
          */
         public static final class User
         {
@@ -1110,7 +1110,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userInitSession()
                 {
@@ -1124,7 +1124,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userIssueToken()
                 {
@@ -1138,7 +1138,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userTokenStatus()
                 {
@@ -1152,7 +1152,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userInformation()
                 {
@@ -1325,7 +1325,7 @@ public class WS {
          *
          * @see com.fluid.program.api.vo.auth0.AccessToken
          * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-         * @see com.fluid.program.api.vo.User
+         * @see com.fluid.program.api.vo.user.User
          */
         public static final class Auth0
         {
@@ -1366,7 +1366,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userToken()
                 {

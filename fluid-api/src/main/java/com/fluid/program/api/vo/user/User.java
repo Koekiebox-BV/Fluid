@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluid.program.api.vo;
+package com.fluid.program.api.vo.user;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.program.api.vo.ABaseFluidJSONObject;
+import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.role.Role;
 
 /**

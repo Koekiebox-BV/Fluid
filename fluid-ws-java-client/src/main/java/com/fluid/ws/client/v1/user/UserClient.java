@@ -18,7 +18,8 @@ package com.fluid.ws.client.v1.user;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.User;
+import com.fluid.program.api.vo.user.User;
+import com.fluid.program.api.vo.user.UserListing;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
@@ -54,6 +55,34 @@ public class UserClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves user information for the logged in {@code User}.
+     *
+     * @return User information.
+     *
+     * @see User
+     */
+    public User getLoggedInUserInformation()
+    {
+        User userToGetInfoFor = new User();
+
+        if(this.serviceTicket != null)
+        {
+            userToGetInfoFor.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new User(this.postJson(
+                    userToGetInfoFor, WS.Path.User.Version1.userInformation()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+
+    /**
      * Retrieves user information for the provided {@code usernameParam}.
      *
      * @param usernameParam The username of the user to retrieve info for.
@@ -61,7 +90,7 @@ public class UserClient extends ABaseClientWS {
      *
      * @see User
      */
-    public User getUserInformationWhereUsername(String usernameParam)
+    public User getUserWhereUsername(String usernameParam)
     {
         User userToGetInfoFor = new User();
         userToGetInfoFor.setUsername(usernameParam);
@@ -73,7 +102,34 @@ public class UserClient extends ABaseClientWS {
 
         try {
             return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.userInformation()));
+                    userToGetInfoFor, WS.Path.User.Version1.getByUsername()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves all user information.
+     *
+     * @return User information.
+     *
+     * @see UserListing
+     */
+    public UserListing getAllUsers()
+    {
+        UserListing userToGetInfoFor = new UserListing();
+
+        if(this.serviceTicket != null)
+        {
+            userToGetInfoFor.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new UserListing(this.postJson(
+                    userToGetInfoFor, WS.Path.User.Version1.getAllUsers()));
         }
         //
         catch (JSONException jsonExcept) {
