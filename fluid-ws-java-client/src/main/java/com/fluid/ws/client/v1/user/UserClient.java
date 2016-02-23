@@ -55,6 +55,97 @@ public class UserClient extends ABaseClientWS {
     }
 
     /**
+     * Creates a new {@code User} with the Email, Fields and
+     * Roles inside the {@code userParam}.
+     *
+     * @param userParam The {@code User} to create.
+     * @return The Created User.
+     *
+     * @see com.fluid.program.api.vo.user.User
+     * @see com.fluid.program.api.vo.Field
+     * @see com.fluid.program.api.vo.role.Role
+     */
+    public User createUser(User userParam)
+    {
+        if(userParam != null && this.serviceTicket != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.putJson(
+                userParam, WS.Path.User.Version1.userCreate()));
+    }
+
+    /**
+     * Updates an existing {@code User} with the Email, Fields and
+     * Roles inside the {@code userParam}.
+     *
+     * @param userParam The User to update.
+     * @return The Updated User.
+     *
+     * @see com.fluid.program.api.vo.user.User
+     * @see com.fluid.program.api.vo.Field
+     * @see com.fluid.program.api.vo.role.Role
+     */
+    public User updateUser(User userParam)
+    {
+        if(userParam != null && this.serviceTicket != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.postJson(
+                userParam,
+                WS.Path.User.Version1.userUpdate()));
+    }
+
+    /**
+     * Activate an existing {@code User} that is currently
+     * Deactivated.
+     *
+     * @param userParam The User to activate.
+     * @return The Activated User.
+     *
+     * @see com.fluid.program.api.vo.user.User
+     * @see com.fluid.program.api.vo.Field
+     * @see com.fluid.program.api.vo.role.Role
+     */
+    public User activateUser(User userParam)
+    {
+        if(userParam != null && this.serviceTicket != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.postJson(
+                userParam,
+                WS.Path.User.Version1.userActivate()));
+    }
+
+    /**
+     * Deactivate an existing {@code User} that is currently
+     * Active.
+     *
+     * @param userParam The User to De-Activate.
+     * @return The DeActivated User.
+     *
+     * @see com.fluid.program.api.vo.user.User
+     * @see com.fluid.program.api.vo.Field
+     * @see com.fluid.program.api.vo.role.Role
+     */
+    public User deActivateUser(User userParam)
+    {
+        if(userParam != null && this.serviceTicket != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.postJson(
+                userParam,
+                WS.Path.User.Version1.userDeActivate()));
+    }
+
+    /**
      * Retrieves user information for the logged in {@code User}.
      *
      * @return User information.
@@ -81,7 +172,6 @@ public class UserClient extends ABaseClientWS {
         }
     }
 
-
     /**
      * Retrieves user information for the provided {@code usernameParam}.
      *
@@ -103,6 +193,35 @@ public class UserClient extends ABaseClientWS {
         try {
             return new User(this.postJson(
                     userToGetInfoFor, WS.Path.User.Version1.getByUsername()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves user information for the provided {@code userIdParam}.
+     *
+     * @param userIdParam The ID of the {@code User} to retrieve info for.
+     * @return User information.
+     *
+     * @see User
+     */
+    public User getUserById(Long userIdParam)
+    {
+        User userToGetInfoFor = new User();
+        userToGetInfoFor.setId(userIdParam);
+
+        if(this.serviceTicket != null)
+        {
+            userToGetInfoFor.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new User(this.postJson(
+                    userToGetInfoFor, WS.Path.User.Version1.getById()));
         }
         //
         catch (JSONException jsonExcept) {

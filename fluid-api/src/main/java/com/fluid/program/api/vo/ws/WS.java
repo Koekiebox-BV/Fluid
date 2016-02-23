@@ -1253,6 +1253,7 @@ public class WS {
 
                 //Delete...
                 public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
 
                 //Read...
                 public static final String READ = ("/get_by_id");
@@ -1295,6 +1296,23 @@ public class WS {
                  */
                 public static final String roleDelete()
                 {
+                    return roleDelete(false);
+                }
+
+                /**
+                 * URL Path for Role delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/role/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String roleDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
                     return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
 

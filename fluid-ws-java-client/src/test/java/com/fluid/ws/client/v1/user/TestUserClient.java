@@ -58,6 +58,61 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
+    public void testCreateUser() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User userToCreate = new User();
+        userToCreate.setUsername("junitTestingUser");
+
+        userToCreate = userClient.createUser(userToCreate);
+
+        TestCase.assertNotNull(userToCreate);
+
+        userClient.deActivateUser(userToCreate);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testUpdateUser() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User userToCreate = new User();
+        userToCreate.setUsername("junitTestingUser");
+
+        User userToUpdate = userClient.createUser(userToCreate);
+
+        TestCase.assertNotNull(userToUpdate);
+
+        userToUpdate.setUsername("junitTestingUser");
+        userToUpdate = userClient.updateUser(userToUpdate);
+
+        userClient.deActivateUser(userToUpdate);
+    }
+
+    /**
+     *
+     */
+    @Test
     public void testGetLoggedUserInfo() {
         if (!this.loginClient.isConnectionValid()) {
             return;
@@ -117,5 +172,28 @@ public class TestUserClient extends ABaseTestCase {
 
         User user = userClient.getUserWhereUsername("admin");
         TestCase.assertNotNull(user);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetUserInfoById() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User user = userClient.getUserWhereUsername("admin");
+        TestCase.assertNotNull(user);
+
+        User userById = userClient.getUserById(user.getId());
+        TestCase.assertNotNull(userById);
     }
 }
