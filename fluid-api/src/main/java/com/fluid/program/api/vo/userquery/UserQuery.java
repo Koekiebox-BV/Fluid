@@ -15,10 +15,17 @@
 
 package com.fluid.program.api.vo.userquery;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
+import com.fluid.program.api.vo.ABaseListing;
+import com.fluid.program.api.vo.Field;
+import com.fluid.program.api.vo.FluidItem;
 
 /**
  * <p>
@@ -30,10 +37,11 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  * @author jasonbruwer
  * @since v1.1
  */
-public class UserQuery extends ABaseFluidJSONObject {
+public class UserQuery extends ABaseListing<FluidItem> {
 
     private String name;
     private String description;
+    private List<Field> inputs;
 
     /**
      * The JSON mapping for the {@code UserQuery} object.
@@ -42,6 +50,7 @@ public class UserQuery extends ABaseFluidJSONObject {
     {
         public static final String NAME = "name";
         public static final String DESCRIPTION = "description";
+        public static final String INPUTS = "inputs";
     }
 
     /**
@@ -67,6 +76,21 @@ public class UserQuery extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
             this.setDescription(this.jsonObject.getString(
                     JSONMapping.DESCRIPTION));
+        }
+
+        //Inputs...
+        if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
+
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(
+                    JSONMapping.INPUTS);
+
+            List<Field> assFields = new ArrayList<>();
+            for(int index = 0;index < fieldsArr.length();index++)
+            {
+                assFields.add(new Field(fieldsArr.getJSONObject(index)));
+            }
+
+            this.setInputs(assFields);
         }
     }
 
@@ -107,6 +131,28 @@ public class UserQuery extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets {@code UserQuery} input {@code Field}s.
+     *
+     * @return A {@code UserQuery}s input {@code Field}s.
+     *
+     * @see Field
+     */
+    public List<Field> getInputs() {
+        return this.inputs;
+    }
+
+    /**
+     * Sets {@code UserQuery} input {@code Field}s.
+     *
+     * @param inputsParam A {@code UserQuery}s input {@code Field}s.
+     *
+     * @see Field
+     */
+    public void setInputs(List<Field> inputsParam) {
+        this.inputs = inputsParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
@@ -131,6 +177,30 @@ public class UserQuery extends ABaseFluidJSONObject {
             returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
         }
 
+        //Inputs...
+        if(this.getInputs() != null)
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(Field toAdd : this.getInputs())
+            {
+                jsonArray.put(toAdd.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.INPUTS, jsonArray);
+        }
+
         return returnVal;
+    }
+
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code T}.
+     * @return new instance of {@code FluidItem}.
+     */
+    @Override
+    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new FluidItem(jsonObjectParam);
     }
 }

@@ -392,7 +392,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 
         //Flow State...
         if (!this.jsonObject.isNull(JSONMapping.FLOW_STATE)) {
-            this.setFlowState(this.jsonObject.getString(JSONMapping.FLOW_STATE));
+            this.setFlowStateString(this.jsonObject.getString(JSONMapping.FLOW_STATE));
         }
     }
 
@@ -1109,7 +1109,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @see Field
      */
     @XmlTransient
-    public void setRouteFields(ArrayList<Field> routeFieldsParam) {
+    public void setRouteFieldsArrayList(ArrayList<Field> routeFieldsParam) {
         this.routeFields = routeFieldsParam;
     }
 
@@ -1205,7 +1205,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @see FlowState
      */
     @XmlTransient
-    public void setFlowState(String flowStateParam) {
+    public void setFlowStateString(String flowStateParam) {
         this.flowState = FlowState.valueOfSafe(flowStateParam);
     }
 

@@ -1339,6 +1339,45 @@ public class WS {
         }
 
         /**
+         * The User Query Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.userquery.UserQuery
+         */
+        public static final class UserQuery
+        {
+            /**
+             * User Query mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/user_query");
+
+                //Read...
+                public static final String EXECUTE = ("/execute");
+
+                /**
+                 * Root for @{code UserQuery}.
+                 *
+                 * @return {@code /user_query/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for executing a {@code UserQuery}.
+                 *
+                 * @return {@code v1/user_query/execute}
+                 */
+                public static final String executeUserQuery()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(EXECUTE);
+                }
+            }
+        }
+
+        /**
          * The Auth0 Web Service mappings.
          *
          * @see com.fluid.program.api.vo.auth0.AccessToken
