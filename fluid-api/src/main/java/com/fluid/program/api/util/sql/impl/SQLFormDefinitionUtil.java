@@ -88,7 +88,6 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
                         syntax.getPreparedStatement());
 
                 resultSet = preparedStatement.executeQuery();
-                resultSet.beforeFirst();
 
                 //Iterate each of the form containers...
                 while (resultSet.next())

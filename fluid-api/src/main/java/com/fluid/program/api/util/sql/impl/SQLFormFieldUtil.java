@@ -120,7 +120,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             preparedStatement.setLong(1, electronicFormIdParam);
 
             resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
 
             //Iterate each of the form containers...
             while (resultSet.next())
@@ -235,7 +234,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             preparedStatement.setLong(3, formContainerIdParam);
 
             resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
 
             switch (formFieldMappingParam.dataType.intValue())
             {
