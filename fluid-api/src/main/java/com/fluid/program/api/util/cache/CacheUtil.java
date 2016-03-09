@@ -16,6 +16,10 @@
 package com.fluid.program.api.util.cache;
 
 
+import java.io.Serializable;
+
+import com.fluid.program.api.vo.Field;
+
 /**
  * Cache Utility class used for {@code Field} value retrieval actions.
  *
@@ -26,6 +30,45 @@ public class CacheUtil {
 
     private static final String NULL = "null";
     private static final String DASH = "-";
+
+    private String cacheHost = null;
+    private int cachePort = -1;
+
+    /**
+     *
+     */
+    public static class CachedFieldValue implements Serializable
+    {
+        public Long fieldValueForCachingId;
+        public Object cachedFieldValue;
+        public int cacheFieldTypeId;
+
+        /**
+         *
+         * @return
+         */
+        public Field getCachedFieldValueAsField()
+        {
+            return null;
+        }
+    }
+
+
+    /**
+     * New instance of cache util using the
+     * provided Host {@code cacheHostParam} and
+     * Port {@code cachePortParam}.
+     *
+     * @param cacheHostParam The MemCache Host IP or hostname.
+     * @param cachePortParam The MemCache Port.
+     */
+    public CacheUtil(
+            String cacheHostParam,
+            int cachePortParam) {
+
+        this.cacheHost = cacheHostParam;
+        this.cachePort = cachePortParam;
+    }
 
     /**
      * Generates the storage key the provided parameters.
@@ -78,4 +121,34 @@ public class CacheUtil {
 
         return stringBuff.toString();
     }
+
+    /**
+     * Retrieves the {@code CachedFieldValue} value stored under
+     * the params.
+     *
+     * @param formDefIdParam The Form Definition Id.
+     * @param formContIdParam The Form Container Id.
+     * @param formFieldIdParam The Form Field Id.
+     *
+     * @return Storage Key
+     */
+    public CachedFieldValue getCachedFieldValueFrom(
+            Long formDefIdParam,
+            Long formContIdParam,
+            Long formFieldIdParam)
+    {
+
+        CachedFieldValue returnVal = null;
+
+
+
+        return returnVal;
+    }
+
+
+
+    //TODO can start off by fetching values only...
+    //TODO use the  [getWord()] to determine the data type.
+    //TODO use      [getValue()] to get the field value.
+    //TODO use      [fieldValueForCachingId] to get the FieldValueId.
 }
