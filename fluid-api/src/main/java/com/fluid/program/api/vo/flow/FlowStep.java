@@ -39,6 +39,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
     private String name;
     private String description;
+
     private Date dateCreated;
     private Date dateLastUpdated;
 
@@ -59,8 +60,10 @@ public class FlowStep extends ABaseFluidJSONObject {
     {
         public static final String NAME = "name";
         public static final String DESCRIPTION = "description";
+
         public static final String DATE_CREATED = "dateCreated";
         public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+
         public static final String FLOW = "flow";
         public static final String FLOW_STEP_TYPE = "flowStepType";
         public static final String ENTRY_RULES = "entryRules";

@@ -68,7 +68,7 @@ public abstract class ABaseClientWS {
     public static final String APPLICATION_JSON_CHARSET_UTF8 = "application/json; charset=UTF-8";
     public static final String CONTENT_TYPE_HEADER = "Content-type";
 
-    private static String endpointUrl = "https://localhost:8443/fluid-ws/";
+    protected static String endpointUrl = "https://localhost:8443/fluid-ws/";
 
     protected String serviceTicket;
 
@@ -180,11 +180,11 @@ public abstract class ABaseClientWS {
     /**
      * Creates a new client and sets the Base Endpoint URL.
      *
-     * @param endpointUrlParam URL to base endpoint.
+     * @param endpointBaseUrlParam URL to base endpoint.
      */
-    public ABaseClientWS(String endpointUrlParam) {
+    public ABaseClientWS(String endpointBaseUrlParam) {
         this();
-        ABaseClientWS.endpointUrl = endpointUrlParam;
+        ABaseClientWS.endpointUrl = endpointBaseUrlParam;
     }
 
     /**

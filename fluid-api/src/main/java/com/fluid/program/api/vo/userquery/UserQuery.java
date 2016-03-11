@@ -41,6 +41,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
     private String name;
     private String description;
+
+    private List<String> rules;
+
     private List<Field> inputs;
 
     /**
@@ -51,6 +54,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
         public static final String NAME = "name";
         public static final String DESCRIPTION = "description";
         public static final String INPUTS = "inputs";
+        public static final String RULES = "rules";
     }
 
     /**
@@ -91,6 +95,21 @@ public class UserQuery extends ABaseListing<FluidItem> {
             }
 
             this.setInputs(assFields);
+        }
+
+        //Rules...
+        if (!this.jsonObject.isNull(JSONMapping.RULES)) {
+
+            JSONArray rulesArr = this.jsonObject.getJSONArray(
+                    JSONMapping.RULES);
+
+            List<String> rules = new ArrayList<>();
+            for(int index = 0;index < rulesArr.length();index++)
+            {
+                rules.add(rulesArr.getString(index));
+            }
+
+            this.setRules(rules);
         }
     }
 
@@ -153,6 +172,24 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
+     * Sets {@code UserQuery} rules.
+     *
+     * @return A {@code UserQuery}s rules.
+     */
+    public List<String> getRules() {
+        return this.rules;
+    }
+
+    /**
+     * Sets {@code UserQuery} rules.
+     *
+     * @param rulesParam A {@code UserQuery}s rules.
+     */
+    public void setRules(List<String> rulesParam) {
+        this.rules = rulesParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
@@ -188,6 +225,19 @@ public class UserQuery extends ABaseListing<FluidItem> {
             }
 
             returnVal.put(JSONMapping.INPUTS, jsonArray);
+        }
+
+        //Rules...
+        if(this.getRules() != null)
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(String toAdd : this.getRules())
+            {
+                jsonArray.put(toAdd);
+            }
+
+            returnVal.put(JSONMapping.RULES, jsonArray);
         }
 
         return returnVal;

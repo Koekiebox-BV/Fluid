@@ -42,6 +42,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     {
         public static final String ID = "id";
         public static final String SERVICE_TICKET = "serviceTicket";
+        public static final String ECHO = "echo";
     }
 
     /**
@@ -98,6 +99,11 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
             if (!this.jsonObject.isNull(JSONMapping.SERVICE_TICKET)) {
                 this.setServiceTicket(this.jsonObject.getString(JSONMapping.SERVICE_TICKET));
             }
+
+            //Echo...
+            if (!this.jsonObject.isNull(JSONMapping.ECHO)) {
+                this.setEcho(this.jsonObject.getString(JSONMapping.ECHO));
+            }
         }
     }
 
@@ -125,6 +131,11 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         if(this.getServiceTicket() != null)
         {
             returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
+        }
+        //Echo...
+        if(this.getEcho() != null)
+        {
+            returnVal.put(JSONMapping.ECHO, this.getEcho());
         }
 
         return returnVal;

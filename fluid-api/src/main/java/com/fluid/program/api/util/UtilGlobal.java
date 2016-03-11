@@ -8,6 +8,8 @@ package com.fluid.program.api.util;
  */
 public class UtilGlobal {
 
+    public static final String EMPTY = "";
+
     /**
      * The field type id mappings.
      */

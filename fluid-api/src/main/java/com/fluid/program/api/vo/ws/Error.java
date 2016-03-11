@@ -15,6 +15,8 @@
 
 package com.fluid.program.api.vo.ws;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
@@ -61,6 +63,26 @@ public class Error extends ABaseFluidJSONObject {
     public Error(int errorCode, String errorMessage) {
         this.setErrorCode(errorCode);
         this.setErrorMessage(errorMessage);
+    }
+
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public Error(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+
+        //Error Code...
+        if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE)) {
+            this.setErrorCode(
+                    new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
+        }
+
+        //Error Message...
+        if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE)) {
+            this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE));
+        }
     }
 
     /**

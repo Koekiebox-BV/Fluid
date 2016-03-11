@@ -310,8 +310,16 @@ public class SQLFormUtil extends ABaseSQLUtil {
 
         toAdd.setId(formId);
         toAdd.setTitle(title);
-        toAdd.setDateCreated(created);
-        toAdd.setDateLastUpdated(lastUpdated);
+
+        if(created != null)
+        {
+            toAdd.setDateCreated(new Date(created.getTime()));
+        }
+
+        if(lastUpdated != null)
+        {
+            toAdd.setDateLastUpdated(new Date(lastUpdated.getTime()));
+        }
 
         return toAdd;
     }

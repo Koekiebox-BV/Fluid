@@ -37,6 +37,7 @@ public class ABaseFluidVO implements Serializable {
 
     private Long id;
     protected String serviceTicket;
+    protected String echo;
 
     private User loggedInUserFromTicket;
 
@@ -95,6 +96,24 @@ public class ABaseFluidVO implements Serializable {
      */
     public void setServiceTicket(String serviceTicketParam) {
         this.serviceTicket = serviceTicketParam;
+    }
+
+    /**
+     * Sets the Echo message for tracking async messages.
+     *
+     * @return Echo message.
+     */
+    public String getEcho() {
+        return this.echo;
+    }
+
+    /**
+     * Sets the Echo message for tracking async messages.
+     *
+     * @param echoParam Echo message.
+     */
+    public void setEcho(String echoParam) {
+        this.echo = echoParam;
     }
 
     /**

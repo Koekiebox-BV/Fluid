@@ -133,6 +133,7 @@ public class Form extends ABaseFluidJSONObject {
 
         //Date Created...
         if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
+
             this.setDateCreated(
                     this.getLongAsDateFromJson(
                             this.jsonObject.getLong(JSONMapping.DATE_CREATED)));

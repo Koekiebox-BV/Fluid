@@ -61,6 +61,11 @@
         <version.apache.httpcomponents.httpclient>4.5.1</version.apache.httpcomponents.httpclient>
         <version.apache.httpcomponents.httpcore>4.4.4</version.apache.httpcomponents.httpcore>
 
+        <!--Web Socket-->
+        <version.javax.websocket>1.0</version.javax.websocket>
+        <version.javax.websocket.tyrus.client>1.12</version.javax.websocket.tyrus.client>
+        <version.javax.websocket.tyrus.container>1.12</version.javax.websocket.tyrus.container>
+
         <!--Koekiebox Git Maven Plugin-->
         <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>
     </properties>
@@ -146,6 +151,29 @@
                 <version>${version.apache.httpcomponents.httpcore}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!--Web Socket using Tyrus-->
+            <dependency>
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-client-api</artifactId>
+                <version>${version.javax.websocket}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.tyrus</groupId>
+                <artifactId>tyrus-client</artifactId>
+                <version>${version.javax.websocket.tyrus.client}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.tyrus</groupId>
+                <artifactId>tyrus-container-grizzly-client</artifactId>
+                <version>${version.javax.websocket.tyrus.container}</version>
+                <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

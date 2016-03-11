@@ -57,6 +57,8 @@ public class WS {
      */
     public final static class Path
     {
+        public static final String WEB_SOCKET = "/web_socket/";
+
         /**
          * The Version mapping for the Fluid Web Service.
          */
@@ -1339,6 +1341,165 @@ public class WS {
         }
 
         /**
+         * The SQL Util Web Service mappings.
+         *
+         * @see com.fluid.program.api.util.sql.impl.SQLFormDefinitionUtil
+         * @see com.fluid.program.api.util.sql.impl.SQLFormFieldUtil
+         * @see com.fluid.program.api.util.sql.impl.SQLFormUtil
+         */
+        public static final class SQLUtil
+        {
+            /**
+             * User Query mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/sql_util");
+
+                public static final String ROOT_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+
+                //[[[ EXECUTE ]]]...
+                //Form...
+                public static final String SQL_UTIL_FORM_GET_TABLE_FORMS =
+                        ("/form/get_table_forms_by_electronic_form_id");
+
+                public static final String SQL_UTIL_FORM_GET_DESCENDANTS =
+                        ("/form/get_descendants_by_electronic_form_id");
+
+                public static final String SQL_UTIL_FORM_GET_ANCESTOR =
+                        ("/form/get_ancestor_by_electronic_form_id");
+
+                //Field...
+                public static final String SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER =
+                        ("/form_field/get_fields_by_electronic_form_id");
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    public static final String INCLUDE_FIELD_DATA = "include_field_data";
+                    public static final String INCLUDE_TABLE_FIELDS = "include_table_fields";
+                }
+
+                /**
+                 * Root for package {@code com.fluid.program.api.util.sql.impl}.
+                 *
+                 * @return {@code /sql_util/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for retrieving Table records for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 *
+                 * @return {@code v1/sql_util/form/get_table_forms_by_electronic_form_id}
+                 */
+                public static final String getTableForms(
+                        boolean includeFieldDataParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
+                            "?" +
+                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving Table records for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
+                 *
+                 * @throws UnsupportedEncodingException If UTF-8 is not supported.
+                 */
+                public static final String getTableFormsWebSocket(
+                        boolean includeFieldDataParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                            "?" +
+                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for retrieving descendants for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 *
+                 * @return {@code v1/sql_util/form/get_descendants_by_electronic_form_id}
+                 */
+                public static final String getDescendants(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_GET_DESCENDANTS).concat(
+                            "?" +
+                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                            "&" +
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving descendants for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 *
+                 * @return {@code v1/sql_util/form/get_ancestor_by_electronic_form_id}
+                 */
+                public static final String getAncestor(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_GET_ANCESTOR).concat(
+                            "?" +
+                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                            "&" +
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving Table records for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeTableFieldsParam Does Table Field data need to be included?
+                 *
+                 * @return {@code v1/sql_util/form_field/get_fields_by_electronic_form_id}
+                 */
+                public static final String getFormFields(
+                        boolean includeTableFieldsParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
+                            "?" +
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                    );
+                }
+            }
+        }
+
+        /**
          * The User Query Web Service mappings.
          *
          * @see com.fluid.program.api.vo.userquery.UserQuery
@@ -1352,11 +1513,24 @@ public class WS {
             {
                 public static final String ROOT = ("/user_query");
 
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
+
                 //Read...
+                public static final String READ = ("/get_by_id");
+
+                //Execute...
                 public static final String EXECUTE = ("/execute");
 
                 /**
-                 * Root for @{code UserQuery}.
+                 * Root for {@code UserQuery}.
                  *
                  * @return {@code /user_query/}
                  */
@@ -1374,6 +1548,64 @@ public class WS {
                 {
                     return Version.VERSION_1.concat(ROOT).concat(EXECUTE);
                 }
+
+                /**
+                 * URL Path for {@code UserQuery} create.
+                 *
+                 * @return {@code /v1/user_query/}
+                 */
+                public static final String userQueryCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} update.
+                 *
+                 * @return {@code v1/user_query/update}
+                 */
+                public static final String userQueryUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a {@code UserQuery}.
+                 *
+                 * @return {@code v1/user_query/delete}
+                 */
+                public static final String userQueryDelete()
+                {
+                    return userQueryDelete(false);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/user_query/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String userQueryDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} get by id.
+                 *
+                 * @return {@code v1/user_query/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
             }
         }
 
