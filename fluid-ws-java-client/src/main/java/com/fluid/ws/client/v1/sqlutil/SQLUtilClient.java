@@ -122,5 +122,4 @@ public class SQLUtilClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
-
 }

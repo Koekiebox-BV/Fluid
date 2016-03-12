@@ -1384,6 +1384,14 @@ public class WS {
                 }
 
                 /**
+                 * Mapping for frequently used HTTP or Web Socket Path parameters.
+                 */
+                public static final class PathParam
+                {
+                    public static final String SERVICE_TICKET = "serviceTicket";
+                }
+
+                /**
                  * Root for package {@code com.fluid.program.api.util.sql.impl}.
                  *
                  * @return {@code /sql_util/}
@@ -1416,10 +1424,9 @@ public class WS {
                  * form with id {@code electronicFormIdParam}.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
                  *
                  * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
-                 *
-                 * @throws UnsupportedEncodingException If UTF-8 is not supported.
                  */
                 public static final String getTableFormsWebSocket(
                         boolean includeFieldDataParam,
@@ -1458,8 +1465,35 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for retrieving descendants for electronic
+                 * URL Path for retrieving Table records for electronic
                  * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/get_descendants_by_electronic_form_id}
+                 */
+                public static final String getDescendantsWebSocket(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_GET_DESCENDANTS).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                    "?" +
+                                    QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                                    "&" +
+                                    QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for retrieving ancestor for electronic
+                 * form.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
@@ -1480,8 +1514,34 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for retrieving Table records for electronic
-                 * form with id {@code electronicFormIdParam}.
+                 * URL Path for retrieving ancestor data via Web Socket.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/get_ancestor_by_electronic_form_id}
+                 */
+                public static final String getAncestorWebSocket(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_GET_ANCESTOR).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                            "?" +
+                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                                            "&" +
+                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for retrieving Form Fields for electronic
+                 * form.
                  *
                  * @param includeTableFieldsParam Does Table Field data need to be included?
                  *
@@ -1495,6 +1555,29 @@ public class WS {
                             "?" +
                             QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
                     );
+                }
+
+                /**
+                 * URL Path for retrieving Form Fields for electronic
+                 * form using a Web Socket.
+                 *
+                 * @param includeTableFieldsParam Does Table Field data need to be included?
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form_field/get_fields_by_electronic_form_id}
+                 */
+                public static final String getFormFieldsWebSocket(
+                        boolean includeTableFieldsParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                            "?" +
+                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
                 }
             }
         }

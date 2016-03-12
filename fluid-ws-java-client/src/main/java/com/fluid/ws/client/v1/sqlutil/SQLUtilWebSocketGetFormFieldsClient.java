@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.form.FormFieldListing;
 import com.fluid.program.api.vo.form.FormListing;
 import com.fluid.program.api.vo.ws.Error;
 import com.fluid.program.api.vo.ws.WS;
@@ -40,7 +41,7 @@ import com.fluid.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see WS.Path.FlowItem
  * @see FluidItem
  */
-public class SQLUtilWebSocketGetTableFormsClient extends
+public class SQLUtilWebSocketGetFormFieldsClient extends
         ABaseClientWebSocket<GenericListMessageHandler> {
 
     /**
@@ -51,45 +52,44 @@ public class SQLUtilWebSocketGetTableFormsClient extends
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param includeFieldDataParam Should Form Field data be included.
      */
-    public SQLUtilWebSocketGetTableFormsClient(
+    public SQLUtilWebSocketGetFormFieldsClient(
             IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
             boolean includeFieldDataParam) {
-
         super(new GenericFormListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
+                WS.Path.SQLUtil.Version1.getFormFieldsWebSocket(
                         includeFieldDataParam,serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
 
     /**
-     * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
+     * Retrieves all the Ancestors (Forms) for the {@code formToGetAncestorsForForParam}.
      *
-     * @param formsToGetTableFormsForParam The Fluid Form to get Table Fields for.
+     * @param formToGetAncestorsForForParam The Fluid Form to get Ancestors for.
      *
-     * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+     * @return The {@code formToGetAncestorsForForParam} Table Records as {@code Form}'s.
      */
-    public List<FormListing> getTableFormsSynchronized(
-            Form ... formsToGetTableFormsForParam) {
+    public List<FormFieldListing> getFormFieldsSynchronized(
+            Form ... formToGetAncestorsForForParam) {
 
         this.messageHandler.clear();
 
-        if(formsToGetTableFormsForParam == null)
+        if(formToGetAncestorsForForParam == null)
         {
             return null;
         }
 
-        if(formsToGetTableFormsForParam.length == 0)
+        if(formToGetAncestorsForForParam.length == 0)
         {
             return this.messageHandler.getReturnValue();
         }
 
         //Send all the messages...
         List<String> echoMessagesExpected = new ArrayList<>();
-        for(Form formToSend : formsToGetTableFormsForParam)
+        for(Form formToSend : formToGetAncestorsForForParam)
         {
             if(formToSend == null)
             {
@@ -159,6 +159,34 @@ public class SQLUtilWebSocketGetTableFormsClient extends
                                 +this.messageHandler.getReturnValue().size()+"'."
                         ,FluidClientException.ErrorCode.IO_ERROR);
             }
+        }
+    }
+
+    /**
+     *
+     */
+    private static class GetAncestorMessageHandler extends GenericListMessageHandler<FormFieldListing>
+    {
+
+        /**
+         *
+         * @param messageReceivedCallbackParam
+         */
+        public GetAncestorMessageHandler(
+                IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam) {
+
+            super(messageReceivedCallbackParam);
+        }
+
+        /**
+         * New {@code FormFieldListing} by {@code jsonObjectParam}
+         *
+         * @param jsonObjectParam The JSON Object to parse.
+         * @return new {@code FormFieldListing}.
+         */
+        @Override
+        public FormFieldListing getNewInstanceBy(JSONObject jsonObjectParam) {
+            return new FormFieldListing(jsonObjectParam);
         }
     }
 }

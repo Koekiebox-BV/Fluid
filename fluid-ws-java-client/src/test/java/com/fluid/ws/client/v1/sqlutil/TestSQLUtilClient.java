@@ -75,6 +75,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
      *
      */
     @Test
+    @Ignore
     public void testGetTableFormsWithSpecificId()
     {
         if(!this.loginClient.isConnectionValid())
@@ -89,7 +90,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         SQLUtilClient sqlUtilClient = new SQLUtilClient(serviceTicket);
 
-        int numberOfRecords = 1000;
+        int numberOfRecords = 5;
         Form[] testForms =
                 TestSQLUtilWebSocketClient.generateLotsOfFormsFor(numberOfRecords, 28L);
 

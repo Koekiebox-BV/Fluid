@@ -40,7 +40,7 @@ import com.fluid.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see WS.Path.FlowItem
  * @see FluidItem
  */
-public class SQLUtilWebSocketGetTableFormsClient extends
+public class SQLUtilWebSocketGetDescendantsClient extends
         ABaseClientWebSocket<GenericListMessageHandler> {
 
     /**
@@ -50,46 +50,49 @@ public class SQLUtilWebSocketGetTableFormsClient extends
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param includeFieldDataParam Should Form Field data be included.
+     * @param includeTableFieldsParam Should Table Fields be included.
      */
-    public SQLUtilWebSocketGetTableFormsClient(
+    public SQLUtilWebSocketGetDescendantsClient(
             IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
-            boolean includeFieldDataParam) {
-
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam) {
         super(new GenericFormListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
-                        includeFieldDataParam,serviceTicketAsHexParam));
+                WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
+                        includeFieldDataParam,
+                        includeTableFieldsParam
+                        ,serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
 
     /**
-     * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
+     * Retrieves all the Descendants (Forms) for the {@code formToGetTableFormsForParam}.
      *
-     * @param formsToGetTableFormsForParam The Fluid Form to get Table Fields for.
+     * @param formToGetDescendantsForParam The Fluid Form to get Descendants for.
      *
-     * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+     * @return The {@code formToGetDescendantsForParam} Table Records as {@code Form}'s.
      */
-    public List<FormListing> getTableFormsSynchronized(
-            Form ... formsToGetTableFormsForParam) {
+    public List<FormListing> getDescendantsSynchronized(
+            Form ... formToGetDescendantsForParam) {
 
         this.messageHandler.clear();
 
-        if(formsToGetTableFormsForParam == null)
+        if(formToGetDescendantsForParam == null)
         {
             return null;
         }
 
-        if(formsToGetTableFormsForParam.length == 0)
+        if(formToGetDescendantsForParam.length == 0)
         {
             return this.messageHandler.getReturnValue();
         }
 
         //Send all the messages...
         List<String> echoMessagesExpected = new ArrayList<>();
-        for(Form formToSend : formsToGetTableFormsForParam)
+        for(Form formToSend : formToGetDescendantsForParam)
         {
             if(formToSend == null)
             {
