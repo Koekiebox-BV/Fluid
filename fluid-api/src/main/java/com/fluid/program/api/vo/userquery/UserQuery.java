@@ -58,6 +58,13 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
+     * Default constructor.
+     */
+    public UserQuery() {
+        super();
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

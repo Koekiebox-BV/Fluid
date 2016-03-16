@@ -65,11 +65,10 @@ public class SQLUtilWebSocketGetAncestorClient extends
     }
 
     /**
-     * Retrieves all the Ancestors (Forms) for the {@code formToGetAncestorsForForParam}.
+     * Retrieves all the Ancestors (Forms) for the {@code formToGetAncestorsForForParam}
+     * asynchronously.
      *
      * @param formToGetAncestorsForForParam The Fluid Form to get Ancestors for.
-     *
-     * @return The {@code formToGetAncestorsForForParam} Table Records as {@code Form}'s.
      */
     public void getAncestorAsynchronous(
             Form formToGetAncestorsForForParam) {

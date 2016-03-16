@@ -1608,6 +1608,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_ALL = ("/get_all_user_queries");
 
                 //Execute...
                 public static final String EXECUTE = ("/execute");
@@ -1687,6 +1688,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for UserQuery get all.
+                 *
+                 * @return {@code v1/user_query/get_all_user_queries}
+                 */
+                public static final String getAllUserQueries()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
 
             }

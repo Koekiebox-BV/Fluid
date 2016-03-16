@@ -9,23 +9,24 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
 import com.fluid.program.api.vo.ws.Error;
 
 /**
- * TODO Description comes here.
+ * Base list message handler.
  *
  * @author jasonbruwer on 2016/03/11.
- * @since 1.0
+ * @since 1.1
  */
 public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
         implements IMessageHandler {
 
-    private List<T> returnValue;
+    private final List<T> returnValue;
     private List<Error> errors;
 
     private IMessageReceivedCallback<T> messageReceivedCallback;
     private boolean isConnectionClosed;
 
     /**
+     * Message handler with callback.
      *
-     * @param messageReceivedCallbackParam
+     * @param messageReceivedCallbackParam The message callback observer.
      */
     public GenericListMessageHandler(IMessageReceivedCallback<T> messageReceivedCallbackParam) {
 
@@ -36,7 +37,9 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
-     * @param messageParam
+     * 'Handles' the message.
+     *
+     * @param messageParam The message to handle.
      */
     @Override
     public void handleMessage(String messageParam) {
@@ -73,7 +76,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
-     *
+     * Event for when connection is closed.
      */
     @Override
     public void connectionClosed() {
@@ -81,16 +84,18 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
+     * Checks whether the connection to the server is closed.
      *
-     * @return
+     * @return Whether connection is closed.
      */
     public boolean isConnectionClosed() {
         return this.isConnectionClosed;
     }
 
     /**
+     * Checks to see whether there are error responses.
      *
-     * @return
+     * @return Whether there is an error.
      */
     public boolean hasErrorOccurred()
     {
@@ -98,23 +103,29 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
+     * Error listing.
      *
-     * @return
+     * @return The error that occured.
      */
     public List<Error> getErrors() {
         return this.errors;
     }
 
     /**
+     * Create a new instance of {@code T}.
      *
-     * @param jsonObjectParam
-     * @return
+     * @param jsonObjectParam The {@code JSONObject} to create an object from.
+     * @return An instance of {@code ABaseFluidJSONObject}.
+     *
+     * @see ABaseFluidJSONObject
+     * @see JSONObject
      */
     public abstract T getNewInstanceBy(JSONObject jsonObjectParam);
 
     /**
+     * Gets the size of the return value.
      *
-     * @return
+     * @return Added Count.
      */
     public int getAddedCount()
     {
@@ -122,8 +133,9 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
+     * Gets a list of echo messages of the current return values.
      *
-     * @return
+     * @return The return value echo messages.
      */
     private List<String> getEchoMessagesFromReturnValue()
     {
@@ -146,8 +158,12 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
+     * Checks the local return value echo messages if all
+     * of them contain {@code echoMessageParam}.
      *
-     * @return
+     * @param echoMessageParam The echo messages to check.
+     *
+     * @return Whether local return value echo messages contain {@code echoMessageParam}.
      */
     public boolean doReturnValueEchoMessageContainAll(List<String> echoMessageParam)
     {
@@ -171,7 +187,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
-     *
+     * Clears the return value.
      */
     public void clear()
     {
@@ -179,8 +195,9 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
+     * Gets the return value.
      *
-     * @return
+     * @return The return value listing.
      */
     public List<T> getReturnValue() {
         return this.returnValue;

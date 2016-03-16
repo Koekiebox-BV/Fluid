@@ -15,7 +15,9 @@ import com.fluid.ws.client.v1.websocket.IMessageReceivedCallback;
 public class GenericFormListingMessageHandler extends GenericListMessageHandler<FormListing> {
 
     /**
-     * @param messageReceivedCallbackParam
+     * Constructor for FormListing callbacks.
+     *
+     * @param messageReceivedCallbackParam The callback events.
      */
     public GenericFormListingMessageHandler(IMessageReceivedCallback<FormListing> messageReceivedCallbackParam) {
 

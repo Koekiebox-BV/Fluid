@@ -152,7 +152,7 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!--Web Socket using Tyrus-->
+            <!--Web Socket Client using Tyrus-->
             <dependency>
                 <groupId>javax.websocket</groupId>
                 <artifactId>javax.websocket-client-api</artifactId>
@@ -173,7 +173,6 @@
                 <version>${version.javax.websocket.tyrus.container}</version>
                 <scope>provided</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 </project>

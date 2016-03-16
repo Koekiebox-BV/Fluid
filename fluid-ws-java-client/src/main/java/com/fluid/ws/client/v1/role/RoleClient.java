@@ -18,7 +18,6 @@ package com.fluid.ws.client.v1.role;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.role.Role;
 import com.fluid.program.api.vo.role.RoleListing;
 import com.fluid.program.api.vo.ws.WS;
@@ -106,7 +105,7 @@ public class RoleClient extends ABaseClientWS {
      * @param roleToDeleteParam The Role to Delete.
      * @return The deleted Role.
      */
-    public Form deleteRole(
+    public Role deleteRole(
             Role roleToDeleteParam)
     {
         if(roleToDeleteParam != null && this.serviceTicket != null)
@@ -114,7 +113,7 @@ public class RoleClient extends ABaseClientWS {
             roleToDeleteParam.setServiceTicket(this.serviceTicket);
         }
 
-        return new Form(this.postJson(roleToDeleteParam,
+        return new Role(this.postJson(roleToDeleteParam,
                 WS.Path.Role.Version1.roleDelete()));
     }
 
@@ -126,7 +125,7 @@ public class RoleClient extends ABaseClientWS {
      * @param forcefullyDeleteParam Delete the Role forcefully.
      * @return The deleted Role.
      */
-    public Form deleteRole(
+    public Role deleteRole(
             Role roleToDeleteParam,
             boolean forcefullyDeleteParam)
     {
@@ -135,7 +134,7 @@ public class RoleClient extends ABaseClientWS {
             roleToDeleteParam.setServiceTicket(this.serviceTicket);
         }
 
-        return new Form(this.postJson(roleToDeleteParam,
+        return new Role(this.postJson(roleToDeleteParam,
                 WS.Path.Role.Version1.roleDelete(forcefullyDeleteParam)));
     }
 

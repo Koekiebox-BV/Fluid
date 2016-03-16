@@ -9,10 +9,10 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
 import com.fluid.ws.client.FluidClientException;
 
 /**
- * TODO Description comes here.
+ * The {@code ClientEndpoint} Web Socket client.
  *
  * @author jasonbruwer on 2016/03/11.
- * @since 1.0
+ * @since 1.1
  */
 @ClientEndpoint()
 public class WebSocketClient {
@@ -21,10 +21,12 @@ public class WebSocketClient {
     private IMessageHandler messageHandler;
 
     /**
+     * Default constructor with an endpoint.
+     * Establishes a connection to remote.
      *
-     * @param endpointURI
-     * @throws DeploymentException
-     * @throws IOException
+     * @param endpointURI The Endpoint URI.
+     * @throws DeploymentException If there is a connection problem.
+     * @throws IOException If there is a I/O problem.
      */
     public WebSocketClient(URI endpointURI) throws DeploymentException, IOException {
 
@@ -49,7 +51,7 @@ public class WebSocketClient {
      *
      * @param userSessionParam The userSession which is getting closed.
      * @param reasonParam The reason for connection close.
-     *      
+     *
      */
     @OnClose
     public void onClose(Session userSessionParam, CloseReason reasonParam) {
@@ -84,23 +86,29 @@ public class WebSocketClient {
     /**
      * Send a message.
      *
-     * @param aBaseFluidJSONObjectParam
+     * @param aBaseFluidJSONObjectParam The JSON Object to send.
      */
     public void sendMessage(ABaseFluidJSONObject aBaseFluidJSONObjectParam) {
 
-        if(aBaseFluidJSONObjectParam != null)
+        if(aBaseFluidJSONObjectParam == null)
         {
-            this.userSession.getAsyncRemote().sendText(
-                    aBaseFluidJSONObjectParam.toJsonObject().toString());
+            throw new FluidClientException(
+                    "No JSON Object to send.",
+                    FluidClientException.ErrorCode.IO_ERROR);
+        }
+        else
+        {
+            this.sendMessage(aBaseFluidJSONObjectParam.toJsonObject().toString());
         }
     }
 
     /**
      * Send a message.
      *
-     * @param messageToSendParam
+     * @param messageToSendParam The text message to send.
      */
     public void sendMessage(String messageToSendParam) {
+
         this.userSession.getAsyncRemote().sendText(messageToSendParam);
     }
 

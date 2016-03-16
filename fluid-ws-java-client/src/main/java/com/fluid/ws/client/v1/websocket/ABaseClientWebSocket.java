@@ -55,15 +55,15 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
 
         public static final String SCHEME_SEP = "://";
         public static final String COLON = ":";
-        public static final String FORWARD_SLASH = "/";
+        //public static final String FORWARD_SLASH = "/";
     }
 
     /**
      * Default constructor.
      *
      * @param messageHandlerParam {@code IMessageHandler} to process incoming messages.
-     * @param timeoutInMillisParam
-     * @param postFixForUrlParam
+     * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
+     * @param postFixForUrlParam The URL Postfix.
      */
     public ABaseClientWebSocket(
             T messageHandlerParam,
@@ -140,8 +140,11 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     }
 
     /**
+     * Send the {@code baseFluidJSONObjectParam} via Web Socket.
      *
-     * @param baseFluidJSONObjectParam
+     * @param baseFluidJSONObjectParam The JSONObject to send.
+     *
+     * @see org.json.JSONObject
      */
     public void sendMessage(ABaseFluidJSONObject baseFluidJSONObjectParam)
     {
@@ -154,7 +157,10 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     }
 
     /**
+     * If the HTTP Client is set, this will
+     * close and clean any connections that needs to be closed.
      *
+     * @since v1.1
      */
     @Override
     public void closeAndClean()
@@ -173,9 +179,10 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     }
 
     /**
+     * Retrieves the Web Service URL from {@code webServiceURLParam}.
      *
-     * @param webServiceURLParam
-     * @return
+     * @param webServiceURLParam The Web Service URL to convert.
+     * @return The Web Socket URL version of {@code webServiceURLParam}.
      */
     private String getWebSocketBaseURIFrom(String webServiceURLParam)
     {
@@ -191,7 +198,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
 
         URI uri = URI.create(webServiceURLParam);
 
-        StringBuffer returnBuffer = new StringBuffer();
+        StringBuilder returnBuffer = new StringBuilder();
 
         String scheme = uri.getScheme();
         scheme = scheme.trim().toLowerCase();
@@ -226,8 +233,9 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     }
 
     /**
+     * The timeout in millis.
      *
-     * @return
+     * @return Timeout in millis.
      */
     public long getTimeoutInMillis() {
         return this.timeoutInMillis;
