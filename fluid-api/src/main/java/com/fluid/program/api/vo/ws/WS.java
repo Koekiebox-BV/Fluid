@@ -131,6 +131,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String BY_NAME = ("/get_by_name");
 
                 /**
                  * Root for Form Field.
@@ -197,6 +198,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Form Field get by name.
+                 *
+                 * @return {@code v1/form_field/get_by_name}
+                 */
+                public static final String getByName()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(BY_NAME);
                 }
             }
         }

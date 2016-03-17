@@ -204,16 +204,14 @@ public class UserQueryClient extends ABaseClientWS {
      */
     public FluidItemListing executeUserQuery(UserQuery queryToExecuteParam)
     {
-        UserQuery userQueryToGetInfoFor = new UserQuery();
-
-        if(this.serviceTicket != null)
+        if(this.serviceTicket != null && queryToExecuteParam != null)
         {
-            userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
+            queryToExecuteParam.setServiceTicket(this.serviceTicket);
         }
 
         try {
             return new FluidItemListing(this.postJson(
-                    userQueryToGetInfoFor, WS.Path.UserQuery.Version1.executeUserQuery()));
+                    queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery()));
         }
         //
         catch (JSONException jsonExcept) {

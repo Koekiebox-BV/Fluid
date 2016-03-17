@@ -181,7 +181,8 @@ public class Field extends ABaseFluidJSONObject {
             if(objFromKey instanceof JSONObject)
             {
                 JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
-                if(jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES))
+                if(jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
+                        jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES))
                 {
                     this.setFieldValue(new MultiChoice(jsonObject));
                 }
