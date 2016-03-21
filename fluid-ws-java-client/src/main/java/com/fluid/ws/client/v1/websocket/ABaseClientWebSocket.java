@@ -221,11 +221,11 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
         // ://
         returnBuffer.append(Constant.SCHEME_SEP);
         returnBuffer.append(uri.getHost());
-        returnBuffer.append(Constant.COLON);
 
         // 80 / 443
         if(uri.getPort() > 0)
         {
+            returnBuffer.append(Constant.COLON);
             returnBuffer.append(uri.getPort());
         }
 
