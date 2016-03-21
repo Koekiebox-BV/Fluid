@@ -224,7 +224,10 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
         returnBuffer.append(Constant.COLON);
 
         // 80 / 443
-        returnBuffer.append(uri.getPort());
+        if(uri.getPort() > 0)
+        {
+            returnBuffer.append(uri.getPort());
+        }
 
         // /fluid-ws/
         returnBuffer.append(uri.getPath());
