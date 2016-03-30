@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.program.api.util.UtilGlobal;
+
 /**
  * <p>
  *     Represents a {@code Form} Table Field.
@@ -127,5 +129,22 @@ public class TableField extends ABaseFluidJSONObject {
         }
 
         return returnVal;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+
+        JSONObject jsonObject = this.toJsonObject();
+
+        if(jsonObject != null)
+        {
+            return jsonObject.toString();
+        }
+
+        return UtilGlobal.EMPTY;
     }
 }
