@@ -23,8 +23,10 @@ import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.form.FormListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
@@ -64,6 +66,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
      *
      */
     @Test
+    @Ignore
     public void testGetTableFormsWithSpecificId()
     {
         if(!this.loginClient.isConnectionValid())
@@ -122,6 +125,80 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
     }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testGetDescendantFormsWithSpecificId()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+        String serviceTicketHex = null;
+        if(serviceTicket != null && !serviceTicket.isEmpty())
+        {
+            serviceTicketHex =
+                    BaseEncoding.base16().encode(BaseEncoding.base64().decode(serviceTicket));
+        }
+
+        SQLUtilWebSocketGetDescendantsClient webSocketClient =
+                new SQLUtilWebSocketGetDescendantsClient(
+                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
+
+        long start = System.currentTimeMillis();
+
+        int numberOfRecords = 1;
+
+        List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
+                generateLotsOfFormsFor(numberOfRecords, 32L));
+
+        long took = (System.currentTimeMillis() - start);
+
+        webSocketClient.closeAndClean();
+
+        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+
+        if(formListing != null)
+        {
+            for(FormListing listing : formListing)
+            {
+                //System.out.println("Response For ::: "+listing.getEcho());
+
+                List<Form> descendantsForms = listing.getListing();
+
+                for(Form form : descendantsForms)
+                {
+                    System.out.println(form.getFormType() +
+                            " - " +
+                            form.getTitle());
+
+                    if(form.getFormFields() != null)
+                    {
+                        for(Field field : form.getFormFields())
+                        {
+                            System.out.println("["+field.getFieldName()+"] = '"+
+                                    field.getFieldValue()+"'");
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.out.println("Nothing...");
+        }
+
+        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+    }
+
 
     /**
      *

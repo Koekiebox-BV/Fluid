@@ -41,6 +41,46 @@ public class TestRoleClient extends ABaseTestCase {
     /**
      *
      */
+    public static final class TestStatics {
+
+        /**
+         *
+         */
+        public static final class Permission {
+
+            public static final String CHANGE_OWN_PASSWORD = "change_own_password";
+            public static final String EDIT_ROLES = "edit_roles";
+            public static final String VIEW_ROLES = "view_roles";
+            public static final String VIEW_USERS = "view_users";
+        }
+
+
+
+        /**
+         *
+         */
+        public static final class Create {
+
+            public static final String ROLE_NAME = "junit Testing Role";
+            public static final String ROLE_DESCRIPTION = "junit Testing Role DESCRIPTION.";
+
+
+            public static final List<String> PERMISSIONS = new ArrayList<>();
+
+            static {
+                PERMISSIONS.add(Permission.CHANGE_OWN_PASSWORD);
+                PERMISSIONS.add(Permission.EDIT_ROLES);
+                PERMISSIONS.add(Permission.VIEW_ROLES);
+                PERMISSIONS.add(Permission.VIEW_USERS);
+
+            }
+        }
+
+    }
+
+        /**
+     *
+     */
     @Before
     public void init() {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
@@ -75,18 +115,19 @@ public class TestRoleClient extends ABaseTestCase {
         RoleClient roleClient = new RoleClient(serviceTicket);
 
         Role roleToCreate = new Role();
-        roleToCreate.setName("junit Testing Role");
-
-        List<String> roleAdminPerm = new ArrayList<>();
-        roleAdminPerm.add("change_own_password");
-        roleAdminPerm.add("edit_roles");
-        roleAdminPerm.add("view_roles");
-        roleAdminPerm.add("view_users");
-        roleToCreate.setAdminPermissions(roleAdminPerm);
+        roleToCreate.setName(TestStatics.Create.ROLE_NAME);
+        roleToCreate.setDescription(TestStatics.Create.ROLE_DESCRIPTION);
+        roleToCreate.setAdminPermissions(TestStatics.Create.PERMISSIONS);
 
         roleToCreate = roleClient.createRole(roleToCreate);
 
+        //Created... Test...
         TestCase.assertNotNull(roleToCreate);
+        TestCase.assertNotNull("The 'Id' needs to be set.", roleToCreate.getId());
+        TestCase.assertEquals("'Name' mismatch.", TestStatics.Create.ROLE_NAME,
+                roleToCreate.getName());
+        TestCase.assertEquals("'Description' mismatch.", TestStatics.Create.ROLE_DESCRIPTION,
+                roleToCreate.getDescription());
 
         roleClient.deleteRole(roleToCreate,true);
     }

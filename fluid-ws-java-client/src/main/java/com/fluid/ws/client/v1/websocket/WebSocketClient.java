@@ -5,6 +5,9 @@ import java.net.URI;
 
 import javax.websocket.*;
 
+import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
+
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 import com.fluid.ws.client.FluidClientException;
 
@@ -30,7 +33,12 @@ public class WebSocketClient {
      */
     public WebSocketClient(URI endpointURI) throws DeploymentException, IOException {
 
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        //ContainerProvider.getWebSocketContainer()
+
+        WebSocketContainer container = ClientManager.createClient(GrizzlyClientContainer.class.getName());
+
+        //WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
+        //WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 
         container.connectToServer(this, endpointURI);
     }
@@ -64,7 +72,6 @@ public class WebSocketClient {
      * a client sends a message.
      * @param messageParam The text message      
      */
-
     @OnMessage
     public void onMessage(String messageParam) {
 
