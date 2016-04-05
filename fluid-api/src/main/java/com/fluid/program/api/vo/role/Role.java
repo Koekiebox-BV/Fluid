@@ -49,7 +49,7 @@ public class Role extends ABaseFluidJSONObject {
     private List<RoleToFormFieldToFormDefinition> roleToFormFieldToFormDefinitions;
 
     private List<RoleToJobView> roleToJobViews;
-    private List<UserQuery> userQueries;
+    private List<RoleToUserQuery> roleToUserQueries;
 
     /**
      * The JSON mapping for the {@code Role} object.
@@ -64,7 +64,7 @@ public class Role extends ABaseFluidJSONObject {
         public static final String ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS =
                 "roleToFormFieldToFormDefinitions";
         public static final String ROLE_TO_JOB_VIEWS = "roleToJobViews";
-        public static final String USER_QUERIES = "userQueries";
+        public static final String ROLE_TO_USER_QUERIES = "roleToUserQueries";
     }
 
     /**
@@ -175,21 +175,21 @@ public class Role extends ABaseFluidJSONObject {
             this.setRoleToJobViews(roleToFormDefListing);
         }
 
-        //User Queries...
-        if (!this.jsonObject.isNull(JSONMapping.USER_QUERIES)) {
+        //Role to User Queries...
+        if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_USER_QUERIES)) {
 
             JSONArray userQueryArray = this.jsonObject.getJSONArray(
-                    JSONMapping.USER_QUERIES);
+                    JSONMapping.ROLE_TO_USER_QUERIES);
 
-            List<UserQuery> userQueryListing = new ArrayList<>();
+            List<RoleToUserQuery> userQueryListing = new ArrayList<>();
 
             for(int index = 0;index < userQueryArray.length();index++)
             {
                 userQueryListing.add(
-                        new UserQuery(userQueryArray.getJSONObject(index)));
+                        new RoleToUserQuery(userQueryArray.getJSONObject(index)));
             }
 
-            this.setUserQueries(userQueryListing);
+            this.setRoleToUserQueries(userQueryListing);
         }
     }
 
@@ -312,25 +312,25 @@ public class Role extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets {@code UserQuery}s.
+     * Gets {@code RoleToUserQuery}s.
      *
-     * @return A {@code Role}s associated {@code UserQuery}s.
+     * @return A {@code Role}s associated {@code RoleToUserQuery}s.
      *
      * @see UserQuery
      */
-    public List<UserQuery> getUserQueries() {
-        return this.userQueries;
+    public List<RoleToUserQuery> getRoleToUserQueries() {
+        return this.roleToUserQueries;
     }
 
     /**
-     * Sets {@code UserQuery}s.
+     * Sets {@code RoleToUserQuery}s.
      *
-     * @param userQueriesParam A {@code Role}s associated {@code UserQuery}s.
+     * @param userQueriesParam A {@code Role}s associated {@code RoleToUserQuery}s.
      *
      * @see UserQuery
      */
-    public void setUserQueries(List<UserQuery> userQueriesParam) {
-        this.userQueries = userQueriesParam;
+    public void setRoleToUserQueries(List<RoleToUserQuery> userQueriesParam) {
+        this.roleToUserQueries = userQueriesParam;
     }
 
     /**
@@ -411,17 +411,17 @@ public class Role extends ABaseFluidJSONObject {
             returnVal.put(JSONMapping.ROLE_TO_JOB_VIEWS, roleToJobViewArr);
         }
 
-        //User Queries...
-        if(this.getUserQueries() != null &&
-                !this.getUserQueries().isEmpty())
+        //Role to User Queries...
+        if(this.getRoleToUserQueries() != null &&
+                !this.getRoleToUserQueries().isEmpty())
         {
             JSONArray userQueriesArr = new JSONArray();
-            for(UserQuery toAdd :this.getUserQueries())
+            for(RoleToUserQuery toAdd :this.getRoleToUserQueries())
             {
                 userQueriesArr.put(toAdd.toJsonObject());
             }
 
-            returnVal.put(JSONMapping.USER_QUERIES, userQueriesArr);
+            returnVal.put(JSONMapping.ROLE_TO_USER_QUERIES, userQueriesArr);
         }
 
         return returnVal;
