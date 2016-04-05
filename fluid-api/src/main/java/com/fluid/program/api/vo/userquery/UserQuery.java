@@ -65,6 +65,17 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
+     * Sets the Id associated with a 'User Query'.
+     *
+     * @param userQueryIdParam UserQuery Id.
+     */
+    public UserQuery(Long userQueryIdParam) {
+        super();
+
+        this.setId(userQueryIdParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

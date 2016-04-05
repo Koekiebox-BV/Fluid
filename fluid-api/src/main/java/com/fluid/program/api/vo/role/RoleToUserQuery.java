@@ -79,7 +79,7 @@ public class RoleToUserQuery extends ABaseFluidJSONObject {
 
         //User Query...
         if (!this.jsonObject.isNull(JSONMapping.USER_QUERY)) {
-            this.setJobView(new UserQuery(this.jsonObject.getJSONObject(
+            this.setUserQuery(new UserQuery(this.jsonObject.getJSONObject(
                     JSONMapping.USER_QUERY)));
         }
 
@@ -104,7 +104,7 @@ public class RoleToUserQuery extends ABaseFluidJSONObject {
      *
      * @param userQueryParam View Rule.
      */
-    public void setJobView(UserQuery userQueryParam) {
+    public void setUserQuery(UserQuery userQueryParam) {
         this.userQuery = userQueryParam;
     }
 
