@@ -19,50 +19,49 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
-import com.fluid.program.api.vo.Form;
-import com.fluid.program.api.vo.flow.JobView;
+import com.fluid.program.api.vo.userquery.UserQuery;
 
 /**
  * <p>
- *     Represents what Views a {@code Role} has access to.
+ *     Represents what UserQueries a {@code Role} has access to.
  * </p>
  *
  * @author jasonbruwer
  * @since v1.1
  *
- * @see Form
+ * @see com.fluid.program.api.vo.userquery.UserQuery
  * @see Role
  */
-public class RoleToJobView extends ABaseFluidJSONObject {
+public class RoleToUserQuery extends ABaseFluidJSONObject {
 
-    private JobView jobView;
+    private UserQuery userQuery;
     private Role role;
 
     /**
-     * The JSON mapping for the {@code RoleToJobView} object.
+     * The JSON mapping for the {@code RoleToUserQuery} object.
      */
     public static class JSONMapping
     {
-        public static final String JOB_VIEW = "jobView";
+        public static final String USER_QUERY = "userQuery";
         public static final String ROLE = "role";
     }
 
     /**
      * Default constructor.
      */
-    public RoleToJobView() {
+    public RoleToUserQuery() {
         super();
     }
 
     /**
-     * Sets the Id associated with a 'Role To Job View'.
+     * Sets the Id associated with a 'Role To User Query'.
      *
-     * @param roleToJobViewIdParam RoleToJobView Id.
+     * @param roleToUserQueryIdParam RoleToUserQuery Id.
      */
-    public RoleToJobView(Long roleToJobViewIdParam) {
+    public RoleToUserQuery(Long roleToUserQueryIdParam) {
         super();
 
-        this.setId(roleToJobViewIdParam);
+        this.setId(roleToUserQueryIdParam);
     }
 
     /**
@@ -70,7 +69,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RoleToJobView(JSONObject jsonObjectParam){
+    public RoleToUserQuery(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -78,10 +77,10 @@ public class RoleToJobView extends ABaseFluidJSONObject {
             return;
         }
 
-        //Job View...
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW)) {
-            this.setJobView(new JobView(this.jsonObject.getJSONObject(
-                    JSONMapping.JOB_VIEW)));
+        //User Query...
+        if (!this.jsonObject.isNull(JSONMapping.USER_QUERY)) {
+            this.setJobView(new UserQuery(this.jsonObject.getJSONObject(
+                    JSONMapping.USER_QUERY)));
         }
 
         //Role...
@@ -92,21 +91,21 @@ public class RoleToJobView extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets the View.
+     * Gets the User Query.
      *
-     * @return View Rule.
+     * @return User Query.
      */
-    public JobView getJobView() {
-        return this.jobView;
+    public UserQuery getUserQuery() {
+        return this.userQuery;
     }
 
     /**
-     * Sets the Role for the View.
+     * Sets the User Query for the Role.
      *
-     * @param jobViewParam View Rule.
+     * @param userQueryParam View Rule.
      */
-    public void setJobView(JobView jobViewParam) {
-        this.jobView = jobViewParam;
+    public void setJobView(UserQuery userQueryParam) {
+        this.userQuery = userQueryParam;
     }
 
     /**
@@ -130,7 +129,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
     /**
      * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code RoleToJobView}
+     * @return {@code JSONObject} representation of {@code RoleToUserQuery}
      * @throws JSONException If there is a problem with the JSON Body.
      *
      * @see ABaseFluidJSONObject#toJsonObject()
@@ -140,11 +139,11 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 
         JSONObject returnVal = super.toJsonObject();
 
-        //Job View...
-        if(this.getJobView() != null)
+        //User Query...
+        if(this.getUserQuery() != null)
         {
-            returnVal.put(JSONMapping.JOB_VIEW,
-                    this.getJobView().toJsonObject());
+            returnVal.put(JSONMapping.USER_QUERY,
+                    this.getUserQuery().toJsonObject());
         }
 
         //Role...
