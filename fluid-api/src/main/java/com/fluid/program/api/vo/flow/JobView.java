@@ -13,56 +13,53 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluid.program.api.vo.role;
+package com.fluid.program.api.vo.flow;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
-import com.fluid.program.api.vo.Form;
-import com.fluid.program.api.vo.flow.JobView;
 
 /**
  * <p>
- *     Represents what Views a {@code Role} has access to.
+ *     Represents a {@code JobView}.
  * </p>
  *
  * @author jasonbruwer
  * @since v1.1
  *
- * @see Form
- * @see Role
+ * @see com.fluid.program.api.vo.role.RoleToJobView
  */
-public class RoleToJobView extends ABaseFluidJSONObject {
+public class JobView extends ABaseFluidJSONObject {
 
-    private JobView jobView;
-    private Role role;
+    private String rule;
+    private String viewName;
 
     /**
      * The JSON mapping for the {@code RoleToJobView} object.
      */
     public static class JSONMapping
     {
-        public static final String JOB_VIEW = "jobView";
-        public static final String ROLE = "role";
+        public static final String RULE = "rule";
+        public static final String VIEW_NAME = "viewName";
     }
 
     /**
      * Default constructor.
      */
-    public RoleToJobView() {
+    public JobView() {
         super();
     }
 
     /**
-     * Sets the Id associated with a 'Role To Job View'.
+     * Sets the Id associated with a 'Job View'.
      *
-     * @param roleToToJobViewIdParam RoleToJobView Id.
+     * @param jobViewIdParam RoleToJobView Id.
      */
-    public RoleToJobView(Long roleToToJobViewIdParam) {
+    public JobView(Long jobViewIdParam) {
         super();
 
-        this.setId(roleToToJobViewIdParam);
+        this.setId(jobViewIdParam);
     }
 
     /**
@@ -70,7 +67,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RoleToJobView(JSONObject jsonObjectParam){
+    public JobView(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
         if(this.jsonObject == null)
@@ -78,53 +75,51 @@ public class RoleToJobView extends ABaseFluidJSONObject {
             return;
         }
 
-        //Job View...
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW)) {
-            this.setJobView(new JobView(this.jsonObject.getJSONObject(
-                    JSONMapping.JOB_VIEW)));
+        //Rule...
+        if (!this.jsonObject.isNull(JSONMapping.RULE)) {
+            this.setRule(this.jsonObject.getString(JSONMapping.RULE));
         }
 
-        //Role...
-        if (!this.jsonObject.isNull(JSONMapping.ROLE)) {
-            this.setRole(new Role(this.jsonObject.getJSONObject(
-                    JSONMapping.ROLE)));
+        //View Name...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
+            this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
         }
     }
 
     /**
-     * Gets the View.
+     * Gets the Rule for the View.
      *
      * @return View Rule.
      */
-    public JobView getJobView() {
-        return this.jobView;
+    public String getRule() {
+        return this.rule;
     }
 
     /**
-     * Sets the Role for the View.
+     * Sets the Rule for the View.
      *
-     * @param jobViewParam View Rule.
+     * @param ruleParam View Rule.
      */
-    public void setJobView(JobView jobViewParam) {
-        this.jobView = jobViewParam;
+    public void setRule(String ruleParam) {
+        this.rule = ruleParam;
     }
 
     /**
-     * Gets the Role for the View.
+     * Gets the Name of the View.
      *
-     * @return View Rule.
+     * @return View Name.
      */
-    public Role getRole() {
-        return this.role;
+    public String getViewName() {
+        return this.viewName;
     }
 
     /**
-     * Sets the Role for the View.
+     * Gets the Name of the View.
      *
-     * @param roleParam View Rule.
+     * @param viewNameParam View Name.
      */
-    public void setRole(Role roleParam) {
-        this.role = roleParam;
+    public void setViewName(String viewNameParam) {
+        this.viewName = viewNameParam;
     }
 
     /**
@@ -140,18 +135,16 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 
         JSONObject returnVal = super.toJsonObject();
 
-        //Job View...
-        if(this.getJobView() != null)
+        //Rule...
+        if(this.getRule() != null)
         {
-            returnVal.put(JSONMapping.JOB_VIEW,
-                    this.getJobView().toJsonObject());
+            returnVal.put(JSONMapping.RULE, this.getRule());
         }
 
-        //Role...
-        if(this.getRole() != null)
+        //View Name...
+        if(this.getViewName() != null)
         {
-            returnVal.put(JSONMapping.ROLE,
-                    this.getRole().toJsonObject());
+            returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
         }
 
         return returnVal;

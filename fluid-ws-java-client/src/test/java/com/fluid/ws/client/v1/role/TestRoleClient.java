@@ -24,8 +24,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluid.program.api.vo.role.Role;
-import com.fluid.program.api.vo.role.RoleListing;
+import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.role.*;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
@@ -74,6 +74,55 @@ public class TestRoleClient extends ABaseTestCase {
                 PERMISSIONS.add(Permission.VIEW_USERS);
 
             }
+
+            /**
+             *
+             * @param formFieldToFormDefParam
+             * @param canCreateAndModParam
+             * @param canViewParam
+             * @return
+             */
+            public static final List<RoleToFormFieldToFormDefinition>
+            toRoleToFormFieldToFormDefinition(
+                    FormFieldToFormDefinition formFieldToFormDefParam,
+                    boolean canCreateAndModParam,
+                    boolean canViewParam){
+
+                List<RoleToFormFieldToFormDefinition> returnVal = new ArrayList<>();
+
+                RoleToFormFieldToFormDefinition roleToFormFieldToFormDef =
+                        new RoleToFormFieldToFormDefinition();
+
+                roleToFormFieldToFormDef.setCanCreateAndModify(canCreateAndModParam);
+                roleToFormFieldToFormDef.setCanView(canViewParam);
+                roleToFormFieldToFormDef.setFormFieldToFormDefinition(formFieldToFormDefParam);
+
+                returnVal.add(roleToFormFieldToFormDef);
+
+                return returnVal;
+            }
+
+            /**
+             *
+             * @param formParam
+             * @param canCreateParam
+             * @return
+             */
+            public static final List<RoleToFormDefinition> toRoleToFormFormDefinition(
+                    Form formParam,
+                    boolean canCreateParam){
+
+                List<RoleToFormDefinition> returnVal = new ArrayList<>();
+
+                RoleToFormDefinition toAdd = new RoleToFormDefinition();
+                toAdd.setCanCreate(canCreateParam);
+                toAdd.setFormDefinition(formParam);
+
+                returnVal.add(toAdd);
+
+                return returnVal;
+            }
+
         }
 
     }
@@ -118,6 +167,13 @@ public class TestRoleClient extends ABaseTestCase {
         roleToCreate.setName(TestStatics.Create.ROLE_NAME);
         roleToCreate.setDescription(TestStatics.Create.ROLE_DESCRIPTION);
         roleToCreate.setAdminPermissions(TestStatics.Create.PERMISSIONS);
+        roleToCreate.setRoleToFormFieldToFormDefinitions(
+                TestStatics.Create.toRoleToFormFieldToFormDefinition(
+                        new FormFieldToFormDefinition(1L),
+                        true,true));
+        roleToCreate.setRoleToFormDefinitions(
+                TestStatics.Create.toRoleToFormFormDefinition(
+                        new Form(1L), true));
 
         roleToCreate = roleClient.createRole(roleToCreate);
 
@@ -128,6 +184,39 @@ public class TestRoleClient extends ABaseTestCase {
                 roleToCreate.getName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.Create.ROLE_DESCRIPTION,
                 roleToCreate.getDescription());
+
+        //Admin Permissions...
+        TestCase.assertNotNull("'Admin Permissions' not set.",roleToCreate.getAdminPermissions());
+        //Due to login permission...
+        TestCase.assertEquals("'Admin Permission' count mismatch.",
+                TestStatics.Create.PERMISSIONS.size() + 1, roleToCreate.getAdminPermissions().size());
+
+        //Role To Form Field To Form Definitions...
+        TestCase.assertNotNull(
+                "'Role To Form Field To Form Definitions' not set.",
+                roleToCreate.getRoleToFormFieldToFormDefinitions());
+
+        RoleToFormFieldToFormDefinition firstRTFFTFD =
+                roleToCreate.getRoleToFormFieldToFormDefinitions().get(0);
+
+        TestCase.assertNotNull(
+                "'RoleToFormFieldToFormDefinition' not set.", firstRTFFTFD);
+
+        TestCase.assertNotNull(
+                "RoleToFormFieldToFormDefinition 'Id' not set.", firstRTFFTFD.getId());
+
+        //Role to Form Definition...
+        TestCase.assertNotNull(
+                "'Role To Form Definitions' not set.",
+                roleToCreate.getRoleToFormDefinitions());
+
+        RoleToFormDefinition firstRTFD = roleToCreate.getRoleToFormDefinitions().get(0);
+
+        TestCase.assertNotNull(
+                "'RoleToFormDefinition' not set.", firstRTFD);
+
+        TestCase.assertNotNull(
+                "RoleToFormDefinition 'Id' not set.", firstRTFD.getId());
 
         roleClient.deleteRole(roleToCreate,true);
     }

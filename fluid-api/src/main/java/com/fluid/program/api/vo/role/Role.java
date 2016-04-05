@@ -75,6 +75,17 @@ public class Role extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Id associated with a 'Role'.
+     *
+     * @param roleIdParam Role Id.
+     */
+    public Role(Long roleIdParam) {
+        super();
+
+        this.setId(roleIdParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

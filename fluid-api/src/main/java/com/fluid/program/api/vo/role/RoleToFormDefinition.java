@@ -55,6 +55,17 @@ public class RoleToFormDefinition extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Id associated with a 'Role To Form Definition'.
+     *
+     * @param roleToFormDefinitionIdParam RoleToFormDefinition Id.
+     */
+    public RoleToFormDefinition(Long roleToFormDefinitionIdParam) {
+        super();
+
+        this.setId(roleToFormDefinitionIdParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

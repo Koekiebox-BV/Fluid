@@ -55,6 +55,17 @@ public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Id associated with a 'Form Field To Form Definition'.
+     *
+     * @param formFieldToFormDefinitionIdParam Field Id.
+     */
+    public FormFieldToFormDefinition(Long formFieldToFormDefinitionIdParam) {
+        super();
+
+        this.setId(formFieldToFormDefinitionIdParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.
