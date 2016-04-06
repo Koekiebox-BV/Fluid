@@ -16,16 +16,14 @@
 package com.fluid.program.api.vo.userquery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.ABaseFluidJSONObject;
-import com.fluid.program.api.vo.ABaseListing;
-import com.fluid.program.api.vo.Field;
-import com.fluid.program.api.vo.FluidItem;
+import com.fluid.program.api.vo.*;
 
 /**
  * <p>
@@ -46,6 +44,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
     private List<Field> inputs;
 
+    private Date dateCreated;
+    private Date dateLastUpdated;
+
     /**
      * The JSON mapping for the {@code UserQuery} object.
      */
@@ -55,6 +56,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
         public static final String DESCRIPTION = "description";
         public static final String INPUTS = "inputs";
         public static final String RULES = "rules";
+
+        public static final String DATE_CREATED = "dateCreated";
+        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
     }
 
     /**
@@ -128,6 +132,21 @@ public class UserQuery extends ABaseListing<FluidItem> {
             }
 
             this.setRules(rules);
+        }
+
+        //Date Created...
+        if (!this.jsonObject.isNull(Form.JSONMapping.DATE_CREATED)) {
+
+            this.setDateCreated(
+                    this.getLongAsDateFromJson(
+                            this.jsonObject.getLong(Form.JSONMapping.DATE_CREATED)));
+        }
+
+        //Date Last Updated...
+        if (!this.jsonObject.isNull(Form.JSONMapping.DATE_LAST_UPDATED)) {
+            this.setDateLastUpdated(
+                    this.getLongAsDateFromJson(
+                            this.jsonObject.getLong(Form.JSONMapping.DATE_LAST_UPDATED)));
         }
     }
 
@@ -208,6 +227,46 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
+     * Gets The {@code Date} the Electronic Form / Form Definition
+     * was created.
+     *
+     * @return Date Created.
+     */
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    /**
+     * Sets The {@code Date} the Electronic Form / Form Definition
+     * was created.
+     *
+     * @param dateCreatedParam Date Created.
+     */
+    public void setDateCreated(Date dateCreatedParam) {
+        this.dateCreated = dateCreatedParam;
+    }
+
+    /**
+     * Gets The {@code Date} the Electronic Form / Form Definition
+     * was last updated.
+     *
+     * @return Date Last Updated.
+     */
+    public Date getDateLastUpdated() {
+        return this.dateLastUpdated;
+    }
+
+    /**
+     * Sets The {@code Date} the Electronic Form / Form Definition
+     * was last updated.
+     *
+     * @param dateLastUpdatedParam Date Last Updated.
+     */
+    public void setDateLastUpdated(Date dateLastUpdatedParam) {
+        this.dateLastUpdated = dateLastUpdatedParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
@@ -256,6 +315,20 @@ public class UserQuery extends ABaseListing<FluidItem> {
             }
 
             returnVal.put(JSONMapping.RULES, jsonArray);
+        }
+
+        //Date Created...
+        if(this.getDateCreated() != null)
+        {
+            returnVal.put(Form.JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated()));
+        }
+
+        //Date Last Updated...
+        if(this.getDateLastUpdated() != null)
+        {
+            returnVal.put(Form.JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
         }
 
         return returnVal;

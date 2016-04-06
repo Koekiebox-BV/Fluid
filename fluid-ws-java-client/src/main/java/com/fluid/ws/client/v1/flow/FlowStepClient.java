@@ -18,6 +18,7 @@ package com.fluid.ws.client.v1.flow;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.flow.FlowStep;
+import com.fluid.program.api.vo.flow.JobViewListing;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
@@ -92,25 +93,47 @@ public class FlowStepClient extends ABaseClientWS {
     /**
      * Retrieves an existing Flow Step via Primary key.
      *
-     * @param flowIdParam The Flow Step Primary Key.
+     * @param flowStepIdParam The Flow Step Primary Key.
      * @param flowStepTypeParam The type of step.
      * @return The Step retrieved by Primary key.
      *
      * @see com.fluid.program.api.vo.flow.FlowStep.StepType
      */
     public FlowStep getFlowStepById(
-            Long flowIdParam, String flowStepTypeParam)
+            Long flowStepIdParam, String flowStepTypeParam)
     {
-        FlowStep flow = new FlowStep(flowIdParam);
-        flow.setFlowStepType(flowStepTypeParam);
+        FlowStep flowStep = new FlowStep(flowStepIdParam);
+        flowStep.setFlowStepType(flowStepTypeParam);
 
         if(this.serviceTicket != null)
         {
-            flow.setServiceTicket(this.serviceTicket);
+            flowStep.setServiceTicket(this.serviceTicket);
         }
 
         return new FlowStep(this.postJson(
-                flow, WS.Path.FlowStep.Version1.getById()));
+                flowStep, WS.Path.FlowStep.Version1.getById()));
+    }
+
+    /**
+     * Retrieves all Assignment {@link com.fluid.program.api.vo.flow.JobView}s
+     * via Flow Step Primary key.
+     *
+     * @param flowStepIdParam The Flow Step Primary Key.
+     * @return The Step retrieved by Primary key.
+     *
+     * @see com.fluid.program.api.vo.flow.FlowStep.StepType
+     */
+    public JobViewListing getJobViewsByStepId(Long flowStepIdParam)
+    {
+        FlowStep flowStep = new FlowStep(flowStepIdParam);
+
+        if(this.serviceTicket != null)
+        {
+            flowStep.setServiceTicket(this.serviceTicket);
+        }
+
+        return new JobViewListing(this.postJson(
+                flowStep, WS.Path.FlowStep.Version1.getAllViewsByStepId()));
     }
 
     /**

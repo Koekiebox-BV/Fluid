@@ -46,8 +46,52 @@ public class TestUserQueryClient extends ABaseTestCase {
      *
      */
     public static final class TestStatics{
-        public static final String FORM_DEFINITION = "Email";
-        public static final String FORM_TITLE_PREFIX = "Test api doc with email...";
+        public static final String NAME = "JUnit Run the Query";
+        public static final String DESCRIPTION = "This is a JUnit test query.";
+
+        public static final String RULE_NR_1 = "[Form Type] = INPUT_VALUE";
+        public static final Long RESULT_FIELD_1 = 1L;
+        public static final String RESULT_FIELD_1_NAME = "Email From Address";
+
+        public static final String UPDATE_NAME = "JUnit Run the Query - Updated";
+        public static final String UPDATE_DESCRIPTION = "This is a JUnit test query. Updated";
+
+        /**
+         *
+         * @param ruleParam
+         * @return
+         */
+        public static List<String> toRuleListing(String ruleParam)
+        {
+            List<String> returnVal = new ArrayList<>();
+
+            if(ruleParam != null){
+                returnVal.add(ruleParam);
+            }
+
+            return returnVal;
+        }
+
+        /**
+         *
+         * @param fieldIdParam
+         * @param nameParam
+         * @return
+         */
+        public static List<Field> toFieldListing(
+                Long fieldIdParam,
+                String nameParam)
+        {
+            List<Field> returnVal = new ArrayList<>();
+
+            Field field = new Field(fieldIdParam);
+            field.setFieldName(nameParam);
+
+            returnVal.add(field);
+
+            return returnVal;
+        }
+
     }
 
     /**
@@ -74,6 +118,65 @@ public class TestUserQueryClient extends ABaseTestCase {
      *
      */
     @Test
+    public void testUserQuery_CRUD()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserQueryClient userQueryClient = new UserQueryClient(serviceTicket);
+
+        //1. Text...
+        UserQuery toCreate = new UserQuery();
+        toCreate.setName(TestStatics.NAME);
+        toCreate.setDescription(TestStatics.DESCRIPTION);
+        toCreate.setRules(TestStatics.toRuleListing(TestStatics.RULE_NR_1));
+        toCreate.setInputs(TestStatics.toFieldListing(
+                TestStatics.RESULT_FIELD_1,
+                TestStatics.RESULT_FIELD_1_NAME));
+
+        //2. Create...
+        UserQuery createdUserQuery = userQueryClient.createUserQuery(toCreate);
+
+        TestCase.assertNotNull("The 'Id' needs to be set.", createdUserQuery.getId());
+        TestCase.assertEquals("'Name' mismatch.", TestStatics.NAME, createdUserQuery.getName());
+        TestCase.assertEquals("'Description' mismatch.", TestStatics.DESCRIPTION,
+                createdUserQuery.getDescription());
+
+        //3. Update...
+        createdUserQuery.setName(TestStatics.UPDATE_NAME);
+        createdUserQuery.setDescription(TestStatics.UPDATE_DESCRIPTION);
+        UserQuery updatedUserQuery = userQueryClient.updateUserQuery(createdUserQuery);
+
+        TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedUserQuery.getId());
+        TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.UPDATE_NAME,
+                updatedUserQuery.getName());
+        TestCase.assertEquals("UPDATE: 'Description' mismatch.",
+                TestStatics.UPDATE_DESCRIPTION, updatedUserQuery.getDescription());
+
+        //4. Get by Id...
+        UserQuery byIdUserQuery = userQueryClient.getUserQueryById(updatedUserQuery.getId());
+
+        TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdUserQuery.getId());
+        TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdUserQuery.getName());
+        TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdUserQuery.getDescription());
+
+        //5. Delete...
+        UserQuery deletedUserQuery = userQueryClient.deleteUserQuery(byIdUserQuery,true);
+        TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedUserQuery.getId());
+    }
+
+
+    /**
+     *
+     */
+    @Test
     @Ignore
     public void executeUserQueryWithSpecificName()
     {
@@ -93,7 +196,6 @@ public class TestUserQueryClient extends ABaseTestCase {
         userQueryToExec.setName("Client is Input");
 
         List<Field> inputs = new ArrayList<>();
-
 
         List<String> selectedClients = new ArrayList<>();
         selectedClients.add("PPC");

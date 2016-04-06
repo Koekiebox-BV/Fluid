@@ -25,10 +25,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.flow.Flow;
+import com.fluid.program.api.vo.flow.FlowStep;
+import com.fluid.program.api.vo.flow.JobView;
+import com.fluid.program.api.vo.flow.JobViewListing;
 import com.fluid.program.api.vo.role.*;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
+import com.fluid.ws.client.v1.flow.FlowClient;
+import com.fluid.ws.client.v1.flow.FlowStepClient;
+import com.fluid.ws.client.v1.flow.TestFlowStepClient;
 import com.fluid.ws.client.v1.user.LoginClient;
 
 /**
@@ -123,6 +130,23 @@ public class TestRoleClient extends ABaseTestCase {
                 return returnVal;
             }
 
+            /**
+             *
+             * @param jobViewParam
+             * @return
+             */
+            public static final List<RoleToJobView> toRoleToJobView(
+                    JobView jobViewParam){
+
+                List<RoleToJobView> returnVal = new ArrayList<>();
+
+                RoleToJobView toAdd = new RoleToJobView();
+                toAdd.setJobView(jobViewParam);
+
+                returnVal.add(toAdd);
+
+                return returnVal;
+            }
         }
 
     }
@@ -161,6 +185,42 @@ public class TestRoleClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
+        //JOB VIEW...
+        FlowClient flowClient = new FlowClient(serviceTicket);
+        FlowStepClient flowStepClient = new FlowStepClient(serviceTicket);
+
+
+        //1. The Test Flow Step...
+        Flow createdFlow = new Flow();
+        createdFlow.setName("JUnit Test Flow");
+        createdFlow.setDescription("Test Flow Description.");
+        createdFlow = flowClient.createFlow(createdFlow);
+
+        FlowStep toCreate = new FlowStep();
+        toCreate.setName(TestFlowStepClient.TestStatics.FLOW_STEP_NAME);
+        toCreate.setDescription(TestFlowStepClient.TestStatics.FLOW_STEP_DESCRIPTION);
+        toCreate.setFlow(createdFlow);
+        toCreate.setFlowStepType(FlowStep.StepType.ASSIGNMENT);
+
+        //2. Create...
+        FlowStep createdFlowStep = flowStepClient.createFlowStep(toCreate);
+
+        TestCase.assertNotNull(
+                "RoleToJobView 'Step' not set.", createdFlowStep);
+        TestCase.assertNotNull(
+                "RoleToJobView 'Step Id' not set.", createdFlowStep.getId());
+
+        JobViewListing jobViewListing =
+                flowStepClient.getJobViewsByStepId(createdFlowStep.getId());
+
+        TestCase.assertNotNull(
+                "RoleToJobView 'Job Views' not set.", jobViewListing);
+
+        JobView firstJobView = jobViewListing.getListing().get(0);
+
+        TestCase.assertNotNull(
+                "RoleToJobView 'First Job View' not set.", firstJobView);
+
         RoleClient roleClient = new RoleClient(serviceTicket);
 
         Role roleToCreate = new Role();
@@ -174,6 +234,7 @@ public class TestRoleClient extends ABaseTestCase {
         roleToCreate.setRoleToFormDefinitions(
                 TestStatics.Create.toRoleToFormFormDefinition(
                         new Form(1L), true));
+        roleToCreate.setRoleToJobViews(TestStatics.Create.toRoleToJobView(firstJobView));
 
         roleToCreate = roleClient.createRole(roleToCreate);
 
@@ -218,7 +279,22 @@ public class TestRoleClient extends ABaseTestCase {
         TestCase.assertNotNull(
                 "RoleToFormDefinition 'Id' not set.", firstRTFD.getId());
 
+        //Role to JobView...
+        TestCase.assertNotNull(
+                "'Role To Job View' not set.",
+                roleToCreate.getRoleToJobViews());
+
+        RoleToJobView firstRTJV = roleToCreate.getRoleToJobViews().get(0);
+
+        TestCase.assertNotNull(
+                "'RoleToJobView' not set.", firstRTJV);
+
+        TestCase.assertNotNull(
+                "RoleToJobView 'Id' not set.", firstRTJV.getId());
+
+        //Cleanup...
         roleClient.deleteRole(roleToCreate,true);
+        flowClient.deleteFlow(createdFlow);
     }
 
 

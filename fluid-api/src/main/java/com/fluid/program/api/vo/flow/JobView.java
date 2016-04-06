@@ -34,6 +34,7 @@ public class JobView extends ABaseFluidJSONObject {
 
     private String rule;
     private String viewName;
+    private String viewType;
 
     /**
      * The JSON mapping for the {@code RoleToJobView} object.
@@ -42,6 +43,7 @@ public class JobView extends ABaseFluidJSONObject {
     {
         public static final String RULE = "rule";
         public static final String VIEW_NAME = "viewName";
+        public static final String VIEW_TYPE = "viewType";
     }
 
     /**
@@ -84,6 +86,11 @@ public class JobView extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
             this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
         }
+
+        //View Type...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_TYPE)) {
+            this.setViewType(this.jsonObject.getString(JSONMapping.VIEW_TYPE));
+        }
     }
 
     /**
@@ -123,6 +130,24 @@ public class JobView extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Type of the View.
+     *
+     * @return Type Name.
+     */
+    public String getViewType() {
+        return this.viewType;
+    }
+
+    /**
+     * Gets the Type of the View.
+     *
+     * @param viewTypeParam Type Name.
+     */
+    public void setViewType(String viewTypeParam) {
+        this.viewType = viewTypeParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code RoleToJobView}
@@ -145,6 +170,12 @@ public class JobView extends ABaseFluidJSONObject {
         if(this.getViewName() != null)
         {
             returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
+        }
+
+        //View Type...
+        if(this.getViewType() != null)
+        {
+            returnVal.put(JSONMapping.VIEW_TYPE, this.getViewType());
         }
 
         return returnVal;

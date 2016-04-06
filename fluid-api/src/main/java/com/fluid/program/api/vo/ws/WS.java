@@ -622,6 +622,8 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_ALL_VIEWS_BY_STEP =
+                        ("/get_views_by_step_id");
 
                 /**
                  * Root for Flow Step.
@@ -688,6 +690,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for JobViews by Flow Step id.
+                 *
+                 * @return {@code v1/flow_step/get_views_by_step_id}
+                 */
+                public static final String getAllViewsByStepId()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_STEP);
                 }
             }
         }
