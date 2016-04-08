@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fluid.program.api.vo.user.User;
@@ -33,6 +34,23 @@ import com.fluid.ws.client.v1.ABaseTestCase;
 public class TestUserClient extends ABaseTestCase {
 
     private LoginClient loginClient;
+
+    /**
+     *
+     */
+    public static final class TestStatics
+    {
+        public static final class Create
+        {
+            public static final String USERNAME = "junitTestingUser";
+            public static final String PASSWORD = "password";
+        }
+
+        public static final class Update
+        {
+            public static final String USERNAME = "junitTestingUserUpdated";
+        }
+    }
 
     /**
      *
@@ -58,6 +76,7 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
+    @Ignore
     public void testCreateUser() {
         if (!this.loginClient.isConnectionValid()) {
             return;
@@ -71,7 +90,8 @@ public class TestUserClient extends ABaseTestCase {
         UserClient userClient = new UserClient(serviceTicket);
 
         User userToCreate = new User();
-        userToCreate.setUsername("junitTestingUser");
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
         userToCreate = userClient.createUser(userToCreate);
 
@@ -84,6 +104,7 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
+    @Ignore
     public void testUpdateUser() {
         if (!this.loginClient.isConnectionValid()) {
             return;
@@ -97,13 +118,14 @@ public class TestUserClient extends ABaseTestCase {
         UserClient userClient = new UserClient(serviceTicket);
 
         User userToCreate = new User();
-        userToCreate.setUsername("junitTestingUser");
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
         User userToUpdate = userClient.createUser(userToCreate);
 
         TestCase.assertNotNull(userToUpdate);
 
-        userToUpdate.setUsername("junitTestingUser");
+        userToUpdate.setUsername(TestStatics.Update.USERNAME);
         userToUpdate = userClient.updateUser(userToUpdate);
 
         userClient.deActivateUser(userToUpdate);

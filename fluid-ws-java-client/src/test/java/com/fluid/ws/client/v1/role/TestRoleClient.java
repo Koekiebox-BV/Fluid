@@ -59,9 +59,12 @@ public class TestRoleClient extends ABaseTestCase {
             public static final String EDIT_ROLES = "edit_roles";
             public static final String VIEW_ROLES = "view_roles";
             public static final String VIEW_USERS = "view_users";
+
+            //Update...
+            public static final String VIEW_AUDIT_LOG = "view_audit_log";
+            public static final String VIEW_SERVER_LOG = "view_server_log";
+            public static final String REVEAL_MASKED_FIELD = "reveal_masked_field";
         }
-
-
 
         /**
          *
@@ -71,84 +74,103 @@ public class TestRoleClient extends ABaseTestCase {
             public static final String ROLE_NAME = "junit Testing Role";
             public static final String ROLE_DESCRIPTION = "junit Testing Role DESCRIPTION.";
 
-
             public static final List<String> PERMISSIONS = new ArrayList<>();
-
             static {
                 PERMISSIONS.add(Permission.CHANGE_OWN_PASSWORD);
                 PERMISSIONS.add(Permission.EDIT_ROLES);
                 PERMISSIONS.add(Permission.VIEW_ROLES);
                 PERMISSIONS.add(Permission.VIEW_USERS);
-
-            }
-
-            /**
-             *
-             * @param formFieldToFormDefParam
-             * @param canCreateAndModParam
-             * @param canViewParam
-             * @return
-             */
-            public static final List<RoleToFormFieldToFormDefinition>
-            toRoleToFormFieldToFormDefinition(
-                    FormFieldToFormDefinition formFieldToFormDefParam,
-                    boolean canCreateAndModParam,
-                    boolean canViewParam){
-
-                List<RoleToFormFieldToFormDefinition> returnVal = new ArrayList<>();
-
-                RoleToFormFieldToFormDefinition roleToFormFieldToFormDef =
-                        new RoleToFormFieldToFormDefinition();
-
-                roleToFormFieldToFormDef.setCanCreateAndModify(canCreateAndModParam);
-                roleToFormFieldToFormDef.setCanView(canViewParam);
-                roleToFormFieldToFormDef.setFormFieldToFormDefinition(formFieldToFormDefParam);
-
-                returnVal.add(roleToFormFieldToFormDef);
-
-                return returnVal;
-            }
-
-            /**
-             *
-             * @param formParam
-             * @param canCreateParam
-             * @return
-             */
-            public static final List<RoleToFormDefinition> toRoleToFormFormDefinition(
-                    Form formParam,
-                    boolean canCreateParam){
-
-                List<RoleToFormDefinition> returnVal = new ArrayList<>();
-
-                RoleToFormDefinition toAdd = new RoleToFormDefinition();
-                toAdd.setCanCreate(canCreateParam);
-                toAdd.setFormDefinition(formParam);
-
-                returnVal.add(toAdd);
-
-                return returnVal;
-            }
-
-            /**
-             *
-             * @param jobViewParam
-             * @return
-             */
-            public static final List<RoleToJobView> toRoleToJobView(
-                    JobView jobViewParam){
-
-                List<RoleToJobView> returnVal = new ArrayList<>();
-
-                RoleToJobView toAdd = new RoleToJobView();
-                toAdd.setJobView(jobViewParam);
-
-                returnVal.add(toAdd);
-
-                return returnVal;
             }
         }
 
+        /**
+         *
+         */
+        public static final class Update {
+
+            public static final String ROLE_NAME = "junit Testing Role - Update";
+            public static final String ROLE_DESCRIPTION = "junit Testing Role DESCRIPTION. - Update";
+
+            public static final List<String> PERMISSIONS = new ArrayList<>();
+            static {
+                PERMISSIONS.add(Permission.CHANGE_OWN_PASSWORD);
+                PERMISSIONS.add(Permission.VIEW_USERS);
+                PERMISSIONS.add(Permission.VIEW_AUDIT_LOG);
+                PERMISSIONS.add(Permission.VIEW_SERVER_LOG);
+                PERMISSIONS.add(Permission.REVEAL_MASKED_FIELD);
+            }
+        }
+
+        /**
+         *
+         * @param formFieldToFormDefParam
+         * @param canCreateAndModParam
+         * @param canViewParam
+         * @return
+         */
+        public static final List<RoleToFormFieldToFormDefinition> toRoleToFormFieldToFormDefinition(
+                FormFieldToFormDefinition formFieldToFormDefParam,
+                boolean canCreateAndModParam,
+                boolean canViewParam){
+
+            List<RoleToFormFieldToFormDefinition> returnVal = new ArrayList<>();
+
+            RoleToFormFieldToFormDefinition roleToFormFieldToFormDef =
+                    new RoleToFormFieldToFormDefinition();
+
+            roleToFormFieldToFormDef.setCanCreateAndModify(canCreateAndModParam);
+            roleToFormFieldToFormDef.setCanView(canViewParam);
+            roleToFormFieldToFormDef.setFormFieldToFormDefinition(formFieldToFormDefParam);
+
+            returnVal.add(roleToFormFieldToFormDef);
+
+            return returnVal;
+        }
+
+        /**
+         *
+         * @param formParam
+         * @param canCreateParam
+         * @return
+         */
+        public static final List<RoleToFormDefinition> toRoleToFormFormDefinition(
+                Form formParam,
+                boolean canCreateParam){
+
+            List<RoleToFormDefinition> returnVal = new ArrayList<>();
+
+            RoleToFormDefinition toAdd = new RoleToFormDefinition();
+            toAdd.setCanCreate(canCreateParam);
+            toAdd.setFormDefinition(formParam);
+
+            returnVal.add(toAdd);
+
+            return returnVal;
+        }
+
+        /**
+         *
+         * @param jobViewsParam
+         * @return
+         */
+        public static final List<RoleToJobView> toRoleToJobView(
+                JobView ... jobViewsParam){
+
+            List<RoleToJobView> returnVal = new ArrayList<>();
+
+            if(jobViewsParam != null)
+            {
+                for(JobView jobView : jobViewsParam)
+                {
+                    RoleToJobView toAdd = new RoleToJobView();
+                    toAdd.setJobView(jobView);
+
+                    returnVal.add(toAdd);
+                }
+            }
+
+            return returnVal;
+        }
     }
 
         /**
@@ -175,7 +197,7 @@ public class TestRoleClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testCreateRole() {
+    public void testRole_CRUD() {
         if (!this.loginClient.isConnectionValid()) {
             return;
         }
@@ -189,7 +211,6 @@ public class TestRoleClient extends ABaseTestCase {
         FlowClient flowClient = new FlowClient(serviceTicket);
         FlowStepClient flowStepClient = new FlowStepClient(serviceTicket);
 
-
         //1. The Test Flow Step...
         Flow createdFlow = new Flow();
         createdFlow.setName("JUnit Test Flow");
@@ -202,7 +223,7 @@ public class TestRoleClient extends ABaseTestCase {
         toCreate.setFlow(createdFlow);
         toCreate.setFlowStepType(FlowStep.StepType.ASSIGNMENT);
 
-        //2. Create...
+        //2. CREATE...
         FlowStep createdFlowStep = flowStepClient.createFlowStep(toCreate);
 
         TestCase.assertNotNull(
@@ -228,13 +249,11 @@ public class TestRoleClient extends ABaseTestCase {
         roleToCreate.setDescription(TestStatics.Create.ROLE_DESCRIPTION);
         roleToCreate.setAdminPermissions(TestStatics.Create.PERMISSIONS);
         roleToCreate.setRoleToFormFieldToFormDefinitions(
-                TestStatics.Create.toRoleToFormFieldToFormDefinition(
-                        new FormFieldToFormDefinition(1L),
-                        true,true));
+                TestStatics.toRoleToFormFieldToFormDefinition(
+                        new FormFieldToFormDefinition(1L), true,true));
         roleToCreate.setRoleToFormDefinitions(
-                TestStatics.Create.toRoleToFormFormDefinition(
-                        new Form(1L), true));
-        roleToCreate.setRoleToJobViews(TestStatics.Create.toRoleToJobView(firstJobView));
+                TestStatics.toRoleToFormFormDefinition(new Form(1L), true));
+        roleToCreate.setRoleToJobViews(TestStatics.toRoleToJobView(firstJobView));
 
         roleToCreate = roleClient.createRole(roleToCreate);
 
@@ -292,64 +311,7 @@ public class TestRoleClient extends ABaseTestCase {
         TestCase.assertNotNull(
                 "RoleToJobView 'Id' not set.", firstRTJV.getId());
 
-        //Cleanup...
-        roleClient.deleteRole(roleToCreate,true);
-        flowClient.deleteFlow(createdFlow);
-    }
-
-
-    /**
-     *
-     */
-    @Test
-    public void testUpdateRole() {
-        if (!this.loginClient.isConnectionValid()) {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RoleClient roleClient = new RoleClient(serviceTicket);
-
-        Role roleToCreate = new Role();
-        roleToCreate.setName("junit Testing Role");
-
-        List<String> roleAdminPerm = new ArrayList<>();
-        roleAdminPerm.add("change_own_password");
-        roleAdminPerm.add("edit_roles");
-        roleAdminPerm.add("view_roles");
-        roleAdminPerm.add("view_users");
-        roleToCreate.setAdminPermissions(roleAdminPerm);
-
-        Role roleToUpdate = roleClient.createRole(roleToCreate);
-        TestCase.assertNotNull(roleToCreate);
-
-        roleToCreate.setName("junit Testing Role Updated");
-        roleToUpdate = roleClient.updateRole(roleToUpdate);
-        TestCase.assertNotNull(roleToUpdate);
-
-        roleClient.deleteRole(roleToCreate,true);
-    }
-
-    /**
-     *
-     */
-    @Test
-    public void testGetAllRoleInfo() {
-        if (!this.loginClient.isConnectionValid()) {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RoleClient roleClient = new RoleClient(serviceTicket);
-
+        //2. FETCH...
         RoleListing roleListing = roleClient.getAllRoles();
 
         TestCase.assertNotNull(roleListing);
@@ -357,25 +319,60 @@ public class TestRoleClient extends ABaseTestCase {
                 roleListing.getListingCount() > 0);
         TestCase.assertNotNull("Role Listing must be set.",roleListing.getListing());
         TestCase.assertNotNull("Role must be set.",roleListing.getListing().get(0));
-    }
 
-    /**
-     *
-     */
-    @Test
-    public void testGetRoleInfoById() {
-        if (!this.loginClient.isConnectionValid()) {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RoleClient userClient = new RoleClient(serviceTicket);
-
-        Role role = userClient.getRoleById(1L);
+        //Get by Id
+        Role role = roleClient.getRoleById(roleToCreate.getId());
         TestCase.assertNotNull(role);
+
+        //3. UPDATE...
+        Role roleToUpdate = new Role();
+        roleToUpdate.setId(roleToCreate.getId());
+        roleToUpdate.setName(TestStatics.Update.ROLE_NAME);
+        roleToUpdate.setDescription(TestStatics.Update.ROLE_DESCRIPTION);
+        roleToUpdate.setAdminPermissions(TestStatics.Update.PERMISSIONS);
+        roleToUpdate.setRoleToFormFieldToFormDefinitions(new ArrayList<RoleToFormFieldToFormDefinition>());
+        roleToUpdate.setRoleToFormDefinitions(new ArrayList<RoleToFormDefinition>());
+        JobView secondJobView = jobViewListing.getListing().get(1);
+        roleToUpdate.setRoleToJobViews(TestStatics.toRoleToJobView(
+                firstJobView,secondJobView));
+
+        roleToUpdate = roleClient.updateRole(roleToUpdate);
+
+        //Updated... Test...
+        TestCase.assertNotNull(roleToUpdate);
+        TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", roleToUpdate.getId());
+        TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.Update.ROLE_NAME,
+                roleToUpdate.getName());
+        TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.Update.ROLE_DESCRIPTION,
+                roleToUpdate.getDescription());
+
+        //Admin Permissions...
+        TestCase.assertNotNull("UPDATE: 'Admin Permissions' not set.",roleToUpdate.getAdminPermissions());
+        //Due to login permission...
+        TestCase.assertEquals("UPDATE: 'Admin Permission' count mismatch.",
+                TestStatics.Update.PERMISSIONS.size() + 1, roleToUpdate.getAdminPermissions().size());
+
+        //Role To Form Field To Form Definitions...
+        TestCase.assertNull(
+                "UPDATE: 'Role To Form Field To Form Definitions' must not be set.",
+                roleToUpdate.getRoleToFormFieldToFormDefinitions());
+
+        //Role to Form Definition...
+        TestCase.assertNull(
+                "UPDATE: 'Role To Form Definitions' must not be set.",
+                roleToUpdate.getRoleToFormDefinitions());
+
+        //Role to JobView...
+        TestCase.assertNotNull(
+                "UPDATE: 'Role To Job View' not set.",
+                roleToUpdate.getRoleToJobViews());
+
+        TestCase.assertEquals(
+                "UPDATE: 'Role To Job View' not set.",
+                2,roleToUpdate.getRoleToJobViews().size());
+
+        //Cleanup...
+        roleClient.deleteRole(roleToUpdate,true);
+        flowClient.deleteFlow(createdFlow);
     }
 }

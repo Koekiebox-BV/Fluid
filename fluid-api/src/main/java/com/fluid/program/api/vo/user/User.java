@@ -16,6 +16,7 @@
 package com.fluid.program.api.vo.user;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -44,10 +45,17 @@ public class User extends ABaseFluidJSONObject {
 
     private String username;
     private String passwordSha256;
+    private String passwordClear;
+
     private String salt;
     private List<Role> roles;
     private List<String> emailAddresses;
     private List<Field> userFields;
+
+    private boolean active;
+
+    private Date dateCreated;
+    private Date dateLastUpdated;
 
     /**
      * The JSON mapping for the {@code User} object.
@@ -55,7 +63,15 @@ public class User extends ABaseFluidJSONObject {
     public static class JSONMapping
     {
         public static final String USERNAME = "username";
+
+        public static final String ACTIVE = "active";
+
+        public static final String DATE_CREATED = "dateCreated";
+        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+
         public static final String PASSWORD_SHA_256 = "passwordSha256";
+        public static final String PASSWORD_CLEAR = "passwordClear";
+
         public static final String ROLES = "roles";
         public static final String EMAIL_ADDRESSES = "emailAddresses";
         public static final String SALT = "salt";
@@ -87,14 +103,39 @@ public class User extends ABaseFluidJSONObject {
             this.setUsername(this.jsonObject.getString(JSONMapping.USERNAME));
         }
 
-        //Password...
+        //Password - sha256...
         if (!this.jsonObject.isNull(JSONMapping.PASSWORD_SHA_256)) {
             this.setPasswordSha256(this.jsonObject.getString(JSONMapping.PASSWORD_SHA_256));
+        }
+
+        //Password - Clear...
+        if (!this.jsonObject.isNull(JSONMapping.PASSWORD_CLEAR)) {
+            this.setPasswordClear(this.jsonObject.getString(JSONMapping.PASSWORD_CLEAR));
+        }
+
+        //Date Created...
+        if (!this.jsonObject.isNull(User.JSONMapping.DATE_CREATED)) {
+
+            this.setDateCreated(
+                    this.getLongAsDateFromJson(
+                            this.jsonObject.getLong(User.JSONMapping.DATE_CREATED)));
+        }
+
+        //Date Last Updated...
+        if (!this.jsonObject.isNull(User.JSONMapping.DATE_LAST_UPDATED)) {
+            this.setDateLastUpdated(
+                    this.getLongAsDateFromJson(
+                            this.jsonObject.getLong(User.JSONMapping.DATE_LAST_UPDATED)));
         }
 
         //Salt...
         if (!this.jsonObject.isNull(JSONMapping.SALT)) {
             this.setSalt(this.jsonObject.getString(JSONMapping.SALT));
+        }
+
+        //Active...
+        if (!this.jsonObject.isNull(JSONMapping.ACTIVE)) {
+            this.setActive(this.jsonObject.getBoolean(JSONMapping.ACTIVE));
         }
 
         //Roles...
@@ -146,6 +187,24 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets whether a user is active.
+     *
+     * @return A Users state.
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * Sets whether a user is active.
+     *
+     * @param activeParam A Users active status.
+     */
+    public void setActive(boolean activeParam) {
+        this.active = activeParam;
+    }
+
+    /**
      * Gets Users username.
      *
      * @return A Users username.
@@ -164,6 +223,42 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets The {@code Date} the User was created.
+     *
+     * @return Date Created.
+     */
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    /**
+     * Sets The {@code Date} the User was created.
+     *
+     * @param dateCreatedParam Date Created.
+     */
+    public void setDateCreated(Date dateCreatedParam) {
+        this.dateCreated = dateCreatedParam;
+    }
+
+    /**
+     * Gets The {@code Date} the User was last updated.
+     *
+     * @return Date Last Updated.
+     */
+    public Date getDateLastUpdated() {
+        return this.dateLastUpdated;
+    }
+
+    /**
+     * Sets The {@code Date} the User was last updated.
+     *
+     * @param dateLastUpdatedParam Date Last Updated.
+     */
+    public void setDateLastUpdated(Date dateLastUpdatedParam) {
+        this.dateLastUpdated = dateLastUpdatedParam;
+    }
+
+    /**
      * Gets Users password in Sha256 format.
      *
      * @return Password in Sha256 Base16 format.
@@ -179,6 +274,24 @@ public class User extends ABaseFluidJSONObject {
      */
     public void setPasswordSha256(String passwordSha256Param) {
         this.passwordSha256 = passwordSha256Param;
+    }
+
+    /**
+     * Gets Users password in the clear (For user create and update).
+     *
+     * @return Password in clear format.
+     */
+    public String getPasswordClear() {
+        return this.passwordClear;
+    }
+
+    /**
+     * Sets Users password in the clear (For user create and update).
+     *
+     * @param passwordClearParam Password in clear.
+     */
+    public void setPasswordClear(String passwordClearParam) {
+        this.passwordClear = passwordClearParam;
     }
 
     /**
@@ -271,6 +384,9 @@ public class User extends ABaseFluidJSONObject {
 
         JSONObject returnVal = super.toJsonObject();
 
+        //Active...
+        returnVal.put(JSONMapping.ACTIVE,this.isActive());
+
         //Username...
         if(this.getUsername() != null)
         {
@@ -281,6 +397,26 @@ public class User extends ABaseFluidJSONObject {
         if(this.getPasswordSha256() != null)
         {
             returnVal.put(JSONMapping.PASSWORD_SHA_256,this.getPasswordSha256());
+        }
+
+        //Password Clear...
+        if(this.getPasswordClear() != null)
+        {
+            returnVal.put(JSONMapping.PASSWORD_CLEAR,this.getPasswordClear());
+        }
+
+        //Date Created...
+        if(this.getDateCreated() != null)
+        {
+            returnVal.put(User.JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated()));
+        }
+
+        //Date Last Updated...
+        if(this.getDateLastUpdated() != null)
+        {
+            returnVal.put(User.JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
         }
 
         //SALT...
