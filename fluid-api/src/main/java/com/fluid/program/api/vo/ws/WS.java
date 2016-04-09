@@ -1105,6 +1105,10 @@ public class WS {
                 //Activate...
                 public static final String ACTIVATE = ("/activate");
 
+                //Delete...
+                public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
+
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String READ_BY_USERNAME = ("/get_by_username");
@@ -1202,6 +1206,33 @@ public class WS {
                 public static final String userUpdate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a User.
+                 *
+                 * @return {@code v1/user/delete}
+                 */
+                public static final String userDelete()
+                {
+                    return userDelete(false);
+                }
+
+                /**
+                 * URL Path for User delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/user/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String userDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
 
                 /**

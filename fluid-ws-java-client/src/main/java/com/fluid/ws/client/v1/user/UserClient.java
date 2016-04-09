@@ -145,6 +145,45 @@ public class UserClient extends ABaseClientWS {
     }
 
     /**
+     * Deletes the {@code User} provided.
+     * Id must be set on the {@code User}.
+     *
+     * @param userToDeleteParam The User to Delete.
+     * @return The deleted User.
+     */
+    public User deleteUser(User userToDeleteParam)
+    {
+        if(userToDeleteParam != null && this.serviceTicket != null)
+        {
+            userToDeleteParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.postJson(userToDeleteParam,
+                WS.Path.User.Version1.userDelete()));
+    }
+
+    /**
+     * Deletes the {@code User} provided.
+     * Id must be set on the {@code User}.
+     *
+     * @param userToDeleteParam The User to Delete.
+     * @param forcefullyDeleteParam Delete the User forcefully.
+     * @return The deleted User.
+     */
+    public User deleteUser(
+            User userToDeleteParam,
+            boolean forcefullyDeleteParam)
+    {
+        if(userToDeleteParam != null && this.serviceTicket != null)
+        {
+            userToDeleteParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.postJson(userToDeleteParam,
+                WS.Path.User.Version1.userDelete(forcefullyDeleteParam)));
+    }
+
+    /**
      * Retrieves user information for the logged in {@code User}.
      *
      * @return User information.

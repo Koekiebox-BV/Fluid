@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fluid.program.api.vo.user.User;
@@ -76,7 +75,6 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
-    @Ignore
     public void testCreateUser() {
         if (!this.loginClient.isConnectionValid()) {
             return;
@@ -95,16 +93,17 @@ public class TestUserClient extends ABaseTestCase {
 
         userToCreate = userClient.createUser(userToCreate);
 
-        TestCase.assertNotNull(userToCreate);
+        TestCase.assertNotNull(
+                "No user created or not returned.",
+                userToCreate);
 
-        userClient.deActivateUser(userToCreate);
+        userClient.deleteUser(userToCreate);
     }
 
     /**
      *
      */
     @Test
-    @Ignore
     public void testUpdateUser() {
         if (!this.loginClient.isConnectionValid()) {
             return;
@@ -128,7 +127,7 @@ public class TestUserClient extends ABaseTestCase {
         userToUpdate.setUsername(TestStatics.Update.USERNAME);
         userToUpdate = userClient.updateUser(userToUpdate);
 
-        userClient.deActivateUser(userToUpdate);
+        userClient.deleteUser(userToUpdate, true);
     }
 
     /**
