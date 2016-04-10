@@ -30,6 +30,7 @@ import com.fluid.program.api.vo.flow.FlowStep;
 import com.fluid.program.api.vo.flow.JobView;
 import com.fluid.program.api.vo.flow.JobViewListing;
 import com.fluid.program.api.vo.role.*;
+import com.fluid.program.api.vo.userquery.UserQuery;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
@@ -37,6 +38,8 @@ import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.FlowStepClient;
 import com.fluid.ws.client.v1.flow.TestFlowStepClient;
 import com.fluid.ws.client.v1.user.LoginClient;
+import com.fluid.ws.client.v1.userquery.TestUserQueryClient;
+import com.fluid.ws.client.v1.userquery.UserQueryClient;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -171,6 +174,30 @@ public class TestRoleClient extends ABaseTestCase {
 
             return returnVal;
         }
+
+        /**
+         *
+         * @param userQueriesParam
+         * @return
+         */
+        public static final List<RoleToUserQuery> toRoleToUserQuery(
+                UserQuery ... userQueriesParam){
+
+            List<RoleToUserQuery> returnVal = new ArrayList<>();
+
+            if(userQueriesParam != null)
+            {
+                for(UserQuery userQuery : userQueriesParam)
+                {
+                    RoleToUserQuery toAdd = new RoleToUserQuery();
+                    toAdd.setUserQuery(userQuery);
+
+                    returnVal.add(toAdd);
+                }
+            }
+
+            return returnVal;
+        }
     }
 
         /**
@@ -242,6 +269,32 @@ public class TestRoleClient extends ABaseTestCase {
         TestCase.assertNotNull(
                 "RoleToJobView 'First Job View' not set.", firstJobView);
 
+        //-- Role to User Query...
+        UserQueryClient userQueryClient = new UserQueryClient(serviceTicket);
+
+        //1. Text...
+        UserQuery userQueryFirst = new UserQuery();
+        userQueryFirst.setName(TestUserQueryClient.TestStatics.NAME);
+        userQueryFirst.setDescription(TestUserQueryClient.TestStatics.DESCRIPTION);
+        userQueryFirst.setRules(TestUserQueryClient.TestStatics.toRuleListing(TestUserQueryClient.TestStatics.RULE_NR_1));
+        userQueryFirst.setInputs(TestUserQueryClient.TestStatics.toFieldListing(
+                TestUserQueryClient.TestStatics.RESULT_FIELD_1,
+                TestUserQueryClient.TestStatics.RESULT_FIELD_1_NAME));
+
+        //2. Create...
+        userQueryFirst = userQueryClient.createUserQuery(userQueryFirst);
+
+        UserQuery userQuerySecond = new UserQuery();
+        userQuerySecond.setName(TestUserQueryClient.TestStatics.UPDATE_NAME);
+        userQuerySecond.setDescription(TestUserQueryClient.TestStatics.UPDATE_DESCRIPTION);
+        userQuerySecond.setRules(TestUserQueryClient.TestStatics.toRuleListing(TestUserQueryClient.TestStatics.RULE_NR_1));
+        userQuerySecond.setInputs(TestUserQueryClient.TestStatics.toFieldListing(
+                TestUserQueryClient.TestStatics.RESULT_FIELD_1,
+                TestUserQueryClient.TestStatics.RESULT_FIELD_1_NAME));
+
+        userQuerySecond = userQueryClient.createUserQuery(userQuerySecond);
+
+
         RoleClient roleClient = new RoleClient(serviceTicket);
 
         Role roleToCreate = new Role();
@@ -254,6 +307,7 @@ public class TestRoleClient extends ABaseTestCase {
         roleToCreate.setRoleToFormDefinitions(
                 TestStatics.toRoleToFormFormDefinition(new Form(1L), true));
         roleToCreate.setRoleToJobViews(TestStatics.toRoleToJobView(firstJobView));
+        roleToCreate.setRoleToUserQueries(TestStatics.toRoleToUserQuery(userQueryFirst));
 
         roleToCreate = roleClient.createRole(roleToCreate);
 
@@ -311,6 +365,18 @@ public class TestRoleClient extends ABaseTestCase {
         TestCase.assertNotNull(
                 "RoleToJobView 'Id' not set.", firstRTJV.getId());
 
+        TestCase.assertNotNull(
+                "'Role To User Queries' not set.",
+                roleToCreate.getRoleToUserQueries());
+
+        RoleToUserQuery firstRTUQ = roleToCreate.getRoleToUserQueries().get(0);
+
+        TestCase.assertNotNull(
+                "'RoleToUserQuery' not set.", firstRTUQ);
+
+        TestCase.assertNotNull(
+                "RoleToUserQuery 'Id' not set.", firstRTUQ.getId());
+
         //2. FETCH...
         RoleListing roleListing = roleClient.getAllRoles();
 
@@ -335,6 +401,8 @@ public class TestRoleClient extends ABaseTestCase {
         JobView secondJobView = jobViewListing.getListing().get(1);
         roleToUpdate.setRoleToJobViews(TestStatics.toRoleToJobView(
                 firstJobView,secondJobView));
+        roleToUpdate.setRoleToUserQueries(TestStatics.toRoleToUserQuery(
+                userQueryFirst,userQuerySecond));
 
         roleToUpdate = roleClient.updateRole(roleToUpdate);
 
@@ -368,11 +436,24 @@ public class TestRoleClient extends ABaseTestCase {
                 roleToUpdate.getRoleToJobViews());
 
         TestCase.assertEquals(
-                "UPDATE: 'Role To Job View' not set.",
+                "UPDATE: 'Role To Job View' incorrect count.",
                 2,roleToUpdate.getRoleToJobViews().size());
 
-        //Cleanup...
+        //Role to UserQuery...
+        TestCase.assertNotNull(
+                "UPDATE: 'Role To User Query' not set.",
+                roleToUpdate.getRoleToUserQueries());
+
+        TestCase.assertEquals(
+                "UPDATE: 'Role To User Query' incorrect count.",
+                2,roleToUpdate.getRoleToUserQueries().size());
+
+        //First delete role...Cleanup...
         roleClient.deleteRole(roleToUpdate,true);
+
+        //Delete User Query...
         flowClient.deleteFlow(createdFlow);
+        userQueryClient.deleteUserQuery(userQueryFirst,true);
+        userQueryClient.deleteUserQuery(userQuerySecond,true);
     }
 }
