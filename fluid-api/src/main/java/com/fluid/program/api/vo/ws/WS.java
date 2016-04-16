@@ -1395,6 +1395,59 @@ public class WS {
         }
 
         /**
+         * The Configuration Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.config.Configuration
+         */
+        public static final class Configuration
+        {
+            /**
+             * Role mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/configuration");
+
+                //Update...
+                //public static final String UPDATE = ("/update");
+
+                //Read...
+                public static final String READ = ("/get_by_key");
+                public static final String READ_ALL = ("/get_all_configurations");
+
+                /**
+                 * Root for Configuration.
+                 *
+                 * @return {@code /configuration/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Configuration get by id.
+                 *
+                 * @return {@code v1/configuration/get_by_key}
+                 */
+                public static final String getByKey()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Configuration get all.
+                 *
+                 * @return {@code v1/configuration/get_all_configurations}
+                 */
+                public static final String getAllConfigurations()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+            }
+        }
+
+        /**
          * The SQL Util Web Service mappings.
          *
          * @see com.fluid.program.api.util.sql.impl.SQLFormDefinitionUtil
