@@ -139,4 +139,20 @@ public class WebSocketClient {
                     e,FluidClientException.ErrorCode.IO_ERROR);
         }
     }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isSessionOpen()
+    {
+        if(this.userSession == null)
+        {
+            return false;
+        }
+
+        return this.userSession.isOpen();
+    }
+
+
 }

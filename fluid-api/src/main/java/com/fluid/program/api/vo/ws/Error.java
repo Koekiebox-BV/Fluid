@@ -45,6 +45,9 @@ public class Error extends ABaseFluidJSONObject {
     {
         public static final String ERROR_CODE = "errorCode";
         public static final String ERROR_MESSAGE = "errorMessage";
+
+        public static final String ERROR_CODE_OTHER = "error_code";
+        public static final String ERROR_MESSAGE_OTHER = "error_message";
     }
 
     /**
@@ -78,10 +81,17 @@ public class Error extends ABaseFluidJSONObject {
             this.setErrorCode(
                     new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
         }
+        else if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE_OTHER)) {
+            this.setErrorCode(
+                    new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE_OTHER)).intValue());
+        }
 
         //Error Message...
         if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE)) {
             this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE));
+        }
+        else if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE_OTHER)) {
+            this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE_OTHER));
         }
     }
 
