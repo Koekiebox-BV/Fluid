@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fluid.program.api.util.UtilGlobal;
+import com.fluid.program.api.util.cache.CacheUtil;
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 import com.fluid.program.api.util.sql.syntax.ISyntax;
@@ -43,6 +44,7 @@ import com.fluid.program.api.vo.*;
 public class SQLFormFieldUtil extends ABaseSQLUtil {
 
     private Map<Long, List<FormFieldMapping>> localDefinitionToFieldsMapping;
+    private CacheUtil cacheUtil = null;
 
     /**
      * Fluid mapping for a Form Field.
@@ -92,7 +94,20 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
      * @param connectionParam SQL Connection to use for Fields.
      */
     public SQLFormFieldUtil(Connection connectionParam) {
+        this(connectionParam, null);
+    }
+
+    /**
+     * New FormField util instance using {@code connectionParam}.
+     *
+     * @param connectionParam SQL Connection to use for Fields.
+     * @param cacheUtilParam The Cache Util for better performance.
+     */
+    public SQLFormFieldUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
         super(connectionParam);
+
+        this.localDefinitionToFieldsMapping = new HashMap<>();
+        this.cacheUtil = cacheUtilParam;
     }
 
     /**
@@ -118,11 +133,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             Long formDefinitionId = this.getFormDefinitionId(electronicFormIdParam);
 
             //Local Mapping...
-            if(this.localDefinitionToFieldsMapping == null)
-            {
-                this.localDefinitionToFieldsMapping = new HashMap<>();
-            }
-
             //When we have the key by definition, we can just return.
             if(this.localDefinitionToFieldsMapping.containsKey(formDefinitionId))
             {
@@ -285,8 +295,28 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             return null;
         }
 
-        Field returnVal = null;
+        //First attempt to fetch from the cache...
+        if(this.cacheUtil != null)
+        {
+            CacheUtil.CachedFieldValue cachedFieldValue =
+                    this.cacheUtil.getCachedFieldValueFrom(
+                        formFieldMappingParam.formDefinitionId,
+                        formContainerIdParam,
+                        formFieldMappingParam.formFieldId);
 
+            if(cachedFieldValue != null)
+            {
+                Field field = cachedFieldValue.getCachedFieldValueAsField();
+                if(field != null)
+                {
+                    field.setFieldName(formFieldMappingParam.name);
+                    return field;
+                }
+            }
+        }
+
+        //Now use a database lookup...
+        Field returnVal = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet;
         try

@@ -36,6 +36,7 @@ public class UtilException extends RuntimeException {
     public static final class ErrorCode {
         public static final int GENERAL = 10001;
         public static final int SQL = 10002;
+        public static final int CACHE = 10003;
     }
 
     /**

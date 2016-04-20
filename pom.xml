@@ -66,6 +66,9 @@
         <version.javax.websocket.tyrus.client>1.12</version.javax.websocket.tyrus.client>
         <version.javax.websocket.tyrus.container>1.12</version.javax.websocket.tyrus.container>
 
+        <!--MemcacheClient-->
+        <version.xmemcached.client>2.0.0</version.xmemcached.client>
+
         <!--Koekiebox Git Maven Plugin-->
         <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>
     </properties>
@@ -173,6 +176,15 @@
                 <version>${version.javax.websocket.tyrus.container}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <!--XMemcachedClient-->
+            <dependency>
+                <groupId>com.googlecode.xmemcached</groupId>
+                <artifactId>xmemcached</artifactId>
+                <version>${version.xmemcached.client}</version>
+                <scope>provided</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

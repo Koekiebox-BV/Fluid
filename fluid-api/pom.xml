@@ -53,6 +53,13 @@
             <artifactId>json</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <!--XMemcachedClient-->
+        <dependency>
+            <groupId>com.googlecode.xmemcached</groupId>
+            <artifactId>xmemcached</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

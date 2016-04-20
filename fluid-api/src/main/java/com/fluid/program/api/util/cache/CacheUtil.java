@@ -16,9 +16,20 @@
 package com.fluid.program.api.util.cache;
 
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.XMemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
+
+import com.fluid.program.api.util.cache.exception.FluidCacheException;
 import com.fluid.program.api.vo.Field;
+import com.fluid.program.api.vo.MultiChoice;
 
 /**
  * Cache Utility class used for {@code Field} value retrieval actions.
@@ -28,20 +39,45 @@ import com.fluid.program.api.vo.Field;
  */
 public class CacheUtil {
 
+    //TODO can start off by fetching values only...
+    //TODO use the  [getWord()] to determine the data type.
+    //TODO use      [getValue()] to get the field value.
+    //TODO use      [fieldValueForCachingId] to get the FieldValueId.
+
     private static final String NULL = "null";
     private static final String DASH = "-";
 
+    private transient MemcachedClient memcachedClient;
+
     private String cacheHost = null;
     private int cachePort = -1;
+
+    //Cached Methods.
+    private Method methodGetWord;
+    private Method methodGetValue;
+
+    /**
+     *
+     */
+    private static class FlowJobTypeMappings
+    {
+        public static final String DATE_TIME = "Date Time";
+        public static final String DECIMAL = "Decimal";
+        public static final String MULTIPLE_CHOICE = "Multiple Choice";
+        public static final String PARAGRAPH_TEXT = "Paragraph Text";
+        public static final String TABLE_FIELD = "Table Field";
+        public static final String TEXT = "Text";
+        public static final String TEXT_ENCRYPTED = "Text Encrypted";
+        public static final String TRUE_FALSE = "True / False";
+    }
 
     /**
      *
      */
     public static class CachedFieldValue implements Serializable
     {
-        public Long fieldValueForCachingId;
         public Object cachedFieldValue;
-        public int cacheFieldTypeId;
+        public String dataType;
 
         /**
          *
@@ -49,10 +85,34 @@ public class CacheUtil {
          */
         public Field getCachedFieldValueAsField()
         {
-            return null;
+            Field returnVal = new Field();
+
+            if(FlowJobTypeMappings.MULTIPLE_CHOICE.equals(this.dataType) &&
+                    cachedFieldValue != null)
+            {
+                MultiChoice multiChoice = new MultiChoice();
+
+                List<String> availableChoices = null;//TODO
+                List<String> selectedChoices = null;//TODO
+
+                multiChoice.setAvailableMultiChoices(availableChoices);
+                multiChoice.setSelectedMultiChoices(selectedChoices);
+
+                returnVal.setFieldValue(multiChoice);
+            }
+            //No table field...
+            else if(FlowJobTypeMappings.TABLE_FIELD.equals(this.dataType))
+            {
+                return null;
+            }
+            else
+            {
+                returnVal.setFieldValue(this.cachedFieldValue);
+            }
+
+            return returnVal;
         }
     }
-
 
     /**
      * New instance of cache util using the
@@ -68,6 +128,158 @@ public class CacheUtil {
 
         this.cacheHost = cacheHostParam;
         this.cachePort = cachePortParam;
+
+        if(this.cacheHost == null || this.cacheHost.trim().isEmpty())
+        {
+            throw new FluidCacheException("Cache Host cannot be empty.");
+        }
+
+        if(this.cachePort < 1 || this.cachePort > 65535)
+        {
+            throw new FluidCacheException("Cache Port number '"+this.cachePort+"' is invalid.");
+        }
+
+        this.initXMemcachedClient();
+    }
+
+
+    /**
+     * Retrieves the {@code CachedFieldValue} value stored under
+     * the params.
+     *
+     * @param formDefIdParam The Form Definition Id.
+     * @param formContIdParam The Form Container Id.
+     * @param formFieldIdParam The Form Field Id.
+     *
+     * @return Storage Key
+     */
+    public CachedFieldValue getCachedFieldValueFrom(
+            Long formDefIdParam,
+            Long formContIdParam,
+            Long formFieldIdParam)
+    {
+        if((formDefIdParam == null || formContIdParam == null) ||
+                formFieldIdParam == null)
+        {
+            return null;
+        }
+
+        String storageKey = this.getStorageKeyFrom(
+                formDefIdParam,
+                formContIdParam,
+                formFieldIdParam);
+
+        Object objWithKey = null;
+        try {
+            objWithKey = this.memcachedClient.get(storageKey);
+        }
+        //
+        catch (MemcachedException | TimeoutException | InterruptedException e) {
+
+            throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
+                    "Contact administrator. "+e.getMessage(),e);
+        }
+
+        return this.getCacheFieldValueFromObject(objWithKey);
+    }
+
+    /**
+     *
+     * @param objWithKeyParam
+     * @return
+     */
+    private CachedFieldValue getCacheFieldValueFromObject(Object objWithKeyParam)
+    {
+        if(objWithKeyParam == null)
+        {
+            return null;
+        }
+
+        //Get Word...
+        if(this.methodGetWord == null)
+        {
+            this.methodGetWord = this.getMethod(
+                    objWithKeyParam.getClass(),
+                    CustomCode.IWord.METHOD_getWord);
+        }
+
+        //Get Value...
+        if(this.methodGetValue == null)
+        {
+            this.methodGetValue = this.getMethod(
+                    objWithKeyParam.getClass(),
+                    CustomCode.ADataType.METHOD_getValue);
+        }
+
+        //Word...
+        Object getWordObj = this.invoke(this.methodGetWord, objWithKeyParam);
+        String getWordVal = null;
+        if(getWordObj instanceof String)
+        {
+            getWordVal = (String)getWordObj;
+        }
+
+        //Value...
+        Object getValueObj = this.invoke(this.methodGetValue, objWithKeyParam);
+        if(getValueObj == null)
+        {
+            return null;
+        }
+
+        if(getWordVal == null)
+        {
+            throw new FluidCacheException(
+                    "Get Word value is 'null'. Not allowed.");
+        }
+
+        CachedFieldValue returnVal = new CachedFieldValue();
+
+        returnVal.dataType = getWordVal;
+        returnVal.cachedFieldValue = getValueObj;
+
+        return returnVal;
+    }
+
+    /**
+     *
+     * @param clazzParam
+     * @param nameParam
+     * @return
+     */
+    private Method getMethod(Class clazzParam, String nameParam)
+    {
+        try {
+            Method returnVal = clazzParam.getDeclaredMethod(nameParam);
+            returnVal.setAccessible(true);
+            return returnVal;
+        }
+        //
+        catch (NoSuchMethodException e) {
+
+            throw new FluidCacheException(
+                    "Unable to get method '"+
+                            nameParam +"'. "+e.getMessage(),e);
+        }
+    }
+
+    /**
+     *
+     * @param methodParam
+     * @param objParam
+     * @return
+     */
+    private Object invoke(Method methodParam,Object objParam)
+    {
+        try {
+            return methodParam.invoke(objParam);
+        }
+        //
+        catch (InvocationTargetException | IllegalAccessException e) {
+
+            throw new FluidCacheException(
+                    "Unable to invoke method '"+
+                            methodParam.getName() +"'. "+e.getMessage(),e);
+        }
     }
 
     /**
@@ -122,33 +334,29 @@ public class CacheUtil {
         return stringBuff.toString();
     }
 
+
     /**
-     * Retrieves the {@code CachedFieldValue} value stored under
-     * the params.
      *
-     * @param formDefIdParam The Form Definition Id.
-     * @param formContIdParam The Form Container Id.
-     * @param formFieldIdParam The Form Field Id.
-     *
-     * @return Storage Key
+     * @return
      */
-    public CachedFieldValue getCachedFieldValueFrom(
-            Long formDefIdParam,
-            Long formContIdParam,
-            Long formFieldIdParam)
+    private MemcachedClient initXMemcachedClient()
     {
+        if(this.memcachedClient != null && !this.memcachedClient.isShutdown())
+        {
+            return this.memcachedClient;
+        }
 
-        CachedFieldValue returnVal = null;
+        try{
+            this.memcachedClient = new XMemcachedClient(
+                    this.cacheHost,this.cachePort);
 
+            return this.memcachedClient;
+        }
+        //Unable to create client with connection.
+        catch (IOException e) {
 
-
-        return returnVal;
+            throw new FluidCacheException(
+                    "Unable to create MemCache client. "+e.getMessage(), e);
+        }
     }
-
-
-
-    //TODO can start off by fetching values only...
-    //TODO use the  [getWord()] to determine the data type.
-    //TODO use      [getValue()] to get the field value.
-    //TODO use      [fieldValueForCachingId] to get the FieldValueId.
 }
