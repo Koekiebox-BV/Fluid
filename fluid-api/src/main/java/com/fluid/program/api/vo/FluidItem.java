@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -392,7 +393,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 
         //Flow State...
         if (!this.jsonObject.isNull(JSONMapping.FLOW_STATE)) {
-            this.setFlowStateString(this.jsonObject.getString(JSONMapping.FLOW_STATE));
+            this.setFlowState(this.jsonObject.getString(JSONMapping.FLOW_STATE));
         }
     }
 
@@ -1108,8 +1109,9 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field
      */
+    @JsonIgnore
     @XmlTransient
-    public void setRouteFieldsArrayList(ArrayList<Field> routeFieldsParam) {
+    public void setRouteFields(ArrayList<Field> routeFieldsParam) {
         this.routeFields = routeFieldsParam;
     }
 
@@ -1204,8 +1206,9 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see FlowState
      */
+    @JsonIgnore
     @XmlTransient
-    public void setFlowStateString(String flowStateParam) {
+    public void setFlowState(String flowStateParam) {
         this.flowState = FlowState.valueOfSafe(flowStateParam);
     }
 

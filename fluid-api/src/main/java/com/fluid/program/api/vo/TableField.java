@@ -15,14 +15,7 @@
 
 package com.fluid.program.api.vo;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluid.program.api.util.UtilGlobal;
 
 /**
  * <p>
@@ -37,52 +30,15 @@ import com.fluid.program.api.util.UtilGlobal;
  * @see Field
  * @see com.fluid.program.api.util.sql.impl.SQLFormFieldUtil
  */
-public class TableField extends ABaseFluidJSONObject {
+public class TableField extends ABaseFluidVO {
 
     private List<Form> tableRecords;
-
-    /**
-     * The JSON mapping for the {@code Form} object.
-     */
-    public static class JSONMapping
-    {
-        public static final String TABLE_RECORDS = "tableRecords";
-    }
 
     /**
      * Default constructor.
      */
     public TableField() {
         super();
-    }
-
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public TableField(JSONObject jsonObjectParam) {
-        super(jsonObjectParam);
-
-        if(this.jsonObject == null)
-        {
-            return;
-        }
-
-        //Table Field Records...
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_RECORDS)) {
-
-            JSONArray formsArr = this.jsonObject.getJSONArray(
-                    JSONMapping.TABLE_RECORDS);
-
-            List<Form> assForms = new ArrayList<>();
-            for(int index = 0;index < formsArr.length();index++)
-            {
-                assForms.add(new Form(formsArr.getJSONObject(index)));
-            }
-
-            this.setTableRecords(assForms);
-        }
     }
 
     /**
@@ -101,50 +57,5 @@ public class TableField extends ABaseFluidJSONObject {
      */
     public void setTableRecords(List<Form> tableRecordsParam) {
         this.tableRecords = tableRecordsParam;
-    }
-
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code TableField}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException
-    {
-        JSONObject returnVal = super.toJsonObject();
-
-        //Table Field Records...
-        if(this.getTableRecords() != null && !this.getTableRecords().isEmpty())
-        {
-            JSONArray assoFormsArr = new JSONArray();
-            for(Form toAdd :this.getTableRecords())
-            {
-                assoFormsArr.put(toAdd.toJsonObject());
-            }
-
-            returnVal.put(JSONMapping.TABLE_RECORDS, assoFormsArr);
-        }
-
-        return returnVal;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String toString() {
-
-        JSONObject jsonObject = this.toJsonObject();
-
-        if(jsonObject != null)
-        {
-            return jsonObject.toString();
-        }
-
-        return UtilGlobal.EMPTY;
     }
 }

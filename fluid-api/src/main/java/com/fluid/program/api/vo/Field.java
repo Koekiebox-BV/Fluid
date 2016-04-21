@@ -19,6 +19,7 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -173,16 +174,6 @@ public class Field extends ABaseFluidJSONObject {
             this.setFieldDescription(this.jsonObject.getString(JSONMapping.FIELD_DESCRIPTION));
         }
 
-        //Type...
-        if (!this.jsonObject.isNull(JSONMapping.TYPE)) {
-            this.setType(this.jsonObject.getString(JSONMapping.TYPE));
-        }
-
-        //Meta Data...
-        if (!this.jsonObject.isNull(JSONMapping.TYPE_META_DATA)) {
-            this.setTypeMetaData(this.jsonObject.getString(JSONMapping.TYPE_META_DATA));
-        }
-
         //Field Value...
         if (!this.jsonObject.isNull(JSONMapping.FIELD_VALUE)) {
 
@@ -191,31 +182,14 @@ public class Field extends ABaseFluidJSONObject {
             if(objFromKey instanceof JSONObject)
             {
                 JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
-
-                //Multi Choices Selected Multi Choices...
-                if(jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
-                        jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES))
+                if(jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES))
                 {
                     this.setFieldValue(new MultiChoice(jsonObject));
-                }
-                //Table Field...
-                else if(jsonObject.has(TableField.JSONMapping.TABLE_RECORDS))
-                {
-                    this.setFieldValue(new TableField(jsonObject));
                 }
             }
             else if(objFromKey instanceof Long)
             {
-                Long castedLong = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
-
-                if(this.getTypeAsEnum() != null && this.getTypeAsEnum() == Type.DateTime)
-                {
-                    this.setFieldValue(new Date(castedLong));
-                }
-                else
-                {
-                    this.setFieldValue(castedLong);
-                }
+                this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
             }
             else if(objFromKey instanceof Number)
             {
@@ -229,6 +203,16 @@ public class Field extends ABaseFluidJSONObject {
             {
                 this.setFieldValue(this.jsonObject.getString(JSONMapping.FIELD_VALUE));
             }
+        }
+
+        //Type...
+        if (!this.jsonObject.isNull(JSONMapping.TYPE)) {
+            this.setType(this.jsonObject.getString(JSONMapping.TYPE));
+        }
+
+        //Meta Data...
+        if (!this.jsonObject.isNull(JSONMapping.TYPE_META_DATA)) {
+            this.setTypeMetaData(this.jsonObject.getString(JSONMapping.TYPE_META_DATA));
         }
     }
 
@@ -355,6 +339,7 @@ public class Field extends ABaseFluidJSONObject {
      *
      * @see Type
      */
+    @JsonIgnore
     @XmlTransient
     public void setTypeAsEnum(Type typeParam) {
 
@@ -374,6 +359,7 @@ public class Field extends ABaseFluidJSONObject {
      *
      * @see Type
      */
+    @JsonIgnore
     @XmlTransient
     public Type getTypeAsEnum()
     {
@@ -479,12 +465,6 @@ public class Field extends ABaseFluidJSONObject {
             {
                 returnVal.put(JSONMapping.FIELD_VALUE,
                         ((MultiChoice)this.getFieldValue()).toJsonObject());
-            }
-            //Table Field...
-            else if(this.getFieldValue() instanceof TableField)
-            {
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((TableField)this.getFieldValue()).toJsonObject());
             }
             else
             {

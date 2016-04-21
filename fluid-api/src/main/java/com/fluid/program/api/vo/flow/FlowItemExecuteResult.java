@@ -35,8 +35,6 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
     private FlowStepRule flowStepRule;
     private FluidItem fluidItem;
-    private String assignmentRuleValue;
-    private String statementResultAsString;
 
     /**
      * The JSON mapping for the {@code FlowItemExecuteResult} object.
@@ -45,8 +43,6 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     {
         public static final String FLOW_STEP_RULE = "flowStepRule";
         public static final String FLUID_ITEM = "fluidItem";
-        public static final String ASSIGNMENT_RULE_VALUE = "assignmentRuleValue";
-        public static final String STATEMENT_RESULT_AS_STRING = "statementResultAsString";
     }
 
     /**
@@ -82,20 +78,6 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
             this.setFlowStepRule(new FlowStepRule(
                     this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP_RULE)));
         }
-
-        //Assignment Rule Value...
-        if (!this.jsonObject.isNull(JSONMapping.ASSIGNMENT_RULE_VALUE)) {
-
-            this.setAssignmentRuleValue(
-                    this.jsonObject.getString(JSONMapping.ASSIGNMENT_RULE_VALUE));
-        }
-
-        //Statement Result As String...
-        if (!this.jsonObject.isNull(JSONMapping.STATEMENT_RESULT_AS_STRING)) {
-
-            this.setStatementResultAsString(
-                    this.jsonObject.getString(JSONMapping.STATEMENT_RESULT_AS_STRING));
-        }
     }
 
     /**
@@ -123,20 +105,6 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         {
             returnVal.put(JSONMapping.FLOW_STEP_RULE,
                     this.getFlowStepRule().toJsonObject());
-        }
-
-        //Assignment Rule...
-        if(this.getAssignmentRuleValue() != null)
-        {
-            returnVal.put(JSONMapping.ASSIGNMENT_RULE_VALUE,
-                    this.getAssignmentRuleValue());
-        }
-
-        //Statement Result as String...
-        if(this.getStatementResultAsString() != null)
-        {
-            returnVal.put(JSONMapping.STATEMENT_RESULT_AS_STRING,
-                    this.getStatementResultAsString());
         }
 
         return returnVal;
@@ -184,41 +152,5 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
      */
     public void setFluidItem(FluidItem fluidItemParam) {
         this.fluidItem = fluidItemParam;
-    }
-
-    /**
-     * Gets the new Field assignment value.
-     *
-     * @return New Assignment value.
-     */
-    public String getAssignmentRuleValue() {
-        return this.assignmentRuleValue;
-    }
-
-    /**
-     * Sets the new Field assignment value.
-     *
-     * @param assignmentRuleValueParam New Assignment value.
-     */
-    public void setAssignmentRuleValue(String assignmentRuleValueParam) {
-        this.assignmentRuleValue = assignmentRuleValueParam;
-    }
-
-    /**
-     * Sets the Statement result value.
-     *
-     * @return Statement result as Text.
-     */
-    public String getStatementResultAsString() {
-        return this.statementResultAsString;
-    }
-
-    /**
-     * Sets the Statement result value.
-     *
-     * @param statementResultAsStringParam Statement result as Text.
-     */
-    public void setStatementResultAsString(String statementResultAsStringParam) {
-        this.statementResultAsString = statementResultAsStringParam;
     }
 }

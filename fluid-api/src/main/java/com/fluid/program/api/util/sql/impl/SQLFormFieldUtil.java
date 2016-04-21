@@ -20,12 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.fluid.program.api.util.UtilGlobal;
-import com.fluid.program.api.util.cache.CacheUtil;
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 import com.fluid.program.api.util.sql.syntax.ISyntax;
@@ -42,9 +38,6 @@ import com.fluid.program.api.vo.*;
  * @see Field
  */
 public class SQLFormFieldUtil extends ABaseSQLUtil {
-
-    private Map<Long, List<FormFieldMapping>> localDefinitionToFieldsMapping;
-    private CacheUtil cacheUtil = null;
 
     /**
      * Fluid mapping for a Form Field.
@@ -94,20 +87,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
      * @param connectionParam SQL Connection to use for Fields.
      */
     public SQLFormFieldUtil(Connection connectionParam) {
-        this(connectionParam, null);
-    }
-
-    /**
-     * New FormField util instance using {@code connectionParam}.
-     *
-     * @param connectionParam SQL Connection to use for Fields.
-     * @param cacheUtilParam The Cache Util for better performance.
-     */
-    public SQLFormFieldUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
         super(connectionParam);
-
-        this.localDefinitionToFieldsMapping = new HashMap<>();
-        this.cacheUtil = cacheUtilParam;
     }
 
     /**
@@ -130,15 +110,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         ResultSet resultSet;
         try
         {
-            Long formDefinitionId = this.getFormDefinitionId(electronicFormIdParam);
-
-            //Local Mapping...
-            //When we have the key by definition, we can just return.
-            if(this.localDefinitionToFieldsMapping.containsKey(formDefinitionId))
-            {
-                return this.localDefinitionToFieldsMapping.get(formDefinitionId);
-            }
-
             ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
                     this.getSQLTypeFromConnection(),
                     ISyntax.ProcedureMapping.Field.GetFormFieldsForFormContainer);
@@ -146,19 +117,17 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             preparedStatement = this.getConnection().prepareStatement(
                     syntax.getPreparedStatement());
 
-            preparedStatement.setLong(1, electronicFormIdParam);
+            preparedStatement.setLong(1,electronicFormIdParam);
 
             resultSet = preparedStatement.executeQuery();
+            resultSet.beforeFirst();
 
             //Iterate each of the form containers...
             while (resultSet.next())
             {
-                returnVal.add(this.mapFormFieldMapping(resultSet));
+                returnVal.add(
+                        this.mapFormFieldMapping(resultSet));
             }
-
-            this.localDefinitionToFieldsMapping.put(formDefinitionId, returnVal);
-
-            return returnVal;
         }
         //
         catch (SQLException sqlError) {
@@ -168,58 +137,12 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         finally {
             this.closeStatement(preparedStatement);
         }
+
+        return returnVal;
     }
 
     /**
-     * Retrieves the Form Definition Id for the
-     * Electronic Form with id {@code electronicFormIdParam}.
-     *
-     * @param electronicFormIdParam The Electronic Form to fetch fields for.
-     * @return The Form Definition for Electronic Form {@code electronicFormIdParam}.
-     */
-    public Long getFormDefinitionId(Long electronicFormIdParam)
-    {
-        if(electronicFormIdParam == null)
-        {
-            return null;
-        }
-
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet;
-        try
-        {
-            ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
-                    this.getSQLTypeFromConnection(),
-                    ISyntax.ProcedureMapping.Field.GetFormDefinitionForFormContainer);
-
-            preparedStatement = this.getConnection().prepareStatement(
-                    syntax.getPreparedStatement());
-
-            preparedStatement.setLong(1, electronicFormIdParam);
-
-            resultSet = preparedStatement.executeQuery();
-
-            //Iterate each of the form containers...
-            while (resultSet.next())
-            {
-                return resultSet.getLong(1);
-            }
-
-            return null;
-        }
-        //
-        catch (SQLException sqlError) {
-            throw new FluidSQLException(sqlError);
-        }
-        //
-        finally {
-            this.closeStatement(preparedStatement);
-        }
-    }
-
-    /**
-     * Retrieves the Form Fields {@code VALUES} for the
-     * Electronic Form with id {@code electronicFormIdParam}.
+     * Retrieves the Form Fields for the Electronic Form with id {@code electronicFormIdParam}.
      *
      * @param electronicFormIdParam The Electronic Form to fetch fields for.
      * @param includeTableFieldsParam Whether to populate the table fields.
@@ -247,8 +170,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         //Get the values for each of the fields...
         for(FormFieldMapping fieldMapping : fieldMappings)
         {
-            if(!includeTableFieldsParam &&
-                    fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD){//Table Field...
+            if(!includeTableFieldsParam && fieldMapping.dataType == 7){//Table Field...
                 continue;
             }
 
@@ -295,28 +217,8 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             return null;
         }
 
-        //First attempt to fetch from the cache...
-        if(this.cacheUtil != null)
-        {
-            CacheUtil.CachedFieldValue cachedFieldValue =
-                    this.cacheUtil.getCachedFieldValueFrom(
-                        formFieldMappingParam.formDefinitionId,
-                        formContainerIdParam,
-                        formFieldMappingParam.formFieldId);
-
-            if(cachedFieldValue != null)
-            {
-                Field field = cachedFieldValue.getCachedFieldValueAsField();
-                if(field != null)
-                {
-                    field.setFieldName(formFieldMappingParam.name);
-                    return field;
-                }
-            }
-        }
-
-        //Now use a database lookup...
         Field returnVal = null;
+
         PreparedStatement preparedStatement = null;
         ResultSet resultSet;
         try
@@ -333,11 +235,12 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             preparedStatement.setLong(3, formContainerIdParam);
 
             resultSet = preparedStatement.executeQuery();
+            resultSet.beforeFirst();
 
             switch (formFieldMappingParam.dataType.intValue())
             {
                 //Text...
-                case UtilGlobal.FieldTypeId._1_TEXT:
+                case 1:
                 if(resultSet.next())
                 {
                     returnVal = new Field(
@@ -347,7 +250,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 }
                 break;
                 //True False...
-                case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
+                case 2:
                 if(resultSet.next())
                 {
                     returnVal = new Field(
@@ -357,7 +260,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 }
                 break;
                 //Paragraph Text...
-                case UtilGlobal.FieldTypeId._3_PARAGRAPH_TEXT:
+                case 3:
                 if(resultSet.next())
                 {
                     returnVal = new Field(
@@ -367,7 +270,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 }
                 break;
                 //Multiple Choice...
-                case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
+                case 4:
                     MultiChoice multiChoice = new MultiChoice();
 
                     List<String> selectedValues = new ArrayList<>();
@@ -385,7 +288,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                     }
                 break;
                 //Date Time...
-                case UtilGlobal.FieldTypeId._5_DATE_TIME:
+                case 5:
                     if(resultSet.next())
                     {
                         returnVal = new Field(
@@ -394,8 +297,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                                 Field.Type.DateTime);
                     }
                 break;
-                //Decimal...
-                case UtilGlobal.FieldTypeId._6_DECIMAL:
+                case 6:
                     if(resultSet.next())
                     {
                         returnVal = new Field(
@@ -404,8 +306,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                                 Field.Type.Decimal);
                     }
                 break;
-                //Table Field...
-                case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
+                case 7:
                     List<Long> formContainerIds = new ArrayList<>();
                     while(resultSet.next())
                     {
@@ -431,7 +332,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                                 tableField,
                                 Field.Type.Table);
                     }
-                    //TODO __8__ encrypted field...
                 break;
                 default:
                     throw new SQLException("Unable to map '"+

@@ -15,13 +15,11 @@
 
 package com.fluid.program.api.util.sql;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 
 /**
@@ -35,7 +33,7 @@ import com.fluid.program.api.util.sql.exception.FluidSQLException;
  * @see PreparedStatement
  * @see java.sql.Statement
  */
-public abstract class ABaseSQLUtil implements Serializable {
+public abstract class ABaseSQLUtil {
 
     private Connection connection;
 
@@ -43,7 +41,7 @@ public abstract class ABaseSQLUtil implements Serializable {
      * The type of SQL Database engine.
      */
     public static enum SQLType{
-        Unknown(UtilGlobal.EMPTY),
+        Unknown(""),
         MySQL("mysql"),
         MicrosoftSQL("microsoft sql server");
 

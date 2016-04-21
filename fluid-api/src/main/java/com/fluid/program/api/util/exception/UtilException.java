@@ -16,14 +16,11 @@
 package com.fluid.program.api.util.exception;
 
 /**
- * Exception class related to using Fluid's Utility classes
- * from within a custom program.
+ * Exception class related to SQL Exceptions exclusively.
  *
  * @author jasonbruwer
  * @since v1.0
  *
- * @see com.fluid.program.api.util.CommandUtil
- * @see com.fluid.program.api.util.sql.exception.FluidSQLException
  * @see RuntimeException
  */
 public class UtilException extends RuntimeException {
@@ -36,7 +33,6 @@ public class UtilException extends RuntimeException {
     public static final class ErrorCode {
         public static final int GENERAL = 10001;
         public static final int SQL = 10002;
-        public static final int CACHE = 10003;
     }
 
     /**

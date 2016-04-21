@@ -72,7 +72,7 @@ public class FormDefinitionClient extends ABaseClientWS {
     }
 
     /**
-     * Updates an existing Form Definition with the Fields inside the definition.
+     * Creates an existing Form Definition with the Fields inside the definition.
      *
      * @param formDefinitionParam The Definition to update.
      * @return The Updated Form Definition.
