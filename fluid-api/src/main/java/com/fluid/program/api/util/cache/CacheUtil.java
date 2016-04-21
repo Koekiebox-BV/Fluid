@@ -39,11 +39,6 @@ import com.fluid.program.api.vo.MultiChoice;
  */
 public class CacheUtil {
 
-    //TODO can start off by fetching values only...
-    //TODO use the  [getWord()] to determine the data type.
-    //TODO use      [getValue()] to get the field value.
-    //TODO use      [fieldValueForCachingId] to get the FieldValueId.
-
     private static final String NULL = "null";
     private static final String DASH = "-";
 
@@ -51,10 +46,6 @@ public class CacheUtil {
 
     private String cacheHost = null;
     private int cachePort = -1;
-
-    //Cached Methods.
-    private Method methodGetWord;
-    private Method methodGetValue;
 
     /**
      *
@@ -143,21 +134,8 @@ public class CacheUtil {
         {
             Field returnVal = new Field();
 
-            if(FlowJobType.MULTIPLE_CHOICE.equals(this.dataType) &&
-                    cachedFieldValue != null)
-            {
-                MultiChoice multiChoice = new MultiChoice();
-
-                List<String> availableChoices = null;//TODO
-                List<String> selectedChoices = null;//TODO
-
-                multiChoice.setAvailableMultiChoices(availableChoices);
-                multiChoice.setSelectedMultiChoices(selectedChoices);
-
-                returnVal.setFieldValue(multiChoice);
-            }
             //No table field...
-            else if(FlowJobType.TABLE_FIELD.equals(this.dataType))
+            if(FlowJobType.TABLE_FIELD.equals(this.dataType))
             {
                 return null;
             }
@@ -256,23 +234,17 @@ public class CacheUtil {
         }
 
         //Get Word...
-        if(this.methodGetWord == null)
-        {
-            this.methodGetWord = this.getMethod(
-                    objWithKeyParam.getClass(),
-                    CustomCode.IWord.METHOD_getWord);
-        }
+        Method methodGetWord = this.getMethod(
+                objWithKeyParam.getClass(),
+                CustomCode.IWord.METHOD_getWord);
 
         //Get Value...
-        if(this.methodGetValue == null)
-        {
-            this.methodGetValue = this.getMethod(
+        Method methodGetValue = this.getMethod(
                     objWithKeyParam.getClass(),
                     CustomCode.ADataType.METHOD_getValue);
-        }
 
         //Word...
-        Object getWordObj = this.invoke(this.methodGetWord, objWithKeyParam);
+        Object getWordObj = this.invoke(methodGetWord, objWithKeyParam);
         String getWordVal = null;
         if(getWordObj instanceof String)
         {
@@ -280,7 +252,45 @@ public class CacheUtil {
         }
 
         //Value...
-        Object getValueObj = this.invoke(this.methodGetValue, objWithKeyParam);
+        Object getValueObj = null;
+        if(FlowJobType.MULTIPLE_CHOICE.equals(getWordVal))
+        {
+            MultiChoice multiChoice = new MultiChoice();
+
+            //Available Choices...
+            Method methodAvailableChoices = getMethod(
+                    objWithKeyParam.getClass(),
+                    CustomCode.MultipleChoice.METHOD_getAvailableChoices);
+
+            Object availChoicesObj =
+                    invoke(methodAvailableChoices, objWithKeyParam);
+
+            if(availChoicesObj instanceof List)
+            {
+                multiChoice.setAvailableMultiChoices((List)availChoicesObj);
+            }
+
+            //Selected...
+            Method methodSelectedChoices = getMethod(
+                    objWithKeyParam.getClass(),
+                    CustomCode.MultipleChoice.METHOD_getSelectedChoices);
+
+            Object selectedChoicesObj =
+                    invoke(methodSelectedChoices, objWithKeyParam);
+
+            if(selectedChoicesObj instanceof List)
+            {
+                multiChoice.setSelectedMultiChoices((List)selectedChoicesObj);
+            }
+
+            getValueObj = multiChoice;
+        }
+        else
+        {
+            getValueObj = this.invoke(methodGetValue, objWithKeyParam);
+        }
+
+
         if(getValueObj == null)
         {
             return null;
@@ -306,7 +316,7 @@ public class CacheUtil {
      * @param nameParam
      * @return
      */
-    private Method getMethod(Class clazzParam, String nameParam)
+    private static Method getMethod(Class clazzParam, String nameParam)
     {
         try {
             Method returnVal = clazzParam.getDeclaredMethod(nameParam);
@@ -328,13 +338,13 @@ public class CacheUtil {
      * @param objParam
      * @return
      */
-    private Object invoke(Method methodParam,Object objParam)
+    private static Object invoke(Method methodParam, Object objParam)
     {
         try {
             return methodParam.invoke(objParam);
         }
         //
-        catch (InvocationTargetException | IllegalAccessException e) {
+        catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
 
             throw new FluidCacheException(
                     "Unable to invoke method '"+

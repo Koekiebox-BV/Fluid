@@ -91,10 +91,10 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         long start = System.currentTimeMillis();
 
-        int numberOfRecords = 5;
+        int numberOfRecords = 1;
 
         List<FormListing> formListing = webSocketClient.getTableFormsSynchronized(
-                generateLotsOfFormsFor(numberOfRecords,28L));
+                generateLotsOfFormsFor(numberOfRecords, 28L));
 
         long took = (System.currentTimeMillis() - start);
 
@@ -112,9 +112,19 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
                 for(Form form : tableForms)
                 {
-                    System.out.println(form.getFormType() +
-                            " - " +
-                            form.getTitle());
+                    System.out.println(form.getFormType() + " - " + form.getTitle());
+
+                    if(form.getFormFields() == null)
+                    {
+                        continue;
+                    }
+
+                    for(Field field : form.getFormFields())
+                    {
+                        System.out.println("|"+field.getFieldName()+"|"+
+                                field.getType()
+                                +"| ->" +field.getFieldValue());
+                    }
                 }
             }
         }

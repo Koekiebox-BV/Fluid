@@ -31,6 +31,10 @@ public class CustomCode {
      */
     public static final class MultipleChoice {
         public static final String NAME = "com.flowjob.domain.ruleengine.datatype.MultipleChoice";
+
+        public static final String METHOD_getAvailableChoices = "getAvailableChoices";
+        public static final String METHOD_getSelectedChoices = "getSelectedChoices";
+
     }
 
     /**
