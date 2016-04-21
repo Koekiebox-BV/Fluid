@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +33,6 @@ import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.FluidClientException;
-import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
@@ -62,18 +60,7 @@ public class TestFlowItemClient extends ABaseTestCase {
     @Before
     public void init()
     {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
         this.loginClient = new LoginClient();
-    }
-
-    /**
-     *
-     */
-    @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
     }
 
     /**
@@ -101,6 +88,7 @@ public class TestFlowItemClient extends ABaseTestCase {
 
         //Fluid Item...
         FluidItem toCreate = new FluidItem();
+
         toCreate.setForm(frm);
 
         //2. Attachments...

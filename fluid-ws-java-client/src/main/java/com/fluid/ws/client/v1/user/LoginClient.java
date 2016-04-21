@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.user.User;
+import com.fluid.program.api.vo.User;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.program.api.vo.ws.auth.AuthEncryptedData;

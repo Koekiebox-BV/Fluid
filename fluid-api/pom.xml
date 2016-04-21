@@ -14,7 +14,6 @@
     <artifactId>fluid-api</artifactId>
     <packaging>jar</packaging>
     <name>Fluid API</name>
-    <version>${version.fluid-api}</version>
     <description>Used for the
         Custom Program Step,
         Custom Actions,
@@ -54,10 +53,10 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--XMemcachedClient-->
+        <!--Resteasy Jackson Provider-->
         <dependency>
-            <groupId>com.googlecode.xmemcached</groupId>
-            <artifactId>xmemcached</artifactId>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
             <scope>compile</scope>
         </dependency>
     </dependencies>

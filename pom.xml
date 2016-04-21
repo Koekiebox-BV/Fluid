@@ -35,8 +35,7 @@
 
     <properties>
         <!--Fluid Versions-->
-        <version.fluid-api>1.1</version.fluid-api>
-        <version.fluid-ws-java-client>1.0</version.fluid-ws-java-client>
+        <version.fluid-api>1.0</version.fluid-api>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.compiler.plugin>2.3.2</version.compiler.plugin>
@@ -51,23 +50,14 @@
         <version.slf4j>1.7.12</version.slf4j>
 
         <!--Org.JSON-->
-        <version.org.json>20160212</version.org.json>
+        <version.org.json>20141113</version.org.json>
 
         <!--JBoss Resteasy-->
         <version.jboss.resteasy.jackson>2.2.1.GA</version.jboss.resteasy.jackson>
 
         <version.apache.commons.lang3>3.3.2</version.apache.commons.lang3>
         <version.google.guava>18.0</version.google.guava>
-        <version.apache.httpcomponents.httpclient>4.5.1</version.apache.httpcomponents.httpclient>
-        <version.apache.httpcomponents.httpcore>4.4.4</version.apache.httpcomponents.httpcore>
-
-        <!--Web Socket-->
-        <version.javax.websocket>1.0</version.javax.websocket>
-        <version.javax.websocket.tyrus.client>1.12</version.javax.websocket.tyrus.client>
-        <version.javax.websocket.tyrus.container>1.12</version.javax.websocket.tyrus.container>
-
-        <!--MemcacheClient-->
-        <version.xmemcached.client>2.0.0</version.xmemcached.client>
+        <version.apache.httpcomponents.httpclient>4.5</version.apache.httpcomponents.httpclient>
 
         <!--Koekiebox Git Maven Plugin-->
         <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>
@@ -124,6 +114,14 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!--Jackson Provider-->
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson-provider</artifactId>
+                <version>${version.jboss.resteasy.jackson}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!--Commons-->
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -147,44 +145,6 @@
                 <version>${version.apache.httpcomponents.httpclient}</version>
                 <scope>provided</scope>
             </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>${version.apache.httpcomponents.httpcore}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--Web Socket Client using Tyrus-->
-            <dependency>
-                <groupId>javax.websocket</groupId>
-                <artifactId>javax.websocket-client-api</artifactId>
-                <version>${version.javax.websocket}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish.tyrus</groupId>
-                <artifactId>tyrus-client</artifactId>
-                <version>${version.javax.websocket.tyrus.client}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish.tyrus</groupId>
-                <artifactId>tyrus-container-grizzly-client</artifactId>
-                <version>${version.javax.websocket.tyrus.container}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--XMemcachedClient-->
-            <dependency>
-                <groupId>com.googlecode.xmemcached</groupId>
-                <artifactId>xmemcached</artifactId>
-                <version>${version.xmemcached.client}</version>
-                <scope>provided</scope>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 </project>
