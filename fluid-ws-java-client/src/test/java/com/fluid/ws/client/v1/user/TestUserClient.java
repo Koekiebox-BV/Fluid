@@ -17,11 +17,14 @@ package com.fluid.ws.client.v1.user;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluid.program.api.vo.User;
+import com.fluid.program.api.vo.user.User;
+import com.fluid.program.api.vo.user.UserListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 
 /**
@@ -34,8 +37,27 @@ public class TestUserClient extends ABaseTestCase {
     /**
      *
      */
+    public static final class TestStatics
+    {
+        public static final class Create
+        {
+            public static final String USERNAME = "junitTestingUser";
+            public static final String PASSWORD = "password";
+        }
+
+        public static final class Update
+        {
+            public static final String USERNAME = "junitTestingUserUpdated";
+        }
+    }
+
+    /**
+     *
+     */
     @Before
     public void init() {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         //this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
         this.loginClient = new LoginClient();
     }
@@ -43,13 +65,21 @@ public class TestUserClient extends ABaseTestCase {
     /**
      *
      */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
+    }
+
+    /**
+     *
+     */
     @Test
-    public void testGetUserInfo() {
+    public void testCreateUser() {
         if (!this.loginClient.isConnectionValid()) {
             return;
         }
 
-        //AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
 
@@ -57,10 +87,134 @@ public class TestUserClient extends ABaseTestCase {
 
         UserClient userClient = new UserClient(serviceTicket);
 
-        User loggedInUser =
-                userClient.getUserInformationWhereUsername("admin");
+        User userToCreate = new User();
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
+        userToCreate = userClient.createUser(userToCreate);
+
+        TestCase.assertNotNull(
+                "No user created or not returned.",
+                userToCreate);
+
+        userClient.deleteUser(userToCreate);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testUpdateUser() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User userToCreate = new User();
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+
+        User userToUpdate = userClient.createUser(userToCreate);
+
+        TestCase.assertNotNull(userToUpdate);
+
+        userToUpdate.setUsername(TestStatics.Update.USERNAME);
+        userToUpdate = userClient.updateUser(userToUpdate);
+
+        userClient.deleteUser(userToUpdate, true);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetLoggedUserInfo() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User loggedInUser = userClient.getLoggedInUserInformation();
         TestCase.assertNotNull(loggedInUser);
+    }
 
+    /**
+     *
+     */
+    @Test
+    public void testGetAllUserInfo() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        UserListing userListing = userClient.getAllUsers();
+
+        TestCase.assertNotNull(userListing);
+        TestCase.assertTrue("User listing must be greater than '0'.",
+                userListing.getListingCount() > 0);
+        TestCase.assertNotNull("User Listing must be set.",userListing.getListing());
+        TestCase.assertNotNull("User must be set.",userListing.getListing().get(0));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetUserInfoByUsername() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User user = userClient.getUserWhereUsername("admin");
+        TestCase.assertNotNull(user);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetUserInfoById() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        User user = userClient.getUserWhereUsername("admin");
+        TestCase.assertNotNull(user);
+
+        User userById = userClient.getUserById(user.getId());
+        TestCase.assertNotNull(userById);
     }
 }

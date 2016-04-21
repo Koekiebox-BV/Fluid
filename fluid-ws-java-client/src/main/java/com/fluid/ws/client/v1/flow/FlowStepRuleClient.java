@@ -17,6 +17,9 @@ package com.fluid.ws.client.v1.flow;
 
 import org.json.JSONObject;
 
+import com.fluid.program.api.vo.FluidItem;
+import com.fluid.program.api.vo.flow.FlowItemExecutePacket;
+import com.fluid.program.api.vo.flow.FlowItemExecuteResult;
 import com.fluid.program.api.vo.flow.FlowStep;
 import com.fluid.program.api.vo.flow.FlowStepRule;
 import com.fluid.program.api.vo.ws.WS;
@@ -177,6 +180,35 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
         return new FlowStepRule(this.postJson(
                 flowStepRule, WS.Path.FlowStepRule.Version1.compileEntrySyntax()));
+    }
+
+    /**
+     * Compiles and Executes the {@code entryRuleSyntaxParam}
+     * text within the Fluid workflow engine.
+     *
+     * @param entryRuleSyntaxParam The syntax to compile.
+     * @param fluidItemToExecuteOnParam The item to execute the rules on.
+     *
+     * @return Execution result.
+     */
+    public FlowItemExecuteResult compileFlowStepEntryRuleAndExecute(
+            String entryRuleSyntaxParam, FluidItem fluidItemToExecuteOnParam)
+    {
+        FlowStepRule flowStepRule = new FlowStepRule();
+        flowStepRule.setRule(entryRuleSyntaxParam);
+
+        FlowItemExecutePacket toPost = new FlowItemExecutePacket();
+
+        if(this.serviceTicket != null)
+        {
+            toPost.setServiceTicket(this.serviceTicket);
+        }
+
+        toPost.setFlowStepRule(flowStepRule);
+        toPost.setFluidItem(fluidItemToExecuteOnParam);
+
+        return new FlowItemExecuteResult(this.postJson(
+                toPost, WS.Path.FlowStepRule.Version1.compileEntrySyntaxAndExecute()));
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fluid.program.api.util.cache.CacheUtil;
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 import com.fluid.program.api.util.sql.syntax.ISyntax;
@@ -42,13 +43,29 @@ import com.fluid.program.api.vo.Form;
  */
 public class SQLFormUtil extends ABaseSQLUtil {
 
+    private SQLFormDefinitionUtil formDefUtil = null;
+    private SQLFormFieldUtil fieldUtil = null;
+
+    /**
+     * New instance using provided {@code connectionParam}.
+     *
+     * @param connectionParam SQL Connection to use.
+     * @param cacheUtilParam The Cache Util for better performance.
+     */
+    public SQLFormUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
+        super(connectionParam);
+
+        this.formDefUtil = new SQLFormDefinitionUtil(connectionParam);
+        this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam);
+    }
+
     /**
      * New instance using provided {@code connectionParam}.
      *
      * @param connectionParam SQL Connection to use.
      */
     public SQLFormUtil(Connection connectionParam) {
-        super(connectionParam);
+        this(connectionParam, null);
     }
 
     /**
@@ -69,10 +86,8 @@ public class SQLFormUtil extends ABaseSQLUtil {
             return returnVal;
         }
 
-        SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
-
         Map<Long,String> definitionAndTitle =
-                formDefUtl.getFormDefinitionIdAndTitle();
+                this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -85,10 +100,9 @@ public class SQLFormUtil extends ABaseSQLUtil {
             preparedStatement = this.getConnection().prepareStatement(
                     syntax.getPreparedStatement());
 
-            preparedStatement.setLong(1,electronicFormIdParam);
+            preparedStatement.setLong(1, electronicFormIdParam);
 
             resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
 
             //Iterate each of the form containers...
             while (resultSet.next())
@@ -101,12 +115,9 @@ public class SQLFormUtil extends ABaseSQLUtil {
             //When field data must also be included...
             if(includeFieldDataParam)
             {
-                SQLFormFieldUtil fieldUtil = new SQLFormFieldUtil(this.getConnection());
-
                 for(Form form : returnVal)
                 {
-                    List<Field> formFields =
-                            fieldUtil.getFormFields(
+                    List<Field> formFields = this.fieldUtil.getFormFields(
                                     form.getId(),
                                     false);
                     form.setFormFields(formFields);
@@ -147,10 +158,8 @@ public class SQLFormUtil extends ABaseSQLUtil {
             return returnVal;
         }
 
-        SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
-
         Map<Long,String> definitionAndTitle =
-                formDefUtl.getFormDefinitionIdAndTitle();
+                this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -166,7 +175,6 @@ public class SQLFormUtil extends ABaseSQLUtil {
             preparedStatement.setLong(1,electronicFormIdParam);
 
             resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
 
             //Iterate each of the form containers...
             while (resultSet.next())
@@ -179,12 +187,10 @@ public class SQLFormUtil extends ABaseSQLUtil {
             //When field data must also be included...
             if(includeFieldDataParam)
             {
-                SQLFormFieldUtil fieldUtil = new SQLFormFieldUtil(this.getConnection());
-
                 for(Form form : returnVal)
                 {
                     List<Field> formFields =
-                            fieldUtil.getFormFields(
+                            this.fieldUtil.getFormFields(
                                     form.getId(),
                                     includeTableFieldsParam);
                     form.setFormFields(formFields);
@@ -225,10 +231,7 @@ public class SQLFormUtil extends ABaseSQLUtil {
 
         Form returnVal = null;
 
-        SQLFormDefinitionUtil formDefUtl = new SQLFormDefinitionUtil(this.getConnection());
-
-        Map<Long,String> definitionAndTitle =
-                formDefUtl.getFormDefinitionIdAndTitle();
+        Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -244,7 +247,6 @@ public class SQLFormUtil extends ABaseSQLUtil {
             preparedStatement.setLong(1,electronicFormIdParam);
 
             resultSet = preparedStatement.executeQuery();
-            resultSet.beforeFirst();
 
             //Iterate each of the form containers...
             if (resultSet.next())
@@ -257,12 +259,9 @@ public class SQLFormUtil extends ABaseSQLUtil {
             //When field data must also be included...
             if(includeFieldDataParam)
             {
-                SQLFormFieldUtil fieldUtil = new SQLFormFieldUtil(this.getConnection());
-
                 if(returnVal != null)
                 {
-                    List<Field> formFields =
-                            fieldUtil.getFormFields(
+                    List<Field> formFields = this.fieldUtil.getFormFields(
                                     returnVal.getId(),
                                     includeTableFieldsParam);
                     returnVal.setFormFields(formFields);
@@ -316,8 +315,16 @@ public class SQLFormUtil extends ABaseSQLUtil {
 
         toAdd.setId(formId);
         toAdd.setTitle(title);
-        toAdd.setDateCreated(created);
-        toAdd.setDateLastUpdated(lastUpdated);
+
+        if(created != null)
+        {
+            toAdd.setDateCreated(new Date(created.getTime()));
+        }
+
+        if(lastUpdated != null)
+        {
+            toAdd.setDateLastUpdated(new Date(lastUpdated.getTime()));
+        }
 
         return toAdd;
     }

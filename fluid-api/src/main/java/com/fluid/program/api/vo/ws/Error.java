@@ -15,6 +15,8 @@
 
 package com.fluid.program.api.vo.ws;
 
+import org.json.JSONObject;
+
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 
 /**
@@ -43,6 +45,9 @@ public class Error extends ABaseFluidJSONObject {
     {
         public static final String ERROR_CODE = "errorCode";
         public static final String ERROR_MESSAGE = "errorMessage";
+
+        public static final String ERROR_CODE_OTHER = "error_code";
+        public static final String ERROR_MESSAGE_OTHER = "error_message";
     }
 
     /**
@@ -61,6 +66,33 @@ public class Error extends ABaseFluidJSONObject {
     public Error(int errorCode, String errorMessage) {
         this.setErrorCode(errorCode);
         this.setErrorMessage(errorMessage);
+    }
+
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public Error(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+
+        //Error Code...
+        if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE)) {
+            this.setErrorCode(
+                    new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
+        }
+        else if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE_OTHER)) {
+            this.setErrorCode(
+                    new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE_OTHER)).intValue());
+        }
+
+        //Error Message...
+        if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE)) {
+            this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE));
+        }
+        else if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE_OTHER)) {
+            this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE_OTHER));
+        }
     }
 
     /**

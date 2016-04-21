@@ -17,8 +17,8 @@ package com.fluid.program.api;
 import java.util.List;
 
 import com.fluid.program.api.vo.FluidItem;
-import com.fluid.program.api.vo.User;
 import com.fluid.program.api.vo.mail.MailMessage;
+import com.fluid.program.api.vo.user.User;
 
 /**
  * Implement this interface when you want Fluid to execute

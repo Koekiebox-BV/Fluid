@@ -57,6 +57,8 @@ public class WS {
      */
     public final static class Path
     {
+        public static final String WEB_SOCKET = "/web_socket/";
+
         /**
          * The Version mapping for the Fluid Web Service.
          */
@@ -129,6 +131,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String BY_NAME = ("/get_by_name");
 
                 /**
                  * Root for Form Field.
@@ -195,6 +198,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Form Field get by name.
+                 *
+                 * @return {@code v1/form_field/get_by_name}
+                 */
+                public static final String getByName()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(BY_NAME);
                 }
             }
         }
@@ -609,6 +622,8 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_ALL_VIEWS_BY_STEP =
+                        ("/get_views_by_step_id");
 
                 /**
                  * Root for Flow Step.
@@ -675,6 +690,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for JobViews by Flow Step id.
+                 *
+                 * @return {@code v1/flow_step/get_views_by_step_id}
+                 */
+                public static final String getAllViewsByStepId()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_STEP);
                 }
             }
         }
@@ -870,7 +895,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/compile_syntax_and_execute}
                  */
-                public static final String compileSyntaxAndExecute()
+                public static final String compileEntrySyntaxAndExecute()
                 {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX_AND_EXECUTE);
                 }
@@ -1052,7 +1077,7 @@ public class WS {
         /**
          * The User Web Service mappings.
          *
-         * @see com.fluid.program.api.vo.User
+         * @see com.fluid.program.api.vo.user.User
          */
         public static final class User
         {
@@ -1067,6 +1092,27 @@ public class WS {
                 public static final String ISSUE_TOKEN = "/issue_token";
                 public static final String TOKEN_STATUS = "/token_status";
                 public static final String INFORMATION = "/info";
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //DeActivate...
+                public static final String DE_ACTIVATE = ("/de_activate");
+
+                //Activate...
+                public static final String ACTIVATE = ("/activate");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+                public static final String READ_BY_USERNAME = ("/get_by_username");
+                public static final String READ_ALL = ("/get_all_users");
 
                 /**
                  * Mapping for frequently used HTTP parameters.
@@ -1093,7 +1139,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userInitSession()
                 {
@@ -1107,7 +1153,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userIssueToken()
                 {
@@ -1121,7 +1167,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userTokenStatus()
                 {
@@ -1135,12 +1181,632 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userInformation()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(INFORMATION);
                 }
+
+                /**
+                 * URL Path for User create.
+                 *
+                 * @return {@code /v1/user/}
+                 */
+                public static final String userCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for User update.
+                 *
+                 * @return {@code v1/user/update}
+                 */
+                public static final String userUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a User.
+                 *
+                 * @return {@code v1/user/delete}
+                 */
+                public static final String userDelete()
+                {
+                    return userDelete(false);
+                }
+
+                /**
+                 * URL Path for User delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/user/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String userDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 * URL Path for De-Activating a User.
+                 *
+                 * @return {@code v1/user/de_activate}
+                 */
+                public static final String userDeActivate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(DE_ACTIVATE);
+                }
+
+                /**
+                 * URL Path for De-Activating a User.
+                 *
+                 * @return {@code v1/user/activate}
+                 */
+                public static final String userActivate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(ACTIVATE);
+                }
+
+                /**
+                 * URL Path for User get by id.
+                 *
+                 * @return {@code v1/user/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for User get by username.
+                 *
+                 * @return {@code v1/user/get_by_username}
+                 */
+                public static final String getByUsername()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_BY_USERNAME);
+                }
+
+                /**
+                 * URL Path for User get by id.
+                 *
+                 * @return {@code v1/user/get_all_users}
+                 */
+                public static final String getAllUsers()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+            }
+        }
+
+        /**
+         * The Role Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.role.Role
+         */
+        public static final class Role
+        {
+            /**
+             * Role mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/role");
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+                public static final String READ_ALL = ("/get_all_roles");
+
+                /**
+                 * Root for Role.
+                 *
+                 * @return {@code /role/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Role create.
+                 *
+                 * @return {@code /v1/role/}
+                 */
+                public static final String roleCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Role update.
+                 *
+                 * @return {@code v1/role/update}
+                 */
+                public static final String roleUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a Role.
+                 *
+                 * @return {@code v1/role/delete}
+                 */
+                public static final String roleDelete()
+                {
+                    return roleDelete(false);
+                }
+
+                /**
+                 * URL Path for Role delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/role/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String roleDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 * URL Path for Role get by id.
+                 *
+                 * @return {@code v1/role/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Role get all.
+                 *
+                 * @return {@code v1/role/get_all_roles}
+                 */
+                public static final String getAllRoles()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+            }
+        }
+
+        /**
+         * The Configuration Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.config.Configuration
+         */
+        public static final class Configuration
+        {
+            /**
+             * Role mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/configuration");
+
+                //Update...
+                //public static final String UPDATE = ("/update");
+
+                //Read...
+                public static final String READ = ("/get_by_key");
+                public static final String READ_ALL = ("/get_all_configurations");
+
+                /**
+                 * Root for Configuration.
+                 *
+                 * @return {@code /configuration/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Configuration get by id.
+                 *
+                 * @return {@code v1/configuration/get_by_key}
+                 */
+                public static final String getByKey()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Configuration get all.
+                 *
+                 * @return {@code v1/configuration/get_all_configurations}
+                 */
+                public static final String getAllConfigurations()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+            }
+        }
+
+        /**
+         * The SQL Util Web Service mappings.
+         *
+         * @see com.fluid.program.api.util.sql.impl.SQLFormDefinitionUtil
+         * @see com.fluid.program.api.util.sql.impl.SQLFormFieldUtil
+         * @see com.fluid.program.api.util.sql.impl.SQLFormUtil
+         */
+        public static final class SQLUtil
+        {
+            /**
+             * User Query mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/sql_util");
+
+                public static final String ROOT_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+
+                //[[[ EXECUTE ]]]...
+                //Form...
+                public static final String SQL_UTIL_FORM_GET_TABLE_FORMS =
+                        ("/form/get_table_forms_by_electronic_form_id");
+
+                public static final String SQL_UTIL_FORM_GET_DESCENDANTS =
+                        ("/form/get_descendants_by_electronic_form_id");
+
+                public static final String SQL_UTIL_FORM_GET_ANCESTOR =
+                        ("/form/get_ancestor_by_electronic_form_id");
+
+                //Field...
+                public static final String SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER =
+                        ("/form_field/get_fields_by_electronic_form_id");
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    public static final String INCLUDE_FIELD_DATA = "include_field_data";
+                    public static final String INCLUDE_TABLE_FIELDS = "include_table_fields";
+                }
+
+                /**
+                 * Mapping for frequently used HTTP or Web Socket Path parameters.
+                 */
+                public static final class PathParam
+                {
+                    public static final String SERVICE_TICKET = "serviceTicket";
+                }
+
+                /**
+                 * Root for package {@code com.fluid.program.api.util.sql.impl}.
+                 *
+                 * @return {@code /sql_util/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for retrieving Table records for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 *
+                 * @return {@code v1/sql_util/form/get_table_forms_by_electronic_form_id}
+                 */
+                public static final String getTableForms(
+                        boolean includeFieldDataParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
+                            "?" +
+                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving Table records for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
+                 */
+                public static final String getTableFormsWebSocket(
+                        boolean includeFieldDataParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                            "?" +
+                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for retrieving descendants for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 *
+                 * @return {@code v1/sql_util/form/get_descendants_by_electronic_form_id}
+                 */
+                public static final String getDescendants(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_GET_DESCENDANTS).concat(
+                            "?" +
+                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                            "&" +
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving Table records for electronic
+                 * form with id {@code electronicFormIdParam}.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/get_descendants_by_electronic_form_id}
+                 */
+                public static final String getDescendantsWebSocket(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_GET_DESCENDANTS).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                    "?" +
+                                    QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                                    "&" +
+                                    QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for retrieving ancestor for electronic
+                 * form.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 *
+                 * @return {@code v1/sql_util/form/get_ancestor_by_electronic_form_id}
+                 */
+                public static final String getAncestor(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_GET_ANCESTOR).concat(
+                            "?" +
+                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                            "&" +
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving ancestor data via Web Socket.
+                 *
+                 * @param includeFieldDataParam Does field data need to be included.
+                 * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/get_ancestor_by_electronic_form_id}
+                 */
+                public static final String getAncestorWebSocket(
+                        boolean includeFieldDataParam,
+                        boolean includeTableFieldsParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_GET_ANCESTOR).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                            "?" +
+                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                                            "&" +
+                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for retrieving Form Fields for electronic
+                 * form.
+                 *
+                 * @param includeTableFieldsParam Does Table Field data need to be included?
+                 *
+                 * @return {@code v1/sql_util/form_field/get_fields_by_electronic_form_id}
+                 */
+                public static final String getFormFields(
+                        boolean includeTableFieldsParam)
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
+                            "?" +
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                    );
+                }
+
+                /**
+                 * URL Path for retrieving Form Fields for electronic
+                 * form using a Web Socket.
+                 *
+                 * @param includeTableFieldsParam Does Table Field data need to be included?
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form_field/get_fields_by_electronic_form_id}
+                 */
+                public static final String getFormFieldsWebSocket(
+                        boolean includeTableFieldsParam,
+                        String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(
+                                    SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
+                                    "/"+ serviceTicketParam + "/" +
+                                            "?" +
+                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
+                }
+            }
+        }
+
+        /**
+         * The User Query Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.userquery.UserQuery
+         */
+        public static final class UserQuery
+        {
+            /**
+             * User Query mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/user_query");
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+                public static final String READ_ALL = ("/get_all_user_queries");
+
+                //Execute...
+                public static final String EXECUTE = ("/execute");
+
+                /**
+                 * Root for {@code UserQuery}.
+                 *
+                 * @return {@code /user_query/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for executing a {@code UserQuery}.
+                 *
+                 * @return {@code v1/user_query/execute}
+                 */
+                public static final String executeUserQuery()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(EXECUTE);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} create.
+                 *
+                 * @return {@code /v1/user_query/}
+                 */
+                public static final String userQueryCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} update.
+                 *
+                 * @return {@code v1/user_query/update}
+                 */
+                public static final String userQueryUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a {@code UserQuery}.
+                 *
+                 * @return {@code v1/user_query/delete}
+                 */
+                public static final String userQueryDelete()
+                {
+                    return userQueryDelete(false);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/user_query/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String userQueryDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 * URL Path for {@code UserQuery} get by id.
+                 *
+                 * @return {@code v1/user_query/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for UserQuery get all.
+                 *
+                 * @return {@code v1/user_query/get_all_user_queries}
+                 */
+                public static final String getAllUserQueries()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+
             }
         }
 
@@ -1149,7 +1815,7 @@ public class WS {
          *
          * @see com.fluid.program.api.vo.auth0.AccessToken
          * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-         * @see com.fluid.program.api.vo.User
+         * @see com.fluid.program.api.vo.user.User
          */
         public static final class Auth0
         {
@@ -1161,7 +1827,9 @@ public class WS {
                 public static final String ROOT = ("/oauth");
 
                 public static final String TOKEN = "/token";
-                public static final String USER_INFO = "/userinfo/?access_token=";
+                public static final String USER_INFO_WITH_ACCESS_TOKEN =
+                        "/userinfo/?access_token=";
+                public static final String USER_INFO = "/userinfo";
 
                 /**
                  * Mapping for frequently used HTTP parameters.
@@ -1188,7 +1856,7 @@ public class WS {
                  *
                  * @see com.fluid.program.api.vo.auth0.AccessToken
                  * @see com.fluid.program.api.vo.auth0.AccessTokenRequest
-                 * @see com.fluid.program.api.vo.User
+                 * @see com.fluid.program.api.vo.user.User
                  */
                 public static final String userToken()
                 {
@@ -1202,7 +1870,7 @@ public class WS {
                  * @param accessTokenValueParam The access token to get user
                  *                              information from.
                  * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
-                 * @throws UnsupportedEncodingException When UTF-8 is not supported.
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
                 public static final String userInfo(String accessTokenValueParam)
                 throws UnsupportedEncodingException
@@ -1214,7 +1882,20 @@ public class WS {
                         encodedValue = URLEncoder.encode(accessTokenValueParam, "UTF-8");
                     }
 
-                    return ROOT.concat(USER_INFO).concat(encodedValue);
+                    return USER_INFO_WITH_ACCESS_TOKEN.concat(encodedValue);
+                }
+
+                /**
+                 * Used to get {@code User} information via the
+                 * {@code accessTokenValueParam} in the HTTP header.
+                 *
+                 * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+                 */
+                public static final String userInfo()
+                        throws UnsupportedEncodingException
+                {
+                    return USER_INFO;
                 }
             }
         }

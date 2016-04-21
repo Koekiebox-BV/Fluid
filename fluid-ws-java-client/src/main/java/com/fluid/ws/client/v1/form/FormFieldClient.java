@@ -1096,15 +1096,35 @@ public class FormFieldClient extends ABaseFieldClient {
      */
     public Field getFieldById(Long fieldIdParam)
     {
-        Field flow = new Field(fieldIdParam);
+        Field field = new Field(fieldIdParam);
 
         if(this.serviceTicket != null)
         {
-            flow.setServiceTicket(this.serviceTicket);
+            field.setServiceTicket(this.serviceTicket);
         }
 
         return new Field(this.postJson(
-                flow, WS.Path.FormField.Version1.getById()));
+                field, WS.Path.FormField.Version1.getById()));
+    }
+
+    /**
+     * Retrieve a Form Field via name.
+     *
+     * @param fieldNameParam The field name.
+     * @return Field and properties.
+     */
+    public Field getFieldByName(String fieldNameParam)
+    {
+        Field field = new Field();
+        field.setFieldName(fieldNameParam);
+
+        if(this.serviceTicket != null)
+        {
+            field.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Field(this.postJson(
+                field, WS.Path.FormField.Version1.getByName()));
     }
 
     /**

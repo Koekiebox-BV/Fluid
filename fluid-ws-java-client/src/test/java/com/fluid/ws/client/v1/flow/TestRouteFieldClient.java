@@ -20,12 +20,14 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.MultiChoice;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
 
@@ -89,7 +91,18 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Before
     public void init()
     {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         this.loginClient = new LoginClient();
+    }
+
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
     }
 
     /**

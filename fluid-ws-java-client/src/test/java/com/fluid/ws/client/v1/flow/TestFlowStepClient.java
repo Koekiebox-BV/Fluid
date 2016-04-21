@@ -17,6 +17,7 @@ package com.fluid.ws.client.v1.flow;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,9 @@ import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.flow.FlowStep;
 import com.fluid.program.api.vo.flow.FlowStepRule;
+import com.fluid.program.api.vo.flow.JobViewListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
 
@@ -62,6 +65,7 @@ public class TestFlowStepClient extends ABaseTestCase {
             public static final String PROP_VIEW_GROUP = "The View";
 
             public static final int VIEW_RULES_COUNT_CREATE = 2;
+            public static final int VIEW_RULES_COUNT_FETCH = 3;
 
             //Update...
 
@@ -94,7 +98,18 @@ public class TestFlowStepClient extends ABaseTestCase {
     @Before
     public void init()
     {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         this.loginClient = new LoginClient();
+    }
+
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
     }
 
     /**
@@ -319,7 +334,7 @@ public class TestFlowStepClient extends ABaseTestCase {
                 TestStatics.Assignment.VIEW_RULES_COUNT_UPDATE,
                 updatedFlowStep.getViewRules().size());
 
-        //4. Get by Id...
+        //4.1 Get by Id...
         FlowStep byIdFlowStep = flowStepClient.getFlowStepById(
                 updatedFlowStep.getId(), FlowStep.StepType.ASSIGNMENT);
 
@@ -334,6 +349,15 @@ public class TestFlowStepClient extends ABaseTestCase {
                 createdFlowStep.getDateCreated().toString(),
                 byIdFlowStep.getDateCreated().toString());*/
         TestCase.assertNotNull("BY_ID: The 'Date Last Updated' needs to be set.", byIdFlowStep.getDateLastUpdated());
+
+        //4.2 Get Job Views by Id...
+        JobViewListing jobViewListing =
+                flowStepClient.getJobViewsByStepId(updatedFlowStep.getId());
+
+        TestCase.assertNotNull("VIEWS_BY_STEP_ID: The 'Job View' needs to be set.", jobViewListing);
+        TestCase.assertEquals("VIEWS_BY_STEP_ID: The listing count mismatch.",
+                TestStatics.Assignment.VIEW_RULES_COUNT_FETCH,
+                jobViewListing.getListingCount().intValue());
 
         //5. Delete...
         FlowStep deletedFlowStep = flowStepClient.deleteFlowStep(byIdFlowStep);
