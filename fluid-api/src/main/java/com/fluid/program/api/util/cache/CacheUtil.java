@@ -59,7 +59,7 @@ public class CacheUtil {
     /**
      *
      */
-    private static class FlowJobTypeMappings
+    private static class FlowJobType
     {
         public static final String DATE_TIME = "Date Time";
         public static final String DECIMAL = "Decimal";
@@ -69,6 +69,62 @@ public class CacheUtil {
         public static final String TEXT = "Text";
         public static final String TEXT_ENCRYPTED = "Text Encrypted";
         public static final String TRUE_FALSE = "True / False";
+    }
+
+    /**
+     *
+     */
+    private static enum FlowJobTypeMapping
+    {
+        DateTime(FlowJobType.DATE_TIME, Field.Type.DateTime),
+        Decimal(FlowJobType.DECIMAL, Field.Type.Decimal),
+        MultiChoice(FlowJobType.MULTIPLE_CHOICE, Field.Type.MultipleChoice),
+        ParagraphText(FlowJobType.PARAGRAPH_TEXT, Field.Type.ParagraphText),
+        TableField(FlowJobType.TABLE_FIELD, Field.Type.Table),
+        Text(FlowJobType.TEXT, Field.Type.Text),
+        TextEncrypted(FlowJobType.TEXT_ENCRYPTED, Field.Type.TextEncrypted),
+        TrueFalse(FlowJobType.TRUE_FALSE, Field.Type.TrueFalse),
+        ;
+
+        private String flowJobDataTypeDesc;
+        private Field.Type fluidType;
+
+        /**
+         *
+         * @param flowJobDataTypeDescParam
+         * @param fluidTypeParam
+         */
+        FlowJobTypeMapping(
+                String flowJobDataTypeDescParam,
+                Field.Type fluidTypeParam)
+        {
+            this.flowJobDataTypeDesc = flowJobDataTypeDescParam;
+            this.fluidType = fluidTypeParam;
+        }
+
+        /**
+         *
+         * @param flowJobTypeParam
+         * @return
+         */
+        public static Field.Type getFluidTypeFromFlowJobType(
+                String flowJobTypeParam)
+        {
+            if(flowJobTypeParam == null || flowJobTypeParam.trim().isEmpty())
+            {
+                return null;
+            }
+
+            for(FlowJobTypeMapping mapping : values())
+            {
+                if(flowJobTypeParam.equals(mapping.flowJobDataTypeDesc))
+                {
+                    return mapping.fluidType;
+                }
+            }
+
+            return null;
+        }
     }
 
     /**
@@ -87,7 +143,7 @@ public class CacheUtil {
         {
             Field returnVal = new Field();
 
-            if(FlowJobTypeMappings.MULTIPLE_CHOICE.equals(this.dataType) &&
+            if(FlowJobType.MULTIPLE_CHOICE.equals(this.dataType) &&
                     cachedFieldValue != null)
             {
                 MultiChoice multiChoice = new MultiChoice();
@@ -101,7 +157,7 @@ public class CacheUtil {
                 returnVal.setFieldValue(multiChoice);
             }
             //No table field...
-            else if(FlowJobTypeMappings.TABLE_FIELD.equals(this.dataType))
+            else if(FlowJobType.TABLE_FIELD.equals(this.dataType))
             {
                 return null;
             }
@@ -109,6 +165,10 @@ public class CacheUtil {
             {
                 returnVal.setFieldValue(this.cachedFieldValue);
             }
+
+            //Set the Type as Enum...
+            returnVal.setTypeAsEnum(
+                    FlowJobTypeMapping.getFluidTypeFromFlowJobType(dataType));
 
             return returnVal;
         }

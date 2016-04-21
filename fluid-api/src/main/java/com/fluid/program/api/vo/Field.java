@@ -96,6 +96,7 @@ public class Field extends ABaseFluidJSONObject {
 	 */
     public static enum Type {
         Text,
+        TextEncrypted,
         TrueFalse,
         DateTime,
         Decimal,
