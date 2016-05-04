@@ -294,7 +294,6 @@ public class TestRoleClient extends ABaseTestCase {
 
         userQuerySecond = userQueryClient.createUserQuery(userQuerySecond);
 
-
         RoleClient roleClient = new RoleClient(serviceTicket);
 
         Role roleToCreate = new Role();

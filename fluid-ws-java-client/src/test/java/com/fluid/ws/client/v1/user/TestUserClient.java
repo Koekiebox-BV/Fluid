@@ -15,17 +15,23 @@
 
 package com.fluid.ws.client.v1.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fluid.program.api.vo.role.Role;
 import com.fluid.program.api.vo.user.User;
 import com.fluid.program.api.vo.user.UserListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
+import com.fluid.ws.client.v1.role.RoleClient;
+import com.fluid.ws.client.v1.role.TestRoleClient;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -128,6 +134,62 @@ public class TestUserClient extends ABaseTestCase {
         userToUpdate = userClient.updateUser(userToUpdate);
 
         userClient.deleteUser(userToUpdate, true);
+    }
+
+
+    /**
+     *
+     */
+    @Test
+    public void testUpdateUserRole() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(serviceTicket);
+
+        //Create the role...
+        RoleClient roleClient = new RoleClient(serviceTicket);
+
+        Role roleToAssociate = new Role();
+        roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
+        roleToAssociate.setDescription(TestRoleClient.TestStatics.Create.ROLE_DESCRIPTION);
+        roleToAssociate.setAdminPermissions(TestRoleClient.TestStatics.Create.PERMISSIONS);
+
+        roleToAssociate = roleClient.createRole(roleToAssociate);
+
+        //Created... Test...
+        TestCase.assertNotNull(roleToAssociate);
+
+        User userToCreate = new User();
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+
+        User userToUpdate = userClient.createUser(userToCreate);
+        TestCase.assertNotNull(userToUpdate);
+
+        List<Role> roleList = new ArrayList<>();
+
+        Role roleToAdd = new Role();
+        roleToAdd.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
+
+        roleList.add(roleToAdd);
+        userToUpdate.setRoles(roleList);
+
+        userToUpdate = userClient.updateUser(userToUpdate);
+
+        TestCase.assertNotNull(userToUpdate);
+        TestCase.assertFalse("Role listing must be greater than '0'.",
+                userToUpdate.getRoles().isEmpty());
+
+        //Delete...
+        userClient.deleteUser(userToUpdate, true);
+        roleClient.deleteRole(roleToAssociate, true);
     }
 
     /**
