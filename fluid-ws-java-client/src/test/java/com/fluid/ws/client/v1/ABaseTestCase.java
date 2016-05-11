@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ABaseTestCase {
 
-    public static final String USERNAME = "admin";
-    public static final String PASSWORD = "12345";
+    public static String USERNAME = "admin";
+    public static String PASSWORD = "12345";
 
     /**
      *

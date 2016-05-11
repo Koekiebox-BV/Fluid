@@ -75,6 +75,43 @@ public class FormContainerClient extends ABaseClientWS {
     }
 
     /**
+     * Update a new Form Container / Electronic Forms.
+     *
+     * @param formParam The Form to update.
+     * @return Updated Form Container / Electronic Form.
+     *
+     * @see com.fluid.program.api.vo.Field
+     */
+    public Form updateFormContainer(Form formParam)
+    {
+        if(formParam != null && this.serviceTicket != null)
+        {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Form(this.postJson(
+                formParam, WS.Path.FormContainer.Version1.formContainerUpdate()));
+    }
+
+    /**
+     * Deletes the Form Container provided.
+     * Id must be set on the Form Container.
+     *
+     * @param formContainerParam The Form Container to Delete.
+     * @return The deleted Form Container.
+     */
+    public Form deleteFormContainer(Form formContainerParam)
+    {
+        if(formContainerParam != null && this.serviceTicket != null)
+        {
+            formContainerParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Form(this.postJson(formContainerParam,
+                WS.Path.FormContainer.Version1.formContainerDelete()));
+    }
+
+    /**
      * Retrieves Electronic Form Workflow historic information.
      *
      * The Form Id must be provided.
@@ -93,4 +130,22 @@ public class FormContainerClient extends ABaseClientWS {
                 formParam, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getFormFlowHistoricDatas();
     }
 
+    /**
+     * Retrieves the Form Container by Primary key.
+     *
+     * @param formContainerIdParam The Form Container primary key.
+     * @return Form by Primary key.
+     */
+    public Form getFormContainerById(Long formContainerIdParam)
+    {
+        Form form = new Form(formContainerIdParam);
+
+        if(this.serviceTicket != null)
+        {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Form(this.postJson(
+                form, WS.Path.FormContainer.Version1.getById()));
+    }
 }

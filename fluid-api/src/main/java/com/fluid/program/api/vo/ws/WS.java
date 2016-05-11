@@ -80,8 +80,16 @@ public class WS {
             public static final class Version1
             {
                 public static final String ROOT = ("/form_container");
-                public static final String CRUD = ("/");
+                public static final String CREATE = ("/");
 
+                //Delete...
+                public static final String DELETE = ("/delete");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
 
                 /**
                  * Root for Form Container.
@@ -94,13 +102,43 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Container get by id.
+                 *
+                 * @return {@code v1/form_container/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
                  * URL Path for Electronic Form create.
                  *
                  * @return {@code v1/form_container/}
                  */
                 public static final String formContainerCreate()
                 {
-                    return Version.VERSION_1.concat(ROOT).concat(CRUD);
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Form Container update.
+                 *
+                 * @return {@code v1/form_container/update}
+                 */
+                public static final String formContainerUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Form Container delete.
+                 *
+                 * @return {@code v1/form_container/delete} <b>without</b> force.
+                 */
+                public static final String formContainerDelete()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
             }
         }
