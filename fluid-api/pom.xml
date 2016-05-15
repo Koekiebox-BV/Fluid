@@ -14,7 +14,7 @@
     <artifactId>fluid-api</artifactId>
     <packaging>jar</packaging>
     <name>Fluid API</name>
-    <version>${version.fluid-api}</version>
+    <version>1.1</version>
     <description>Used for the
         Custom Program Step,
         Custom Actions,
@@ -93,7 +93,7 @@
             <plugin>
                 <groupId>com.koekiebox</groupId>
                 <artifactId>git-maven-plugin</artifactId>
-                <version>1.1</version>
+                <version>${version.plugin.koekiebox.git-maven}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -113,6 +113,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>${version.plugin.java.source}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -127,6 +128,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${version.plugin.java.doc}</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

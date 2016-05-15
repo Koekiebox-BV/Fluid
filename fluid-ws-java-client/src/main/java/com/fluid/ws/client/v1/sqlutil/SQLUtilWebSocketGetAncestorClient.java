@@ -90,8 +90,9 @@ public class SQLUtilWebSocketGetAncestorClient extends
         private Form returnedForm;
 
         /**
+         * The default constructor that sets a ancestor message handler.
          *
-         * @param messageReceivedCallbackParam
+         * @param messageReceivedCallbackParam The optional message callback.
          */
         public GetAncestorMessageHandler(IMessageReceivedCallback<Form> messageReceivedCallbackParam) {
 
@@ -113,8 +114,9 @@ public class SQLUtilWebSocketGetAncestorClient extends
         }
 
         /**
+         * Gets the value from that was returned after the WS call.
          *
-         * @return
+         * @return The returned form.
          */
         public Form getReturnedForm() {
             return this.returnedForm;

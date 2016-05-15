@@ -110,7 +110,7 @@ public class WebSocketClient {
     }
 
     /**
-     * Send a message.
+     * Send a message as text.
      *
      * @param messageToSendParam The text message to send.
      */
@@ -120,7 +120,7 @@ public class WebSocketClient {
     }
 
     /**
-     *
+     * Closes the Web Socket User session.
      */
     public void closeSession()
     {
@@ -141,8 +141,9 @@ public class WebSocketClient {
     }
 
     /**
+     * Check to see whether the session is open.
      *
-     * @return
+     * @return {@code true} if session is open, otherwise {@code false}.
      */
     public boolean isSessionOpen()
     {
@@ -153,6 +154,4 @@ public class WebSocketClient {
 
         return this.userSession.isOpen();
     }
-
-
 }

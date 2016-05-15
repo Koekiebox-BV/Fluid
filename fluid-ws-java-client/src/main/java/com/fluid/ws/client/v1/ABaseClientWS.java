@@ -65,7 +65,8 @@ import com.fluid.ws.client.FluidClientException;
  */
 public abstract class ABaseClientWS {
 
-    public static final String APPLICATION_JSON_CHARSET_UTF8 = "application/json; charset=UTF-8";
+    //public static final String APPLICATION_JSON_CHARSET_UTF8 = "application/json; charset=UTF-8";
+
     public static final String CONTENT_TYPE_HEADER = "Content-type";
 
     protected static String endpointUrl = "https://localhost:8443/fluid-ws/";
@@ -780,7 +781,7 @@ public abstract class ABaseClientWS {
     {
         String[] nameValuePairs = formDataToAddParam.split(REGEX_AMP);
 
-        if(nameValuePairs != null && nameValuePairs.length > 0)
+        if(nameValuePairs.length > 0)
         {
             for(String nameValuePair : nameValuePairs)
             {
@@ -829,8 +830,8 @@ public abstract class ABaseClientWS {
                 else if (status >= 200 && status < 300) {
                     HttpEntity entity = responseParam.getEntity();
 
-                    String responseJsonString = entity != null ?
-                            EntityUtils.toString(entity) : null;
+                    String responseJsonString = (entity == null) ? null:
+                            EntityUtils.toString(entity);
 
                     return responseJsonString;
                 }
@@ -838,8 +839,8 @@ public abstract class ABaseClientWS {
                 else if (status == 400) {
                     HttpEntity entity = responseParam.getEntity();
 
-                    String responseJsonString = entity != null ?
-                            EntityUtils.toString(entity) : null;
+                    String responseJsonString = (entity == null) ? null :
+                            EntityUtils.toString(entity);
 
                     return responseJsonString;
                 }

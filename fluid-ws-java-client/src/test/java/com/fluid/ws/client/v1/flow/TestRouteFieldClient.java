@@ -18,8 +18,6 @@ package com.fluid.ws.client.v1.flow;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +28,8 @@ import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -349,6 +349,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testFormField_MultiChoicePlain_CRUD()
     {
         if(!this.loginClient.isConnectionValid())
@@ -449,6 +450,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
+    @SuppressWarnings("unchecked")
     public void testFormField_MultiChoiceSelectMany_CRUD()
     {
         if(!this.loginClient.isConnectionValid())

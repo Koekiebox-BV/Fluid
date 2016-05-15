@@ -70,7 +70,10 @@
         <version.xmemcached.client>2.0.0</version.xmemcached.client>
 
         <!--Koekiebox Git Maven Plugin-->
-        <version.koekiebox.git-maven>1.1</version.koekiebox.git-maven>
+        <version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
+        <version.plugin.java.source>3.0.0</version.plugin.java.source>
+        <version.plugin.java.doc>2.10.3</version.plugin.java.doc>
+
     </properties>
 
     <!--Repos-->

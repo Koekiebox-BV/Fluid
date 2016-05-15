@@ -66,7 +66,7 @@ public class CacheUtil {
     /**
      * Enum for mapping the Fluid data types to Flow-Job.
      */
-    private static enum FlowJobTypeMapping
+    private enum FlowJobTypeMapping
     {
         DateTime(FlowJobType.DATE_TIME, Field.Type.DateTime),
         Decimal(FlowJobType.DECIMAL, Field.Type.Decimal),
@@ -127,8 +127,8 @@ public class CacheUtil {
      */
     public static class CachedFieldValue implements Serializable
     {
-        public Object cachedFieldValue;
-        public String dataType;
+        private Object cachedFieldValue;
+        private String dataType;
 
         /**
          * Converts the cached value to Fluid Field.
@@ -235,6 +235,7 @@ public class CacheUtil {
      *
      * @return CachedFieldValue from {@code objWithKeyParam}.
      */
+    @SuppressWarnings("unchecked")
     private CachedFieldValue getCacheFieldValueFromObject(Object objWithKeyParam)
     {
         if(objWithKeyParam == null)
@@ -243,17 +244,17 @@ public class CacheUtil {
         }
 
         //Get Word...
-        Method methodGetWord = this.getMethod(
+        Method methodGetWord = CacheUtil.getMethod(
                 objWithKeyParam.getClass(),
                 CustomCode.IWord.METHOD_getWord);
 
         //Get Value...
-        Method methodGetValue = this.getMethod(
+        Method methodGetValue = CacheUtil.getMethod(
                     objWithKeyParam.getClass(),
                     CustomCode.ADataType.METHOD_getValue);
 
         //Word...
-        Object getWordObj = this.invoke(methodGetWord, objWithKeyParam);
+        Object getWordObj = CacheUtil.invoke(methodGetWord, objWithKeyParam);
         String getWordVal = null;
         if(getWordObj instanceof String)
         {
@@ -261,7 +262,7 @@ public class CacheUtil {
         }
 
         //Value...
-        Object getValueObj = null;
+        Object getValueObj;
         if(FlowJobType.MULTIPLE_CHOICE.equals(getWordVal))
         {
             MultiChoice multiChoice = new MultiChoice();
@@ -326,11 +327,18 @@ public class CacheUtil {
      *
      * @return Method from {@code clazzParam} and {@code nameParam}.
      */
+    @SuppressWarnings("unchecked")
     private static Method getMethod(Class clazzParam, String nameParam)
     {
         try {
+            if(clazzParam == null || nameParam == null)
+            {
+                return null;
+            }
+
             Method returnVal = clazzParam.getDeclaredMethod(nameParam);
             returnVal.setAccessible(true);
+
             return returnVal;
         }
         //
@@ -378,7 +386,7 @@ public class CacheUtil {
             Long formContIdParam,
             Long formFieldIdParam)
     {
-        StringBuffer stringBuff = new StringBuffer();
+        StringBuilder stringBuff = new StringBuilder();
 
         //Form Definition...
         if(formDefIdParam == null)

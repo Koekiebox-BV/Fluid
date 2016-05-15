@@ -132,8 +132,9 @@ public class TableField extends ABaseFluidJSONObject {
     }
 
     /**
+     * String value for a table field.
      *
-     * @return
+     * @return JSON text from the table field.
      */
     @Override
     public String toString() {
