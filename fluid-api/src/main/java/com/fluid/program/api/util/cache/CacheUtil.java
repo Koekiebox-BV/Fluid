@@ -23,13 +23,13 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.XMemcachedClient;
-import net.rubyeye.xmemcached.exception.MemcachedException;
-
 import com.fluid.program.api.util.cache.exception.FluidCacheException;
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.MultiChoice;
+
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.XMemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
 
 /**
  * Cache Utility class used for {@code Field} value retrieval actions.
@@ -48,7 +48,8 @@ public class CacheUtil {
     private int cachePort = -1;
 
     /**
-     *
+     * The FlowJob data type description mappings.
+     * See Fluid configuration.
      */
     private static class FlowJobType
     {
@@ -63,7 +64,7 @@ public class CacheUtil {
     }
 
     /**
-     *
+     * Enum for mapping the Fluid data types to Flow-Job.
      */
     private static enum FlowJobTypeMapping
     {
@@ -81,9 +82,10 @@ public class CacheUtil {
         private Field.Type fluidType;
 
         /**
+         * Maps the Fluid to the Flow-Job data types.
          *
-         * @param flowJobDataTypeDescParam
-         * @param fluidTypeParam
+         * @param flowJobDataTypeDescParam The Flow-Job text data type.
+         * @param fluidTypeParam The Fluid enum type.
          */
         FlowJobTypeMapping(
                 String flowJobDataTypeDescParam,
@@ -94,9 +96,11 @@ public class CacheUtil {
         }
 
         /**
+         * Retrieves the Fluid data type from the Flow-Hob data
+         * type description.
          *
-         * @param flowJobTypeParam
-         * @return
+         * @param flowJobTypeParam The Flow-Job type.
+         * @return Fluid Field Type from Flow-Job type.
          */
         public static Field.Type getFluidTypeFromFlowJobType(
                 String flowJobTypeParam)
@@ -119,7 +123,7 @@ public class CacheUtil {
     }
 
     /**
-     *
+     * Fluid API cached field value.
      */
     public static class CachedFieldValue implements Serializable
     {
@@ -127,8 +131,11 @@ public class CacheUtil {
         public String dataType;
 
         /**
+         * Converts the cached value to Fluid Field.
          *
-         * @return
+         * @return Fluid Field.
+         *
+         * @see Field
          */
         public Field getCachedFieldValueAsField()
         {
@@ -207,7 +214,7 @@ public class CacheUtil {
                 formContIdParam,
                 formFieldIdParam);
 
-        Object objWithKey = null;
+        Object objWithKey;
         try {
             objWithKey = this.memcachedClient.get(storageKey);
         }
@@ -222,9 +229,11 @@ public class CacheUtil {
     }
 
     /**
+     * Converts the {@code objWithKeyParam} Object to {@code CachedFieldValue}.
      *
-     * @param objWithKeyParam
-     * @return
+     * @param objWithKeyParam The retrieved cached object.
+     *
+     * @return CachedFieldValue from {@code objWithKeyParam}.
      */
     private CachedFieldValue getCacheFieldValueFromObject(Object objWithKeyParam)
     {
@@ -263,7 +272,7 @@ public class CacheUtil {
                     CustomCode.MultipleChoice.METHOD_getAvailableChoices);
 
             Object availChoicesObj =
-                    invoke(methodAvailableChoices, objWithKeyParam);
+                    CacheUtil.invoke(methodAvailableChoices, objWithKeyParam);
 
             if(availChoicesObj instanceof List)
             {
@@ -287,9 +296,8 @@ public class CacheUtil {
         }
         else
         {
-            getValueObj = this.invoke(methodGetValue, objWithKeyParam);
+            getValueObj = CacheUtil.invoke(methodGetValue, objWithKeyParam);
         }
-
 
         if(getValueObj == null)
         {
@@ -311,10 +319,12 @@ public class CacheUtil {
     }
 
     /**
+     * Retrieves the java method from class {@code clazzParam}.
      *
-     * @param clazzParam
-     * @param nameParam
-     * @return
+     * @param clazzParam The class.
+     * @param nameParam The class name.
+     *
+     * @return Method from {@code clazzParam} and {@code nameParam}.
      */
     private static Method getMethod(Class clazzParam, String nameParam)
     {
@@ -333,10 +343,12 @@ public class CacheUtil {
     }
 
     /**
+     * Invokes the {@code methodParam} method on {@code objParam}.
      *
-     * @param methodParam
-     * @param objParam
-     * @return
+     * @param methodParam The method to invoke.
+     * @param objParam The object to invoke the method on.
+     *
+     * @return The result of the invoked object.
      */
     private static Object invoke(Method methodParam, Object objParam)
     {
@@ -406,8 +418,9 @@ public class CacheUtil {
 
 
     /**
+     * Creates an instance of MemcachedClient.
      *
-     * @return
+     * @return MemcachedClient
      */
     private MemcachedClient initXMemcachedClient()
     {

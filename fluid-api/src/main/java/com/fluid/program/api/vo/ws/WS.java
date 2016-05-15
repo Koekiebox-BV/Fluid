@@ -144,6 +144,43 @@ public class WS {
         }
 
         /**
+         * The Electronic Form (Document) Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.Form
+         */
+        public static final class FormContainerTableRecord
+        {
+            /**
+             * Form Container mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/form_container/table_record");
+                public static final String CREATE = ("/");
+
+                /**
+                 * Root for Form Container.
+                 *
+                 * @return {@code /form_container}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Electronic Form Table Record create.
+                 *
+                 * @return {@code /form_container/table_record/}
+                 */
+                public static final String formContainerTableRecordCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+            }
+        }
+
+        /**
          * The Form Field Web Service mappings.
          *
          * @see com.fluid.program.api.vo.Field
