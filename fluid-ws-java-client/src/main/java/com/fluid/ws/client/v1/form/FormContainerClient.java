@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.FormFlowHistoricData;
 import com.fluid.program.api.vo.FormFlowHistoricDataContainer;
+import com.fluid.program.api.vo.form.TableRecord;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
@@ -72,6 +73,27 @@ public class FormContainerClient extends ABaseClientWS {
 
         return new Form(this.putJson(
                 formParam, WS.Path.FormContainer.Version1.formContainerCreate()));
+    }
+
+
+    /**
+     * Create a new Table Record.
+     *
+     * @param tableRecordParam The Table Record to create.
+     * @return Created Table Record.
+     *
+     * @see TableRecord
+     */
+    public TableRecord createTableRecord(TableRecord tableRecordParam)
+    {
+        if(tableRecordParam != null && this.serviceTicket != null)
+        {
+            tableRecordParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new TableRecord(this.putJson(
+                tableRecordParam,
+                WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreate()));
     }
 
     /**

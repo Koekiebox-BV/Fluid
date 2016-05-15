@@ -33,6 +33,7 @@ import com.fluid.program.api.vo.Form;
  */
 public class TableRecord extends ABaseFluidJSONObject {
 
+    private Form formContainer;
     private Form parentFormContainer;
     private Field parentFormField;
 
@@ -41,6 +42,7 @@ public class TableRecord extends ABaseFluidJSONObject {
      */
     public static class JSONMapping
     {
+        public static final String FORM_CONTAINER= "formContainer";
         public static final String PARENT_FORM_CONTAINER= "parentFormContainer";
         public static final String PARENT_FORM_FIELD = "parentFormField";
     }
@@ -64,6 +66,13 @@ public class TableRecord extends ABaseFluidJSONObject {
     public TableRecord(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
+        //Form Container...
+        if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER)) {
+            this.setFormContainer(
+                    new Form(
+                            this.jsonObject.getJSONObject(JSONMapping.FORM_CONTAINER)));
+        }
+
         //Parent Form Container...
         if (!this.jsonObject.isNull(JSONMapping.PARENT_FORM_CONTAINER)) {
             this.setParentFormContainer(
@@ -76,7 +85,6 @@ public class TableRecord extends ABaseFluidJSONObject {
             this.setParentFormField(
                     new Field(this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_FIELD)));
         }
-
     }
 
     /**
@@ -98,6 +106,13 @@ public class TableRecord extends ABaseFluidJSONObject {
     public JSONObject toJsonObject() throws JSONException
     {
         JSONObject returnVal = super.toJsonObject();
+
+        //Form Container...
+        if(this.getFormContainer() != null)
+        {
+            returnVal.put(JSONMapping.FORM_CONTAINER,
+                    this.getFormContainer().toJsonObject());
+        }
 
         //Parent Form Container...
         if(this.getParentFormContainer() != null)
@@ -136,6 +151,28 @@ public class TableRecord extends ABaseFluidJSONObject {
      */
     public void setParentFormContainer(Form parentFormContainerParam) {
         this.parentFormContainer = parentFormContainerParam;
+    }
+
+    /**
+     * Gets the electronic Form Container.
+     *
+     * @return The Form.
+     *
+     * @see Form
+     */
+    public Form getFormContainer() {
+        return this.formContainer;
+    }
+
+    /**
+     * Sets the electronic Form Container.
+     *
+     * @param formContainerParam The Form.
+     *
+     * @see Form
+     */
+    public void setFormContainer(Form formContainerParam) {
+        this.formContainer = formContainerParam;
     }
 
     /**
