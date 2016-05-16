@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.MultiChoice;
 import com.fluid.program.api.vo.form.TableRecord;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
@@ -178,6 +179,17 @@ public class TestFormContainerClient extends ABaseTestCase {
         tempTextPlainDescription.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
         tempTextPlainDescription = formFieldClient.createFieldTextPlain(tempTextPlainDescription);
 
+        Field tempMultiPlainTitle = new Field();
+        tempMultiPlainTitle.setFieldName("JUNIT Title");
+        tempMultiPlainTitle.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+
+        List<String> availTitles = new ArrayList<>();
+        availTitles.add("Mr");
+        availTitles.add("Mrs");
+        availTitles.add("Dr");
+        tempMultiPlainTitle = formFieldClient.createFieldMultiChoicePlain(
+                tempMultiPlainTitle,availTitles);
+
         Form formDefinitionLineItem = new Form();
         formDefinitionLineItem.setFormType("JUNIT Line Item");
         formDefinitionLineItem.setFormDescription("Line item definition.");
@@ -185,6 +197,8 @@ public class TestFormContainerClient extends ABaseTestCase {
         List<Field> frmFieldsLineItem = new ArrayList<>();
         frmFieldsLineItem.add(tempTextPlainCode);
         frmFieldsLineItem.add(tempTextPlainDescription);
+        frmFieldsLineItem.add(tempMultiPlainTitle);
+
         formDefinitionLineItem.setFormFields(frmFieldsLineItem);
 
         formDefinitionLineItem =
@@ -228,8 +242,12 @@ public class TestFormContainerClient extends ABaseTestCase {
         formContainerLineItem.setTitle("INV_12345");
 
         List<Field> lineItemFields = new ArrayList<>();
+
         lineItemFields.add(new Field("JUNIT Description", "Line item description."));
         lineItemFields.add(new Field("JUNIT Code", "Pills001"));
+        MultiChoice multiChoiceTitle = new MultiChoice("Mr");
+        lineItemFields.add(new Field("JUNIT Title", multiChoiceTitle));
+
         toCreate.setFormFields(lineItemFields);
 
         formContainerLineItem.setFormFields(lineItemFields);
@@ -241,6 +259,21 @@ public class TestFormContainerClient extends ABaseTestCase {
 
         tableRecordLineItemToCreate =
                 formContainerClient.createTableRecord(tableRecordLineItemToCreate);
+
+        TestCase.assertNotNull("Table Record Not Set.", tableRecordLineItemToCreate);
+
+        List<Field> formFields =
+                tableRecordLineItemToCreate.getFormContainer().getFormFields();
+
+        TestCase.assertEquals("Expected 3 Table Fields.",
+                3,formFields.size());
+
+        for(Field formField : formFields)
+        {
+            TestCase.assertNotNull("Form Field Id is not set. " +
+                    "Expected value to be set.",
+                    formField.getId());
+        }
 
         //DELETE THE ITEMS...
         formContainerClient.deleteFormContainer(tableRecordLineItemToCreate.getFormContainer());
@@ -255,5 +288,6 @@ public class TestFormContainerClient extends ABaseTestCase {
         formDefinitionClient.deleteFormDefinition(formDefinitionLineItem);
         formFieldClient.deleteField(tempTextPlainCode);
         formFieldClient.deleteField(tempTextPlainDescription);
+        formFieldClient.deleteField(tempMultiPlainTitle);
     }
 }
