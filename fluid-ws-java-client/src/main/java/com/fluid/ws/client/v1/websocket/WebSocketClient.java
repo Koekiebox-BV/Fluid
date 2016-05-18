@@ -46,12 +46,12 @@ public class WebSocketClient {
     /**
      * Callback hook for Connection open events.
      *
-     * @param userSession the userSession which is opened.
+     * @param userSessionParam the userSession which is opened.
      */
     @OnOpen
-    public void onOpen(Session userSession) {
+    public void onOpen(Session userSessionParam) {
 
-        this.userSession = userSession;
+        this.userSession = userSessionParam;
     }
 
     /**
@@ -116,7 +116,22 @@ public class WebSocketClient {
      */
     public void sendMessage(String messageToSendParam) {
 
-        this.userSession.getAsyncRemote().sendText(messageToSendParam);
+        if(this.userSession == null)
+        {
+            throw new FluidClientException(
+                    "User Session is not set. Check if connection is open.",
+                    FluidClientException.ErrorCode.IO_ERROR);
+        }
+
+        RemoteEndpoint.Async asyncRemote = null;
+        if((asyncRemote = this.userSession.getAsyncRemote()) == null)
+        {
+            throw new FluidClientException(
+                    "Remote Session is not set. Check if connection is open.",
+                    FluidClientException.ErrorCode.IO_ERROR);
+        }
+
+        asyncRemote.sendText(messageToSendParam);
     }
 
     /**
