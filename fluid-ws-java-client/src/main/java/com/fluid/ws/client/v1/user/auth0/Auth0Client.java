@@ -16,8 +16,6 @@
 package com.fluid.ws.client.v1.user.auth0;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONObject;
 
@@ -131,16 +129,9 @@ public class Auth0Client extends ABaseClientWS {
         }
 
         try {
-            String accessToken = accessTokenParam.getAccessToken();
-
-            List<HeaderNameValue> headerListing = new ArrayList<HeaderNameValue>();
-
-            headerListing.add(new HeaderNameValue(
-                    NormalizedUserProfile.HeaderMapping.AUTHORIZATION,
-                    "Bearer "+accessToken));
-
             return new NormalizedUserProfile(
-                    this.getJson(true, WS.Path.Auth0.Version1.userInfo(),headerListing));
+                    this.getJson(true, WS.Path.Auth0.Version1.userInfo(
+                    accessTokenParam.getAccessToken())));
         }
         //
         catch (UnsupportedEncodingException e) {

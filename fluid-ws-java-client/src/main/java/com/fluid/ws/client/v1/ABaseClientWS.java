@@ -20,11 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -32,13 +27,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.*;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,7 +61,7 @@ public abstract class ABaseClientWS {
 
     public static final String CONTENT_TYPE_HEADER = "Content-type";
 
-    protected static String endpointUrl = "https://localhost:8443/fluid-ws/";
+    private static String endpointUrl = "http://localhost:8080/fluid-ws/";
 
     protected String serviceTicket;
 
@@ -78,10 +70,6 @@ public abstract class ABaseClientWS {
 
     private static String REGEX_AMP = "\\&";
     private static String REGEX_EQUALS = "\\=";
-
-    public static boolean IS_IN_JUNIT_TEST_MODE = false;
-
-    private CloseableHttpClient closeableHttpClient;
 
     /**
      * The HTML Form Name and Value mapping.
@@ -100,43 +88,6 @@ public abstract class ABaseClientWS {
             this.name = nameParam;
             this.value = valueParam;
             this.value = ABaseClientWS.encodeParam(this.value);
-        }
-
-        /**
-         * Gets the Form Param Name.
-         *
-         * @return The Form Param Name.
-         */
-        public String getName() {
-            return this.name;
-        }
-
-        /**
-         * Gets the Form Param Value.
-         *
-         * @return The Form Param Value.
-         */
-        public String getValue() {
-            return value;
-        }
-    }
-
-    /**
-     * The HTML Header Name and Value mapping.
-     */
-    public static class HeaderNameValue{
-        private String name;
-        private String value;
-
-        /**
-         * Sets the HTML Header name and value.
-         *
-         * @param nameParam The HTML header name.
-         * @param valueParam The HTML header value.
-         */
-        public HeaderNameValue(String nameParam, String valueParam) {
-            this.name = nameParam;
-            this.value = valueParam;
         }
 
         /**
@@ -181,11 +132,11 @@ public abstract class ABaseClientWS {
     /**
      * Creates a new client and sets the Base Endpoint URL.
      *
-     * @param endpointBaseUrlParam URL to base endpoint.
+     * @param endpointUrlParam URL to base endpoint.
      */
-    public ABaseClientWS(String endpointBaseUrlParam) {
+    public ABaseClientWS(String endpointUrlParam) {
         this();
-        ABaseClientWS.endpointUrl = endpointBaseUrlParam;
+        ABaseClientWS.endpointUrl = endpointUrlParam;
     }
 
     /**
@@ -251,7 +202,7 @@ public abstract class ABaseClientWS {
     public JSONObject getJson(
             String postfixUrlParam) {
 
-        return this.getJson(false, postfixUrlParam);
+        return this.getJson(false,postfixUrlParam);
     }
 
     /**
@@ -260,7 +211,6 @@ public abstract class ABaseClientWS {
      * @param skipCheckConnectionValidParam Skip to check if connection to
      *                                      base endpoint is valid.
      * @param postfixUrlParam URL mapping after the Base endpoint.
-     *
      * @return Return body as JSON.
      *
      * @see JSONObject
@@ -268,28 +218,6 @@ public abstract class ABaseClientWS {
     public JSONObject getJson(
             boolean skipCheckConnectionValidParam,
             String postfixUrlParam) {
-
-        return this.getJson(
-                skipCheckConnectionValidParam,
-                postfixUrlParam, null);
-    }
-
-    /**
-     * Performs an HTTP-GET request with {@code postfixUrlParam}.
-     *
-     * @param skipCheckConnectionValidParam Skip to check if connection to
-     *                                      base endpoint is valid.
-     * @param postfixUrlParam URL mapping after the Base endpoint.
-     * @param headerNameValuesParam The HTTP Headers to include.
-     *
-     * @return Return body as JSON.
-     *
-     * @see JSONObject
-     */
-    public JSONObject getJson(
-            boolean skipCheckConnectionValidParam,
-            String postfixUrlParam,
-            List<HeaderNameValue> headerNameValuesParam) {
 
         //
         if(!skipCheckConnectionValidParam && !this.isConnectionValid())
@@ -300,35 +228,16 @@ public abstract class ABaseClientWS {
                     FluidClientException.ErrorCode.CONNECT_ERROR);
         }
 
-        CloseableHttpClient httpclient = this.getClient();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
 
         try {
             HttpGet httpGet = new HttpGet(endpointUrl.concat(postfixUrlParam));
-
-            if(headerNameValuesParam != null && !headerNameValuesParam.isEmpty())
-            {
-                for(HeaderNameValue headerNameVal : headerNameValuesParam)
-                {
-                    if(headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty())
-                    {
-                        continue;
-                    }
-
-                    if(headerNameVal.getValue() == null)
-                    {
-                        continue;
-                    }
-
-                    httpGet.setHeader(headerNameVal.getName(), headerNameVal.getValue());
-                }
-            }
 
             // Create a custom response handler
             ResponseHandler<String> responseHandler = this.getJsonResponseHandler(
                     endpointUrl.concat(postfixUrlParam));
 
-            String responseBody = this.executeHttp(
-                    httpclient, httpGet, responseHandler, postfixUrlParam);
+            String responseBody = this.executeHttp(httpclient,httpGet,responseHandler,postfixUrlParam);
 
             if(responseBody == null || responseBody.trim().isEmpty())
             {
@@ -363,6 +272,17 @@ public abstract class ABaseClientWS {
         {
             throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);
+        }
+        //
+        finally {
+            try {
+                httpclient.close();
+            }
+            //
+            catch (IOException e) {
+                throw new FluidClientException(e.getMessage(),
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
         }
     }
 
@@ -640,8 +560,7 @@ public abstract class ABaseClientWS {
                     FluidClientException.ErrorCode.CONNECT_ERROR);
         }
 
-        CloseableHttpClient httpclient = this.getClient();
-
+        CloseableHttpClient httpclient = HttpClients.createDefault();
         String responseBody = null;
 
         try {
@@ -765,6 +684,17 @@ public abstract class ABaseClientWS {
         {
             throw new FluidClientException(otherExcept.getMessage(),
                     otherExcept, FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+        //
+        finally {
+            try {
+                httpclient.close();
+            }
+            //
+            catch (IOException e) {
+                throw new FluidClientException(e.getMessage(),e,
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
         }
     }
 
@@ -980,97 +910,5 @@ public abstract class ABaseClientWS {
     public String getFluidAPIVersion()
     {
         return GitDescribe.GIT_DESCRIBE;
-    }
-
-    /**
-     * Creates a new Http client.
-     *
-     * If part of a test run, the Http client will accept
-     * self signed certificates.
-     *
-     * See flag {@code IS_IN_JUNIT_TEST_MODE}.En
-     *
-     * @return CloseableHttpClient that may or may not accept
-     * self signed certificates.
-     *
-     * @since v1.1
-     */
-    private CloseableHttpClient getClient()
-    {
-        if(this.closeableHttpClient != null)
-        {
-            return this.closeableHttpClient;
-        }
-
-        //Only accept self signed certificate if in Junit test case.
-        if(IS_IN_JUNIT_TEST_MODE)
-        {
-            SSLContextBuilder builder = new SSLContextBuilder();
-
-            try {
-                //builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-                builder.loadTrustMaterial(new SSLTrustAll());
-
-                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
-
-                this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-            }
-            //
-            catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-
-                throw new FluidClientException(
-                        "Unable to load self signed trust material.",
-                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
-            }
-        }
-        //Default HTTP Client...
-        else
-        {
-            this.closeableHttpClient = HttpClients.createDefault();
-        }
-
-        return this.closeableHttpClient;
-    }
-
-    /**
-     * If the HTTP Client is set, this will
-     * close and clean any connections that needs to be closed.
-     *
-     * @since v1.1
-     */
-    public void closeAndClean()
-    {
-        if(this.closeableHttpClient != null)
-        {
-            try {
-                this.closeableHttpClient.close();
-            }
-            //
-            catch (IOException e) {
-
-                throw new FluidClientException(
-                        "Unable to close Http Client connection. "+
-                        e.getMessage(),
-                        e, FluidClientException.ErrorCode.IO_ERROR);
-            }
-        }
-    }
-
-    /**
-     * Trust all SSL type connections.
-     */
-    private static final class SSLTrustAll implements TrustStrategy
-    {
-        /**
-         *
-         * @param x509Certificates List of X509 certificates.
-         * @param stringParam Text.
-         * @return {@code true}, always trusted.
-         * @throws CertificateException If there is a cert problem.
-         */
-        @Override
-        public boolean isTrusted(X509Certificate[] x509Certificates, String stringParam) throws CertificateException {
-            return true;
-        }
     }
 }
