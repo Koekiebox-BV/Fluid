@@ -71,6 +71,9 @@ public interface ISyntax {
          * @see com.fluid.program.api.vo.Field
          */
         public static final class Field{
+            public static final String GetFormDefinitionForFormContainer =
+                    "Fluid_GetFormDefinitionForFormContainer";
+
             public static final String GetFormFieldsForFormContainer =
                     "Fluid_GetFormFieldsForFormContainer";
 
@@ -139,6 +142,7 @@ public interface ISyntax {
                     Form.GetFormContainersChildFormContainers,
                     Form.GetFormContainersParentFormContainer,
                     Field.GetFormFieldsForFormContainer,
+                    Field.GetFormDefinitionForFormContainer,
                     Field.GetFormFieldValue_1_Text,
                     Field.GetFormFieldValue_2_TrueFalse,
                     Field.GetFormFieldValue_3_ParagraphText,
@@ -174,6 +178,11 @@ public interface ISyntax {
             }
             //Fields...
             else if(Field.GetFormFieldsForFormContainer.equals(aliasParam))
+            {
+                return 1;
+            }
+            //Form Definition by Container...
+            else if(Field.GetFormDefinitionForFormContainer.equals(aliasParam))
             {
                 return 1;
             }

@@ -53,6 +53,7 @@
             <groupId>com.fluid</groupId>
             <artifactId>fluid-api</artifactId>
             <scope>compile</scope>
+            <version>1.1</version>
         </dependency>
 
         <!--Commons-->
@@ -74,12 +75,14 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <scope>compile</scope>
+            <version>4.5.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <scope>compile</scope>
+            <version>4.4.4</version>
         </dependency>
 
         <!--Web Socket using Tyrus-->
@@ -87,18 +90,21 @@
             <groupId>javax.websocket</groupId>
             <artifactId>javax.websocket-client-api</artifactId>
             <scope>compile</scope>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-client</artifactId>
             <scope>compile</scope>
+            <version>1.12</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-container-grizzly-client</artifactId>
             <scope>compile</scope>
+            <version>1.12</version>
         </dependency>
     </dependencies>
 

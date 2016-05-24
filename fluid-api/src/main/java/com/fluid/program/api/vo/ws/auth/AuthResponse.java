@@ -15,7 +15,6 @@
 
 package com.fluid.program.api.vo.ws.auth;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +32,6 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  * @see AuthRequest
  * @see AuthEncryptedData
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthResponse extends ABaseFluidJSONObject {
 
     private String salt;

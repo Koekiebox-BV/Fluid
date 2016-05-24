@@ -20,6 +20,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,7 @@ import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.MultiChoice;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
 
@@ -167,7 +169,18 @@ public class TestFormFieldClient extends ABaseTestCase {
     @Before
     public void init()
     {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
         this.loginClient = new LoginClient();
+    }
+
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
     }
 
     /**
@@ -542,7 +555,17 @@ public class TestFormFieldClient extends ABaseTestCase {
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 FormFieldClient.FieldMetaData.ParagraphText.PLAIN, byIdField.getTypeMetaData());
 
-        //5. Delete...
+        //5. Get by Name...
+        Field byNameField = formFieldClient.getFieldByName(updatedField.getFieldName());
+
+        TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byNameField.getId());
+        TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byNameField.getFieldName());
+        TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byNameField.getFieldDescription());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.ParagraphText.toString(), byNameField.getType());
+        TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
+                FormFieldClient.FieldMetaData.ParagraphText.PLAIN, byNameField.getTypeMetaData());
+
+        //6. Delete...
         Field deletedField = formFieldClient.deleteField(byIdField);
         TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedField.getId());
     }

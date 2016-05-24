@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
@@ -114,16 +115,16 @@ public class SyntaxFactory {
 
         switch (dataType.intValue())
         {
-            case 1:
+            case UtilGlobal.FieldTypeId._1_TEXT:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_1_Text);
-            case 2:
+            case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_2_TrueFalse);
-            case 3:
+            case UtilGlobal.FieldTypeId._3_PARAGRAPH_TEXT:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
-            case 4:
+            case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
                 if(this.isPlain(formFieldMappingParam.metaData))
                 {
                     return this.getSyntaxFor(
@@ -143,13 +144,13 @@ public class SyntaxFactory {
                                     formFieldMappingParam.metaData+"'."));
                 }
 
-            case 5:
+            case UtilGlobal.FieldTypeId._5_DATE_TIME:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_5_DateTime);
-            case 6:
+            case UtilGlobal.FieldTypeId._6_DECIMAL:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_6_Decimal);
-            case 7:
+            case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
             default:
@@ -168,7 +169,7 @@ public class SyntaxFactory {
      *
      * @return Whether the {@code textToCheckParam} is of type Plain.
      */
-    private final boolean isPlain(String textToCheckParam)
+    private boolean isPlain(String textToCheckParam)
     {
         if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
         {
@@ -187,7 +188,7 @@ public class SyntaxFactory {
      *
      * @return Whether the {@code textToCheckParam} is of type Select Many.
      */
-    private final boolean isSelectMany(String textToCheckParam)
+    private boolean isSelectMany(String textToCheckParam)
     {
         if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
         {

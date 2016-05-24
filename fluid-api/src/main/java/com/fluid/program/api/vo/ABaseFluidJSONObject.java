@@ -42,6 +42,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     {
         public static final String ID = "id";
         public static final String SERVICE_TICKET = "serviceTicket";
+        public static final String ECHO = "echo";
     }
 
     /**
@@ -65,12 +66,43 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         {
             //Id...
             if (!this.jsonObject.isNull(JSONMapping.ID)) {
-                this.setId(this.jsonObject.getLong(JSONMapping.ID));
+
+                Object idObject = this.jsonObject.get(JSONMapping.ID);
+
+                //Long Id...
+                if(idObject instanceof Number)
+                {
+                    this.setId(this.jsonObject.getLong(JSONMapping.ID));
+                }
+                //String Id...
+                else if(idObject instanceof String)
+                {
+                    String idStr = this.jsonObject.getString(JSONMapping.ID);
+
+                    try
+                    {
+                        this.setId(Long.parseLong(idStr));
+                    }
+                    catch (NumberFormatException nfe)
+                    {
+                        this.setId(null);
+                    }
+                }
+                else
+                {
+                    throw new IllegalArgumentException(
+                            "Unable to parse Field '"+JSONMapping.ID+"'.");
+                }
             }
 
             //Service Ticket...
             if (!this.jsonObject.isNull(JSONMapping.SERVICE_TICKET)) {
                 this.setServiceTicket(this.jsonObject.getString(JSONMapping.SERVICE_TICKET));
+            }
+
+            //Echo...
+            if (!this.jsonObject.isNull(JSONMapping.ECHO)) {
+                this.setEcho(this.jsonObject.getString(JSONMapping.ECHO));
             }
         }
     }
@@ -99,6 +131,11 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         if(this.getServiceTicket() != null)
         {
             returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
+        }
+        //Echo...
+        if(this.getEcho() != null)
+        {
+            returnVal.put(JSONMapping.ECHO, this.getEcho());
         }
 
         return returnVal;

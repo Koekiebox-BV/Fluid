@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
+import com.fluid.program.api.vo.user.User;
 
 /**
  * Fluid consolidation of a workflow.
@@ -30,7 +31,7 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see com.fluid.program.api.vo.User
+ * @see User
  */
 public class NormalizedUserProfile extends ABaseFluidJSONObject {
 
@@ -65,6 +66,14 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         //Done with identities...
 
         public static final String LOCALE = "locale";
+    }
+
+    /**
+     * The Header mapping for the {@code NormalizedUserProfile} object.
+     */
+    public static class HeaderMapping
+    {
+        public static final String AUTHORIZATION = "Authorization";
     }
 
     /**
