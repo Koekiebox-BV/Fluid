@@ -16,8 +16,8 @@ Components include;
 
 ## Source Type
 
-*   Java `1.7`
-*   Maven `3.2.2`
+*   Java `1.8`
+*   Maven `3.3.9`
  
 ## Project Build
 

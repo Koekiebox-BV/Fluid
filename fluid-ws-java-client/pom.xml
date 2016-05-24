@@ -18,6 +18,13 @@
     <description>The Fluid Restful Web Service Java Client.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
 
+    <properties>
+        <!--JDK Properties-->
+        <version.jdk.compile>1.8</version.jdk.compile>
+        <version.plugin.compiler>3.5.1</version.plugin.compiler>
+
+    </properties>
+
     <licenses>
         <license>
             <name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
@@ -111,6 +118,17 @@
     <!--Maven Build Information-->
     <build>
         <plugins>
+            <!--Compiler Plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.plugin.compiler}</version>
+                <configuration>
+                    <source>${version.jdk.compile}</source>
+                    <target>${version.jdk.compile}</target>
+                </configuration>
+            </plugin>
+
             <!--Maven Source Plugin-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
