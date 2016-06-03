@@ -163,6 +163,55 @@ public class FlowStepRuleClient extends ABaseClientWS {
     }
 
     /**
+     * Compiles the {@code viewRuleSyntaxParam} text within the Fluid workflow engine.
+     *
+     * @param viewRuleSyntaxParam The syntax to compile.
+     * @return Compiled rule.
+     */
+    public FlowStepRule compileFlowStepViewRule(String viewRuleSyntaxParam)
+    {
+        FlowStepRule flowStepRule = new FlowStepRule();
+        flowStepRule.setRule(viewRuleSyntaxParam);
+
+        if(this.serviceTicket != null)
+        {
+            flowStepRule.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepRule(this.postJson(
+                flowStepRule, WS.Path.FlowStepRule.Version1.compileViewSyntax()));
+    }
+
+    /**
+     * Compiles and Executes the {@code viewRuleSyntaxParam}
+     * text within the Fluid workflow engine.
+     *
+     * @param viewRuleSyntaxParam The syntax to compile.
+     * @param fluidItemToExecuteOnParam The item to execute the rules on.
+     *
+     * @return Execution result.
+     */
+    public FlowItemExecuteResult compileFlowStepViewRuleAndExecute(
+            String viewRuleSyntaxParam, FluidItem fluidItemToExecuteOnParam)
+    {
+        FlowStepRule flowStepRule = new FlowStepRule();
+        flowStepRule.setRule(viewRuleSyntaxParam);
+
+        FlowItemExecutePacket toPost = new FlowItemExecutePacket();
+
+        if(this.serviceTicket != null)
+        {
+            toPost.setServiceTicket(this.serviceTicket);
+        }
+
+        toPost.setFlowStepRule(flowStepRule);
+        toPost.setFluidItem(fluidItemToExecuteOnParam);
+
+        return new FlowItemExecuteResult(this.postJson(
+                toPost, WS.Path.FlowStepRule.Version1.compileViewSyntaxAndExecute()));
+    }
+
+    /**
      * Compiles the {@code entryRuleSyntaxParam} text within the Fluid workflow engine.
      *
      * @param entryRuleSyntaxParam The syntax to compile.

@@ -1034,6 +1034,17 @@ public class WS {
                 {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(COMPILE_SYNTAX);
                 }
+
+                /**
+                 * URL Path for Flow Step View {@code compile} syntax and then
+                 * {@code execute}.
+                 *
+                 * @return {@code v1/flow_step_rule/view/compile_syntax_and_execute}
+                 */
+                public static final String compileViewSyntaxAndExecute()
+                {
+                    return Version.VERSION_1.concat(ROOT_VIEW).concat(COMPILE_SYNTAX_AND_EXECUTE);
+                }
             }
         }
 

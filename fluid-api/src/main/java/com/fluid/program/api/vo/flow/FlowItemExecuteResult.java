@@ -15,6 +15,10 @@
 
 package com.fluid.program.api.vo.flow;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +39,8 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
     private FlowStepRule flowStepRule;
     private FluidItem fluidItem;
+    private List<FluidItem> fluidItems;
+
     private String assignmentRuleValue;
     private String statementResultAsString;
 
@@ -45,6 +51,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     {
         public static final String FLOW_STEP_RULE = "flowStepRule";
         public static final String FLUID_ITEM = "fluidItem";
+        public static final String FLUID_ITEMS = "fluidItems";
         public static final String ASSIGNMENT_RULE_VALUE = "assignmentRuleValue";
         public static final String STATEMENT_RESULT_AS_STRING = "statementResultAsString";
     }
@@ -96,6 +103,20 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
             this.setStatementResultAsString(
                     this.jsonObject.getString(JSONMapping.STATEMENT_RESULT_AS_STRING));
         }
+
+        //Fluid Items...
+        if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEMS)) {
+
+            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(JSONMapping.FLUID_ITEMS);
+
+            List<FluidItem> listOfItems = new ArrayList<>();
+            for(int index = 0;index < fluidItemsArr.length();index++)
+            {
+                listOfItems.add(new FluidItem(fluidItemsArr.getJSONObject(index)));
+            }
+
+            this.setFluidItems(listOfItems);
+        }
     }
 
     /**
@@ -137,6 +158,19 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         {
             returnVal.put(JSONMapping.STATEMENT_RESULT_AS_STRING,
                     this.getStatementResultAsString());
+        }
+
+        //Fluid Items...
+        if(this.getFluidItems() != null && !this.getFluidItems().isEmpty())
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(FluidItem item : this.getFluidItems())
+            {
+                jsonArray.put(item.toJsonObject());
+            }
+
+            returnVal.put(JSONMapping.FLUID_ITEMS, jsonArray);
         }
 
         return returnVal;
@@ -184,6 +218,28 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
      */
     public void setFluidItem(FluidItem fluidItemParam) {
         this.fluidItem = fluidItemParam;
+    }
+
+    /**
+     * Gets the Fluid items.
+     *
+     * @return Fluid items.
+     *
+     * @see FluidItem
+     */
+    public List<FluidItem> getFluidItems() {
+        return this.fluidItems;
+    }
+
+    /**
+     * Sets the Fluid items.
+     *
+     * @param fluidItemsParam Fluid items.
+     *
+     * @see FluidItem
+     */
+    public void setFluidItems(List<FluidItem> fluidItemsParam) {
+        this.fluidItems = fluidItemsParam;
     }
 
     /**

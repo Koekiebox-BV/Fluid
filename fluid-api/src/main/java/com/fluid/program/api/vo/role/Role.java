@@ -28,8 +28,13 @@ import com.fluid.program.api.vo.userquery.UserQuery;
 
 /**
  * <p>
- *     Represents a Fluid Role.
+ *     Represents the Fluid framework user Role.
  * </p>
+ *
+ * The following fields are mandatory for creating or updating a Role;
+ *
+ * Name (create and update)
+ * Description (create and update)
  *
  * @author jasonbruwer
  * @since v1.1

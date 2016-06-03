@@ -29,8 +29,13 @@ import com.fluid.program.api.vo.role.Role;
 
 /**
  * <p>
- *     Represents a Fluid User.
+ *     Represents the Fluid framework User.
  * </p>
+ *
+ * The following fields are mandatory for creating or updating a User;
+ *
+ * Username (create and update)
+ * Password (create). Needs to be at least 5 characters.
  *
  * @author jasonbruwer
  * @since v1.0
