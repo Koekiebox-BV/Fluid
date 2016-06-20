@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,10 +38,12 @@ import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flowitem.FlowItemClient;
 import com.fluid.ws.client.v1.user.LoginClient;
 
+import junit.framework.TestCase;
+
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFlowStepRuleClient extends ABaseTestCase {
+public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
     private LoginClient loginClient;
 

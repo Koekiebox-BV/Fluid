@@ -45,6 +45,21 @@ public interface IActionBase extends Serializable {
      * @see javax.sql.DataSource
      * @param dataSourcesParam A list of created JDBC Data Sources in the system.
      *
+     * @throws Exception If a problem occurs.
+     *
      */
-    public abstract void init(List<DataSource> dataSourcesParam);
+    public abstract void init(List<DataSource> dataSourcesParam)
+    throws Exception;
+
+    /**
+     * <code>Execute Order (LAST)</code>
+     *
+     * <p>
+     * Any cleanup code may be placed in the <code>destroy</code> method.
+     * This is the last method executed before the Fluid framework takes over.
+     *
+     * @throws Exception If a problem occurs.
+     *
+     */
+    public abstract void destroy() throws Exception;
 }
