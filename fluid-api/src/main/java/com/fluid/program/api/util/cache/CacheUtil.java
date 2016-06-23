@@ -218,8 +218,16 @@ public class CacheUtil {
         try {
             objWithKey = this.memcachedClient.get(storageKey);
         }
-        //
-        catch (MemcachedException | TimeoutException | InterruptedException e) {
+        //Changed for Java 1.6 compatibility...
+        catch (MemcachedException e) {
+
+            throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
+                    "Contact administrator. "+e.getMessage(),e);
+        } catch (TimeoutException e) {
+
+            throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
+                    "Contact administrator. "+e.getMessage(),e);
+        } catch (InterruptedException e) {
 
             throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
                     "Contact administrator. "+e.getMessage(),e);
@@ -363,8 +371,18 @@ public class CacheUtil {
         try {
             return methodParam.invoke(objParam);
         }
-        //
-        catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+        //Changed for Java 1.6 compatibility...
+        catch (InvocationTargetException e) {
+
+            throw new FluidCacheException(
+                    "Unable to invoke method '"+
+                            methodParam.getName() +"'. "+e.getMessage(),e);
+        } catch (IllegalAccessException e) {
+
+            throw new FluidCacheException(
+                    "Unable to invoke method '"+
+                            methodParam.getName() +"'. "+e.getMessage(),e);
+        } catch (IllegalArgumentException e) {
 
             throw new FluidCacheException(
                     "Unable to invoke method '"+

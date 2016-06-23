@@ -91,7 +91,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
         }
 
         //Send all the messages...
-        List<String> echoMessagesExpected = new ArrayList<>();
+        List<String> echoMessagesExpected = new ArrayList();
         for(Form formToSend : formToGetDescendantsForParam)
         {
             if(formToSend == null)

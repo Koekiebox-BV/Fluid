@@ -83,7 +83,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
                     JSONMapping.LISTING);
             listingArrCount = listingArray.length();
 
-            List<T> listing = new ArrayList<>();
+            List<T> listing = new ArrayList();
 
             for(int index = 0;index < listingArrCount;index++)
             {

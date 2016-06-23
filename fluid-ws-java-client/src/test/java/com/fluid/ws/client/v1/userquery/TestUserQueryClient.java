@@ -18,8 +18,6 @@ package com.fluid.ws.client.v1.userquery;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -34,6 +32,8 @@ import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -63,7 +63,7 @@ public class TestUserQueryClient extends ABaseTestCase {
          */
         public static List<String> toRuleListing(String ruleParam)
         {
-            List<String> returnVal = new ArrayList<>();
+            List<String> returnVal = new ArrayList();
 
             if(ruleParam != null){
                 returnVal.add(ruleParam);
@@ -82,7 +82,7 @@ public class TestUserQueryClient extends ABaseTestCase {
                 Long fieldIdParam,
                 String nameParam)
         {
-            List<Field> returnVal = new ArrayList<>();
+            List<Field> returnVal = new ArrayList();
 
             Field field = new Field(fieldIdParam);
             field.setFieldName(nameParam);
@@ -195,9 +195,9 @@ public class TestUserQueryClient extends ABaseTestCase {
         UserQuery userQueryToExec = new UserQuery();
         userQueryToExec.setName("Client is Input");
 
-        List<Field> inputs = new ArrayList<>();
+        List<Field> inputs = new ArrayList();
 
-        List<String> selectedClients = new ArrayList<>();
+        List<String> selectedClients = new ArrayList();
         selectedClients.add("PPC");
 
         MultiChoice selectedMultiChoices = new MultiChoice(selectedClients);

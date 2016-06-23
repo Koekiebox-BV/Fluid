@@ -74,7 +74,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
      */
     public MultiChoice(String selectedMultiChoiceValueParam)
     {
-        this.selectedMultiChoices = new ArrayList<>();
+        this.selectedMultiChoices = new ArrayList();
         if(selectedMultiChoiceValueParam != null)
         {
             this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
@@ -100,7 +100,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
             JSONArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_MULTI_CHOICES);
 
-            this.availableMultiChoices = new ArrayList<>();
+            this.availableMultiChoices = new ArrayList();
 
             for(int index = 0;index < arrayOfString.length();index++)
             {
@@ -112,7 +112,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
             JSONArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_CHOICES);
 
-            this.availableMultiChoices = new ArrayList<>();
+            this.availableMultiChoices = new ArrayList();
 
             for(int index = 0;index < arrayOfString.length();index++)
             {
@@ -126,7 +126,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
             JSONArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.SELECTED_MULTI_CHOICES);
 
-            this.selectedMultiChoices = new ArrayList<>();
+            this.selectedMultiChoices = new ArrayList();
 
             for(int index = 0;index < arrayOfString.length();index++)
             {
@@ -138,7 +138,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
             JSONArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.SELECTED_CHOICES);
 
-            this.selectedMultiChoices = new ArrayList<>();
+            this.selectedMultiChoices = new ArrayList();
 
             for(int index = 0;index < arrayOfString.length();index++)
             {

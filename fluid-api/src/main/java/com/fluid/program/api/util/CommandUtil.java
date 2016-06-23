@@ -113,7 +113,7 @@ public class CommandUtil {
             throw new IOException("Unable to execute command. No commands provided.");
         }
 
-        List<String> returnedLines = new ArrayList<>();
+        List<String> returnedLines = new ArrayList();
 
         try {
             Process process = null;

@@ -79,8 +79,12 @@ public class AES256Local {
 
             return hmac.doFinal(encryptedDataParam);
         }
-        //
-        catch (InvalidKeyException | NoSuchAlgorithmException except) {
+        //Changed for Java 1.6 compatibility...
+        catch (NoSuchAlgorithmException except) {
+            throw new FluidClientException("Unable to create HMAC from key. " + except.getMessage(), except,
+                    FluidClientException.ErrorCode.AES_256);
+        }
+        catch (InvalidKeyException except) {
             throw new FluidClientException("Unable to create HMAC from key. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         }
@@ -197,9 +201,28 @@ public class AES256Local {
 
             return cipher.doFinal(dataToDecryptParam);
         }
-        //
-        catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException |
-                NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException except) {
+        //Changed for Java 1.6 compatibility...
+        catch (InvalidKeyException except) {
+
+            throw new FluidClientException("Unable to decrypt data. " +
+                    except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
+        } catch (InvalidAlgorithmParameterException except) {
+
+            throw new FluidClientException("Unable to decrypt data. " +
+                    except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
+        } catch (IllegalBlockSizeException except) {
+
+            throw new FluidClientException("Unable to decrypt data. " +
+                    except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
+        } catch (NoSuchPaddingException except) {
+
+            throw new FluidClientException("Unable to decrypt data. " +
+                    except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
+        } catch (NoSuchAlgorithmException except) {
+
+            throw new FluidClientException("Unable to decrypt data. " +
+                    except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
+        } catch (BadPaddingException except) {
 
             throw new FluidClientException("Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
@@ -229,8 +252,23 @@ public class AES256Local {
 
             return cipher.doFinal(dataToEncryptParam);
         }
-        //
-        catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException except) {
+        //Changed for Java 1.6 compatibility...
+        catch (InvalidKeyException except) {
+            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+                    FluidClientException.ErrorCode.AES_256);
+        } catch (InvalidAlgorithmParameterException except) {
+            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+                    FluidClientException.ErrorCode.AES_256);
+        } catch (IllegalBlockSizeException except) {
+            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+                    FluidClientException.ErrorCode.AES_256);
+        } catch (NoSuchPaddingException except) {
+            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+                    FluidClientException.ErrorCode.AES_256);
+        } catch (NoSuchAlgorithmException except) {
+            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+                    FluidClientException.ErrorCode.AES_256);
+        } catch (BadPaddingException except) {
             throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         }

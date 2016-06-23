@@ -80,7 +80,7 @@ public class FormFlowHistoricDataContainer extends ABaseFluidJSONObject {
             JSONArray arrayOfObjects =
                     this.jsonObject.getJSONArray(JSONMapping.FORM_FLOW_HISTORIC_DATAS);
 
-            this.formFlowHistoricDatas = new ArrayList<>();
+            this.formFlowHistoricDatas = new ArrayList();
 
             for(int index = 0;index < arrayOfObjects.length();index++)
             {

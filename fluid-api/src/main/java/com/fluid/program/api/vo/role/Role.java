@@ -119,7 +119,7 @@ public class Role extends ABaseFluidJSONObject {
             JSONArray adminPermissionListing =
                     this.jsonObject.getJSONArray(JSONMapping.ADMIN_PERMISSIONS);
 
-            List<String> adminPermissionList = new ArrayList<>();
+            List<String> adminPermissionList = new ArrayList();
 
             for(int index = 0;index < adminPermissionListing.length();index++)
             {
@@ -135,7 +135,7 @@ public class Role extends ABaseFluidJSONObject {
             JSONArray roleToFormDefArray = this.jsonObject.getJSONArray(
                     JSONMapping.ROLE_TO_FORM_DEFINITIONS);
 
-            List<RoleToFormDefinition> roleToFormDefListing = new ArrayList<>();
+            List<RoleToFormDefinition> roleToFormDefListing = new ArrayList();
 
             for(int index = 0;index < roleToFormDefArray.length();index++)
             {
@@ -152,7 +152,7 @@ public class Role extends ABaseFluidJSONObject {
             JSONArray roleToFormDefArray = this.jsonObject.getJSONArray(
                     JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS);
 
-            List<RoleToFormFieldToFormDefinition> roleToFormDefListing = new ArrayList<>();
+            List<RoleToFormFieldToFormDefinition> roleToFormDefListing = new ArrayList();
 
             for(int index = 0;index < roleToFormDefArray.length();index++)
             {
@@ -169,7 +169,7 @@ public class Role extends ABaseFluidJSONObject {
             JSONArray roleToJobViewDefArray = this.jsonObject.getJSONArray(
                     JSONMapping.ROLE_TO_JOB_VIEWS);
 
-            List<RoleToJobView> roleToFormDefListing = new ArrayList<>();
+            List<RoleToJobView> roleToFormDefListing = new ArrayList();
 
             for(int index = 0;index < roleToJobViewDefArray.length();index++)
             {
@@ -186,7 +186,7 @@ public class Role extends ABaseFluidJSONObject {
             JSONArray userQueryArray = this.jsonObject.getJSONArray(
                     JSONMapping.ROLE_TO_USER_QUERIES);
 
-            List<RoleToUserQuery> userQueryListing = new ArrayList<>();
+            List<RoleToUserQuery> userQueryListing = new ArrayList();
 
             for(int index = 0;index < userQueryArray.length();index++)
             {

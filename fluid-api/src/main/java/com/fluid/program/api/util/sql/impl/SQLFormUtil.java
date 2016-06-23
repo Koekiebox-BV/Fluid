@@ -79,7 +79,7 @@ public class SQLFormUtil extends ABaseSQLUtil {
             Long electronicFormIdParam,
             boolean includeFieldDataParam)
     {
-        List<Form> returnVal = new ArrayList<>();
+        List<Form> returnVal = new ArrayList();
 
         if(electronicFormIdParam == null)
         {
@@ -151,7 +151,7 @@ public class SQLFormUtil extends ABaseSQLUtil {
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam)
     {
-        List<Form> returnVal = new ArrayList<>();
+        List<Form> returnVal = new ArrayList();
 
         if(electronicFormIdParam == null)
         {

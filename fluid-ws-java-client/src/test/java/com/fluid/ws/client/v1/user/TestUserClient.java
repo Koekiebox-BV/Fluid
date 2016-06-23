@@ -173,7 +173,7 @@ public class TestUserClient extends ABaseTestCase {
         User userToUpdate = userClient.createUser(userToCreate);
         TestCase.assertNotNull(userToUpdate);
 
-        List<Role> roleList = new ArrayList<>();
+        List<Role> roleList = new ArrayList();
 
         Role roleToAdd = new Role();
         roleToAdd.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);

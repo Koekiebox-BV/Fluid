@@ -75,7 +75,7 @@ public class TableField extends ABaseFluidJSONObject {
             JSONArray formsArr = this.jsonObject.getJSONArray(
                     JSONMapping.TABLE_RECORDS);
 
-            List<Form> assForms = new ArrayList<>();
+            List<Form> assForms = new ArrayList();
             for(int index = 0;index < formsArr.length();index++)
             {
                 assForms.add(new Form(formsArr.getJSONObject(index)));

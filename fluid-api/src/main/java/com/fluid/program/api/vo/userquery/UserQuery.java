@@ -110,7 +110,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
             JSONArray fieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.INPUTS);
 
-            List<Field> assFields = new ArrayList<>();
+            List<Field> assFields = new ArrayList();
             for(int index = 0;index < fieldsArr.length();index++)
             {
                 assFields.add(new Field(fieldsArr.getJSONObject(index)));
@@ -125,7 +125,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
             JSONArray rulesArr = this.jsonObject.getJSONArray(
                     JSONMapping.RULES);
 
-            List<String> rules = new ArrayList<>();
+            List<String> rules = new ArrayList();
             for(int index = 0;index < rulesArr.length();index++)
             {
                 rules.add(rulesArr.getString(index));

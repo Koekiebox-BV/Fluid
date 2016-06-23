@@ -1015,8 +1015,18 @@ public abstract class ABaseClientWS {
 
                 this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
             }
-            //
-            catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            //Changed for Java 1.6 compatibility...
+            catch (NoSuchAlgorithmException e) {
+
+                throw new FluidClientException(
+                        "Unable to load self signed trust material.",
+                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
+            } catch (KeyManagementException e) {
+
+                throw new FluidClientException(
+                        "Unable to load self signed trust material.",
+                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
+            } catch (KeyStoreException e) {
 
                 throw new FluidClientException(
                         "Unable to load self signed trust material.",

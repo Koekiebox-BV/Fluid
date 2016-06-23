@@ -109,7 +109,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
             JSONArray fluidItemsArr = this.jsonObject.getJSONArray(JSONMapping.FLUID_ITEMS);
 
-            List<FluidItem> listOfItems = new ArrayList<>();
+            List<FluidItem> listOfItems = new ArrayList();
             for(int index = 0;index < fluidItemsArr.length();index++)
             {
                 listOfItems.add(new FluidItem(fluidItemsArr.getJSONObject(index)));

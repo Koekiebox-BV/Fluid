@@ -106,7 +106,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
     public SQLFormFieldUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
         super(connectionParam);
 
-        this.localDefinitionToFieldsMapping = new HashMap<>();
+        this.localDefinitionToFieldsMapping = new HashMap();
         this.cacheUtil = cacheUtilParam;
     }
 
@@ -119,7 +119,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
     public List<FormFieldMapping> getFormFieldMappingForForm(
             Long electronicFormIdParam)
     {
-        List<FormFieldMapping> returnVal = new ArrayList<>();
+        List<FormFieldMapping> returnVal = new ArrayList();
 
         if(electronicFormIdParam == null)
         {
@@ -229,7 +229,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
             Long electronicFormIdParam,
             boolean includeTableFieldsParam)
     {
-        List<Field> returnVal = new ArrayList<>();
+        List<Field> returnVal = new ArrayList();
 
         if(electronicFormIdParam == null)
         {
@@ -370,7 +370,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
                     MultiChoice multiChoice = new MultiChoice();
 
-                    List<String> selectedValues = new ArrayList<>();
+                    List<String> selectedValues = new ArrayList();
                     while(resultSet.next())
                     {
                         selectedValues.add(resultSet.getString(1));
@@ -406,7 +406,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 break;
                 //Table Field...
                 case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
-                    List<Long> formContainerIds = new ArrayList<>();
+                    List<Long> formContainerIds = new ArrayList();
                     while(resultSet.next())
                     {
                         formContainerIds.add(resultSet.getLong(1));
@@ -416,7 +416,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                     {
                         TableField tableField = new TableField();
 
-                        List<Form> formRecords = new ArrayList<>();
+                        List<Form> formRecords = new ArrayList();
                         for(Long formContainerId : formContainerIds)
                         {
                             Form toAdd = new Form();

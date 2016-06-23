@@ -31,8 +31,8 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     public GenericListMessageHandler(IMessageReceivedCallback<T> messageReceivedCallbackParam) {
 
         this.messageReceivedCallback = messageReceivedCallbackParam;
-        this.returnValue = new ArrayList<>();
-        this.errors = new ArrayList<>();
+        this.returnValue = new ArrayList();
+        this.errors = new ArrayList();
         this.isConnectionClosed = false;
     }
 
@@ -139,7 +139,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
      */
     private List<String> getEchoMessagesFromReturnValue()
     {
-        List<String> returnListing = new ArrayList<>();
+        List<String> returnListing = new ArrayList();
 
         synchronized (this.returnValue)
         {

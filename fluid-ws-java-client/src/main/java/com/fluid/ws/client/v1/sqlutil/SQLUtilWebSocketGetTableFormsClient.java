@@ -88,7 +88,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
         }
 
         //Send all the messages...
-        List<String> echoMessagesExpected = new ArrayList<>();
+        List<String> echoMessagesExpected = new ArrayList();
         for(Form formToSend : formsToGetTableFormsForParam)
         {
             if(formToSend == null)

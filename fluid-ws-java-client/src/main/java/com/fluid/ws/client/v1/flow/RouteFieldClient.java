@@ -166,7 +166,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 
         if(multiChoiceValuesParam == null)
         {
-            multiChoiceValuesParam = new ArrayList<>();
+            multiChoiceValuesParam = new ArrayList();
         }
 
         if(formFieldParam != null)

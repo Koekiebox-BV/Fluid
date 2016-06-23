@@ -254,7 +254,7 @@ public class FormFieldClient extends ABaseFieldClient {
 
         if(multiChoiceValuesParam == null)
         {
-            multiChoiceValuesParam = new ArrayList<>();
+            multiChoiceValuesParam = new ArrayList();
         }
 
         if(formFieldParam != null)

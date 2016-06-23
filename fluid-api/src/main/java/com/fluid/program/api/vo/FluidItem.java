@@ -304,7 +304,7 @@ public class FluidItem extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.CUSTOM_PROPERTIES)) {
             JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_PROPERTIES);
 
-            List<FluidItemProperty> fluidItemProperties = new ArrayList<>();
+            List<FluidItemProperty> fluidItemProperties = new ArrayList();
 
             for(int index = 0;index < jsonPropArray.length();index++)
             {
@@ -326,7 +326,7 @@ public class FluidItem extends ABaseFluidJSONObject {
             JSONArray fieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.USER_FIELDS);
 
-            List<Field> assUserFields = new ArrayList<>();
+            List<Field> assUserFields = new ArrayList();
             for(int index = 0;index < fieldsArr.length();index++)
             {
                 assUserFields.add(new Field(fieldsArr.getJSONObject(index)));
@@ -341,7 +341,7 @@ public class FluidItem extends ABaseFluidJSONObject {
             JSONArray fieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ROUTE_FIELDS);
 
-            List<Field> assRouteFields = new ArrayList<>();
+            List<Field> assRouteFields = new ArrayList();
             for(int index = 0;index < fieldsArr.length();index++)
             {
                 assRouteFields.add(new Field(fieldsArr.getJSONObject(index)));
@@ -356,7 +356,7 @@ public class FluidItem extends ABaseFluidJSONObject {
             JSONArray fieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.GLOBAL_FIELDS);
 
-            List<Field> assGlobalFields = new ArrayList<>();
+            List<Field> assGlobalFields = new ArrayList();
             for(int index = 0;index < fieldsArr.length();index++)
             {
                 assGlobalFields.add(new Field(fieldsArr.getJSONObject(index)));
@@ -371,7 +371,7 @@ public class FluidItem extends ABaseFluidJSONObject {
             JSONArray fieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ATTACHMENTS);
 
-            List<Attachment> assAttachments = new ArrayList<>();
+            List<Attachment> assAttachments = new ArrayList();
             for(int index = 0;index < fieldsArr.length();index++)
             {
                 assAttachments.add(new Attachment(fieldsArr.getJSONObject(index)));
@@ -816,7 +816,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 
         if(this.getGlobalFields() == null || this.getGlobalFields().isEmpty())
         {
-            this.setGlobalFields(new ArrayList<>());
+            this.setGlobalFields(new ArrayList());
         }
 
         String fieldNameParamLower = fieldNameParam.toLowerCase();
@@ -935,7 +935,7 @@ public class FluidItem extends ABaseFluidJSONObject {
         }
 
         if (this.getGlobalFields() == null || this.getGlobalFields().isEmpty()) {
-            this.setGlobalFields(new ArrayList<>());
+            this.setGlobalFields(new ArrayList());
         }
 
         String paramLower = fieldNameParam.toLowerCase().trim();
@@ -1051,7 +1051,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      */
     public void addAttachment(Attachment toAddParam) {
         if (!this.containsAttachments()) {
-            this.setAttachments(new ArrayList<>());
+            this.setAttachments(new ArrayList());
         }
 
         this.getAttachments().add(toAddParam);

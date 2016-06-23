@@ -18,8 +18,6 @@ package com.fluid.ws.client.v1.role;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +38,8 @@ import com.fluid.ws.client.v1.flow.TestFlowStepClient;
 import com.fluid.ws.client.v1.user.LoginClient;
 import com.fluid.ws.client.v1.userquery.TestUserQueryClient;
 import com.fluid.ws.client.v1.userquery.UserQueryClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -77,7 +77,7 @@ public class TestRoleClient extends ABaseTestCase {
             public static final String ROLE_NAME = "junit Testing Role";
             public static final String ROLE_DESCRIPTION = "junit Testing Role DESCRIPTION.";
 
-            public static final List<String> PERMISSIONS = new ArrayList<>();
+            public static final List<String> PERMISSIONS = new ArrayList();
             static {
                 PERMISSIONS.add(Permission.CHANGE_OWN_PASSWORD);
                 PERMISSIONS.add(Permission.EDIT_ROLES);
@@ -94,7 +94,7 @@ public class TestRoleClient extends ABaseTestCase {
             public static final String ROLE_NAME = "junit Testing Role - Update";
             public static final String ROLE_DESCRIPTION = "junit Testing Role DESCRIPTION. - Update";
 
-            public static final List<String> PERMISSIONS = new ArrayList<>();
+            public static final List<String> PERMISSIONS = new ArrayList();
             static {
                 PERMISSIONS.add(Permission.CHANGE_OWN_PASSWORD);
                 PERMISSIONS.add(Permission.VIEW_USERS);
@@ -116,7 +116,7 @@ public class TestRoleClient extends ABaseTestCase {
                 boolean canCreateAndModParam,
                 boolean canViewParam){
 
-            List<RoleToFormFieldToFormDefinition> returnVal = new ArrayList<>();
+            List<RoleToFormFieldToFormDefinition> returnVal = new ArrayList();
 
             RoleToFormFieldToFormDefinition roleToFormFieldToFormDef =
                     new RoleToFormFieldToFormDefinition();
@@ -140,7 +140,7 @@ public class TestRoleClient extends ABaseTestCase {
                 Form formParam,
                 boolean canCreateParam){
 
-            List<RoleToFormDefinition> returnVal = new ArrayList<>();
+            List<RoleToFormDefinition> returnVal = new ArrayList();
 
             RoleToFormDefinition toAdd = new RoleToFormDefinition();
             toAdd.setCanCreate(canCreateParam);
@@ -159,7 +159,7 @@ public class TestRoleClient extends ABaseTestCase {
         public static final List<RoleToJobView> toRoleToJobView(
                 JobView ... jobViewsParam){
 
-            List<RoleToJobView> returnVal = new ArrayList<>();
+            List<RoleToJobView> returnVal = new ArrayList();
 
             if(jobViewsParam != null)
             {
@@ -183,7 +183,7 @@ public class TestRoleClient extends ABaseTestCase {
         public static final List<RoleToUserQuery> toRoleToUserQuery(
                 UserQuery ... userQueriesParam){
 
-            List<RoleToUserQuery> returnVal = new ArrayList<>();
+            List<RoleToUserQuery> returnVal = new ArrayList();
 
             if(userQueriesParam != null)
             {

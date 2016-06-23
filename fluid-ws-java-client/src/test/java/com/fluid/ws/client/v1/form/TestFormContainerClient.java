@@ -101,7 +101,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         Form toCreate = new Form(TestStatics.FORM_DEFINITION);
         toCreate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
 
-        List<Field> fields = new ArrayList<>();
+        List<Field> fields = new ArrayList();
         fields.add(new Field(TestStatics.FieldName.EMAIL_FROM_ADDRESS, "zapper@zool.com"));
         fields.add(new Field(TestStatics.FieldName.EMAIL_TO_ADDRESS, "pateldream@correct.com"));
         fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject..."));
@@ -183,7 +183,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         tempMultiPlainTitle.setFieldName("JUNIT Title");
         tempMultiPlainTitle.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
 
-        List<String> availTitles = new ArrayList<>();
+        List<String> availTitles = new ArrayList();
         availTitles.add("Mr");
         availTitles.add("Mrs");
         availTitles.add("Dr");
@@ -194,7 +194,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         formDefinitionLineItem.setFormType("JUNIT Line Item");
         formDefinitionLineItem.setFormDescription("Line item definition.");
 
-        List<Field> frmFieldsLineItem = new ArrayList<>();
+        List<Field> frmFieldsLineItem = new ArrayList();
         frmFieldsLineItem.add(tempTextPlainCode);
         frmFieldsLineItem.add(tempTextPlainDescription);
         frmFieldsLineItem.add(tempMultiPlainTitle);
@@ -218,7 +218,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         formDefinitionInvoice.setFormType("JUNIT Invoice");
         formDefinitionInvoice.setFormDescription("Invoice description.");
 
-        List<Field> frmFieldsInvoice = new ArrayList<>();
+        List<Field> frmFieldsInvoice = new ArrayList();
         frmFieldsInvoice.add(tempTextPlainInvoiceNumber);
         frmFieldsInvoice.add(createdFieldTableLineItems);
 
@@ -231,7 +231,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         Form toCreate = new Form("JUNIT Invoice");
         toCreate.setTitle("INV_12345");
 
-        List<Field> fields = new ArrayList<>();
+        List<Field> fields = new ArrayList();
         fields.add(new Field("JUNIT Invoice Number", "INV_12345"));
         toCreate.setFormFields(fields);
 
@@ -241,7 +241,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         Form formContainerLineItem = new Form("JUNIT Line Item");
         formContainerLineItem.setTitle("INV_12345");
 
-        List<Field> lineItemFields = new ArrayList<>();
+        List<Field> lineItemFields = new ArrayList();
 
         lineItemFields.add(new Field("JUNIT Description", "Line item description."));
         lineItemFields.add(new Field("JUNIT Code", "Pills001"));

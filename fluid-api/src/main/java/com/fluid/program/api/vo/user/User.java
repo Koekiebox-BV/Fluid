@@ -148,7 +148,7 @@ public class User extends ABaseFluidJSONObject {
 
             JSONArray roleListing = this.jsonObject.getJSONArray(JSONMapping.ROLES);
 
-            List<Role> roleListingList = new ArrayList<>();
+            List<Role> roleListingList = new ArrayList();
 
             for(int index = 0;index < roleListing.length();index++)
             {
@@ -164,7 +164,7 @@ public class User extends ABaseFluidJSONObject {
             JSONArray emailListing =
                     this.jsonObject.getJSONArray(JSONMapping.EMAIL_ADDRESSES);
 
-            List<String> emailAddressList = new ArrayList<>();
+            List<String> emailAddressList = new ArrayList();
 
             for(int index = 0;index < emailListing.length();index++)
             {
@@ -179,7 +179,7 @@ public class User extends ABaseFluidJSONObject {
 
             JSONArray userFieldListing = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
 
-            List<Field> userFieldListingList = new ArrayList<>();
+            List<Field> userFieldListingList = new ArrayList();
 
             for(int index = 0;index < userFieldListing.length();index++)
             {

@@ -18,8 +18,6 @@ package com.fluid.ws.client.v1.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +31,8 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -261,7 +261,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         fieldFirst = formFieldClient.createFieldTextPlain(fieldFirst);
 
-        List<Field> fieldsToUse = new ArrayList<>();
+        List<Field> fieldsToUse = new ArrayList();
         fieldsToUse.add(fieldFirst);
 
 
@@ -333,7 +333,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         fieldFirst = formFieldClient.createFieldTextPlain(fieldFirst);
 
-        List<Field> fieldsToUse = new ArrayList<>();
+        List<Field> fieldsToUse = new ArrayList();
         fieldsToUse.add(fieldFirst);
 
         Form toCreate = new Form();
@@ -383,7 +383,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         fieldFirst = formFieldClient.createFieldTextPlain(fieldFirst);
 
-        List<Field> fieldsToUse = new ArrayList<>();
+        List<Field> fieldsToUse = new ArrayList();
         fieldsToUse.add(fieldFirst);
 
         //1. The Test Flow...

@@ -33,6 +33,102 @@ import com.google.common.io.BaseEncoding;
 /**
  * Java Web Service Client for User Login related actions.
  *
+ * Sequence for login is as follows;
+ *
+ * <br>
+ * <h1>1. Pre Checks;</h1>
+ * <br>
+ *
+ * The API requires the following prerequisites;
+ * <br>
+ * <br>
+ *
+ * <ul>
+ *     <li>Support for TLS 1.0 and above.</li>
+ *     <li>SHA-256 hashing function.</li>
+ *     <li>AES-256.</li>
+ * </ul>
+ *
+ *
+ * <br>
+ * <h1>2. Authentication Steps</h1>
+ *
+ *     The steps below explains the process of authenticating against the Fluid-API.
+ * <br>
+ *
+ * <h2>2.1 Authentication Request and Response</h2>
+ *
+ *
+ * 2.1.1. Send a {@code AuthRequest} JSON request {@code POST} to; <br><br>
+ *     <b>{@code https://<server:port>/fluid-ws/v1/user/init}</b> <br>
+ *         to initiate the authentication. <br>
+ * <i>* Note: The lifetime is in seconds.</i><br><br>
+ *
+ * <b>Example of {@code AuthRequest} request JSON;</b><br>
+ * <code>
+ *  {<br>
+ *           "username" : "johnny",<br>
+ *           "lifetime", 1000<br>
+ *  }<br>
+ * </code>
+ * <b>Breakdown of {@code AuthRequest};</b>
+ * <br>
+ * <ul>
+ *     <li><b>{@code username}</b> : The Fluid username.</li>
+ *     <li><b>{@code lifetime}</b> : The duration of the Service Ticket in seconds.</li>
+ * </ul>
+ *
+ * <br><br>
+ *
+ *
+ * 2.1.2. If the provided {@code AuthRequest} JSON is correct, the Fluid-API will return a {@code AuthResponse} in JSON format.
+ * <br>
+ * <br>
+ * <br>
+ *
+ * <b>Example of {@code AuthResponse} response JSON;</b><br>
+ *
+ * <code>
+ *  {<br>
+ *      "salt": "jQJVm'T7zhG1d'z)!o!+",<br>
+ *      "encryptedDataBase64": "IeWj7pcXhLXf2lEFtRVU",<br>
+ *      "encryptedDataHmacBase64": "SdAU3W/VDk5CNCMlZL0k=",<br>
+ *      "ivBase64": "cCWtbV+K2J4peTNx/7EZ5w==",<br>
+ *      "seedBase64": "BRJyFMvUIm/FZq6VxaIzYC9nYnZCZmWEuBARuUQ5JTw=",<br>
+ *      "serviceTicketBase64": "of6torcGONT6kjyNE3+pVutWZ4cz/eTWGsbP"<br>
+ *  }<br>
+ * </code>
+ *
+ * <b>Breakdown of {@code AuthResponse};</b>
+ * <br>
+ * <ul>
+ *     <li><b>{@code salt}</b> : In cryptography, a salt is random data that is used as an additional input to a one-way function that "hashes" a password or passphrase.</li>
+ *     <li><b>{@code encryptedDataBase64}</b> : Contains encrypted JSON {@code (roleListing, ticketExpiration and sessionKeyBase64)} in Base64 format. The data is encrypted as follows;<br>
+ *         1. A SHA-256 checksum needs
+ *
+ *     </li>
+ * </ul>
+ *
+ * <br><br>
+ *
+ *
+ *
+ *
+ * This will provide the caller with an encrypted packet as;
+ *
+ * 2. Zool
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * 2. TODO
+ *
  * @author jasonbruwer
  * @since v1.0
  *
@@ -109,10 +205,10 @@ public class LoginClient extends ABaseClientWS {
             authResponse = new AuthResponse(
                     this.postJson(authRequest, WS.Path.User.Version1.userInitSession()));
         }
-        //
-        catch (JSONException e) {
+        //JSON format problem...
+        catch (JSONException jsonException) {
             throw new FluidClientException(
-                    e.getMessage(),e,FluidClientException.ErrorCode.JSON_PARSING);
+                    jsonException.getMessage(),jsonException,FluidClientException.ErrorCode.JSON_PARSING);
         }
 
         AuthEncryptedData authEncData =

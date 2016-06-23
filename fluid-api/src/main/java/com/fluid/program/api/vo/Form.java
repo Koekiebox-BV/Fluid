@@ -152,7 +152,7 @@ public class Form extends ABaseFluidJSONObject {
             JSONArray associatedJobsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ASSOCIATED_FLOWS);
 
-            List<Flow> assFlowsObj = new ArrayList<>();
+            List<Flow> assFlowsObj = new ArrayList();
             for(int index = 0;index < associatedJobsArr.length();index++)
             {
                 assFlowsObj.add(new Flow(associatedJobsArr.getJSONObject(index)));
@@ -167,7 +167,7 @@ public class Form extends ABaseFluidJSONObject {
             JSONArray formFieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.FORM_FIELDS);
 
-            List<Field> assFormFields = new ArrayList<>();
+            List<Field> assFormFields = new ArrayList();
             for(int index = 0;index < formFieldsArr.length();index++)
             {
                 assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
@@ -501,7 +501,7 @@ public class Form extends ABaseFluidJSONObject {
 
         if(this.getFormFields() == null || this.getFormFields().isEmpty())
         {
-            this.setFormFields(new ArrayList<>());
+            this.setFormFields(new ArrayList());
         }
 
         String fieldNameParamLower = fieldNameParam.toLowerCase();
@@ -558,7 +558,7 @@ public class Form extends ABaseFluidJSONObject {
         }
 
         if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
-            this.setFormFields(new ArrayList<>());
+            this.setFormFields(new ArrayList());
         }
 
         String paramLower = fieldNameParam.toLowerCase().trim();
