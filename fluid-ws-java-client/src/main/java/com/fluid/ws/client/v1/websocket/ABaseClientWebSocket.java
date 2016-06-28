@@ -36,7 +36,7 @@ import com.fluid.ws.client.v1.ABaseClientWS;
  */
 public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends ABaseClientWS {
 
-    protected static String webSocketEndpointUrl;
+    protected String webSocketEndpointUrl;
 
     private WebSocketClient webSocketClient;
     private long timeoutInMillis;
@@ -61,29 +61,31 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     /**
      * Default constructor.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param messageHandlerParam {@code IMessageHandler} to process incoming messages.
      * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
      * @param postFixForUrlParam The URL Postfix.
      */
     public ABaseClientWebSocket(
+            String endpointBaseUrlParam,
             T messageHandlerParam,
             long timeoutInMillisParam,
             String postFixForUrlParam) {
-        super();
+        super(endpointBaseUrlParam);
 
         this.messageHandler = messageHandlerParam;
         this.timeoutInMillis = timeoutInMillisParam;
 
-        if(ABaseClientWebSocket.webSocketEndpointUrl == null &&
-                ABaseClientWS.endpointUrl != null)
+        if(this.webSocketEndpointUrl == null &&
+                this.endpointUrl != null)
         {
-            ABaseClientWebSocket.webSocketEndpointUrl =
-                    this.getWebSocketBaseURIFrom(ABaseClientWS.endpointUrl);
+            this.webSocketEndpointUrl =
+                    this.getWebSocketBaseURIFrom(this.endpointUrl);
         }
 
         //Confirm Web Socket Endpoint is set.
-        if(ABaseClientWebSocket.webSocketEndpointUrl == null ||
-                ABaseClientWebSocket.webSocketEndpointUrl.trim().isEmpty())
+        if(this.webSocketEndpointUrl == null ||
+                this.webSocketEndpointUrl.trim().isEmpty())
         {
             throw new FluidClientException(
                     "Base Web Socket Enpoint URL not set.",
@@ -97,7 +99,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
 
-        String completeUrl = (ABaseClientWebSocket.webSocketEndpointUrl +
+        String completeUrl = (this.webSocketEndpointUrl +
                 postFixForUrlParam);
 
         try {
@@ -133,10 +135,9 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
      * @param baseEndpointUrlParam URL to base endpoint.
      */
     public ABaseClientWebSocket(String baseEndpointUrlParam) {
-        super();
+        super(baseEndpointUrlParam);
 
-        ABaseClientWebSocket.webSocketEndpointUrl =
-                this.getWebSocketBaseURIFrom(baseEndpointUrlParam);
+        this.webSocketEndpointUrl = this.getWebSocketBaseURIFrom(baseEndpointUrlParam);
     }
 
     /**

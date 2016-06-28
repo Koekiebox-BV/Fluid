@@ -46,6 +46,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
     /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param messageReceivedCallbackParam Callback for when a message is received.
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
@@ -53,12 +54,14 @@ public class SQLUtilWebSocketGetDescendantsClient extends
      * @param includeTableFieldsParam Should Table Fields be included.
      */
     public SQLUtilWebSocketGetDescendantsClient(
+            String endpointBaseUrlParam,
             IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam) {
-        super(new GenericFormListingMessageHandler(messageReceivedCallbackParam),
+        super(endpointBaseUrlParam,
+                new GenericFormListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
                         includeFieldDataParam,

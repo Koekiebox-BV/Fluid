@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -40,6 +38,8 @@ import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
 import com.fluid.ws.client.v1.user.LoginClient;
 import com.google.common.io.BaseEncoding;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -64,7 +64,7 @@ public class TestFlowItemClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -92,8 +92,8 @@ public class TestFlowItemClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowItemClient flowItmClient = new FlowItemClient(serviceTicket);
-        FlowClient flowClient = new FlowClient(serviceTicket);
+        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
 
         //1. Form...
         Form frm = new Form(TestStatics.FORM_DEFINITION);

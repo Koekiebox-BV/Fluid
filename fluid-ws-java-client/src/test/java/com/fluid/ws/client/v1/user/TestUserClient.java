@@ -65,7 +65,7 @@ public class TestUserClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         //this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -91,7 +91,7 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         User userToCreate = new User();
         userToCreate.setUsername(TestStatics.Create.USERNAME);
@@ -120,7 +120,7 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         User userToCreate = new User();
         userToCreate.setUsername(TestStatics.Create.USERNAME);
@@ -151,10 +151,10 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         //Create the role...
-        RoleClient roleClient = new RoleClient(serviceTicket);
+        RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
 
         Role roleToAssociate = new Role();
         roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
@@ -206,7 +206,7 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         User loggedInUser = userClient.getLoggedInUserInformation();
         TestCase.assertNotNull(loggedInUser);
@@ -226,7 +226,7 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         UserListing userListing = userClient.getAllUsers();
 
@@ -251,7 +251,7 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         User user = userClient.getUserWhereUsername("admin");
         TestCase.assertNotNull(user);
@@ -271,7 +271,7 @@ public class TestUserClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(serviceTicket);
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         User user = userClient.getUserWhereUsername("admin");
         TestCase.assertNotNull(user);

@@ -18,8 +18,6 @@ package com.fluid.ws.client.v1.sqlutil;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,6 +33,8 @@ import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
 import com.fluid.ws.client.v1.flowitem.FlowItemClient;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -59,7 +59,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -88,7 +88,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(serviceTicket);
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
 
         int numberOfRecords = 5;
         Form[] testForms =
@@ -139,8 +139,8 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowItemClient flowItmClient = new FlowItemClient(serviceTicket);
-        FlowClient flowClient = new FlowClient(serviceTicket);
+        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
 
         //1. Form...
         Form frm = new Form(TestStatics.FORM_DEFINITION);
@@ -164,7 +164,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
         //Wait for 3 seconds...
         sleepForSeconds(3);
 
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(serviceTicket);
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
 
 
         List<Form> tableForms = sqlUtilClient.getTableForms(

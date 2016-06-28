@@ -69,8 +69,8 @@ public abstract class ABaseClientWS {
 
     public static final String CONTENT_TYPE_HEADER = "Content-type";
 
-    protected static String endpointUrl = "https://localhost:8443/fluid-ws/";
-
+    //Protected variables used by subclasses...
+    protected String endpointUrl = "https://localhost:8443/fluid-ws/";
     protected String serviceTicket;
 
     private static String EQUALS = "=";
@@ -172,20 +172,21 @@ public abstract class ABaseClientWS {
     }
 
     /**
-     * Default constructor.
-     */
-    public ABaseClientWS() {
-        super();
-    }
-
-    /**
      * Creates a new client and sets the Base Endpoint URL.
      *
      * @param endpointBaseUrlParam URL to base endpoint.
      */
     public ABaseClientWS(String endpointBaseUrlParam) {
-        this();
-        ABaseClientWS.endpointUrl = endpointBaseUrlParam;
+        super();
+
+        if(endpointBaseUrlParam == null || endpointBaseUrlParam.trim().isEmpty())
+        {
+            this.endpointUrl = "https://localhost:8443/fluid-ws/";
+        }
+        else
+        {
+            this.endpointUrl = endpointBaseUrlParam;
+        }
     }
 
     /**
@@ -219,14 +220,14 @@ public abstract class ABaseClientWS {
                             (returnedObj == null) ? null:returnedObj.getClass().getName()),
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
-        //
+        //IO Problem...
         catch (IOException e) {
 
             if(e instanceof UnknownHostException)
             {
                 throw new FluidClientException(
                         "Unable to reach host '"+
-                                endpointUrl.concat(postfixUrlParam)+"'. "+e.getMessage(),
+                                this.endpointUrl.concat(postfixUrlParam)+"'. "+e.getMessage(),
                         FluidClientException.ErrorCode.CONNECT_ERROR);
             }
 
@@ -296,14 +297,14 @@ public abstract class ABaseClientWS {
         {
             throw new FluidClientException(
                     "Unable to reach service at '"+
-                            endpointUrl.concat(postfixUrlParam)+"'.",
+                            this.endpointUrl.concat(postfixUrlParam)+"'.",
                     FluidClientException.ErrorCode.CONNECT_ERROR);
         }
 
         CloseableHttpClient httpclient = this.getClient();
 
         try {
-            HttpGet httpGet = new HttpGet(endpointUrl.concat(postfixUrlParam));
+            HttpGet httpGet = new HttpGet(this.endpointUrl.concat(postfixUrlParam));
 
             if(headerNameValuesParam != null && !headerNameValuesParam.isEmpty())
             {
@@ -325,7 +326,7 @@ public abstract class ABaseClientWS {
 
             // Create a custom response handler
             ResponseHandler<String> responseHandler = this.getJsonResponseHandler(
-                    endpointUrl.concat(postfixUrlParam));
+                    this.endpointUrl.concat(postfixUrlParam));
 
             String responseBody = this.executeHttp(
                     httpclient, httpGet, responseHandler, postfixUrlParam);
@@ -334,7 +335,7 @@ public abstract class ABaseClientWS {
             {
                 throw new FluidClientException(
                         "No response data from '"+
-                                endpointUrl.concat(postfixUrlParam)+"'.",
+                                this.endpointUrl.concat(postfixUrlParam)+"'.",
                         FluidClientException.ErrorCode.IO_ERROR);
             }
 
@@ -636,7 +637,7 @@ public abstract class ABaseClientWS {
         {
             throw new FluidClientException(
                     "Unable to reach service at '"+
-                            endpointUrl.concat(postfixUrlParam)+"'.",
+                            this.endpointUrl.concat(postfixUrlParam)+"'.",
                     FluidClientException.ErrorCode.CONNECT_ERROR);
         }
 
@@ -654,7 +655,7 @@ public abstract class ABaseClientWS {
                 if(contentTypeParam == ContentType.APPLICATION_FORM_URLENCODED)
                 {
                     RequestBuilder builder = RequestBuilder.post().setUri(
-                            endpointUrl.concat(postfixUrlParam));
+                            this.endpointUrl.concat(postfixUrlParam));
 
                     builder = this.addParamsToBuildFromString(builder,stringParam);
 
@@ -663,7 +664,7 @@ public abstract class ABaseClientWS {
                 //JSON or any other...
                 else
                 {
-                    uriRequest = new HttpPost(endpointUrl.concat(postfixUrlParam));
+                    uriRequest = new HttpPost(this.endpointUrl.concat(postfixUrlParam));
                 }
 
                 uriRequest.setHeader(CONTENT_TYPE_HEADER, contentTypeParam.toString());
@@ -674,21 +675,21 @@ public abstract class ABaseClientWS {
                 if(contentTypeParam == ContentType.APPLICATION_FORM_URLENCODED)
                 {
                     RequestBuilder builder = RequestBuilder.put().setUri(
-                            endpointUrl.concat(postfixUrlParam));
+                            this.endpointUrl.concat(postfixUrlParam));
 
                     builder = this.addParamsToBuildFromString(builder, stringParam);
                     uriRequest = builder.build();
                 }
                 else
                 {
-                    uriRequest = new HttpPut(endpointUrl.concat(postfixUrlParam));
+                    uriRequest = new HttpPut(this.endpointUrl.concat(postfixUrlParam));
                     uriRequest.setHeader(CONTENT_TYPE_HEADER, contentTypeParam.toString());
                 }
             }
             //DELETE...
             else if(httpMethodParam == HttpMethod.DELETE)
             {
-                uriRequest = new HttpDelete(endpointUrl.concat(postfixUrlParam));
+                uriRequest = new HttpDelete(this.endpointUrl.concat(postfixUrlParam));
                 uriRequest.setHeader(CONTENT_TYPE_HEADER, contentTypeParam.toString());
             }
 
@@ -709,7 +710,7 @@ public abstract class ABaseClientWS {
 
             // Create a custom response handler
             ResponseHandler<String> responseHandler = this.getJsonResponseHandler(
-                    endpointUrl.concat(postfixUrlParam));
+                    this.endpointUrl.concat(postfixUrlParam));
 
             responseBody = this.executeHttp(httpclient, uriRequest,
                     responseHandler, postfixUrlParam);
@@ -718,7 +719,7 @@ public abstract class ABaseClientWS {
             {
                 throw new FluidClientException(
                         "No response data from '"+
-                                endpointUrl.concat(postfixUrlParam)+"'.",
+                                this.endpointUrl.concat(postfixUrlParam)+"'.",
                         FluidClientException.ErrorCode.IO_ERROR);
             }
 

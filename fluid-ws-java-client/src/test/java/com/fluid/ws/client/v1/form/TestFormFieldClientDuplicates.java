@@ -15,8 +15,6 @@
 
 package com.fluid.ws.client.v1.form;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +25,8 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -54,7 +54,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -83,7 +83,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();

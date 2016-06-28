@@ -36,19 +36,15 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 public class FlowItemClient extends ABaseClientWS {
 
     /**
-     * Default constructor.
-     */
-    public FlowItemClient() {
-        super();
-    }
-
-    /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param serviceTicketParam The Server issued Service Ticket.
      */
-    public FlowItemClient(String serviceTicketParam) {
-        super();
+    public FlowItemClient(
+            String endpointBaseUrlParam,
+            String serviceTicketParam) {
+        super(endpointBaseUrlParam);
 
         this.setServiceTicket(serviceTicketParam);
     }

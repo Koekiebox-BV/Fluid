@@ -40,6 +40,8 @@ public class SQLUtilWebSocketGetAncestorClient extends
     /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     *
      * @param messageReceivedCallbackParam Callback for when a message is received.
      *
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
@@ -49,12 +51,14 @@ public class SQLUtilWebSocketGetAncestorClient extends
      * @param includeTableFieldsParam Should Table Fields be included.
      */
     public SQLUtilWebSocketGetAncestorClient(
+            String endpointBaseUrlParam,
             IMessageReceivedCallback<Form> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam) {
-        super(new GetAncestorMessageHandler(messageReceivedCallbackParam),
+        super(endpointBaseUrlParam,
+                new GetAncestorMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getAncestorWebSocket(
                         includeFieldDataParam,

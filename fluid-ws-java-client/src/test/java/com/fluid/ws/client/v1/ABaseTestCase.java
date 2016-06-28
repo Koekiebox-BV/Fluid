@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class ABaseTestCase {
 
+    public static String BASE_URL = "https://localhost:8443/fluid-ws/";
     public static String USERNAME = "admin";
     public static String PASSWORD = "12345";
 

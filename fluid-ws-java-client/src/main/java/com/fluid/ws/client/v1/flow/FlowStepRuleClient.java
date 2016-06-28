@@ -42,20 +42,17 @@ import com.fluid.ws.client.v1.ABaseClientWS;
  */
 public class FlowStepRuleClient extends ABaseClientWS {
 
-    /**
-     * Default constructor.
-     */
-    public FlowStepRuleClient() {
-        super();
-    }
 
     /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param serviceTicketParam The Server issued Service Ticket.
      */
-    public FlowStepRuleClient(String serviceTicketParam) {
-        super();
+    public FlowStepRuleClient(
+            String endpointBaseUrlParam,
+            String serviceTicketParam) {
+        super(endpointBaseUrlParam);
 
         this.setServiceTicket(serviceTicketParam);
     }

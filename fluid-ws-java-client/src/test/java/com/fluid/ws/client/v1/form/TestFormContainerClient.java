@@ -67,7 +67,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -95,7 +95,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormContainerClient formContainerClient = new FormContainerClient(serviceTicket);
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
 
         //1. Form...
         Form toCreate = new Form(TestStatics.FORM_DEFINITION);
@@ -159,9 +159,9 @@ public class TestFormContainerClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormContainerClient formContainerClient = new FormContainerClient(serviceTicket);
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
-        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(serviceTicket);
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
 
         //1. Create the Definitions...
         Field tempTextPlainInvoiceNumber = new Field();

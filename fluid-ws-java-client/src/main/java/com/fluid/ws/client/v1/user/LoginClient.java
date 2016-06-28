@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.user.User;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.program.api.vo.ws.auth.AuthEncryptedData;
@@ -33,6 +32,9 @@ import com.google.common.io.BaseEncoding;
 /**
  * Java Web Service Client for User Login related actions.
  *
+ * The API is based on the <i>Kerberos mutual authentication model</i>. <br>
+ * See https://en.wikipedia.org/wiki/Kerberos_(protocol).
+ *
  * Sequence for login is as follows;
  *
  * <br>
@@ -44,11 +46,13 @@ import com.google.common.io.BaseEncoding;
  * <br>
  *
  * <ul>
- *     <li>Support for TLS 1.0 and above.</li>
- *     <li>SHA-256 hashing function.</li>
- *     <li>AES-256.</li>
+ *     <li>Support for TLS 1.0 and above (For public / private RSA connection).</li>
+ *     <li>SHA-256 hashing function (For password and HMAC).</li>
+ *     <li>AES-256 (Session keys and encrypted data).</li>
  * </ul>
  *
+ * If Java is being used, the Unlimited Strength Jurisdiction Policy Files needs to be used
+ * to enable AES-256. See http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
  *
  * <br>
  * <h1>2. Authentication Steps</h1>
@@ -57,7 +61,6 @@ import com.google.common.io.BaseEncoding;
  * <br>
  *
  * <h2>2.1 Authentication Request and Response</h2>
- *
  *
  * 2.1.1. Send a {@code AuthRequest} JSON request {@code POST} to; <br><br>
  *     <b>{@code https://<server:port>/fluid-ws/v1/user/init}</b> <br>
@@ -99,52 +102,71 @@ import com.google.common.io.BaseEncoding;
  *  }<br>
  * </code>
  *
+ * <br><br><br>
+ *
  * <b>Breakdown of {@code AuthResponse};</b>
  * <br>
  * <ul>
  *     <li><b>{@code salt}</b> : In cryptography, a salt is random data that is used as an additional input to a one-way function that "hashes" a password or passphrase.</li>
- *     <li><b>{@code encryptedDataBase64}</b> : Contains encrypted JSON {@code (roleListing, ticketExpiration and sessionKeyBase64)} in Base64 format. The data is encrypted as follows;<br>
- *         1. A SHA-256 checksum needs
+ *     <li><b>{@code encryptedDataBase64}</b> : Contains encrypted JSON {@code (roleListing, ticketExpiration and sessionKeyBase64)} in Base64 format.</li>
+ *     <li><b>{@code encryptedDataHmacBase64}</b> : HMAC for the {@code encryptedDataBase64} in Base64 format.</li>
+ *     <li><b>{@code ivBase64}</b> : Session Initialization Vector in Base64 format.</li>
+ *     <li><b>{@code seedBase64}</b> : SEED in Base64 format.</li>
+ *     <li><b>{@code serviceTicketBase64}</b> : Service Ticket in Base64 format.</li>
+ * </ul>
  *
- *     </li>
+ * <p>
+ *     The process of decrypting {@code encryptedDataBase64}, is as follows;<br>
+ *         1. Decode all the Base64 fields to binary.
+ *         2. Perform a SHA-256 on the clear password followed by the {@code salt}. <br>Example: {@code byte[] passwordSha256 = sha256(passwordParam.concat(saltParam).getBytes());}
+ *         3. Perform a SHA-256 on the <b>step 2</b> result data and {@code seedBase64}. <br>{@code byte[] derivedKey = sha256(ArrayUtils.addAll(passwordSha256, seedParam));}
+ *         4. Perform a decrypt, using the <b>step 3</b> result as the key, and provided {@code ivBase64} in binary format.
+ *         5. The result of the decrypt must now be used to parse as a JSON object ({@code AuthEncryptedData}). Which will house {@code roleListing}, {@code ticketExpiration} and {@code sessionKeyBase64}.
+ * <br><br>
+ *
+ *
+ * <h2>2.2 Issue Service Token</h2>
+ *
+ * 2.1.1. Send a {@code AppRequestToken} JSON request {@code POST} to; <br><br>
+ *     <b>{@code https://<server:port>/fluid-ws/v1/user/issue_token}</b> <br>
+ *         to be issued a service ticket.<br><br>
+ *
+ * <b>Example of {@code AppRequestToken} request JSON;</b><br>
+ * <code>
+ *  {<br>
+ *           "encryptedDataBase64" : "IeWj7pcXhLXf2lEFtRVU",<br>
+ *           "encryptedDataHmacBase64", "SdAU3W/V"<br>
+ *           "ivBase64", "cCWtbV+K2J4peTNx/7EZ5w=="<br>
+ *           "seedBase64", "BRJyFMvUIm/FZq6VxaIzYC9nYnZCZmWEuBARuUQ5JTw="<br>
+ *           "serviceTicket", "of6torc"<br>
+ *  }<br>
+ * </code>
+ *
+ * <br><br><br>
+ *
+ * <b>Breakdown of {@code AppRequestToken};</b>
+ * <br>
+ * <ul>
+ *     <li><b>{@code encryptedDataBase64}</b> : Encrypted data in Base64 format. <br>A newly random generated IV will be used. <br>The {@code sessionKeyBase64} from {@code AuthEncryptedData} will be used as a encryption key.</li>
+ *     <li><b>{@code encryptedDataHmacBase64}</b> : HMAC for encrypted data. Consists of newly generated SEED <b>(each of the bytes poisoned by XOR 222)</b> and derived key. <br> Example; {@code byte[] derivedKey = sha256(ArrayUtils.addAll(keyParam, poisonedSeed));}.</li>
+ *     <li><b>{@code ivBase64}</b> : A newly random generated IV.</li>
+ *     <li><b>{@code seedBase64}</b> : A newly random generated SEED.</li>
+ *     <li><b>{@code serviceTicket}</b> : The serviceTicket from {@code AuthResponse}.</li>
  * </ul>
  *
  * <br><br>
  *
- *
- *
- *
- * This will provide the caller with an encrypted packet as;
- *
- * 2. Zool
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- * 2. TODO
+ * The response from the Issue Token request will return a JSON object with a {@code serviceTicket}.
+ * Each of the API Web Services will require the service ticket to perform functions.
  *
  * @author jasonbruwer
  * @since v1.0
  *
  * @see JSONObject
  * @see com.fluid.program.api.vo.ws.WS.Path.Auth0
- * @see User
+ * @see com.fluid.program.api.vo.user.User
  */
 public class LoginClient extends ABaseClientWS {
-
-
-    /**
-     * Default constructor.
-     */
-    public LoginClient() {
-        super();
-    }
 
     /**
      * Constructor which sets the login URL.
@@ -228,7 +250,7 @@ public class LoginClient extends ABaseClientWS {
     /**
      * Performs HMAC and encryption to initialize the session.
      *
-     * @param passwordParam The user password.
+     * @param passwordParam The user password in the clear.
      * @param authResponseParam Response of the initial authentication request (handshake).
      * @return Authenticated encrypted data.
      */
@@ -260,7 +282,11 @@ public class LoginClient extends ABaseClientWS {
 
         //Decrypted Initialization Data...
         byte[] decryptedEncryptedData =
-                AES256Local.decryptInitPacket(encryptedData, passwordParam, authResponseParam.getSalt(), ivBytes, seedBytes);
+                AES256Local.decryptInitPacket(encryptedData,
+                        passwordParam,
+                        authResponseParam.getSalt(),
+                        ivBytes,
+                        seedBytes);
 
         try
         {
@@ -309,9 +335,9 @@ public class LoginClient extends ABaseClientWS {
         AppRequestToken requestToServer = new AppRequestToken();
 
         requestToServer.setEncryptedDataBase64(BaseEncoding.base64().encode(encryptedData));
+        requestToServer.setEncryptedDataHmacBase64(BaseEncoding.base64().encode(encryptedDataHMac));
         requestToServer.setIvBase64(BaseEncoding.base64().encode(iv));
         requestToServer.setSeedBase64(BaseEncoding.base64().encode(seed));
-        requestToServer.setEncryptedDataHmacBase64(BaseEncoding.base64().encode(encryptedDataHMac));
         requestToServer.setServiceTicket(serviceTicketBase64Param);
 
         try {

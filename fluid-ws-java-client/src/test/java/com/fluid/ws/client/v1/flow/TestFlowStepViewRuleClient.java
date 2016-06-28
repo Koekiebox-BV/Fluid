@@ -82,7 +82,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -110,10 +110,10 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowClient flowClient = new FlowClient(serviceTicket);
-        FlowStepClient flowStepClient = new FlowStepClient(serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
+        FlowStepClient flowStepClient = new FlowStepClient(BASE_URL,serviceTicket);
 
-        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(serviceTicket);
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
         //THE COMPILE RULES THAT PASSES...
         for(String passRule : TestStatics.ViewRules.Pass.COMPILE_LIST_PASS)

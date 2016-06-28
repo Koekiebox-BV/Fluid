@@ -37,19 +37,13 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 public class UserClient extends ABaseClientWS {
 
     /**
-     * Default constructor.
-     */
-    public UserClient() {
-        super();
-    }
-
-    /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param serviceTicketParam The Server issued Service Ticket.
      */
-    public UserClient(String serviceTicketParam) {
-        super();
+    public UserClient(String endpointBaseUrlParam, String serviceTicketParam) {
+        super(endpointBaseUrlParam);
 
         this.setServiceTicket(serviceTicketParam);
     }

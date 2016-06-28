@@ -93,7 +93,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -121,7 +121,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -181,7 +181,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -241,7 +241,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -301,7 +301,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -362,7 +362,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -463,7 +463,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -563,7 +563,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -623,7 +623,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -683,7 +683,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();

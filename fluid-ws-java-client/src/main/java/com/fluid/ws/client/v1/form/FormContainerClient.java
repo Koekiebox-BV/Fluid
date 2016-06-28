@@ -39,19 +39,15 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 public class FormContainerClient extends ABaseClientWS {
 
     /**
-     * Default constructor.
-     */
-    public FormContainerClient() {
-        super();
-    }
-
-    /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param serviceTicketParam The Server issued Service Ticket.
      */
-    public FormContainerClient(String serviceTicketParam) {
-        super();
+    public FormContainerClient(
+            String endpointBaseUrlParam,
+            String serviceTicketParam) {
+        super(endpointBaseUrlParam);
 
         this.setServiceTicket(serviceTicketParam);
     }

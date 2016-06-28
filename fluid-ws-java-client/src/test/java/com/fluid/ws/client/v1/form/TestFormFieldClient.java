@@ -18,8 +18,6 @@ package com.fluid.ws.client.v1.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +29,8 @@ import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -171,7 +171,7 @@ public class TestFormFieldClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -199,7 +199,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -259,7 +259,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -326,7 +326,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -393,7 +393,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -456,7 +456,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -516,7 +516,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -586,7 +586,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -646,7 +646,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -746,7 +746,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -846,7 +846,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -946,7 +946,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1046,7 +1046,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1106,7 +1106,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1166,7 +1166,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1226,7 +1226,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1296,7 +1296,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1364,7 +1364,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -1430,8 +1430,8 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
-        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL, serviceTicket);
 
         //0. Text Plain...
         Field tempTextPlainToCreate = new Field();

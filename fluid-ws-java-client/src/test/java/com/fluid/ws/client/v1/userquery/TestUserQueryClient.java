@@ -102,7 +102,7 @@ public class TestUserQueryClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -130,7 +130,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserQueryClient userQueryClient = new UserQueryClient(serviceTicket);
+        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
         //1. Text...
         UserQuery toCreate = new UserQuery();
@@ -190,7 +190,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserQueryClient userQueryClient = new UserQueryClient(serviceTicket);
+        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
         UserQuery userQueryToExec = new UserQuery();
         userQueryToExec.setName("Client is Input");

@@ -15,8 +15,6 @@
 
 package com.fluid.ws.client.v1.flow;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +25,8 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -54,7 +54,7 @@ public class TestFlowClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -82,7 +82,7 @@ public class TestFlowClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowClient flowClient = new FlowClient(serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
 
         //1. The Test Flow...
         Flow toCreate = new Flow();
@@ -139,7 +139,7 @@ public class TestFlowClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowClient flowClient = new FlowClient(serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
 
         //1. The Test Flow...
         Flow toCreate = new Flow();

@@ -37,19 +37,15 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 public class RoleClient extends ABaseClientWS {
 
     /**
-     * Default constructor.
-     */
-    public RoleClient() {
-        super();
-    }
-
-    /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param serviceTicketParam The Server issued Service Ticket.
      */
-    public RoleClient(String serviceTicketParam) {
-        super();
+    public RoleClient(
+            String endpointBaseUrlParam,
+            String serviceTicketParam) {
+        super(endpointBaseUrlParam);
 
         this.setServiceTicket(serviceTicketParam);
     }

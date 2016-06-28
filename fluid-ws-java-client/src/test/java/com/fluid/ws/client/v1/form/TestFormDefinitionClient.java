@@ -75,7 +75,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -103,9 +103,9 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(serviceTicket);
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
-        FlowClient flowClient = new FlowClient(serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
 
         //1. Create 2 Form Fields...
         Field fieldFirst = new Field();
@@ -233,8 +233,8 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(serviceTicket);
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. The Test Flow - NO FIELDS...
         Form toCreate = new Form();
@@ -323,8 +323,8 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(serviceTicket);
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //1. Text...
         Field fieldFirst = new Field();
@@ -373,8 +373,8 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(serviceTicket);
-        FormFieldClient formFieldClient = new FormFieldClient(serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
 
         //Create a Field...
         Field fieldFirst = new Field();

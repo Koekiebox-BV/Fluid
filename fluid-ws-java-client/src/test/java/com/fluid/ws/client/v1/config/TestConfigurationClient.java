@@ -15,8 +15,6 @@
 
 package com.fluid.ws.client.v1.config;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +25,8 @@ import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 16/04/16.
@@ -50,7 +50,7 @@ public class TestConfigurationClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -78,7 +78,7 @@ public class TestConfigurationClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        ConfigurationClient configurationClient = new ConfigurationClient(serviceTicket);
+        ConfigurationClient configurationClient = new ConfigurationClient(BASE_URL, serviceTicket);
 
         //1. Fetch...
         Configuration fetchedConfig =
@@ -106,7 +106,7 @@ public class TestConfigurationClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        ConfigurationClient configurationClient = new ConfigurationClient(serviceTicket);
+        ConfigurationClient configurationClient = new ConfigurationClient(BASE_URL, serviceTicket);
 
         //1. Fetch...
         ConfigurationListing fetchedConfigs = configurationClient.getAllConfigurations();

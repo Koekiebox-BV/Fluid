@@ -31,6 +31,15 @@ import org.json.JSONObject;
 public abstract class ABaseFieldClient extends ABaseClientWS{
 
     /**
+     * Creates a new client and sets the Base Endpoint URL.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     */
+    public ABaseFieldClient(String endpointBaseUrlParam) {
+        super(endpointBaseUrlParam);
+    }
+
+    /**
      * Meta-Data types for Field.
      */
     public static final class FieldMetaData

@@ -208,7 +208,7 @@ public class TestRoleClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         //this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -235,8 +235,8 @@ public class TestRoleClient extends ABaseTestCase {
         String serviceTicket = appRequestToken.getServiceTicket();
 
         //JOB VIEW...
-        FlowClient flowClient = new FlowClient(serviceTicket);
-        FlowStepClient flowStepClient = new FlowStepClient(serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
+        FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, serviceTicket);
 
         //1. The Test Flow Step...
         Flow createdFlow = new Flow();
@@ -270,7 +270,7 @@ public class TestRoleClient extends ABaseTestCase {
                 "RoleToJobView 'First Job View' not set.", firstJobView);
 
         //-- Role to User Query...
-        UserQueryClient userQueryClient = new UserQueryClient(serviceTicket);
+        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
         //1. Text...
         UserQuery userQueryFirst = new UserQuery();
@@ -294,7 +294,7 @@ public class TestRoleClient extends ABaseTestCase {
 
         userQuerySecond = userQueryClient.createUserQuery(userQuerySecond);
 
-        RoleClient roleClient = new RoleClient(serviceTicket);
+        RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
 
         Role roleToCreate = new Role();
         roleToCreate.setName(TestStatics.Create.ROLE_NAME);

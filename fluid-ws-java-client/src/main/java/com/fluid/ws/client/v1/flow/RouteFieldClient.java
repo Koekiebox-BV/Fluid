@@ -40,19 +40,15 @@ import com.fluid.ws.client.v1.ABaseFieldClient;
 public class RouteFieldClient extends ABaseFieldClient {
 
     /**
-     * Default constructor.
-     */
-    public RouteFieldClient() {
-        super();
-    }
-
-    /**
      * Constructor that sets the Service Ticket from authentication.
      *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param serviceTicketParam The Server issued Service Ticket.
      */
-    public RouteFieldClient(String serviceTicketParam) {
-        super();
+    public RouteFieldClient(
+            String endpointBaseUrlParam,
+            String serviceTicketParam) {
+        super(endpointBaseUrlParam);
 
         this.setServiceTicket(serviceTicketParam);
     }

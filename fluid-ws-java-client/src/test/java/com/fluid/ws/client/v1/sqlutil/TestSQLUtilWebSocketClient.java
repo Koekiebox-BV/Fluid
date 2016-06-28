@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -34,6 +32,8 @@ import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
 import com.google.common.io.BaseEncoding;
+
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -50,7 +50,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -87,6 +87,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         SQLUtilWebSocketGetTableFormsClient webSocketClient =
                 new SQLUtilWebSocketGetTableFormsClient(
+                        BASE_URL,
                         null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true);
 
         long start = System.currentTimeMillis();
@@ -161,6 +162,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         SQLUtilWebSocketGetDescendantsClient webSocketClient =
                 new SQLUtilWebSocketGetDescendantsClient(
+                        BASE_URL,
                         null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
 
         long start = System.currentTimeMillis();

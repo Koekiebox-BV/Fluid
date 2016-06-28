@@ -155,7 +155,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient();
+        this.loginClient = new LoginClient(BASE_URL);
     }
 
     /**
@@ -183,10 +183,10 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowClient flowClient = new FlowClient(serviceTicket);
-        FlowStepClient flowStepClient = new FlowStepClient(serviceTicket);
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
-        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
+        FlowStepClient flowStepClient = new FlowStepClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
         //1. The Test Flow Step...
         Flow createdFlow = new Flow();
@@ -254,14 +254,14 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         Field fieldZool = new Field();
         fieldZool.setFieldName("Zool JUnit");
         fieldZool.setFieldDescription("Field Description");
         fieldZool = routeFieldClient.createFieldTextPlain(fieldZool);
 
-        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(serviceTicket);
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
         //THE COMPILE RULES THAT PASSES...
         for(String passRule : TestStatics.EntryRules.Pass.Set.COMPILE_LIST_PASS)
@@ -326,7 +326,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         Field fieldZool = new Field();
         String fieldName = "Zool JUnit";
@@ -335,7 +335,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         fieldZool.setFieldDescription("Field Description");
         fieldZool = routeFieldClient.createFieldTextPlain(fieldZool);
 
-        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(serviceTicket);
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, serviceTicket);
 
         //1. Form...
         Form frm = new Form(TestStatics.FORM_DEFINITION);
@@ -350,11 +350,11 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         flowToCreate.setName(TestFlowClient.TestStatics.FLOW_NAME);
         flowToCreate.setDescription(TestFlowClient.TestStatics.FLOW_DESCRIPTION);
 
-        FlowClient flowClient = new FlowClient(serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
         Flow createdFlow = flowClient.createFlow(flowToCreate);
 
         //Create...
-        FlowItemClient flowItmClient = new FlowItemClient(serviceTicket);
+        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL,serviceTicket);
         itemToSend = flowItmClient.createFlowItem(itemToSend, createdFlow.getName());
 
         //Wait for 1 seconds...
