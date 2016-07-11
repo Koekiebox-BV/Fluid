@@ -60,7 +60,34 @@ public class TestLoginClient extends ABaseTestCase {
             return;
         }
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+        //First...
+        AppRequestToken firstAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(firstAppRequestToken);
+
+        String firstServiceTicket = firstAppRequestToken.getServiceTicket();
+        TestCase.assertNotNull(firstServiceTicket);
+        System.out.println("1st Token: "+firstServiceTicket);
+
+        //Second...
+        AppRequestToken secondAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(secondAppRequestToken);
+
+        String secondServiceTicket = secondAppRequestToken.getServiceTicket();
+        TestCase.assertNotNull(secondServiceTicket);
+        System.out.println("2nd Token: "+secondServiceTicket);
+
+        TestCase.assertNotSame("(1 and 2) Service Tickets not allowed to match."
+                ,firstServiceTicket,secondServiceTicket);
+
+        //Third...
+        AppRequestToken thirdAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(thirdAppRequestToken);
+
+        String thirdServiceTicket = thirdAppRequestToken.getServiceTicket();
+        TestCase.assertNotNull(thirdServiceTicket);
+        System.out.println("3rd Token: "+thirdServiceTicket);
+
+        TestCase.assertNotSame("(2 and 3) Service Tickets not allowed to match."
+                ,secondServiceTicket,thirdServiceTicket);
     }
 }
