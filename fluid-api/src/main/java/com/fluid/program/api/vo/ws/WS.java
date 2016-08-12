@@ -1481,6 +1481,33 @@ public class WS {
         }
 
         /**
+         * The Mandrill Inbound Mail Web Service mappings.
+         */
+        public static final class MandrillInbound
+        {
+            /**
+             * Role mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/mandrill_inbound");
+
+                //Create...
+                public static final String CONSUME = ("/");
+
+                /**
+                 * Root for Mandrill inbound.
+                 *
+                 * @return {@code /mandrill_inbound/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+            }
+        }
+
+        /**
          * The Configuration Web Service mappings.
          *
          * @see com.fluid.program.api.vo.config.Configuration

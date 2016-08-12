@@ -198,10 +198,24 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
         }
 
         URI uri = URI.create(webServiceURLParam);
+        if(uri == null)
+        {
+            throw new FluidClientException(
+                    "URI created from '"+webServiceURLParam+"' is not set.",
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
 
         StringBuilder returnBuffer = new StringBuilder();
 
         String scheme = uri.getScheme();
+
+        if(scheme == null)
+        {
+            throw new FluidClientException(
+                    "Unable to get scheme from '"+webServiceURLParam+"' URL.",
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+
         scheme = scheme.trim().toLowerCase();
 
         //https://localhost:8443/fluid-ws/
@@ -215,7 +229,6 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
             returnBuffer.append(Constant.WSS);
         }
         else {
-
             returnBuffer.append(uri.getScheme());
         }
 
