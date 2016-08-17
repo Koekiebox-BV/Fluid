@@ -53,7 +53,7 @@ import com.fluid.program.api.vo.flow.Flow;
  * @see Field
  * @see Flow
  */
-public class Form extends ABaseFluidJSONObject {
+public class Form extends ABaseFluidElasticCacheJSONObject {
 
     private String formType;
     private String formDescription;
@@ -65,6 +65,9 @@ public class Form extends ABaseFluidJSONObject {
 
     private List<Field> formFields;
     private List<Flow> associatedFlows;
+
+    private Long ancestorId;
+    private List<Long> descendantIds;
 
     private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
 
@@ -82,11 +85,14 @@ public class Form extends ABaseFluidJSONObject {
 
         public static final String FORM_FIELDS = "formFields";
         public static final String ASSOCIATED_FLOWS = "associatedFlows";
+
+        //Fields used for SearchEngine indexing...
+        public static final String ANCESTOR_ID = "ancestorId";
+        public static final String DESCENDANT_IDS = "descendantIds";
     }
 
     /**
      * Default constructor.
-	 * 
 	 */
     public Form() {
         super();
@@ -685,6 +691,140 @@ public class Form extends ABaseFluidJSONObject {
     }
 
     /**
+     * Conversion to {@code JSONObject} for storage in ElasticCache for {@code Form}.
+     *
+     * @return {@code JSONObject} representation of {@code Form}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see Form
+     */
+    @Override
+    public JSONObject toJsonForEC() throws JSONException {
+
+        JSONObject returnVal = super.toJsonObject();
+
+        //Form Type...
+        if(this.getFormType() != null)
+        {
+            returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
+        }
+
+        //Title...
+        if(this.getTitle() != null)
+        {
+            returnVal.put(JSONMapping.TITLE, this.getTitle());
+        }
+
+        //Form Description...
+        if(this.getFormDescription() != null)
+        {
+            returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
+        }
+
+        //Date Created...
+        if(this.getDateCreated() != null)
+        {
+            returnVal.put(JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated()));
+        }
+
+        //Date Last Updated...
+        if(this.getDateLastUpdated() != null)
+        {
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        }
+
+        //Form Fields...
+        if(this.getFormFields() != null && !this.getFormFields().isEmpty())
+        {
+            for(Field toAdd :this.getFormFields())
+            {
+                //Test Name...
+                if(toAdd.getFieldName() == null || toAdd.getFieldName().trim().isEmpty())
+                {
+                    continue;
+                }
+
+                //Test Value...
+                if(toAdd.getFieldValue() == null)
+                {
+                    continue;
+                }
+
+                //Table Field...
+                if(toAdd.getFieldValue() instanceof TableField)
+                {
+                    TableField tableField = (TableField)toAdd.getFieldValue();
+
+                    if(tableField.getTableRecords() != null &&
+                            !tableField.getTableRecords().isEmpty())
+                    {
+                        JSONArray array = new JSONArray();
+
+                        for(Form record : tableField.getTableRecords())
+                        {
+                            if(record.getId() == null)
+                            {
+                                continue;
+                            }
+
+                            array.put(record.getId());
+                        }
+
+                        returnVal.put(toAdd.getFieldName(), array);
+                    }
+                }
+                //Multiple Choice...
+                else if(toAdd.getFieldValue() instanceof MultiChoice)
+                {
+                    MultiChoice multiChoice = (MultiChoice)toAdd.getFieldValue();
+
+                    if(multiChoice.getSelectedMultiChoices() != null &&
+                            !multiChoice.getSelectedMultiChoices().isEmpty())
+                    {
+                        JSONArray array = new JSONArray();
+
+                        for(String selectedChoice : multiChoice.getSelectedMultiChoices())
+                        {
+                            array.put(selectedChoice);
+                        }
+
+                        returnVal.put(toAdd.getFieldName(), array);
+                    }
+                }
+                //Everything else...
+                else
+                {
+                    returnVal.put(toAdd.getFieldName(), toAdd.getFieldValue());
+                }
+            }
+        }
+
+        //Ancestor...
+        if(this.getAncestorId() != null)
+        {
+            returnVal.put(JSONMapping.ANCESTOR_ID, this.getAncestorId());
+        }
+
+        //Descendant Ids...
+        if(this.getDescendantIds() != null && !this.getDescendantIds().isEmpty())
+        {
+            JSONArray array = new JSONArray();
+
+            for(Long formId : this.getDescendantIds())
+            {
+                array.put(formId);
+            }
+
+            returnVal.put(JSONMapping.DESCENDANT_IDS, array);
+        }
+
+        return returnVal;
+    }
+
+    /**
      * Prints all the Fields and their values to the standard
      * {@code System.out}.
      *
@@ -870,5 +1010,41 @@ public class Form extends ABaseFluidJSONObject {
      */
     public void setAssociatedFlows(List<Flow> associatedFlowsParam) {
         this.associatedFlows = associatedFlowsParam;
+    }
+
+    /**
+     * Gets the Ancestor Id as a {@code Long} for {@code this} {@code Form}.
+     *
+     * @return Ancestor Id.
+     */
+    public Long getAncestorId() {
+        return this.ancestorId;
+    }
+
+    /**
+     * Sets the Ancestor Id as a {@code Long} for {@code this} {@code Form}.
+     *
+     * @param ancestorIdParam Ancestor Id.
+     */
+    public void setAncestorId(Long ancestorIdParam) {
+        this.ancestorId = ancestorIdParam;
+    }
+
+    /**
+     * Gets the Descendant Ids as a {@code List<Long>} for {@code this} {@code Form}.
+     *
+     * @return List of Descendant Form Ids.
+     */
+    public List<Long> getDescendantIds() {
+        return this.descendantIds;
+    }
+
+    /**
+     * Sets the Descendant Ids as a {@code List<Long>} for {@code this} {@code Form}.
+     *
+     * @param descendantIdsParam List of Descendant Form Ids.
+     */
+    public void setDescendantIds(List<Long> descendantIdsParam) {
+        this.descendantIds = descendantIdsParam;
     }
 }

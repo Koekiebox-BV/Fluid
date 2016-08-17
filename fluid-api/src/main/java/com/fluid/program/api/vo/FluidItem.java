@@ -16,7 +16,6 @@
 package com.fluid.program.api.vo;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,8 +39,6 @@ import org.json.JSONObject;
  * @see Properties
  */
 public class FluidItem extends ABaseFluidJSONObject {
-
-    private Properties customProperties;
 
     private List<Field> userFields;
     private List<Field> routeFields;
@@ -311,13 +308,6 @@ public class FluidItem extends ABaseFluidJSONObject {
                 fluidItemProperties.add(
                         new FluidItemProperty(jsonPropArray.getJSONObject(index)));
             }
-
-            //Add as Properties...
-            for(FluidItemProperty itemProp :fluidItemProperties)
-            {
-                this.customProperties = new Properties();
-                this.customProperties.put(itemProp.getName(), itemProp.getValue());
-            }
         }
 
         //User Fields...
@@ -408,26 +398,6 @@ public class FluidItem extends ABaseFluidJSONObject {
     public JSONObject toJsonObject() throws JSONException
     {
         JSONObject returnVal = super.toJsonObject();
-
-        //Custom Properties...
-        if(this.getCustomProperties() != null)
-        {
-            Properties properties = this.getCustomProperties();
-            Enumeration propNames = properties.propertyNames();
-
-            JSONArray customProps = new JSONArray();
-
-            while(propNames.hasMoreElements())
-            {
-                String propertyName = propNames.nextElement().toString();
-                String propertyValue = properties.get(propertyName).toString();
-
-                customProps.put(new FluidItemProperty(
-                        propertyName,propertyValue).toJsonObject());
-            }
-
-            returnVal.put(JSONMapping.CUSTOM_PROPERTIES, customProps);
-        }
 
         //Flow...
         if(this.getFlow() != null)
@@ -1154,28 +1124,6 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets all the {@code Properties}.
-     *
-     * @return {@code Properties} for the {@code FluidItem}.
-     *
-     * @see Properties
-     */
-    public Properties getCustomProperties() {
-        return this.customProperties;
-    }
-
-    /**
-     * Sets all the {@code Properties}.
-     *
-     * @param customPropertiesParam {@code Properties} for the {@code FluidItem}.
-     *
-     * @see Properties
-     */
-    public void setCustomProperties(Properties customPropertiesParam) {
-        this.customProperties = customPropertiesParam;
-    }
-
-    /**
      * Gets the {@code FlowState}.
      * 
      * @return {@code FlowState} for {@code this} {@code FluidItem}
@@ -1216,72 +1164,6 @@ public class FluidItem extends ABaseFluidJSONObject {
      */
     public boolean containsAttachments() {
         return (this.attachments != null && !this.attachments.isEmpty());
-    }
-
-    /**
-     * Checks whether the property with {@code propertyNameParam}
-     * is set. The {@code propertyNameParam} is <b>not</b> case sensitive.
-     *
-     * @param propertyNameParam The name of the Property.
-     * @return If the {@code propertyNameParam} Property is set.
-     *
-     * @see Properties
-     */
-    public boolean isPropertySet(String propertyNameParam) {
-        if ((propertyNameParam == null || propertyNameParam.trim().isEmpty()) ||
-                (this.customProperties == null || this.customProperties.isEmpty())) {
-
-            return false;
-        }
-
-        String propVal = this.customProperties.getProperty(propertyNameParam);
-
-        if (propVal == null || propVal.trim().isEmpty()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Gets the {@code String} value of the {@code propertyNameParam}.
-     *
-     * @param propertyNameParam The name of the Property.
-     * @return Property value based on the {@code propertyNameParam}.
-     */
-    public String getStringProperty(String propertyNameParam) {
-        if (this.customProperties == null) {
-            return null;
-        }
-
-        return this.customProperties.getProperty(propertyNameParam);
-    }
-
-    /**
-     * Sets the {@code String} value of the {@code propertyNameParam} to
-     * {@code propertyValueParam}.
-     *
-     * @param propertyNameParam The name of the Property.
-     * @param propertyValueParam The value of the Property.
-     */
-    public void setStringProperty(String propertyNameParam,String propertyValueParam)
-    {
-        if (this.customProperties == null) {
-            this.customProperties = new Properties();
-        }
-
-        //Validate Property Name...
-        if(propertyNameParam == null || propertyNameParam.trim().isEmpty())
-        {
-            return;
-        }
-
-        if(propertyValueParam == null)
-        {
-            propertyValueParam = "";
-        }
-
-        this.customProperties.setProperty(propertyNameParam, propertyValueParam);
     }
 
     /**

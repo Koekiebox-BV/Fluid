@@ -17,6 +17,7 @@ package com.fluid.program.api;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -43,12 +44,16 @@ public interface IActionBase extends Serializable {
      * executes any of the sub Custom Programs.
      *
      * @see javax.sql.DataSource
+     *
+     * @param propertiesParam Properties applicable to each custom program.
      * @param dataSourcesParam A list of created JDBC Data Sources in the system.
      *
      * @throws Exception If a problem occurs.
      *
      */
-    public abstract void init(List<DataSource> dataSourcesParam)
+    public abstract void init(
+            Properties propertiesParam,
+            List<DataSource> dataSourcesParam)
     throws Exception;
 
     /**

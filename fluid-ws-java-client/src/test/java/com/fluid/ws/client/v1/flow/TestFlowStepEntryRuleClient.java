@@ -111,40 +111,6 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
                 public static final String FAIL_01 = "";
             }
         }
-
-        /**
-         *
-         */
-        public static final class ExitRules
-        {
-            /**
-             *
-             */
-            public static final class Pass{
-
-                /**
-                 *
-                 */
-                public static final class Set{
-                    public static final String PASS_01 = "SET ROUTE.Zool JUnit TO 'Cool'";
-                }
-
-                /**
-                 *
-                 */
-                public static final class RouteTo{
-                    public static final String PASS_01 = "ROUTE TO 'Exit'";
-                }
-            }
-
-            /**
-             *
-             */
-            public static final class Fail{
-
-                public static final String FAIL_01 = "";
-            }
-        }
     }
 
     /**
