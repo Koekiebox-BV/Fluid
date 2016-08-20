@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.flow.Flow;
+import com.fluid.program.api.vo.user.User;
 
 /**
  * <p>
@@ -60,6 +61,10 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
 
     private String title;
 
+    private String flowState;
+    private String state;
+    private User currentUser;
+
     private Date dateCreated;
     private Date dateLastUpdated;
 
@@ -79,6 +84,9 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         public static final String FORM_TYPE = "formType";
         public static final String FORM_DESCRIPTION = "formDescription";
         public static final String TITLE = "title";
+        public static final String STATE = "state";
+        public static final String FLOW_STATE = "flowState";
+        public static final String CURRENT_USER = "currentUser";
 
         public static final String DATE_CREATED = "dateCreated";
         public static final String DATE_LAST_UPDATED = "dateLastUpdated";
@@ -130,6 +138,37 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         //Title...
         if (!this.jsonObject.isNull(JSONMapping.TITLE)) {
             this.setTitle(this.jsonObject.getString(JSONMapping.TITLE));
+        }
+
+        //Flow State...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW_STATE)) {
+            this.setFlowState(this.jsonObject.getString(JSONMapping.FLOW_STATE));
+        }
+
+        //State...
+        if (!this.jsonObject.isNull(JSONMapping.STATE)) {
+            this.setState(this.jsonObject.getString(JSONMapping.STATE));
+        }
+
+        //User...
+        if (!this.jsonObject.isNull(JSONMapping.CURRENT_USER)) {
+
+            JSONObject jsonObj = this.jsonObject.getJSONObject(JSONMapping.CURRENT_USER);
+            User currentUser = new User();
+
+            //Id
+            if (!jsonObj.isNull(ABaseFluidJSONObject.JSONMapping.ID)) {
+
+                currentUser.setId(jsonObj.getLong(ABaseFluidJSONObject.JSONMapping.ID));
+            }
+
+            //Username
+            if (!jsonObj.isNull(User.JSONMapping.USERNAME)) {
+
+                currentUser.setUsername(jsonObj.getString(User.JSONMapping.USERNAME));
+            }
+
+            this.setCurrentUser(currentUser);
         }
 
         //Form Type...
@@ -739,6 +778,38 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
         }
 
+        //State...
+        if(this.getState() != null)
+        {
+            returnVal.put(JSONMapping.STATE, this.getState());
+        }
+
+        //Flow State...
+        if(this.getFlowState() != null)
+        {
+            returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState());
+        }
+
+        //Current User...
+        if(this.getCurrentUser() != null)
+        {
+            JSONObject currentUserJsonObj = new JSONObject();
+
+            if(this.getCurrentUser().getId() != null)
+            {
+                currentUserJsonObj.put(ABaseFluidJSONObject.JSONMapping.ID,
+                        this.getCurrentUser().getId());
+            }
+
+            if(this.getCurrentUser().getUsername() != null)
+            {
+                currentUserJsonObj.put(User.JSONMapping.USERNAME,
+                        this.getCurrentUser().getUsername());
+            }
+
+            returnVal.put(JSONMapping.CURRENT_USER,currentUserJsonObj);
+        }
+
         //Date Created...
         if(this.getDateCreated() != null)
         {
@@ -904,6 +975,24 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             this.setTitle(jsonObjectParam.getString(JSONMapping.FORM_TYPE));
         }
 
+        //Flow State...
+        if(jsonObjectParam.isNull(JSONMapping.FLOW_STATE))
+        {
+            this.setFlowState(null);
+        }
+        else {
+            this.setFlowState(jsonObjectParam.getString(JSONMapping.FLOW_STATE));
+        }
+
+        //State...
+        if(jsonObjectParam.isNull(JSONMapping.STATE))
+        {
+            this.setState(null);
+        }
+        else {
+            this.setState(jsonObjectParam.getString(JSONMapping.STATE));
+        }
+
         //Form Description...
         if(jsonObjectParam.isNull(JSONMapping.FORM_DESCRIPTION))
         {
@@ -933,6 +1022,34 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             this.setDateLastUpdated(new Date(
                     jsonObjectParam.getLong(JSONMapping.DATE_LAST_UPDATED)));
         }
+
+        //Current User...
+        if(jsonObjectParam.isNull(JSONMapping.CURRENT_USER))
+        {
+            this.setCurrentUser(null);
+        }
+        else {
+
+            JSONObject currUserJsonObj =
+                    jsonObjectParam.getJSONObject(JSONMapping.CURRENT_USER);
+
+            User currentUser = new User();
+
+            if(!currUserJsonObj.isNull(ABaseFluidJSONObject.JSONMapping.ID))
+            {
+                currentUser.setId(currUserJsonObj.getLong(
+                        ABaseFluidJSONObject.JSONMapping.ID));
+            }
+
+            if(!currUserJsonObj.isNull(User.JSONMapping.USERNAME))
+            {
+                currentUser.setUsername(currUserJsonObj.getString(
+                        User.JSONMapping.USERNAME));
+            }
+
+            this.setCurrentUser(currentUser);
+        }
+
 
         //Form Fields...
         if(formFieldsParam != null && !formFieldsParam.isEmpty())
@@ -1262,6 +1379,60 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         }
 
         this.title = titleParam;
+    }
+
+    /**
+     * Gets the Flow State as in Fluid.
+     *
+     * @return Flow State.
+     */
+    public String getFlowState() {
+        return this.flowState;
+    }
+
+    /**
+     * <p>Sets the Flow State as in Fluid.
+     *
+     * @param flowStateParam Flow State.
+     */
+    public void setFlowState(String flowStateParam) {
+        this.flowState = flowStateParam;
+    }
+
+    /**
+     * Gets the State as in Fluid.
+     *
+     * @return Flow State.
+     */
+    public String getState() {
+        return this.state;
+    }
+
+    /**
+     * <p>Sets the State as in Fluid.
+     *
+     * @param stateParam State.
+     */
+    public void setState(String stateParam) {
+        this.state = stateParam;
+    }
+
+    /**
+     * Gets the Current User as in Fluid.
+     *
+     * @return Current User.
+     */
+    public User getCurrentUser() {
+        return this.currentUser;
+    }
+
+    /**
+     * <p>Sets the Current User as in Fluid.
+     *
+     * @param currentUserParam Current User.
+     */
+    public void setCurrentUser(User currentUserParam) {
+        this.currentUser = currentUserParam;
     }
 
     /**
