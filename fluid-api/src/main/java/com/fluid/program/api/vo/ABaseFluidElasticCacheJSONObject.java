@@ -15,6 +15,8 @@
 
 package com.fluid.program.api.vo;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,12 +50,26 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
     }
 
     /**
-     * Conversion to {@code JSONObject} for storage in ElasticCache.
+     * Conversion to {@code JSONObject} for storage in ElasticSearch.
      *
      * @return {@code JSONObject} representation of {@code Form}
      * @throws JSONException If there is a problem with the JSON Body.
      *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
-    public abstract JSONObject toJsonForEC() throws JSONException;
+    public abstract JSONObject toJsonForElasticSearch() throws JSONException;
+
+    /**
+     * Populate the object based on the ElasticSearch JSON structure.
+     *
+     * @param jsonObjectParam The JSON object to populate from.
+     * @param formFieldsParam The Form Fields to use.
+     *
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    public abstract void populateFromElasticSearchJson(
+            JSONObject jsonObjectParam,
+            List<Field> formFieldsParam) throws JSONException;
 }

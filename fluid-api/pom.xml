@@ -87,6 +87,14 @@
             <scope>compile</scope>
             <version>2.0.0</version>
         </dependency>
+
+        <!--ElasticSearch-->
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>provided</scope>
+            <version>2.3.5</version>
+        </dependency>
     </dependencies>
 
     <build>

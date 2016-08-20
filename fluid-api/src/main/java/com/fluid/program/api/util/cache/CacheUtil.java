@@ -21,8 +21,10 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
+import com.fluid.program.api.util.ABaseUtil;
 import com.fluid.program.api.util.cache.exception.FluidCacheException;
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.MultiChoice;
@@ -36,8 +38,10 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  *
  * @author jasonbruwer on 2016/02/29.
  * @since 1.0
+ *
+ * @see ABaseUtil
  */
-public class CacheUtil {
+public class CacheUtil extends ABaseUtil {
 
     private static final String NULL = "null";
     private static final String DASH = "-";
@@ -46,6 +50,16 @@ public class CacheUtil {
 
     private String cacheHost = null;
     private int cachePort = -1;
+
+    /**
+     *
+     */
+    private static class PropName
+    {
+        public static final String MEMORY_CACHE_TYPE = "MemoryCacheType";
+        public static final String MEMORY_CACHE_HOSTNAME = "MemoryCacheHostname";
+        public static final String MEMORY_CACHE_PORT_NUMBER = "MemoryCachePortNumber";
+    }
 
     /**
      * The FlowJob data type description mappings.
@@ -161,6 +175,20 @@ public class CacheUtil {
 
     /**
      * New instance of cache util using the
+     * provided {@code propertiesParam}.
+     *
+     * @param propertiesParam The Properties to extract the cache configs from.
+     */
+    public CacheUtil(Properties propertiesParam) {
+        this(
+                getStringPropertyFromProperties(
+                        propertiesParam, PropName.MEMORY_CACHE_HOSTNAME),
+                getIntPropertyFromProperties(
+                        propertiesParam, PropName.MEMORY_CACHE_PORT_NUMBER));
+    }
+
+    /**
+     * New instance of cache util using the
      * provided Host {@code cacheHostParam} and
      * Port {@code cachePortParam}.
      *
@@ -186,7 +214,6 @@ public class CacheUtil {
 
         this.initXMemcachedClient();
     }
-
 
     /**
      * Retrieves the {@code CachedFieldValue} value stored under

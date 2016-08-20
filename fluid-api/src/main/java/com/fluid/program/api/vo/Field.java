@@ -107,6 +107,25 @@ public class Field extends ABaseFluidJSONObject {
     }
 
     /**
+     * Constructor to set the Id, Field Name, Value and Type.
+     *
+     * @param fieldIdParam Field Id.
+     * @param fieldNameParam Sets Field Name.
+     * @param fieldValueParam Sets Field Value.
+     * @param fieldTypeParam Sets Field Type.
+     */
+    public Field(Long fieldIdParam,
+                 String fieldNameParam,
+                 Object fieldValueParam,
+                 Type fieldTypeParam) {
+        this(fieldIdParam);
+
+        this.setFieldName(fieldNameParam);
+        this.setFieldValue(fieldValueParam);
+        this.setTypeAsEnum(fieldTypeParam);
+    }
+
+    /**
      * Sets the Id associated with a Field.
      *
      * @param fieldIdParam Field Id.

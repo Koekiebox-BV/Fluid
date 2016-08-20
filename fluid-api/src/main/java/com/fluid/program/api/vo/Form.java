@@ -700,14 +700,31 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @see Form
      */
     @Override
-    public JSONObject toJsonForEC() throws JSONException {
+    public JSONObject toJsonForElasticSearch() throws JSONException {
 
         JSONObject returnVal = super.toJsonObject();
 
         //Form Type...
         if(this.getFormType() != null)
         {
-            returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
+            Long formTypeNumeric;
+
+            try
+            {
+                formTypeNumeric = Long.parseLong(this.getFormType());
+            }
+            catch (NumberFormatException nfe)
+            {
+                formTypeNumeric = null;
+            }
+
+            if(formTypeNumeric == null)
+            {
+                returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
+            }
+            else {
+                returnVal.put(JSONMapping.FORM_TYPE, formTypeNumeric);
+            }
         }
 
         //Title...
@@ -741,17 +758,13 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         {
             for(Field toAdd :this.getFormFields())
             {
-                //Test Name...
-                if(toAdd.getFieldName() == null || toAdd.getFieldName().trim().isEmpty())
+                if(!this.doesFieldQualifyForElasticSearchInsert(toAdd))
                 {
                     continue;
                 }
 
-                //Test Value...
-                if(toAdd.getFieldValue() == null)
-                {
-                    continue;
-                }
+                long fieldId = toAdd.getId().longValue();
+                String fieldIdAsString = Long.toString(fieldId);
 
                 //Table Field...
                 if(toAdd.getFieldValue() instanceof TableField)
@@ -773,7 +786,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
                             array.put(record.getId());
                         }
 
-                        returnVal.put(toAdd.getFieldName(), array);
+                        returnVal.put(fieldIdAsString, array);
                     }
                 }
                 //Multiple Choice...
@@ -788,16 +801,34 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
 
                         for(String selectedChoice : multiChoice.getSelectedMultiChoices())
                         {
-                            array.put(selectedChoice);
+                            Long selectedChoiceAsLong;
+
+                            try{
+                                selectedChoiceAsLong = Long.parseLong(selectedChoice);
+                            }
+                            catch (NumberFormatException nfe)
+                            {
+                                selectedChoiceAsLong = null;
+                            }
+
+                            //When not long, store as is...
+                            if(selectedChoiceAsLong == null)
+                            {
+                                array.put(selectedChoice);
+                            }
+                            else
+                            {
+                                array.put(selectedChoiceAsLong.longValue());
+                            }
                         }
 
-                        returnVal.put(toAdd.getFieldName(), array);
+                        returnVal.put(fieldIdAsString, array);
                     }
                 }
                 //Everything else...
                 else
                 {
-                    returnVal.put(toAdd.getFieldName(), toAdd.getFieldValue());
+                    returnVal.put(fieldIdAsString, toAdd.getFieldValue());
                 }
             }
         }
@@ -822,6 +853,309 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         }
 
         return returnVal;
+    }
+
+    /**
+     * Populate the object based on the ElasticSearch JSON structure.
+     *
+     * @param jsonObjectParam The JSON object to populate from.
+     * @param formFieldsParam The Form Fields to use for mapping.
+     *
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public void populateFromElasticSearchJson(
+            JSONObject jsonObjectParam,
+            List<Field> formFieldsParam) throws JSONException {
+
+        this.jsonObject = jsonObjectParam;
+        if(jsonObjectParam == null)
+        {
+            return;
+        }
+
+        //Id...
+        if(jsonObjectParam.isNull(ABaseFluidJSONObject.JSONMapping.ID))
+        {
+            this.setId(null);
+        }
+        else {
+            this.setId(jsonObjectParam.getLong(ABaseFluidJSONObject.JSONMapping.ID));
+        }
+
+        //Form Type...
+        if(jsonObjectParam.isNull(JSONMapping.FORM_TYPE))
+        {
+            this.setFormType(null);
+        }
+        else {
+            Object formTypeObj = jsonObjectParam.get(JSONMapping.FORM_TYPE);
+            this.setFormType(formTypeObj.toString());
+        }
+
+        //Title...
+        if(jsonObjectParam.isNull(JSONMapping.TITLE))
+        {
+            this.setTitle(null);
+        }
+        else {
+            this.setTitle(jsonObjectParam.getString(JSONMapping.FORM_TYPE));
+        }
+
+        //Form Description...
+        if(jsonObjectParam.isNull(JSONMapping.FORM_DESCRIPTION))
+        {
+            this.setFormDescription(null);
+        }
+        else {
+            this.setFormDescription(jsonObjectParam.getString(
+                    JSONMapping.FORM_DESCRIPTION));
+        }
+
+        //Date Created...
+        if(jsonObjectParam.isNull(JSONMapping.DATE_CREATED))
+        {
+            this.setDateCreated(null);
+        }
+        else {
+            this.setDateCreated(new Date(
+                    jsonObjectParam.getLong(JSONMapping.DATE_CREATED)));
+        }
+
+        //Date Last Updated...
+        if(jsonObjectParam.isNull(JSONMapping.DATE_LAST_UPDATED))
+        {
+            this.setDateLastUpdated(null);
+        }
+        else {
+            this.setDateLastUpdated(new Date(
+                    jsonObjectParam.getLong(JSONMapping.DATE_LAST_UPDATED)));
+        }
+
+        //Form Fields...
+        if(formFieldsParam != null && !formFieldsParam.isEmpty())
+        {
+            List<Field> fieldsToSet = new ArrayList();
+
+            for(Field formField : formFieldsParam)
+            {
+                if(formField.getId() == null)
+                {
+                    continue;
+                }
+
+                Long formFieldId = formField.getId();
+                String fieldIdAsString = Long.toString(formFieldId);
+
+                if(jsonObjectParam.isNull(fieldIdAsString))
+                {
+                    continue;
+                }
+
+                Field.Type type;
+                if((type = formField.getTypeAsEnum()) == null)
+                {
+                    continue;
+                }
+
+                Object formFieldValue = jsonObjectParam.get(fieldIdAsString);
+
+                Field fieldToAdd = null;
+
+                switch (type)
+                {
+                    case DateTime:
+                        if(formFieldValue instanceof Long)
+                        {
+                            fieldToAdd = new Field(
+                                    formField.getId(),
+                                    formField.getFieldName(),
+                                    new Date(((Long)formFieldValue).longValue()),
+                                    formField.getTypeAsEnum());
+                        }
+                    break;
+                    case Decimal:
+                        if(formFieldValue instanceof Number)
+                        {
+                            fieldToAdd = new Field(
+                                    formField.getId(),
+                                    formField.getFieldName(),
+                                    ((Number)formFieldValue).doubleValue(),
+                                    formField.getTypeAsEnum());
+                        }
+                    break;
+                    case MultipleChoice:
+                        if(formFieldValue instanceof JSONArray)
+                        {
+                            JSONArray casted = (JSONArray)formFieldValue;
+                            List<String> selectedChoices = new ArrayList();
+                            for(int index = 0;index < casted.length();index++)
+                            {
+                                selectedChoices.add(casted.get(index).toString());
+                            }
+
+                            if(selectedChoices.isEmpty())
+                            {
+                                continue;
+                            }
+
+                            MultiChoice multiChoiceToSet = new MultiChoice(selectedChoices);
+
+                            fieldToAdd = new Field(
+                                    formField.getId(),
+                                    formField.getFieldName(),
+                                    multiChoiceToSet,
+                                    formField.getTypeAsEnum());
+                        }
+                    break;
+                    case Table:
+                        if(formFieldValue instanceof JSONArray)
+                        {
+                            JSONArray casted = (JSONArray)formFieldValue;
+                            List<Form> tableRecords = new ArrayList();
+                            for(int index = 0;index < casted.length();index++)
+                            {
+                                Object obAtIndex = casted.get(index);
+
+                                if(obAtIndex instanceof Number)
+                                {
+                                    tableRecords.add(new Form(((Number)obAtIndex).longValue()));
+                                }
+                            }
+
+                            if(tableRecords.isEmpty())
+                            {
+                                continue;
+                            }
+
+                            TableField tableField = new TableField();
+                            tableField.setTableRecords(tableRecords);
+
+                            fieldToAdd = new Field(
+                                    formField.getId(),
+                                    formField.getFieldName(),
+                                    tableField,
+                                    formField.getTypeAsEnum());
+                        }
+                    break;
+                    case Text:
+                        if(formFieldValue instanceof String)
+                        {
+                            fieldToAdd = new Field(
+                                    formField.getId(),
+                                    formField.getFieldName(),
+                                    formFieldValue.toString(),
+                                    formField.getTypeAsEnum());
+                        }
+                    case TrueFalse:
+                        if(formFieldValue instanceof Boolean)
+                        {
+                            fieldToAdd = new Field(
+                                    formField.getId(),
+                                    formField.getFieldName(),
+                                    formFieldValue,
+                                    formField.getTypeAsEnum());
+                        }
+                    break;
+                }
+
+                if(fieldToAdd == null)
+                {
+                    continue;
+                }
+
+                fieldsToSet.add(fieldToAdd);
+            }
+
+            //Confirm there are values...
+            if(fieldsToSet.isEmpty())
+            {
+                this.setFormFields(null);
+            }
+            else {
+                this.setFormFields(fieldsToSet);
+            }
+        }
+        else {
+            this.setFormFields(null);
+        }
+
+        //Ancestor...
+        if(jsonObjectParam.isNull(JSONMapping.ANCESTOR_ID))
+        {
+            this.setAncestorId(null);
+        }
+        else {
+            this.setAncestorId(jsonObjectParam.getLong(JSONMapping.ANCESTOR_ID));
+        }
+
+        //Descendant Ids...
+        if(jsonObjectParam.isNull(JSONMapping.DESCENDANT_IDS))
+        {
+            this.setDescendantIds(null);
+        }
+        else {
+            JSONArray jsonArray = jsonObjectParam.getJSONArray(
+                    JSONMapping.DESCENDANT_IDS);
+            List<Long> descendantIds = new ArrayList();
+            for(int index = 0;index < jsonArray.length();index++)
+            {
+                descendantIds.add(jsonArray.getLong(index));
+            }
+
+            if(descendantIds.isEmpty())
+            {
+                this.setDescendantIds(null);
+            }
+            else {
+                this.setDescendantIds(descendantIds);
+            }
+        }
+    }
+
+    /**
+     * Checks whether the provided {@code fieldParam} qualifies for
+     * insert into Elastic Search.
+     *
+     * @param fieldParam The field to check.
+     * @return Whether the Field Qualifies.
+     */
+    private boolean doesFieldQualifyForElasticSearchInsert(Field fieldParam)
+    {
+        if(fieldParam == null)
+        {
+            return false;
+        }
+
+        //Test Value...
+        Field.Type fieldType;
+        if(((fieldParam.getFieldValue()) == null) ||
+                ((fieldType = fieldParam.getTypeAsEnum()) == null))
+        {
+            return false;
+        }
+
+        //Test the Id...
+        if(fieldParam.getId() == null || fieldParam.getId().longValue() < 1)
+        {
+            return false;
+        }
+
+        //Confirm the type is supported...
+        switch (fieldType){
+
+            case DateTime:
+            case Decimal:
+            case MultipleChoice:
+            case Table:
+            case Text:
+            case TrueFalse:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**

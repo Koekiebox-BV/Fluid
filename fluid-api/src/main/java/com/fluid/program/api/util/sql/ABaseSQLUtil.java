@@ -15,12 +15,12 @@
 
 package com.fluid.program.api.util.sql;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.fluid.program.api.util.ABaseUtil;
 import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 
@@ -35,7 +35,7 @@ import com.fluid.program.api.util.sql.exception.FluidSQLException;
  * @see PreparedStatement
  * @see java.sql.Statement
  */
-public abstract class ABaseSQLUtil implements Serializable {
+public abstract class ABaseSQLUtil extends ABaseUtil {
 
     private Connection connection;
 
