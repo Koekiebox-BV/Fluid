@@ -15,12 +15,7 @@
 
 package com.fluid.program.api.util.elasticsearch;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import com.fluid.program.api.util.ABaseUtil;
 
@@ -32,22 +27,22 @@ import com.fluid.program.api.util.ABaseUtil;
  * @since 1.3
  * @see ABaseUtil
  */
-public class ElasticSearchUtil extends ABaseUtil {
+public class ESFormUtil extends ABaseUtil {
 
     //TODO This needs to be completed once...
+    private Client client;
 
     /**
+     * Initialise with the ElasticSearch client.
      *
+     * @param clientParam The ES Client.
      */
-    public ElasticSearchUtil() {
+    public ESFormUtil(Client clientParam) {
         super();
 
-        try {
-            Client client = TransportClient.builder().build()
-                    .addTransportAddress(
-                            new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
-        } catch (UnknownHostException eParam) {
-            eParam.printStackTrace();
-        }
+        this.client = clientParam;
     }
+
+
+
 }

@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.user.User;
+import com.fluid.program.api.vo.user.UserFieldListing;
 import com.fluid.program.api.vo.user.UserListing;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.FluidClientException;
@@ -290,4 +291,37 @@ public class UserClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
+
+    /**
+     * Retrieves all user field values information by the {@code userParam}.
+     *
+     * @param userParam The {@code User} to retrieve the field values for.
+     * @return User information.
+     *
+     * @see UserFieldListing
+     */
+    public UserFieldListing getAllUserFieldValuesByUser(User userParam)
+    {
+        if(userParam == null)
+        {
+            return null;
+        }
+
+        if(this.serviceTicket != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new UserFieldListing(this.postJson(
+                    userParam,
+                    WS.Path.User.Version1.getUserFieldValuesByUser()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
 }

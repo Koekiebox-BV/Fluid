@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import com.fluid.program.api.vo.role.Role;
 import com.fluid.program.api.vo.user.User;
+import com.fluid.program.api.vo.user.UserFieldListing;
 import com.fluid.program.api.vo.user.UserListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
@@ -236,6 +237,35 @@ public class TestUserClient extends ABaseTestCase {
         TestCase.assertNotNull("User Listing must be set.",userListing.getListing());
         TestCase.assertNotNull("User must be set.",userListing.getListing().get(0));
     }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetAllUserFieldValues() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+        User loggedIn = userClient.getLoggedInUserInformation();
+
+        UserFieldListing userListing = userClient.getAllUserFieldValuesByUser(loggedIn);
+
+        TestCase.assertNotNull(userListing);
+        TestCase.assertTrue("User Field Value listing must be greater than '0'.",
+                userListing.getListingCount() > 0);
+        TestCase.assertNotNull("User Field Value Listing must be set.",userListing.getListing());
+        TestCase.assertNotNull("User Field Value must be set.",userListing.getListing().get(0));
+    }
+
+
 
     /**
      *

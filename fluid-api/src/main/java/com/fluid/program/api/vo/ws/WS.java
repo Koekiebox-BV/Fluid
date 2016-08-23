@@ -1198,6 +1198,7 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String READ_BY_USERNAME = ("/get_by_username");
+                public static final String READ_USER_FIELD_VALUES_BY_USER = ("/get_user_field_values_by_user");
                 public static final String READ_ALL = ("/get_all_users");
 
                 /**
@@ -1359,6 +1360,16 @@ public class WS {
                 public static final String getByUsername()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_USERNAME);
+                }
+
+                /**
+                 * URL Path for User Field Values by User.
+                 *
+                 * @return {@code v1/user/get_user_field_values_by_user}
+                 */
+                public static final String getUserFieldValuesByUser()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_USER_FIELD_VALUES_BY_USER);
                 }
 
                 /**
