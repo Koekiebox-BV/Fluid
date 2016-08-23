@@ -137,21 +137,18 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
      *
      * @return The return value echo messages.
      */
-    private List<String> getEchoMessagesFromReturnValue()
+    private synchronized List<String> getEchoMessagesFromReturnValue()
     {
         List<String> returnListing = new ArrayList();
 
-        synchronized (this.returnValue)
+        for(T returnVal : this.returnValue)
         {
-            for(T returnVal : this.returnValue)
+            if(returnVal.getEcho() == null)
             {
-                if(returnVal.getEcho() == null)
-                {
-                    continue;
-                }
-
-                returnListing.add(returnVal.getEcho());
+                continue;
             }
+
+            returnListing.add(returnVal.getEcho());
         }
 
         return returnListing;
