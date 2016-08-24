@@ -1,6 +1,7 @@
 package com.fluid.ws.client.v1.websocket;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -141,14 +142,19 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     {
         List<String> returnListing = new ArrayList();
 
-        if(this.returnValue == null || this.returnValue.isEmpty())
+        if(this.returnValue == null)
         {
             return returnListing;
         }
 
+        Iterator<T> iterForReturnVal =
+                this.returnValue.iterator();
+
         //Only add where the ECHO message is set...
-        for(T returnVal : this.returnValue)
+        while(iterForReturnVal.hasNext())
         {
+            T returnVal = iterForReturnVal.next();
+
             if(returnVal.getEcho() == null)
             {
                 continue;
@@ -168,7 +174,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
      *
      * @return Whether local return value echo messages contain {@code echoMessageParam}.
      */
-    public synchronized boolean doReturnValueEchoMessageContainAll(
+    public boolean doReturnValueEchoMessageContainAll(
             List<String> echoMessageParam)
     {
         if(echoMessageParam == null || echoMessageParam.isEmpty())
