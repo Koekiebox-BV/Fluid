@@ -141,6 +141,12 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     {
         List<String> returnListing = new ArrayList();
 
+        if(this.returnValue == null || this.returnValue.isEmpty())
+        {
+            return returnListing;
+        }
+
+        //Only add where the ECHO message is set...
         for(T returnVal : this.returnValue)
         {
             if(returnVal.getEcho() == null)
