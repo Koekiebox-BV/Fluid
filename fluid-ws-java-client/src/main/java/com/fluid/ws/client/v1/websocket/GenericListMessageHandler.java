@@ -3,6 +3,7 @@ package com.fluid.ws.client.v1.websocket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.json.JSONObject;
 
@@ -32,8 +33,8 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     public GenericListMessageHandler(IMessageReceivedCallback<T> messageReceivedCallbackParam) {
 
         this.messageReceivedCallback = messageReceivedCallbackParam;
-        this.returnValue = new ArrayList();
-        this.errors = new ArrayList();
+        this.returnValue = new CopyOnWriteArrayList();
+        this.errors = new CopyOnWriteArrayList();
         this.isConnectionClosed = false;
     }
 
@@ -63,10 +64,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
         {
             T messageForm = this.getNewInstanceBy(jsonObject);
 
-            synchronized (this.returnValue)
-            {
-                this.returnValue.add(messageForm);
-            }
+            this.returnValue.add(messageForm);
 
             //Do a message callback...
             if(this.messageReceivedCallback != null)
