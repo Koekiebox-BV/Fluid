@@ -137,7 +137,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
      *
      * @return The return value echo messages.
      */
-    private synchronized List<String> getEchoMessagesFromReturnValue()
+    private List<String> getEchoMessagesFromReturnValue()
     {
         List<String> returnListing = new ArrayList();
 
@@ -168,7 +168,8 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
      *
      * @return Whether local return value echo messages contain {@code echoMessageParam}.
      */
-    public boolean doReturnValueEchoMessageContainAll(List<String> echoMessageParam)
+    public synchronized boolean doReturnValueEchoMessageContainAll(
+            List<String> echoMessageParam)
     {
         if(echoMessageParam == null || echoMessageParam.isEmpty())
         {
