@@ -333,6 +333,11 @@ public class Field extends ABaseFluidJSONObject {
             {
                 this.setTypeAsEnum(Type.MultipleChoice);
             }
+            //Table Field...
+            else if(fieldValueParam instanceof TableField)
+            {
+                this.setTypeAsEnum(Type.Table);
+            }
             //Text...
             else if(fieldValueParam instanceof String)
             {
