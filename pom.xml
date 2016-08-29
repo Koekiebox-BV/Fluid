@@ -50,7 +50,7 @@
         <version.slf4j>1.7.12</version.slf4j>
 
         <!--Org.JSON-->
-        <version.org.json>20141113</version.org.json>
+        <version.org.json>20160810</version.org.json>
 
         <!--JBoss Resteasy-->
         <version.jboss.resteasy.jackson>2.2.1.GA</version.jboss.resteasy.jackson>

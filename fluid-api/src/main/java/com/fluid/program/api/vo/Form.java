@@ -57,6 +57,7 @@ import com.fluid.program.api.vo.user.User;
 public class Form extends ABaseFluidElasticCacheJSONObject {
 
     private String formType;
+    private Long formTypeId;
     private String formDescription;
 
     private String title;
@@ -82,6 +83,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
     public static class JSONMapping
     {
         public static final String FORM_TYPE = "formType";
+        public static final String FORM_TYPE_ID = "formTypeId";
         public static final String FORM_DESCRIPTION = "formDescription";
         public static final String TITLE = "title";
         public static final String STATE = "state";
@@ -174,6 +176,11 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         //Form Type...
         if (!this.jsonObject.isNull(JSONMapping.FORM_TYPE)) {
             this.setFormType(this.jsonObject.getString(JSONMapping.FORM_TYPE));
+        }
+
+        //Form Type Id...
+        if (!this.jsonObject.isNull(JSONMapping.FORM_TYPE_ID)) {
+            this.setFormTypeId(this.jsonObject.getLong(JSONMapping.FORM_TYPE_ID));
         }
 
         //Date Created...
@@ -676,6 +683,12 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
         }
 
+        //Form Type Id...
+        if(this.getFormTypeId() != null)
+        {
+            returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
+        }
+
         //Title...
         if(this.getTitle() != null)
         {
@@ -746,24 +759,13 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         //Form Type...
         if(this.getFormType() != null)
         {
-            Long formTypeNumeric;
+            returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
+        }
 
-            try
-            {
-                formTypeNumeric = Long.parseLong(this.getFormType());
-            }
-            catch (NumberFormatException nfe)
-            {
-                formTypeNumeric = null;
-            }
-
-            if(formTypeNumeric == null)
-            {
-                returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
-            }
-            else {
-                returnVal.put(JSONMapping.FORM_TYPE, formTypeNumeric);
-            }
+        //Form Type Id...
+        if(this.getFormTypeId() != null)
+        {
+            returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
         }
 
         //Title...
@@ -962,8 +964,16 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             this.setFormType(null);
         }
         else {
-            Object formTypeObj = jsonObjectParam.get(JSONMapping.FORM_TYPE);
-            this.setFormType(formTypeObj.toString());
+            this.setFormType(jsonObjectParam.getString(JSONMapping.FORM_TYPE));
+        }
+
+        //Form Type Id...
+        if(jsonObjectParam.isNull(JSONMapping.FORM_TYPE_ID))
+        {
+            this.setFormTypeId(null);
+        }
+        else {
+            this.setFormTypeId(jsonObjectParam.getLong(JSONMapping.FORM_TYPE_ID));
         }
 
         //Title...
@@ -1349,6 +1359,24 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      */
     public void setFormType(String formTypeParam) {
         this.formType = formTypeParam;
+    }
+
+    /**
+     * Gets the Form Type / Form Definition Id of {@code this} {@code Form}.
+     *
+     * @return Form Type / Form Definition Id.
+     */
+    public Long getFormTypeId() {
+        return this.formTypeId;
+    }
+
+    /**
+     * Sets the Form Type / Form Definition Id of {@code this} {@code Form}.
+     *
+     * @param formTypeIdParam Form Type / Form Definition Id.
+     */
+    public void setFormTypeId(Long formTypeIdParam) {
+        this.formTypeId = formTypeIdParam;
     }
 
     /**
