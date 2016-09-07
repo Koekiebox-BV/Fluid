@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.user.User;
 
@@ -838,9 +839,10 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
 
                 long fieldId = toAdd.getId().longValue();
                 String fieldIdAsString = Long.toString(fieldId);
+                Object fieldValue = toAdd.getFieldValue();
 
                 //Table Field...
-                if(toAdd.getFieldValue() instanceof TableField)
+                if(fieldValue instanceof TableField)
                 {
                     TableField tableField = (TableField)toAdd.getFieldValue();
 
@@ -863,7 +865,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
                     }
                 }
                 //Multiple Choice...
-                else if(toAdd.getFieldValue() instanceof MultiChoice)
+                else if(fieldValue instanceof MultiChoice)
                 {
                     MultiChoice multiChoice = (MultiChoice)toAdd.getFieldValue();
 
@@ -898,10 +900,21 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
                         returnVal.put(fieldIdAsString, array);
                     }
                 }
-                //Everything else...
-                else
+                //Other valid types...
+                else if(fieldValue instanceof Number || fieldValue instanceof Boolean)
                 {
-                    returnVal.put(fieldIdAsString, toAdd.getFieldValue());
+                    returnVal.put(fieldIdAsString, fieldValue);
+                }
+                //Date...
+                else if(fieldValue instanceof Date)
+                {
+                    returnVal.put(fieldIdAsString, ((Date)fieldValue).getTime());
+                }
+                //Problem
+                else {
+                    throw new FluidElasticSearchException(
+                            "Field Value of type '"+fieldValue.getClass().getSimpleName()
+                                    +"' and Value '"+ fieldValue+"' is not supported.");
                 }
             }
         }

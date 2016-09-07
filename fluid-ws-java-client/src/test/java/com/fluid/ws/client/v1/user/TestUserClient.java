@@ -142,6 +142,46 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
+    public void testActivateAndDeactivateUser() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+        User userToCreate = new User();
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+
+        User userToUpdate = userClient.createUser(userToCreate);
+
+        TestCase.assertNotNull(userToUpdate);
+        TestCase.assertTrue("User should be active after creation.",userToUpdate.isActive());
+
+        //User should now be de-activated...
+        userToUpdate = userClient.deActivateUser(userToUpdate);
+
+        TestCase.assertNotNull(userToUpdate);
+        TestCase.assertFalse("User should NOT be active after creation.",userToUpdate.isActive());
+
+        //Activate user...
+        userToUpdate = userClient.activateUser(userToUpdate);
+
+        TestCase.assertNotNull(userToUpdate);
+        TestCase.assertTrue("User should be active after activation.",userToUpdate.isActive());
+
+        userClient.deleteUser(userToUpdate, true);
+    }
+
+    /**
+     *
+     */
+    @Test
     public void testUpdateUserRole() {
         if (!this.loginClient.isConnectionValid()) {
             return;
@@ -283,7 +323,7 @@ public class TestUserClient extends ABaseTestCase {
 
         UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User user = userClient.getUserWhereUsername("admin");
+        User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
         TestCase.assertNotNull(user);
     }
 
@@ -303,7 +343,7 @@ public class TestUserClient extends ABaseTestCase {
 
         UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User user = userClient.getUserWhereUsername("admin");
+        User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
         TestCase.assertNotNull(user);
 
         User userById = userClient.getUserById(user.getId());

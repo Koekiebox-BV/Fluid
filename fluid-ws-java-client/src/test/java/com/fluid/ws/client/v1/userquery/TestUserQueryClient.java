@@ -17,6 +17,7 @@ package com.fluid.ws.client.v1.userquery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -172,9 +173,122 @@ public class TestUserQueryClient extends ABaseTestCase {
         TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedUserQuery.getId());
     }
 
+    /**
+     * Use this for VOLUME testing...
+     *
+     */
+    @Test
+    @Ignore
+    public void executeUserQueryWithSpecificNameVolume()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+
+        UserQuery userQueryToExec = new UserQuery();
+        userQueryToExec.setName("Get Customer By Code");
+
+        List<Field> inputs = new ArrayList();
+
+        inputs.add(new Field("Customer Code","1.10855224"));
+        userQueryToExec.setInputs(inputs);
+
+        int totalThreads = 50;
+        for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++)
+        {
+            CustomerCodeExecutionThread customerCodeExecutionThread = new CustomerCodeExecutionThread(
+                    serviceTicket, userQueryToExec);
+
+            Thread zoolThread = new Thread(
+                    customerCodeExecutionThread,"SpeedTest --> "+(threadIndex + 1));
+            zoolThread.start();
+        }
+
+        try {
+            Thread.sleep(TimeUnit.MINUTES.toMillis(1));
+        }
+        //
+        catch (InterruptedException eParam) {
+            eParam.printStackTrace();
+        }
+
+        System.out.println("Sum score "+SUM + " (less is better)");
+    }
+
+    public static long SUM = 0;
 
     /**
      *
+     */
+    private class CustomerCodeExecutionThread implements Runnable
+    {
+        UserQueryClient userQueryClient;
+        private UserQuery userQueryToExec;
+
+
+
+        /**
+         *
+         * @param serviceTicketParam
+         * @param userQueryToExecParam
+         */
+        public CustomerCodeExecutionThread(
+                String serviceTicketParam,
+                UserQuery userQueryToExecParam) {
+            this.userQueryToExec = userQueryToExecParam;
+
+            this.userQueryClient = new UserQueryClient(BASE_URL, serviceTicketParam);
+        }
+
+        /**
+         *
+         */
+        @Override
+        public void run() {
+            long start = System.currentTimeMillis();
+
+            System.out.println("Starting ["+Thread.currentThread().getName()+"]");
+
+            int total = 1;
+            for(int index = 0;index < total;index++)
+            {
+                FluidItemListing itemListing =
+                        userQueryClient.executeUserQuery(this.userQueryToExec);
+
+                if(itemListing.getListingCount() > 0)
+                {
+                    for(FluidItem returnVal :itemListing.getListing())
+                    {
+                    /*System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+                            returnVal.getForm().getTitle() + " ]]] ***");
+
+                    for(Field formField : returnVal.getForm().getFormFields())
+                    {
+                        System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
+                    }*/
+                    }
+                }
+            }
+
+            long took = (System.currentTimeMillis() - start);
+
+            SUM += took;
+
+            System.out.println("["+Thread.currentThread().getName()+"] Took '"+(
+                    TimeUnit.MILLISECONDS.toSeconds(took))+"' seconds for '"+total+
+                    "' executions. Avg["+TimeUnit.MILLISECONDS.toSeconds(took / total)+"]");
+        }
+    }
+
+    /**
+     * Use this for testing...
      */
     @Test
     @Ignore
