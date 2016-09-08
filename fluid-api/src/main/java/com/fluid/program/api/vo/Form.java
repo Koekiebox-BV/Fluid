@@ -901,7 +901,8 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
                     }
                 }
                 //Other valid types...
-                else if(fieldValue instanceof Number || fieldValue instanceof Boolean)
+                else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+                        fieldValue instanceof String)
                 {
                     returnVal.put(fieldIdAsString, fieldValue);
                 }
