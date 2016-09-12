@@ -996,7 +996,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             this.setTitle(null);
         }
         else {
-            this.setTitle(jsonObjectParam.getString(JSONMapping.FORM_TYPE));
+            this.setTitle(jsonObjectParam.getString(JSONMapping.TITLE));
         }
 
         //Flow State...
