@@ -125,7 +125,6 @@ public class TestSQLUtilClient extends ABaseTestCase {
      *
      */
     @Test
-    //TODO remove
     @Ignore
     public void testGetTableForms()
     {
