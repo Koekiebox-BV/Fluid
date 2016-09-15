@@ -177,4 +177,15 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
         return dateValueParam.getTime();
     }
+
+    /**
+     * Returns the local JSON object.
+     * Only set through constructor.
+     *
+     * @return The local set {@code JSONObject} object.
+     */
+    public JSONObject getJSONObject()
+    {
+        return this.jsonObject;
+    }
 }

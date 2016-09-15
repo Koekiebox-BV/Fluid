@@ -15,10 +15,14 @@
 
 package com.fluid.program.api.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.fluid.program.api.util.UtilGlobal;
+import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
 
 /**
  * <p>
@@ -72,4 +76,93 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
     public abstract void populateFromElasticSearchJson(
             JSONObject jsonObjectParam,
             List<Field> formFieldsParam) throws JSONException;
+
+    /**
+     * Convert the {@code SQLFormFieldUtil.FormFieldMapping} to {@code Field}.
+     *
+     * @param formFieldMappingsParam The {@code formFieldMappingsParam} to convert.
+     * @return The converted {@code Field}s.
+     */
+    public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam)
+    {
+        if(formFieldMappingsParam == null)
+        {
+            return null;
+        }
+
+        List<Field> returnVal = new ArrayList();
+
+        for(SQLFormFieldUtil.FormFieldMapping mappingToConvert : formFieldMappingsParam)
+        {
+            returnVal.add(this.convertTo(mappingToConvert));
+        }
+
+        return returnVal;
+    }
+
+    /**
+     *
+     * @param formFieldMappingParam
+     * @return
+     */
+    public Field convertTo(SQLFormFieldUtil.FormFieldMapping formFieldMappingParam)
+    {
+        switch (formFieldMappingParam.dataType.intValue())
+        {
+            //Text...
+            case UtilGlobal.FieldTypeId._1_TEXT:
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null, Field.Type.Text);
+
+            //True False...
+            case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null, Field.Type.TrueFalse);
+            //Paragraph Text...
+            case UtilGlobal.FieldTypeId._3_PARAGRAPH_TEXT:
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null,
+                        Field.Type.ParagraphText);
+            //Multiple Choice...
+            case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null,
+                        Field.Type.MultipleChoice);
+            //Date Time...
+            case UtilGlobal.FieldTypeId._5_DATE_TIME:
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null,
+                        Field.Type.DateTime);
+            //Decimal...
+            case UtilGlobal.FieldTypeId._6_DECIMAL:
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null,
+                        Field.Type.Decimal);
+            //Table Field...
+            case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
+
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        null,
+                        Field.Type.Table);
+
+                //TODO __8__ encrypted field...
+            default:
+                throw new IllegalStateException("Unable to map '"+
+                        formFieldMappingParam.dataType.intValue() +"', to Form Field value.");
+        }
+    }
 }

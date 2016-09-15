@@ -73,7 +73,9 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
     private List<Field> formFields;
     private List<Flow> associatedFlows;
 
+    //Specifically for Elasticsearch...
     private Long ancestorId;
+    private Long tableFieldParentId;
     private List<Long> descendantIds;
 
     private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
@@ -86,6 +88,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         public static final String FORM_TYPE = "formType";
         public static final String FORM_TYPE_ID = "formTypeId";
         public static final String FORM_DESCRIPTION = "formDescription";
+
         public static final String TITLE = "title";
         public static final String STATE = "state";
         public static final String FLOW_STATE = "flowState";
@@ -97,8 +100,9 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         public static final String FORM_FIELDS = "formFields";
         public static final String ASSOCIATED_FLOWS = "associatedFlows";
 
-        //Fields used for SearchEngine indexing...
+        //Fields used for Search engine indexing...
         public static final String ANCESTOR_ID = "ancestorId";
+        public static final String TABLE_FIELD_PARENT_ID = "tableFieldParentId";
         public static final String DESCENDANT_IDS = "descendantIds";
     }
 
@@ -926,6 +930,13 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             returnVal.put(JSONMapping.ANCESTOR_ID, this.getAncestorId());
         }
 
+        //Table Field Parent Id...
+        if(this.getTableFieldParentId() != null)
+        {
+            returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID,
+                    this.getTableFieldParentId());
+        }
+
         //Descendant Ids...
         if(this.getDescendantIds() != null && !this.getDescendantIds().isEmpty())
         {
@@ -1229,7 +1240,18 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             this.setAncestorId(null);
         }
         else {
-            this.setAncestorId(jsonObjectParam.getLong(JSONMapping.ANCESTOR_ID));
+            this.setAncestorId(jsonObjectParam.getLong(
+                    JSONMapping.ANCESTOR_ID));
+        }
+
+        //Table Field Parent Id...
+        if(jsonObjectParam.isNull(JSONMapping.TABLE_FIELD_PARENT_ID))
+        {
+            this.setTableFieldParentId(null);
+        }
+        else {
+            this.setTableFieldParentId(jsonObjectParam.getLong(
+                    JSONMapping.TABLE_FIELD_PARENT_ID));
         }
 
         //Descendant Ids...
@@ -1575,6 +1597,24 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      */
     public void setAncestorId(Long ancestorIdParam) {
         this.ancestorId = ancestorIdParam;
+    }
+
+    /**
+     * Gets the Table Field Parent Id as a {@code Long} for {@code this} {@code Form}.
+     *
+     * @return Table Field Parent Id.
+     */
+    public Long getTableFieldParentId() {
+        return this.tableFieldParentId;
+    }
+
+    /**
+     * Sets the Table Field Parent Id as a {@code Long} for {@code this} {@code Form}.
+     *
+     * @param tableFieldParentIdParam Table Field Parent Id.
+     */
+    public void setTableFieldParentId(Long tableFieldParentIdParam) {
+        this.tableFieldParentId = tableFieldParentIdParam;
     }
 
     /**

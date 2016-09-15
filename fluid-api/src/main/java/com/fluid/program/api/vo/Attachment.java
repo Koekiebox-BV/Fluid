@@ -16,6 +16,7 @@
 package com.fluid.program.api.vo;
 
 import java.io.File;
+import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,9 @@ public class Attachment extends ABaseFluidJSONObject {
     private String path;
     private String contentType;
 
+    private Date dateLastUpdated;
+    private Date dateCreated;
+
     private String attachmentDataBase64;
 
     /**
@@ -51,6 +55,10 @@ public class Attachment extends ABaseFluidJSONObject {
 
         public static final String VERSION = "version";
         public static final String CONTENT_TYPE = "contentType";
+
+        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+        public static final String DATE_CREATED = "dateCreated";
+
         public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
     }
 
@@ -120,6 +128,18 @@ public class Attachment extends ABaseFluidJSONObject {
         //Content Type...
         if (!this.jsonObject.isNull(JSONMapping.CONTENT_TYPE)) {
             this.setContentType(this.jsonObject.getString(JSONMapping.CONTENT_TYPE));
+        }
+
+        //Date Created...
+        if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
+            this.setDateCreated(new Date(
+                    this.jsonObject.getLong(JSONMapping.DATE_CREATED)));
+        }
+
+        //Date Last Updated...
+        if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
+            this.setDateLastUpdated(new Date(
+                    this.jsonObject.getLong(JSONMapping.DATE_LAST_UPDATED)));
         }
 
         //Attachment Data...
@@ -202,6 +222,42 @@ public class Attachment extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the {@code Date} when {@code this} {@code Attachment} was last updated.
+     *
+     * @return Attachment Last Updated Date.
+     */
+    public Date getDateLastUpdated() {
+        return this.dateLastUpdated;
+    }
+
+    /**
+     * Sets the {@code Date} when {@code this} {@code Attachment} was last updated.
+     *
+     * @param dateLastUpdatedParam Attachment Last Updated Date.
+     */
+    public void setDateLastUpdated(Date dateLastUpdatedParam) {
+        this.dateLastUpdated = dateLastUpdatedParam;
+    }
+
+    /**
+     * Gets the {@code Date} when {@code this} {@code Attachment} was created.
+     *
+     * @return Attachment Created Date.
+     */
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    /**
+     * Sets the {@code Date} when {@code this} {@code Attachment} was created.
+     *
+     * @param dateCreatedParam Attachment Created Date.
+     */
+    public void setDateCreated(Date dateCreatedParam) {
+        this.dateCreated = dateCreatedParam;
+    }
+
+    /**
      * <p>
      * The data for {@code this} {@code Attachment} in Base-64 encoding.
      *
@@ -270,11 +326,6 @@ public class Attachment extends ABaseFluidJSONObject {
             returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
         }
 
-        //Content Type...
-        if (this.getContentType() != null) {
-            returnVal.put(JSONMapping.CONTENT_TYPE, this.getContentType());
-        }
-
         //Name...
         if (this.getName() != null) {
             returnVal.put(JSONMapping.NAME, this.getName());
@@ -288,6 +339,18 @@ public class Attachment extends ABaseFluidJSONObject {
         //Version...
         if (this.getVersion() != null) {
             returnVal.put(JSONMapping.VERSION, this.getVersion());
+        }
+
+        //Date Created...
+        if (this.getDateCreated() != null) {
+            returnVal.put(JSONMapping.DATE_CREATED,
+                    this.getDateCreated().getTime());
+        }
+
+        //Date Last Updated...
+        if (this.getDateLastUpdated() != null) {
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateLastUpdated().getTime());
         }
 
         return returnVal;

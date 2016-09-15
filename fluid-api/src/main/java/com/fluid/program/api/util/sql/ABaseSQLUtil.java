@@ -169,15 +169,15 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
     protected void closeStatement(PreparedStatement preparedStatementParam,
                                   ResultSet resultSetParam)
     {
-        this.closeStatement(preparedStatementParam);
-
         if(resultSetParam == null)
         {
+            this.closeStatement(preparedStatementParam);
             return;
         }
 
         try {
             resultSetParam.close();
+            this.closeStatement(preparedStatementParam);
         }
         //
         catch (SQLException sqlExcept) {

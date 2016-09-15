@@ -77,6 +77,9 @@ public interface ISyntax {
             public static final String GetFormFieldsForFormContainer =
                     "Fluid_GetFormFieldsForFormContainer";
 
+            public static final String GetFormFieldsForFormDefinition =
+                    "Fluid_GetFormFieldsForFormDefinition";
+
             //Field Values...
             public static final String GetFormFieldValue_1_Text =
                     "Fluid_GetFormFieldValueText";

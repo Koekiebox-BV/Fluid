@@ -127,7 +127,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         }
 
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
         try
         {
             Long formDefinitionId = this.getFormDefinitionId(electronicFormIdParam);
@@ -166,7 +166,65 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         }
         //
         finally {
-            this.closeStatement(preparedStatement);
+            this.closeStatement(preparedStatement, resultSet);
+        }
+    }
+
+    /**
+     * Retrieve the Form Field mappings for Form Definition {@code electronicFormDefinitionIdParam}.
+     *
+     * @param formDefinitionIdParam The Electronic Form Definition
+     *                                        to get Form Field mappings for.
+     * @return List of Form Field mappings.
+     */
+    public List<FormFieldMapping> getFormFieldMappingForFormDefinition(
+            Long formDefinitionIdParam)
+    {
+        List<FormFieldMapping> returnVal = new ArrayList();
+
+        if(formDefinitionIdParam == null || formDefinitionIdParam.longValue() < 1)
+        {
+            return returnVal;
+        }
+
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            //Local Mapping...
+            //When we have the key by definition, we can just return.
+            if(this.localDefinitionToFieldsMapping.containsKey(formDefinitionIdParam))
+            {
+                return this.localDefinitionToFieldsMapping.get(formDefinitionIdParam);
+            }
+
+            ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
+                    this.getSQLTypeFromConnection(),
+                    ISyntax.ProcedureMapping.Field.GetFormFieldsForFormDefinition);
+
+            preparedStatement = this.getConnection().prepareStatement(
+                    syntax.getPreparedStatement());
+
+            preparedStatement.setLong(1, formDefinitionIdParam);
+
+            resultSet = preparedStatement.executeQuery();
+
+            //Iterate each of the form containers...
+            while (resultSet.next())
+            {
+                returnVal.add(this.mapFormFieldMapping(resultSet));
+            }
+
+            this.localDefinitionToFieldsMapping.put(formDefinitionIdParam, returnVal);
+
+            return returnVal;
+        }
+        //
+        catch (SQLException sqlError) {
+            throw new FluidSQLException(sqlError);
+        }
+        //
+        finally {
+            this.closeStatement(preparedStatement, resultSet);
         }
     }
 
