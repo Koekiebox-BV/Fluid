@@ -165,7 +165,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
                         "SQLUtil-WebSocket-GetDescendants: Timeout while waiting for all return data. There were '"
                                 +this.messageHandler.getReturnValue().size()
                                 +"' items after a Timeout of "+(
-                                TimeUnit.MILLISECONDS.toSeconds(timeoutTime))+" seconds."
+                                TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                         ,FluidClientException.ErrorCode.IO_ERROR);
             }
         }
