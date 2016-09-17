@@ -74,4 +74,23 @@ public abstract class ABaseUtil implements Serializable {
             return -1;
         }
     }
+
+    /**
+     * Returns -1 if there is a problem with conversion.
+     *
+     * @param toParseParam The {@code String} value to convert to {@code long}.
+     * @return {@code long} primitive version of {@code toParseParam}.
+     */
+    protected long toLongSafe(String toParseParam) {
+        if (toParseParam == null || toParseParam.trim().isEmpty()) {
+            return -1;
+        }
+        try {
+            return Long.parseLong(toParseParam.trim());
+        }
+        //
+        catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 }

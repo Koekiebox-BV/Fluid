@@ -101,9 +101,11 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
     }
 
     /**
+     * Utility method to convert from a {@code SQLFormFieldUtil.FormFieldMapping} to a {@code Field}.
      *
-     * @param formFieldMappingParam
-     * @return
+     * @param formFieldMappingParam The {@code SQLFormFieldUtil.FormFieldMapping} to convert.
+     *
+     * @return Converted {@code Field} from {@code SQLFormFieldUtil.FormFieldMapping}.
      */
     public Field convertTo(SQLFormFieldUtil.FormFieldMapping formFieldMappingParam)
     {

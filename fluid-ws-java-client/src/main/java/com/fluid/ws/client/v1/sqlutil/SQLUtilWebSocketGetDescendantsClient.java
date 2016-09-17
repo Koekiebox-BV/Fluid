@@ -17,6 +17,7 @@ package com.fluid.ws.client.v1.sqlutil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 
@@ -161,8 +162,10 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             if(now > timeoutTime)
             {
                 throw new FluidClientException(
-                        "Timeout while waiting for all return data. There were '"
-                                +this.messageHandler.getReturnValue().size()+"'."
+                        "SQLUtil-WebSocket-GetDescendants: Timeout while waiting for all return data. There were '"
+                                +this.messageHandler.getReturnValue().size()
+                                +"' items after a Timeout of "+(
+                                TimeUnit.MILLISECONDS.toSeconds(timeoutTime))+" seconds."
                         ,FluidClientException.ErrorCode.IO_ERROR);
             }
         }
