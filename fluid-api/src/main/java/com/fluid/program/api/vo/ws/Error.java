@@ -15,6 +15,7 @@
 
 package com.fluid.program.api.vo.ws;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
@@ -129,5 +130,29 @@ public class Error extends ABaseFluidJSONObject {
      */
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    /**
+     *
+     *
+     * @return
+     * @throws JSONException
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+
+        JSONObject returnVal = super.toJsonObject();
+
+        returnVal.put(JSONMapping.ERROR_CODE, this.getErrorCode());
+        returnVal.put(JSONMapping.ERROR_CODE_OTHER, this.getErrorCode());
+
+        //Error Message...
+        if(this.getErrorMessage() != null)
+        {
+            returnVal.put(JSONMapping.ERROR_MESSAGE,this.getErrorMessage());
+            returnVal.put(JSONMapping.ERROR_MESSAGE_OTHER,this.getErrorMessage());
+        }
+
+        return returnVal;
     }
 }

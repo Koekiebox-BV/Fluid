@@ -52,24 +52,6 @@
         <url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
     </scm>
 
-    <!--repositories>
-        <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/2/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>hibernate-memcached</id>
-            <name>hibernate-memcached</name>
-            <url>http://raykrueger.googlecode.com/svn/repository</url>
-        </repository>
-    </repositories-->
-
     <!--Dependencies-->
     <dependencies>
         <!--JSON Library-->

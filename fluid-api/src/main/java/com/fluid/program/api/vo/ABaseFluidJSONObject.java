@@ -62,48 +62,50 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
         this.jsonObject = jsonObjectParam;
 
-        if(this.jsonObject != null)
+        if(this.jsonObject == null)
         {
-            //Id...
-            if (!this.jsonObject.isNull(JSONMapping.ID)) {
+            return;
+        }
 
-                Object idObject = this.jsonObject.get(JSONMapping.ID);
+        //Id...
+        if (!this.jsonObject.isNull(JSONMapping.ID)) {
 
-                //Long Id...
-                if(idObject instanceof Number)
+            Object idObject = this.jsonObject.get(JSONMapping.ID);
+
+            //Long Id...
+            if(idObject instanceof Number)
+            {
+                this.setId(this.jsonObject.getLong(JSONMapping.ID));
+            }
+            //String Id...
+            else if(idObject instanceof String)
+            {
+                String idStr = this.jsonObject.getString(JSONMapping.ID);
+
+                try
                 {
-                    this.setId(this.jsonObject.getLong(JSONMapping.ID));
+                    this.setId(Long.parseLong(idStr));
                 }
-                //String Id...
-                else if(idObject instanceof String)
+                catch (NumberFormatException nfe)
                 {
-                    String idStr = this.jsonObject.getString(JSONMapping.ID);
-
-                    try
-                    {
-                        this.setId(Long.parseLong(idStr));
-                    }
-                    catch (NumberFormatException nfe)
-                    {
-                        this.setId(null);
-                    }
-                }
-                else
-                {
-                    throw new IllegalArgumentException(
-                            "Unable to parse Field '"+JSONMapping.ID+"'.");
+                    this.setId(null);
                 }
             }
-
-            //Service Ticket...
-            if (!this.jsonObject.isNull(JSONMapping.SERVICE_TICKET)) {
-                this.setServiceTicket(this.jsonObject.getString(JSONMapping.SERVICE_TICKET));
+            else
+            {
+                throw new IllegalArgumentException(
+                        "Unable to parse Field '"+JSONMapping.ID+"'.");
             }
+        }
 
-            //Echo...
-            if (!this.jsonObject.isNull(JSONMapping.ECHO)) {
-                this.setEcho(this.jsonObject.getString(JSONMapping.ECHO));
-            }
+        //Service Ticket...
+        if (!this.jsonObject.isNull(JSONMapping.SERVICE_TICKET)) {
+            this.setServiceTicket(this.jsonObject.getString(JSONMapping.SERVICE_TICKET));
+        }
+
+        //Echo...
+        if (!this.jsonObject.isNull(JSONMapping.ECHO)) {
+            this.setEcho(this.jsonObject.getString(JSONMapping.ECHO));
         }
     }
 

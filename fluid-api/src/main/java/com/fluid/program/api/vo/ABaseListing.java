@@ -206,14 +206,14 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
         int listingCountFromListing = 0;
         if(this.getListing() != null && !this.getListing().isEmpty())
         {
-            JSONArray userQueriesArr = new JSONArray();
+            JSONArray jsonArray = new JSONArray();
             listingCountFromListing = this.getListing().size();
             for(T toAdd :this.getListing())
             {
-                userQueriesArr.put(toAdd.toJsonObject());
+                jsonArray.put(toAdd.toJsonObject());
             }
 
-            returnVal.put(JSONMapping.LISTING, userQueriesArr);
+            returnVal.put(JSONMapping.LISTING, jsonArray);
         }
 
         //Listing count...
