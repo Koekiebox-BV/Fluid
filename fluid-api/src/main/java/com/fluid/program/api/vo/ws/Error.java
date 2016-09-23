@@ -133,10 +133,15 @@ public class Error extends ABaseFluidJSONObject {
     }
 
     /**
+     * <p>
+     * Base {@code toJsonObject} that creates a {@code JSONObject}
+     * with the Id and ServiceTicket set.
+     * </p>
      *
+     * @return {@code JSONObject} representation of {@code ABaseFluidJSONObject}
+     * @throws JSONException If there is a problem with the JSON Body.
      *
-     * @return
-     * @throws JSONException
+     * @see org.json.JSONObject
      */
     @Override
     public JSONObject toJsonObject() throws JSONException {
