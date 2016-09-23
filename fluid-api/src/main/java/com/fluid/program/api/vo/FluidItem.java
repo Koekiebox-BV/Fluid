@@ -451,7 +451,6 @@ public class FluidItem extends ABaseFluidJSONObject {
         if(this.getAttachments() != null)
         {
             JSONArray jsonArray = new JSONArray();
-
             for(Attachment toAdd : this.getAttachments())
             {
                 jsonArray.put(toAdd.toJsonObject());

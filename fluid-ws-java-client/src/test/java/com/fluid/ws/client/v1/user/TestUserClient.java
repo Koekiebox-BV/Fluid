@@ -182,6 +182,58 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
+    public void testCreateUserWithRole() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+        //Create the role...
+        RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
+
+        Role roleToAssociate = new Role();
+        roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
+        roleToAssociate.setDescription(TestRoleClient.TestStatics.Create.ROLE_DESCRIPTION);
+        roleToAssociate.setAdminPermissions(TestRoleClient.TestStatics.Create.PERMISSIONS);
+
+        roleToAssociate = roleClient.createRole(roleToAssociate);
+        roleToAssociate.setId(null);
+
+        //Created... Test...
+        TestCase.assertNotNull(roleToAssociate);
+
+        User userToCreate = new User();
+        userToCreate.setUsername(TestStatics.Create.USERNAME);
+        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+
+        List<Role> roleList = new ArrayList();
+        roleList.add(roleToAssociate);
+        userToCreate.setRoles(roleList);
+
+        userClient.createUser(userToCreate);
+
+        //Fetch the user and check role...
+        User createdUser = userClient.getUserWhereUsername(userToCreate.getUsername());
+
+        TestCase.assertNotNull(createdUser);
+        TestCase.assertFalse("Role listing must be greater than '0'.",
+                createdUser.getRoles().isEmpty());
+
+        //Delete...
+        userClient.deleteUser(createdUser, true);
+        roleClient.deleteRole(roleToAssociate, true);
+    }
+
+    /**
+     *
+     */
+    @Test
     public void testUpdateUserRole() {
         if (!this.loginClient.isConnectionValid()) {
             return;

@@ -323,7 +323,13 @@ public class Attachment extends ABaseFluidJSONObject {
 
         //Attachment Data...
         if (this.getAttachmentDataBase64() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
+            returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
+                    this.getAttachmentDataBase64());
+        }
+
+        //Content Type...
+        if (this.getContentType() != null) {
+            returnVal.put(JSONMapping.CONTENT_TYPE, this.getContentType());
         }
 
         //Name...
@@ -333,7 +339,7 @@ public class Attachment extends ABaseFluidJSONObject {
 
         //Path...
         if (this.getPath() != null) {
-            returnVal.put(JSONMapping.PATH, this.getName());
+            returnVal.put(JSONMapping.PATH, this.getPath());
         }
 
         //Version...
