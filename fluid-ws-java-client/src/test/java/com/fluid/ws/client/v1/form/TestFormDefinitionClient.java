@@ -119,7 +119,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         fieldFirst = formFieldClient.createFieldTextPlain(fieldFirst);
         fieldSecond = formFieldClient.createFieldTextPlain(fieldSecond);
 
-        List<Field> createdFields = new ArrayList<Field>();
+        List<Field> createdFields = new ArrayList();
         createdFields.add(fieldFirst);
         createdFields.add(fieldSecond);
 
@@ -135,7 +135,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         flowFirst = flowClient.createFlow(flowFirst);
         flowSecond = flowClient.createFlow(flowSecond);
 
-        List<Flow> createdFlows = new ArrayList<Flow>();
+        List<Flow> createdFlows = new ArrayList();
         createdFlows.add(flowFirst);
         createdFlows.add(flowSecond);
 

@@ -505,6 +505,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_BY_NAME = ("/get_by_name");
 
                 /**
                  * Root for Form Definition.
@@ -571,6 +572,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Form Definition get by name.
+                 *
+                 * @return {@code v1/form_definition/get_by_name}
+                 */
+                public static final String getByName()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
                 }
             }
         }

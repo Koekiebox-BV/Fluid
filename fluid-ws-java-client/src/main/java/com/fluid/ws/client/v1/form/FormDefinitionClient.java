@@ -108,6 +108,25 @@ public class FormDefinitionClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves the Form Definition by Name.
+     *
+     * @param formDefinitionNameParam The Form Definition name.
+     * @return Form by Name.
+     */
+    public Form getFormDefinitionByName(String formDefinitionNameParam)
+    {
+        Form form = new Form(formDefinitionNameParam);
+
+        if(this.serviceTicket != null)
+        {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Form(this.postJson(
+                form, WS.Path.FormDefinition.Version1.getByName()));
+    }
+
+    /**
      * Deletes the Form Definition provided.
      * Id must be set on the Form Definition.
      *

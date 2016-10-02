@@ -346,6 +346,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @return The value for the Form Field as {@code TableField}.
      *
      * @see com.fluid.program.api.vo.Field.Type#Table
+     * @see TableField
      */
     public TableField getFieldValueAsTableField(String fieldNameParam)
     {
@@ -359,6 +360,44 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         if(obj instanceof TableField)
         {
             return (TableField)obj;
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code MultiChoice}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#MultipleChoice
+     * @see MultiChoice
+     */
+    public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam)
+    {
+        Object obj = this.getFieldValueForField(fieldNameParam);
+
+        if(obj == null)
+        {
+            return null;
+        }
+
+        if(obj instanceof MultiChoice)
+        {
+            return (MultiChoice)obj;
         }
 
         return null;

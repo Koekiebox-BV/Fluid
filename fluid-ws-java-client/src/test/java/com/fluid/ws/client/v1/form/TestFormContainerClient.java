@@ -28,6 +28,7 @@ import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.MultiChoice;
 import com.fluid.program.api.vo.form.TableRecord;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
@@ -83,7 +84,7 @@ public class TestFormContainerClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testCRUDFormContainer()
+    public void testCRUDFormContainerBasic()
     {
         if(!this.loginClient.isConnectionValid())
         {
@@ -141,6 +142,171 @@ public class TestFormContainerClient extends ABaseTestCase {
                 deletedForm);
         TestCase.assertNotNull("The 'Form Container Id' needs to be set.",
                 deletedForm.getId());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testCRUDFormContainerAdvanced()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+        //Create the Multi Choice Field...
+        Field fieldToCreate = new Field();
+        fieldToCreate.setFieldName(TestFormFieldClient.TestStatics.FIELD_NAME);
+        fieldToCreate.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+
+        FormFieldClient formFieldClient =
+                new FormFieldClient(BASE_URL, serviceTicket);
+
+        Field createdField = null;
+        try{
+            createdField = formFieldClient.getFieldByName(
+                    TestFormFieldClient.TestStatics.FIELD_NAME);
+        }
+        catch(FluidClientException fce)
+        {
+            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            {
+                TestCase.fail(fce.getMessage());
+            }
+
+            createdField = formFieldClient.createFieldMultiChoicePlain(
+                    fieldToCreate, TestFormFieldClient.TestStatics.MultiChoice.CREATE_LIST);
+        }
+
+        List<Field> createdFields = new ArrayList();
+        createdFields.add(createdField);
+
+        //Create Form Definition...
+        Form formDefToCreate = new Form();
+        formDefToCreate.setFormType(TestFormDefinitionClient.TestStatics.FORM_TYPE);
+        formDefToCreate.setFormDescription(TestFormDefinitionClient.TestStatics.FORM_DESCRIPTION);
+        formDefToCreate.setFormFields(createdFields);
+
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL, serviceTicket);
+        Form createdFormDef = null;
+
+        try
+        {
+            createdFormDef = formDefinitionClient.getFormDefinitionByName(
+                    TestFormDefinitionClient.TestStatics.FORM_TYPE);
+        }
+        catch(FluidClientException fce)
+        {
+            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            {
+                TestCase.fail(fce.getMessage());
+            }
+
+            createdFormDef = formDefinitionClient.createFormDefinition(formDefToCreate);
+        }
+
+        //Create the Form Container...
+        Form formContainerToCreate = new Form(createdFormDef.getFormType());
+        formContainerToCreate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
+
+        formContainerToCreate.setFieldValue(
+                TestFormFieldClient.TestStatics.FIELD_NAME, new MultiChoice(
+                        TestFormFieldClient.TestStatics.MultiChoice.OPTION_1));
+
+        //Create...
+        Form createdForm = formContainerClient.createFormContainer(formContainerToCreate);
+
+        TestCase.assertNotNull("The 'Form Container' needs to be set.", createdForm);
+        TestCase.assertNotNull("The 'Form Container Id' needs to be set.",
+                createdForm.getId());
+        TestCase.assertNotNull("The 'Form Fields' needs to be set.",
+                createdForm.getFormFields());
+        TestCase.assertEquals("The number of 'Form Fields' is not equal.",
+                1, createdForm.getFormFields().size());
+
+        MultiChoice multiChoiceFromCreatedForm = createdForm.getFieldValueAsMultiChoice(
+                TestFormFieldClient.TestStatics.FIELD_NAME);
+
+        TestCase.assertNotNull("The 'Multi Choice' needs to be set.",
+                multiChoiceFromCreatedForm);
+        TestCase.assertNotNull("The 'Multi Choice - SelectedMultiChoices' needs to be set.",
+                multiChoiceFromCreatedForm.getSelectedMultiChoices());
+
+        TestCase.assertEquals("The 'Multi Choice' needs to be set.",
+                TestFormFieldClient.TestStatics.MultiChoice.OPTION_1,
+                multiChoiceFromCreatedForm.getSelectedMultiChoices().get(0));
+
+        //GET FORM CONTAINER TO CONFIRM...
+        createdForm = formContainerClient.getFormContainerById(createdForm.getId());
+
+        multiChoiceFromCreatedForm = createdForm.getFieldValueAsMultiChoice(
+                TestFormFieldClient.TestStatics.FIELD_NAME);
+        TestCase.assertNotNull("FETCH: The 'Multi Choice' needs to be set.",
+                multiChoiceFromCreatedForm);
+        TestCase.assertEquals("The 'Multi Choice' needs to be set.",
+                TestFormFieldClient.TestStatics.MultiChoice.OPTION_1,
+                multiChoiceFromCreatedForm.getSelectedMultiChoices().get(0));
+
+        //UPDATE FORM...
+        Form formToUpdate = new Form(createdForm.getId());
+        formToUpdate.setFormType(createdForm.getFormType());
+        formToUpdate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
+
+        formToUpdate.setFieldValue(
+                TestFormFieldClient.TestStatics.FIELD_NAME, new MultiChoice(
+                        TestFormFieldClient.TestStatics.MultiChoice.OPTION_2));
+
+        Form updatedForm = formContainerClient.updateFormContainer(formToUpdate);
+
+        TestCase.assertNotNull("UPDATE: The 'Form Container' needs to be set.", updatedForm);
+        TestCase.assertNotNull("UPDATE:The 'Form Container Id' needs to be set.", updatedForm.getId());
+        TestCase.assertNotNull("UPDATE:The 'Form Fields' needs to be set.", updatedForm.getFormFields());
+        TestCase.assertEquals("UPDATE:The number of 'Form Fields' is not equal.",
+                1, updatedForm.getFormFields().size());
+
+        MultiChoice multiChoiceFromUpdatedForm = updatedForm.getFieldValueAsMultiChoice(
+                TestFormFieldClient.TestStatics.FIELD_NAME);
+
+        TestCase.assertNotNull("UPDATE:The 'Multi Choice' needs to be set.",
+                multiChoiceFromUpdatedForm);
+        TestCase.assertNotNull("UPDATE:The 'Multi Choice - SelectedMultiChoices' needs to be set.",
+                multiChoiceFromUpdatedForm.getSelectedMultiChoices());
+
+        TestCase.assertEquals("UPDATE:The 'Multi Choice' needs to be set.",
+                TestFormFieldClient.TestStatics.MultiChoice.OPTION_2,
+                multiChoiceFromUpdatedForm.getSelectedMultiChoices().get(0));
+
+        //GET FORM CONTAINER TO CONFIRM UPDATE...
+        updatedForm = formContainerClient.getFormContainerById(updatedForm.getId());
+
+        multiChoiceFromUpdatedForm = updatedForm.getFieldValueAsMultiChoice(
+                TestFormFieldClient.TestStatics.FIELD_NAME);
+        TestCase.assertNotNull("FETCH-UPDATE: The 'Multi Choice' needs to be set.",
+                multiChoiceFromUpdatedForm);
+        TestCase.assertEquals("FETCH-UPDATE: The 'Multi Choice' needs to be set.",
+                TestFormFieldClient.TestStatics.MultiChoice.OPTION_2,
+                multiChoiceFromUpdatedForm.getSelectedMultiChoices().get(0));
+
+        //DELETE ALL CREATED INFO...
+        Form deletedFormContainer = formContainerClient.deleteFormContainer(createdForm);
+
+        TestCase.assertNotNull("The 'Form Container' needs to be set.", deletedFormContainer);
+        TestCase.assertNotNull("The 'Form Container Id' needs to be set.", deletedFormContainer.getId());
+
+        //5. Delete Form Def...
+        Form deletedForm = formDefinitionClient.deleteFormDefinition(createdFormDef);
+        TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedForm.getId());
+
+        //6. Delete Fields...
+        formFieldClient.deleteField(createdField);
     }
 
     /**

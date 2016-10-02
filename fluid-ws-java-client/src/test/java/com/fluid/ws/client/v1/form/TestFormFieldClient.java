@@ -648,7 +648,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 
         FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
-        //1. Text...
+        //1. Multi Choice...
         Field toCreate = new Field();
         toCreate.setFieldName(TestStatics.FIELD_NAME);
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
