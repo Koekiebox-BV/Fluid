@@ -211,6 +211,84 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
     }
 
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testExecuteSQLWithSpecificId()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+        String serviceTicketHex = null;
+        if(serviceTicket != null && !serviceTicket.isEmpty())
+        {
+            serviceTicketHex =
+                    BaseEncoding.base16().encode(BaseEncoding.base64().decode(serviceTicket));
+        }
+
+        SQLUtilWebSocketExecuteSQLClient webSocketClient =
+                new SQLUtilWebSocketExecuteSQLClient(
+                        BASE_URL,
+                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(160));
+
+        long start = System.currentTimeMillis();
+
+        int numberOfRecords = 1;
+
+        Form formToUse = new Form();
+        formToUse.setEcho("zool");
+        formToUse.setFieldValue("SQL Query","SELECT * FROM form_container " +
+                "WHERE id > ?" +
+                " LIMIT 0,10000;");
+
+        formToUse.getFormFields().add(new Field(1L,"Zool",new Long(1000L), Field.Type.Decimal));
+
+        List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
+
+        long took = (System.currentTimeMillis() - start);
+
+        webSocketClient.closeAndClean();
+
+        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+
+        if(formListing != null)
+        {
+            for(FormListing listing : formListing)
+            {
+                List<Form> resultForms = listing.getListing();
+
+                for(Form form : resultForms)
+                {
+                    System.out.println(form.getFormTypeId() +
+                            " - " +
+                            form.getTitle());
+
+                    if(form.getFormFields() != null)
+                    {
+                        for(Field field : form.getFormFields())
+                        {
+                            System.out.println("["+field.getFieldName()+"] = '"+
+                                    field.getFieldValue()+"'");
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.out.println("Nothing...");
+        }
+
+        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+    }
 
     /**
      *

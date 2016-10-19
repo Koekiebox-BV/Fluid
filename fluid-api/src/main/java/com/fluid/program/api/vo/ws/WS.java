@@ -1612,6 +1612,9 @@ public class WS {
                 public static final String SQL_UTIL_FORM_GET_ANCESTOR =
                         ("/form/get_ancestor_by_electronic_form_id");
 
+                public static final String SQL_UTIL_FORM_EXECUTE_SQL =
+                        ("/form/execute_sql");
+
                 //Field...
                 public static final String SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER =
                         ("/form_field/get_fields_by_electronic_form_id");
@@ -1729,6 +1732,22 @@ public class WS {
                                     QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
                                     "&" +
                                     QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for executing SQL on the Fluid core database.
+                 *
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code /web_socket/v1/sql_util/form/execute_sql}
+                 */
+                public static final String getExecuteSQLWebSocket(String serviceTicketParam)
+                {
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_EXECUTE_SQL).concat(
+                                    "/"+ serviceTicketParam + "/");
 
                     return returnVal;
                 }
