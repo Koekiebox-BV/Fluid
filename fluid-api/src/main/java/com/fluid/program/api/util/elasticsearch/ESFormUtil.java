@@ -508,7 +508,8 @@ public class ESFormUtil extends ABaseSQLUtil {
 
             returnVal = new ArrayList();
 
-            if(searchHits.getHits().length != totalHits)
+            if((searchHits.getHits().length != totalHits) &&
+                    (searchHits.getHits().length != numberOfResultsParam))
             {
                 throw new FluidElasticSearchException(
                         "The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
