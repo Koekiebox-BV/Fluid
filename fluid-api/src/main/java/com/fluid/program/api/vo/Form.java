@@ -160,13 +160,15 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         //User...
         if (!this.jsonObject.isNull(JSONMapping.CURRENT_USER)) {
 
-            JSONObject jsonObj = this.jsonObject.getJSONObject(JSONMapping.CURRENT_USER);
+            JSONObject jsonObj = this.jsonObject.getJSONObject(
+                    JSONMapping.CURRENT_USER);
             User currentUser = new User();
 
-            //Id
-            if (!jsonObj.isNull(ABaseFluidJSONObject.JSONMapping.ID)) {
+            //User Id
+            if (!jsonObj.isNull(User.JSONMapping.USER_ID)) {
 
-                currentUser.setId(jsonObj.getLong(ABaseFluidJSONObject.JSONMapping.ID));
+                currentUser.setId(jsonObj.getLong(
+                        User.JSONMapping.USER_ID));
             }
 
             //Username
@@ -843,7 +845,8 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
 
             if(this.getCurrentUser().getId() != null)
             {
-                currentUserJsonObj.put(ABaseFluidJSONObject.JSONMapping.ID,
+                currentUserJsonObj.put(
+                        User.JSONMapping.USER_ID,
                         this.getCurrentUser().getId());
             }
 
@@ -853,7 +856,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
                         this.getCurrentUser().getUsername());
             }
 
-            returnVal.put(JSONMapping.CURRENT_USER,currentUserJsonObj);
+            returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
         }
 
         //Date Created...
@@ -1109,10 +1112,10 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
 
             User currentUser = new User();
 
-            if(!currUserJsonObj.isNull(ABaseFluidJSONObject.JSONMapping.ID))
+            if(!currUserJsonObj.isNull(User.JSONMapping.USER_ID))
             {
                 currentUser.setId(currUserJsonObj.getLong(
-                        ABaseFluidJSONObject.JSONMapping.ID));
+                        User.JSONMapping.USER_ID));
             }
 
             if(!currUserJsonObj.isNull(User.JSONMapping.USERNAME))
@@ -1123,7 +1126,6 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
 
             this.setCurrentUser(currentUser);
         }
-
 
         //Form Fields...
         if(formFieldsParam != null && !formFieldsParam.isEmpty())

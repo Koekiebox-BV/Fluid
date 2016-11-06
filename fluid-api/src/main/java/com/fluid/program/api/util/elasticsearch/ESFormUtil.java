@@ -20,13 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.json.JSONObject;
@@ -37,8 +36,10 @@ import com.fluid.program.api.util.elasticsearch.exception.FluidElasticSearchExce
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.impl.SQLFormDefinitionUtil;
 import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
+import com.fluid.program.api.vo.ABaseFluidJSONObject;
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.TableField;
 
 /**
  * ElasticSearch Utility class used for {@code Form} related actions.
@@ -55,6 +56,8 @@ public class ESFormUtil extends ABaseSQLUtil {
 
     private SQLFormDefinitionUtil formDefUtil = null;
     private SQLFormFieldUtil fieldUtil = null;
+
+    private static final int MAX_NUMBER_OF_TABLE_RECORDS = 10000;
 
     /**
      * The index type.
@@ -74,7 +77,11 @@ public class ESFormUtil extends ABaseSQLUtil {
      * @param esClientParam The ES Client.
      * @param cacheUtilParam The Cache Util for better performance.
      */
-    public ESFormUtil(Connection connectionParam, Client esClientParam, CacheUtil cacheUtilParam) {
+    public ESFormUtil(
+            Connection connectionParam,
+            Client esClientParam,
+            CacheUtil cacheUtilParam) {
+
         super(connectionParam);
 
         this.client = esClientParam;
@@ -166,115 +173,170 @@ public class ESFormUtil extends ABaseSQLUtil {
             return null;
         }
 
-        //Only using Id....
-        Form mainElectronicForm = this.getDocumentFormByPrimaryKey(
-                null, electronicFormIdParam, null);
+        //Query using the descendantId directly...
+        StringBuffer ancestorQuery = new StringBuffer(
+                Form.JSONMapping.DESCENDANT_IDS);
+        ancestorQuery.append(":\"");
+        ancestorQuery.append(electronicFormIdParam);
+        ancestorQuery.append("\"");
 
-        if(mainElectronicForm == null)
-        {
-            return null;
-        }
-
-        Long ancestorId = mainElectronicForm.getAncestorId();
-        if(ancestorId == null || ancestorId.longValue() < 1)
-        {
-            return null;
-        }
-
-        Form returnVal = this.getDocumentFormByPrimaryKey(
-                null, ancestorId, null);
-
-        if(this.fieldUtil == null)
-        {
-            throw new ElasticsearchException("FieldUtil is not set.");
-        }
-
-        //When field data must also be included...
+        //Search for the Ancestor...
+        List<Form> ancestorForms = null;
         if(includeFieldDataParam)
         {
-            Long formDefId = returnVal.getFormTypeId();
-            List<SQLFormFieldUtil.FormFieldMapping> formFieldMappings =
-                    this.fieldUtil.getFormFieldMappingForFormDefinition(formDefId);
-
-            returnVal.populateFromElasticSearchJson(
-                    returnVal.getJSONObject(),
-                    returnVal.convertTo(formFieldMappings));
-
-            //
-            if(includeTableFieldsParam)
-            {
-
-
-
-            }
-        }
-
-        return returnVal;
-    }
-
-    /**
-     *
-     * @param formTypeIdParam
-     * @param formIdParam
-     * @param fieldsToRetrieveParam
-     * @return
-     */
-    private Form getDocumentFormByPrimaryKey(
-            Long formTypeIdParam,
-            Long formIdParam,
-            List<Field> fieldsToRetrieveParam)
-    {
-        GetResponse getResponse = null;
-
-        if(formTypeIdParam == null)
-        {
-            //TODO need to query by id...
-            //TODO sdsdsds
-        }
-
-        try
-        {
-            getResponse = this.client.prepareGet(
+            ancestorForms = this.searchAndConvertHitsToFormWithAllFields(
+                    QueryBuilders.queryStringQuery(ancestorQuery.toString()),
                     Index.DOCUMENT,
-                    formTypeIdParam.toString(),
-                    formIdParam.toString())
-                    .get();
+                    1,
+                    null);
         }
-        //When the index was not found...
-        catch(IndexNotFoundException indexNotFound)
+        else
+        {
+            ancestorForms = this.searchAndConvertHitsToFormWithNoFields(
+                    QueryBuilders.queryStringQuery(ancestorQuery.toString()),
+                    Index.DOCUMENT,
+                    1,
+                    null);
+        }
+
+        Form returnVal = null;
+        if(ancestorForms != null && !ancestorForms.isEmpty())
+        {
+            returnVal = ancestorForms.get(0);
+        }
+
+        //No result...
+        if(returnVal == null)
         {
             return null;
         }
 
-        String sourceAsString;
-        if(getResponse == null ||
-                (sourceAsString = getResponse.getSourceAsString()) == null)
+        //Whether table field data should be included...
+        if(!includeTableFieldsParam)
         {
-            return null;
+            return returnVal;
         }
 
-        Form returnVal = new Form();
-        returnVal.populateFromElasticSearchJson(
-                new JSONObject(sourceAsString),
-                fieldsToRetrieveParam);
+        //No Form Fields present, just return...
+        if(returnVal.getFormFields() == null ||
+                returnVal.getFormFields().isEmpty())
+        {
+            return returnVal;
+        }
+
+        for(Field ancestorField : returnVal.getFormFields())
+        {
+            //Skip if not Table Field...
+            if(!(ancestorField.getFieldValue() instanceof TableField))
+            {
+                continue;
+            }
+
+            TableField tableField = (TableField)ancestorField.getFieldValue();
+            List<Form> tableRecordWithIdOnly = tableField.getTableRecords();
+            if(tableRecordWithIdOnly == null || tableRecordWithIdOnly.isEmpty())
+            {
+                continue;
+            }
+
+            //Populate the ids for lookup...
+            List<Long> formIdsOnly = new ArrayList();
+            for(Form tableRecord : tableRecordWithIdOnly)
+            {
+                formIdsOnly.add(tableRecord.getId());
+            }
+
+            List<Form> populatedTableRecords =
+                    this.getFormsByIds(
+                            Index.TABLE_RECORD,
+                            formIdsOnly,
+                            includeFieldDataParam,
+                            MAX_NUMBER_OF_TABLE_RECORDS);
+
+            tableField.setTableRecords(populatedTableRecords);
+            ancestorField.setFieldValue(tableField);
+        }
 
         return returnVal;
     }
 
+    /**
+     * Gets the ancestor for the {@code electronicFormIdParam} Form.
+     *
+     * @param electronicFormIdParam Identifier for the Form.
+     * @param includeFieldDataParam Whether to populate the return {@code Form} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code Form} table fields.
+     *
+     * @return {@code Form} descendants.
+     *
+     * @see Form
+     */
 
     /**
+     * Retrieves the {@code Form}'s via the provided {@code formIdsParam}.
      *
-     * @param byParentIdParam
-     * @param fieldsToRetrieveParam
-     * @return
+     * @param indexParam The ElasticSearch index to be used for lookup.
+     * @param formIdsParam {@code List} of Identifiers for the Forms to return.
+     * @param includeFieldDataParam Whether to populate the return {@code Form} table fields.
+     * @param maxNumberOfResultsParam The maximum number of results to return.
+     *
+     * @return {@code List<Form>} List of Forms.
      */
-    private List<Form> getTableRecordFormsByParentId(
-            Long byParentIdParam,
-            List<Field> fieldsToRetrieveParam)
+    public List<Form> getFormsByIds(
+            String indexParam,
+            List<Long> formIdsParam,
+            boolean includeFieldDataParam,
+            int maxNumberOfResultsParam)
     {
-        //TODO @Jason, complete here...
+        if(formIdsParam == null || formIdsParam.isEmpty())
+        {
+            return null;
+        }
 
-        return null;
+        if(indexParam == null || indexParam.trim().isEmpty())
+        {
+            throw new FluidElasticSearchException(
+                    "Index is mandatory for lookup.");
+        }
+
+        //Query using the descendantId directly...
+        StringBuffer byIdQuery = new StringBuffer();
+
+        for(Long formId : formIdsParam)
+        {
+            byIdQuery.append(ABaseFluidJSONObject.JSONMapping.ID);
+            byIdQuery.append(":\"");
+            byIdQuery.append(formId);
+            byIdQuery.append("\" ");
+        }
+
+        String queryByIdsToString = byIdQuery.toString();
+        queryByIdsToString = queryByIdsToString.substring(0, queryByIdsToString.length() - 1);
+
+        List<Form> returnVal = null;
+        if(includeFieldDataParam)
+        {
+            returnVal = this.searchAndConvertHitsToFormWithAllFields(
+                    QueryBuilders.queryStringQuery(queryByIdsToString),
+                    indexParam,
+                    maxNumberOfResultsParam,
+                    null);
+        }
+        else
+        {
+            returnVal = this.searchAndConvertHitsToFormWithNoFields(
+                    QueryBuilders.queryStringQuery(queryByIdsToString),
+                    indexParam,
+                    maxNumberOfResultsParam,
+                    null);
+        }
+
+        if(returnVal == null || returnVal.isEmpty())
+        {
+            return null;
+        }
+
+        return returnVal;
     }
 
 
@@ -294,21 +356,6 @@ public class ESFormUtil extends ABaseSQLUtil {
         return null;
     }
 
-    /**
-     *
-     * @param ancestorIdParam
-     * @param fieldsToRetrieveParam
-     * @return
-     */
-    private Form getAncestorByDescendantId(
-            Long ancestorIdParam,
-            List<Field> fieldsToRetrieveParam)
-    {
-        //TODO @Jason, complete here...
-
-
-        return null;
-    }
 
     /*******************************************************/
     /**
@@ -538,5 +585,161 @@ public class ESFormUtil extends ABaseSQLUtil {
         }
 
         return returnVal;
+    }
+
+    /**
+     * Performs a search against the Elasticsearch instance with the {@code qbParam}.
+     *
+     * @param qbParam The @{code QueryBuilder} to search with.
+     * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
+     * @param numberOfResultsParam The number of results to return.
+     * @param formTypesParam The Id's for the Form Definitions to be returned.
+     *
+     * @return The {@code SearchHits} as Fluid {@code Form}.
+     *
+     * @see Form
+     * @see SearchHits
+     */
+    public List<Form> searchAndConvertHitsToFormWithAllFields(
+            QueryBuilder qbParam,
+            String indexParam,
+            int numberOfResultsParam,
+            Long ... formTypesParam) {
+
+        SearchHits searchHits = this.searchWithHits(
+                qbParam,
+                indexParam,
+                false,
+                numberOfResultsParam,
+                formTypesParam);
+
+        List<Form> returnVal = null;
+
+        long totalHits;
+        if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
+
+            returnVal = new ArrayList();
+
+            if((searchHits.getHits().length != totalHits) &&
+                    (searchHits.getHits().length != numberOfResultsParam))
+            {
+                throw new FluidElasticSearchException(
+                        "The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
+                                searchHits.getHits().length+"'.");
+            }
+
+            //Iterate...
+            for(int index = 0;index < totalHits;index++)
+            {
+                SearchHit searchHit = searchHits.getAt(index);
+
+                String source;
+                if((source = searchHit.sourceAsString()) == null)
+                {
+                    continue;
+                }
+
+                Form formFromSource = new Form();
+
+                JSONObject jsonObject = new JSONObject(source);
+
+                List<Field> fieldsForForm = null;
+                //Is Form Type available...
+                if(jsonObject.has(Form.JSONMapping.FORM_TYPE_ID))
+                {
+                    fieldsForForm = formFromSource.convertTo(
+                            this.fieldUtil.getFormFieldMappingForForm(
+                                    jsonObject.getLong(Form.JSONMapping.FORM_TYPE_ID)));
+                }
+
+                formFromSource.populateFromElasticSearchJson(
+                        jsonObject,
+                        fieldsForForm);
+
+                returnVal.add(formFromSource);
+            }
+        }
+
+        return returnVal;
+    }
+
+    /**
+     * Performs a search against the Elasticsearch instance with the {@code qbParam}.
+     *
+     * @param qbParam The @{code QueryBuilder} to search with.
+     * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
+     * @param numberOfResultsParam The number of results to return.
+     * @param formTypesParam The Id's for the Form Definitions to be returned.
+     *
+     * @return The {@code SearchHits} as Fluid {@code Form}.
+     *
+     * @see Form
+     * @see SearchHits
+     */
+    public List<Form> searchAndConvertHitsToFormWithNoFields(
+            QueryBuilder qbParam,
+            String indexParam,
+            int numberOfResultsParam,
+            Long ... formTypesParam) {
+
+        SearchHits searchHits = this.searchWithHits(
+                qbParam,
+                indexParam,
+                false,
+                numberOfResultsParam,
+                formTypesParam);
+
+        List<Form> returnVal = null;
+
+        long totalHits;
+        if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
+
+            returnVal = new ArrayList();
+
+            if((searchHits.getHits().length != totalHits) &&
+                    (searchHits.getHits().length != numberOfResultsParam))
+            {
+                throw new FluidElasticSearchException(
+                        "The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
+                                searchHits.getHits().length+"'.");
+            }
+
+            //Iterate...
+            for(int index = 0;index < totalHits;index++)
+            {
+                SearchHit searchHit = searchHits.getAt(index);
+
+                String source;
+                if((source = searchHit.sourceAsString()) == null)
+                {
+                    continue;
+                }
+
+                Form formFromSource = new Form();
+
+                formFromSource.populateFromElasticSearchJson(
+                        new JSONObject(source),
+                        null);
+
+                returnVal.add(formFromSource);
+            }
+        }
+
+        return returnVal;
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void closeConnection() {
+        super.closeConnection();
+
+        if(this.client != null)
+        {
+            this.client.close();
+        }
+
+        this.client = null;
     }
 }

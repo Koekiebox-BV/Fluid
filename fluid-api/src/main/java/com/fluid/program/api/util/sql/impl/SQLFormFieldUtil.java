@@ -156,6 +156,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
                 returnVal.add(this.mapFormFieldMapping(resultSet));
             }
 
+            //Cache the mapping...
             this.localDefinitionToFieldsMapping.put(formDefinitionId, returnVal);
 
             return returnVal;
@@ -305,6 +306,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
         //Get the values for each of the fields...
         for(FormFieldMapping fieldMapping : fieldMappings)
         {
+            //Skip if ignore Table Fields...
             if(!includeTableFieldsParam &&
                     fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD){//Table Field...
                 continue;

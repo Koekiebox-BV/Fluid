@@ -231,7 +231,8 @@ public class SQLFormUtil extends ABaseSQLUtil {
 
         Form returnVal = null;
 
-        Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
+        Map<Long,String> definitionAndTitle =
+                this.formDefUtil.getFormDefinitionIdAndTitle();
 
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -257,15 +258,11 @@ public class SQLFormUtil extends ABaseSQLUtil {
             }
 
             //When field data must also be included...
-            if(includeFieldDataParam)
+            if(includeFieldDataParam && returnVal != null)
             {
-                if(returnVal != null)
-                {
-                    List<Field> formFields = this.fieldUtil.getFormFields(
-                                    returnVal.getId(),
-                                    includeTableFieldsParam);
-                    returnVal.setFormFields(formFields);
-                }
+                returnVal.setFormFields(
+                        this.fieldUtil.getFormFields(
+                                returnVal.getId(), includeTableFieldsParam));
             }
 
             return returnVal;
