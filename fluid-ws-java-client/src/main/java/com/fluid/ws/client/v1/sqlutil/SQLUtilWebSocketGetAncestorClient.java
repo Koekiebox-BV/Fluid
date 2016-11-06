@@ -15,11 +15,17 @@
 
 package com.fluid.ws.client.v1.sqlutil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.ws.Error;
 import com.fluid.program.api.vo.ws.WS;
+import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluid.ws.client.v1.websocket.GenericListMessageHandler;
 import com.fluid.ws.client.v1.websocket.IMessageReceivedCallback;
@@ -67,6 +73,92 @@ public class SQLUtilWebSocketGetAncestorClient extends
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
+
+    /**
+     * Retrieves the Ancestor (Form) for the {@code formToGetTableFormsForParam}.
+     *
+     * @param formToGetAncestorForParam The Fluid Form to get Ancestor for.
+     *
+     * @return The {@code formToGetDescendantsForParam} Table Records as {@code Form}'s.
+     */
+    public Form getAncestorSynchronized(
+            Form formToGetAncestorForParam) {
+
+        this.messageHandler.clear();
+
+        if(formToGetAncestorForParam == null)
+        {
+            return null;
+        }
+
+        //Send all the messages...
+        List<String> echoMessagesExpected = new ArrayList();
+        if(formToGetAncestorForParam.getEcho() == null || formToGetAncestorForParam.getEcho().isEmpty())
+        {
+            throw new FluidClientException("Echo needs to be set to bind to return.",
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+        else if(echoMessagesExpected.contains(formToGetAncestorForParam.getEcho()))
+        {
+            throw new FluidClientException("Echo message '"+formToGetAncestorForParam.getEcho()
+                    +"' already added.",
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+
+        echoMessagesExpected.add(formToGetAncestorForParam.getEcho());
+
+        //Send the actual message...
+        this.sendMessage(formToGetAncestorForParam);
+
+        long timeoutTime = (System.currentTimeMillis() +
+                this.getTimeoutInMillis());
+
+        //Wait for all the results...
+        while(true)
+        {
+            if(this.messageHandler.hasErrorOccurred())
+            {
+                List<Error> listOfErrors = this.messageHandler.getErrors();
+                Error firstError = listOfErrors.get(0);
+
+                throw new FluidClientException(
+                        firstError.getErrorMessage(),
+                        firstError.getErrorCode());
+            }
+            else if(this.messageHandler.isConnectionClosed() ||
+                    this.messageHandler.doReturnValueEchoMessageContainAll(echoMessagesExpected))
+            {
+                return this.messageHandler.getReturnedForm();
+            }
+            //
+            else
+            {
+                try {
+                    Thread.sleep(50);
+                }
+                //
+                catch (InterruptedException e) {
+
+                    throw new FluidClientException(
+                            "Thread interrupted. "+e.getMessage(),
+                            e,FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                }
+            }
+
+            long now = System.currentTimeMillis();
+            //Timeout...
+            if(now > timeoutTime)
+            {
+                throw new FluidClientException(
+                        "SQLUtil-WebSocket-GetAncestor: Timeout while waiting for all return data. There were '"
+                                +this.messageHandler.getReturnValue().size()
+                                +"' items after a Timeout of "+(
+                                TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
+                        ,FluidClientException.ErrorCode.IO_ERROR);
+            }
+        }
+    }
+
 
     /**
      * Retrieves all the Ancestors (Forms) for the {@code formToGetAncestorsForForParam}

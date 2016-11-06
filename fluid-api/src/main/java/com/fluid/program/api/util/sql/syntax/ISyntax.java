@@ -144,6 +144,7 @@ public interface ISyntax {
                     Form.GetFormContainersTableFieldFormContainers,
                     Form.GetFormContainersChildFormContainers,
                     Form.GetFormContainersParentFormContainer,
+                    Field.GetFormFieldsForFormDefinition,
                     Field.GetFormFieldsForFormContainer,
                     Field.GetFormDefinitionForFormContainer,
                     Field.GetFormFieldValue_1_Text,
@@ -181,6 +182,10 @@ public interface ISyntax {
             }
             //Fields...
             else if(Field.GetFormFieldsForFormContainer.equals(aliasParam))
+            {
+                return 1;
+            }
+            else if(Field.GetFormFieldsForFormDefinition.equals(aliasParam))
             {
                 return 1;
             }

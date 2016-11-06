@@ -167,32 +167,4 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
             }
         }
     }
-
-    /**
-     *
-     */
-    private static class GetAncestorMessageHandler extends GenericListMessageHandler<FormFieldListing>
-    {
-
-        /**
-         *
-         * @param messageReceivedCallbackParam
-         */
-        public GetAncestorMessageHandler(
-                IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam) {
-
-            super(messageReceivedCallbackParam);
-        }
-
-        /**
-         * New {@code FormFieldListing} by {@code jsonObjectParam}
-         *
-         * @param jsonObjectParam The JSON Object to parse.
-         * @return new {@code FormFieldListing}.
-         */
-        @Override
-        public FormFieldListing getNewInstanceBy(JSONObject jsonObjectParam) {
-            return new FormFieldListing(jsonObjectParam);
-        }
-    }
 }

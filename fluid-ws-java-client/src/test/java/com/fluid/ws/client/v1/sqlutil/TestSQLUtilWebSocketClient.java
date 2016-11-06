@@ -142,6 +142,63 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
      */
     @Test
     @Ignore
+    public void testGetAncestorFormWithSpecificId()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+        String serviceTicketHex = null;
+        if(serviceTicket != null && !serviceTicket.isEmpty())
+        {
+            serviceTicketHex =
+                    BaseEncoding.base16().encode(BaseEncoding.base64().decode(serviceTicket));
+        }
+
+        SQLUtilWebSocketGetAncestorClient webSocketClient =
+                new SQLUtilWebSocketGetAncestorClient(
+                        BASE_URL,
+                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
+
+        long start = System.currentTimeMillis();
+
+        Form toGetParentFor = new Form(254L);
+        toGetParentFor.setEcho("event-patoel");
+
+        Form ancestorForm = webSocketClient.getAncestorSynchronized(toGetParentFor);
+
+        TestCase.assertNotNull(
+                "Ancestor Form not set.", ancestorForm);
+
+        long took = (System.currentTimeMillis() - start);
+
+        webSocketClient.closeAndClean();
+
+        System.out.println("Took '"+took+"' millis for lookup.");
+
+        System.out.println(ancestorForm.getFormType() +
+                " - " + ancestorForm.getTitle());
+
+        if(ancestorForm.getFormFields() != null)
+        {
+            for(Field field : ancestorForm.getFormFields())
+            {
+                System.out.println("["+field.getFieldName()+"] = '"+
+                        field.getFieldValue()+"'");
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
     public void testGetDescendantFormsWithSpecificId()
     {
         if(!this.loginClient.isConnectionValid())
