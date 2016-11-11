@@ -564,7 +564,6 @@ public class ESFormUtil extends ABaseSQLUtil {
             }
 
             long iterationMax = totalHits;
-
             if(numberOfResultsParam > 0 &&
                     totalHits > numberOfResultsParam)
             {
