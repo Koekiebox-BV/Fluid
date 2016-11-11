@@ -34,7 +34,6 @@ import com.fluid.program.api.util.ABaseUtil;
 import com.fluid.program.api.util.cache.CacheUtil;
 import com.fluid.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
-import com.fluid.program.api.util.sql.impl.SQLFormDefinitionUtil;
 import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
 import com.fluid.program.api.vo.Field;
@@ -51,10 +50,8 @@ import com.fluid.program.api.vo.TableField;
  */
 public class ESFormUtil extends ABaseSQLUtil {
 
-    //TODO This needs to be completed once...
     private Client client;
 
-    private SQLFormDefinitionUtil formDefUtil = null;
     private SQLFormFieldUtil fieldUtil = null;
 
     private static final int MAX_NUMBER_OF_TABLE_RECORDS = 10000;
@@ -85,7 +82,6 @@ public class ESFormUtil extends ABaseSQLUtil {
         super(connectionParam);
 
         this.client = esClientParam;
-        this.formDefUtil = new SQLFormDefinitionUtil(connectionParam);
         this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam);
     }
 
@@ -98,58 +94,6 @@ public class ESFormUtil extends ABaseSQLUtil {
         super(null);
 
         this.client = esClientParam;
-    }
-
-    /**
-     * Retrieves the Table field records as {@code List<Form>}.
-     *
-     * @param electronicFormIdParam The Form Identifier.
-     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-     *
-     * @return {@code List<Form>} records.
-     */
-    public List<Form> getFormTableForms(
-            Long electronicFormIdParam,
-            boolean includeFieldDataParam)
-    {
-        List<Form> returnVal = new ArrayList();
-
-        if(electronicFormIdParam == null)
-        {
-            return returnVal;
-        }
-
-
-
-
-
-        return returnVal;
-    }
-
-    /**
-     * Gets the descendants for the {@code electronicFormIdParam} Form.
-     *
-     * @param electronicFormIdParam Identifier for the Form.
-     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
-     *
-     * @return {@code List<Form>} descendants.
-     *
-     * @see Form
-     */
-    public List<Form> getFormDescendants(
-            Long electronicFormIdParam,
-            boolean includeFieldDataParam,
-            boolean includeTableFieldsParam)
-    {
-        List<Form> returnVal = new ArrayList();
-
-        if(electronicFormIdParam == null)
-        {
-            return returnVal;
-        }
-
-        return returnVal;
     }
 
     /**
@@ -217,60 +161,141 @@ public class ESFormUtil extends ABaseSQLUtil {
             return returnVal;
         }
 
-        //No Form Fields present, just return...
-        if(returnVal.getFormFields() == null ||
-                returnVal.getFormFields().isEmpty())
+        //Populate the Table Fields...
+        this.populateTableFields(
+                false,
+                includeFieldDataParam,
+                returnVal.getFormFields());
+
+        return returnVal;
+    }
+
+    /**
+     * Gets the descendants for the {@code electronicFormIdParam} Form.
+     *
+     * @param electronicFormIdParam Identifier for the Form.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     *
+     * @return {@code List<Form>} descendants.
+     *
+     * @see Form
+     */
+    public List<Form> getFormDescendants(
+            Long electronicFormIdParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam)
+    {
+        if(electronicFormIdParam == null)
+        {
+            return null;
+        }
+
+        //Query using the descendantId directly...
+        StringBuffer descendantQuery = new StringBuffer(
+                Form.JSONMapping.ANCESTOR_ID);
+        descendantQuery.append(":\"");
+        descendantQuery.append(electronicFormIdParam);
+        descendantQuery.append("\"");
+
+        //Search for the Descendants...
+        List<Form> returnVal = null;
+        if(includeFieldDataParam)
+        {
+            returnVal = this.searchAndConvertHitsToFormWithAllFields(
+                    QueryBuilders.queryStringQuery(descendantQuery.toString()),
+                    Index.DOCUMENT,
+                    1,
+                    null);
+        }
+        else
+        {
+            returnVal = this.searchAndConvertHitsToFormWithNoFields(
+                    QueryBuilders.queryStringQuery(descendantQuery.toString()),
+                    Index.DOCUMENT,
+                    1,
+                    null);
+        }
+
+        //Whether table field data should be included...
+        if(!includeTableFieldsParam)
         {
             return returnVal;
         }
 
-        for(Field ancestorField : returnVal.getFormFields())
+        //Populate in order to have table field data...
+        for(Form descendantForm : returnVal)
         {
-            //Skip if not Table Field...
-            if(!(ancestorField.getFieldValue() instanceof TableField))
-            {
-                continue;
-            }
-
-            TableField tableField = (TableField)ancestorField.getFieldValue();
-            List<Form> tableRecordWithIdOnly = tableField.getTableRecords();
-            if(tableRecordWithIdOnly == null || tableRecordWithIdOnly.isEmpty())
-            {
-                continue;
-            }
-
-            //Populate the ids for lookup...
-            List<Long> formIdsOnly = new ArrayList();
-            for(Form tableRecord : tableRecordWithIdOnly)
-            {
-                formIdsOnly.add(tableRecord.getId());
-            }
-
-            List<Form> populatedTableRecords =
-                    this.getFormsByIds(
-                            Index.TABLE_RECORD,
-                            formIdsOnly,
-                            includeFieldDataParam,
-                            MAX_NUMBER_OF_TABLE_RECORDS);
-
-            tableField.setTableRecords(populatedTableRecords);
-            ancestorField.setFieldValue(tableField);
+            this.populateTableFields(
+                    false,
+                    includeFieldDataParam,
+                    descendantForm.getFormFields());
         }
 
         return returnVal;
     }
 
     /**
-     * Gets the ancestor for the {@code electronicFormIdParam} Form.
+     * Retrieves the Table field records as {@code List<Form>}.
      *
-     * @param electronicFormIdParam Identifier for the Form.
-     * @param includeFieldDataParam Whether to populate the return {@code Form} fields.
-     * @param includeTableFieldsParam Whether to populate the return {@code Form} table fields.
+     * @param electronicFormIdParam The Form Identifier.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
      *
-     * @return {@code Form} descendants.
-     *
-     * @see Form
+     * @return {@code List<Form>} records.
      */
+    public List<Form> getFormTableForms(
+            Long electronicFormIdParam,
+            boolean includeFieldDataParam)
+    {
+        if(electronicFormIdParam == null)
+        {
+            return null;
+        }
+
+        //Query using the descendantId directly...
+        StringBuffer primaryQuery = new StringBuffer(
+                ABaseFluidJSONObject.JSONMapping.ID);
+        primaryQuery.append(":\"");
+        primaryQuery.append(electronicFormIdParam);
+        primaryQuery.append("\"");
+
+        //Search for the primary...
+        List<Form> formsWithId = null;
+        if(includeFieldDataParam)
+        {
+            formsWithId = this.searchAndConvertHitsToFormWithAllFields(
+                    QueryBuilders.queryStringQuery(primaryQuery.toString()),
+                    Index.DOCUMENT,
+                    1,
+                    null);
+        }
+        else
+        {
+            formsWithId = this.searchAndConvertHitsToFormWithNoFields(
+                    QueryBuilders.queryStringQuery(primaryQuery.toString()),
+                    Index.DOCUMENT,
+                    1,
+                    null);
+        }
+
+        Form returnVal = null;
+        if(formsWithId != null && !formsWithId.isEmpty())
+        {
+            returnVal = formsWithId.get(0);
+        }
+
+        //No result...
+        if(returnVal == null)
+        {
+            return null;
+        }
+
+        //Populate the Table Fields...
+        return this.populateTableFields(
+                true,
+                includeFieldDataParam,
+                returnVal.getFormFields());
+    }
 
     /**
      * Retrieves the {@code Form}'s via the provided {@code formIdsParam}.
@@ -338,24 +363,6 @@ public class ESFormUtil extends ABaseSQLUtil {
 
         return returnVal;
     }
-
-
-    /**
-     *
-     * @param ancestorIdParam
-     * @param fieldsToRetrieveParam
-     * @return
-     */
-    private List<Form> getDescendantsByAncestorId(
-            Long ancestorIdParam,
-            List<Field> fieldsToRetrieveParam)
-    {
-
-        //TODO @Jason, complete here...
-
-        return null;
-    }
-
 
     /*******************************************************/
     /**
@@ -656,7 +663,7 @@ public class ESFormUtil extends ABaseSQLUtil {
                 {
                     fieldsForForm = formFromSource.convertTo(
                             this.fieldUtil.getFormFieldMappingForFormDefinition(
-                                    jsonObject.getLong(Form.JSONMapping.FORM_TYPE_ID)));
+                                jsonObject.getLong(Form.JSONMapping.FORM_TYPE_ID)));
                 }
 
                 formFromSource.populateFromElasticSearchJson(
@@ -736,7 +743,7 @@ public class ESFormUtil extends ABaseSQLUtil {
     }
 
     /**
-     *
+     * Close the SQL and ElasticSearch Connection.
      */
     @Override
     public void closeConnection() {
@@ -748,5 +755,69 @@ public class ESFormUtil extends ABaseSQLUtil {
         }
 
         this.client = null;
+    }
+
+    /**
+     * Populate all the Table Field values from the Table index.
+     *
+     * @param addAllTableRecordsForReturnParam Whether to include all the Table Records as a return value.
+     * @param includeFieldDataParam Whether to populate the return {@code Form} table fields.
+     * @param formFieldsParam The {@code Field}s to populate.
+     *
+     * @return {@code List<Form>} of populated Table Field records.
+     */
+    private List<Form> populateTableFields(
+            boolean addAllTableRecordsForReturnParam,
+            boolean includeFieldDataParam,
+            List<Field> formFieldsParam)
+    {
+        if(formFieldsParam == null || formFieldsParam.isEmpty())
+        {
+            return null;
+        }
+
+        List<Form> allTableRecordsFromAllFields = addAllTableRecordsForReturnParam ?
+                new ArrayList() : null;
+
+        //Populate each of the Table Fields...
+        for(Field descendantField : formFieldsParam)
+        {
+            //Skip if not Table Field...
+            if(!(descendantField.getFieldValue() instanceof TableField))
+            {
+                continue;
+            }
+
+            TableField tableField = (TableField)descendantField.getFieldValue();
+
+            List<Form> tableRecordWithIdOnly = tableField.getTableRecords();
+            if(tableRecordWithIdOnly == null || tableRecordWithIdOnly.isEmpty())
+            {
+                continue;
+            }
+
+            //Populate the ids for lookup...
+            List<Long> formIdsOnly = new ArrayList();
+            for(Form tableRecord : tableRecordWithIdOnly)
+            {
+                formIdsOnly.add(tableRecord.getId());
+            }
+
+            List<Form> populatedTableRecords = this.getFormsByIds(
+                    Index.TABLE_RECORD,
+                    formIdsOnly,
+                    includeFieldDataParam,
+                    MAX_NUMBER_OF_TABLE_RECORDS);
+
+            if(addAllTableRecordsForReturnParam && populatedTableRecords != null)
+            {
+                allTableRecordsFromAllFields.addAll(populatedTableRecords);
+            }
+
+            tableField.setTableRecords(populatedTableRecords);
+            descendantField.setFieldValue(tableField);
+        }
+
+        return allTableRecordsFromAllFields;
     }
 }
