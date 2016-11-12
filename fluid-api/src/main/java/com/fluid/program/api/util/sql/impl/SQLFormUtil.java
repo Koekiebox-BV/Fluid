@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fluid.program.api.util.IFormAction;
 import com.fluid.program.api.util.cache.CacheUtil;
 import com.fluid.program.api.util.sql.ABaseSQLUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
@@ -40,8 +41,9 @@ import com.fluid.program.api.vo.Form;
  *
  * @see ABaseSQLUtil
  * @see Form
+ * @see IFormAction
  */
-public class SQLFormUtil extends ABaseSQLUtil {
+public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 
     private SQLFormDefinitionUtil formDefUtil = null;
     private SQLFormFieldUtil fieldUtil = null;

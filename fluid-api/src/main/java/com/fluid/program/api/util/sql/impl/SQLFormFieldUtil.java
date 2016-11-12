@@ -41,7 +41,7 @@ import com.fluid.program.api.vo.*;
  * @see ABaseSQLUtil
  * @see Field
  */
-public class SQLFormFieldUtil extends ABaseSQLUtil {
+public class SQLFormFieldUtil extends ABaseSQLUtil{
 
     private Map<Long, List<FormFieldMapping>> localDefinitionToFieldsMapping;
     private CacheUtil cacheUtil = null;
