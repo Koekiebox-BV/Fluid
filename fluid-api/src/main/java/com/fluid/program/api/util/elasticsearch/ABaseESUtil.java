@@ -465,6 +465,80 @@ public class ABaseESUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Performs a search against the Elasticsearch instance with the {@code qbParam}.
+     *
+     * @param qbParam The @{code QueryBuilder} to search with.
+     * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
+     * @param fieldsParam The Fluid {@code Field}'s to return after lookup.
+     * @param numberOfResultsParam The number of results to return.
+     * @param formTypesParam The Id's for the Form Definitions to be returned.
+     *
+     * @return The {@code SearchHits} as Fluid {@code Form}.
+     *
+     * @see Form
+     * @see SearchHits
+     */
+    public List<Form> searchAndConvertHitsToForm(
+            QueryBuilder qbParam,
+            String indexParam,
+            List<Field> fieldsParam,
+            int numberOfResultsParam,
+            Long ... formTypesParam) {
+
+        SearchHits searchHits = this.searchWithHits(
+                qbParam,
+                indexParam,
+                false,
+                numberOfResultsParam,
+                formTypesParam);
+
+        List<Form> returnVal = null;
+
+        long totalHits;
+        if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
+
+            returnVal = new ArrayList();
+
+            if((searchHits.getHits().length != totalHits) &&
+                    (searchHits.getHits().length != numberOfResultsParam))
+            {
+                throw new FluidElasticSearchException(
+                        "The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
+                                searchHits.getHits().length+"'.");
+            }
+
+            long iterationMax = totalHits;
+            if(numberOfResultsParam > 0 &&
+                    totalHits > numberOfResultsParam)
+            {
+                iterationMax = numberOfResultsParam;
+            }
+
+            //Iterate...
+            for(int index = 0;index < iterationMax;index++)
+            {
+                SearchHit searchHit = searchHits.getAt(index);
+
+                String source;
+                if((source = searchHit.sourceAsString()) == null)
+                {
+                    continue;
+                }
+
+                Form formFromSource = new Form();
+
+                formFromSource.populateFromElasticSearchJson(
+                        new JSONObject(source),
+                        fieldsParam);
+
+                returnVal.add(formFromSource);
+            }
+        }
+
+        return returnVal;
+    }
+
+    /**
      * Populate all the Table Field values from the Table index.
      *
      * @param addAllTableRecordsForReturnParam Whether to include all the Table Records as a return value.

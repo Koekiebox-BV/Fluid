@@ -91,11 +91,10 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                         null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true);
 
         long start = System.currentTimeMillis();
-
         int numberOfRecords = 1;
 
         List<FormListing> formListing = webSocketClient.getTableFormsSynchronized(
-                generateLotsOfFormsFor(numberOfRecords, 28L));
+                generateLotsOfFormsFor(numberOfRecords, 2192L));
 
         long took = (System.currentTimeMillis() - start);
 
@@ -105,6 +104,8 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         if(formListing != null)
         {
+            System.out.println("Listing is '"+formListing.size()+"' -> \n\n\n");
+
             for(FormListing listing : formListing)
             {
                 //System.out.println("Response For ::: "+listing.getEcho());
