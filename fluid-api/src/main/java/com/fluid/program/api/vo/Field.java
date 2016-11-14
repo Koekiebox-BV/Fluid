@@ -457,6 +457,7 @@ public class Field extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
     public JSONObject toJsonObject() throws JSONException
     {
         JSONObject returnVal = super.toJsonObject();

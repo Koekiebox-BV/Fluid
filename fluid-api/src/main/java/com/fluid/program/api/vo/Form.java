@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -266,6 +268,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type
      */
+    @XmlTransient
     public Object getFieldValueForField(String fieldNameParam) {
 
         if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
@@ -317,6 +320,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type#Text
      */
+    @XmlTransient
     public String getFieldValueAsString(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -350,6 +354,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @see com.fluid.program.api.vo.Field.Type#Table
      * @see TableField
      */
+    @XmlTransient
     public TableField getFieldValueAsTableField(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -388,6 +393,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @see com.fluid.program.api.vo.Field.Type#MultipleChoice
      * @see MultiChoice
      */
+    @XmlTransient
     public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -425,6 +431,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type#DateTime
      */
+    @XmlTransient
     public Date getFieldValueAsDate(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -473,6 +480,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type#TrueFalse
      */
+    @XmlTransient
     public Boolean getFieldValueAsBoolean(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -510,6 +518,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
+    @XmlTransient
     public Double getFieldValueAsDouble(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -548,6 +557,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type#Decimal
      */
+    @XmlTransient
     public Integer getFieldValueAsInt(String fieldNameParam)
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
@@ -590,6 +600,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type
      */
+    @XmlTransient
     public void setFieldValue(String fieldNameParam, Object fieldValueParam)
     {
         if(fieldNameParam == null || fieldNameParam.trim().length() == 0)
@@ -650,6 +661,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      *
      * @see com.fluid.program.api.vo.Field.Type
      */
+    @XmlTransient
     public void setFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
         if (fieldNameParam == null) {
             return;
@@ -700,6 +712,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @param formTypeParam String value of the Form Definition.
      * @return Whether the {@code Form} is of type {@code formTypeParam}
      */
+    @XmlTransient
     public boolean isFormType(String formTypeParam) {
 
         if ((formTypeParam == null || formTypeParam.trim().isEmpty()) ||
@@ -719,6 +732,8 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
+    //@JsonIgnore
     public JSONObject toJsonObject() throws JSONException
     {
         JSONObject returnVal = super.toJsonObject();
@@ -798,6 +813,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @see Form
      */
     @Override
+    @XmlTransient
     public JSONObject toJsonForElasticSearch() throws JSONException {
 
         JSONObject returnVal = super.toJsonObject();
@@ -1006,6 +1022,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
     public void populateFromElasticSearchJson(
             JSONObject jsonObjectParam,
             List<Field> formFieldsParam) throws JSONException {
@@ -1320,53 +1337,11 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
     }
 
     /**
-     * Checks whether the provided {@code fieldParam} qualifies for
-     * insert into Elastic Search.
-     *
-     * @param fieldParam The field to check.
-     * @return Whether the Field Qualifies.
-     */
-    private boolean doesFieldQualifyForElasticSearchInsert(Field fieldParam)
-    {
-        if(fieldParam == null)
-        {
-            return false;
-        }
-
-        //Test Value...
-        Field.Type fieldType;
-        if(((fieldParam.getFieldValue()) == null) ||
-                ((fieldType = fieldParam.getTypeAsEnum()) == null))
-        {
-            return false;
-        }
-
-        //Test the Id...
-        if(fieldParam.getId() == null || fieldParam.getId().longValue() < 1)
-        {
-            return false;
-        }
-
-        //Confirm the type is supported...
-        switch (fieldType){
-
-            case DateTime:
-            case Decimal:
-            case MultipleChoice:
-            case Table:
-            case Text:
-            case TrueFalse:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    /**
      * Prints all the Fields and their values to the standard
      * {@code System.out}.
      *
      */
+    @XmlTransient
     public void printFormFields()
     {
         System.out.println("\n\n*** PRINTING FORM FIELDS ***");
@@ -1674,5 +1649,48 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      */
     public void setDescendantIds(List<Long> descendantIdsParam) {
         this.descendantIds = descendantIdsParam;
+    }
+
+    /**
+     * Checks whether the provided {@code fieldParam} qualifies for
+     * insert into Elastic Search.
+     *
+     * @param fieldParam The field to check.
+     * @return Whether the Field Qualifies.
+     */
+    private boolean doesFieldQualifyForElasticSearchInsert(Field fieldParam)
+    {
+        if(fieldParam == null)
+        {
+            return false;
+        }
+
+        //Test Value...
+        Field.Type fieldType;
+        if(((fieldParam.getFieldValue()) == null) ||
+                ((fieldType = fieldParam.getTypeAsEnum()) == null))
+        {
+            return false;
+        }
+
+        //Test the Id...
+        if(fieldParam.getId() == null || fieldParam.getId().longValue() < 1)
+        {
+            return false;
+        }
+
+        //Confirm the type is supported...
+        switch (fieldType){
+
+            case DateTime:
+            case Decimal:
+            case MultipleChoice:
+            case Table:
+            case Text:
+            case TrueFalse:
+                return true;
+            default:
+                return false;
+        }
     }
 }

@@ -92,10 +92,10 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         int numberOfRecords = 5;
         Form[] testForms =
-                TestSQLUtilWebSocketClient.generateLotsOfFormsFor(numberOfRecords, 28L);
+                TestSQLUtilWebSocketClient.generateLotsOfFormsFor(
+                        numberOfRecords, 2192L);
 
         long start = System.currentTimeMillis();
-
 
         for(Form forToSend :testForms)
         {

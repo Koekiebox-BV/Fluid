@@ -114,7 +114,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
                 for(Form form : tableForms)
                 {
-                    System.out.println(form.getFormType() + " - " + form.getTitle());
+                    System.out.println("\n-> "+form.getFormType() + " - " + form.getTitle());
 
                     if(form.getFormFields() == null)
                     {
@@ -228,7 +228,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
         int numberOfRecords = 1;
 
         List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
-                generateLotsOfFormsFor(numberOfRecords, 673L));
+                generateLotsOfFormsFor(numberOfRecords, 246L));
 
         long took = (System.currentTimeMillis() - start);
 
@@ -246,7 +246,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
                 for(Form form : descendantsForms)
                 {
-                    System.out.println(form.getFormType() +
+                    System.out.println("\n--> "+form.getFormType() +
                             " - " +
                             form.getTitle());
 

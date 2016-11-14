@@ -198,6 +198,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
     public JSONObject toJsonObject() throws JSONException {
 
         JSONObject returnVal = super.toJsonObject();

@@ -174,7 +174,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             returnVal = this.searchAndConvertHitsToFormWithAllFields(
                     QueryBuilders.queryStringQuery(descendantQuery.toString()),
                     Index.DOCUMENT,
-                    1,
+                    MAX_NUMBER_OF_TABLE_RECORDS,
                     null);
         }
         else
@@ -182,7 +182,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             returnVal = this.searchAndConvertHitsToFormWithNoFields(
                     QueryBuilders.queryStringQuery(descendantQuery.toString()),
                     Index.DOCUMENT,
-                    1,
+                    MAX_NUMBER_OF_TABLE_RECORDS,
                     null);
         }
 

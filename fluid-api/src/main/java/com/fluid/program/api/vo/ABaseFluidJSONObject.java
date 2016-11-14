@@ -17,6 +17,8 @@ package com.fluid.program.api.vo;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +35,7 @@ import org.json.JSONObject;
  */
 public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
+    @XmlTransient
     protected JSONObject jsonObject;
 
     /**
@@ -120,6 +123,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
      *
      * @see org.json.JSONObject
      */
+    @XmlTransient
     public JSONObject toJsonObject() throws JSONException
     {
         JSONObject returnVal = new JSONObject();
@@ -152,6 +156,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
      * @return {@code Date} Object from {@code longValueParam}
      *
      */
+    @XmlTransient
     public Date getLongAsDateFromJson(Long longValueParam)
     {
         if(longValueParam == null)
@@ -170,6 +175,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
      * @param dateValueParam {@code Long} Object from {@code dateValueParam}
      * @return The milliseconds since January 1, 1970, 00:00:00 GMT
      */
+    @XmlTransient
     public Long getDateAsLongFromJson(Date dateValueParam)
     {
         if(dateValueParam == null)
@@ -186,6 +192,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
      *
      * @return The local set {@code JSONObject} object.
      */
+    @XmlTransient
     public JSONObject getJSONObject()
     {
         return this.jsonObject;

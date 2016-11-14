@@ -18,6 +18,8 @@ package com.fluid.program.api.vo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,6 +63,7 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
      *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
+    @XmlTransient
     public abstract JSONObject toJsonForElasticSearch() throws JSONException;
 
     /**
@@ -73,6 +76,7 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
      *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
+    @XmlTransient
     public abstract void populateFromElasticSearchJson(
             JSONObject jsonObjectParam,
             List<Field> formFieldsParam) throws JSONException;
@@ -83,6 +87,7 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
      * @param formFieldMappingsParam The {@code formFieldMappingsParam} to convert.
      * @return The converted {@code Field}s.
      */
+    @XmlTransient
     public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam)
     {
         if(formFieldMappingsParam == null)
@@ -107,6 +112,7 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
      *
      * @return Converted {@code Field} from {@code SQLFormFieldUtil.FormFieldMapping}.
      */
+    @XmlTransient
     public Field convertTo(SQLFormFieldUtil.FormFieldMapping formFieldMappingParam)
     {
         switch (formFieldMappingParam.dataType.intValue())
