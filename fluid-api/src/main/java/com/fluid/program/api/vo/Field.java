@@ -16,11 +16,16 @@
 package com.fluid.program.api.vo;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.fluid.program.api.util.UtilGlobal;
+import com.fluid.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -32,8 +37,9 @@ import org.json.JSONObject;
  *
  * @see Form
  * @see FluidItem
+ * @see ABaseFluidElasticSearchJSONObject
  */
-public class Field extends ABaseFluidJSONObject {
+public class Field extends ABaseFluidElasticSearchJSONObject {
 
     private String fieldName;
     private Object fieldValue;
@@ -41,6 +47,8 @@ public class Field extends ABaseFluidJSONObject {
 
     private String type;
     private String typeMetaData;
+
+    private static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
 
     /**
      * The JSON mapping for the {@code Field} object.
@@ -52,6 +60,15 @@ public class Field extends ABaseFluidJSONObject {
         public static final String FIELD_VALUE = "fieldValue";
         public static final String TYPE = "type";
         public static final String TYPE_META_DATA = "typeMetaData";
+
+        /**
+         * The JSON mapping for Elastic Search data types.
+         * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}.
+         */
+        public static final class Elastic
+        {
+            public static final String TYPE = "type";
+        }
     }
 
     /**
@@ -102,8 +119,38 @@ public class Field extends ABaseFluidJSONObject {
         Decimal,
         MultipleChoice,
         ParagraphText,
-        //Table field only supported by Database....
+        //Table field only supported by Database (Memcached statement)....
         Table
+    }
+
+    /**
+     * The field type for Elastic Search.
+     * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}
+     */
+    public static class ElasticSearchType
+    {
+        //String...
+        public static final String TEXT = "text";
+        public static final String KEYWORD = "keyword";
+
+        //Numeric...
+        public static final String DOUBLE = "double";
+        public static final String LONG = "long";
+
+        //Date...
+        public static final String DATE = "date";
+
+        //Boolean...
+        public static final String BOOLEAN = "boolean";
+
+        //Binary...
+        public static final String BINARY = "binary";
+
+        //Geo...
+        public static final String GEO_POINT = "geo_point";//41.12,-71.34 (Lat, Lon)
+
+        //Nested...
+        public static final String NESTED = "nested";
     }
 
     /**
@@ -275,6 +322,16 @@ public class Field extends ABaseFluidJSONObject {
      */
     public void setFieldName(String fieldNameParam) {
         this.fieldName = fieldNameParam;
+    }
+
+    /**
+     * Converts the {@code getFieldName} to upper_camel_case.
+     *
+     * @return {@code getFieldName()} as upper_camel_case.
+     */
+    public String getFieldNameAsUpperCamel()
+    {
+        return new UtilGlobal().toCamelUpperCase(this.getFieldName());
     }
 
     /**
@@ -531,5 +588,241 @@ public class Field extends ABaseFluidJSONObject {
         }
 
         return returnVal;
+    }
+
+    /**
+     * Creates the mapping object required by Elastic Search when making
+     * use of enhanced data-types.
+     *
+     * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}.
+     *
+     * @return {@code JSONObject} representation of {@code Field} for
+     * ElasticSearch mapping.
+     * @throws JSONException If there is a problem with the JSON Body.
+     */
+    @Override
+    @XmlTransient
+    public JSONObject toJsonMappingForElasticSearch() throws JSONException {
+
+        String fieldNameUpperCamel = this.getFieldNameAsUpperCamel();
+        if(fieldNameUpperCamel == null)
+        {
+            return null;
+        }
+
+        String elasticType = this.getElasticSearchFieldType();
+        if(elasticType == null)
+        {
+            return null;
+        }
+
+        JSONObject returnVal = new JSONObject();
+
+        returnVal.put(JSONMapping.Elastic.TYPE, elasticType);
+
+        return returnVal;
+    }
+
+    /**
+     * Conversion to {@code JSONObject} for storage in ElasticSearch.
+     *
+     * @return {@code JSONObject} representation of {@code Field}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    @XmlTransient
+    public JSONObject toJsonForElasticSearch() throws JSONException {
+
+        if(!this.doesFieldQualifyForElasticSearchInsert())
+        {
+            return null;
+        }
+
+        JSONObject returnVal = new JSONObject();
+
+        String fieldIdAsString = this.getFieldNameAsUpperCamel();
+        Object fieldValue = this.getFieldValue();
+
+        //Table Field...
+        if(fieldValue instanceof TableField)
+        {
+            TableField tableField = (TableField)this.getFieldValue();
+
+            if(tableField.getTableRecords() != null &&
+                    !tableField.getTableRecords().isEmpty())
+            {
+                JSONArray array = new JSONArray();
+
+                for(Form record : tableField.getTableRecords())
+                {
+                    if(record.getId() == null)
+                    {
+                        continue;
+                    }
+
+                    array.put(record.getId());
+                }
+
+                returnVal.put(fieldIdAsString, array);
+            }
+        }
+        //Multiple Choice...
+        else if(fieldValue instanceof MultiChoice)
+        {
+            MultiChoice multiChoice = (MultiChoice)this.getFieldValue();
+
+            if(multiChoice.getSelectedMultiChoices() != null &&
+                    !multiChoice.getSelectedMultiChoices().isEmpty())
+            {
+                JSONArray array = new JSONArray();
+
+                for(String selectedChoice : multiChoice.getSelectedMultiChoices())
+                {
+                    Long selectedChoiceAsLong = null;
+
+                    try{
+                        if(!selectedChoice.isEmpty() &&
+                                Character.isDigit(selectedChoice.charAt(0)))
+                        {
+                            selectedChoiceAsLong = Long.parseLong(selectedChoice);
+                        }
+                    }
+                    catch (NumberFormatException nfe)
+                    {
+                        selectedChoiceAsLong = null;
+                    }
+
+                    //When not long, store as is...
+                    if(selectedChoiceAsLong == null)
+                    {
+                        array.put(selectedChoice);
+                    }
+                    else
+                    {
+                        array.put(selectedChoiceAsLong.longValue());
+                    }
+                }
+
+                returnVal.put(fieldIdAsString, array);
+            }
+        }
+        //Other valid types...
+        else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+                fieldValue instanceof String)
+        {
+            returnVal.put(fieldIdAsString, fieldValue);
+        }
+        //Date...
+        else if(fieldValue instanceof Date)
+        {
+            returnVal.put(fieldIdAsString, ((Date)fieldValue).getTime());
+        }
+        //Problem
+        else {
+            throw new FluidElasticSearchException(
+                    "Field Value of type '"+fieldValue.getClass().getSimpleName()
+                            +"' and Value '"+ fieldValue+"' is not supported.");
+        }
+
+        return returnVal;
+    }
+
+    /**
+     *
+     * @param jsonObjectParam The JSON object to populate from.
+     * @param formFieldsParam The Form Fields to use.
+     *
+     * @throws JSONException
+     */
+    @Override
+    @XmlTransient
+    public void populateFromElasticSearchJson(
+            JSONObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
+
+
+
+
+        //TODO Need to complete...
+    }
+
+    /**
+     * Returns the ElasticSearch equivalent data type from the Fluid datatype.
+     *
+     * @return ElasticSearch type.
+     *
+     * @see ElasticSearchType
+     */
+    @XmlTransient
+    public String getElasticSearchFieldType()
+    {
+        Type fieldType = this.getTypeAsEnum();
+
+        //Get the type by Fluid field type...
+        switch (fieldType)
+        {
+            case ParagraphText:
+                return ElasticSearchType.TEXT;
+            case Text:
+
+                String metaData = this.getTypeMetaData();
+                if(metaData == null || metaData.isEmpty())
+                {
+                    return ElasticSearchType.TEXT;
+                }
+
+                if(LATITUDE_AND_LONGITUDE.equals(metaData))
+                {
+                    return ElasticSearchType.GEO_POINT;
+                }
+            case TrueFalse:
+                return ElasticSearchType.BOOLEAN;
+            case DateTime:
+                return ElasticSearchType.DATE;
+            case Decimal:
+                return ElasticSearchType.DOUBLE;
+            case MultipleChoice:
+                return ElasticSearchType.KEYWORD;
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks whether the provided {@code fieldParam} qualifies for
+     * insert into Elastic Search.
+     *
+     * @return Whether the Field Qualifies.
+     */
+    private boolean doesFieldQualifyForElasticSearchInsert()
+    {
+        //Test Value...
+        Field.Type fieldType;
+        if(((this.getFieldValue()) == null) ||
+                ((fieldType = this.getTypeAsEnum()) == null))
+        {
+            return false;
+        }
+
+        //Test the Id...
+        if(this.getId() == null || this.getId().longValue() < 1)
+        {
+            return false;
+        }
+
+        //Confirm the type is supported...
+        switch (fieldType){
+
+            case DateTime:
+            case Decimal:
+            case MultipleChoice:
+            case Table:
+            case Text:
+            case TrueFalse:
+                return true;
+            default:
+                return false;
+        }
     }
 }

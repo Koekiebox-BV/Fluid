@@ -70,7 +70,6 @@ public class User extends ABaseFluidJSONObject {
     public static class JSONMapping
     {
         public static final String USERNAME = "username";
-        public static final String USER_ID = "user_id";
 
         public static final String ACTIVE = "active";
 
@@ -84,6 +83,14 @@ public class User extends ABaseFluidJSONObject {
         public static final String EMAIL_ADDRESSES = "emailAddresses";
         public static final String SALT = "salt";
         public static final String USER_FIELDS = "userFields";
+
+        /**
+         * Elastic specific properties.
+         */
+        public static final class Elastic
+        {
+            public static final String USER_ID = "userId";
+        }
     }
 
     /**

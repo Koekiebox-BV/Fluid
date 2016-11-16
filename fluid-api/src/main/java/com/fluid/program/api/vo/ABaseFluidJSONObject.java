@@ -46,6 +46,14 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         public static final String ID = "id";
         public static final String SERVICE_TICKET = "serviceTicket";
         public static final String ECHO = "echo";
+
+        /**
+         * Elastic specific properties.
+         */
+        public static final class Elastic
+        {
+            public static final String PROPERTIES = "properties";
+        }
     }
 
     /**

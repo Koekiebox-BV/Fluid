@@ -37,12 +37,12 @@ import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
  * @see ABaseFluidVO
  * @see JSONObject
  */
-public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObject{
+public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONObject{
 
     /**
      * Default constructor.
      */
-    public ABaseFluidElasticCacheJSONObject() {
+    public ABaseFluidElasticSearchJSONObject() {
         super();
     }
 
@@ -51,20 +51,33 @@ public abstract class ABaseFluidElasticCacheJSONObject extends ABaseFluidJSONObj
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ABaseFluidElasticCacheJSONObject(JSONObject jsonObjectParam) {
+    public ABaseFluidElasticSearchJSONObject(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
     /**
      * Conversion to {@code JSONObject} for storage in ElasticSearch.
      *
-     * @return {@code JSONObject} representation of {@code Form}
+     * @return {@code JSONObject} representation of {@code subclass-type}
      * @throws JSONException If there is a problem with the JSON Body.
      *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     public abstract JSONObject toJsonForElasticSearch() throws JSONException;
+
+    /**
+     * The JSON mapping for ElasticSearch and its field definitions.
+     * The JSON mapping is crucial in defining the correct types to make storage of
+     * data-types more effective.
+     *
+     * @return {@code JSONObject} representation of {@code Form} definition.
+     * @throws JSONException If there is a problem with constructing the mapping.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @XmlTransient
+    public abstract JSONObject toJsonMappingForElasticSearch() throws JSONException;
 
     /**
      * Populate the object based on the ElasticSearch JSON structure.

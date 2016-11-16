@@ -55,6 +55,8 @@ public class ABaseESUtil extends ABaseSQLUtil {
 
     protected static final int MAX_NUMBER_OF_TABLE_RECORDS = 10000;
 
+    public static final String NO_FIELDS_MAPPER = "_none_";
+
     /**
      * The index type.
      */
@@ -186,7 +188,7 @@ public class ABaseESUtil extends ABaseSQLUtil {
 
         //No Fields...
         if (withNoFieldsParam) {
-            searchRequestBuilder = searchRequestBuilder.setNoFields();
+            searchRequestBuilder = searchRequestBuilder.storedFields(NO_FIELDS_MAPPER);
         }
 
         //The requested number of results...

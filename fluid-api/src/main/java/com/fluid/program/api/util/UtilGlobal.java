@@ -40,4 +40,49 @@ public class UtilGlobal {
 
         //TODO public static final int _8_TEXT_ENCRYPTED = 8;
     }
+
+    /**
+     * Utility method for creating camel-case-upper from {@code inputParam}
+     *
+     * @param inputParam The input to convert.
+     * @return The converted value.
+     */
+    public String toCamelUpperCase(String inputParam) {
+
+        if(inputParam == null)
+        {
+            return null;
+        }
+
+        if(inputParam.isEmpty())
+        {
+            return EMPTY;
+        }
+
+        char[] original = inputParam.toCharArray();
+
+        StringBuilder titleCase =
+                new StringBuilder(Character.toString(
+                        Character.toLowerCase(original[0])));
+
+        boolean nextTitleCase = false;
+        for(int index = 1;index < original.length;index++)
+        {
+            char c = original[index];
+
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+                continue;
+            }
+            //Just add...
+            else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
+    }
 }

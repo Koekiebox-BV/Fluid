@@ -17,6 +17,7 @@ package com.fluid.program.api.vo;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -25,7 +26,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.user.User;
 
@@ -57,7 +57,7 @@ import com.fluid.program.api.vo.user.User;
  * @see Field
  * @see Flow
  */
-public class Form extends ABaseFluidElasticCacheJSONObject {
+public class Form extends ABaseFluidElasticSearchJSONObject {
 
     private String formType;
     private Long formTypeId;
@@ -167,10 +167,10 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             User currentUser = new User();
 
             //User Id
-            if (!jsonObj.isNull(User.JSONMapping.USER_ID)) {
+            if (!jsonObj.isNull(User.JSONMapping.Elastic.USER_ID)) {
 
                 currentUser.setId(jsonObj.getLong(
-                        User.JSONMapping.USER_ID));
+                        User.JSONMapping.Elastic.USER_ID));
             }
 
             //Username
@@ -804,6 +804,173 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
     }
 
     /**
+     * Creates the mapping object required by Elastic Search when making
+     * use of enhanced data-types.
+     *
+     * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}.
+     *
+     * @return {@code JSONObject} representation of {@code Form} for
+     * ElasticSearch mapping.
+     *
+     * @throws JSONException If there is a problem with the JSON Body.
+     */
+    @Override
+    @XmlTransient
+    public JSONObject toJsonMappingForElasticSearch() throws JSONException {
+
+        JSONObject returnVal = new JSONObject();
+
+        //Form Type...
+        {
+            JSONObject formTypeJsonObj = new JSONObject();
+            formTypeJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.KEYWORD);
+            returnVal.put(JSONMapping.FORM_TYPE, formTypeJsonObj);
+        }
+
+        //Form Type Id...
+        {
+            JSONObject formTypeIdJsonObj = new JSONObject();
+            formTypeIdJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.LONG);
+            returnVal.put(JSONMapping.FORM_TYPE_ID, formTypeIdJsonObj);
+        }
+
+        //Title...
+        {
+            JSONObject titleJsonObj = new JSONObject();
+            titleJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.TEXT);
+            returnVal.put(JSONMapping.TITLE, titleJsonObj);
+        }
+
+        //Form Description...
+        {
+            JSONObject formDescJsonObj = new JSONObject();
+            formDescJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.KEYWORD);
+            returnVal.put(JSONMapping.FORM_DESCRIPTION, formDescJsonObj);
+        }
+
+        //State...
+        {
+            JSONObject stateJsonObj = new JSONObject();
+            stateJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.KEYWORD);
+            returnVal.put(JSONMapping.STATE, stateJsonObj);
+        }
+
+        //Flow State...
+        {
+            JSONObject flowStateJsonObj = new JSONObject();
+            flowStateJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.KEYWORD);
+            returnVal.put(JSONMapping.FLOW_STATE, flowStateJsonObj);
+        }
+
+        //Current User...
+        {
+            JSONObject currentUserJsonObj = new JSONObject();
+            currentUserJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.NESTED);
+
+            JSONObject properties = new JSONObject();
+
+            //Current User Id...
+            JSONObject currentUserUserIdJsonObj = new JSONObject();
+            currentUserUserIdJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.LONG);
+            properties.put(User.JSONMapping.Elastic.USER_ID, currentUserUserIdJsonObj);
+
+            //Current User Id...
+            JSONObject currentUserUsernameJsonObj = new JSONObject();
+            currentUserUsernameJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.KEYWORD);
+            properties.put(User.JSONMapping.USERNAME, currentUserUsernameJsonObj);
+
+            currentUserJsonObj.put(
+                    ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
+                    properties);
+
+            returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
+        }
+
+        //Date Created...
+        {
+            JSONObject dateCreatedJsonObj = new JSONObject();
+            dateCreatedJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.DATE);
+            returnVal.put(JSONMapping.DATE_CREATED, dateCreatedJsonObj);
+        }
+
+        //Date Last Updated...
+        {
+            JSONObject dateLastUpdatedJsonObj = new JSONObject();
+            dateLastUpdatedJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.DATE);
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED, dateLastUpdatedJsonObj);
+        }
+
+        //Get the listing of form fields...
+        if(this.getFormFields() != null &&
+                !this.getFormFields().isEmpty())
+        {
+            for(Field toAdd : this.getFormFields())
+            {
+                JSONObject convertedField = toAdd.toJsonMappingForElasticSearch();
+                if(convertedField == null)
+                {
+                    continue;
+                }
+
+                String fieldNameAsCamel = toAdd.getFieldNameAsUpperCamel();
+                returnVal.put(fieldNameAsCamel, convertedField);
+            }
+        }
+
+        //Ancestor Obj...
+        {
+            JSONObject ancestorJsonObj = new JSONObject();
+            ancestorJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.LONG);
+            returnVal.put(JSONMapping.ANCESTOR_ID, ancestorJsonObj);
+        }
+
+        //Table field parent id...
+        {
+            JSONObject tblFieldParentIdJsonObj = new JSONObject();
+            tblFieldParentIdJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.LONG);
+            returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, tblFieldParentIdJsonObj);
+        }
+
+        //Table Field parent Id...
+        //No type required for array...
+        /*{
+            JSONObject tableParentFieldJsonObj = new JSONObject();
+            tableParentFieldJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.LONG);
+            returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, tableParentFieldJsonObj);
+        }*/
+
+        return returnVal;
+    }
+
+    /**
      * Conversion to {@code JSONObject} for storage in ElasticCache for {@code Form}.
      *
      * @return {@code JSONObject} representation of {@code Form}
@@ -862,7 +1029,7 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
             if(this.getCurrentUser().getId() != null)
             {
                 currentUserJsonObj.put(
-                        User.JSONMapping.USER_ID,
+                        User.JSONMapping.Elastic.USER_ID,
                         this.getCurrentUser().getId());
             }
 
@@ -892,92 +1059,19 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
         //Form Fields...
         if(this.getFormFields() != null && !this.getFormFields().isEmpty())
         {
-            for(Field toAdd :this.getFormFields())
+            for(Field toAdd : this.getFormFields())
             {
-                if(!this.doesFieldQualifyForElasticSearchInsert(toAdd))
+                JSONObject convertedField = toAdd.toJsonForElasticSearch();
+                if(convertedField == null)
                 {
                     continue;
                 }
 
-                long fieldId = toAdd.getId().longValue();
-                String fieldIdAsString = Long.toString(fieldId);
-                Object fieldValue = toAdd.getFieldValue();
-
-                //Table Field...
-                if(fieldValue instanceof TableField)
+                Iterator<String> iterKeys = convertedField.keys();
+                while(iterKeys.hasNext())
                 {
-                    TableField tableField = (TableField)toAdd.getFieldValue();
-
-                    if(tableField.getTableRecords() != null &&
-                            !tableField.getTableRecords().isEmpty())
-                    {
-                        JSONArray array = new JSONArray();
-
-                        for(Form record : tableField.getTableRecords())
-                        {
-                            if(record.getId() == null)
-                            {
-                                continue;
-                            }
-
-                            array.put(record.getId());
-                        }
-
-                        returnVal.put(fieldIdAsString, array);
-                    }
-                }
-                //Multiple Choice...
-                else if(fieldValue instanceof MultiChoice)
-                {
-                    MultiChoice multiChoice = (MultiChoice)toAdd.getFieldValue();
-
-                    if(multiChoice.getSelectedMultiChoices() != null &&
-                            !multiChoice.getSelectedMultiChoices().isEmpty())
-                    {
-                        JSONArray array = new JSONArray();
-
-                        for(String selectedChoice : multiChoice.getSelectedMultiChoices())
-                        {
-                            Long selectedChoiceAsLong;
-
-                            try{
-                                selectedChoiceAsLong = Long.parseLong(selectedChoice);
-                            }
-                            catch (NumberFormatException nfe)
-                            {
-                                selectedChoiceAsLong = null;
-                            }
-
-                            //When not long, store as is...
-                            if(selectedChoiceAsLong == null)
-                            {
-                                array.put(selectedChoice);
-                            }
-                            else
-                            {
-                                array.put(selectedChoiceAsLong.longValue());
-                            }
-                        }
-
-                        returnVal.put(fieldIdAsString, array);
-                    }
-                }
-                //Other valid types...
-                else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
-                        fieldValue instanceof String)
-                {
-                    returnVal.put(fieldIdAsString, fieldValue);
-                }
-                //Date...
-                else if(fieldValue instanceof Date)
-                {
-                    returnVal.put(fieldIdAsString, ((Date)fieldValue).getTime());
-                }
-                //Problem
-                else {
-                    throw new FluidElasticSearchException(
-                            "Field Value of type '"+fieldValue.getClass().getSimpleName()
-                                    +"' and Value '"+ fieldValue+"' is not supported.");
+                    String key = iterKeys.next();
+                    returnVal.put(key, convertedField.get(key));
                 }
             }
         }
@@ -1128,11 +1222,10 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
                     jsonObjectParam.getJSONObject(JSONMapping.CURRENT_USER);
 
             User currentUser = new User();
-
-            if(!currUserJsonObj.isNull(User.JSONMapping.USER_ID))
+            if(!currUserJsonObj.isNull(User.JSONMapping.Elastic.USER_ID))
             {
                 currentUser.setId(currUserJsonObj.getLong(
-                        User.JSONMapping.USER_ID));
+                        User.JSONMapping.Elastic.USER_ID));
             }
 
             if(!currUserJsonObj.isNull(User.JSONMapping.USERNAME))
@@ -1649,48 +1742,5 @@ public class Form extends ABaseFluidElasticCacheJSONObject {
      */
     public void setDescendantIds(List<Long> descendantIdsParam) {
         this.descendantIds = descendantIdsParam;
-    }
-
-    /**
-     * Checks whether the provided {@code fieldParam} qualifies for
-     * insert into Elastic Search.
-     *
-     * @param fieldParam The field to check.
-     * @return Whether the Field Qualifies.
-     */
-    private boolean doesFieldQualifyForElasticSearchInsert(Field fieldParam)
-    {
-        if(fieldParam == null)
-        {
-            return false;
-        }
-
-        //Test Value...
-        Field.Type fieldType;
-        if(((fieldParam.getFieldValue()) == null) ||
-                ((fieldType = fieldParam.getTypeAsEnum()) == null))
-        {
-            return false;
-        }
-
-        //Test the Id...
-        if(fieldParam.getId() == null || fieldParam.getId().longValue() < 1)
-        {
-            return false;
-        }
-
-        //Confirm the type is supported...
-        switch (fieldType){
-
-            case DateTime:
-            case Decimal:
-            case MultipleChoice:
-            case Table:
-            case Text:
-            case TrueFalse:
-                return true;
-            default:
-                return false;
-        }
     }
 }
