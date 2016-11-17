@@ -957,16 +957,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, tblFieldParentIdJsonObj);
         }
 
-        //Table Field parent Id...
-        //No type required for array...
-        /*{
-            JSONObject tableParentFieldJsonObj = new JSONObject();
-            tableParentFieldJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
-                    Field.ElasticSearchType.LONG);
-            returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, tableParentFieldJsonObj);
-        }*/
-
         return returnVal;
     }
 
@@ -1244,126 +1234,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
             for(Field formField : formFieldsParam)
             {
-                if(formField.getId() == null)
-                {
-                    continue;
-                }
-
-                Long formFieldId = formField.getId();
-                String fieldIdAsString = Long.toString(formFieldId);
-
-                if(jsonObjectParam.isNull(fieldIdAsString))
-                {
-                    continue;
-                }
-
-                Field.Type type;
-                if((type = formField.getTypeAsEnum()) == null)
-                {
-                    continue;
-                }
-
-                Object formFieldValue = jsonObjectParam.get(fieldIdAsString);
-
-                Field fieldToAdd = null;
-
-                switch (type)
-                {
-                    case DateTime:
-                        if(formFieldValue instanceof Long)
-                        {
-                            fieldToAdd = new Field(
-                                    formField.getId(),
-                                    formField.getFieldName(),
-                                    new Date(((Long)formFieldValue).longValue()),
-                                    formField.getTypeAsEnum());
-                        }
-                    break;
-                    case Decimal:
-                        if(formFieldValue instanceof Number)
-                        {
-                            fieldToAdd = new Field(
-                                    formField.getId(),
-                                    formField.getFieldName(),
-                                    ((Number)formFieldValue).doubleValue(),
-                                    formField.getTypeAsEnum());
-                        }
-                    break;
-                    case MultipleChoice:
-                        if(formFieldValue instanceof JSONArray)
-                        {
-                            JSONArray casted = (JSONArray)formFieldValue;
-                            List<String> selectedChoices = new ArrayList();
-                            for(int index = 0;index < casted.length();index++)
-                            {
-                                selectedChoices.add(casted.get(index).toString());
-                            }
-
-                            if(selectedChoices.isEmpty())
-                            {
-                                continue;
-                            }
-
-                            MultiChoice multiChoiceToSet = new MultiChoice(selectedChoices);
-
-                            fieldToAdd = new Field(
-                                    formField.getId(),
-                                    formField.getFieldName(),
-                                    multiChoiceToSet,
-                                    formField.getTypeAsEnum());
-                        }
-                    break;
-                    case Table:
-                        if(formFieldValue instanceof JSONArray)
-                        {
-                            JSONArray casted = (JSONArray)formFieldValue;
-                            List<Form> tableRecords = new ArrayList();
-                            for(int index = 0;index < casted.length();index++)
-                            {
-                                Object obAtIndex = casted.get(index);
-
-                                if(obAtIndex instanceof Number)
-                                {
-                                    tableRecords.add(new Form(((Number)obAtIndex).longValue()));
-                                }
-                            }
-
-                            if(tableRecords.isEmpty())
-                            {
-                                continue;
-                            }
-
-                            TableField tableField = new TableField();
-                            tableField.setTableRecords(tableRecords);
-
-                            fieldToAdd = new Field(
-                                    formField.getId(),
-                                    formField.getFieldName(),
-                                    tableField,
-                                    formField.getTypeAsEnum());
-                        }
-                    break;
-                    case Text:
-                        if(formFieldValue instanceof String)
-                        {
-                            fieldToAdd = new Field(
-                                    formField.getId(),
-                                    formField.getFieldName(),
-                                    formFieldValue.toString(),
-                                    formField.getTypeAsEnum());
-                        }
-                    case TrueFalse:
-                        if(formFieldValue instanceof Boolean)
-                        {
-                            fieldToAdd = new Field(
-                                    formField.getId(),
-                                    formField.getFieldName(),
-                                    formFieldValue,
-                                    formField.getTypeAsEnum());
-                        }
-                    break;
-                }
-
+                Field fieldToAdd = formField.populateFromElasticSearchJson(jsonObjectParam);
                 if(fieldToAdd == null)
                 {
                     continue;

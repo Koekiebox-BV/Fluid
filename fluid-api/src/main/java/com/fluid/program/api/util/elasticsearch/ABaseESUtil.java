@@ -605,6 +605,31 @@ public class ABaseESUtil extends ABaseSQLUtil {
     }
 
     /**
+     * Confirms whether index with the name {@code indexToCheckParam} exists.
+     *
+     * @param indexToCheckParam ElasticSearch index to check for existance.
+     * @return {@code true} if ElasticSearch index {@code indexToCheckParam} exists, otherwise {@code false}.
+     */
+    public boolean doesIndexExist(String indexToCheckParam)
+    {
+        if(indexToCheckParam == null || indexToCheckParam.trim().isEmpty())
+        {
+            return false;
+        }
+
+        if(this.client == null)
+        {
+            throw new FluidElasticSearchException(
+                    "ElasticSearch client is not initialized.");
+        }
+
+        return this.client.admin().cluster()
+                .prepareState().execute()
+                .actionGet().getState()
+                .getMetaData().hasIndex(indexToCheckParam);
+    }
+
+    /**
      * Close the SQL and ElasticSearch Connection.
      */
     @Override

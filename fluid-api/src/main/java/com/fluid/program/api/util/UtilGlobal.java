@@ -24,6 +24,11 @@ package com.fluid.program.api.util;
 public class UtilGlobal {
 
     public static final String EMPTY = "";
+    public static final String REG_EX_PIPE = "\\|";
+    public static final String PIPE = "|";
+    public static final String COMMA = ",";
+
+    public static final String REG_EX_COMMA = "\\,";
 
     /**
      * The field type id mappings.
@@ -38,7 +43,7 @@ public class UtilGlobal {
         public static final int _6_DECIMAL = 6;
         public static final int _7_TABLE_FIELD = 7;
 
-        //TODO public static final int _8_TEXT_ENCRYPTED = 8;
+        //public static final int _8_TEXT_ENCRYPTED = 8;
     }
 
     /**
@@ -84,5 +89,141 @@ public class UtilGlobal {
         }
 
         return titleCase.toString();
+    }
+
+    /**
+     * Extract and returns Latitude from {@code textToCheckParam} applicable to
+     * Fluid.
+     *
+     * @param textToCheckParam The Latitude and Longitude to extract Latitude from.
+     * @return Geo Latitude from {@code textToCheckParam}.
+     */
+    public double getLatitudeFromFluidText(String textToCheckParam)
+    {
+        if(textToCheckParam == null || textToCheckParam.isEmpty())
+        {
+            return 0.0;
+        }
+
+        String[] latitudeAndLongitude =
+                textToCheckParam.split(REG_EX_PIPE);
+
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
+        {
+            return 0.0;
+        }
+
+        if(latitudeAndLongitude.length > 1)
+        {
+            return toDoubleSafe(latitudeAndLongitude[0]);
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * Extract and returns Longitude from {@code textToCheckParam}
+     * applicable to ElasticSearch.
+     *
+     * @param textToCheckParam The Latitude and Longitude to extract Longitude from.
+     * @return Geo Longitude from {@code textToCheckParam}.
+     */
+    public double getLongitudeFromFluidText(String textToCheckParam)
+    {
+        if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
+        {
+            return 0.0;
+        }
+
+        String[] latitudeAndLongitude =
+                textToCheckParam.split(REG_EX_PIPE);
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
+        {
+            return 0.0;
+        }
+
+        if(latitudeAndLongitude.length > 1)
+        {
+            return this.toDoubleSafe(latitudeAndLongitude[1]);
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * Extract and returns Latitude from {@code textToCheckParam}
+     * applicable to ElasticSearch.
+     *
+     * @param textToCheckParam The Latitude and Longitude to extract Latitude from.
+     * @return Geo Latitude from {@code textToCheckParam}.
+     */
+    public double getLatitudeFromElasticSearchText(String textToCheckParam)
+    {
+        if(textToCheckParam == null || textToCheckParam.isEmpty())
+        {
+            return 0.0;
+        }
+
+        String[] latitudeAndLongitude =
+                textToCheckParam.split(REG_EX_COMMA);
+
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
+        {
+            return 0.0;
+        }
+
+        if(latitudeAndLongitude.length > 1)
+        {
+            return toDoubleSafe(latitudeAndLongitude[0]);
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * Extract and returns Longitude from {@code textToCheckParam}
+     * applicable to ElasticSearch.
+     *
+     * @param textToCheckParam The Latitude and Longitude to extract Longitude from.
+     * @return Geo Longitude from {@code textToCheckParam}.
+     */
+    public double getLongitudeFromElasticSearchText(String textToCheckParam)
+    {
+        if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
+        {
+            return 0.0;
+        }
+
+        String[] latitudeAndLongitude =
+                textToCheckParam.split(REG_EX_COMMA);
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
+        {
+            return 0.0;
+        }
+
+        if(latitudeAndLongitude.length > 1)
+        {
+            return this.toDoubleSafe(latitudeAndLongitude[1]);
+        }
+
+        return 0.0;
+    }
+
+    /**
+     * Convert the {@code toParseParam} to a double.
+     *
+     * @param toParseParam The {@code String} value to convert to {@code double}.
+     *
+     * @return {@code toParseParam} converted to a {@code double}.
+     */
+    public final double toDoubleSafe(String toParseParam) {
+        if (toParseParam == null || toParseParam.trim().isEmpty()) {
+            return 0D;
+        }
+        try {
+            return Double.parseDouble(toParseParam);
+        } catch (NumberFormatException e) {
+            return 0D;
+        }
     }
 }

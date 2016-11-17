@@ -15,6 +15,7 @@
 
 package com.fluid.program.api.vo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -712,6 +713,20 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
                 fieldValue instanceof String)
         {
+            if((fieldValue instanceof String) &&
+                    LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData()))
+            {
+
+                String formFieldValueStr = fieldValue.toString();
+
+                UtilGlobal utilGlobal = new UtilGlobal();
+
+                double latitude = utilGlobal.getLatitudeFromFluidText(formFieldValueStr);
+                double longitude = utilGlobal.getLongitudeFromFluidText(formFieldValueStr);
+
+                fieldValue = (latitude + UtilGlobal.COMMA + longitude);
+            }
+
             returnVal.put(fieldIdAsString, fieldValue);
         }
         //Date...
@@ -730,21 +745,183 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Populate the object based on the ElasticSearch JSON structure.
+     *
+     * @param jsonObjectParam The JSON object to populate from.
+     * @return {@link Field} - The field to be added, if invalid a {@code null}
+     * will be returned.
+     *
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @XmlTransient
+    public Field populateFromElasticSearchJson(
+            JSONObject jsonObjectParam) throws JSONException {
+
+        if(this.getFieldNameAsUpperCamel() == null)
+        {
+            return null;
+        }
+
+        String fieldIdAsString = this.getFieldNameAsUpperCamel();
+
+        if(jsonObjectParam.isNull(fieldIdAsString))
+        {
+            return null;
+        }
+
+        Field.Type type;
+        if((type = this.getTypeAsEnum()) == null)
+        {
+            return null;
+        }
+
+        Object formFieldValue = jsonObjectParam.get(fieldIdAsString);
+
+        Field fieldToAdd = null;
+
+        switch (type)
+        {
+            case DateTime:
+                if(formFieldValue instanceof Long)
+                {
+                    fieldToAdd = new Field(
+                            this.getId(),
+                            this.getFieldName(),
+                            new Date(((Long)formFieldValue).longValue()),
+                            type);
+                }
+                break;
+            case Decimal:
+                if(formFieldValue instanceof Number)
+                {
+                    fieldToAdd = new Field(
+                            this.getId(),
+                            this.getFieldName(),
+                            ((Number)formFieldValue).doubleValue(),
+                            type);
+                }
+                break;
+            case MultipleChoice:
+                if(formFieldValue instanceof JSONArray)
+                {
+                    JSONArray casted = (JSONArray)formFieldValue;
+                    List<String> selectedChoices = new ArrayList();
+                    for(int index = 0;index < casted.length();index++)
+                    {
+                        selectedChoices.add(casted.get(index).toString());
+                    }
+
+                    if(selectedChoices.isEmpty())
+                    {
+                        return null;
+                    }
+
+                    MultiChoice multiChoiceToSet = new MultiChoice(selectedChoices);
+
+                    fieldToAdd = new Field(
+                            this.getId(),
+                            this.getFieldName(),
+                            multiChoiceToSet,
+                            type);
+                }
+                break;
+            case Table:
+                if(formFieldValue instanceof JSONArray)
+                {
+                    JSONArray casted = (JSONArray)formFieldValue;
+                    List<Form> tableRecords = new ArrayList();
+                    for(int index = 0;index < casted.length();index++)
+                    {
+                        Object obAtIndex = casted.get(index);
+
+                        if(obAtIndex instanceof Number)
+                        {
+                            tableRecords.add(new Form(((Number)obAtIndex).longValue()));
+                        }
+                    }
+
+                    if(tableRecords.isEmpty())
+                    {
+                        return null;
+                    }
+
+                    TableField tableField = new TableField();
+                    tableField.setTableRecords(tableRecords);
+
+                    fieldToAdd = new Field(
+                            this.getId(),
+                            this.getFieldName(),
+                            tableField,
+                            type);
+                }
+                break;
+            case Text:
+            case ParagraphText:
+                if(formFieldValue instanceof String)
+                {
+                    //Latitude and Longitude storage...
+                    if(LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData()))
+                    {
+                        String formFieldValueStr = formFieldValue.toString();
+
+                        UtilGlobal utilGlobal = new UtilGlobal();
+
+                        double latitude = utilGlobal.getLatitudeFromElasticSearchText(formFieldValueStr);
+                        double longitude = utilGlobal.getLongitudeFromElasticSearchText(formFieldValueStr);
+
+                        String newFieldVal =
+                                (latitude + UtilGlobal.PIPE + longitude + UtilGlobal.PIPE);
+
+                        fieldToAdd = new Field(
+                                this.getId(),
+                                this.getFieldName(),
+                                newFieldVal,
+                                type);
+                    }
+                    //Other...
+                    else {
+                        fieldToAdd = new Field(
+                                this.getId(),
+                                this.getFieldName(),
+                                formFieldValue.toString(),
+                                type);
+                    }
+                }
+            case TrueFalse:
+                if(formFieldValue instanceof Boolean)
+                {
+                    fieldToAdd = new Field(
+                            this.getId(),
+                            this.getFieldName(),
+                            formFieldValue,
+                            type);
+                }
+                break;
+        }
+
+        return fieldToAdd;
+    }
+
+    /**
+     * Not allowed to call this method.
      *
      * @param jsonObjectParam The JSON object to populate from.
      * @param formFieldsParam The Form Fields to use.
      *
-     * @throws JSONException
+     * @throws JSONException Never.
+     * @throws FluidElasticSearchException Always.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     public void populateFromElasticSearchJson(
             JSONObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
 
-
-
-
-        //TODO Need to complete...
+        throw new FluidElasticSearchException(
+                "Method not implemented. Make use of other ");
     }
 
     /**
