@@ -64,8 +64,32 @@ public class ABaseESUtil extends ABaseSQLUtil {
 
         public static final String DOCUMENT = "document";
         public static final String FOLDER = "folder";
-
         public static final String TABLE_RECORD = "table_record";
+
+        /**
+         * Checks to see whether {@code indexParam} is a valid
+         * index type.
+         *
+         * @param indexParam The index to check.
+         * @return {@code true} for valid index and {@code false} for invalid index.
+         */
+        public static boolean isIndexValid(String indexParam)
+        {
+            if(DOCUMENT.equals(indexParam))
+            {
+                return true;
+            }
+            else if(FOLDER.equals(indexParam))
+            {
+                return true;
+            }
+            else if(TABLE_RECORD.equals(indexParam))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     /**

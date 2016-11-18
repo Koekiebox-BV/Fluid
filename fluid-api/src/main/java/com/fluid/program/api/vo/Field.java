@@ -716,7 +716,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             if((fieldValue instanceof String) &&
                     LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData()))
             {
-
                 String formFieldValueStr = fieldValue.toString();
 
                 UtilGlobal utilGlobal = new UtilGlobal();
@@ -982,8 +981,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             return false;
         }
 
-        //Test the Id...
-        if(this.getId() == null || this.getId().longValue() < 1)
+        //Test the Name...
+        if(this.getFieldName() == null ||
+                this.getFieldName().trim().isEmpty())
         {
             return false;
         }
