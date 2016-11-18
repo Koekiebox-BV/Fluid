@@ -952,6 +952,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 {
                     return ElasticSearchType.GEO_POINT;
                 }
+
+                return ElasticSearchType.TEXT;
             case TrueFalse:
                 return ElasticSearchType.BOOLEAN;
             case DateTime:

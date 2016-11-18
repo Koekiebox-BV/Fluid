@@ -97,74 +97,53 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
                 fluidFormMappingToUpdateParam.toJsonMappingForElasticSearch();
 
         //Retrieve and update...
-        if(this.doesIndexExist(indexParam))
+        GetIndexResponse getExistingIndex = this.getOrCreateIndex(indexParam);
+
+        JSONObject propsToUpdate = null;
+
+        for(ObjectCursor mappingKey : getExistingIndex.getMappings().keys())
         {
-            GetIndexResponse getExistingIndex =
-                    this.client.admin().indices().prepareGetIndex().get();
-
-            JSONObject propsToUpdate = null;
-
-            for(ObjectCursor mappingKey : getExistingIndex.getMappings().keys())
+            //Found index...
+            if(!mappingKey.value.toString().equals(indexParam))
             {
-                //Found index...
-                if(!mappingKey.value.toString().equals(indexParam))
+                continue;
+            }
+
+            //Found a match...
+            Object obj = getExistingIndex.getMappings().get(mappingKey.value.toString());
+            if(obj instanceof ImmutableOpenMap)
+            {
+                ImmutableOpenMap casted = (ImmutableOpenMap)obj;
+
+                //Type...
+                if(casted.containsKey(formTypeString) &&
+                        casted.get(formTypeString) instanceof MappingMetaData)
                 {
-                    continue;
-                }
+                    MappingMetaData mappingMetaData = (MappingMetaData)casted.get(formTypeString);
 
-                //Found a match...
-                Object obj = getExistingIndex.getMappings().get(mappingKey.value.toString());
-                if(obj instanceof ImmutableOpenMap)
-                {
-                    ImmutableOpenMap casted = (ImmutableOpenMap)obj;
-
-                    //Type...
-                    if(casted.containsKey(formTypeString) &&
-                            casted.get(formTypeString) instanceof MappingMetaData)
-                    {
-                        MappingMetaData mappingMetaData = (MappingMetaData)casted.get(formTypeString);
-
-                        try {
-                            propsToUpdate = new JSONObject(mappingMetaData.source().string());
-                        }
-                        //throw by mappingMetaData.source()
-                        catch (IOException eParam) {
-                            throw new FluidElasticSearchException(
-                                    "Unable to retrieve source from 'Mapping Meta-Data'. "+
-                                    eParam.getMessage(),eParam);
-                        }
+                    try {
+                        propsToUpdate = new JSONObject(mappingMetaData.source().string());
+                        break;
+                    }
+                    //throw by mappingMetaData.source()
+                    catch (IOException eParam) {
+                        throw new FluidElasticSearchException(
+                                "Unable to retrieve source from 'Mapping Meta-Data'. "+
+                                eParam.getMessage(),eParam);
                     }
                 }
             }
+        }
 
-            if(propsToUpdate == null)
-            {
-                throw new FluidElasticSearchException(
-                        "Unable to retrieve existing properties for update.");
-            }
+        //No mapping for the type ...
+        if(propsToUpdate == null)
+        {
+            propsToUpdate = new JSONObject();
 
-            JSONObject existingPropertiesUpdated =
-                    propsToUpdate.getJSONObject(formTypeString).getJSONObject(
-                            ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES);
-
-            //Merge existing with new...
-            for(String key : newContentMappingBuilder.keySet())
-            {
-                if(existingPropertiesUpdated.has(key))
-                {
-                    continue;
-                }
-
-                newContentMappingBuilder.put(key,
-                        newContentMappingBuilder.get(key));
-            }
-
-            //Update the properties to new values...
             propsToUpdate.put(
                     ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
                     newContentMappingBuilder);
 
-            //Push the change...
             PutMappingResponse putMappingResponse =
                     this.client.admin().indices().preparePutMapping(indexParam).setType(
                             formTypeString).setSource(propsToUpdate.toString()).get();
@@ -172,22 +151,70 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
             if(!putMappingResponse.isAcknowledged())
             {
                 throw new FluidElasticSearchException(
-                        "Index Update for '"+
+                        "Index Update for Creating '"+
                                 indexParam+"' and type '"+
                                 formTypeString+"' not acknowledged by ElasticSearch.");
             }
+
+            //Creation done.
+            return;
         }
-        //Create...
+
+        //Update the existing index...
+        JSONObject existingPropertiesUpdated =
+                propsToUpdate.getJSONObject(formTypeString).getJSONObject(
+                        ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES);
+
+        //Merge existing with new...
+        for(String key : newContentMappingBuilder.keySet())
+        {
+            if(existingPropertiesUpdated.has(key))
+            {
+                continue;
+            }
+
+            newContentMappingBuilder.put(key,
+                    newContentMappingBuilder.get(key));
+        }
+
+        //Update the properties to new values...
+        propsToUpdate.put(
+                ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
+                newContentMappingBuilder);
+
+        //Push the change...
+        PutMappingResponse putMappingResponse =
+                this.client.admin().indices().preparePutMapping(indexParam).setType(
+                        formTypeString).setSource(propsToUpdate.toString()).get();
+
+        if(!putMappingResponse.isAcknowledged())
+        {
+            throw new FluidElasticSearchException(
+                    "Index Update for '"+
+                            indexParam+"' and type '"+
+                            formTypeString+"' not acknowledged by ElasticSearch.");
+        }
+    }
+
+    /**
+     * Creates a new index or fetches existing index.
+     *
+     * @param indexParam The name of the index to create in lower-case.
+     * @return Newly created or existing index.
+     *
+     * @see GetIndexResponse
+     */
+    private GetIndexResponse getOrCreateIndex(String indexParam)
+    {
+        if(this.doesIndexExist(indexParam))
+        {
+            return this.client.admin().indices().prepareGetIndex().get();
+        }
         else
         {
             CreateIndexRequestBuilder createIndexRequestBuilder =
                     this.client.admin().indices().prepareCreate(indexParam);
 
-            createIndexRequestBuilder.addMapping(
-                    formTypeString,
-                    newContentMappingBuilder.toString());
-
-            // MAPPING DONE
             CreateIndexResponse mappingCreateResponse =
                     createIndexRequestBuilder.execute().actionGet();
 
@@ -197,6 +224,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
                         "Index Creation for '"+
                                 indexParam+"' not acknowledged by ElasticSearch.");
             }
+
+            return this.client.admin().indices().prepareGetIndex().get();
         }
     }
 }
