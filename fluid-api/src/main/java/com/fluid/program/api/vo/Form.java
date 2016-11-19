@@ -820,6 +820,15 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
         JSONObject returnVal = new JSONObject();
 
+        //Id...
+        {
+            JSONObject idJsonObj = new JSONObject();
+            idJsonObj.put(
+                    Field.JSONMapping.Elastic.TYPE,
+                    Field.ElasticSearchType.LONG);
+            returnVal.put(ABaseFluidJSONObject.JSONMapping.ID, idJsonObj);
+        }
+
         //Form Type...
         {
             JSONObject formTypeJsonObj = new JSONObject();

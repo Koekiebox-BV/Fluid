@@ -55,7 +55,8 @@ public class ABaseESUtil extends ABaseSQLUtil {
 
     protected static final int MAX_NUMBER_OF_TABLE_RECORDS = 10000;
 
-    public static final String NO_FIELDS_MAPPER = "_none_";
+    //public static final String[] NO_FIELDS_MAPPER = {"_none_"};
+    public static final String[] NO_FIELDS_MAPPER = {"_id","_type"};
 
     /**
      * The index type.

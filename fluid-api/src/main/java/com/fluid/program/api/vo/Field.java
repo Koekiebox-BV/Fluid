@@ -655,7 +655,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                     !tableField.getTableRecords().isEmpty())
             {
                 JSONArray array = new JSONArray();
-
                 for(Form record : tableField.getTableRecords())
                 {
                     if(record.getId() == null)

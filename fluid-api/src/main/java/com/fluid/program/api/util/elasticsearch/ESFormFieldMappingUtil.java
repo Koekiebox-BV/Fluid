@@ -93,13 +93,13 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
         String formTypeString =
                 fluidFormMappingToUpdateParam.getFormTypeId().toString();
 
-        JSONObject newContentMappingBuilder =
+        JSONObject newContentMappingBuilderFromParam =
                 fluidFormMappingToUpdateParam.toJsonMappingForElasticSearch();
 
         //Retrieve and update...
         GetIndexResponse getExistingIndex = this.getOrCreateIndex(indexParam);
 
-        JSONObject propsToUpdate = null;
+        JSONObject existingPropsToUpdate = null;
 
         for(ObjectCursor mappingKey : getExistingIndex.getMappings().keys())
         {
@@ -122,7 +122,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
                     MappingMetaData mappingMetaData = (MappingMetaData)casted.get(formTypeString);
 
                     try {
-                        propsToUpdate = new JSONObject(mappingMetaData.source().string());
+                        existingPropsToUpdate = new JSONObject(mappingMetaData.source().string());
                         break;
                     }
                     //throw by mappingMetaData.source()
@@ -135,18 +135,18 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
             }
         }
 
-        //No mapping for the type ...
-        if(propsToUpdate == null)
+        //No mapping for the type create a new one...
+        if(existingPropsToUpdate == null)
         {
-            propsToUpdate = new JSONObject();
+            existingPropsToUpdate = new JSONObject();
 
-            propsToUpdate.put(
+            existingPropsToUpdate.put(
                     ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
-                    newContentMappingBuilder);
+                    newContentMappingBuilderFromParam);
 
             PutMappingResponse putMappingResponse =
                     this.client.admin().indices().preparePutMapping(indexParam).setType(
-                            formTypeString).setSource(propsToUpdate.toString()).get();
+                            formTypeString).setSource(existingPropsToUpdate.toString()).get();
 
             if(!putMappingResponse.isAcknowledged())
             {
@@ -162,30 +162,41 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 
         //Update the existing index...
         JSONObject existingPropertiesUpdated =
-                propsToUpdate.getJSONObject(formTypeString).getJSONObject(
+                existingPropsToUpdate.getJSONObject(formTypeString).getJSONObject(
                         ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES);
 
         //Merge existing with new...
-        for(String key : newContentMappingBuilder.keySet())
+        for(String existingKey : existingPropertiesUpdated.keySet())
         {
-            if(existingPropertiesUpdated.has(key))
-            {
-                continue;
-            }
+            newContentMappingBuilderFromParam.put(existingKey,
+                    existingPropertiesUpdated.get(existingKey));
+        }
 
-            newContentMappingBuilder.put(key,
-                    newContentMappingBuilder.get(key));
+        //Check to see whether there are any new fields added...
+        boolean noChanges = true;
+        for(String possibleExistingKey : newContentMappingBuilderFromParam.keySet())
+        {
+            if(!existingPropertiesUpdated.has(possibleExistingKey))
+            {
+                noChanges = false;
+                break;
+            }
+        }
+
+        if(noChanges)
+        {
+            return;
         }
 
         //Update the properties to new values...
-        propsToUpdate.put(
+        existingPropsToUpdate.put(
                 ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
-                newContentMappingBuilder);
+                newContentMappingBuilderFromParam);
 
         //Push the change...
         PutMappingResponse putMappingResponse =
                 this.client.admin().indices().preparePutMapping(indexParam).setType(
-                        formTypeString).setSource(propsToUpdate.toString()).get();
+                        formTypeString).setSource(existingPropsToUpdate.toString()).get();
 
         if(!putMappingResponse.isAcknowledged())
         {
