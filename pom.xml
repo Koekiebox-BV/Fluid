@@ -6,7 +6,7 @@
     <groupId>com.fluid</groupId>
     <artifactId>fluid-root</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>1.3</version>
     <name>Fluid Root</name>
     <description>Parent pom providing default setups for all application and admin servers modules.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
@@ -35,7 +35,7 @@
 
     <properties>
         <!--Fluid Versions-->
-        <version.fluid-api>1.0</version.fluid-api>
+        <version.fluid-api>1.3</version.fluid-api>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.compiler.plugin>2.3.2</version.compiler.plugin>

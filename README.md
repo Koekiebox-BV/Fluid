@@ -1,4 +1,4 @@
-![alt text](content/fluid_logo.png "Fluid")
+![Fluid Logo](content/fluid_logo.png "Fluid") ![Koekiebox Logo](content/koekiebox.png "Koekiebox")
 # *** Fluid ***  
 
 On demand Business Process Management, Content Management System.

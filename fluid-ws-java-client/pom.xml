@@ -7,14 +7,14 @@
     <parent>
         <groupId>com.fluid</groupId>
         <artifactId>fluid-root</artifactId>
-        <version>1.0</version>
+        <version>1.3</version>
     </parent>
 
     <!--Fluid Web Service Java Client-->
     <artifactId>fluid-ws-java-client</artifactId>
     <packaging>jar</packaging>
     <name>Fluid RESTful Web Service Client</name>
-    <version>1.0</version>
+    <version>1.3</version>
     <description>The Fluid Restful Web Service Java Client.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
 
@@ -22,7 +22,6 @@
         <!--JDK Properties-->
         <version.jdk.compile>1.8</version.jdk.compile>
         <version.plugin.compiler>3.5.1</version.plugin.compiler>
-
     </properties>
 
     <licenses>
@@ -60,7 +59,7 @@
             <groupId>com.fluid</groupId>
             <artifactId>fluid-api</artifactId>
             <scope>compile</scope>
-            <version>1.1</version>
+            <version>1.3</version>
         </dependency>
 
         <!--Commons-->
