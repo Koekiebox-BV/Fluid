@@ -32,6 +32,7 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
+import com.google.common.io.BaseEncoding;
 
 import junit.framework.TestCase;
 
@@ -137,6 +138,70 @@ public class TestFormContainerClient extends ABaseTestCase {
                 4, updatedForm.getFormFields().size());
 
         Form deletedForm = formContainerClient.deleteFormContainer(updatedForm);
+
+        TestCase.assertNotNull("The 'Form Container' needs to be set.",
+                deletedForm);
+        TestCase.assertNotNull("The 'Form Container Id' needs to be set.",
+                deletedForm.getId());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testCRUDFormContainerBasicWebSocket()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+        String serviceTicketHex = null;
+        if(serviceTicket != null && !serviceTicket.isEmpty())
+        {
+            serviceTicketHex =
+                    BaseEncoding.base16().encode(BaseEncoding.base64().decode(serviceTicket));
+        }
+
+        WebSocketFormContainerClient webSocketFormContainerClient
+                = new WebSocketFormContainerClient(BASE_URL,
+                null,serviceTicketHex,5000);
+
+        //1. Form...
+        Form toCreate = new Form(TestStatics.FORM_DEFINITION);
+        toCreate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
+
+        List<Field> fields = new ArrayList();
+        fields.add(new Field(TestStatics.FieldName.EMAIL_FROM_ADDRESS, "zapper@zool.com"));
+        fields.add(new Field(TestStatics.FieldName.EMAIL_TO_ADDRESS, "pateldream@correct.com"));
+        fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject..."));
+
+        toCreate.setFormFields(fields);
+
+        //Create...
+        toCreate.setEcho("ZoolPatoelBra");
+        Form createdForm = webSocketFormContainerClient.createFormContainerSynchronized(toCreate);
+
+        TestCase.assertNotNull("The 'Form Container' needs to be set.",
+                createdForm);
+        TestCase.assertNotNull("The 'Form Container Id' needs to be set.",
+                createdForm.getId());
+        TestCase.assertNotNull("The 'Form Fields' needs to be set.",
+                createdForm.getFormFields());
+        TestCase.assertEquals("The number of 'Form Fields' is not equal.",
+                3, createdForm.getFormFields().size());
+
+        createdForm.getFormFields().add(
+                new Field(TestStatics.FieldName.EMAIL_SENT_DATE, new Date()));
+
+        Form deletedForm = formContainerClient.deleteFormContainer(createdForm);
 
         TestCase.assertNotNull("The 'Form Container' needs to be set.",
                 deletedForm);

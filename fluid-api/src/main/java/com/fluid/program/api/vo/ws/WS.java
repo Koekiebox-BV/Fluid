@@ -80,6 +80,9 @@ public class WS {
             public static final class Version1
             {
                 public static final String ROOT = ("/form_container");
+                public static final String ROOT_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+
                 public static final String CREATE = ("/");
 
                 //Delete...
@@ -119,6 +122,18 @@ public class WS {
                 public static final String formContainerCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Electronic Form create via Web Socket.
+                 *
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code web_socket/v1/form_container/}
+                 */
+                public static final String formContainerCreateWebSocket(String serviceTicketParam)
+                {
+                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
                 }
 
                 /**
@@ -1072,6 +1087,9 @@ public class WS {
             public static final class Version1
             {
                 public static final String ROOT = ("/flow_item");
+                public static final String ROOT_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+
                 public static final String CREATE = ("/");
 
                 /**
@@ -1092,6 +1110,18 @@ public class WS {
                 public static final String flowItemCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Flow Item create via Web Socket.
+                 *
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code web_socket/v1/flow_item/}
+                 */
+                public static final String flowItemCreateWebSocket(String serviceTicketParam)
+                {
+                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/");
                 }
             }
         }
