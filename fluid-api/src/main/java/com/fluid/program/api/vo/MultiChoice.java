@@ -165,12 +165,18 @@ public class MultiChoice extends ABaseFluidJSONObject {
         {
             returnVal.put(JSONMapping.AVAILABLE_MULTI_CHOICES,
                     new JSONArray(this.getAvailableMultiChoices().toArray()));
+
+            returnVal.put(JSONMapping.AVAILABLE_CHOICES,
+                    new JSONArray(this.getAvailableMultiChoices().toArray()));
         }
 
         //Selected...
         if(this.getSelectedMultiChoices() != null)
         {
             returnVal.put(JSONMapping.SELECTED_MULTI_CHOICES,
+                    new JSONArray(this.getSelectedMultiChoices().toArray()));
+
+            returnVal.put(JSONMapping.SELECTED_CHOICES,
                     new JSONArray(this.getSelectedMultiChoices().toArray()));
         }
 

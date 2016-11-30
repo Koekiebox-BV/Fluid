@@ -134,7 +134,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
             else
             {
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(Constant.RESPONSE_CHECKER_SLEEP);
                 }
                 //
                 catch (InterruptedException e) {

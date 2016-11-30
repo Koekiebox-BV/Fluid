@@ -45,7 +45,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     /**
      * The constant variables used.
      */
-    private static class Constant
+    public static class Constant
     {
         public static final String HTTP = "http";
         public static final String HTTPS = "https";
@@ -55,6 +55,8 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
 
         public static final String SCHEME_SEP = "://";
         public static final String COLON = ":";
+
+        public static final long RESPONSE_CHECKER_SLEEP = 2;
         //public static final String FORWARD_SLASH = "/";
     }
 
