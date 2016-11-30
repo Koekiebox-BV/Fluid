@@ -16,7 +16,9 @@
 package com.fluid.program.api.vo;
 
 import java.io.Serializable;
+import java.util.Base64;
 
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.user.User;
 
 /**
@@ -85,6 +87,63 @@ public class ABaseFluidVO implements Serializable {
      */
     public String getServiceTicket() {
         return this.serviceTicket;
+    }
+
+    /**
+     * Gets the Service Ticket associated with the Fluid session as HEX.
+     *
+     * @return Service Ticket of Fluid session in Hex format.
+     *
+     * @see com.fluid.program.api.vo.ws.auth.ServiceTicket
+     */
+    public String getServiceTicketAsHexUpper() {
+
+        String serviceTicket = this.getServiceTicket();
+
+        if(serviceTicket == null)
+        {
+            return null;
+        }
+
+        if(serviceTicket.isEmpty())
+        {
+            return serviceTicket;
+        }
+
+        byte[] base64Bytes = Base64.getDecoder().decode(serviceTicket);
+
+        return this.bytesToHex(base64Bytes);
+    }
+
+    final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    /**
+     * Convert the byte[] to a HEX string as upper case.
+     *
+     * @param bytesToConvert The {@code byte[]} to convert.
+     * @return String with upper case HEX.
+     */
+    private String bytesToHex(byte[] bytesToConvert) {
+
+        if(bytesToConvert == null)
+        {
+            return null;
+        }
+
+        if(bytesToConvert.length == 0)
+        {
+            return UtilGlobal.EMPTY;
+        }
+
+        char[] hexChars = new char[bytesToConvert.length * 2];
+
+        for ( int index = 0; index < bytesToConvert.length; index++ ) {
+            int andWith127 = (bytesToConvert[index] & 0xFF);
+            hexChars[index * 2] = HEX_ARRAY[andWith127 >>> 4];
+            hexChars[index * 2 + 1] = HEX_ARRAY[andWith127 & 0x0F];
+        }
+
+        return new String(hexChars);
     }
 
     /**
