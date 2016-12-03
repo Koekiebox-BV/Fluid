@@ -162,8 +162,15 @@ public class ABaseESUtil extends ABaseSQLUtil {
                                 searchHits.getHits().length+"'.");
             }
 
+            long iterationMax = totalHits;
+            if(numberOfResultsParam > 0 &&
+                    totalHits > numberOfResultsParam)
+            {
+                iterationMax = numberOfResultsParam;
+            }
+
             //Iterate...
-            for(int index = 0;index < totalHits;index++)
+            for(int index = 0;index < iterationMax;index++)
             {
                 SearchHit searchHit = searchHits.getAt(index);
                 String idAsString;
@@ -392,8 +399,15 @@ public class ABaseESUtil extends ABaseSQLUtil {
                                 searchHits.getHits().length+"'.");
             }
 
+            long iterationMax = totalHits;
+            if(numberOfResultsParam > 0 &&
+                    totalHits > numberOfResultsParam)
+            {
+                iterationMax = numberOfResultsParam;
+            }
+
             //Iterate...
-            for(int index = 0;index < totalHits;index++)
+            for(int index = 0;index < iterationMax;index++)
             {
                 SearchHit searchHit = searchHits.getAt(index);
 
@@ -411,6 +425,12 @@ public class ABaseESUtil extends ABaseSQLUtil {
                 //Is Form Type available...
                 if(jsonObject.has(Form.JSONMapping.FORM_TYPE_ID))
                 {
+                    if(this.fieldUtil == null)
+                    {
+                        throw new FluidElasticSearchException(
+                                "Field Util is not set. Use a different constructor.");
+                    }
+
                     fieldsForForm = formFromSource.convertTo(
                             this.fieldUtil.getFormFieldMappingForFormDefinition(
                                     jsonObject.getLong(Form.JSONMapping.FORM_TYPE_ID)));
@@ -468,8 +488,15 @@ public class ABaseESUtil extends ABaseSQLUtil {
                                 searchHits.getHits().length+"'.");
             }
 
+            long iterationMax = totalHits;
+            if(numberOfResultsParam > 0 &&
+                    totalHits > numberOfResultsParam)
+            {
+                iterationMax = numberOfResultsParam;
+            }
+
             //Iterate...
-            for(int index = 0;index < totalHits;index++)
+            for(int index = 0;index < iterationMax;index++)
             {
                 SearchHit searchHit = searchHits.getAt(index);
 

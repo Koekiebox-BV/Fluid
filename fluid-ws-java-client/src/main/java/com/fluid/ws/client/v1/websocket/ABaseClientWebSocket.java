@@ -56,7 +56,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
         public static final String SCHEME_SEP = "://";
         public static final String COLON = ":";
 
-        public static final long RESPONSE_CHECKER_SLEEP = 2;
+        public static final long RESPONSE_CHECKER_SLEEP = 5;
         //public static final String FORWARD_SLASH = "/";
     }
 
