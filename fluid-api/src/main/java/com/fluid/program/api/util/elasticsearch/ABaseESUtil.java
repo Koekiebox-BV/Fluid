@@ -105,7 +105,7 @@ public class ABaseESUtil extends ABaseSQLUtil {
             Client esClientParam,
             CacheUtil cacheUtilParam) {
 
-        super(connectionParam);
+        super(connectionParam, cacheUtilParam);
         this.client = esClientParam;
         this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam);
     }

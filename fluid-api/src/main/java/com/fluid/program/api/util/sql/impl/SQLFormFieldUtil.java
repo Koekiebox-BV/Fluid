@@ -44,7 +44,6 @@ import com.fluid.program.api.vo.*;
 public class SQLFormFieldUtil extends ABaseSQLUtil{
 
     private Map<Long, List<FormFieldMapping>> localDefinitionToFieldsMapping;
-    private CacheUtil cacheUtil = null;
 
     /**
      * Fluid mapping for a Form Field.
@@ -104,10 +103,9 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
      * @param cacheUtilParam The Cache Util for better performance.
      */
     public SQLFormFieldUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
-        super(connectionParam);
+        super(connectionParam, cacheUtilParam);
 
         this.localDefinitionToFieldsMapping = new HashMap();
-        this.cacheUtil = cacheUtilParam;
     }
 
     /**
@@ -356,10 +354,10 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
         }
 
         //First attempt to fetch from the cache...
-        if(this.cacheUtil != null)
+        if(this.getCacheUtil() != null)
         {
             CacheUtil.CachedFieldValue cachedFieldValue =
-                    this.cacheUtil.getCachedFieldValueFrom(
+                    this.getCacheUtil().getCachedFieldValueFrom(
                         formFieldMappingParam.formDefinitionId,
                         formContainerIdParam,
                         formFieldMappingParam.formFieldId);

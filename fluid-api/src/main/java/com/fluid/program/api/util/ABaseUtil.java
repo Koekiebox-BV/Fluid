@@ -18,6 +18,8 @@ package com.fluid.program.api.util;
 import java.io.Serializable;
 import java.util.Properties;
 
+import com.fluid.program.api.util.cache.CacheUtil;
+
 /**
  * Base class for any utility classes used in the Fluid framework.
  *
@@ -25,6 +27,39 @@ import java.util.Properties;
  * @since 1.0
  */
 public abstract class ABaseUtil implements Serializable {
+
+    private CacheUtil cacheUtil;
+
+    /**
+     * Create a new instance with a {@link CacheUtil}.
+     *
+     * @param cacheUtilParam The {@link CacheUtil}.
+     *
+     * @see CacheUtil
+     */
+    public ABaseUtil(CacheUtil cacheUtilParam) {
+        super();
+        this.cacheUtil = cacheUtilParam;
+    }
+
+    /**
+     * Default constructor.
+     * No use for cache util.
+     */
+    public ABaseUtil() {
+        super();
+        this.cacheUtil = null;
+    }
+
+    /**
+     * Returns the {@code CacheUtil} as created
+     * by the constructor.
+     *
+     * @return {@code null} or the {@code CacheUtil} instance.
+     */
+    public CacheUtil getCacheUtil() {
+        return this.cacheUtil;
+    }
 
     /**
      * Retrieves a property and returns the value as {@code java.lang.String}.

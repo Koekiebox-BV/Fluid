@@ -22,6 +22,7 @@ import java.sql.SQLException;
 
 import com.fluid.program.api.util.ABaseUtil;
 import com.fluid.program.api.util.UtilGlobal;
+import com.fluid.program.api.util.cache.CacheUtil;
 import com.fluid.program.api.util.sql.exception.FluidSQLException;
 
 /**
@@ -93,6 +94,20 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
      */
     public ABaseSQLUtil(Connection connectionParam)
     {
+        super();
+        this.connection = connectionParam;
+    }
+
+    /**
+     * The SQL Connection with {@link CacheUtil}.
+     *
+     * @param connectionParam Connection used.
+     * @param cacheUtilParam The Cache utility for use.
+     */
+    public ABaseSQLUtil(
+            Connection connectionParam, CacheUtil cacheUtilParam)
+    {
+        super(cacheUtilParam);
         this.connection = connectionParam;
     }
 

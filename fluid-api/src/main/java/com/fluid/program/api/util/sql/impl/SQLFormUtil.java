@@ -55,7 +55,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
      * @param cacheUtilParam The Cache Util for better performance.
      */
     public SQLFormUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
-        super(connectionParam);
+        super(connectionParam, cacheUtilParam);
 
         this.formDefUtil = new SQLFormDefinitionUtil(connectionParam);
         this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam);

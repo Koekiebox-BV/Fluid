@@ -264,6 +264,25 @@ public class CacheUtil extends ABaseUtil {
     }
 
     /**
+     * Retrieves the MemCached server descriptions from the MemCached client.
+     * Performs a connection test.
+     *
+     * @return Servers descriptions from MemCached client.
+     *
+     * @see MemcachedClient#getServersDescription()
+     */
+    public List<String> getMemcacheServersDescription()
+    {
+        if(this.memcachedClient == null)
+        {
+            throw new FluidCacheException(
+                    "MemCached client is not set.");
+        }
+
+        return this.memcachedClient.getServersDescription();
+    }
+
+    /**
      * Converts the {@code objWithKeyParam} Object to {@code CachedFieldValue}.
      *
      * @param objWithKeyParam The retrieved cached object.
@@ -493,6 +512,26 @@ public class CacheUtil extends ABaseUtil {
 
             throw new FluidCacheException(
                     "Unable to create MemCache client. "+e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Closes the Memcached client connection.
+     */
+    public void shutdown()
+    {
+        if(this.memcachedClient != null &&
+                !this.memcachedClient.isShutdown())
+        {
+            try {
+                this.memcachedClient.shutdown();
+            }
+            //
+            catch (IOException eParam) {
+
+                throw new FluidCacheException(
+                        "Unable to create shutdown MemCache client. "+eParam.getMessage(), eParam);
+            }
         }
     }
 }
