@@ -36,6 +36,7 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flowitem.FlowItemClient;
+import com.fluid.ws.client.v1.form.FormContainerClient;
 import com.fluid.ws.client.v1.user.LoginClient;
 
 import junit.framework.TestCase;
@@ -46,72 +47,6 @@ import junit.framework.TestCase;
 public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
     private LoginClient loginClient;
-
-    /**
-     *
-     */
-    public static final class TestStatics{
-
-        public static final String FORM_DEFINITION = "Email";
-        public static final String FORM_TITLE_PREFIX = "Test api doc with email...";
-
-        /**
-         *
-         */
-        public static final class EntryRules
-        {
-            /**
-             *
-             */
-            public static final class Pass{
-
-                /**
-                 *
-                 */
-                public static final class Set{
-                    public static final String PASS_01 = "SET ROUTE.Zool JUnit TO 'Cool'";
-
-                    public static final String PASS_02_FIELD_VAL = "Cool";
-                    public static final String PASS_02_COMPILE_EXEC =
-                            "SET ROUTE.Zool JUnit TO '"+PASS_02_FIELD_VAL+"'";
-
-                    /**
-                     *
-                     */
-                    public static final String[] COMPILE_LIST_PASS =
-                    {
-                        "SET ROUTE.Zool JUnit TO 'Cool'",
-                    };
-
-                    /**
-                     *
-                     */
-                    public static final String[] COMPILE_LIST_FAIL =
-                    {
-                        "SET",
-                        "SET ROUTE.Zool",
-                        "SET ROUTE.Zool TO",
-                        "SET ROUTE.Zool TO 'Cool'",
-                    };
-                }
-
-                /**
-                 *
-                 */
-                public static final class Expire{
-                    public static final String PASS_01 = "EXPIRE";
-                }
-            }
-
-            /**
-             *
-             */
-            public static final class Fail{
-
-                public static final String FAIL_01 = "";
-            }
-        }
-    }
 
     /**
      *
@@ -183,7 +118,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         //. The Rule...
         FlowStepRule entryRule = new FlowStepRule();
         entryRule.setFlowStep(createdFlowStep);
-        entryRule.setRule(TestStatics.EntryRules.Pass.Set.PASS_01);
+        entryRule.setRule("SET ROUTE.Zool JUnit TO 'Cool'");
 
         FlowStepRule createdEntryRule = flowStepRuleClient.createFlowStepEntryRule(entryRule);
         TestCase.assertNotNull("The 'Id' needs to be set for Entry rule.", createdEntryRule.getId());
@@ -208,7 +143,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testFlowStepEntryRule_CompileSucceedAndFail()
+    public void testFlowStepEntryRule_CompileSucceed()
     {
         if(!this.loginClient.isConnectionValid())
         {
@@ -222,15 +157,27 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
+        //First field...
         Field fieldZool = new Field();
-        fieldZool.setFieldName("Zool JUnit");
+        fieldZool.setFieldName("JUnit Test Entry Rule");
         fieldZool.setFieldDescription("Field Description");
         fieldZool = routeFieldClient.createFieldTextPlain(fieldZool);
 
+        //Second field...
+        Field fieldKapoel = new Field();
+        fieldKapoel.setFieldName("JUnit Test Entry Rule Kapoel");
+        fieldKapoel.setFieldDescription("Field Description");
+        fieldKapoel = routeFieldClient.createFieldTextPlain(fieldKapoel);
+
         FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
+        String[] compileListPass = {
+                "SET ROUTE.JUnit Test Entry Rule TO 'Cool'",
+
+        };
+
         //THE COMPILE RULES THAT PASSES...
-        for(String passRule : TestStatics.EntryRules.Pass.Set.COMPILE_LIST_PASS)
+        for(String passRule : compileListPass)
         {
             try{
                 flowStepRuleClient.compileFlowStepEntryRule(passRule);
@@ -246,8 +193,50 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
             }
         }
 
+        routeFieldClient.deleteField(fieldZool);
+        routeFieldClient.deleteField(fieldKapoel);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testFlowStepEntryRule_CompileFail()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+
+        //First field...
+        Field fieldZool = new Field();
+        fieldZool.setFieldName("JUnit Test Entry Rule");
+        fieldZool.setFieldDescription("Field Description");
+        fieldZool = routeFieldClient.createFieldTextPlain(fieldZool);
+
+        //Second field...
+        Field fieldKapoel = new Field();
+        fieldKapoel.setFieldName("JUnit Test Entry Rule Kapoel");
+        fieldKapoel.setFieldDescription("Field Description");
+        fieldKapoel = routeFieldClient.createFieldTextPlain(fieldKapoel);
+
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
+
         //THE COMPILE RULES THAT FAILS...
-        for(String passRule : TestStatics.EntryRules.Pass.Set.COMPILE_LIST_FAIL)
+        String[] compListFail = {
+                "SET",
+                "SET ROUTE.JUnit Test",
+                "SET ROUTE.JUnit Test Entry Rule TO",
+                "SET ROUTE.JUnit Test Entry TO 'Cool'",};
+
+        for(String passRule : compListFail)
         {
             try{
                 flowStepRuleClient.compileFlowStepEntryRule(passRule);
@@ -268,11 +257,13 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
                 Assert.fail("Expected rule: \n\n"+passRule+"\n to fail with Error-Code ["+
                         FluidClientException.ErrorCode.STATEMENT_SYNTAX_ERROR+"].");
                 routeFieldClient.deleteField(fieldZool);
+                routeFieldClient.deleteField(fieldKapoel);
                 return;
             }
         }
 
         routeFieldClient.deleteField(fieldZool);
+        routeFieldClient.deleteField(fieldKapoel);
     }
 
 
@@ -280,7 +271,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testFlowStepEntryRule_CompileAndRunSucceed()
+    public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue()
     {
         if(!this.loginClient.isConnectionValid())
         {
@@ -295,7 +286,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
 
         Field fieldZool = new Field();
-        String fieldName = "Zool JUnit";
+        String fieldName = "JUnit Compile Run";
 
         fieldZool.setFieldName(fieldName);
         fieldZool.setFieldDescription("Field Description");
@@ -304,8 +295,8 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, serviceTicket);
 
         //1. Form...
-        Form frm = new Form(TestStatics.FORM_DEFINITION);
-        frm.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
+        Form frm = new Form("Email");
+        frm.setTitle("Test api doc with email... "+new Date().toString());
 
         //Fluid Item...
         FluidItem itemToSend = new FluidItem();
@@ -313,8 +304,8 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 
         //0. Create the Flow...
         Flow flowToCreate = new Flow();
-        flowToCreate.setName(TestFlowClient.TestStatics.FLOW_NAME);
-        flowToCreate.setDescription(TestFlowClient.TestStatics.FLOW_DESCRIPTION);
+        flowToCreate.setName("JUnit FlowForTestCompileRun");
+        flowToCreate.setDescription("A Flow to Compile, Test and Run.");
 
         FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
         Flow createdFlow = flowClient.createFlow(flowToCreate);
@@ -324,25 +315,131 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         itemToSend = flowItmClient.createFlowItem(itemToSend, createdFlow.getName());
 
         //Wait for 1 seconds...
-        sleepForSeconds(1);
+        this.sleepForSeconds(1);
 
         //Item Created... Add the field...
-        List<Field> routeFields = new ArrayList<Field>();
+        List<Field> routeFields = new ArrayList();
         String routeFieldValue = "RunInTheWind";
         routeFields.add(new Field(fieldName, routeFieldValue));
         itemToSend.setRouteFields(routeFields);
 
+        String textVal = "Cool";
+
         FlowItemExecuteResult executionResult = flowStepRuleClient.compileFlowStepEntryRuleAndExecute(
-                TestStatics.EntryRules.Pass.Set.PASS_02_COMPILE_EXEC,
+                "SET ROUTE."+fieldName+" TO '"+textVal+"'",
                 itemToSend);
 
         TestCase.assertEquals("'"+fieldName+"' mismatch.",
-                TestStatics.EntryRules.Pass.Set.PASS_02_FIELD_VAL,
+                textVal,
                 executionResult.getAssignmentRuleValue());
 
         //Cleanup...
         routeFieldClient.deleteField(fieldZool);
         flowClient.forceDeleteFlow(createdFlow);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testFlowStepEntryRule_CompileAndRunSucceed_AnotherFieldValue()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        //Route Fields...
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+
+        //Field One...
+        Field fieldOne = new Field();
+        String fieldOneName = "JUnit CRSAFV One";
+
+        fieldOne.setFieldName(fieldOneName);
+        fieldOne.setFieldDescription(fieldOneName);
+        fieldOne = routeFieldClient.createFieldTextPlain(fieldOne);
+
+        //1. Form...
+        String formFieldValue = "piet@ziet.com";
+        Form frm = new Form("Email");
+        frm.setTitle("Test api doc with email... "+new Date().toString());
+        frm.setFieldValue(
+                "Email From Address",formFieldValue, Field.Type.Text);
+
+        //Fluid Item...
+        FluidItem itemToSend = new FluidItem();
+        itemToSend.setForm(frm);
+
+        //0. Create the Flow...
+        Flow flowToCreate = new Flow();
+        String flowName = "JUnit FlowForTestCompileRun Another Field";
+
+        flowToCreate.setName(flowName);
+        flowToCreate.setDescription("A Flow to Compile, Test and Run.");
+
+        FlowClient flowClient = new FlowClient(BASE_URL,serviceTicket);
+
+        Flow createdFlow = null;
+        try {
+            createdFlow = flowClient.getFlowByName(flowName);
+        }
+        //
+        catch(FluidClientException fce)
+        {
+            createdFlow = flowClient.createFlow(flowToCreate);
+        }
+
+        //Create...
+        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL,serviceTicket);
+        itemToSend = flowItmClient.createFlowItem(itemToSend, createdFlow.getName());
+
+        //Wait for 1 seconds...
+        this.sleepForSeconds(1);
+
+        //Item Created... Add the field...
+        List<Field> routeFields = new ArrayList();
+        routeFields.add(new Field(fieldOneName, "RunInTheWind"));
+        itemToSend.setRouteFields(routeFields);
+
+        //Execute the rule...
+        String textVal = "Cool";
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, serviceTicket);
+
+        try {
+            FlowItemExecuteResult executionResult =
+                    flowStepRuleClient.compileFlowStepEntryRuleAndExecute(
+                            "SET ROUTE."+fieldOneName+
+                                    " TO FORM.Email From Address",
+                            itemToSend);
+
+            TestCase.assertEquals("'"+fieldOneName+"' mismatch.",
+                    formFieldValue,
+                    executionResult.getAssignmentRuleValue());
+        }
+        catch (Exception problem)
+        {
+            problem.printStackTrace();
+            TestCase.fail(problem.getMessage());
+        }
+        finally {
+            //Cleanup...
+            FormContainerClient formContainerClient =
+                    new FormContainerClient(BASE_URL, serviceTicket);
+            formContainerClient.deleteFormContainer(itemToSend.getForm());
+            formContainerClient.closeAndClean();
+
+            routeFieldClient.deleteField(fieldOne);
+            routeFieldClient.closeAndClean();
+
+            flowClient.forceDeleteFlow(createdFlow);
+            flowClient.closeAndClean();
+        }
     }
 
 }

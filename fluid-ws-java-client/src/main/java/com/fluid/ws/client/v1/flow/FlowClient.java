@@ -108,6 +108,27 @@ public class FlowClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves a Flow by unique Name.
+     *
+     * @param flowNameParam The Flow name.
+     * @return The Flow.
+     */
+    public Flow getFlowByName(String flowNameParam)
+    {
+        Flow flow = new Flow();
+        flow.setName(flowNameParam);
+
+        if(this.serviceTicket != null)
+        {
+            flow.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Flow(this.postJson(
+                flow, WS.Path.Flow.Version1.getByName()));
+    }
+
+
+    /**
      * Delete an existing Flow.
      *
      * @param flowParam The Flow to delete.
