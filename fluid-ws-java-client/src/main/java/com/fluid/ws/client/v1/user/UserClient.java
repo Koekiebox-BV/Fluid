@@ -140,6 +140,26 @@ public class UserClient extends ABaseClientWS {
     }
 
     /**
+     * Increment the invalid login count for {@code userParam}.
+     *
+     * @param userParam The User to increment invalid count for.
+     * @return The User where invalid count performed.
+     *
+     * @see com.fluid.program.api.vo.user.User
+     */
+    public User incrementInvalidLoginForUser(User userParam)
+    {
+        if(userParam != null && this.serviceTicket != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new User(this.postJson(
+                userParam,
+                WS.Path.User.Version1.incrementInvalidLogin()));
+    }
+
+    /**
      * Deletes the {@code User} provided.
      * Id must be set on the {@code User}.
      *

@@ -334,6 +334,31 @@ public class TestUserClient extends ABaseTestCase {
      *
      */
     @Test
+    public void testIncrementInvalidLogin() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+        User invalidLogin = new User();
+        invalidLogin.setUsername(USERNAME);
+
+        User user = userClient.incrementInvalidLoginForUser(
+                invalidLogin);
+
+        TestCase.assertNotNull(user);
+    }
+
+    /**
+     *
+     */
+    @Test
     public void testGetAllUserFieldValues() {
         if (!this.loginClient.isConnectionValid()) {
             return;

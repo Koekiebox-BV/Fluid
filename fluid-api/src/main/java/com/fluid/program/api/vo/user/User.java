@@ -60,6 +60,10 @@ public class User extends ABaseFluidJSONObject {
     private List<Field> userFields;
 
     private boolean active;
+    private int invalidLoginCount;
+
+    private Date passwordChangedAt;
+    private Date loggedInDateTime;
 
     private Date dateCreated;
     private Date dateLastUpdated;
@@ -72,9 +76,12 @@ public class User extends ABaseFluidJSONObject {
         public static final String USERNAME = "username";
 
         public static final String ACTIVE = "active";
+        public static final String INVALID_LOGIN_COUNT = "invalidLoginCount";
 
         public static final String DATE_CREATED = "dateCreated";
         public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+        public static final String PASSWORD_CHANGED_AT = "passwordChangedAt";
+        public static final String LOGGED_IN_DATE_TIME = "loggedInDateTime";
 
         public static final String PASSWORD_SHA_256 = "passwordSha256";
         public static final String PASSWORD_CLEAR = "passwordClear";
@@ -143,6 +150,20 @@ public class User extends ABaseFluidJSONObject {
                             this.jsonObject.getLong(User.JSONMapping.DATE_LAST_UPDATED)));
         }
 
+        //Password Changed At...
+        if (!this.jsonObject.isNull(JSONMapping.PASSWORD_CHANGED_AT)) {
+            this.setPasswordChangedAt(
+                    this.getLongAsDateFromJson(
+                            this.jsonObject.getLong(JSONMapping.PASSWORD_CHANGED_AT)));
+        }
+
+        //Logged In Date Time...
+        if (!this.jsonObject.isNull(JSONMapping.LOGGED_IN_DATE_TIME)) {
+            this.setLoggedInDateTime(
+                    this.getLongAsDateFromJson(
+                            this.jsonObject.getLong(JSONMapping.LOGGED_IN_DATE_TIME)));
+        }
+
         //Salt...
         if (!this.jsonObject.isNull(JSONMapping.SALT)) {
             this.setSalt(this.jsonObject.getString(JSONMapping.SALT));
@@ -151,6 +172,12 @@ public class User extends ABaseFluidJSONObject {
         //Active...
         if (!this.jsonObject.isNull(JSONMapping.ACTIVE)) {
             this.setActive(this.jsonObject.getBoolean(JSONMapping.ACTIVE));
+        }
+
+        //Invalid Login Count...
+        if (!this.jsonObject.isNull(JSONMapping.INVALID_LOGIN_COUNT)) {
+            this.setInvalidLoginCount(this.jsonObject.getInt(
+                    JSONMapping.INVALID_LOGIN_COUNT));
         }
 
         //Roles...
@@ -220,6 +247,24 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the {@code Date} when the password was last changed.
+     *
+     * @return When password was last changed.
+     */
+    public Date getPasswordChangedAt() {
+        return this.passwordChangedAt;
+    }
+
+    /**
+     * Sets the {@code Date} when the password was last changed.
+     *
+     * @param passwordChangedAtParam Password Changed at.
+     */
+    public void setPasswordChangedAt(Date passwordChangedAtParam) {
+        this.passwordChangedAt = passwordChangedAtParam;
+    }
+
+    /**
      * Gets Users username.
      *
      * @return A Users username.
@@ -235,6 +280,24 @@ public class User extends ABaseFluidJSONObject {
      */
     public void setUsername(String usernameParam) {
         this.username = usernameParam;
+    }
+
+    /**
+     * Gets The invalid login count for the {@code User}.
+     *
+     * @return Invalid Login Count.
+     */
+    public int getInvalidLoginCount() {
+        return this.invalidLoginCount;
+    }
+
+    /**
+     * Sets The invalid login count for the {@code User}.
+     *
+     * @param invalidLoginCountParam Invalid Login Count.
+     */
+    public void setInvalidLoginCount(int invalidLoginCountParam) {
+        this.invalidLoginCount = invalidLoginCountParam;
     }
 
     /**
@@ -271,6 +334,24 @@ public class User extends ABaseFluidJSONObject {
      */
     public void setDateLastUpdated(Date dateLastUpdatedParam) {
         this.dateLastUpdated = dateLastUpdatedParam;
+    }
+
+    /**
+     * Gets The {@code Date} the User last logged in.
+     *
+     * @return Date Last Logged in.
+     */
+    public Date getLoggedInDateTime() {
+        return this.loggedInDateTime;
+    }
+
+    /**
+     * Sets The {@code Date} the User last logged in.
+     *
+     * @param loggedInDateTimeParam Date Last Logged in.
+     */
+    public void setLoggedInDateTime(Date loggedInDateTimeParam) {
+        this.loggedInDateTime = loggedInDateTimeParam;
     }
 
     /**
@@ -401,7 +482,11 @@ public class User extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Active...
-        returnVal.put(JSONMapping.ACTIVE,this.isActive());
+        returnVal.put(JSONMapping.ACTIVE, this.isActive());
+
+        //Invalid Login Count...
+        returnVal.put(JSONMapping.INVALID_LOGIN_COUNT,
+                this.getInvalidLoginCount());
 
         //Username...
         if(this.getUsername() != null)
@@ -433,6 +518,20 @@ public class User extends ABaseFluidJSONObject {
         {
             returnVal.put(User.JSONMapping.DATE_LAST_UPDATED,
                     this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        }
+
+        //Password Changed At...
+        if(this.getPasswordChangedAt() != null)
+        {
+            returnVal.put(JSONMapping.PASSWORD_CHANGED_AT,
+                    this.getDateAsLongFromJson(this.getPasswordChangedAt()));
+        }
+
+        //Logged In Date Time...
+        if(this.getLoggedInDateTime() != null)
+        {
+            returnVal.put(JSONMapping.LOGGED_IN_DATE_TIME,
+                    this.getDateAsLongFromJson(this.getLoggedInDateTime()));
         }
 
         //SALT...

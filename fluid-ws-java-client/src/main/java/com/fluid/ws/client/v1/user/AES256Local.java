@@ -204,27 +204,27 @@ public class AES256Local {
         //Changed for Java 1.6 compatibility...
         catch (InvalidKeyException except) {
 
-            throw new FluidClientException("Unable to decrypt data. " +
+            throw new FluidClientException("Key: Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
         } catch (InvalidAlgorithmParameterException except) {
 
-            throw new FluidClientException("Unable to decrypt data. " +
+            throw new FluidClientException("Algo: Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
         } catch (IllegalBlockSizeException except) {
 
-            throw new FluidClientException("Unable to decrypt data. " +
+            throw new FluidClientException("Block: Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
         } catch (NoSuchPaddingException except) {
 
-            throw new FluidClientException("Unable to decrypt data. " +
+            throw new FluidClientException("NoPadding: Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
         } catch (NoSuchAlgorithmException except) {
 
-            throw new FluidClientException("Unable to decrypt data. " +
+            throw new FluidClientException("NoAlgo: Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
         } catch (BadPaddingException except) {
 
-            throw new FluidClientException("Unable to decrypt data. " +
+            throw new FluidClientException("BadPadding: Unable to decrypt data. " +
                     except.getMessage(), except, FluidClientException.ErrorCode.AES_256);
         }
     }
@@ -254,22 +254,22 @@ public class AES256Local {
         }
         //Changed for Java 1.6 compatibility...
         catch (InvalidKeyException except) {
-            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+            throw new FluidClientException("Key: Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         } catch (InvalidAlgorithmParameterException except) {
-            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+            throw new FluidClientException("Algo: Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         } catch (IllegalBlockSizeException except) {
-            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+            throw new FluidClientException("Block: Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         } catch (NoSuchPaddingException except) {
-            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+            throw new FluidClientException("NoPadding: Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         } catch (NoSuchAlgorithmException except) {
-            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+            throw new FluidClientException("NoAlgo: Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         } catch (BadPaddingException except) {
-            throw new FluidClientException("Unable to encrypt data. " + except.getMessage(), except,
+            throw new FluidClientException("BadPadding: Unable to encrypt data. " + except.getMessage(), except,
                     FluidClientException.ErrorCode.AES_256);
         }
     }

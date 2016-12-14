@@ -1237,11 +1237,11 @@ public class WS {
                 //Update...
                 public static final String UPDATE = ("/update");
 
-                //DeActivate...
+                //Activate / DeActivate...
                 public static final String DE_ACTIVATE = ("/de_activate");
-
-                //Activate...
                 public static final String ACTIVATE = ("/activate");
+                public static final String INCREMENT_INVALID_LOGIN =
+                        ("/increment_invalid_login");
 
                 //Delete...
                 public static final String DELETE = ("/delete");
@@ -1382,6 +1382,17 @@ public class WS {
                 public static final String userDeActivate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(DE_ACTIVATE);
+                }
+
+
+                /**
+                 * URL Path for Incrementing the invalid login count for a User.
+                 *
+                 * @return {@code v1/user/increment_invalid_login}
+                 */
+                public static final String incrementInvalidLogin()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(INCREMENT_INVALID_LOGIN);
                 }
 
                 /**

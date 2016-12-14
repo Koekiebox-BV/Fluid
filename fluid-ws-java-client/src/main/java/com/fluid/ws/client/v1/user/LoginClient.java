@@ -274,6 +274,7 @@ public class LoginClient extends ABaseClientWS {
         byte[] localGeneratedHMac = AES256Local.generateLocalHMAC(
                 encryptedData, passwordParam, authResponseParam.getSalt(), seedBytes);
 
+        //Password mismatch...
         if (!Arrays.equals(hMacFromResponse, localGeneratedHMac)) {
             throw new FluidClientException(
                     "Login attempt failure.",
