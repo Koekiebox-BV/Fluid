@@ -15,8 +15,11 @@
 
 package com.fluid.ws.client.v1.flow;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.flow.FlowItemExecutePacket;
 import com.fluid.program.api.vo.flow.FlowItemExecuteResult;
@@ -340,5 +343,32 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
         return new FlowStep(this.postJson(
                 flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteView()));
+    }
+
+    /**
+     * Retrieves the next valid syntax rules for {@code inputRuleParam}.
+     *
+     * @param inputRuleParam The text to use as input.
+     * @return Listing of valid syntax words to use.
+     */
+    public List<String> getNextValidSyntaxWordsEntryRule(String inputRuleParam)
+    {
+        if(inputRuleParam == null)
+        {
+            inputRuleParam = UtilGlobal.EMPTY;
+        }
+
+        FlowStepRule flowStepRule = new FlowStepRule();
+        flowStepRule.setRule(inputRuleParam);
+
+        if(this.serviceTicket != null)
+        {
+            flowStepRule.setServiceTicket(this.serviceTicket);
+        }
+
+        FlowStepRule returnedObj = new FlowStepRule(this.postJson(
+                        flowStepRule, WS.Path.FlowStepRule.Version1.getNextValidEntrySyntax()));
+
+        return returnedObj.getNextValidSyntaxWords();
     }
 }

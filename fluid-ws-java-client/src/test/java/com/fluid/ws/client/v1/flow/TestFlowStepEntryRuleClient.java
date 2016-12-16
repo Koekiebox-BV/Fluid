@@ -143,6 +143,102 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
      *
      */
     @Test
+    public void testFlowStepEntryRule_GetNextValidSyntax_Empty()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
+
+        //Empty...
+        try {
+            flowStepRuleClient.getNextValidSyntaxWordsEntryRule(null);
+            Assert.fail("Expected to fail.");
+        }
+        //
+        catch(FluidClientException prob)
+        {
+
+        }
+
+        //S...
+        try {
+            flowStepRuleClient.getNextValidSyntaxWordsEntryRule("S");
+            Assert.fail("Expected to fail.");
+        }
+        //
+        catch(FluidClientException prob)
+        {
+
+        }
+
+        //SET...
+        List<String> nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET");
+
+        Assert.assertNotNull("Next valid syntax must be set.",nextValidSyntaxWords);
+        Assert.assertEquals("Expected number of rules missmatch.",
+                4,nextValidSyntaxWords.size());
+
+        boolean isScope = false;
+        for(String iter : nextValidSyntaxWords)
+        {
+            if(iter.equals("FORM."))
+            {
+                isScope = true;
+            }
+        }
+
+        Assert.assertTrue("Expected at least FORM.",isScope);
+
+        //FORM.
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET FORM.");
+
+        Assert.assertTrue("Expected at least 5 fields.",
+                nextValidSyntaxWords.size() > 5);
+
+        for(String iter : nextValidSyntaxWords)
+        {
+            if(!iter.startsWith("FORM."))
+            {
+                Assert.fail("Did not start with FORM. "+iter);
+            }
+        }
+
+        //SET FORM.FORM.Email Subject
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+                        "SET FORM.Email Subject");
+
+        Assert.assertTrue("Expected only 1 value.",
+                nextValidSyntaxWords.size() == 1);
+
+        Assert.assertTrue("Expected TO.",
+                nextValidSyntaxWords.get(0).equals("TO"));
+
+        //SET FORM.FORM.Email Subject TO
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+                        "SET FORM.Email Subject TO");
+
+        Assert.assertTrue("Expected 6 values.",
+                nextValidSyntaxWords.size() == 6);
+
+
+    }
+
+    /**
+     *
+     */
+    @Test
     public void testFlowStepEntryRule_CompileSucceed()
     {
         if(!this.loginClient.isConnectionValid())
