@@ -934,6 +934,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     {
         Type fieldType = this.getTypeAsEnum();
 
+        if(fieldType == null)
+        {
+            return null;
+        }
+
         //Get the type by Fluid field type...
         switch (fieldType)
         {

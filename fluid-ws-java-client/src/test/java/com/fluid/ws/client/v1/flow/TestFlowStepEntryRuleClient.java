@@ -232,7 +232,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         Assert.assertTrue("Expected 6 values.",
                 nextValidSyntaxWords.size() == 6);
 
-
+        //
     }
 
     /**
