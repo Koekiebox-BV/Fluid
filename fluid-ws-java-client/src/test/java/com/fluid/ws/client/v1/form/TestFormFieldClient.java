@@ -725,6 +725,12 @@ public class TestFormFieldClient extends ABaseTestCase {
                 TestStatics.MultiChoice.UPDATE_LIST.size(),
                 castedById.getSelectedMultiChoices().size());
 
+        //5. Get by Name...
+        Field byNameField = formFieldClient.getFieldByName(byIdField.getFieldName());
+
+        TestCase.assertNotNull("BY_NAME: The field must be set.",
+                byNameField);
+
         //5. Delete...
         Field deletedField = formFieldClient.deleteField(byIdField);
         TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedField.getId());

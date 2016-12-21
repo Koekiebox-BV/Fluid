@@ -23,6 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.MultiChoice;
@@ -32,7 +33,6 @@ import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
-import com.google.common.io.BaseEncoding;
 
 import junit.framework.TestCase;
 
@@ -167,7 +167,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         if(serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex =
-                    BaseEncoding.base16().encode(BaseEncoding.base64().decode(serviceTicket));
+                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
         }
 
         WebSocketFormContainerClient webSocketFormContainerClient

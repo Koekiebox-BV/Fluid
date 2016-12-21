@@ -887,6 +887,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                                 type);
                     }
                 }
+                break;
             case TrueFalse:
                 if(formFieldValue instanceof Boolean)
                 {
@@ -1002,6 +1003,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             case MultipleChoice:
             case Table:
             case Text:
+            case ParagraphText:
             case TrueFalse:
                 return true;
             default:

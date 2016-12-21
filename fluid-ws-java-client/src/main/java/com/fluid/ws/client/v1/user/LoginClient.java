@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.program.api.vo.ws.auth.AuthEncryptedData;
@@ -27,7 +28,6 @@ import com.fluid.program.api.vo.ws.auth.AuthRequest;
 import com.fluid.program.api.vo.ws.auth.AuthResponse;
 import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
-import com.google.common.io.BaseEncoding;
 
 /**
  * Java Web Service Client for User Login related actions.
@@ -258,17 +258,22 @@ public class LoginClient extends ABaseClientWS {
             String passwordParam,
             AuthResponse authResponseParam)
     {
+
         //IV...
-        byte[] ivBytes = BaseEncoding.base64().decode(authResponseParam.getIvBase64());
+        byte[] ivBytes = UtilGlobal.decodeBase64(
+                authResponseParam.getIvBase64());
 
         //Seed...
-        byte[] seedBytes = BaseEncoding.base64().decode(authResponseParam.getSeedBase64());
+        byte[] seedBytes = UtilGlobal.decodeBase64(
+                authResponseParam.getSeedBase64());
 
         //Encrypted Data...
-        byte[] encryptedData = BaseEncoding.base64().decode(authResponseParam.getEncryptedDataBase64());
+        byte[] encryptedData = UtilGlobal.decodeBase64(
+                authResponseParam.getEncryptedDataBase64());
 
         //HMac from Response...
-        byte[] hMacFromResponse = BaseEncoding.base64().decode(authResponseParam.getEncryptedDataHmacBase64());
+        byte[] hMacFromResponse = UtilGlobal.decodeBase64(
+                authResponseParam.getEncryptedDataHmacBase64());
 
         //Local HMac...
         byte[] localGeneratedHMac = AES256Local.generateLocalHMAC(
@@ -320,8 +325,8 @@ public class LoginClient extends ABaseClientWS {
         byte[] iv = AES256Local.generateRandom(AES256Local.IV_SIZE_BYTES);
         byte[] seed = AES256Local.generateRandom(AES256Local.SEED_SIZE_BYTES);
 
-        byte[] sessionKey =
-                BaseEncoding.base64().decode(authEncryptDataParam.getSessionKeyBase64());
+        byte[] sessionKey = UtilGlobal.decodeBase64(
+                authEncryptDataParam.getSessionKeyBase64());
 
         byte[] dataToEncrypt = usernameParam.getBytes();
 
@@ -335,10 +340,10 @@ public class LoginClient extends ABaseClientWS {
 
         AppRequestToken requestToServer = new AppRequestToken();
 
-        requestToServer.setEncryptedDataBase64(BaseEncoding.base64().encode(encryptedData));
-        requestToServer.setEncryptedDataHmacBase64(BaseEncoding.base64().encode(encryptedDataHMac));
-        requestToServer.setIvBase64(BaseEncoding.base64().encode(iv));
-        requestToServer.setSeedBase64(BaseEncoding.base64().encode(seed));
+        requestToServer.setEncryptedDataBase64(UtilGlobal.encodeBase64(encryptedData));
+        requestToServer.setEncryptedDataHmacBase64(UtilGlobal.encodeBase64(encryptedDataHMac));
+        requestToServer.setIvBase64(UtilGlobal.encodeBase64(iv));
+        requestToServer.setSeedBase64(UtilGlobal.encodeBase64(seed));
         requestToServer.setServiceTicket(serviceTicketBase64Param);
 
         try {

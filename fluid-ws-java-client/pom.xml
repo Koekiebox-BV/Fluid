@@ -62,20 +62,6 @@
             <version>1.3</version>
         </dependency>
 
-        <!--Commons-->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
-        <!--Google Guava-->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
         <!--HTTP Components-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -91,57 +77,54 @@
             <version>4.4.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <scope>compile</scope>
-            <version>1.2</version>
-        </dependency>
-
         <!--WEB SOCKET USING TYRUS-->
         <!--Tyrus Grizzly Client-->
         <dependency>
             <groupId>javax.websocket</groupId>
             <artifactId>javax.websocket-client-api</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-container-grizzly-client</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <version>1.13</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-framework</artifactId>
+            <scope>provided</scope>
             <version>2.3.25</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-http</artifactId>
+            <scope>provided</scope>
             <version>2.3.25</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-client</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <version>1.13</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-core</artifactId>
+            <scope>provided</scope>
             <version>1.13</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-spi</artifactId>
+            <scope>provided</scope>
             <version>1.13</version>
         </dependency>
     </dependencies>

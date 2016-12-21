@@ -21,8 +21,7 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.ws.client.FluidClientException;
 
 
@@ -109,7 +108,7 @@ public class AES256Local {
                 passwordParam.concat(saltParam).getBytes());
 
         //Add the seed to the password and SHA-256...
-        byte[] derivedKey = sha256(ArrayUtils.addAll(passwordSha256, poisonedSeed));
+        byte[] derivedKey = sha256(UtilGlobal.addAll(passwordSha256, poisonedSeed));
 
         return hmacSha256(derivedKey, encryptedDataParam);
     }
@@ -128,7 +127,7 @@ public class AES256Local {
         byte[] poisonedSeed = poisonBytes(seedParam);
 
         //Add the seed to the password and SHA-256...
-        byte[] derivedKey = sha256(ArrayUtils.addAll(keyParam, poisonedSeed));
+        byte[] derivedKey = sha256(UtilGlobal.addAll(keyParam, poisonedSeed));
 
         return hmacSha256(derivedKey, encryptedDataParam);
     }
@@ -177,7 +176,7 @@ public class AES256Local {
         byte[] passwordSha256 = sha256(passwordParam.concat(saltParam).getBytes());
 
         //Add the seed to the password and SHA-256...
-        byte[] derivedKey = sha256(ArrayUtils.addAll(passwordSha256, seedParam));
+        byte[] derivedKey = sha256(UtilGlobal.addAll(passwordSha256, seedParam));
 
         //Decrypt with the derived key.
         return decrypt(derivedKey, encryptedDataParam, ivParam);

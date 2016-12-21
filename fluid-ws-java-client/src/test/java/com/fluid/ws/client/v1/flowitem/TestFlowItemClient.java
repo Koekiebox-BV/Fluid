@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.Attachment;
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.Form;
@@ -37,7 +38,6 @@ import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
 import com.fluid.ws.client.v1.user.LoginClient;
-import com.google.common.io.BaseEncoding;
 
 import junit.framework.TestCase;
 
@@ -127,7 +127,7 @@ public class TestFlowItemClient extends ABaseTestCase {
         //First Attachment...
         Attachment attachmentToAdd = new Attachment();
         attachmentToAdd.setAttachmentDataBase64(
-                BaseEncoding.base64().encode(jsonObject.toString().getBytes()));
+                UtilGlobal.encodeBase64(jsonObject.toString().getBytes()));
 
         attachmentToAdd.setName("Test assessment JSON.json");
         attachmentToAdd.setContentType("application/json");
@@ -135,7 +135,7 @@ public class TestFlowItemClient extends ABaseTestCase {
         //Second Attachment...
         Attachment secondToAdd = new Attachment();
         secondToAdd.setAttachmentDataBase64(
-                BaseEncoding.base64().encode("De Beers".toString().getBytes()));
+                UtilGlobal.encodeBase64("De Beers".toString().getBytes()));
 
         secondToAdd.setName("Test Text Plain.txt");
         secondToAdd.setContentType("text/plain");
