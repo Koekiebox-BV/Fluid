@@ -4,25 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--Parent-->
     <parent>
         <groupId>com.fluid</groupId>
         <artifactId>fluid-root</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!--Fluid Web Service Java Client-->
     <artifactId>fluid-ws-java-client</artifactId>
     <packaging>jar</packaging>
     <name>Fluid RESTful Web Service Client</name>
-    <version>1.3</version>
     <description>The Fluid Restful Web Service Java Client.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
-
-    <properties>
-        <!--JDK Properties-->
-        <version.jdk.compile>1.8</version.jdk.compile>
-        <version.plugin.compiler>3.5.1</version.plugin.compiler>
-    </properties>
 
     <licenses>
         <license>
@@ -47,19 +42,11 @@
     </scm>
 
     <dependencies>
-        <!--JUnit Testing-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!--Fluid Dependencies-->
+        <!--Fluid-->
         <dependency>
             <groupId>com.fluid</groupId>
             <artifactId>fluid-api</artifactId>
             <scope>compile</scope>
-            <version>1.3</version>
         </dependency>
 
         <!--HTTP Components-->
@@ -67,14 +54,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <scope>compile</scope>
-            <version>4.5.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <scope>compile</scope>
-            <version>4.4.5</version>
         </dependency>
 
         <!--WEB SOCKET USING TYRUS-->
@@ -83,49 +68,49 @@
             <groupId>javax.websocket</groupId>
             <artifactId>javax.websocket-client-api</artifactId>
             <scope>provided</scope>
-            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-container-grizzly-client</artifactId>
             <scope>provided</scope>
-            <version>1.13</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-framework</artifactId>
             <scope>provided</scope>
-            <version>2.3.25</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.grizzly</groupId>
             <artifactId>grizzly-http</artifactId>
             <scope>provided</scope>
-            <version>2.3.25</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-client</artifactId>
             <scope>provided</scope>
-            <version>1.13</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-core</artifactId>
             <scope>provided</scope>
-            <version>1.13</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.tyrus</groupId>
             <artifactId>tyrus-spi</artifactId>
             <scope>provided</scope>
-            <version>1.13</version>
+        </dependency>
+
+        <!--JUnit Testing-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

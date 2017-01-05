@@ -4,10 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--Parent-->
     <parent>
         <groupId>com.fluid</groupId>
         <artifactId>fluid-root</artifactId>
-        <version>1.3</version>
+        <version>1.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -15,20 +16,13 @@
     <artifactId>fluid-api</artifactId>
     <packaging>jar</packaging>
     <name>Fluid API</name>
-    <version>1.3</version>
     <description>Used for the
-        Custom Program Step,
-        Custom Actions,
-        Scheduled Actions and
-        Fluid API
+        * Custom Program Step,
+        * Custom Actions,
+        * Scheduled Actions and
+        * Fluid API
         in the Fluid BPM and Content Management system.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
-
-    <properties>
-        <!--JDK Properties-->
-        <version.jdk.compile>1.8</version.jdk.compile>
-        <version.plugin.compiler>3.5.1</version.plugin.compiler>
-    </properties>
 
     <licenses>
         <license>
@@ -59,7 +53,6 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <scope>compile</scope>
-            <version>20160810</version>
         </dependency>
 
         <!--XMemcachedClient-->
@@ -67,7 +60,6 @@
             <groupId>com.googlecode.xmemcached</groupId>
             <artifactId>xmemcached</artifactId>
             <scope>compile</scope>
-            <version>2.0.0</version>
         </dependency>
 
         <!--ElasticSearch-->
@@ -76,7 +68,6 @@
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>transport</artifactId>
             <scope>provided</scope>
-            <version>5.1.1</version>
         </dependency>
     </dependencies>
 

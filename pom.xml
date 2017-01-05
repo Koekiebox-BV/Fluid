@@ -6,7 +6,7 @@
     <groupId>com.fluid</groupId>
     <artifactId>fluid-root</artifactId>
     <packaging>pom</packaging>
-    <version>1.3</version>
+    <version>1.4</version>
     <name>Fluid Root</name>
     <description>Parent pom providing default setups for all application and admin servers modules.</description>
     <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
@@ -23,7 +23,7 @@
         <developer>
             <name>Jason Bruwer</name>
             <email>jason@koekiebox.com</email>
-            <organization>Koekiebox</organization>
+            <organization>Koekiebox (PTY) LTD</organization>
         </developer>
     </developers>
 
@@ -34,20 +34,15 @@
     </scm>
 
     <properties>
-        <!--Fluid Versions-->
-        <version.fluid-api>1.3</version.fluid-api>
-
+        <!-- Maven-compiler-plugin -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.compiler.plugin>2.3.2</version.compiler.plugin>
-        <version.surefire.plugin>2.4.3</version.surefire.plugin>
-
-        <!-- maven-compiler-plugin -->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <version.jdk.compile>1.8</version.jdk.compile>
 
         <!--Maven Dependency Versions-->
         <version.junit>4.12</version.junit>
-        <version.slf4j>1.7.12</version.slf4j>
+        <version.slf4j>1.7.22</version.slf4j>
+
+        <version.javax.websocket>1.1</version.javax.websocket>
 
         <!--Org.JSON-->
         <version.org.json>20160810</version.org.json>
@@ -55,33 +50,49 @@
         <!--JBoss Resteasy-->
         <version.jboss.resteasy.jackson>2.2.1.GA</version.jboss.resteasy.jackson>
 
-        <version.apache.commons.lang3>3.3.2</version.apache.commons.lang3>
-        <version.google.guava>18.0</version.google.guava>
-        <version.apache.httpcomponents.httpclient>4.5</version.apache.httpcomponents.httpclient>
+        <!--Google-->
+        <version.google.xmemcached>2.0.0</version.google.xmemcached>
 
-        <!--Koekiebox Git Maven Plugin-->
+        <!--Apache-->
+        <version.apache.httpcomponents.httpcore>4.4.5</version.apache.httpcomponents.httpcore>
+        <version.apache.httpcomponents.httpclient>4.5.2</version.apache.httpcomponents.httpclient>
+
+        <!--ElasticSearch-->
+        <version.elasticsearch>5.1.1</version.elasticsearch>
+
+        <!--GlassFish Tyrus-->
+        <version.glassfish.tyrus.core>1.13</version.glassfish.tyrus.core>
+        <version.glassfish.tyrus.client>1.13</version.glassfish.tyrus.client>
+        <version.glassfish.tyrus.container.client>1.13</version.glassfish.tyrus.container.client>
+        <version.glassfish.tyrus.spi>1.13</version.glassfish.tyrus.spi>
+
+        <!--GlassFish Grizzly-->
+        <version.glassfish.grizzly.framework>2.3.28</version.glassfish.grizzly.framework>
+        <version.glassfish.grizzly.http>2.3.28</version.glassfish.grizzly.http>
+
+        <!--Plugins-->
+        <version.plugin.compiler>3.6.0</version.plugin.compiler>
         <version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
-        <version.plugin.java.source>3.0.0</version.plugin.java.source>
-        <version.plugin.java.doc>2.10.3</version.plugin.java.doc>
-
+        <version.plugin.java.source>3.0.1</version.plugin.java.source>
+        <version.plugin.java.doc>2.10.4</version.plugin.java.doc>
     </properties>
 
     <!--Repos-->
     <repositories>
-        <repository>
+        <!--repository>
             <id>Local Repo</id>
             <name>Local Maven Repository</name>
             <url>file:${user.home}/.m2/repository</url>
-        </repository>
+        </repository-->
     </repositories>
 
     <!--Plugin Repos-->
     <pluginRepositories>
-        <pluginRepository>
+        <!--pluginRepository>
             <id>Local Repo</id>
             <name>Local Maven Repository</name>
             <url>file:${user.home}/.m2/repository</url>
-        </pluginRepository>
+        </pluginRepository-->
     </pluginRepositories>
 
     <!--Modules-->
@@ -93,20 +104,12 @@
     <!--Dependencies-->
     <dependencyManagement>
         <dependencies>
-            <!--Fluid Dependencies-->
+            <!--Fluid-->
             <dependency>
                 <groupId>com.fluid</groupId>
                 <artifactId>fluid-api</artifactId>
                 <scope>provided</scope>
-                <version>${version.fluid-api}</version>
-            </dependency>
-
-            <!--JUnit-->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-                <scope>test</scope>
+                <version>${project.version}</version>
             </dependency>
 
             <!--JSON Library API-->
@@ -117,6 +120,90 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!--Google-->
+            <!--XMemcachedClient-->
+            <dependency>
+                <groupId>com.googlecode.xmemcached</groupId>
+                <artifactId>xmemcached</artifactId>
+                <scope>provided</scope>
+                <version>${version.google.xmemcached}</version>
+            </dependency>
+
+            <!--ElasticSearch-->
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>transport</artifactId>
+                <scope>provided</scope>
+                <version>${version.elasticsearch}</version>
+            </dependency>
+
+            <!--HTTP Components-->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <scope>provided</scope>
+                <version>${version.apache.httpcomponents.httpclient}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <scope>provided</scope>
+                <version>${version.apache.httpcomponents.httpcore}</version>
+            </dependency>
+
+            <!--WebSocket-->
+            <dependency>
+                <groupId>javax.websocket</groupId>
+                <artifactId>javax.websocket-client-api</artifactId>
+                <scope>provided</scope>
+                <version>${version.javax.websocket}</version>
+            </dependency>
+
+            <!--GlassFish Tyrus-->
+            <dependency>
+                <groupId>org.glassfish.tyrus</groupId>
+                <artifactId>tyrus-container-grizzly-client</artifactId>
+                <scope>provided</scope>
+                <version>${version.glassfish.tyrus.container.client}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.tyrus</groupId>
+                <artifactId>tyrus-client</artifactId>
+                <scope>provided</scope>
+                <version>${version.glassfish.tyrus.client}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.tyrus</groupId>
+                <artifactId>tyrus-core</artifactId>
+                <scope>provided</scope>
+                <version>${version.glassfish.tyrus.core}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.tyrus</groupId>
+                <artifactId>tyrus-spi</artifactId>
+                <scope>provided</scope>
+                <version>${version.glassfish.tyrus.spi}</version>
+            </dependency>
+
+            <!--GlassFish Grizzly-->
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-framework</artifactId>
+                <scope>provided</scope>
+                <version>${version.glassfish.grizzly.framework}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.grizzly</groupId>
+                <artifactId>grizzly-http</artifactId>
+                <scope>provided</scope>
+                <version>${version.glassfish.grizzly.http}</version>
+            </dependency>
+
             <!--Jackson Provider-->
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
@@ -125,28 +212,12 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!--Commons-->
+            <!--JUnit-->
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${version.apache.commons.lang3}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--Google Guava-->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${version.google.guava}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <!--HTTP Components-->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${version.apache.httpcomponents.httpclient}</version>
-                <scope>provided</scope>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
