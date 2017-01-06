@@ -1,13 +1,13 @@
-![Fluid Logo](content/fluid_logo.png "Fluid") ![Koekiebox Logo](content/koekiebox.png "Koekiebox")
+![Fluid Logo](content/fluid_logo_new.png "Fluid") ![Koekiebox Logo](content/koekiebox.png "Koekiebox")
 # *** Fluid ***  
 
 On demand Business Process Management, Content Management System.
 
 Components include;
 
-##1. Fluid API.
+##1. Fluid Java API.
 
-*   The core `API`  
+*   The core `API`.
 
 ##2. Fluid API Java Web-Service Client.
 
@@ -24,7 +24,7 @@ Components include;
 1. Clone the repo: `git clone git@github.com:Koekiebox-PTY-LTD/Fluid.git` 
 2. Install [Maven](https://maven.apache.org/install.html).
 3. Navigate to local project folder: `cd Fluid`
-3. Run `mvn clean install`
+4. Run `mvn clean install`
 
 ## Test Results and Package Info
 
