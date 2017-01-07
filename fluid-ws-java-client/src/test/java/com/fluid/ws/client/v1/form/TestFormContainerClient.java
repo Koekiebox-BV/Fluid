@@ -166,13 +166,13 @@ public class TestFormContainerClient extends ABaseTestCase {
         String serviceTicketHex = null;
         if(serviceTicket != null && !serviceTicket.isEmpty())
         {
-            serviceTicketHex =
-                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+            serviceTicketHex = UtilGlobal.encodeBase16(
+                    UtilGlobal.decodeBase64(serviceTicket));
         }
 
         WebSocketFormContainerClient webSocketFormContainerClient
                 = new WebSocketFormContainerClient(BASE_URL,
-                null,serviceTicketHex,5000);
+                null, serviceTicketHex,5000);
 
         //1. Form...
         Form toCreate = new Form(TestStatics.FORM_DEFINITION);

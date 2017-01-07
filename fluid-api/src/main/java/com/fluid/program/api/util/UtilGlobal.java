@@ -17,6 +17,8 @@ package com.fluid.program.api.util;
 
 import java.util.Base64;
 
+import javax.xml.bind.DatatypeConverter;
+
 /**
  * Global utility class for the {@code com.fluid.program.api.util} package.
  *
@@ -268,13 +270,15 @@ public class UtilGlobal {
             return UtilGlobal.EMPTY;
         }
 
-        StringBuilder sb = new StringBuilder();
+        return DatatypeConverter.printHexBinary(bytesParam).toUpperCase();
+
+        /*StringBuilder sb = new StringBuilder();
         for (byte bte : bytesParam) {
 
             sb.append(Integer.toHexString(bte));
         }
 
-        return sb.toString().toUpperCase();
+        return sb.toString().toUpperCase();*/
     }
 
     /**
