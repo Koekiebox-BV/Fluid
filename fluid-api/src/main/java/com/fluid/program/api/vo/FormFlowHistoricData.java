@@ -86,10 +86,8 @@ public class FormFlowHistoricData extends ABaseFluidJSONObject {
         }
 
         //Date Created...
-        if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
-            this.setDateCreated(this.getLongAsDateFromJson(
-                    this.jsonObject.getLong(JSONMapping.DATE_CREATED)));
-        }
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.DATE_CREATED));
 
         //Rule Executed...
         if (!this.jsonObject.isNull(JSONMapping.RULE_EXECUTED)) {

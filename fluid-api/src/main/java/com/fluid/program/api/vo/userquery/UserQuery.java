@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.*;
+import com.fluid.program.api.vo.flow.Flow;
 
 /**
  * <p>
@@ -135,19 +136,12 @@ public class UserQuery extends ABaseListing<FluidItem> {
         }
 
         //Date Created...
-        if (!this.jsonObject.isNull(Form.JSONMapping.DATE_CREATED)) {
-
-            this.setDateCreated(
-                    this.getLongAsDateFromJson(
-                            this.jsonObject.getLong(Form.JSONMapping.DATE_CREATED)));
-        }
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(
+                Flow.JSONMapping.DATE_CREATED));
 
         //Date Last Updated...
-        if (!this.jsonObject.isNull(Form.JSONMapping.DATE_LAST_UPDATED)) {
-            this.setDateLastUpdated(
-                    this.getLongAsDateFromJson(
-                            this.jsonObject.getLong(Form.JSONMapping.DATE_LAST_UPDATED)));
-        }
+        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
+                Flow.JSONMapping.DATE_LAST_UPDATED));
     }
 
     /**

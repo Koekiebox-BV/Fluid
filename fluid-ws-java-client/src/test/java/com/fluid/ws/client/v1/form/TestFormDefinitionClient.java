@@ -166,11 +166,11 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         createdFormDef.setFormType(TestStatics.FORM_TYPE_UPDATE);
         createdFormDef.setFormDescription(TestStatics.FORM_DESCRIPTION_UPDATE);
 
-        List<Field> updateFields = new ArrayList<Field>();
+        List<Field> updateFields = new ArrayList();
         updateFields.add(fieldFirst);
         createdFormDef.setFormFields(updateFields);
 
-        List<Flow> updateFlows = new ArrayList<Flow>();
+        List<Flow> updateFlows = new ArrayList();
         updateFlows.add(flowFirst);
         createdFormDef.setAssociatedFlows(updateFlows);
 
@@ -263,7 +263,6 @@ public class TestFormDefinitionClient extends ABaseTestCase {
 
         List<Field> fieldsToUse = new ArrayList();
         fieldsToUse.add(fieldFirst);
-
 
         //1. The Test Flow...
         toCreate = new Form();

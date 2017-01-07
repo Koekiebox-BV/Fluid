@@ -330,6 +330,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @return {@code getFieldName()} as upper_camel_case.
      */
+    @XmlTransient
     public String getFieldNameAsUpperCamel()
     {
         return new UtilGlobal().toCamelUpperCase(this.getFieldName());

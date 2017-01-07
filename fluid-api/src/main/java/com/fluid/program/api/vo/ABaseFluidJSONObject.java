@@ -15,6 +15,8 @@
 
 package com.fluid.program.api.vo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,6 +39,15 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
     @XmlTransient
     protected JSONObject jsonObject;
+
+    private static SimpleDateFormat DATE_FORMAT_001 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+    private static SimpleDateFormat DATE_FORMAT_002 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private static SimpleDateFormat DATE_FORMAT_003 = new SimpleDateFormat("h:mma");
+    private static SimpleDateFormat DATE_FORMAT_004 = new SimpleDateFormat("yyyy-MM-dd");
+
+    private static SimpleDateFormat[] SUPPORTED_FORMATS = {
+            DATE_FORMAT_001, DATE_FORMAT_002, DATE_FORMAT_003, DATE_FORMAT_004
+    };
 
     /**
      * The JSON mapping for the {@code ABaseFluidJSONObject} object.
@@ -165,7 +176,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
      *
      */
     @XmlTransient
-    public Date getLongAsDateFromJson(Long longValueParam)
+    private Date getLongAsDateFromJson(Long longValueParam)
     {
         if(longValueParam == null)
         {
@@ -173,6 +184,52 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         }
 
         return new Date(longValueParam);
+    }
+
+    /**
+     * Retrieves the value of field {@code fieldNameParam} as a timestamp.
+     *
+     * @param fieldNameParam The name of the JSON field to retrieve.
+     * @return The value of the JSON Object as a {@code java.util.Date}.
+     */
+    @XmlTransient
+    public Date getDateFieldValueFromFieldWithName(String fieldNameParam)
+    {
+        if((fieldNameParam == null || fieldNameParam.trim().isEmpty()) ||
+                (this.jsonObject == null || this.jsonObject.isNull(fieldNameParam)))
+        {
+            return null;
+        }
+
+        Object objectAtIndex = this.jsonObject.get(fieldNameParam);
+
+        if(objectAtIndex instanceof Number)
+        {
+            return this.getLongAsDateFromJson(((Number)objectAtIndex).longValue());
+        }
+        else if(objectAtIndex instanceof String)
+        {
+            Date validDate = null;
+            for(SimpleDateFormat format : SUPPORTED_FORMATS)
+            {
+                try
+                {
+                    validDate = format.parse((String)objectAtIndex);
+                    if(validDate != null)
+                    {
+                        break;
+                    }
+                }
+                catch (ParseException parseExcept)
+                {
+                    validDate = null;
+                }
+            }
+
+            return validDate;
+        }
+
+        return null;
     }
 
     /**

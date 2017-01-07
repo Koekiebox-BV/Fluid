@@ -136,33 +136,20 @@ public class User extends ABaseFluidJSONObject {
         }
 
         //Date Created...
-        if (!this.jsonObject.isNull(User.JSONMapping.DATE_CREATED)) {
-
-            this.setDateCreated(
-                    this.getLongAsDateFromJson(
-                            this.jsonObject.getLong(User.JSONMapping.DATE_CREATED)));
-        }
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.DATE_CREATED));
 
         //Date Last Updated...
-        if (!this.jsonObject.isNull(User.JSONMapping.DATE_LAST_UPDATED)) {
-            this.setDateLastUpdated(
-                    this.getLongAsDateFromJson(
-                            this.jsonObject.getLong(User.JSONMapping.DATE_LAST_UPDATED)));
-        }
+        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.DATE_LAST_UPDATED));
 
         //Password Changed At...
-        if (!this.jsonObject.isNull(JSONMapping.PASSWORD_CHANGED_AT)) {
-            this.setPasswordChangedAt(
-                    this.getLongAsDateFromJson(
-                            this.jsonObject.getLong(JSONMapping.PASSWORD_CHANGED_AT)));
-        }
+        this.setPasswordChangedAt(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.PASSWORD_CHANGED_AT));
 
         //Logged In Date Time...
-        if (!this.jsonObject.isNull(JSONMapping.LOGGED_IN_DATE_TIME)) {
-            this.setLoggedInDateTime(
-                    this.getLongAsDateFromJson(
-                            this.jsonObject.getLong(JSONMapping.LOGGED_IN_DATE_TIME)));
-        }
+        this.setLoggedInDateTime(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.LOGGED_IN_DATE_TIME));
 
         //Salt...
         if (!this.jsonObject.isNull(JSONMapping.SALT)) {
