@@ -213,7 +213,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 
         if(toString.length() > 2)
         {
-            return toString.substring(0,toString.length() - 2);
+            return toString.substring(0, toString.length() - 2);
         }
 
         return toString;

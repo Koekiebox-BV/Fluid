@@ -15,11 +15,15 @@
 
 package com.fluid.ws.client.v1.flow;
 
+import java.util.List;
+
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.user.LoginClient;
@@ -32,49 +36,6 @@ import junit.framework.TestCase;
 public class TestFlowStepExitRuleClient extends ABaseTestCase {
 
     private LoginClient loginClient;
-
-    /**
-     *
-     */
-    public static final class TestStatics{
-
-        public static final String FORM_DEFINITION = "Email";
-        public static final String FORM_TITLE_PREFIX = "Test api doc with email...";
-
-        /**
-         *
-         */
-        public static final class ExitRules
-        {
-            /**
-             *
-             */
-            public static final class Pass{
-
-                /**
-                 *
-                 */
-                public static final class Set{
-                    public static final String PASS_01 = "SET ROUTE.Zool JUnit TO 'Cool'";
-                }
-
-                /**
-                 *
-                 */
-                public static final class RouteTo{
-                    public static final String PASS_01 = "ROUTE TO 'Exit'";
-                }
-            }
-
-            /**
-             *
-             */
-            public static final class Fail{
-
-                public static final String FAIL_01 = "";
-            }
-        }
-    }
 
     /**
      *
@@ -95,6 +56,103 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     {
         this.loginClient.closeAndClean();
     }
+
+    /**
+     *
+     */
+    @Test
+    public void testFlowStepExitRule_GetNextValidSyntax()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
+
+        //Empty...
+        try {
+            flowStepRuleClient.getNextValidSyntaxWordsExitRule(null);
+            Assert.fail("Expected to fail.");
+        }
+        //
+        catch(FluidClientException prob)
+        {
+
+        }
+
+        //S...
+        try {
+            flowStepRuleClient.getNextValidSyntaxWordsExitRule("S");
+            Assert.fail("Expected to fail.");
+        }
+        //
+        catch(FluidClientException prob)
+        {
+
+        }
+
+        //SET...
+        List<String> nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsExitRule("SET");
+
+        Assert.assertNotNull("Next valid syntax must be set.",nextValidSyntaxWords);
+        Assert.assertEquals("Expected number of rules missmatch.",
+                4,nextValidSyntaxWords.size());
+
+        boolean isScope = false;
+        for(String iter : nextValidSyntaxWords)
+        {
+            if(iter.equals("FORM."))
+            {
+                isScope = true;
+            }
+        }
+
+        Assert.assertTrue("Expected at least FORM.",isScope);
+
+        //FORM.
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsExitRule("SET FORM.");
+
+        Assert.assertTrue("Expected at least 5 fields.",
+                nextValidSyntaxWords.size() > 5);
+
+        for(String iter : nextValidSyntaxWords)
+        {
+            if(!iter.startsWith("FORM."))
+            {
+                Assert.fail("Did not start with FORM. "+iter);
+            }
+        }
+
+        //SET FORM.FORM.Email Subject
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsExitRule(
+                        "SET FORM.Email Subject");
+
+        Assert.assertTrue("Expected only 1 value.",
+                nextValidSyntaxWords.size() == 1);
+
+        Assert.assertTrue("Expected TO.",
+                nextValidSyntaxWords.get(0).equals("TO"));
+
+        //SET FORM.FORM.Email Subject TO
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsExitRule(
+                        "SET FORM.Email Subject TO");
+
+        Assert.assertTrue("Expected 6 values.",
+                nextValidSyntaxWords.size() == 6);
+
+        //
+    }
+
 
     /**
      *

@@ -42,7 +42,7 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code AuthEncryptedData} object.
      */
-    public static final class JsonStructure {
+    public static final class JSONMapping {
         public static final String ROLE_LISTING = "roleListing";
         public static final String TICKET_EXPIRES = "ticketExpiration";
         public static final String SESSION_KEY = "sessionKeyBase64";
@@ -64,18 +64,18 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
         super();
 
         //Role Listing...
-        if (!jsonObjectParam.isNull(JsonStructure.ROLE_LISTING)) {
-            this.setRoleListing(jsonObjectParam.getString(JsonStructure.ROLE_LISTING));
+        if (!jsonObjectParam.isNull(JSONMapping.ROLE_LISTING)) {
+            this.setRoleListing(jsonObjectParam.getString(JSONMapping.ROLE_LISTING));
         }
 
         //Session Key...
-        if (!jsonObjectParam.isNull(JsonStructure.SESSION_KEY)) {
-            this.setSessionKeyBase64(jsonObjectParam.getString(JsonStructure.SESSION_KEY));
+        if (!jsonObjectParam.isNull(JSONMapping.SESSION_KEY)) {
+            this.setSessionKeyBase64(jsonObjectParam.getString(JSONMapping.SESSION_KEY));
         }
 
         //Ticket Expires...
-        if (!jsonObjectParam.isNull(JsonStructure.TICKET_EXPIRES)) {
-            this.setTicketExpires(jsonObjectParam.getLong(JsonStructure.TICKET_EXPIRES));
+        if (!jsonObjectParam.isNull(JSONMapping.TICKET_EXPIRES)) {
+            this.setTicketExpires(jsonObjectParam.getLong(JSONMapping.TICKET_EXPIRES));
         }
     }
 
@@ -144,9 +144,9 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
 
         JSONObject returnVal = new JSONObject();
 
-        returnVal.put(JsonStructure.TICKET_EXPIRES, this.getTicketExpires());
-        returnVal.put(JsonStructure.ROLE_LISTING, this.getRoleListing());
-        returnVal.put(JsonStructure.SESSION_KEY, this.getSessionKeyBase64());
+        returnVal.put(JSONMapping.TICKET_EXPIRES, this.getTicketExpires());
+        returnVal.put(JSONMapping.ROLE_LISTING, this.getRoleListing());
+        returnVal.put(JSONMapping.SESSION_KEY, this.getSessionKeyBase64());
 
         return returnVal;
     }

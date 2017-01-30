@@ -143,7 +143,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testFlowStepEntryRule_GetNextValidSyntax_Empty()
+    public void testFlowStepEntryRule_GetNextValidSyntax()
     {
         if(!this.loginClient.isConnectionValid())
         {
@@ -229,10 +229,38 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
                 flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
                         "SET FORM.Email Subject TO");
 
-        Assert.assertTrue("Expected 6 values.",
-                nextValidSyntaxWords.size() == 6);
+        Assert.assertTrue("Expected 5 values.",
+                nextValidSyntaxWords.size() == 5);
+        
 
-        //
+        //SET FORM.FORM.Email Subject TO 'Zool'
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+                        "SET FORM.Email Subject TO 'Zool'");
+
+        Assert.assertTrue("Expected 1 values.",
+                nextValidSyntaxWords.size() == 1);
+
+        Assert.assertEquals("Expected an IF",
+                "IF", nextValidSyntaxWords.get(0));
+
+        //SET FORM.FORM.Email Subject TO 'Zool' IF
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+                        "SET FORM.Email Subject TO 'Zool' if");
+        Assert.assertTrue("Expected 0 values.",
+                nextValidSyntaxWords.size() == 0);
+
+        //SET FORM.Email Sent Date TO FORM.
+        nextValidSyntaxWords =
+                flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+                        "SET FORM.Email Subject TO FORM.Age");
+
+        Assert.assertTrue("Expected 1 values.",
+                nextValidSyntaxWords.size() == 1);
+
+        Assert.assertEquals("Expected an IF",
+                "IF", nextValidSyntaxWords.get(0));
     }
 
     /**

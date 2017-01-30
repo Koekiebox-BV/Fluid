@@ -371,4 +371,31 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
         return returnedObj.getNextValidSyntaxWords();
     }
+
+    /**
+     * Retrieves the next valid syntax rules for {@code inputRuleParam}.
+     *
+     * @param inputRuleParam The text to use as input.
+     * @return Listing of valid syntax words to use.
+     */
+    public List<String> getNextValidSyntaxWordsExitRule(String inputRuleParam)
+    {
+        if(inputRuleParam == null)
+        {
+            inputRuleParam = UtilGlobal.EMPTY;
+        }
+
+        FlowStepRule flowStepRule = new FlowStepRule();
+        flowStepRule.setRule(inputRuleParam);
+
+        if(this.serviceTicket != null)
+        {
+            flowStepRule.setServiceTicket(this.serviceTicket);
+        }
+
+        FlowStepRule returnedObj = new FlowStepRule(this.postJson(
+                flowStepRule, WS.Path.FlowStepRule.Version1.getNextValidExitSyntax()));
+
+        return returnedObj.getNextValidSyntaxWords();
+    }
 }

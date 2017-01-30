@@ -1317,24 +1317,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             {
                 System.out.println("Field Exists: '"+formField.getFieldName()+"' with value: "+
                         formField.getFieldValue());
-
-                if(formField.getTypeAsEnum() == com.fluid.program.api.vo.Field.Type.MultipleChoice)
-                {
-                    if(formField.getFieldValue() instanceof MultiChoice)
-                    {
-                        MultiChoice casted = (MultiChoice)formField.getFieldValue();
-
-                        if(casted.getSelectedMultiChoices() == null)
-                        {
-                            continue;
-                        }
-
-                        for(String selected : casted.getSelectedMultiChoices())
-                        {
-                            System.out.println("--> Selected: "+selected);
-                        }
-                    }
-                }
             }
         }
     }

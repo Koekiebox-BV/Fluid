@@ -41,42 +41,6 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     /**
      *
      */
-    public static final class TestStatics{
-
-        public static final String FORM_DEFINITION = "Email";
-        public static final String FORM_TITLE_PREFIX = "Test api doc with email...";
-
-        /**
-         *
-         */
-        public static final class ViewRules
-        {
-            /**
-             *
-             */
-            public static final class Pass{
-
-                /**
-                 *
-                 */
-                public static final class View{
-                    public static final String PASS_01 = "VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)";
-                }
-
-                /**
-                 *
-                 */
-                public static final String[] COMPILE_LIST_PASS =
-                        {
-                                "VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)",
-                        };
-            }
-        }
-    }
-
-    /**
-     *
-     */
     @Before
     public void init()
     {
@@ -115,8 +79,13 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
 
         FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
+        String[] compileListPass = {
+                "VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)",
+
+        };
+
         //THE COMPILE RULES THAT PASSES...
-        for(String passRule : TestStatics.ViewRules.Pass.COMPILE_LIST_PASS)
+        for(String passRule : compileListPass)
         {
             try{
                 flowStepRuleClient.compileFlowStepViewRule(passRule);
@@ -150,7 +119,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
         //. The Rule...
         FlowStepRule viewRule = new FlowStepRule();
         viewRule.setFlowStep(createdFlowStep);
-        viewRule.setRule(TestStatics.ViewRules.Pass.View.PASS_01);
+        viewRule.setRule("VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)");
 
         FlowStepRule createdViewRule = flowStepRuleClient.createFlowStepViewRule(viewRule);
         TestCase.assertNotNull("The 'Id' needs to be set for Entry rule.", createdViewRule.getId());
@@ -166,12 +135,72 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
 
         //Cleanup...
         flowClient.deleteFlow(createdFlow);
-
-        //Test the Execution...
-        /*TODO FlowItemExecuteResult executionResult = flowStepRuleClient.compileFlowStepViewRuleAndExecute(
-                TestStatics.ViewRules.Pass.View.PASS_01,
-                new FluidItem());
-
-        TestCase.assertNotNull("BY_ID: Execute result is not set.", executionResult);*/
     }
+
+    /**
+     *
+     */
+    @Test
+    public void testFlowStepViewRule_CompileSucceed()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FlowStepRuleClient flowStepRuleClient =
+                new FlowStepRuleClient(BASE_URL,serviceTicket);
+
+        String[] compileListPass = {
+                //Standard...
+                "VIEW 'JUnit Zool'",
+
+                //IS_EMPTY...
+                "VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)",
+
+                //EQUAL...
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'I am a Title')",
+                "VIEW 'JUnit Zool' IF(FORM.Email Subject EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' IF(FORM.Email From Address EQUAL 'This is cool')",
+
+                //EQUAL against Field...
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Title)",
+                "VIEW 'JUnit Zool' IF(FORM.Email Subject EQUAL FORM.Title)",
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Email Subject)",
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Email From Address)",
+
+                //NOT_EQUAL...
+                "VIEW 'JUnit Zool' IF(FORM.Title NOT_EQUAL 'I am a Title')",
+                "VIEW 'JUnit Zool' IF(FORM.Email Subject NOT_EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' IF(FORM.Email From Address NOT_EQUAL 'This is cool')",
+
+        };
+
+        //THE COMPILE RULES THAT PASSES...
+        System.out.println("*** START ***");
+        for(String passRule : compileListPass)
+        {
+            try{
+                flowStepRuleClient.compileFlowStepViewRule(passRule);
+
+                System.out.println("PASS ["+passRule+"]");
+            }
+            //
+            catch(FluidClientException cle)
+            {
+                Assert.fail("Rule Failing is \n\n"+
+                        passRule+"\n\n : "+cle.getMessage());
+                
+                cle.printStackTrace();
+                return;
+            }
+        }
+        System.out.println("*** END ***");
+    }
+
 }

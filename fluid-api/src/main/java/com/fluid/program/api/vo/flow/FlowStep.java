@@ -300,7 +300,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
             JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.ENTRY_RULES);
 
-            List<FlowStepRule> listOfRules = new ArrayList<FlowStepRule>();
+            List<FlowStepRule> listOfRules = new ArrayList();
             for(int index = 0;index < entryRules.length();index++)
             {
                 listOfRules.add(new FlowStepRule(entryRules.getJSONObject(index)));
@@ -314,7 +314,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
             JSONArray exitRules = this.jsonObject.getJSONArray(JSONMapping.EXIT_RULES);
 
-            List<FlowStepRule> listOfRules = new ArrayList<FlowStepRule>();
+            List<FlowStepRule> listOfRules = new ArrayList();
             for(int index = 0;index < exitRules.length();index++)
             {
                 listOfRules.add(new FlowStepRule(exitRules.getJSONObject(index)));
@@ -328,7 +328,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
             JSONArray viewRules = this.jsonObject.getJSONArray(JSONMapping.VIEW_RULES);
 
-            List<FlowStepRule> listOfRules = new ArrayList<FlowStepRule>();
+            List<FlowStepRule> listOfRules = new ArrayList();
             for(int index = 0;index < viewRules.length();index++)
             {
                 listOfRules.add(new FlowStepRule(viewRules.getJSONObject(index)));
@@ -341,7 +341,7 @@ public class FlowStep extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.STEP_PROPERTIES)) {
             JSONArray stepProperties = this.jsonObject.getJSONArray(JSONMapping.STEP_PROPERTIES);
 
-            List<StepProperty> listOfStepProps = new ArrayList<StepProperty>();
+            List<StepProperty> listOfStepProps = new ArrayList();
             for(int index = 0;index < stepProperties.length();index++)
             {
                 listOfStepProps.add(new StepProperty(stepProperties.getJSONObject(index)));
@@ -363,7 +363,7 @@ public class FlowStep extends ABaseFluidJSONObject {
     {
         if(this.getStepProperties() == null)
         {
-            this.setStepProperties(new ArrayList<StepProperty>());
+            this.setStepProperties(new ArrayList());
         }
 
         if(nameParam == null || nameParam.trim().isEmpty())
@@ -463,7 +463,8 @@ public class FlowStep extends ABaseFluidJSONObject {
         //Flow...
         if(this.getFlow() != null)
         {
-            returnVal.put(JSONMapping.FLOW,this.getFlow().toJsonObject());
+            returnVal.put(JSONMapping.FLOW,
+                    this.getFlow().toJsonObject());
         }
 
         //Flow Step Type...
