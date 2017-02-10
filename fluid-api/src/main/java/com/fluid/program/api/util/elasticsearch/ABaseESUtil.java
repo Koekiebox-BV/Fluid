@@ -688,6 +688,21 @@ public class ABaseESUtil extends ABaseSQLUtil {
      */
     @Override
     public void closeConnection() {
+
+        CloseConnectionRunnable closeConnectionRunnable =
+                new CloseConnectionRunnable(this);
+
+        Thread closeConnThread = new Thread(
+                closeConnectionRunnable,"Close ABaseES Connection");
+        closeConnThread.start();
+    }
+
+    /**
+     * Close the SQL and ElasticSearch Connection, but not in
+     * a separate {@code Thread}.
+     */
+    public void closeConnectionNonThreaded()
+    {
         super.closeConnection();
 
         if(this.client != null)
@@ -696,5 +711,36 @@ public class ABaseESUtil extends ABaseSQLUtil {
         }
 
         this.client = null;
+    }
+
+    /**
+     * Utility class to close the connection in a thread.
+     */
+    private static class CloseConnectionRunnable implements Runnable{
+
+        private ABaseESUtil baseESUtil;
+
+        /**
+         * The resource to close.
+         *
+         * @param baseESUtilParam Base utility to close.
+         */
+        public CloseConnectionRunnable(ABaseESUtil baseESUtilParam) {
+            this.baseESUtil = baseESUtilParam;
+        }
+
+        /**
+         * Performs the threaded operation.
+         */
+        @Override
+        public void run() {
+
+            if(this.baseESUtil == null)
+            {
+                return;
+            }
+
+            this.baseESUtil.closeConnectionNonThreaded();
+        }
     }
 }
