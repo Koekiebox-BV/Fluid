@@ -734,8 +734,13 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_BY_STEP = ("/get_by_step");
+
+                public static final String READ_ALL_STEPS_BY_FLOW =
+                        ("/get_steps_by_flow");
+
                 public static final String READ_ALL_VIEWS_BY_STEP =
-                        ("/get_views_by_step_id");
+                        ("/get_views_by_step");
 
                 /**
                  * Root for Flow Step.
@@ -805,13 +810,33 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for JobViews by Flow Step id.
+                 * URL Path for Flow Step get by Step details.
                  *
-                 * @return {@code v1/flow_step/get_views_by_step_id}
+                 * @return {@code v1/flow_step/get_by_step}
                  */
-                public static final String getAllViewsByStepId()
+                public static final String getByStep()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_BY_STEP);
+                }
+
+                /**
+                 * URL Path for JobViews by Flow Step id or name.
+                 *
+                 * @return {@code v1/flow_step/get_views_by_step}
+                 */
+                public static final String getAllViewsByStep()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_STEP);
+                }
+
+                /**
+                 * URL Path for Steps by Flow.
+                 *
+                 * @return {@code v1/flow_step/get_steps_by_flow}
+                 */
+                public static final String getAllStepsByFlow()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_STEPS_BY_FLOW);
                 }
             }
         }

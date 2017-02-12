@@ -58,7 +58,7 @@ public class Flow extends ABaseFluidJSONObject {
     }
 
     /**
-     * The unique Flow identifier.
+     * Constructor with the unique Flow identifier.
      *
      * @param flowIdParam The Flow primary key.
      */
@@ -66,6 +66,17 @@ public class Flow extends ABaseFluidJSONObject {
         super();
 
         this.setId(flowIdParam);
+    }
+
+    /**
+     * Constructor with the Flow name.
+     *
+     * @param flowNameParam The Flow name.
+     */
+    public Flow(String flowNameParam) {
+        super();
+
+        this.setName(flowNameParam);
     }
 
     /**

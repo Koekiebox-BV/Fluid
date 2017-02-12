@@ -30,6 +30,7 @@ import com.fluid.program.api.vo.flow.JobViewListing;
 import com.fluid.program.api.vo.role.*;
 import com.fluid.program.api.vo.userquery.UserQuery;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
+import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
@@ -242,7 +243,22 @@ public class TestRoleClient extends ABaseTestCase {
         Flow createdFlow = new Flow();
         createdFlow.setName("JUnit Test Flow");
         createdFlow.setDescription("Test Flow Description.");
-        createdFlow = flowClient.createFlow(createdFlow);
+
+        try
+        {
+            createdFlow = flowClient.getFlowByName(createdFlow.getName());
+        }
+        catch (FluidClientException fce)
+        {
+            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            {
+                TestCase.fail(fce.getMessage());
+            }
+            else
+            {
+                createdFlow = flowClient.createFlow(createdFlow);
+            }
+        }
 
         FlowStep toCreate = new FlowStep();
         toCreate.setName(TestFlowStepClient.TestStatics.FLOW_STEP_NAME);
@@ -251,23 +267,65 @@ public class TestRoleClient extends ABaseTestCase {
         toCreate.setFlowStepType(FlowStep.StepType.ASSIGNMENT);
 
         //2. CREATE...
-        FlowStep createdFlowStep = flowStepClient.createFlowStep(toCreate);
+        FlowStep createdFlowStep = null;
+        try
+        {
+            createdFlowStep = flowStepClient.getFlowStepByStep(toCreate);
+        }
+        catch (FluidClientException fce)
+        {
+            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            {
+                TestCase.fail(fce.getMessage());
+            }
+            else
+            {
+                createdFlowStep = flowStepClient.createFlowStep(toCreate);
+            }
+        }
 
         TestCase.assertNotNull(
                 "RoleToJobView 'Step' not set.", createdFlowStep);
         TestCase.assertNotNull(
                 "RoleToJobView 'Step Id' not set.", createdFlowStep.getId());
 
+        //By Id...
         JobViewListing jobViewListing =
                 flowStepClient.getJobViewsByStepId(createdFlowStep.getId());
 
         TestCase.assertNotNull(
-                "RoleToJobView 'Job Views' not set.", jobViewListing);
+                "ByID: 'Job Views' not set.", jobViewListing);
 
         JobView firstJobView = jobViewListing.getListing().get(0);
 
         TestCase.assertNotNull(
-                "RoleToJobView 'First Job View' not set.", firstJobView);
+                "ByID: 'First Job View' not set.", firstJobView);
+
+        //By Step name and Flow Id
+        jobViewListing = flowStepClient.getJobViewsByStepName(
+                        createdFlowStep.getName(),
+                        new Flow(createdFlow.getId()));
+
+        TestCase.assertNotNull(
+                "ByStepName-Flow-ID: 'Job Views' not set.", jobViewListing);
+
+        firstJobView = jobViewListing.getListing().get(0);
+
+        TestCase.assertNotNull(
+                "ByStepName-Flow-ID: 'First Job View' not set.", firstJobView);
+
+        //By Step name and Flow Id
+        jobViewListing = flowStepClient.getJobViewsByStepName(
+                createdFlowStep.getName(),
+                new Flow(createdFlow.getName()));
+
+        TestCase.assertNotNull(
+                "ByStepName-Flow-Name: 'Job Views' not set.", jobViewListing);
+
+        firstJobView = jobViewListing.getListing().get(0);
+        
+        TestCase.assertNotNull(
+                "ByStepName-Flow-Name: 'First Job View' not set.", firstJobView);
 
         //-- Role to User Query...
         UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);

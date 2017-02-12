@@ -17,7 +17,9 @@ package com.fluid.ws.client.v1.flow;
 
 import org.json.JSONObject;
 
+import com.fluid.program.api.vo.flow.Flow;
 import com.fluid.program.api.vo.flow.FlowStep;
+import com.fluid.program.api.vo.flow.FlowStepListing;
 import com.fluid.program.api.vo.flow.JobViewListing;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.v1.ABaseClientWS;
@@ -111,6 +113,28 @@ public class FlowStepClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves an existing Flow Step via Step.
+     *
+     * Lookup will include id, then;
+     * Name.
+     *
+     * @param flowStepParam The Flow Step to use as lookup.
+     * @return The Step retrieved by provided {@code flowStepParam}.
+     *
+     * @see com.fluid.program.api.vo.flow.FlowStep.StepType
+     */
+    public FlowStep getFlowStepByStep(FlowStep flowStepParam)
+    {
+        if(this.serviceTicket != null && flowStepParam != null)
+        {
+            flowStepParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStep(this.postJson(
+                flowStepParam, WS.Path.FlowStep.Version1.getByStep()));
+    }
+
+    /**
      * Retrieves all Assignment {@link com.fluid.program.api.vo.flow.JobView}s
      * via Flow Step Primary key.
      *
@@ -121,15 +145,67 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public JobViewListing getJobViewsByStepId(Long flowStepIdParam)
     {
-        FlowStep flowStep = new FlowStep(flowStepIdParam);
+        return this.getJobViewsByStep(new FlowStep(flowStepIdParam));
+    }
 
-        if(this.serviceTicket != null)
+    /**
+     * Retrieves all Assignment {@link com.fluid.program.api.vo.flow.JobView}s
+     * via Flow Step Name key.
+     *
+     * @param flowStepNameParam The Flow Step Name.
+     * @param flowParam The Flow.
+     * @return The Step retrieved by Primary key.
+     *
+     * @see com.fluid.program.api.vo.flow.FlowStep.StepType
+     */
+    public JobViewListing getJobViewsByStepName(
+            String flowStepNameParam, Flow flowParam)
+    {
+        FlowStep step = new FlowStep();
+        step.setName(flowStepNameParam);
+        step.setFlow(flowParam);
+        
+        return this.getJobViewsByStep(step);
+    }
+
+    /**
+     * Retrieves all Assignment {@link com.fluid.program.api.vo.flow.JobView}s
+     * via Flow Step Primary key.
+     *
+     * @param flowStepParam The Flow Step.
+     * @return The Step retrieved by Primary key.
+     *
+     * @see com.fluid.program.api.vo.flow.FlowStep.StepType
+     */
+    public JobViewListing getJobViewsByStep(FlowStep flowStepParam)
+    {
+        if(this.serviceTicket != null && flowStepParam != null)
         {
-            flowStep.setServiceTicket(this.serviceTicket);
+            flowStepParam.setServiceTicket(this.serviceTicket);
         }
 
         return new JobViewListing(this.postJson(
-                flowStep, WS.Path.FlowStep.Version1.getAllViewsByStepId()));
+                flowStepParam, WS.Path.FlowStep.Version1.getAllViewsByStep()));
+    }
+
+    /**
+     * Retrieves all Steps via Flow.
+     *
+     * @param flowParam The Flow.
+     * @return The Step retrieved by Primary key.
+     *
+     * @see com.fluid.program.api.vo.flow.Flow
+     * @see FlowStepListing
+     */
+    public FlowStepListing getStepsByFlow(Flow flowParam)
+    {
+        if(this.serviceTicket != null && flowParam != null)
+        {
+            flowParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepListing(this.postJson(
+                flowParam, WS.Path.FlowStep.Version1.getAllStepsByFlow()));
     }
 
     /**
