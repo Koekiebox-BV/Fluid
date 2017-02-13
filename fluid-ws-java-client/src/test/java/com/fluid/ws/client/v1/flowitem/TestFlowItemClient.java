@@ -21,21 +21,21 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.Attachment;
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.flow.Flow;
+import com.fluid.program.api.vo.flow.JobView;
+import com.fluid.program.api.vo.item.FluidItemListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
+import com.fluid.ws.client.v1.flow.FlowStepClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
 import com.fluid.ws.client.v1.user.LoginClient;
 
@@ -177,5 +177,54 @@ public class TestFlowItemClient extends ABaseTestCase {
 
         //Cleanup...
         flowClient.forceDeleteFlow(createdFlow);
+    }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testViewItemsForWorkflowStep()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FlowStepClient flowStepClient =
+                new FlowStepClient(BASE_URL, serviceTicket);
+
+        String stepName = "Have a look";
+        String flowName = "Approve Bin";
+        String viewName = "Have a look";
+
+        JobView foundView = flowStepClient.getStandardJobViewBy(
+                flowName, stepName, viewName);
+
+        FlowItemClient flowItemClient =
+                new FlowItemClient(BASE_URL, serviceTicket);
+
+        FluidItemListing itemListingFromView = flowItemClient.getFluidItemsForView(
+                        foundView, 10,0,null,null);
+
+        TestCase.assertNotNull("Item listing not set.",itemListingFromView);
+        TestCase.assertTrue("Item listing not set",
+                itemListingFromView.getListingCount().intValue() > 0);
+
+        for(FluidItem fluidItem : itemListingFromView.getListing())
+        {
+            System.out.println(" *** START *** ");
+
+            System.out.println("Id - "+fluidItem.getId());
+            System.out.println("Form Id - "+fluidItem.getForm().getId());
+            System.out.println("Form Title - "+fluidItem.getForm().getTitle());
+
+            System.out.println(" *** END *** ");
+        }
     }
 }

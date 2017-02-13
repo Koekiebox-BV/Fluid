@@ -17,11 +17,9 @@ package com.fluid.ws.client.v1.flow;
 
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.flow.Flow;
-import com.fluid.program.api.vo.flow.FlowStep;
-import com.fluid.program.api.vo.flow.FlowStepListing;
-import com.fluid.program.api.vo.flow.JobViewListing;
+import com.fluid.program.api.vo.flow.*;
 import com.fluid.program.api.vo.ws.WS;
+import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
@@ -39,6 +37,15 @@ import com.fluid.ws.client.v1.ABaseClientWS;
  * @see ABaseClientWS
  */
 public class FlowStepClient extends ABaseClientWS {
+
+    /**
+     * The View types.
+     */
+    public static class ViewType
+    {
+        public static final String STANDARD = "Standard";
+        public static final String ERROR = "Error";
+    }
 
     /**
      * Constructor that sets the Service Ticket from authentication.
@@ -166,6 +173,79 @@ public class FlowStepClient extends ABaseClientWS {
         step.setFlow(flowParam);
         
         return this.getJobViewsByStep(step);
+    }
+
+    /**
+     * Retrieves all Assignment {@link com.fluid.program.api.vo.flow.JobView}s
+     * via Flow Step Name key.
+     *
+     * @param flowNameParam The Flow Name.
+     * @param flowStepNameParam The Flow Step Name.
+     * @param flowViewNameParam The Step View Name.
+     *
+     * @return The View that matches the credentials.
+     *
+     * @see com.fluid.program.api.vo.flow.FlowStep.StepType
+     * @see JobView
+     */
+    public JobView getStandardJobViewBy(
+            String flowNameParam,
+            String flowStepNameParam,
+            String flowViewNameParam)
+    {
+        if(flowNameParam == null ||
+                flowNameParam.trim().isEmpty())
+        {
+            throw new FluidClientException(
+                    "Flow name not provided.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE);
+        }
+
+        if(flowStepNameParam == null ||
+                flowStepNameParam.trim().isEmpty())
+        {
+            throw new FluidClientException(
+                    "Step name not provided.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE);
+        }
+
+        if(flowViewNameParam == null ||
+                flowViewNameParam.trim().isEmpty())
+        {
+            throw new FluidClientException(
+                    "View name not provided.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE);
+        }
+
+        JobViewListing jobViewListing = this.getJobViewsByStepName(
+                flowStepNameParam, new Flow(flowNameParam));
+
+        JobView returnVal = null;
+
+        if(jobViewListing.getListingCount().intValue() > 1)
+        {
+            for(JobView jobView : jobViewListing.getListing())
+            {
+                if(ViewType.STANDARD.equals(jobView.getViewType()) &&
+                        jobView.getViewName().equalsIgnoreCase(flowViewNameParam))
+                {
+                    returnVal = jobView;
+                    break;
+                }
+            }
+        }
+
+        if(returnVal == null)
+        {
+            throw new FluidClientException(
+                    "No View found for Flow '"+
+                            flowNameParam +"', Step '"+
+                            flowStepNameParam+"' and View '"+
+                            flowViewNameParam+"'.",
+                    FluidClientException.ErrorCode.NO_RESULT);
+        }
+
+        return returnVal;
     }
 
     /**

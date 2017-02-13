@@ -1127,6 +1127,18 @@ public class WS {
                         (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
                 public static final String CREATE = ("/");
+                public static final String GET_BY_JOB_VIEW = ("/get_by_job_view");
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    public static final String QUERY_LIMIT = "query_limit";
+                    public static final String OFFSET = "offset";
+                    public static final String SORT_FIELD = "sort_field";
+                    public static final String SORT_ORDER = "sort_order";
+                }
 
                 /**
                  * Root for Flow / Fluid Item.
@@ -1149,15 +1161,62 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for Flow Item create via Web Socket.
+                 * URL Path for Flow Item get by {@link com.fluid.program.api.vo.flow.JobView}.
                  *
-                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 * @param queryLimitParam The query limit.
+                 * @param offsetParam The query offset.
+                 * @param sortFieldParam The field to sort.
+                 * @param sortOrderParam The sort order.
                  *
-                 * @return {@code web_socket/v1/flow_item/}
+                 * @return {@code /v1/flow_item/get_by_job_view}
                  */
-                public static final String flowItemCreateWebSocket(String serviceTicketParam)
+                public static final String getByJobView(
+                        int queryLimitParam,
+                        int offsetParam,
+                        String sortFieldParam,
+                        String sortOrderParam)
                 {
-                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/");
+                    String base = Version.VERSION_1.concat(ROOT).concat(GET_BY_JOB_VIEW);
+
+                    String additionString = "?";
+                    
+                    if(queryLimitParam > 0)
+                    {
+                        additionString += QueryParam.QUERY_LIMIT;
+                        additionString += "=";
+                        additionString += queryLimitParam;
+                        additionString += "&";
+                    }
+
+                    if(offsetParam > -1)
+                    {
+                        additionString += QueryParam.OFFSET;
+                        additionString += "=";
+                        additionString += offsetParam;
+                        additionString += "&";
+                    }
+
+                    if(sortFieldParam != null && !sortFieldParam.trim().isEmpty())
+                    {
+                        additionString += QueryParam.SORT_FIELD;
+                        additionString += "=";
+                        additionString += sortFieldParam;
+                        additionString += "&";
+                    }
+
+                    if(sortOrderParam != null && !sortOrderParam.trim().isEmpty())
+                    {
+                        additionString += QueryParam.SORT_ORDER;
+                        additionString += "=";
+                        additionString += sortOrderParam;
+                        additionString += "&";
+                    }
+
+                    //Cut of the end bit...
+                    additionString = additionString.substring(
+                            0, additionString.length() - 1);
+                    
+                    return base.concat(additionString);
                 }
             }
         }

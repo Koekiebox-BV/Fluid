@@ -19,6 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.FluidItem;
+import com.fluid.program.api.vo.flow.JobView;
+import com.fluid.program.api.vo.item.FluidItemListing;
 import com.fluid.program.api.vo.ws.WS;
 import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
@@ -79,6 +81,45 @@ public class FlowItemClient extends ABaseClientWS {
         //
         catch (JSONException e) {
             throw new FluidClientException(e.getMessage(), e,
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves items for the provided JobView.
+     *
+     * @param jobViewParam The {@link JobView} to retrieve items from.
+     * @param queryLimitParam The query limit.
+     * @param offsetParam The offset.
+     * @param sortFieldParam The sort field.
+     * @param sortOrderParam The sort order.
+     * @return The Fluid items for the {@code jobViewParam}.
+     */
+    public FluidItemListing getFluidItemsForView(
+            JobView jobViewParam,
+            int queryLimitParam,
+            int offsetParam,
+            String sortFieldParam,
+            String sortOrderParam)
+    {
+        if(this.serviceTicket != null && jobViewParam != null)
+        {
+            jobViewParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new FluidItemListing(this.postJson(
+                    jobViewParam,
+                    WS.Path.FlowItem.Version1.getByJobView(
+                            queryLimitParam,
+                            offsetParam,
+                            sortFieldParam,
+                            sortOrderParam
+                    )));
+        }
+        //rethrow as a Fluid Client exception.
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
