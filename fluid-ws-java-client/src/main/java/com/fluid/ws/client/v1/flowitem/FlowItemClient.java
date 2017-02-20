@@ -123,4 +123,30 @@ public class FlowItemClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
+
+    /**
+     * Send a workflow item currently in an {@code Assignment} step to   
+     *
+     * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
+     *
+     * @return The Fluid item that was sent on.
+     */
+    public FluidItem sendFlowItemOn(
+            FluidItem flowJobItemParam) {
+
+        if (flowJobItemParam != null && this.serviceTicket != null) {
+            flowJobItemParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+
+            return new FluidItem(this.postJson(
+                    flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn()));
+        }
+        //
+        catch (JSONException e) {
+            throw new FluidClientException(e.getMessage(), e,
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
 }

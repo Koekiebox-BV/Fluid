@@ -94,6 +94,19 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
 
+                //Lock and Unlock
+                public static final String LOCK_FORM_CONTAINER = "/lock_form_container";
+                public static final String UN_LOCK_FORM_CONTAINER = "/un_lock_form_container";
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    //Locking a Form Container...
+                    public static final String JOB_VIEW = "job_view";
+                }
+
                 /**
                  * Root for Form Container.
                  *
@@ -155,6 +168,45 @@ public class WS {
                 {
                     return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
+
+                /**
+                 * URL Path for locking a {@code Form}.
+                 *
+                 * @param jobViewIdParam The view selected to lock the item from.
+                 *
+                 * @return {@code /v1/form_container/lock_form_container}
+                 */
+                public static final String lockFormContainer(
+                        Long jobViewIdParam)
+                {
+                    String base = Version.VERSION_1.concat(ROOT).concat(
+                            LOCK_FORM_CONTAINER);
+                    String additionString = "?";
+
+                    if(jobViewIdParam != null)
+                    {
+                        additionString += FlowItem.Version1.QueryParam.JOB_VIEW;
+                        additionString += "=";
+                        additionString += jobViewIdParam;
+                        additionString += "&";
+                    }
+
+                    //Cut of the end bit...
+                    additionString = additionString.substring(
+                            0, additionString.length() - 1);
+
+                    return base.concat(additionString);
+                }
+
+                /**
+                 * URL Path for un-locking a {@code Form}.
+                 *
+                 * @return {@code v1/form_container/un_lock_form_container}
+                 */
+                public static final String unLockFormContainer()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UN_LOCK_FORM_CONTAINER);
+                }
             }
         }
 
@@ -191,6 +243,84 @@ public class WS {
                 public static final String formContainerTableRecordCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+            }
+        }
+
+        /**
+         * The Electronic Form Personal Inventory Web Service mappings.
+         *
+         * @see com.fluid.program.api.vo.Form
+         */
+        public static final class PersonalInventory
+        {
+            /**
+             * Personal Inventory mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/personal_inventory");
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Read...
+                public static final String READ = ("/get_all_by_logged_in_user");
+
+                //Remove from Personal Inventory...
+                public static final String CLEAR_PERSONAL_INVENTORY = "/clear_personal_inventory";
+                public static final String REMOVE_FROM_PERSONAL_INVENTORY = "/remove_from_personal_inventory";
+
+                /**
+                 * Root for Personal Inventory.
+                 *
+                 * @return {@code /personal_inventory}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for adding Electronic Form to Personal Inventory.
+                 *
+                 * @return {@code v1/personal_inventory/}
+                 */
+                public static final String formContainerAddToPersonalInventory()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Form Containers get by logged in user.
+                 *
+                 * @return {@code v1/personal_inventory/get_all_by_logged_in_user}
+                 */
+                public static final String getAllByLoggedInUser()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for clearing the whole Personal Inventory.
+                 *
+                 * @return {@code v1/personal_inventory/remove_from_personal_inventory}
+                 */
+                public static final String removeFromPersonalInventory()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            REMOVE_FROM_PERSONAL_INVENTORY);
+                }
+
+                /**
+                 * URL Path for clearing Personal Inventory.
+                 *
+                 * @return {@code v1/personal_inventory/clear_personal_inventory}
+                 */
+                public static final String clearPersonalInventory()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            CLEAR_PERSONAL_INVENTORY);
                 }
             }
         }
@@ -1126,7 +1256,13 @@ public class WS {
                 public static final String ROOT_WEB_SOCKET =
                         (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
+                //Send On...
+                public static final String SEND_ON = ("/send_on");
+
+                //Create...
                 public static final String CREATE = ("/");
+
+                //Get...
                 public static final String GET_BY_JOB_VIEW = ("/get_by_job_view");
 
                 /**
@@ -1134,10 +1270,14 @@ public class WS {
                  */
                 public static final class QueryParam
                 {
+                    //List Job View content...
                     public static final String QUERY_LIMIT = "query_limit";
                     public static final String OFFSET = "offset";
                     public static final String SORT_FIELD = "sort_field";
                     public static final String SORT_ORDER = "sort_order";
+
+                    //Locking a Form Container...
+                    public static final String JOB_VIEW = "job_view";
                 }
 
                 /**
@@ -1161,6 +1301,17 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for sending a Flow Item to the next
+                 * step in the workflow process.
+                 *
+                 * @return {@code /v1/flow_item/send_on}
+                 */
+                public static final String sendFlowItemOn()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(SEND_ON);
+                }
+
+                /**
                  * URL Path for Flow Item get by {@link com.fluid.program.api.vo.flow.JobView}.
                  *
                  * @param queryLimitParam The query limit.
@@ -1177,7 +1328,6 @@ public class WS {
                         String sortOrderParam)
                 {
                     String base = Version.VERSION_1.concat(ROOT).concat(GET_BY_JOB_VIEW);
-
                     String additionString = "?";
                     
                     if(queryLimitParam > 0)

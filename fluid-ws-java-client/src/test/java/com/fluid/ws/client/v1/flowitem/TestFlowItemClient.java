@@ -25,6 +25,7 @@ import org.junit.*;
 
 import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.Attachment;
+import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.FluidItem;
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.flow.Flow;
@@ -37,7 +38,9 @@ import com.fluid.ws.client.v1.ABaseTestCase;
 import com.fluid.ws.client.v1.flow.FlowClient;
 import com.fluid.ws.client.v1.flow.FlowStepClient;
 import com.fluid.ws.client.v1.flow.TestFlowClient;
+import com.fluid.ws.client.v1.form.FormContainerClient;
 import com.fluid.ws.client.v1.user.LoginClient;
+import com.fluid.ws.client.v1.user.PersonalInventoryClient;
 
 import junit.framework.TestCase;
 
@@ -199,9 +202,9 @@ public class TestFlowItemClient extends ABaseTestCase {
         FlowStepClient flowStepClient =
                 new FlowStepClient(BASE_URL, serviceTicket);
 
-        String stepName = "Have a look";
-        String flowName = "Approve Bin";
-        String viewName = "Have a look";
+        String stepName = "Have a look";//Make config...
+        String flowName = "Approve Bin";//Make config...
+        String viewName = "Have a look";//Make config...
 
         JobView foundView = flowStepClient.getStandardJobViewBy(
                 flowName, stepName, viewName);
@@ -216,15 +219,72 @@ public class TestFlowItemClient extends ABaseTestCase {
         TestCase.assertTrue("Item listing not set",
                 itemListingFromView.getListingCount().intValue() > 0);
 
+        FluidItem fluidItemToSendOn = null;
         for(FluidItem fluidItem : itemListingFromView.getListing())
         {
+            if(fluidItemToSendOn == null)
+            {
+                fluidItemToSendOn = fluidItem;
+            }
+
             System.out.println(" *** START *** ");
 
             System.out.println("Id - "+fluidItem.getId());
             System.out.println("Form Id - "+fluidItem.getForm().getId());
             System.out.println("Form Title - "+fluidItem.getForm().getTitle());
 
+            if(fluidItem.getRouteFields() != null)
+            {
+                for(Field routeField : fluidItem.getRouteFields())
+                {
+                    System.out.println("RF["+
+                            routeField.getFieldName()+"] : "+
+                            routeField.getFieldValue());
+                }
+            }
+
+            //We have a match... Lock and Send Send on...
             System.out.println(" *** END *** ");
         }
+        
+        //Fluid item is not set... just stop...
+        if(fluidItemToSendOn == null)
+        {
+            return;
+        }
+
+        //Form Container Client...
+        FormContainerClient formContClient =
+                new FormContainerClient(BASE_URL, serviceTicket);
+
+        Form lockedFormCont = formContClient.lockFormContainer(
+                fluidItemToSendOn.getForm(),
+                foundView);
+
+        PersonalInventoryClient personalInventoryClient =
+                new PersonalInventoryClient(BASE_URL, serviceTicket);
+
+        FluidItemListing fluidItemListing =
+                personalInventoryClient.getPersonalInventoryItems();
+
+        boolean contains = false;
+        for(FluidItem fluidItem : fluidItemListing.getListing())
+        {
+            if(lockedFormCont.getId().equals(fluidItem.getForm().getId()))
+            {
+                contains = true;
+                break;
+            }
+        }
+
+        if(!contains)
+        {
+            TestCase.fail("Personal Inventory does not contain '"+
+                    lockedFormCont.getTitle()+"'.");
+        }
+
+        FluidItem itemToSentOn =
+                flowItemClient.sendFlowItemOn(fluidItemToSendOn);
+
     }
 }

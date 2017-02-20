@@ -17,13 +17,16 @@ package com.fluid.ws.client.v1.form;
 
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.Form;
 import com.fluid.program.api.vo.FormFlowHistoricData;
 import com.fluid.program.api.vo.FormFlowHistoricDataContainer;
+import com.fluid.program.api.vo.flow.JobView;
 import com.fluid.program.api.vo.form.TableRecord;
 import com.fluid.program.api.vo.ws.WS;
+import com.fluid.ws.client.FluidClientException;
 import com.fluid.ws.client.v1.ABaseClientWS;
 
 /**
@@ -165,5 +168,64 @@ public class FormContainerClient extends ABaseClientWS {
 
         return new Form(this.postJson(
                 form, WS.Path.FormContainer.Version1.getById()));
+    }
+
+    /**
+     * Lock the provided form container for logged in user.
+     *
+     * @param formParam The form to lock.
+     * @param jobViewParam If retrieved from a view, the lock to view from.
+     *
+     * @return The locked form.
+     */
+    public Form lockFormContainer(
+            Form formParam,
+            JobView jobViewParam)
+    {
+        if(this.serviceTicket != null && formParam != null)
+        {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        Long jobViewId = (jobViewParam == null) ?
+                null : jobViewParam.getId();
+
+        try {
+            return new Form(this.postJson(
+                    formParam,
+                    WS.Path.FormContainer.Version1.lockFormContainer(
+                            jobViewId)));
+        }
+        //rethrow as a Fluid Client exception.
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Unlock the provided form container from the logged in user.
+     *
+     * @param formParam The form to unlock.
+     *
+     * @return The un-locked form.
+     */
+    public Form unLockFormContainer(Form formParam)
+    {
+        if(this.serviceTicket != null && formParam != null)
+        {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new Form(this.postJson(
+                    formParam,
+                    WS.Path.FormContainer.Version1.unLockFormContainer()));
+        }
+        //rethrow as a Fluid Client exception.
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
     }
 }
