@@ -1051,6 +1051,20 @@ public abstract class ABaseClientWS {
      */
     public void closeAndClean()
     {
+        CloseConnectionRunnable closeConnectionRunnable =
+                new CloseConnectionRunnable(this);
+
+        Thread closeConnThread = new Thread(
+                closeConnectionRunnable,"Close ABaseClientWS Connection");
+        closeConnThread.start();
+    }
+
+    /**
+     * Close the SQL and ElasticSearch Connection, but not in
+     * a separate {@code Thread}.
+     */
+    protected void closeConnectionNonThreaded()
+    {
         if(this.closeableHttpClient != null)
         {
             try {
@@ -1061,10 +1075,12 @@ public abstract class ABaseClientWS {
 
                 throw new FluidClientException(
                         "Unable to close Http Client connection. "+
-                        e.getMessage(),
+                                e.getMessage(),
                         e, FluidClientException.ErrorCode.IO_ERROR);
             }
         }
+
+        this.closeableHttpClient = null;
     }
 
     /**
@@ -1082,6 +1098,37 @@ public abstract class ABaseClientWS {
         @Override
         public boolean isTrusted(X509Certificate[] x509Certificates, String stringParam) throws CertificateException {
             return true;
+        }
+    }
+
+    /**
+     * Utility class to close the connection in a thread.
+     */
+    private static class CloseConnectionRunnable implements Runnable{
+
+        private ABaseClientWS baseClientWS;
+
+        /**
+         * The resource to close.
+         *
+         * @param aBaseClientWSParam Base utility to close.
+         */
+        public CloseConnectionRunnable(ABaseClientWS aBaseClientWSParam) {
+            this.baseClientWS = aBaseClientWSParam;
+        }
+
+        /**
+         * Performs the threaded operation.
+         */
+        @Override
+        public void run() {
+
+            if(this.baseClientWS == null)
+            {
+                return;
+            }
+
+            this.baseClientWS.closeConnectionNonThreaded();
         }
     }
 }

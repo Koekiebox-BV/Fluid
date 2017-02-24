@@ -168,6 +168,20 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     @Override
     public void closeAndClean()
     {
+        CloseConnectionRunnable closeConnectionRunnable =
+                new CloseConnectionRunnable(this);
+
+        Thread closeConnThread = new Thread(
+                closeConnectionRunnable,"Close ABaseClientWebSocket Connection");
+        closeConnThread.start();
+    }
+
+    /**
+     * Close the SQL and ElasticSearch Connection, but not in
+     * a separate {@code Thread}.
+     */
+    protected void closeConnectionNonThreaded()
+    {
         if(this.webSocketClient == null)
         {
             return;
@@ -179,6 +193,8 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
         {
             this.messageHandler.connectionClosed();
         }
+
+        super.closeConnectionNonThreaded();
     }
 
     /**
@@ -259,4 +275,36 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
     public long getTimeoutInMillis() {
         return this.timeoutInMillis;
     }
+
+    /**
+     * Utility class to close the connection in a thread.
+     */
+    private static class CloseConnectionRunnable implements Runnable{
+
+        private ABaseClientWebSocket baseClientWebSocket;
+
+        /**
+         * The resource to close.
+         *
+         * @param baseClientWebSocketParam Base WS utility to close.
+         */
+        public CloseConnectionRunnable(ABaseClientWebSocket baseClientWebSocketParam) {
+            this.baseClientWebSocket = baseClientWebSocketParam;
+        }
+
+        /**
+         * Performs the threaded operation.
+         */
+        @Override
+        public void run() {
+
+            if(this.baseClientWebSocket == null)
+            {
+                return;
+            }
+
+            this.baseClientWebSocket.closeConnectionNonThreaded();
+        }
+    }
+
 }
