@@ -1912,6 +1912,7 @@ public class WS {
                 {
                     public static final String INCLUDE_FIELD_DATA = "include_field_data";
                     public static final String INCLUDE_TABLE_FIELDS = "include_table_fields";
+                    public static final String MASS_FETCH = "mass_fetch";
                 }
 
                 /**
@@ -2001,6 +2002,8 @@ public class WS {
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param massFetchParam Is the fetch a large fetch.
+                 *                       
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  *
                  * @return {@code /web_socket/v1/sql_util/form/get_descendants_by_electronic_form_id}
@@ -2008,6 +2011,7 @@ public class WS {
                 public static final String getDescendantsWebSocket(
                         boolean includeFieldDataParam,
                         boolean includeTableFieldsParam,
+                        boolean massFetchParam,
                         String serviceTicketParam)
                 {
                     String returnVal =
@@ -2016,6 +2020,8 @@ public class WS {
                                     "/"+ serviceTicketParam + "/" +
                                     "?" +
                                     QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
+                                    "&" +
+                                    QueryParam.MASS_FETCH+"=" + massFetchParam +
                                     "&" +
                                     QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
 

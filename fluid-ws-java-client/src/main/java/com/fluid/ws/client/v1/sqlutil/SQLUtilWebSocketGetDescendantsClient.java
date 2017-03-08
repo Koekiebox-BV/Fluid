@@ -17,6 +17,7 @@ package com.fluid.ws.client.v1.sqlutil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
@@ -44,6 +45,8 @@ import com.fluid.ws.client.v1.websocket.IMessageReceivedCallback;
 public class SQLUtilWebSocketGetDescendantsClient extends
         ABaseClientWebSocket<GenericListMessageHandler> {
 
+    private boolean massFetch;
+
     /**
      * Constructor that sets the Service Ticket from authentication.
      *
@@ -53,6 +56,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param includeFieldDataParam Should Form Field data be included.
      * @param includeTableFieldsParam Should Table Fields be included.
+     * @param massFetchParam Is the fetch a large fetch.
      */
     public SQLUtilWebSocketGetDescendantsClient(
             String endpointBaseUrlParam,
@@ -60,16 +64,19 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam) {
+            boolean includeTableFieldsParam,
+            boolean massFetchParam) {
         super(endpointBaseUrlParam,
                 new GenericFormListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
                         includeFieldDataParam,
-                        includeTableFieldsParam
-                        ,serviceTicketAsHexParam));
+                        includeTableFieldsParam,
+                        massFetchParam,
+                        serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);
+        this.massFetch = massFetchParam;
     }
 
     /**
@@ -94,32 +101,62 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             return this.messageHandler.getReturnValue();
         }
 
-        //Send all the messages...
         List<String> echoMessagesExpected = new ArrayList();
-        for(Form formToSend : formToGetDescendantsForParam)
+
+        //Mass data fetch...
+        if(this.massFetch)
         {
-            if(formToSend == null)
+            FormListing listingToSend = new FormListing();
+            List<Form> listOfValidForms = new ArrayList();
+            for(Form formToSend : formToGetDescendantsForParam)
             {
-                throw new FluidClientException(
-                        "Cannot provide 'null' for Form.",
-                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-            }
-            else if(formToSend.getEcho() == null || formToSend.getEcho().isEmpty())
-            {
-                throw new FluidClientException("Echo needs to be set to bind to return.",
-                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-            }
-            else if(echoMessagesExpected.contains(formToSend.getEcho()))
-            {
-                throw new FluidClientException("Echo message '"+formToSend.getEcho()
-                        +"' already added.",
-                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                if(formToSend == null)
+                {
+                    throw new FluidClientException(
+                            "Cannot provide 'null' for Form.",
+                            FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                }
+                
+                listOfValidForms.add(new Form(formToSend.getId()));
             }
 
-            echoMessagesExpected.add(formToSend.getEcho());
+            listingToSend.setEcho(UUID.randomUUID().toString());
+            listingToSend.setListing(listOfValidForms);
+
+            echoMessagesExpected.add(listingToSend.getEcho());
 
             //Send the actual message...
-            this.sendMessage(formToSend);
+            this.sendMessage(listingToSend);
+        }
+        //Single...
+        else
+        {
+            //Send all the messages...
+            for(Form formToSend : formToGetDescendantsForParam)
+            {
+                if(formToSend == null)
+                {
+                    throw new FluidClientException(
+                            "Cannot provide 'null' for Form.",
+                            FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                }
+                else if(formToSend.getEcho() == null || formToSend.getEcho().isEmpty())
+                {
+                    throw new FluidClientException("Echo needs to be set to bind to return.",
+                            FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                }
+                else if(echoMessagesExpected.contains(formToSend.getEcho()))
+                {
+                    throw new FluidClientException("Echo message '"+formToSend.getEcho()
+                            +"' already added.",
+                            FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                }
+
+                echoMessagesExpected.add(formToSend.getEcho());
+
+                //Send the actual message...
+                this.sendMessage(formToSend);
+            }
         }
 
         long timeoutTime = (System.currentTimeMillis() +

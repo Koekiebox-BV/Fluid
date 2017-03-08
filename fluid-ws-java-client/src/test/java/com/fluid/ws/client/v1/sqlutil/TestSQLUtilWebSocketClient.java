@@ -221,14 +221,19 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
         SQLUtilWebSocketGetDescendantsClient webSocketClient =
                 new SQLUtilWebSocketGetDescendantsClient(
                         BASE_URL,
-                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
+                        null,
+                        serviceTicketHex,
+                        TimeUnit.SECONDS.toMillis(60),
+                        true,
+                        true,
+                        true);
 
         long start = System.currentTimeMillis();
 
         int numberOfRecords = 1;
 
         List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
-                generateLotsOfFormsFor(numberOfRecords, 15441/*1769*//*246L*/));
+                generateLotsOfFormsFor(numberOfRecords, 135/*1769*//*246L*/));
 
         long took = (System.currentTimeMillis() - start);
 

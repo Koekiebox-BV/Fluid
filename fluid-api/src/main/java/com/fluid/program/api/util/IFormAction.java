@@ -68,4 +68,19 @@ public interface IFormAction extends IAction {
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam);
+
+    /**
+     * Gets the descendants for the {@code electronicFormIdsParam} Forms.
+     *
+     * @param electronicFormIdsParam Identifiers for the Forms to retrieve.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @return {@code List<Form>} descendants.
+     *
+     * @see Form
+     */
+    public List<Form> getFormDescendants(
+            List<Long> electronicFormIdsParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam);
 }

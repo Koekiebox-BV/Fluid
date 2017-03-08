@@ -16,6 +16,7 @@
 package com.fluid.program.api.util.elasticsearch;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.elasticsearch.client.Client;
@@ -145,34 +146,78 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
      * @param electronicFormIdParam Identifier for the Form.
      * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
      * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
-     *
      * @return {@code List<Form>} descendants.
      *
      * @see Form
      */
+    @Override
     public List<Form> getFormDescendants(
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam)
-    {
+            boolean includeTableFieldsParam) {
+
         if(electronicFormIdParam == null)
         {
             return null;
         }
 
-        //Query using the descendantId directly...
-        StringBuffer descendantQuery = new StringBuffer(
-                Form.JSONMapping.ANCESTOR_ID);
-        descendantQuery.append(":\"");
-        descendantQuery.append(electronicFormIdParam);
-        descendantQuery.append("\"");
+        List<Long> electronicFormIds = new ArrayList();
+        electronicFormIds.add(electronicFormIdParam);
 
+        //Get Form Descendants...
+        return this.getFormDescendants(
+                electronicFormIds,
+                includeFieldDataParam,
+                includeTableFieldsParam);
+    }
+
+    /**
+     * Gets the descendants for the {@code electronicFormIdsParam} Forms.
+     *
+     * @param electronicFormIdsParam Identifiers for the Forms to retrieve.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     *                                
+     * @return {@code List<Form>} descendants.
+     *
+     * @see Form
+     */
+    public List<Form> getFormDescendants(
+            List<Long> electronicFormIdsParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam)
+    {
+        if(electronicFormIdsParam == null ||
+                electronicFormIdsParam.isEmpty())
+        {
+            return null;
+        }
+
+        //String stringQuery = "formType:(\"JIT Schedule\" \"SMT Training\") AND flowState:\"Not In Flow\"";
+
+        //Query using the descendantId directly...
+        StringBuffer descendantQuery = new StringBuffer(Form.JSONMapping.ANCESTOR_ID);
+        descendantQuery.append(":(");
+
+        for(Long electronicFormId : electronicFormIdsParam)
+        {
+            descendantQuery.append("\"");
+            descendantQuery.append(electronicFormId);
+            descendantQuery.append("\"");
+            descendantQuery.append(" ");
+        }
+
+        String fullQueryToExec = descendantQuery.toString();
+        fullQueryToExec = fullQueryToExec.substring(
+                0, fullQueryToExec.length() - 1);
+        fullQueryToExec = fullQueryToExec.concat(")");
+        
         //Search for the Descendants...
         List<Form> returnVal = null;
         if(includeFieldDataParam)
         {
             returnVal = this.searchAndConvertHitsToFormWithAllFields(
-                    QueryBuilders.queryStringQuery(descendantQuery.toString()),
+                    QueryBuilders.queryStringQuery(fullQueryToExec),
                     Index.DOCUMENT,
                     MAX_NUMBER_OF_TABLE_RECORDS,
                     null);
@@ -180,7 +225,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
         else
         {
             returnVal = this.searchAndConvertHitsToFormWithNoFields(
-                    QueryBuilders.queryStringQuery(descendantQuery.toString()),
+                    QueryBuilders.queryStringQuery(fullQueryToExec),
                     Index.DOCUMENT,
                     MAX_NUMBER_OF_TABLE_RECORDS,
                     null);

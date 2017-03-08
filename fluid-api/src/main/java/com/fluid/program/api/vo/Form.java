@@ -572,6 +572,45 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
     /**
      * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *         <li>Field Value is not of type {@code Number}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code Number}.
+     *
+     * @see com.fluid.program.api.vo.Field.Type#Decimal
+     */
+    @XmlTransient
+    public Number getFieldValueAsNumber(String fieldNameParam)
+    {
+        Object obj = this.getFieldValueForField(fieldNameParam);
+
+        if(obj == null)
+        {
+            return null;
+        }
+
+        if(obj instanceof Number)
+        {
+            return ((Number)obj);
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>
      *     Sets the value of the {@code fieldNameParam} requested.
      * <p>
      *     If there is an existing value, the value will be override with

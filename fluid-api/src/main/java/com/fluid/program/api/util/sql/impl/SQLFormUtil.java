@@ -139,6 +139,45 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
     }
 
     /**
+     * Gets the descendants for the {@code electronicFormIdsParam} Forms.
+     *
+     * @param electronicFormIdsParam Identifiers for the Forms to retrieve.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @return {@code List<Form>} descendants.
+     *
+     * @see Form
+     */
+    @Override
+    public List<Form> getFormDescendants(
+            List<Long> electronicFormIdsParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam) {
+
+        if(electronicFormIdsParam == null || electronicFormIdsParam.isEmpty())
+        {
+            return null;
+        }
+
+        List<Form> returnVal = new ArrayList();
+
+        for(Long electronicFormId : electronicFormIdsParam)
+        {
+            List<Form> forTheCycle = this.getFormDescendants(
+                    electronicFormId, includeFieldDataParam, includeTableFieldsParam);
+
+            if(forTheCycle == null)
+            {
+                continue;
+            }
+
+            returnVal.addAll(forTheCycle);
+        }
+
+        return returnVal;
+    }
+
+    /**
      * Gets the descendants for the {@code electronicFormIdParam} Form.
      *
      * @param electronicFormIdParam Identifier for the Form.

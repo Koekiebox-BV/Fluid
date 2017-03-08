@@ -48,7 +48,7 @@ import com.fluid.program.api.vo.TableField;
  * @see ABaseUtil
  * @see ABaseSQLUtil
  */
-public class ABaseESUtil extends ABaseSQLUtil {
+public abstract class ABaseESUtil extends ABaseSQLUtil {
 
     protected Client client;
     protected SQLFormFieldUtil fieldUtil = null;
