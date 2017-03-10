@@ -229,6 +229,26 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
             this.setFormFields(assFormFields);
         }
+
+        //Ancestor...
+        if(this.jsonObject.isNull(JSONMapping.ANCESTOR_ID))
+        {
+            this.setAncestorId(null);
+        }
+        else {
+            this.setAncestorId(this.jsonObject.getLong(
+                    JSONMapping.ANCESTOR_ID));
+        }
+
+        //Table Field Parent Id...
+        if(this.jsonObject.isNull(JSONMapping.TABLE_FIELD_PARENT_ID))
+        {
+            this.setTableFieldParentId(null);
+        }
+        else {
+            this.setTableFieldParentId(this.jsonObject.getLong(
+                    JSONMapping.TABLE_FIELD_PARENT_ID));
+        }
     }
 
     /**
@@ -830,6 +850,19 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             }
 
             returnVal.put(JSONMapping.ASSOCIATED_FLOWS, assoJobsArr);
+        }
+
+        //Ancestor...
+        if(this.getAncestorId() != null)
+        {
+            returnVal.put(JSONMapping.ANCESTOR_ID, this.getAncestorId());
+        }
+
+        //Table Field Parent Id...
+        if(this.getTableFieldParentId() != null)
+        {
+            returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID,
+                    this.getTableFieldParentId());
         }
 
         return returnVal;
