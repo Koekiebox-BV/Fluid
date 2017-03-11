@@ -77,8 +77,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
     //Specifically for Elasticsearch...
     private Long ancestorId;
-    private Long tableFieldParentId;
     private List<Long> descendantIds;
+    
+    private Long tableFieldParentId;
 
     private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
 
@@ -248,6 +249,29 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         else {
             this.setTableFieldParentId(this.jsonObject.getLong(
                     JSONMapping.TABLE_FIELD_PARENT_ID));
+        }
+
+        //Descendant Ids...
+        if(this.jsonObject.isNull(JSONMapping.DESCENDANT_IDS))
+        {
+            this.setDescendantIds(null);
+        }
+        else {
+            JSONArray jsonArray = this.jsonObject.getJSONArray(
+                    JSONMapping.DESCENDANT_IDS);
+            List<Long> descendantIds = new ArrayList();
+            for(int index = 0;index < jsonArray.length();index++)
+            {
+                descendantIds.add(jsonArray.getLong(index));
+            }
+
+            if(descendantIds.isEmpty())
+            {
+                this.setDescendantIds(null);
+            }
+            else {
+                this.setDescendantIds(descendantIds);
+            }
         }
     }
 
@@ -863,6 +887,19 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID,
                     this.getTableFieldParentId());
+        }
+
+        //Descendant Ids...
+        if(this.getDescendantIds() != null && !this.getDescendantIds().isEmpty())
+        {
+            JSONArray array = new JSONArray();
+
+            for(Long formId : this.getDescendantIds())
+            {
+                array.put(formId);
+            }
+
+            returnVal.put(JSONMapping.DESCENDANT_IDS, array);
         }
 
         return returnVal;

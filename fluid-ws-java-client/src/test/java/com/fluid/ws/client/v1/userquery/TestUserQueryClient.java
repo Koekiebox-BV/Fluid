@@ -286,7 +286,7 @@ public class TestUserQueryClient extends ABaseTestCase {
                     "' executions. Avg["+TimeUnit.MILLISECONDS.toSeconds(took / total)+"]");
         }
     }
-
+    
     /**
      * Use this for testing...
      */
@@ -342,4 +342,51 @@ public class TestUserQueryClient extends ABaseTestCase {
         System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
                 "' records.");
     }
+
+    /**
+     * Use this for testing...
+     */
+    @Test
+    @Ignore
+    public void executeUserQueryWithSpecificNameNoInput()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
+
+        UserQuery userQueryToExec = new UserQuery();
+        userQueryToExec.setName("All Zools");
+
+        long start = System.currentTimeMillis();
+
+        FluidItemListing itemListing =
+                userQueryClient.executeUserQuery(userQueryToExec);
+
+        if(itemListing.getListingCount() > 0)
+        {
+            for(FluidItem returnVal :itemListing.getListing())
+            {
+                System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+                        returnVal.getForm().getTitle() + " ]]] ***");
+
+                for(Field formField : returnVal.getForm().getFormFields())
+                {
+                    System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
+                }
+            }
+        }
+
+        long took = (System.currentTimeMillis() - start);
+        System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
+                "' records.");
+    }
+
 }
