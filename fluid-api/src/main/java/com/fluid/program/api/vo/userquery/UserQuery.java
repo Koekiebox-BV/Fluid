@@ -23,8 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluid.program.api.vo.*;
-import com.fluid.program.api.vo.flow.Flow;
+import com.fluid.program.api.vo.ABaseFluidJSONObject;
+import com.fluid.program.api.vo.ABaseListing;
+import com.fluid.program.api.vo.Field;
+import com.fluid.program.api.vo.FluidItem;
 
 /**
  * <p>
@@ -137,11 +139,11 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         //Date Created...
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(
-                Flow.JSONMapping.DATE_CREATED));
+                JSONMapping.DATE_CREATED));
 
         //Date Last Updated...
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
-                Flow.JSONMapping.DATE_LAST_UPDATED));
+                JSONMapping.DATE_LAST_UPDATED));
     }
 
     /**
@@ -221,7 +223,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
-     * Gets The {@code Date} the Electronic Form / Form Definition
+     * Gets The {@code Date} the User Query
      * was created.
      *
      * @return Date Created.
@@ -231,7 +233,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
-     * Sets The {@code Date} the Electronic Form / Form Definition
+     * Sets The {@code Date} the User Query
      * was created.
      *
      * @param dateCreatedParam Date Created.
@@ -241,7 +243,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
-     * Gets The {@code Date} the Electronic Form / Form Definition
+     * Gets The {@code Date} the User Query
      * was last updated.
      *
      * @return Date Last Updated.
@@ -251,7 +253,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     }
 
     /**
-     * Sets The {@code Date} the Electronic Form / Form Definition
+     * Sets The {@code Date} the User Query
      * was last updated.
      *
      * @param dateLastUpdatedParam Date Last Updated.
@@ -314,14 +316,14 @@ public class UserQuery extends ABaseListing<FluidItem> {
         //Date Created...
         if(this.getDateCreated() != null)
         {
-            returnVal.put(Form.JSONMapping.DATE_CREATED,
+            returnVal.put(JSONMapping.DATE_CREATED,
                     this.getDateAsLongFromJson(this.getDateCreated()));
         }
 
         //Date Last Updated...
         if(this.getDateLastUpdated() != null)
         {
-            returnVal.put(Form.JSONMapping.DATE_LAST_UPDATED,
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
                     this.getDateAsLongFromJson(this.getDateLastUpdated()));
         }
 
