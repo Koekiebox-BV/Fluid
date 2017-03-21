@@ -40,6 +40,7 @@ import com.fluid.program.api.util.UtilGlobal;
 public class TableField extends ABaseFluidJSONObject {
 
     private List<Form> tableRecords;
+    private Boolean sumDecimals;
 
     /**
      * The JSON mapping for the {@code Form} object.
@@ -47,6 +48,7 @@ public class TableField extends ABaseFluidJSONObject {
     public static class JSONMapping
     {
         public static final String TABLE_RECORDS = "tableRecords";
+        public static final String SUM_DECIMALS = "sumDecimals";
     }
 
     /**
@@ -67,6 +69,12 @@ public class TableField extends ABaseFluidJSONObject {
         if(this.jsonObject == null)
         {
             return;
+        }
+
+        //Sum Decimals...
+        if (!this.jsonObject.isNull(JSONMapping.SUM_DECIMALS)) {
+
+            this.setSumDecimals(this.jsonObject.getBoolean(JSONMapping.SUM_DECIMALS));
         }
 
         //Table Field Records...
@@ -95,12 +103,30 @@ public class TableField extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets List of Table Records for {@code TableField}.
+     * Set List of Table Records for {@code TableField}.
      *
      * @param tableRecordsParam {@code List} of {@code Form}s for {@code TableField}.
      */
     public void setTableRecords(List<Form> tableRecordsParam) {
         this.tableRecords = tableRecordsParam;
+    }
+
+    /**
+     * Determine whether decimal columns should be summed.
+     *
+     * @return {@code Boolean} for Sum Decimals.
+     */
+    public Boolean getSumDecimals() {
+        return this.sumDecimals;
+    }
+
+    /**
+     * Set whether decimal columns should be summed.
+     *
+     * @param sumDecimalsParam Whether table record decimal columns should be summed.
+     */
+    public void setSumDecimals(Boolean sumDecimalsParam) {
+        this.sumDecimals = sumDecimalsParam;
     }
 
     /**
@@ -115,6 +141,12 @@ public class TableField extends ABaseFluidJSONObject {
     public JSONObject toJsonObject() throws JSONException
     {
         JSONObject returnVal = super.toJsonObject();
+
+        //Sum Decimals...
+        if(this.getSumDecimals() != null)
+        {
+            returnVal.put(JSONMapping.SUM_DECIMALS, this.getSumDecimals());
+        }
 
         //Table Field Records...
         if(this.getTableRecords() != null && !this.getTableRecords().isEmpty())

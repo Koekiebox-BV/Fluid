@@ -15,8 +15,11 @@
 
 package com.fluid.program.api.vo.flow;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,6 +41,7 @@ public class Flow extends ABaseFluidJSONObject {
     private String description;
     private Date dateCreated;
     private Date dateLastUpdated;
+    private List<FlowStep> flowSteps;
 
     /**
      * The JSON mapping for the {@code Flow} object.
@@ -48,6 +52,7 @@ public class Flow extends ABaseFluidJSONObject {
         public static final String DESCRIPTION = "description";
         public static final String DATE_CREATED = "dateCreated";
         public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+        public static final String FLOW_STEPS = "flowSteps";
     }
 
     /**
@@ -107,6 +112,20 @@ public class Flow extends ABaseFluidJSONObject {
 
         //Date Last Updated...
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
+
+        //Flow Steps...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEPS)) {
+
+            JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.FLOW_STEPS);
+
+            List<FlowStep> listOfFlowSteps = new ArrayList();
+            for(int index = 0;index < entryRules.length();index++)
+            {
+                listOfFlowSteps.add(new FlowStep(entryRules.getJSONObject(index)));
+            }
+
+            this.setFlowSteps(listOfFlowSteps);
+        }
     }
 
     /**
@@ -182,6 +201,24 @@ public class Flow extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets the Flow steps.
+     *
+     * @return Flow Steps.
+     */
+    public List<FlowStep> getFlowSteps() {
+        return this.flowSteps;
+    }
+
+    /**
+     * Sets the Flow steps.
+     *
+     * @param flowStepsParam The Flow Steps.
+     */
+    public void setFlowSteps(List<FlowStep> flowStepsParam) {
+        this.flowSteps = flowStepsParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Flow}
@@ -204,6 +241,19 @@ public class Flow extends ABaseFluidJSONObject {
         if(this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
+        }
+
+        //Flow Steps...
+        if(this.getFlowSteps() != null && !this.getFlowSteps().isEmpty())
+        {
+            JSONArray jsonArray = new JSONArray();
+
+            for(FlowStep rule : this.getFlowSteps())
+            {
+                jsonArray.put(rule.toJsonObject());
+            }
+            
+            returnVal.put(JSONMapping.FLOW_STEPS, jsonArray);
         }
 
         //Date Created...

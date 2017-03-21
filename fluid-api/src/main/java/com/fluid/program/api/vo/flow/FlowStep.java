@@ -117,6 +117,24 @@ public class FlowStep extends ABaseFluidJSONObject {
 
             public static final String RouteFields = "RouteFields";
             public static final String ViewGroup = "ViewGroup";
+            public static final String ViewGroupPriority = "ViewGroupPriority";
+
+            //Send Mail...
+            public static final String MailTemplateDescription = "MailTemplateDescription";
+            public static final String MailTemplateSubject = "MailTemplateSubject";
+            public static final String MailTemplateBodyType = "MailTemplateBodyType";
+            public static final String MailTemplateBodyContent = "MailTemplateBodyContent";
+            public static final String IncludeAttachments = "IncludeAttachments";
+            public static final String RecipientSyntax = "RecipientSyntax";
+
+            //Java Program...
+            public static final String TaskIdentifier = "TaskIdentifier";
+            public static final String ProgramNameValueProperties = "ProgramNameValueProperties";
+
+            //Clone Item...
+            public static final String CloneAttachments = "CloneAttachments";
+            public static final String SendCloneTo = "SendCloneTo";
+            public static final String DestinationForm = "DestinationForm";
         }
 
         /**
