@@ -39,8 +39,10 @@ import com.fluid.program.api.vo.Form;
 public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 
     private String filename;
+    private String sha256sum;
     private String description;
     private String libraryDataBase64;
+    private Boolean addToolsToClassPath;
 
     /**
      * The JSON mapping for the {@code Field} object.
@@ -49,6 +51,8 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
     {
         public static final String FILENAME= "filename";
         public static final String DESCRIPTION = "description";
+        public static final String SHA_256_SUM = "sha256sum";
+        public static final String ADD_TOOLS_TO_CLASS_PATH = "addToolsToClassPath";
         public static final String LIBRARY_DATA_BASE64= "libraryDataBase64";
     }
 
@@ -81,6 +85,17 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
             this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
         }
 
+        //Sha-256...
+        if (!this.jsonObject.isNull(JSONMapping.SHA_256_SUM)) {
+            this.setSha256sum(this.jsonObject.getString(JSONMapping.SHA_256_SUM));
+        }
+
+        //Add to classpath...
+        if (!this.jsonObject.isNull(JSONMapping.ADD_TOOLS_TO_CLASS_PATH)) {
+            this.setAddToolsToClassPath(
+                    this.jsonObject.getBoolean(JSONMapping.ADD_TOOLS_TO_CLASS_PATH));
+        }
+        
         //Data Base-64...
         if (!this.jsonObject.isNull(JSONMapping.LIBRARY_DATA_BASE64)) {
             this.setLibraryDataBase64(this.jsonObject.getString(JSONMapping.LIBRARY_DATA_BASE64));
@@ -149,6 +164,42 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets {@code Sha-256} of the data in {@code Hex}.
+     *
+     * @return A {@code Sha-256} of the data in {@code Hex}.
+     */
+    public String getSha256sum() {
+        return this.sha256sum;
+    }
+
+    /**
+     * Sets {@code Sha-256} of the data in {@code Hex}.
+     *
+     * @param sha256sumParam The {@code ThirdPartyLibrary} data SHA-256 in {@code Hex}.
+     */
+    public void setSha256sum(String sha256sumParam) {
+        this.sha256sum = sha256sumParam;
+    }
+
+    /**
+     * Gets if tools should be added to classpath.
+     *
+     * @return A {@code Sha-256} of the data in {@code Hex}.
+     */
+    public Boolean isAddToolsToClassPath() {
+        return this.addToolsToClassPath;
+    }
+
+    /**
+     * Sets if tools should be added to classpath.
+     *
+     * @param addToolsToClassPathParam The tools be added.
+     */
+    public void setAddToolsToClassPath(Boolean addToolsToClassPathParam) {
+        this.addToolsToClassPath = addToolsToClassPathParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Field}
@@ -172,6 +223,18 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
         if(this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
+        }
+
+        //Sha-256 SUM...
+        if(this.getSha256sum() != null)
+        {
+            returnVal.put(JSONMapping.SHA_256_SUM, this.getSha256sum());
+        }
+
+        //Add Tools to Classpath...
+        if(this.isAddToolsToClassPath() != null)
+        {
+            returnVal.put(JSONMapping.ADD_TOOLS_TO_CLASS_PATH, this.isAddToolsToClassPath());
         }
 
         //Library Data in Base-64...
