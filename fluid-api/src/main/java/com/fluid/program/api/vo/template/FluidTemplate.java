@@ -53,6 +53,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
 
     private String templateName;
     private String templateDescription;
+    private String templateComment;
 
     private List<Form> formsAndFields;
     private List<UserQuery> userQueries;
@@ -70,6 +71,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
     public static final class JSONMapping {
         public static final String TEMPLATE_NAME = "templateName";
         public static final String TEMPLATE_DESCRIPTION = "templateDescription";
+        public static final String TEMPLATE_COMMENT = "templateComment";
 
         public static final String FORMS_AND_FIELDS = "formsAndFields";
         public static final String USER_QUERIES = "userQueries";
@@ -107,6 +109,12 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         if (!jsonObjectParam.isNull(JSONMapping.TEMPLATE_DESCRIPTION)) {
             this.setTemplateDescription(jsonObjectParam.getString(
                     JSONMapping.TEMPLATE_DESCRIPTION));
+        }
+
+        //Template Comment...
+        if (!jsonObjectParam.isNull(JSONMapping.TEMPLATE_COMMENT)) {
+            this.setTemplateComment(jsonObjectParam.getString(
+                    JSONMapping.TEMPLATE_COMMENT));
         }
 
         //Forms and Fields...
@@ -238,6 +246,13 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     this.getTemplateDescription());
         }
 
+        //Template Comment...
+        if(this.getTemplateComment() != null)
+        {
+            returnVal.put(JSONMapping.TEMPLATE_COMMENT,
+                    this.getTemplateComment());
+        }
+
         //Forms and Fields...
         if(this.getFormsAndFields() != null && !this.getFormsAndFields().isEmpty())
         {
@@ -365,6 +380,24 @@ public class FluidTemplate extends ABaseFluidJSONObject{
      */
     public void setTemplateDescription(String templateDescriptionParam) {
         this.templateDescription = templateDescriptionParam;
+    }
+
+    /**
+     * Gets Comment of the template.
+     *
+     * @return Template description.
+     */
+    public String getTemplateComment() {
+        return this.templateComment;
+    }
+
+    /**
+     * Sets Comment of the template.
+     *
+     * @param templateCommentParam Fluid Comment description.
+     */
+    public void setTemplateComment(String templateCommentParam) {
+        this.templateComment = templateCommentParam;
     }
 
     /**
