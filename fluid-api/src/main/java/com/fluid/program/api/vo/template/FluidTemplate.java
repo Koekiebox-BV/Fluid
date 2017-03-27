@@ -97,23 +97,23 @@ public class FluidTemplate extends ABaseFluidJSONObject{
      * @param jsonObjectParam The JSON Object.
      */
     public FluidTemplate(JSONObject jsonObjectParam) {
-        super();
+        super(jsonObjectParam);
 
         //Template Name...
-        if (!jsonObjectParam.isNull(JSONMapping.TEMPLATE_NAME)) {
-            this.setTemplateName(jsonObjectParam.getString(
+        if (!this.jsonObject.isNull(JSONMapping.TEMPLATE_NAME)) {
+            this.setTemplateName(this.jsonObject.getString(
                     JSONMapping.TEMPLATE_NAME));
         }
 
         //Template Description...
-        if (!jsonObjectParam.isNull(JSONMapping.TEMPLATE_DESCRIPTION)) {
-            this.setTemplateDescription(jsonObjectParam.getString(
+        if (!this.jsonObject.isNull(JSONMapping.TEMPLATE_DESCRIPTION)) {
+            this.setTemplateDescription(this.jsonObject.getString(
                     JSONMapping.TEMPLATE_DESCRIPTION));
         }
 
         //Template Comment...
-        if (!jsonObjectParam.isNull(JSONMapping.TEMPLATE_COMMENT)) {
-            this.setTemplateComment(jsonObjectParam.getString(
+        if (!this.jsonObject.isNull(JSONMapping.TEMPLATE_COMMENT)) {
+            this.setTemplateComment(this.jsonObject.getString(
                     JSONMapping.TEMPLATE_COMMENT));
         }
 
