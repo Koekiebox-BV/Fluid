@@ -35,6 +35,8 @@ import com.fluid.program.api.vo.Form;
  */
 public class FormListing extends ABaseListing<Form> {
 
+    public static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

@@ -37,6 +37,8 @@ import org.json.JSONObject;
  */
 public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABaseFluidJSONObject{
 
+    public static final long serialVersionUID = 1L;
+
     private List<T> listing;
 
     private Integer listingCount;

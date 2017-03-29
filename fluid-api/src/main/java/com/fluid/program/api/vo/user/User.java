@@ -50,6 +50,8 @@ import com.fluid.program.api.vo.role.Role;
  */
 public class User extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String username;
     private String passwordSha256;
     private String passwordClear;

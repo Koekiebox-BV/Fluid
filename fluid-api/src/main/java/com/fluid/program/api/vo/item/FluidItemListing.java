@@ -35,6 +35,8 @@ import com.fluid.program.api.vo.FluidItem;
  */
 public class FluidItemListing extends ABaseListing<FluidItem> {
 
+    public static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

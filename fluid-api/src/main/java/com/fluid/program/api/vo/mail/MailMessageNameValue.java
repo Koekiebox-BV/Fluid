@@ -34,6 +34,8 @@ import com.fluid.program.api.vo.ABaseFluidVO;
  */
 public class MailMessageNameValue extends ABaseFluidVO {
 
+    public static final long serialVersionUID = 1L;
+
     private String name;
     private String value;
 

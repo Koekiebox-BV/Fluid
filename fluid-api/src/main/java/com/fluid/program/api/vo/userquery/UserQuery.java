@@ -40,6 +40,8 @@ import com.fluid.program.api.vo.FluidItem;
  */
 public class UserQuery extends ABaseListing<FluidItem> {
 
+    public static final long serialVersionUID = 1L;
+
     private String name;
     private String description;
 

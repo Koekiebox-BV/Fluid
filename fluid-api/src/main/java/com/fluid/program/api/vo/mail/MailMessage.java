@@ -33,6 +33,8 @@ import com.fluid.program.api.vo.ABaseFluidVO;
  */
 public class MailMessage extends ABaseFluidVO {
 
+    public static final long serialVersionUID = 1L;
+
     private List<MailMessageAttachment> attachments;
     private List<MailMessageNameValue> nameValues;
 

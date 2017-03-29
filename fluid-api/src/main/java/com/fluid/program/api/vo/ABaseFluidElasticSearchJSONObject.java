@@ -39,6 +39,8 @@ import com.fluid.program.api.util.sql.impl.SQLFormFieldUtil;
  */
 public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONObject{
 
+    public static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

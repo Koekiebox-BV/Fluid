@@ -36,6 +36,8 @@ import com.fluid.program.api.vo.Form;
  */
 public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private FormFieldToFormDefinition formFieldToFormDefinition;
 
     private Boolean canView;

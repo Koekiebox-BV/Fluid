@@ -59,6 +59,8 @@ import com.fluid.program.api.vo.user.User;
  */
 public class Form extends ABaseFluidElasticSearchJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String formType;
     private Long formTypeId;
     private String formDescription;

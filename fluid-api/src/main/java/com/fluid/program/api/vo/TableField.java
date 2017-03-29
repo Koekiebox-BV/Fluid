@@ -39,6 +39,8 @@ import com.fluid.program.api.util.UtilGlobal;
  */
 public class TableField extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private List<Form> tableRecords;
     private Boolean sumDecimals;
 

@@ -32,6 +32,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class JobView extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String rule;
     private String viewName;
     private String viewType;

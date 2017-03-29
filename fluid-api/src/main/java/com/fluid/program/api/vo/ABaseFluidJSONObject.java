@@ -37,6 +37,8 @@ import org.json.JSONObject;
  */
 public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
+    public static final long serialVersionUID = 1L;
+
     @XmlTransient
     protected JSONObject jsonObject;
 

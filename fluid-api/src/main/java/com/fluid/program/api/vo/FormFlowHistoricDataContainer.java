@@ -37,6 +37,8 @@ import org.json.JSONObject;
  */
 public class FormFlowHistoricDataContainer extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private List<FormFlowHistoricData> formFlowHistoricDatas;
 
     /**

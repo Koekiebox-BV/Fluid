@@ -34,6 +34,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class AppRequestToken extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     //Payload...
     private String encryptedDataBase64;//Contains [TicketExpires], [Roles] and [SessionKey]...
     private String encryptedDataHmacBase64;

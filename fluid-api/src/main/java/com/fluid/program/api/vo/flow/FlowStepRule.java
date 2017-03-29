@@ -37,6 +37,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class FlowStepRule extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private Long order;
     private String rule;
 

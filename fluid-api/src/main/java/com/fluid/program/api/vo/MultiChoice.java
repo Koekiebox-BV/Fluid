@@ -35,6 +35,8 @@ import org.json.JSONObject;
  */
 public class MultiChoice extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private List<String> availableMultiChoices;
     private List<String> selectedMultiChoices;
 

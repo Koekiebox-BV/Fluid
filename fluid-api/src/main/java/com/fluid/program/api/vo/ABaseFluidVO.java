@@ -37,6 +37,8 @@ import com.fluid.program.api.vo.user.User;
  */
 public class ABaseFluidVO implements Serializable {
 
+    public static final long serialVersionUID = 1L;
+
     private Long id;
     protected String serviceTicket;
     protected String echo;

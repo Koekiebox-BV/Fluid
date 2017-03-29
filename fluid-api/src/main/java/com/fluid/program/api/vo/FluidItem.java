@@ -40,6 +40,8 @@ import org.json.JSONObject;
  */
 public class FluidItem extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private List<Field> userFields;
     private List<Field> routeFields;
     private List<Field> globalFields;

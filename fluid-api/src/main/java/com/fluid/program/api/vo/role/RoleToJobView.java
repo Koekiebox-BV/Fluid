@@ -35,6 +35,8 @@ import com.fluid.program.api.vo.flow.JobView;
  */
 public class RoleToJobView extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private JobView jobView;
     private Role role;
 

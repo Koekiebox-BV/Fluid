@@ -35,6 +35,8 @@ import com.fluid.program.api.vo.Field;
  */
 public class FormFieldListing extends ABaseListing<Field> {
 
+    public static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

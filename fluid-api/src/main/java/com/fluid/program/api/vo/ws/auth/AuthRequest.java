@@ -34,6 +34,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class AuthRequest extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String username;
     private Long lifetime;
 

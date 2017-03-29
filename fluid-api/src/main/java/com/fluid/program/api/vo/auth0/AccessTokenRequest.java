@@ -33,6 +33,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class AccessTokenRequest extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String clientId;
     private String clientSecret;
     private String redirectUri;

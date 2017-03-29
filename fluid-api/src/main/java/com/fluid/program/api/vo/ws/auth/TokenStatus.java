@@ -31,6 +31,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class TokenStatus extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private Long expirationTime;
     private String tokenMessage;
 

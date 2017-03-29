@@ -51,6 +51,8 @@ import com.fluid.program.api.vo.userquery.UserQuery;
  */
 public class FluidTemplate extends ABaseFluidJSONObject{
 
+    public static final long serialVersionUID = 1L;
+
     private String templateName;
     private String templateDescription;
     private String templateComment;

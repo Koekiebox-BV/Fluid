@@ -46,6 +46,8 @@ import com.fluid.program.api.vo.userquery.UserQuery;
  */
 public class Role extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String name;
     private String description;
 

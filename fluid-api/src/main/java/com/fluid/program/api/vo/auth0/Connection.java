@@ -37,6 +37,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class Connection extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String userId;
     private String name;
     private String email;
@@ -77,6 +79,8 @@ public class Connection extends ABaseFluidJSONObject {
      */
     public static class Client extends ABaseFluidJSONObject
     {
+        public static final long serialVersionUID = 1L;
+        
         private String accessToken;
         private String provider;
         private String userId;

@@ -30,6 +30,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class Configuration extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String key;
     private String value;
 

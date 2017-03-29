@@ -36,6 +36,8 @@ import org.json.JSONObject;
  */
 public class Attachment extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String version;
     private String name;
     private String path;

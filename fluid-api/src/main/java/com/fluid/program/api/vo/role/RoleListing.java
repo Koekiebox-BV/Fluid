@@ -34,6 +34,8 @@ import com.fluid.program.api.vo.ABaseListing;
  */
 public class RoleListing extends ABaseListing<Role> {
 
+    public static final long serialVersionUID = 1L;
+
     /**
      * Default constructor.
      */

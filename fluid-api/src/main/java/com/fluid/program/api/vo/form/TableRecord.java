@@ -33,6 +33,8 @@ import com.fluid.program.api.vo.Form;
  */
 public class TableRecord extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private Form formContainer;
     private Form parentFormContainer;
     private Field parentFormField;

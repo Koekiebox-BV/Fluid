@@ -35,6 +35,8 @@ import com.fluid.program.api.vo.user.User;
  */
 public class FormFlowHistoricData extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private Date dateCreated;
     private String ruleExecuted;
     private String ruleExecutedResult;

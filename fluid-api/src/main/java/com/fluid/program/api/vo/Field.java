@@ -42,6 +42,8 @@ import com.fluid.program.api.util.elasticsearch.exception.FluidElasticSearchExce
  */
 public class Field extends ABaseFluidElasticSearchJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String fieldName;
     private Object fieldValue;
     private String fieldDescription;

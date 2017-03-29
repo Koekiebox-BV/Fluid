@@ -38,6 +38,8 @@ import com.fluid.program.api.vo.Form;
  */
 public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String filename;
     private String sha256sum;
     private String description;

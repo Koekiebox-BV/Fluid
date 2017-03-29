@@ -35,6 +35,8 @@ import com.fluid.program.api.vo.user.User;
  */
 public class NormalizedUserProfile extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String userId;
     private String name;
     private String email;

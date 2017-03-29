@@ -34,6 +34,8 @@ import com.fluid.program.api.vo.ABaseFluidJSONObject;
  */
 public class AccessToken extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private String accessToken;
     private String idToken;
     private String tokenType;

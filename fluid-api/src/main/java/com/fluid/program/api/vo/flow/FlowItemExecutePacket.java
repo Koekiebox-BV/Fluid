@@ -37,6 +37,8 @@ import com.fluid.program.api.vo.FluidItem;
  */
 public class FlowItemExecutePacket extends ABaseFluidJSONObject {
 
+    public static final long serialVersionUID = 1L;
+
     private FlowStepRule flowStepRule;
     private FluidItem fluidItem;
 

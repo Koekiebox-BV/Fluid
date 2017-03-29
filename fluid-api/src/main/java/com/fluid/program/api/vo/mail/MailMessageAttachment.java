@@ -31,6 +31,8 @@ import com.fluid.program.api.vo.ABaseFluidVO;
  */
 public class MailMessageAttachment extends ABaseFluidVO {
 
+    public static final long serialVersionUID = 1L;
+
     private String attachmentPath;
 
     /**
