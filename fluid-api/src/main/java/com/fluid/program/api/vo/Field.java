@@ -123,7 +123,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         MultipleChoice,
         ParagraphText,
         //Table field only supported by Database (Memcached statement)....
-        Table
+        Table,
+        Label
     }
 
     /**

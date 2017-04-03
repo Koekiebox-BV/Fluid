@@ -181,8 +181,15 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
                         formFieldMappingParam.name,
                         null,
                         Field.Type.Table);
+            //TODO __8__ encrypted field...
+            //Label...
+            case UtilGlobal.FieldTypeId._9_LABEL:
 
-                //TODO __8__ encrypted field...
+                return new Field(
+                        formFieldMappingParam.formFieldId,
+                        formFieldMappingParam.name,
+                        formFieldMappingParam.description,
+                        Field.Type.Label);
             default:
                 throw new IllegalStateException("Unable to map '"+
                         formFieldMappingParam.dataType.intValue() +"', to Form Field value.");

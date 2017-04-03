@@ -153,6 +153,9 @@ public class SyntaxFactory {
             case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
                 return this.getSyntaxFor(
                         sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
+            case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
+            case UtilGlobal.FieldTypeId._9_LABEL:
+                return null;
             default:
                 throw new FluidSQLException(
                         new SQLException("Data Type '"+

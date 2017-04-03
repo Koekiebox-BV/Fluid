@@ -46,8 +46,8 @@ public class UtilGlobal {
         public static final int _5_DATE_TIME = 5;
         public static final int _6_DECIMAL = 6;
         public static final int _7_TABLE_FIELD = 7;
-
-        //public static final int _8_TEXT_ENCRYPTED = 8;
+        public static final int _8_TEXT_ENCRYPTED = 8;
+        public static final int _9_LABEL = 9;
     }
 
     /**

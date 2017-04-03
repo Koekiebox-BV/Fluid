@@ -376,21 +376,24 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
         //Now use a database lookup...
         Field returnVal = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet;
+        ResultSet resultSet = null;
         try
         {
             ISyntax syntax = SyntaxFactory.getInstance().getFieldValueSyntaxFor(
                     this.getSQLTypeFromConnection(),
                     formFieldMappingParam);
 
-            preparedStatement = this.getConnection().prepareStatement(
-                    syntax.getPreparedStatement());
+            if(syntax != null)
+            {
+                preparedStatement = this.getConnection().prepareStatement(
+                        syntax.getPreparedStatement());
 
-            preparedStatement.setLong(1, formFieldMappingParam.formDefinitionId);
-            preparedStatement.setLong(2, formFieldMappingParam.formFieldId);
-            preparedStatement.setLong(3, formContainerIdParam);
+                preparedStatement.setLong(1, formFieldMappingParam.formDefinitionId);
+                preparedStatement.setLong(2, formFieldMappingParam.formFieldId);
+                preparedStatement.setLong(3, formContainerIdParam);
 
-            resultSet = preparedStatement.executeQuery();
+                resultSet = preparedStatement.executeQuery();
+            }
 
             switch (formFieldMappingParam.dataType.intValue())
             {
@@ -491,6 +494,13 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                     }
                     //TODO __8__ encrypted field...
                 break;
+                //Label...
+                case UtilGlobal.FieldTypeId._9_LABEL:
+                    returnVal = new Field(
+                            formFieldMappingParam.name,
+                            formFieldMappingParam.description,
+                            Field.Type.Label);
+                    break;
                 default:
                     throw new SQLException("Unable to map '"+
                             formContainerIdParam.intValue() +"', to Form Field value.");

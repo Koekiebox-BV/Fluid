@@ -75,6 +75,7 @@ public class CacheUtil extends ABaseUtil {
         public static final String TEXT = "Text";
         public static final String TEXT_ENCRYPTED = "Text Encrypted";
         public static final String TRUE_FALSE = "True / False";
+        public static final String LABEL = "Label";
     }
 
     /**
@@ -90,6 +91,7 @@ public class CacheUtil extends ABaseUtil {
         Text(FlowJobType.TEXT, Field.Type.Text),
         TextEncrypted(FlowJobType.TEXT_ENCRYPTED, Field.Type.TextEncrypted),
         TrueFalse(FlowJobType.TRUE_FALSE, Field.Type.TrueFalse),
+        Label(FlowJobType.LABEL, Field.Type.Label),
         ;
 
         private String flowJobDataTypeDesc;
