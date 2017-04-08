@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.fluid.program.api.util.UtilGlobal;
 import com.fluid.program.api.vo.Field;
 import com.fluid.program.api.vo.Form;
+import com.fluid.program.api.vo.TableField;
 import com.fluid.program.api.vo.form.FormListing;
 import com.fluid.program.api.vo.ws.auth.AppRequestToken;
 import com.fluid.ws.client.v1.ABaseClientWS;
@@ -261,6 +262,34 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                         {
                             System.out.println("["+field.getFieldName()+"] = '"+
                                     field.getFieldValue()+"'");
+
+                            if(field.getTypeAsEnum() == Field.Type.Table)
+                            {
+                                TableField tableField =
+                                        form.getFieldValueAsTableField(field.getFieldName());
+
+                                if(tableField == null ||
+                                        (tableField.getTableRecords() == null ||
+                                                tableField.getTableRecords().isEmpty()))
+                                {
+                                    continue;
+                                }
+
+                                for(Form tableRecord : tableField.getTableRecords())
+                                {
+                                    if(tableRecord.getFormFields() == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    for(Field tableRecordField : tableRecord.getFormFields())
+                                    {
+                                        System.out.println("["+field.getFieldName()+":"+
+                                                tableRecordField.getFieldName()+"] = '"+
+                                                tableRecordField.getFieldValue()+"'");
+                                    }
+                                }
+                            }
                         }
                     }
                 }
