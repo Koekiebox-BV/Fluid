@@ -15,25 +15,21 @@
 
 package com.fluid.program.api.vo.thirdpartylib;
 
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluid.program.api.vo.ABaseFluidJSONObject;
-import com.fluid.program.api.vo.FluidItem;
-import com.fluid.program.api.vo.Form;
 
 /**
  * 3rd Party library uploaded through the Fluid core.
  *
- * {@code Field} can be part of Electronic Form or Form Definition in Fluid.
- *
  * @author jasonbruwer on 2017-03-10
  * @since v1.4
  *
- * @see Form
- * @see FluidItem
  * @see ABaseFluidJSONObject
  */
 public class ThirdPartyLibrary extends ABaseFluidJSONObject {
@@ -46,6 +42,9 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
     private String libraryDataBase64;
     private Boolean addToolsToClassPath;
 
+    private Date dateCreated;
+    private Date dateLastUpdated;
+
     /**
      * The JSON mapping for the {@code Field} object.
      */
@@ -56,6 +55,9 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
         public static final String SHA_256_SUM = "sha256sum";
         public static final String ADD_TOOLS_TO_CLASS_PATH = "addToolsToClassPath";
         public static final String LIBRARY_DATA_BASE64= "libraryDataBase64";
+
+        public static final String DATE_CREATED = "dateCreated";
+        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
     }
 
     /**
@@ -102,6 +104,14 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.LIBRARY_DATA_BASE64)) {
             this.setLibraryDataBase64(this.jsonObject.getString(JSONMapping.LIBRARY_DATA_BASE64));
         }
+
+        //Date Created...
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.DATE_CREATED));
+
+        //Date Last Updated...
+        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
+                JSONMapping.DATE_LAST_UPDATED));
     }
 
     /**
@@ -202,6 +212,42 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
     }
 
     /**
+     * Gets The {@code Date} the 3rd Party Lib was created.
+     *
+     * @return Date Created.
+     */
+    public Date getDateCreated() {
+        return this.dateCreated;
+    }
+
+    /**
+     * Sets The {@code Date} the 3rd Party Lib was created.
+     *
+     * @param dateCreatedParam Date Created.
+     */
+    public void setDateCreated(Date dateCreatedParam) {
+        this.dateCreated = dateCreatedParam;
+    }
+
+    /**
+     * Gets The {@code Date} the 3rd Party Lib was last updated.
+     *
+     * @return Date Last Updated.
+     */
+    public Date getDateLastUpdated() {
+        return this.dateLastUpdated;
+    }
+
+    /**
+     * Sets The {@code Date} the 3rd Party Lib was last updated.
+     *
+     * @param dateLastUpdatedParam Date Last Updated.
+     */
+    public void setDateLastUpdated(Date dateLastUpdatedParam) {
+        this.dateLastUpdated = dateLastUpdatedParam;
+    }
+
+    /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Field}
@@ -244,6 +290,20 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
         {
             returnVal.put(JSONMapping.LIBRARY_DATA_BASE64,
                     this.getLibraryDataBase64());
+        }
+
+        //Date Created...
+        if(this.getDateCreated() != null)
+        {
+            returnVal.put(JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated()));
+        }
+
+        //Date Last Updated...
+        if(this.getDateLastUpdated() != null)
+        {
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
         }
 
         return returnVal;
