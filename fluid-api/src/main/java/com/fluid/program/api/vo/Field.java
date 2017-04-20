@@ -509,7 +509,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     public void setTypeMetaData(String typeMetaDataParam) {
         this.typeMetaData = typeMetaDataParam;
     }
-
+    
     /**
      * Conversion to {@code JSONObject} from Java Object.
      *

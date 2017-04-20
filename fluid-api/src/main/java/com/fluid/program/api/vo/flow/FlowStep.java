@@ -79,7 +79,7 @@ public class FlowStep extends ABaseFluidJSONObject {
      */
     public static class StepType {
         public static final String INTRODUCTION = "Introduction";
-        public static final String RE_route = "Re Route";
+        public static final String RE_ROUTE = "Re Route";
         public static final String EXIT = "Exit";
         public static final String ASSIGNMENT = "Assignment";
         public static final String MAIL_CAPTURE = "Mail Capture";
@@ -92,7 +92,7 @@ public class FlowStep extends ABaseFluidJSONObject {
     }
 
     /**
-     * Additional properties appicable to specrific <code>FlowStep</code> types.
+     * Additional properties applicable to specific <code>FlowStep</code> types.
      */
     public static class StepProperty extends ABaseFluidJSONObject
     {
