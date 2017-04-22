@@ -830,10 +830,17 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 }
                 break;
             case Table:
-                if(formFieldValue instanceof JSONArray)
+                List<Form> tableRecords = new ArrayList();
+
+                //When there is only a single number stored...
+                if(formFieldValue instanceof Number)
+                {
+                    tableRecords.add(new Form(((Number)formFieldValue).longValue()));
+                }
+                //When array already...
+                else if(formFieldValue instanceof JSONArray)
                 {
                     JSONArray casted = (JSONArray)formFieldValue;
-                    List<Form> tableRecords = new ArrayList();
                     for(int index = 0;index < casted.length();index++)
                     {
                         Object obAtIndex = casted.get(index);
@@ -843,21 +850,21 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                             tableRecords.add(new Form(((Number)obAtIndex).longValue()));
                         }
                     }
-
-                    if(tableRecords.isEmpty())
-                    {
-                        return null;
-                    }
-
-                    TableField tableField = new TableField();
-                    tableField.setTableRecords(tableRecords);
-
-                    fieldToAdd = new Field(
-                            this.getId(),
-                            this.getFieldName(),
-                            tableField,
-                            type);
                 }
+
+                if(tableRecords.isEmpty())
+                {
+                    return null;
+                }
+
+                TableField tableField = new TableField();
+                tableField.setTableRecords(tableRecords);
+
+                fieldToAdd = new Field(
+                        this.getId(),
+                        this.getFieldName(),
+                        tableField,
+                        type);
                 break;
             case Text:
             case ParagraphText:
