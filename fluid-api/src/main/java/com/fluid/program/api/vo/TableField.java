@@ -61,6 +61,17 @@ public class TableField extends ABaseFluidJSONObject {
     }
 
     /**
+     * Constructor to create {@code TableField} with records.
+     *
+     * @param tableRecordsParam The records to create.
+     */
+    public TableField(List<Form> tableRecordsParam) {
+        super();
+
+        this.setTableRecords(tableRecordsParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

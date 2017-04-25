@@ -1164,17 +1164,17 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             for(Field toAdd : this.getFormFields())
             {
-                JSONObject convertedField = toAdd.toJsonForElasticSearch();
-                if(convertedField == null)
+                JSONObject convertedFieldObj = toAdd.toJsonForElasticSearch();
+                if(convertedFieldObj == null)
                 {
                     continue;
                 }
 
-                Iterator<String> iterKeys = convertedField.keys();
+                Iterator<String> iterKeys = convertedFieldObj.keys();
                 while(iterKeys.hasNext())
                 {
                     String key = iterKeys.next();
-                    returnVal.put(key, convertedField.get(key));
+                    returnVal.put(key, convertedFieldObj.get(key));
                 }
             }
         }
@@ -1341,8 +1341,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         }
 
         //Form Fields...
-        if(formFieldsParam != null && !formFieldsParam.isEmpty())
+        if(formFieldsParam == null || formFieldsParam.isEmpty())
         {
+            this.setFormFields(null);
+        }
+        //There are fields...
+        else {
             List<Field> fieldsToSet = new ArrayList();
 
             for(Field formField : formFieldsParam)
@@ -1364,9 +1368,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             else {
                 this.setFormFields(fieldsToSet);
             }
-        }
-        else {
-            this.setFormFields(null);
         }
 
         //Ancestor...
@@ -1395,12 +1396,26 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             this.setDescendantIds(null);
         }
         else {
-            JSONArray jsonArray = jsonObjectParam.getJSONArray(
-                    JSONMapping.DESCENDANT_IDS);
+
+            Object objectDescendantIds =
+                    jsonObjectParam.get(JSONMapping.DESCENDANT_IDS);
+
             List<Long> descendantIds = new ArrayList();
-            for(int index = 0;index < jsonArray.length();index++)
+
+            //Array...
+            if(objectDescendantIds instanceof JSONArray)
             {
-                descendantIds.add(jsonArray.getLong(index));
+                JSONArray jsonArray = (JSONArray) objectDescendantIds;
+
+                for(int index = 0;index < jsonArray.length();index++)
+                {
+                    descendantIds.add(jsonArray.getLong(index));
+                }
+            }
+            //Number...
+            else if(objectDescendantIds instanceof Number)
+            {
+                descendantIds.add(((Number)objectDescendantIds).longValue());
             }
 
             if(descendantIds.isEmpty())
@@ -1414,9 +1429,27 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * JSON {@code String} value for this form.
+     *
+     * @return JSON value of form.
+     */
+    @Override
+    @XmlTransient
+    public String toString() {
+
+        JSONObject jsonObj = this.toJsonObject();
+
+        if(jsonObj == null)
+        {
+            return null;
+        }
+
+        return jsonObj.toString();
+    }
+
+    /**
      * Prints all the Fields and their values to the standard
      * {@code System.out}.
-     *
      */
     @XmlTransient
     public void printFormFields()
@@ -1703,7 +1736,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
     /**
      * Sets the Descendant Ids as a {@code List<Long>} for {@code this} {@code Form}.
-     *
+     * 
      * @param descendantIdsParam List of Descendant Form Ids.
      */
     public void setDescendantIds(List<Long> descendantIdsParam) {

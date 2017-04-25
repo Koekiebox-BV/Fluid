@@ -767,7 +767,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         }
 
         String fieldIdAsString = this.getFieldNameAsUpperCamel();
-
         if(jsonObjectParam.isNull(fieldIdAsString))
         {
             return null;
@@ -831,14 +830,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 break;
             case Table:
                 List<Form> tableRecords = new ArrayList();
-
-                //When there is only a single number stored...
-                if(formFieldValue instanceof Number)
-                {
-                    tableRecords.add(new Form(((Number)formFieldValue).longValue()));
-                }
+                
                 //When array already...
-                else if(formFieldValue instanceof JSONArray)
+                if(formFieldValue instanceof JSONArray)
                 {
                     JSONArray casted = (JSONArray)formFieldValue;
                     for(int index = 0;index < casted.length();index++)
@@ -851,19 +845,21 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                         }
                     }
                 }
+                //When there is only a single number stored...
+                else if(formFieldValue instanceof Number)
+                {
+                    tableRecords.add(new Form(((Number)formFieldValue).longValue()));
+                }
 
                 if(tableRecords.isEmpty())
                 {
                     return null;
                 }
 
-                TableField tableField = new TableField();
-                tableField.setTableRecords(tableRecords);
-
                 fieldToAdd = new Field(
                         this.getId(),
                         this.getFieldName(),
-                        tableField,
+                        new TableField(tableRecords),
                         type);
                 break;
             case Text:
@@ -931,7 +927,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             JSONObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
 
         throw new FluidElasticSearchException(
-                "Method not implemented. Make use of other ");
+                "Method not implemented. Make use of 'populateFromElasticSearchJson(JSONObject jsonObjectParam)' method.");
     }
 
     /**
@@ -984,6 +980,25 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * JSON {@code String} value for field.
+     *
+     * @return JSON value of field.
+     */
+    @Override
+    @XmlTransient
+    public String toString() {
+
+        JSONObject jsonObj = this.toJsonObject();
+
+        if(jsonObj == null)
+        {
+            return null;
+        }
+        
+        return jsonObj.toString();
+    }
+
+    /**
      * Checks whether the provided {@code fieldParam} qualifies for
      * insert into Elastic Search.
      *
@@ -1016,6 +1031,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             case Text:
             case ParagraphText:
             case TrueFalse:
+            case TextEncrypted:
                 return true;
             default:
                 return false;
