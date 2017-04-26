@@ -1448,6 +1448,60 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Compares {@code objParam} against {@code this} to see
+     * if they are equal.
+     * 
+     * @param objParam The object to compare against.
+     * @return Whether {@code objParam} is equal.
+     */
+    @Override
+    @XmlTransient
+    public boolean equals(Object objParam) {
+
+        if(objParam == null || this.getId() == null)
+        {
+            return false;
+        }
+
+        if(objParam instanceof Form)
+        {
+            Form paramCasted = (Form)objParam;
+
+            if(paramCasted.getId() == null)
+            {
+                return false;
+            }
+
+            return (this.getId().equals(paramCasted.getId()));
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns a hash code value for the object. This method is
+     * supported for the benefit of hash tables such as those provided by
+     * {@link java.util.HashMap}.
+     *
+     * @return The hascode of {@code this} object.
+     */
+    @Override
+    @XmlTransient
+    public int hashCode() {
+
+        int hash = 10000000;
+
+        if(this.getId() == null)
+        {
+            return hash;
+        }
+        
+        hash += this.getId().hashCode();
+
+        return hash;
+    }
+
+    /**
      * Prints all the Fields and their values to the standard
      * {@code System.out}.
      */
