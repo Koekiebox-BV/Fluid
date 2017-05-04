@@ -83,6 +83,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     
     private Long tableFieldParentId;
 
+    private String ancestorLabel;
+    private String descendantsLabel;
+
     private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
 
     /**
@@ -104,6 +107,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
         public static final String FORM_FIELDS = "formFields";
         public static final String ASSOCIATED_FLOWS = "associatedFlows";
+
+        //Labels...
+        public static final String ANCESTOR_LABEL = "ancestorLabel";
+        public static final String DESCENDANTS_LABEL = "descendantsLabel";
 
         //Fields used for Search engine indexing...
         public static final String TABLE_FIELD_PARENT_ID = "tableFieldParentId";
@@ -147,6 +154,18 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             this.setFormDescription(this.jsonObject.getString(JSONMapping.FORM_DESCRIPTION));
         }
 
+        //Ancestor Label...
+        if (!this.jsonObject.isNull(JSONMapping.ANCESTOR_LABEL)) {
+            this.setAncestorLabel(
+                    this.jsonObject.getString(JSONMapping.ANCESTOR_LABEL));
+        }
+
+        //Descendant Label...
+        if (!this.jsonObject.isNull(JSONMapping.DESCENDANTS_LABEL)) {
+            this.setDescendantsLabel(
+                    this.jsonObject.getString(JSONMapping.DESCENDANTS_LABEL));
+        }
+        
         //Title...
         if (!this.jsonObject.isNull(JSONMapping.TITLE)) {
             this.setTitle(this.jsonObject.getString(JSONMapping.TITLE));
@@ -838,6 +857,20 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if(this.getFormDescription() != null)
         {
             returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
+        }
+
+        //Ancestor Label...
+        if(this.getAncestorLabel() != null)
+        {
+            returnVal.put(JSONMapping.ANCESTOR_LABEL,
+                    this.getAncestorLabel());
+        }
+
+        //Descendant Label...
+        if(this.getDescendantsLabel() != null)
+        {
+            returnVal.put(JSONMapping.DESCENDANTS_LABEL,
+                    this.getDescendantsLabel());
         }
 
         //Date Created...
@@ -1717,6 +1750,42 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     public void setFormDescription(String formDescriptionParam) {
         this.formDescription = formDescriptionParam;
+    }
+
+    /**
+     * Gets the Electronic Form Ancestor Label.
+     *
+     * @return Electronic Form ancestor label.
+     */
+    public String getAncestorLabel() {
+        return this.ancestorLabel;
+    }
+
+    /**
+     * Sets the Electronic Form ancestor label.
+     *
+     * @param ancestorLabelParam Electronic Form ancestor label.
+     */
+    public void setAncestorLabel(String ancestorLabelParam) {
+        this.ancestorLabel = ancestorLabelParam;
+    }
+
+    /**
+     * Gets the Electronic Form Descendants Label.
+     *
+     * @return Electronic Form descendants label.
+     */
+    public String getDescendantsLabel() {
+        return this.descendantsLabel;
+    }
+
+    /**
+     * Sets the Electronic Form descendants label.
+     *
+     * @param descendantsLabelParam Electronic Form descendants label.
+     */
+    public void setDescendantsLabel(String descendantsLabelParam) {
+        this.descendantsLabel = descendantsLabelParam;
     }
 
     /**
