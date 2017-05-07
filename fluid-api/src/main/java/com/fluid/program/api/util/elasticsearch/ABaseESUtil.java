@@ -339,7 +339,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                     QueryBuilders.queryStringQuery(queryByIdsToString),
                     indexParam,
                     maxNumberOfResultsParam,
-                    null);
+                    new Long[]{});
         }
         else
         {
@@ -347,7 +347,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                     QueryBuilders.queryStringQuery(queryByIdsToString),
                     indexParam,
                     maxNumberOfResultsParam,
-                    null);
+                    new Long[]{});
         }
 
         if(returnVal == null || returnVal.isEmpty())

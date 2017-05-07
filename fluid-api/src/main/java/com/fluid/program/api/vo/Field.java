@@ -136,10 +136,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         //String...
         public static final String TEXT = "text";
         public static final String KEYWORD = "keyword";
+        public static final String IP = "ip";
 
         //Numeric...
         public static final String DOUBLE = "double";
         public static final String LONG = "long";
+        public static final String INTEGER = "integer";
 
         //Date...
         public static final String DATE = "date";

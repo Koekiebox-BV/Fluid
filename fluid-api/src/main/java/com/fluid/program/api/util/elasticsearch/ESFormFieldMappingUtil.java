@@ -24,6 +24,7 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.json.JSONObject;
 
 import com.carrotsearch.hppc.cursors.ObjectCursor;
@@ -98,7 +99,6 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 
         //Retrieve and update...
         GetIndexResponse getExistingIndex = this.getOrCreateIndex(indexParam);
-
         JSONObject existingPropsToUpdate = null;
 
         for(ObjectCursor mappingKey : getExistingIndex.getMappings().keys())
@@ -146,7 +146,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 
             PutMappingResponse putMappingResponse =
                     this.client.admin().indices().preparePutMapping(indexParam).setType(
-                            formTypeString).setSource(existingPropsToUpdate.toString()).get();
+                            formTypeString).setSource(
+                                    existingPropsToUpdate.toString(), XContentType.JSON).get();
 
             if(!putMappingResponse.isAcknowledged())
             {
@@ -196,7 +197,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
         //Push the change...
         PutMappingResponse putMappingResponse =
                 this.client.admin().indices().preparePutMapping(indexParam).setType(
-                        formTypeString).setSource(existingPropsToUpdate.toString()).get();
+                        formTypeString).setSource(
+                                existingPropsToUpdate.toString(), XContentType.JSON).get();
 
         if(!putMappingResponse.isAcknowledged())
         {
@@ -215,7 +217,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
      *
      * @see GetIndexResponse
      */
-    private GetIndexResponse getOrCreateIndex(String indexParam)
+    public GetIndexResponse getOrCreateIndex(String indexParam)
     {
         if(this.doesIndexExist(indexParam))
         {

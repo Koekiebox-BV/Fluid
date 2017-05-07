@@ -102,7 +102,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
                     QueryBuilders.queryStringQuery(ancestorQuery.toString()),
                     Index.DOCUMENT,
                     1,
-                    null);
+                    new Long[]{});
         }
         else
         {
@@ -110,7 +110,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
                     QueryBuilders.queryStringQuery(ancestorQuery.toString()),
                     Index.DOCUMENT,
                     1,
-                    null);
+                    new Long[]{});
         }
 
         Form returnVal = null;
@@ -220,7 +220,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
                     QueryBuilders.queryStringQuery(fullQueryToExec),
                     Index.DOCUMENT,
                     MAX_NUMBER_OF_TABLE_RECORDS,
-                    null);
+                    new Long[]{});
         }
         else
         {
@@ -228,7 +228,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
                     QueryBuilders.queryStringQuery(fullQueryToExec),
                     Index.DOCUMENT,
                     MAX_NUMBER_OF_TABLE_RECORDS,
-                    null);
+                    new Long[]{});
         }
 
         //Whether table field data should be included...
@@ -281,7 +281,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
                     QueryBuilders.queryStringQuery(primaryQuery.toString()),
                     Index.DOCUMENT,
                     1,
-                    null);
+                    new Long[]{});
         }
         else
         {
@@ -289,7 +289,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
                     QueryBuilders.queryStringQuery(primaryQuery.toString()),
                     Index.DOCUMENT,
                     1,
-                    null);
+                    new Long[]{});
         }
 
         Form returnVal = null;

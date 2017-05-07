@@ -86,6 +86,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     private String ancestorLabel;
     private String descendantsLabel;
 
+    private Boolean numberInputs;
+
     private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
 
     /**
@@ -111,6 +113,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         //Labels...
         public static final String ANCESTOR_LABEL = "ancestorLabel";
         public static final String DESCENDANTS_LABEL = "descendantsLabel";
+        public static final String NUMBER_INPUTS = "numberInputs";
 
         //Fields used for Search engine indexing...
         public static final String TABLE_FIELD_PARENT_ID = "tableFieldParentId";
@@ -164,6 +167,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.DESCENDANTS_LABEL)) {
             this.setDescendantsLabel(
                     this.jsonObject.getString(JSONMapping.DESCENDANTS_LABEL));
+        }
+
+        //Number Inputs...
+        if (!this.jsonObject.isNull(JSONMapping.NUMBER_INPUTS)) {
+            this.setNumberInputs(this.jsonObject.getBoolean(
+                    JSONMapping.NUMBER_INPUTS));
         }
         
         //Title...
@@ -871,6 +880,13 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             returnVal.put(JSONMapping.DESCENDANTS_LABEL,
                     this.getDescendantsLabel());
+        }
+
+        //Number Inputs...
+        if(this.getNumberInputs() != null)
+        {
+            returnVal.put(JSONMapping.NUMBER_INPUTS,
+                    this.getNumberInputs());
         }
 
         //Date Created...
@@ -1786,6 +1802,24 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     public void setDescendantsLabel(String descendantsLabelParam) {
         this.descendantsLabel = descendantsLabelParam;
+    }
+
+    /**
+     * Gets the flag to number inputs.
+     *
+     * @return Whether inputs should be numbered.
+     */
+    public Boolean getNumberInputs() {
+        return this.numberInputs;
+    }
+
+    /**
+     * Sets the flag to number inputs.
+     *
+     * @param numberInputsParam Whether inputs should be numbered.
+     */
+    public void setNumberInputs(Boolean numberInputsParam) {
+        this.numberInputs = numberInputsParam;
     }
 
     /**
