@@ -154,11 +154,13 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         {
             returnVal.put(JSONMapping.ID,this.getId());
         }
+
         //Service Ticket...
         if(this.getServiceTicket() != null)
         {
             returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
         }
+        
         //Echo...
         if(this.getEcho() != null)
         {

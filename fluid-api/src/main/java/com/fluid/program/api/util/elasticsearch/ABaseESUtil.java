@@ -412,7 +412,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                 SearchHit searchHit = searchHits.getAt(index);
 
                 String source;
-                if((source = searchHit.sourceAsString()) == null)
+                if((source = searchHit.getSourceAsString()) == null)
                 {
                     continue;
                 }
@@ -501,7 +501,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                 SearchHit searchHit = searchHits.getAt(index);
 
                 String source;
-                if((source = searchHit.sourceAsString()) == null)
+                if((source = searchHit.getSourceAsString()) == null)
                 {
                     continue;
                 }
@@ -576,7 +576,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                 SearchHit searchHit = searchHits.getAt(index);
 
                 String source;
-                if((source = searchHit.sourceAsString()) == null)
+                if((source = searchHit.getSourceAsString()) == null)
                 {
                     continue;
                 }
