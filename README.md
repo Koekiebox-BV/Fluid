@@ -1,4 +1,11 @@
 ![Fluid Logo](content/fluid_logo_new.png "Fluid") ![Koekiebox Logo](content/koekiebox.png "Koekiebox")
+
+[![label](https://img.shields.io/badge/Fluid--API_Version-1.4-orange.svg?style=plastic)]()
+[![label](https://img.shields.io/badge/license-GNU--GPL-blue.svg?style=plastic)]()
+
+[![label](https://img.shields.io/badge/javadoc-Fluid--API-green.svg?style=plastic)](https://github.com/Koekiebox-PTY-LTD/Fluid/releases/download/v1.4/fluid-api-1.4-javadoc.jar)
+[![label](https://img.shields.io/badge/javadoc-Fluid--WS--Client-green.svg?style=plastic)](https://github.com/Koekiebox-PTY-LTD/Fluid/releases/download/v1.4/fluid-ws-java-client-1.4-javadoc.jar)
+
 # *** Fluid ***  
 
 On demand Business Process Management, Content Management System.
