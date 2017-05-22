@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.fluid</groupId>
+    <groupId>com.fluidbpm</groupId>
     <artifactId>fluid-root</artifactId>
     <packaging>pom</packaging>
     <version>1.4</version>
@@ -106,7 +106,7 @@
         <dependencies>
             <!--Fluid-->
             <dependency>
-                <groupId>com.fluid</groupId>
+                <groupId>com.fluidbpm</groupId>
                 <artifactId>fluid-api</artifactId>
                 <scope>provided</scope>
                 <version>${project.version}</version>

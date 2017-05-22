@@ -6,7 +6,7 @@
 
     <!--Parent-->
     <parent>
-        <groupId>com.fluid</groupId>
+        <groupId>com.fluidbpm</groupId>
         <artifactId>fluid-root</artifactId>
         <version>1.4</version>
         <relativePath>../pom.xml</relativePath>
@@ -44,7 +44,7 @@
     <dependencies>
         <!--Fluid-->
         <dependency>
-            <groupId>com.fluid</groupId>
+            <groupId>com.fluidbpm</groupId>
             <artifactId>fluid-api</artifactId>
             <scope>compile</scope>
         </dependency>
