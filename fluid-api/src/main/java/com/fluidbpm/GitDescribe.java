@@ -2,6 +2,6 @@ package com.fluidbpm;
 
 public class GitDescribe {
 
-public static final String GIT_DESCRIBE = "v1.3-44-gceb92ea";
+public static final String GIT_DESCRIBE = "v1.3-45-gec4228d";
 
 }

@@ -6,18 +6,18 @@ package com.fluidbpm.ws.client.v1.websocket;
  * @author jasonbruwer on 2016/03/11.
  * @since 1.1
  */
-public interface IMessageHandler {
+public interface IMessageResponseHandler {
 
     /**
      * Handle the {@code messageParam}.
      *
      * @param messageParam The message from the server.
      */
-    public void handleMessage(String messageParam);
+    public abstract void handleMessage(String messageParam);
 
     /**
      * When a connection closed has been initiated
      * remotely.
      */
-    public void connectionClosed();
+    public abstract void connectionClosed();
 }

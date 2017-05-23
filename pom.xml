@@ -75,6 +75,7 @@
         <version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
         <version.plugin.java.source>3.0.1</version.plugin.java.source>
         <version.plugin.java.doc>2.10.4</version.plugin.java.doc>
+        <version.plugin.gpg>1.6</version.plugin.gpg>
     </properties>
 
     <!--Repos-->
@@ -212,6 +213,14 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!--Maven GPG Plugin-->
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${version.plugin.gpg}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!--JUnit-->
             <dependency>
                 <groupId>junit</groupId>
@@ -221,4 +230,40 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!--Distribution Management-->
+    <distributionManagement>
+
+        <!--Snapshot-->
+        <snapshotRepository>
+            <id>fluid_open_source</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+
+        <!--Release-->
+        <repository>
+            <id>fluid_open_source</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <!--Plugins-->
+    <build>
+        <plugins>
+            <!--Maven GPG Sign Plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

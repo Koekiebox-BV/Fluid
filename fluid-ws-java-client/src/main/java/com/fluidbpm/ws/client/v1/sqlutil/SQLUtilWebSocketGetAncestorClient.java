@@ -15,15 +15,16 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.Form;
-import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
@@ -81,8 +82,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
      *
      * @return The {@code formToGetDescendantsForParam} Table Records as {@code Form}'s.
      */
-    public Form getAncestorSynchronized(
-            Form formToGetAncestorForParam) {
+    public Form getAncestorSynchronized(Form formToGetAncestorForParam) {
 
         this.messageHandler.clear();
 
@@ -92,90 +92,68 @@ public class SQLUtilWebSocketGetAncestorClient extends
         }
 
         //Send all the messages...
-        List<String> echoMessagesExpected = new ArrayList();
         if(formToGetAncestorForParam.getEcho() == null || formToGetAncestorForParam.getEcho().isEmpty())
         {
             throw new FluidClientException("Echo needs to be set to bind to return.",
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
-        else if(echoMessagesExpected.contains(formToGetAncestorForParam.getEcho()))
-        {
-            throw new FluidClientException("Echo message '"+formToGetAncestorForParam.getEcho()
-                    +"' already added.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
 
-        echoMessagesExpected.add(formToGetAncestorForParam.getEcho());
+        CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
+
+        //Set the future...
+        this.messageHandler.setCompletableFuture(completableFuture);
 
         //Send the actual message...
         this.sendMessage(formToGetAncestorForParam);
+        
+        try {
+            List<Form> returnValue = completableFuture.get(
+                    this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
-        long timeoutTime = (System.currentTimeMillis() +
-                this.getTimeoutInMillis());
-
-        //Wait for all the results...
-        while(true)
-        {
-            if(this.messageHandler.hasErrorOccurred())
+            if(returnValue == null || returnValue.isEmpty())
             {
-                List<Error> listOfErrors = this.messageHandler.getErrors();
-                Error firstError = listOfErrors.get(0);
+                return null;
+            }
 
-                throw new FluidClientException(
-                        firstError.getErrorMessage(),
-                        firstError.getErrorCode());
-            }
-            else if(this.messageHandler.isConnectionClosed() ||
-                    this.messageHandler.doReturnValueEchoMessageContainAll(echoMessagesExpected))
+            return returnValue.get(0);
+        }
+        //Interrupted...
+        catch (InterruptedException exceptParam) {
+
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-Interrupted-GetAncestor: " +
+                            exceptParam.getMessage(),
+                    exceptParam,
+                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+        }
+        //Error on the web-socket...
+        catch (ExecutionException executeProblem) {
+
+            Throwable cause = executeProblem.getCause();
+
+            //Fluid client exception...
+            if(cause instanceof FluidClientException)
             {
-                return this.messageHandler.getReturnedForm();
+                throw (FluidClientException)cause;
             }
-            //
             else
             {
-                try {
-                    Thread.sleep(Constant.RESPONSE_CHECKER_SLEEP);
-                }
-                //
-                catch (InterruptedException e) {
-
-                    throw new FluidClientException(
-                            "Thread interrupted. "+e.getMessage(),
-                            e,FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-                }
-            }
-
-            long now = System.currentTimeMillis();
-            //Timeout...
-            if(now > timeoutTime)
-            {
                 throw new FluidClientException(
-                        "SQLUtil-WebSocket-GetAncestor: Timeout while waiting for all return data. There were '"
-                                +this.messageHandler.getReturnValue().size()
-                                +"' items after a Timeout of "+(
-                                TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                        ,FluidClientException.ErrorCode.IO_ERROR);
+                        "SQLUtil-WebSocket-GetAncestor: " +
+                                cause.getMessage(), cause,
+                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
             }
         }
-    }
+        //Timeout...
+        catch (TimeoutException eParam) {
 
-
-    /**
-     * Retrieves all the Ancestors (Forms) for the {@code formToGetAncestorsForForParam}
-     * asynchronously.
-     *
-     * @param formToGetAncestorsForForParam The Fluid Form to get Ancestors for.
-     */
-    public void getAncestorAsynchronous(
-            Form formToGetAncestorsForForParam) {
-
-        if(formToGetAncestorsForForParam == null)
-        {
-            return;
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-GetAncestor: Timeout while waiting for all return data. There were '"
+                            +this.messageHandler.getReturnValue().size()
+                            +"' items after a Timeout of "+(
+                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
+                    ,FluidClientException.ErrorCode.IO_ERROR);
         }
-
-        //Send the actual message...
-        this.sendMessage(formToGetAncestorsForForParam);
     }
 
     /**
@@ -183,8 +161,6 @@ public class SQLUtilWebSocketGetAncestorClient extends
      */
     public static class GetAncestorMessageHandler extends GenericListMessageHandler<Form>
     {
-        private Form returnedForm;
-
         /**
          * The default constructor that sets a ancestor message handler.
          *
@@ -203,19 +179,8 @@ public class SQLUtilWebSocketGetAncestorClient extends
          */
         @Override
         public Form getNewInstanceBy(JSONObject jsonObjectParam) {
-
-            this.returnedForm = new Form(jsonObjectParam);
-
-            return this.returnedForm;
-        }
-
-        /**
-         * Gets the value from that was returned after the WS call.
-         *
-         * @return The returned form.
-         */
-        public Form getReturnedForm() {
-            return this.returnedForm;
+            
+            return new Form(jsonObjectParam);
         }
     }
 }

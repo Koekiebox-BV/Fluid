@@ -21,7 +21,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 public class WebSocketClient {
 
     private Session userSession = null;
-    private IMessageHandler messageHandler;
+    private IMessageResponseHandler messageHandler;
 
     /**
      * Default constructor with an endpoint.
@@ -86,7 +86,7 @@ public class WebSocketClient {
      *
      * @param msgHandlerParam The message handler.
      */
-    public void setMessageHandler(IMessageHandler msgHandlerParam) {
+    public void setMessageHandler(IMessageResponseHandler msgHandlerParam) {
         this.messageHandler = msgHandlerParam;
     }
 

@@ -3,27 +3,38 @@ package com.fluidbpm.ws.client.v1.websocket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
+import com.fluidbpm.ws.client.FluidClientException;
 
 /**
  * Base list message handler.
  *
  * @author jasonbruwer on 2016/03/11.
  * @since 1.1
+ *
+ * @param <T> The response object generic.
+ *
+ * @see CompletableFuture
  */
 public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
-        implements IMessageHandler {
+        implements IMessageResponseHandler {
 
     private final List<T> returnValue;
     private List<Error> errors;
 
     private IMessageReceivedCallback<T> messageReceivedCallback;
     private boolean isConnectionClosed;
+
+    private Set<String> expectedEchoMessagesBeforeComplete;
+    private CompletableFuture<List<T>> completableFuture;
 
     /**
      * Message handler with callback.
@@ -35,6 +46,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
         this.messageReceivedCallback = messageReceivedCallbackParam;
         this.returnValue = new CopyOnWriteArrayList();
         this.errors = new CopyOnWriteArrayList();
+        this.expectedEchoMessagesBeforeComplete = new CopyOnWriteArraySet();
         this.isConnectionClosed = false;
     }
 
@@ -50,6 +62,7 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
 
         Error fluidError = new Error(jsonObject);
 
+        //There is an error...
         if(fluidError.getErrorCode() > 0)
         {
             this.errors.add(fluidError);
@@ -59,12 +72,39 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
             {
                 this.messageReceivedCallback.errorMessageReceived(fluidError);
             }
+
+            //If complete future is provided...
+            if(this.completableFuture != null)
+            {
+                this.completableFuture.completeExceptionally(
+                        new FluidClientException(
+                                fluidError.getErrorMessage(),
+                                fluidError.getErrorCode()));
+            }
         }
+        //No Error...
         else
         {
             T messageForm = this.getNewInstanceBy(jsonObject);
 
+            //Add to the list of return values...
             this.returnValue.add(messageForm);
+
+            //Completable future is set, and all response messages received...
+            if(this.completableFuture != null)
+            {
+                String echo = messageForm.getEcho();
+                if(echo != null && !echo.trim().isEmpty())
+                {
+                    this.expectedEchoMessagesBeforeComplete.remove(echo);
+                }
+
+                //All expected messages received...
+                if(this.expectedEchoMessagesBeforeComplete.isEmpty())
+                {
+                    this.completableFuture.complete(this.returnValue);
+                }
+            }
 
             //Do a message callback...
             if(this.messageReceivedCallback != null)
@@ -72,6 +112,15 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
                 this.messageReceivedCallback.messageReceived(messageForm);
             }
         }
+    }
+
+    /**
+     * Set the {@code CompletableFuture} for a list.
+     * 
+     * @param completableFutureParam The async future to make use of.
+     */
+    public void setCompletableFuture(CompletableFuture<List<T>> completableFutureParam) {
+        this.completableFuture = completableFutureParam;
     }
 
     /**
@@ -99,6 +148,23 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     public boolean hasErrorOccurred()
     {
         return !this.errors.isEmpty();
+    }
+
+    /**
+     * Adds the {@code expectedMessageEchoParam} echo to expect as a
+     * return value before the Web Socket operation may be regarded as complete.
+     *
+     * @param expectedMessageEchoParam The echo to expect.
+     */
+    public void addExpectedMessage(String expectedMessageEchoParam)
+    {
+        if(expectedMessageEchoParam == null ||
+                expectedMessageEchoParam.trim().isEmpty())
+        {
+            return;
+        }
+
+        this.expectedEchoMessagesBeforeComplete.add(expectedMessageEchoParam);
     }
 
     /**

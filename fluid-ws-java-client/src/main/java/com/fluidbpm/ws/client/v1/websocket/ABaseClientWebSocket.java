@@ -34,7 +34,7 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  *
  * @see ABaseClientWS
  */
-public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends ABaseClientWS {
+public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> extends ABaseClientWS {
 
     protected String webSocketEndpointUrl;
 
@@ -154,6 +154,14 @@ public abstract class ABaseClientWebSocket<T extends IMessageHandler> extends AB
         if(baseFluidJSONObjectParam != null)
         {
             baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
+
+            //Add the echo to the listing if [GenericListMessageHandler].
+            if(this.messageHandler != null &&
+                    (this.messageHandler instanceof GenericListMessageHandler))
+            {
+                GenericListMessageHandler listHandler = (GenericListMessageHandler)this.messageHandler;
+                listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
+            }
         }
 
         this.webSocketClient.sendMessage(baseFluidJSONObjectParam);

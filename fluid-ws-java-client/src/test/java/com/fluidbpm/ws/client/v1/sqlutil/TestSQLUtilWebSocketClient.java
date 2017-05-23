@@ -169,7 +169,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         long start = System.currentTimeMillis();
 
-        Form toGetParentFor = new Form(136L);
+        Form toGetParentFor = new Form(8457L);
         toGetParentFor.setEcho("event-patoel");
 
         Form ancestorForm = webSocketClient.getAncestorSynchronized(toGetParentFor);
@@ -304,11 +304,12 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     }
 
     /**
+     * Make use of a WebSocket to test the SQL execution function.
      *
      */
     @Test
     @Ignore
-    public void testExecuteSQLWithSpecificId()
+    public void testExecuteSQLWhereIdGreaterThan()
     {
         if(!this.loginClient.isConnectionValid())
         {
@@ -329,7 +330,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
         SQLUtilWebSocketExecuteSQLClient webSocketClient =
                 new SQLUtilWebSocketExecuteSQLClient(
                         BASE_URL,
-                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(160));
+                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(10));
 
         long start = System.currentTimeMillis();
 
@@ -337,9 +338,10 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         Form formToUse = new Form();
         formToUse.setEcho("zool");
-        formToUse.setFieldValue("SQL Query","SELECT * FROM form_container " +
+        formToUse.setFieldValue("SQL Query",
+                "SELECT * FROM form_container " +
                 "WHERE id > ?" +
-                " LIMIT 0,10000;");
+                " LIMIT 0,1000;");
 
         formToUse.getFormFields().add(new Field(1L,"Zool",new Long(1000L), Field.Type.Decimal));
 

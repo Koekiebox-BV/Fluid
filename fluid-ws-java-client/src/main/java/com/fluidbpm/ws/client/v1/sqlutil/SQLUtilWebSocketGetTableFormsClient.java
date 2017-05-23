@@ -15,16 +15,17 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
-import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
@@ -91,8 +92,12 @@ public class SQLUtilWebSocketGetTableFormsClient extends
             return this.messageHandler.getReturnValue();
         }
 
+        CompletableFuture<List<FormListing>> completableFuture = new CompletableFuture();
+
+        //Set the future...
+        this.messageHandler.setCompletableFuture(completableFuture);
+
         //Send all the messages...
-        List<String> echoMessagesExpected = new ArrayList();
         for(Form formToSend : formsToGetTableFormsForParam)
         {
             if(formToSend == null)
@@ -106,65 +111,53 @@ public class SQLUtilWebSocketGetTableFormsClient extends
                 throw new FluidClientException("Echo needs to be set to bind to return.",
                         FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
             }
-            else if(echoMessagesExpected.contains(formToSend.getEcho()))
-            {
-                throw new FluidClientException("Echo message '"+formToSend.getEcho()
-                        +"' already added.",
-                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-            }
-
-            echoMessagesExpected.add(formToSend.getEcho());
 
             //Send the actual message...
             this.sendMessage(formToSend);
         }
 
-        long timeoutTime = (System.currentTimeMillis() +
-                this.getTimeoutInMillis());
+        try {
+            List<FormListing> returnValue = completableFuture.get(
+                    this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
-        //Wait for all the results...
-        while(true)
-        {
-            if(this.messageHandler.hasErrorOccurred())
-            {
-                List<Error> listOfErrors = this.messageHandler.getErrors();
-                Error firstError = listOfErrors.get(0);
+            return returnValue;
+        }
+        //Interrupted...
+        catch (InterruptedException exceptParam) {
 
-                throw new FluidClientException(
-                        firstError.getErrorMessage(),
-                        firstError.getErrorCode());
-            }
-            else if(this.messageHandler.isConnectionClosed() ||
-                    this.messageHandler.doReturnValueEchoMessageContainAll(echoMessagesExpected))
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-Interrupted-GetTableRecordForms: " +
+                            exceptParam.getMessage(),
+                    exceptParam,
+                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+        }
+        //Error on the web-socket...
+        catch (ExecutionException executeProblem) {
+
+            Throwable cause = executeProblem.getCause();
+
+            //Fluid client exception...
+            if(cause instanceof FluidClientException)
             {
-                return this.messageHandler.getReturnValue();
+                throw (FluidClientException)cause;
             }
-            //
             else
             {
-                try {
-                    Thread.sleep(Constant.RESPONSE_CHECKER_SLEEP);
-                }
-                //
-                catch (InterruptedException e) {
-
-                    throw new FluidClientException(
-                            "Thread interrupted. "+e.getMessage(),
-                            e,FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-                }
-            }
-
-            long now = System.currentTimeMillis();
-            //Timeout...
-            if(now > timeoutTime)
-            {
                 throw new FluidClientException(
-                        "SQLUtil-WebSocket-GetTableRecordForms: Timeout while waiting for all return data. There were '"
-                                +this.messageHandler.getReturnValue().size()
-                                +"' items after a Timeout of "+(
-                                TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                        ,FluidClientException.ErrorCode.IO_ERROR);
+                        "SQLUtil-WebSocket-GetTableRecordForms: " +
+                                cause.getMessage(), cause,
+                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
             }
+        }
+        //Timeout...
+        catch (TimeoutException eParam) {
+
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-GetTableRecordForms: Timeout while waiting for all return data. There were '"
+                            +this.messageHandler.getReturnValue().size()
+                            +"' items after a Timeout of "+(
+                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
+                    ,FluidClientException.ErrorCode.IO_ERROR);
         }
     }
 }

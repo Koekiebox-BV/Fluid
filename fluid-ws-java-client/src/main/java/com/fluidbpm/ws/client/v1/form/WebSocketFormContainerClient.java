@@ -15,14 +15,15 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.Form;
-import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
@@ -84,72 +85,69 @@ public class WebSocketFormContainerClient extends
         }
 
         //Send all the messages...
-        List<String> echoMessagesExpected = new ArrayList();
         if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().isEmpty())
         {
             throw new FluidClientException("Echo needs to be set to bind to return.",
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
-        else if(echoMessagesExpected.contains(formToCreateParam.getEcho()))
-        {
-            throw new FluidClientException("Echo message '"+formToCreateParam.getEcho()
-                    +"' already added.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
 
-        echoMessagesExpected.add(formToCreateParam.getEcho());
+        CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
 
+        //Set the future...
+        this.messageHandler.setCompletableFuture(completableFuture);
+        
         //Send the actual message...
         this.sendMessage(formToCreateParam);
 
-        long timeoutTime = (System.currentTimeMillis() + this.getTimeoutInMillis());
+        try {
+            List<Form> returnValue = completableFuture.get(
+                    this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
-        //Wait for all the results...
-        while(true)
-        {
-            if(this.messageHandler.hasErrorOccurred())
+            if(returnValue == null || returnValue.isEmpty())
             {
-                List<Error> listOfErrors = this.messageHandler.getErrors();
-                Error firstError = listOfErrors.get(0);
+                return null;
+            }
 
-                throw new FluidClientException(
-                        firstError.getErrorMessage(),
-                        firstError.getErrorCode());
-            }
-            else if(this.messageHandler.isConnectionClosed() ||
-                    this.messageHandler.doReturnValueEchoMessageContainAll(echoMessagesExpected))
+            return returnValue.get(0);
+        }
+        //Interrupted...
+        catch (InterruptedException exceptParam) {
+
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-Interrupted-CreateFormContainer: " +
+                            exceptParam.getMessage(),
+                    exceptParam,
+                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+        }
+        //Error on the web-socket...
+        catch (ExecutionException executeProblem) {
+
+            Throwable cause = executeProblem.getCause();
+
+            //Fluid client exception...
+            if(cause instanceof FluidClientException)
             {
-                return this.messageHandler.getReturnedForm();
+                throw (FluidClientException)cause;
             }
-            //
             else
             {
-                try {
-                    Thread.sleep(Constant.RESPONSE_CHECKER_SLEEP);
-                }
-                //
-                catch (InterruptedException e) {
-
-                    throw new FluidClientException(
-                            "Thread interrupted. "+e.getMessage(),
-                            e,FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-                }
-            }
-
-            long now = System.currentTimeMillis();
-            //Timeout...
-            if(now > timeoutTime)
-            {
                 throw new FluidClientException(
-                        "SQLUtil-WebSocket-CreateFormContainer: Timeout while waiting for all return data. There were '"
-                                +this.messageHandler.getReturnValue().size()
-                                +"' items after a Timeout of "+(
-                                TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                        ,FluidClientException.ErrorCode.IO_ERROR);
+                        "SQLUtil-WebSocket-CreateFormContainer: " +
+                                cause.getMessage(), cause,
+                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
             }
         }
-    }
+        //Timeout...
+        catch (TimeoutException eParam) {
 
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-CreateFormContainer: Timeout while waiting for all return data. There were '"
+                            +this.messageHandler.getReturnValue().size()
+                            +"' items after a Timeout of "+(
+                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
+                    ,FluidClientException.ErrorCode.IO_ERROR);
+        }
+    }
 
     /**
      * Creates a new Form Container from {@code formToGetAncestorsForForParam}
