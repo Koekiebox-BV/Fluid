@@ -21,7 +21,7 @@ fluid-api/target/
 fluid-ws-java-client/target/
 
 # Git Describe #
-fluid-api/src/main/java/com/fluid/GitDescribe.java
+fluid-api/src/main/java/com/fluidbpm/GitDescribe.java
 
 # Include Maven Java WS Client Target Resources #
 !fluid-ws-java-client/target/site/
