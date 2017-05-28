@@ -1,9 +1,9 @@
 ![Fluid Logo](content/fluid_logo_new.png "Fluid") ![Koekiebox Logo](content/koekiebox.png "Koekiebox")
 
-[![label](https://img.shields.io/badge/fluid--api-v1.4-orange.svg?style=plastic)]()
+[![label](https://img.shields.io/badge/fluid--api-v1.5-orange.svg?style=plastic)]()
 [![label](https://img.shields.io/badge/license-GPL--3-blue.svg?style=plastic)]()
-[![label](https://img.shields.io/badge/javadoc-Fluid--API-green.svg?style=plastic)](https://github.com/Koekiebox-PTY-LTD/Fluid/releases/download/v1.4/fluid-api-1.4-javadoc.jar)
-[![label](https://img.shields.io/badge/javadoc-Fluid--WS--Client-green.svg?style=plastic)](https://github.com/Koekiebox-PTY-LTD/Fluid/releases/download/v1.4/fluid-ws-java-client-1.4-javadoc.jar)
+[![label](https://img.shields.io/badge/javadoc-Fluid--API-green.svg?style=plastic)](https://github.com/Koekiebox-PTY-LTD/Fluid/releases/download/v1.5/fluid-api-1.5-javadoc.jar)
+[![label](https://img.shields.io/badge/javadoc-Fluid--WS--Client-green.svg?style=plastic)](https://github.com/Koekiebox-PTY-LTD/Fluid/releases/download/v1.5/fluid-ws-java-client-1.5-javadoc.jar)
 [![label](https://img.shields.io/badge/docker--store-Fluid--BPM-red.svg?style=plastic)](https://store.docker.com/images/fluid-bpm)
 
 # *** Fluid ***  
