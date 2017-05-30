@@ -271,14 +271,34 @@ public class UtilGlobal {
         }
 
         return DatatypeConverter.printHexBinary(bytesParam).toUpperCase();
+    }
 
-        /*StringBuilder sb = new StringBuilder();
-        for (byte bte : bytesParam) {
+    /**
+     * Encodes the {@code stringParam} as {@code byte[]}.
+     *
+     * @param stringParam to convert to bytes.
+     * @return bytes from {@code stringParam}.
+     */
+    public static byte[] decodeBase16(String stringParam) {
 
-            sb.append(Integer.toHexString(bte));
+        if(stringParam == null)
+        {
+            return null;
         }
 
-        return sb.toString().toUpperCase();*/
+        if(stringParam.trim().isEmpty())
+        {
+            return new byte[]{};
+        }
+
+        int len = stringParam.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(stringParam.charAt(i), 16) << 4)
+                    + Character.digit(stringParam.charAt(i+1), 16));
+        }
+        
+        return data;
     }
 
     /**
