@@ -119,6 +119,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         public static final String TABLE_FIELD_PARENT_ID = "tableFieldParentId";
         public static final String ANCESTOR_ID = "ancestorId";
         public static final String DESCENDANT_IDS = "descendantIds";
+
+        public static final String _PARENT = "_parent";
     }
 
     /**
@@ -928,9 +930,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         }
 
         //Ancestor...
-        if(this.getAncestorId() != null)
+        Long ancestorIdLcl = this.getAncestorId();
+        if(ancestorIdLcl != null)
         {
-            returnVal.put(JSONMapping.ANCESTOR_ID, this.getAncestorId());
+            returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
+            returnVal.put(JSONMapping._PARENT, ancestorIdLcl);
         }
 
         //Table Field Parent Id...
@@ -1229,9 +1233,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         }
 
         //Ancestor...
-        if(this.getAncestorId() != null)
+        Long ancestorIdLcl = this.getAncestorId();
+        if(ancestorIdLcl != null)
         {
-            returnVal.put(JSONMapping.ANCESTOR_ID, this.getAncestorId());
+            returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
+            returnVal.put(JSONMapping._PARENT, ancestorIdLcl);
         }
 
         //Table Field Parent Id...
