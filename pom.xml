@@ -76,6 +76,7 @@
         <version.plugin.java.source>3.0.1</version.plugin.java.source>
         <version.plugin.java.doc>2.10.4</version.plugin.java.doc>
         <version.plugin.gpg>1.6</version.plugin.gpg>
+        <version.plugin.dependency>3.0.1</version.plugin.dependency>
     </properties>
 
     <!--Repos-->

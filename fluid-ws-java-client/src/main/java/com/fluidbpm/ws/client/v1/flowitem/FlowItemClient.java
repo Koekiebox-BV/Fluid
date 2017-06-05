@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -149,4 +150,38 @@ public class FlowItemClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
+
+    /**
+     * Send a form item to be part of a workflow.
+     *
+     * @param formToSendToFlowParam The Form to {@code "Send To Flow (introduction)"} in the workflow process.
+     * @param flowParam The Flow the {@code formToSendToFlowParam} must be sent to.
+     *
+     * @return The Fluid item that was initiated in a workflow process.
+     */
+    public FluidItem sendFormToFlow(
+            Form formToSendToFlowParam,
+            String flowParam) {
+
+        FluidItem itemToSend = new FluidItem();
+        itemToSend.setForm(formToSendToFlowParam);
+        itemToSend.setFlow(flowParam);
+
+        if (this.serviceTicket != null) {
+            itemToSend.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+
+            return new FluidItem(this.postJson(
+                    itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
+        }
+        //
+        catch (JSONException e) {
+            throw new FluidClientException(e.getMessage(), e,
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+
 }

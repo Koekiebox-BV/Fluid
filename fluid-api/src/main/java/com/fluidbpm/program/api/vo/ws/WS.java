@@ -1259,6 +1259,9 @@ public class WS {
                 //Send On...
                 public static final String SEND_ON = ("/send_on");
 
+                //Send to Flow...
+                public static final String SEND_TO_FLOW = ("/send_to_flow");
+
                 //Create...
                 public static final String CREATE = ("/");
 
@@ -1309,6 +1312,17 @@ public class WS {
                 public static final String sendFlowItemOn()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(SEND_ON);
+                }
+
+                /**
+                 * URL Path for sending a Form to a Flow to follow
+                 * the workflow process.
+                 *
+                 * @return {@code /v1/flow_item/send_to_flow}
+                 */
+                public static final String sendFlowItemToFlow()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(SEND_TO_FLOW);
                 }
 
                 /**
