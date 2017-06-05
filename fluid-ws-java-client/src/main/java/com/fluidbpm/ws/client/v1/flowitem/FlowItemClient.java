@@ -182,6 +182,4 @@ public class FlowItemClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
     }
-
-
 }
