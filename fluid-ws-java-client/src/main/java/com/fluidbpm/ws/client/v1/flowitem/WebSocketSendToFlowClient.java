@@ -62,7 +62,7 @@ public class WebSocketSendToFlowClient extends
         super(endpointBaseUrlParam,
                 new SendToFlowMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
-                WS.Path.FormContainer.Version1.formContainerCreateWebSocket(
+                WS.Path.FlowItem.Version1.sendToFlowWebSocket(
                         serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);

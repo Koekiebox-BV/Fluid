@@ -58,7 +58,7 @@
         <version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
 
         <!--ElasticSearch-->
-        <version.elasticsearch>5.4.0</version.elasticsearch>
+        <version.elasticsearch>5.4.1</version.elasticsearch>
 
         <!--GlassFish Tyrus-->
         <version.glassfish.tyrus.core>1.13.1</version.glassfish.tyrus.core>
@@ -67,8 +67,8 @@
         <version.glassfish.tyrus.spi>1.13.1</version.glassfish.tyrus.spi>
 
         <!--GlassFish Grizzly-->
-        <version.glassfish.grizzly.framework>2.3.30</version.glassfish.grizzly.framework>
-        <version.glassfish.grizzly.http>2.3.30</version.glassfish.grizzly.http>
+        <version.glassfish.grizzly.framework>2.3.31</version.glassfish.grizzly.framework>
+        <version.glassfish.grizzly.http>2.3.31</version.glassfish.grizzly.http>
 
         <!--Plugins-->
         <version.plugin.compiler>3.6.0</version.plugin.compiler>
