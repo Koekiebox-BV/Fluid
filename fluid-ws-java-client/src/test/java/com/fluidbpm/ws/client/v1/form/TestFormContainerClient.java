@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.form;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -160,9 +161,6 @@ public class TestFormContainerClient extends ABaseTestCase {
         TestCase.assertNotNull(appRequestToken);
 
         String serviceTicket = appRequestToken.getServiceTicket();
-
-        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
-
         String serviceTicketHex = null;
         if(serviceTicket != null && !serviceTicket.isEmpty())
         {
@@ -201,7 +199,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         createdForm.getFormFields().add(
                 new Field(TestStatics.FieldName.EMAIL_SENT_DATE, new Date()));
 
-        Form deletedForm = formContainerClient.deleteFormContainer(createdForm);
+        Form deletedForm = new FormContainerClient(BASE_URL, serviceTicket).deleteFormContainer(createdForm);
 
         TestCase.assertNotNull("The 'Form Container' needs to be set.",
                 deletedForm);
@@ -522,5 +520,191 @@ public class TestFormContainerClient extends ABaseTestCase {
         formFieldClient.deleteField(tempMultiPlainTitle);
     }
 
+    /**
+     *
+     */
+    @Test
+    public void testCreateDeleteTableRecordWebSocket()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
 
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+        String serviceTicketHex = null;
+        if(serviceTicket != null && !serviceTicket.isEmpty())
+        {
+            serviceTicketHex = UtilGlobal.encodeBase16(
+                    UtilGlobal.decodeBase64(serviceTicket));
+        }
+
+        WebSocketTableRecordCreateClient webSocketTableRecordClient
+                = new WebSocketTableRecordCreateClient(BASE_URL,
+                null, serviceTicketHex, TimeUnit.MINUTES.toMillis(2));
+
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
+        FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
+
+        //1. Create the Definitions...
+        Field tempTextPlainInvoiceNumber = new Field();
+        tempTextPlainInvoiceNumber.setFieldName("JUNIT Invoice Number");
+        tempTextPlainInvoiceNumber.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+        tempTextPlainInvoiceNumber = formFieldClient.createFieldTextPlain(tempTextPlainInvoiceNumber);
+
+        Field tempTextPlainCode = new Field();
+        tempTextPlainCode.setFieldName("JUNIT Code");
+        tempTextPlainCode.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+        tempTextPlainCode = formFieldClient.createFieldTextPlain(tempTextPlainCode);
+
+        Field tempTextPlainDescription = new Field();
+        tempTextPlainDescription.setFieldName("JUNIT Description");
+        tempTextPlainDescription.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+        tempTextPlainDescription = formFieldClient.createFieldTextPlain(tempTextPlainDescription);
+
+        Field tempMultiPlainTitle = new Field();
+        tempMultiPlainTitle.setFieldName("JUNIT Title");
+        tempMultiPlainTitle.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+
+        List<String> availTitles = new ArrayList();
+        availTitles.add("Mr");
+        availTitles.add("Mrs");
+        availTitles.add("Dr");
+        tempMultiPlainTitle = formFieldClient.createFieldMultiChoicePlain(
+                tempMultiPlainTitle,availTitles);
+
+        Form formDefinitionLineItem = new Form();
+        formDefinitionLineItem.setFormType("JUNIT Line Item");
+        formDefinitionLineItem.setFormDescription("Line item definition.");
+
+        List<Field> frmFieldsLineItem = new ArrayList();
+        frmFieldsLineItem.add(tempTextPlainCode);
+        frmFieldsLineItem.add(tempTextPlainDescription);
+        frmFieldsLineItem.add(tempMultiPlainTitle);
+
+        formDefinitionLineItem.setFormFields(frmFieldsLineItem);
+
+        formDefinitionLineItem =
+                formDefinitionClient.createFormDefinition(formDefinitionLineItem);
+
+        Field tableFieldToCreate = new Field();
+        tableFieldToCreate.setFieldName("JUNIT Line Items");
+        tableFieldToCreate.setFieldDescription(TestFormFieldClient.TestStatics.FIELD_DESCRIPTION);
+
+        //2.1 Create Line Item Table Field...
+        Field createdFieldTableLineItems = formFieldClient.createFieldTable(
+                tableFieldToCreate, formDefinitionLineItem,
+                TestFormFieldClient.TestStatics.TableField.SUM_DECIMALS);
+
+        //2.2 Create Form Definition Invoice.
+        Form formDefinitionInvoice = new Form();
+        formDefinitionInvoice.setFormType("JUNIT Invoice");
+        formDefinitionInvoice.setFormDescription("Invoice description.");
+
+        List<Field> frmFieldsInvoice = new ArrayList();
+        frmFieldsInvoice.add(tempTextPlainInvoiceNumber);
+        frmFieldsInvoice.add(createdFieldTableLineItems);
+
+        formDefinitionInvoice.setFormFields(frmFieldsInvoice);
+
+        formDefinitionInvoice =
+                formDefinitionClient.createFormDefinition(formDefinitionInvoice);
+
+        //CREATE THE ITEMS...
+        Form toCreate = new Form("JUNIT Invoice");
+        toCreate.setTitle("INV_12345");
+
+        List<Field> fields = new ArrayList();
+        fields.add(new Field("JUNIT Invoice Number", "INV_12345"));
+        toCreate.setFormFields(fields);
+
+        //Create...
+        Form createdInvoice = formContainerClient.createFormContainer(toCreate);
+
+        Form formContainerLineItem = new Form("JUNIT Line Item");
+        formContainerLineItem.setTitle("INV_12345");
+
+        List<Field> lineItemFields = new ArrayList();
+
+        lineItemFields.add(new Field("JUNIT Description", "Line item description."));
+        lineItemFields.add(new Field("JUNIT Code", "Pills001"));
+        lineItemFields.add(new Field("JUNIT Title", new MultiChoice("Mr")));
+
+        toCreate.setFormFields(lineItemFields);
+
+        formContainerLineItem.setFormFields(lineItemFields);
+
+        TableRecord tableRecordLineItemToCreateOne = new TableRecord();
+        tableRecordLineItemToCreateOne.setParentFormContainer(createdInvoice);
+        tableRecordLineItemToCreateOne.setParentFormField(createdFieldTableLineItems);
+        tableRecordLineItemToCreateOne.setFormContainer(formContainerLineItem);
+
+        //Create the 5...
+        tableRecordLineItemToCreateOne =
+                webSocketTableRecordClient.createTableRecordSynchronized(tableRecordLineItemToCreateOne);
+
+        List<TableRecord> additionalForSpeed = new ArrayList();
+
+        long now = System.currentTimeMillis();
+        int totalCount = 40;
+        for(int counter = 0;counter < totalCount;counter++)
+        {
+            TableRecord toAdd = new TableRecord();
+
+            toAdd.setParentFormContainer(createdInvoice);
+            toAdd.setParentFormField(createdFieldTableLineItems);
+            toAdd.setFormContainer(formContainerLineItem);
+
+            toAdd = webSocketTableRecordClient.createTableRecordSynchronized(toAdd);
+
+            additionalForSpeed.add(toAdd);
+        }
+
+        long takenInMillis = (System.currentTimeMillis() - now);
+
+        System.out.println("Took '"+takenInMillis+"' millis to create '"+
+                takenInMillis+"' records. Average of '"+(takenInMillis / totalCount)+"' millis per item.");
+
+        TestCase.assertNotNull("Table Record Not Set.", tableRecordLineItemToCreateOne);
+
+        List<Field> formFields = tableRecordLineItemToCreateOne.getFormContainer().getFormFields();
+
+        TestCase.assertEquals("Expected 3 Table Fields.",
+                3,formFields.size());
+
+        for(Field formField : formFields)
+        {
+            TestCase.assertNotNull("Form Field Id is not set. " +
+                            "Expected value to be set.",
+                    formField.getId());
+        }
+
+        //DELETE THE ITEMS...
+        if(!additionalForSpeed.isEmpty())
+        {
+            for(TableRecord toDel : additionalForSpeed)
+            {
+                formContainerClient.deleteFormContainer(toDel.getFormContainer());
+            }
+        }
+
+        formContainerClient.deleteFormContainer(tableRecordLineItemToCreateOne.getFormContainer());
+        formContainerClient.deleteFormContainer(createdInvoice);
+
+        //5. Delete...
+        formDefinitionClient.deleteFormDefinition(formDefinitionInvoice);
+        formFieldClient.deleteField(tempTextPlainInvoiceNumber);
+        formFieldClient.deleteField(createdFieldTableLineItems);
+
+        //Delete the other temp field...
+        formDefinitionClient.deleteFormDefinition(formDefinitionLineItem);
+        formFieldClient.deleteField(tempTextPlainCode);
+        formFieldClient.deleteField(tempTextPlainDescription);
+        formFieldClient.deleteField(tempMultiPlainTitle);
+    }
 }

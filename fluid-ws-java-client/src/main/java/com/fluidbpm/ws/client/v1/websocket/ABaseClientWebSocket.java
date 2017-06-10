@@ -40,7 +40,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
 
     private WebSocketClient webSocketClient;
     private long timeoutInMillis;
-    protected T messageHandler;
+    private ThreadLocal<T> messageHandlerThreadLocal;
 
     /**
      * The constant variables used.
@@ -55,9 +55,6 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
 
         public static final String SCHEME_SEP = "://";
         public static final String COLON = ":";
-
-        public static final long RESPONSE_CHECKER_SLEEP = 5;
-        //public static final String FORWARD_SLASH = "/";
     }
 
     /**
@@ -75,11 +72,19 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             String postFixForUrlParam) {
         super(endpointBaseUrlParam);
 
-        this.messageHandler = messageHandlerParam;
+        if(messageHandlerParam == null)
+        {
+            throw new FluidClientException(
+                    "[IMessageHandler] has not been implemented.",
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+        
+        this.messageHandlerThreadLocal = new ThreadLocal<T>();
+        this.messageHandlerThreadLocal.set(messageHandlerParam);
+        
         this.timeoutInMillis = timeoutInMillisParam;
 
-        if(this.webSocketEndpointUrl == null &&
-                this.endpointUrl != null)
+        if(this.webSocketEndpointUrl == null && this.endpointUrl != null)
         {
             this.webSocketEndpointUrl =
                     this.getWebSocketBaseURIFrom(this.endpointUrl);
@@ -91,13 +96,6 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
         {
             throw new FluidClientException(
                     "Base Web Socket Enpoint URL not set.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
-
-        if(messageHandlerParam == null)
-        {
-            throw new FluidClientException(
-                    "[IMessageHandler] has not been implemented.",
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
 
@@ -132,17 +130,6 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
     }
 
     /**
-     * Creates a new client and sets the Base Endpoint URL.
-     *
-     * @param baseEndpointUrlParam URL to base endpoint.
-     */
-    public ABaseClientWebSocket(String baseEndpointUrlParam) {
-        super(baseEndpointUrlParam);
-
-        this.webSocketEndpointUrl = this.getWebSocketBaseURIFrom(baseEndpointUrlParam);
-    }
-
-    /**
      * Send the {@code baseFluidJSONObjectParam} via Web Socket.
      *
      * @param baseFluidJSONObjectParam The JSONObject to send.
@@ -156,10 +143,11 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
             //Add the echo to the listing if [GenericListMessageHandler].
-            if(this.messageHandler != null &&
-                    (this.messageHandler instanceof GenericListMessageHandler))
+
+            if(this.getMessageHandler() instanceof GenericListMessageHandler)
             {
-                GenericListMessageHandler listHandler = (GenericListMessageHandler)this.messageHandler;
+                GenericListMessageHandler listHandler =
+                        (GenericListMessageHandler)this.getMessageHandler();
                 listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
             }
         }
@@ -197,12 +185,24 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
 
         this.webSocketClient.closeSession();
 
-        if(this.messageHandler != null)
+        if(this.messageHandlerThreadLocal.get() != null)
         {
-            this.messageHandler.connectionClosed();
+            this.messageHandlerThreadLocal.get().connectionClosed();
         }
 
         super.closeConnectionNonThreaded();
+    }
+
+    /**
+     * Returns the {@code ThreadLocal} instance of MessageHandler.
+     *
+     * @see ThreadLocal
+     *
+     * @return The message handler.
+     */
+    protected T getMessageHandler()
+    {
+        return this.messageHandlerThreadLocal.get();
     }
 
     /**
@@ -224,13 +224,6 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
         }
 
         URI uri = URI.create(webServiceURLParam);
-        if(uri == null)
-        {
-            throw new FluidClientException(
-                    "URI created from '"+webServiceURLParam+"' is not set.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
-
         StringBuilder returnBuffer = new StringBuilder();
 
         String scheme = uri.getScheme();
@@ -280,7 +273,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
      *
      * @return Timeout in millis.
      */
-    public long getTimeoutInMillis() {
+    protected long getTimeoutInMillis() {
         return this.timeoutInMillis;
     }
 
@@ -296,7 +289,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
          *
          * @param baseClientWebSocketParam Base WS utility to close.
          */
-        public CloseConnectionRunnable(ABaseClientWebSocket baseClientWebSocketParam) {
+        CloseConnectionRunnable(ABaseClientWebSocket baseClientWebSocketParam) {
             this.baseClientWebSocket = baseClientWebSocketParam;
         }
 
@@ -314,5 +307,4 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             this.baseClientWebSocket.closeConnectionNonThreaded();
         }
     }
-
 }

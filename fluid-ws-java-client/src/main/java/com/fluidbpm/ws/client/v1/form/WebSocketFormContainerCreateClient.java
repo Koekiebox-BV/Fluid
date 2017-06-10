@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.form;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +33,8 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
  * Java Web Socket Client for {@code Form} related actions.
+ *
+ * IMPORTANT: This class is Thread safe.
  *
  * @author jasonbruwer
  * @since v1.4
@@ -77,7 +80,7 @@ public class WebSocketFormContainerCreateClient extends
     public Form createFormContainerSynchronized(
             Form formToCreateParam) {
 
-        this.messageHandler.clear();
+        this.getMessageHandler().clear();
 
         if(formToCreateParam == null)
         {
@@ -85,16 +88,15 @@ public class WebSocketFormContainerCreateClient extends
         }
 
         //Send all the messages...
-        if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().isEmpty())
+        if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().trim().isEmpty())
         {
-            throw new FluidClientException("Echo needs to be set to bind to return.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+            formToCreateParam.setEcho(UUID.randomUUID().toString());
         }
 
         CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
 
         //Set the future...
-        this.messageHandler.setCompletableFuture(completableFuture);
+        this.getMessageHandler().setCompletableFuture(completableFuture);
         
         //Send the actual message...
         this.sendMessage(formToCreateParam);
@@ -142,7 +144,7 @@ public class WebSocketFormContainerCreateClient extends
 
             throw new FluidClientException(
                     "WebSocket-CreateFormContainer: Timeout while waiting for all return data. There were '"
-                            +this.messageHandler.getReturnValue().size()
+                            +this.getMessageHandler().getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
@@ -169,7 +171,7 @@ public class WebSocketFormContainerCreateClient extends
     /**
      * Gets the single form. Still relying on a single session.
      */
-    public static class CreateFormContainerMessageHandler extends GenericListMessageHandler<Form>
+    static class CreateFormContainerMessageHandler extends GenericListMessageHandler<Form>
     {
         private Form returnedForm;
 

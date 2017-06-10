@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +77,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
     public List<FormListing> executeSQLSynchronized(
             Form formWithSQLFieldParam) {
 
-        this.messageHandler.clear();
+        this.getMessageHandler().clear();
 
         if(formWithSQLFieldParam == null)
         {
@@ -86,20 +87,20 @@ public class SQLUtilWebSocketExecuteSQLClient extends
         if(formWithSQLFieldParam.getFormFields() == null ||
                 formWithSQLFieldParam.getFormFields().isEmpty())
         {
-            return this.messageHandler.getReturnValue();
+            return this.getMessageHandler().getReturnValue();
         }
 
         //Validate the echo...
-        if(formWithSQLFieldParam.getEcho() == null || formWithSQLFieldParam.getEcho().isEmpty())
+        if(formWithSQLFieldParam.getEcho() == null ||
+                formWithSQLFieldParam.getEcho().trim().isEmpty())
         {
-            throw new FluidClientException("Echo needs to be set to bind to return.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+            formWithSQLFieldParam.setEcho(UUID.randomUUID().toString());
         }
 
         CompletableFuture<List<FormListing>> completableFuture = new CompletableFuture();
 
         //Set the future...
-        this.messageHandler.setCompletableFuture(completableFuture);
+        this.getMessageHandler().setCompletableFuture(completableFuture);
 
         //Send the actual message...
         this.sendMessage(formWithSQLFieldParam);
@@ -142,7 +143,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-ExecuteSQL: Timeout while waiting for all return data. There were '"
-                            +this.messageHandler.getReturnValue().size()
+                            +this.getMessageHandler().getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);

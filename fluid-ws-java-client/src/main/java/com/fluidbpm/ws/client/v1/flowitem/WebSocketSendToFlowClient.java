@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.flowitem;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,8 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
  * Java Web Socket Client for sending {@code Form} to a specific Flow.
+ *
+ * IMPORTANT: This class is Thread safe.
  *
  * @author jasonbruwer
  * @since v1.5
@@ -79,7 +82,7 @@ public class WebSocketSendToFlowClient extends
     public FluidItem sendToFlowSynchronized(
             Form formToSendToFlowParam) {
 
-        this.messageHandler.clear();
+        this.getMessageHandler().clear();
 
         if(formToSendToFlowParam == null)
         {
@@ -87,16 +90,15 @@ public class WebSocketSendToFlowClient extends
         }
 
         //Send all the messages...
-        if(formToSendToFlowParam.getEcho() == null || formToSendToFlowParam.getEcho().isEmpty())
+        if(formToSendToFlowParam.getEcho() == null || formToSendToFlowParam.getEcho().trim().isEmpty())
         {
-            throw new FluidClientException("Echo needs to be set to bind to return.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+            formToSendToFlowParam.setEcho(UUID.randomUUID().toString());
         }
 
         CompletableFuture<List<FluidItem>> completableFuture = new CompletableFuture();
 
         //Set the future...
-        this.messageHandler.setCompletableFuture(completableFuture);
+        this.getMessageHandler().setCompletableFuture(completableFuture);
         
         //Send the actual message...
         this.sendMessage(formToSendToFlowParam);
@@ -144,7 +146,7 @@ public class WebSocketSendToFlowClient extends
 
             throw new FluidClientException(
                     "WebSocket-SendToFlow: Timeout while waiting for all return data. There were '"
-                            +this.messageHandler.getReturnValue().size()
+                            +this.getMessageHandler().getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);

@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.form;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +34,8 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
  * Java Web Socket Client for {@code TableRecord} related actions.
+ *
+ * IMPORTANT: This class is Thread safe.
  *
  * @author jasonbruwer on 2017/06/10
  * @since v1.5
@@ -79,7 +82,7 @@ public class WebSocketTableRecordCreateClient extends
     public TableRecord createTableRecordSynchronized(
             TableRecord tableRecordToCreateParam) {
 
-        this.messageHandler.clear();
+        this.getMessageHandler().clear();
 
         if(tableRecordToCreateParam == null)
         {
@@ -87,16 +90,16 @@ public class WebSocketTableRecordCreateClient extends
         }
 
         //Send all the messages...
-        if(tableRecordToCreateParam.getEcho() == null || tableRecordToCreateParam.getEcho().isEmpty())
+        if(tableRecordToCreateParam.getEcho() == null ||
+                tableRecordToCreateParam.getEcho().trim().isEmpty())
         {
-            throw new FluidClientException("Echo needs to be set to bind to return.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+            tableRecordToCreateParam.setEcho(UUID.randomUUID().toString());
         }
 
         CompletableFuture<List<TableRecord>> completableFuture = new CompletableFuture();
 
         //Set the future...
-        this.messageHandler.setCompletableFuture(completableFuture);
+        this.getMessageHandler().setCompletableFuture(completableFuture);
         
         //Send the actual message...
         this.sendMessage(tableRecordToCreateParam);
@@ -145,7 +148,7 @@ public class WebSocketTableRecordCreateClient extends
             throw new FluidClientException(
                     "WebSocket-CreateTableRecord: " +
                             "Timeout while waiting for all return data. There were '"
-                            +this.messageHandler.getReturnValue().size()
+                            +this.getMessageHandler().getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
@@ -172,7 +175,7 @@ public class WebSocketTableRecordCreateClient extends
     /**
      * Gets the single form. Still relying on a single session.
      */
-    public static class CreateTableRecordMessageHandler extends GenericListMessageHandler<TableRecord>
+    static class CreateTableRecordMessageHandler extends GenericListMessageHandler<TableRecord>
     {
         private TableRecord returnedTableRecord;
 

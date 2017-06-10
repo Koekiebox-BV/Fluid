@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +85,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
      */
     public Form getAncestorSynchronized(Form formToGetAncestorForParam) {
 
-        this.messageHandler.clear();
+        this.getMessageHandler().clear();
 
         if(formToGetAncestorForParam == null)
         {
@@ -92,16 +93,16 @@ public class SQLUtilWebSocketGetAncestorClient extends
         }
 
         //Send all the messages...
-        if(formToGetAncestorForParam.getEcho() == null || formToGetAncestorForParam.getEcho().isEmpty())
+        if(formToGetAncestorForParam.getEcho() == null ||
+                formToGetAncestorForParam.getEcho().trim().isEmpty())
         {
-            throw new FluidClientException("Echo needs to be set to bind to return.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+            formToGetAncestorForParam.setEcho(UUID.randomUUID().toString());
         }
 
         CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
 
         //Set the future...
-        this.messageHandler.setCompletableFuture(completableFuture);
+        this.getMessageHandler().setCompletableFuture(completableFuture);
 
         //Send the actual message...
         this.sendMessage(formToGetAncestorForParam);
@@ -149,7 +150,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-GetAncestor: Timeout while waiting for all return data. There were '"
-                            +this.messageHandler.getReturnValue().size()
+                            +this.getMessageHandler().getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);

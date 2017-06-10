@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -80,7 +81,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
     public List<FormListing> getTableFormsSynchronized(
             Form ... formsToGetTableFormsForParam) {
 
-        this.messageHandler.clear();
+        this.getMessageHandler().clear();
 
         if(formsToGetTableFormsForParam == null)
         {
@@ -89,13 +90,13 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 
         if(formsToGetTableFormsForParam.length == 0)
         {
-            return this.messageHandler.getReturnValue();
+            return this.getMessageHandler().getReturnValue();
         }
 
         CompletableFuture<List<FormListing>> completableFuture = new CompletableFuture();
 
         //Set the future...
-        this.messageHandler.setCompletableFuture(completableFuture);
+        this.getMessageHandler().setCompletableFuture(completableFuture);
 
         //Send all the messages...
         for(Form formToSend : formsToGetTableFormsForParam)
@@ -106,10 +107,9 @@ public class SQLUtilWebSocketGetTableFormsClient extends
                         "Cannot provide 'null' for Form.",
                         FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
             }
-            else if(formToSend.getEcho() == null || formToSend.getEcho().isEmpty())
+            else if(formToSend.getEcho() == null || formToSend.getEcho().trim().isEmpty())
             {
-                throw new FluidClientException("Echo needs to be set to bind to return.",
-                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+                formToSend.setEcho(UUID.randomUUID().toString());
             }
 
             //Send the actual message...
@@ -154,7 +154,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-GetTableRecordForms: Timeout while waiting for all return data. There were '"
-                            +this.messageHandler.getReturnValue().size()
+                            +this.getMessageHandler().getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
