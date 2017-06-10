@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
@@ -31,17 +32,18 @@ import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
- * Java Web Socket Client for {@code Form} related actions.
+ * Java Web Socket Client for {@code TableRecord} related actions.
  *
- * @author jasonbruwer
- * @since v1.4
+ * @author jasonbruwer on 2017/06/10
+ * @since v1.5
  *
  * @see JSONObject
  * @see WS.Path.FormContainer
  * @see Form
+ * @see com.fluidbpm.program.api.vo.form.TableRecord
  */
-public class WebSocketFormContainerClient extends
-        ABaseClientWebSocket<WebSocketFormContainerClient.CreateFormContainerMessageHandler> {
+public class WebSocketTableRecordCreateClient extends
+        ABaseClientWebSocket<WebSocketTableRecordCreateClient.CreateTableRecordMessageHandler> {
 
     /**
      * Constructor that sets the Service Ticket from authentication.
@@ -53,54 +55,54 @@ public class WebSocketFormContainerClient extends
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
      */
-    public WebSocketFormContainerClient(
+    public WebSocketTableRecordCreateClient(
             String endpointBaseUrlParam,
-            IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+            IMessageReceivedCallback<TableRecord> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam) {
         super(endpointBaseUrlParam,
-                new CreateFormContainerMessageHandler(messageReceivedCallbackParam),
+                new CreateTableRecordMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
-                WS.Path.FormContainer.Version1.formContainerCreateWebSocket(
+                WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreateWebSocket(
                         serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
 
     /**
-     * Creates a new (Form) for the {@code formToCreateParam}.
+     * Creates a new (TableRecord) for the {@code formToCreateParam}.
      *
-     * @param formToCreateParam The Fluid Form to create.
+     * @param tableRecordToCreateParam The Fluid Form to create.
      *
-     * @return The {@code formToCreateParam} created as {@code Form}.
+     * @return The {@code tableRecordToCreateParam} created as {@code TableRecord}.
      */
-    public Form createFormContainerSynchronized(
-            Form formToCreateParam) {
+    public TableRecord createTableRecordSynchronized(
+            TableRecord tableRecordToCreateParam) {
 
         this.messageHandler.clear();
 
-        if(formToCreateParam == null)
+        if(tableRecordToCreateParam == null)
         {
             return null;
         }
 
         //Send all the messages...
-        if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().isEmpty())
+        if(tableRecordToCreateParam.getEcho() == null || tableRecordToCreateParam.getEcho().isEmpty())
         {
             throw new FluidClientException("Echo needs to be set to bind to return.",
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
 
-        CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
+        CompletableFuture<List<TableRecord>> completableFuture = new CompletableFuture();
 
         //Set the future...
         this.messageHandler.setCompletableFuture(completableFuture);
         
         //Send the actual message...
-        this.sendMessage(formToCreateParam);
+        this.sendMessage(tableRecordToCreateParam);
 
         try {
-            List<Form> returnValue = completableFuture.get(
+            List<TableRecord> returnValue = completableFuture.get(
                     this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
             if(returnValue == null || returnValue.isEmpty())
@@ -114,7 +116,7 @@ public class WebSocketFormContainerClient extends
         catch (InterruptedException exceptParam) {
 
             throw new FluidClientException(
-                    "SQLUtil-WebSocket-Interrupted-CreateFormContainer: " +
+                    "WebSocket-Interrupted-CreateTableRecord: " +
                             exceptParam.getMessage(),
                     exceptParam,
                     FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
@@ -132,7 +134,7 @@ public class WebSocketFormContainerClient extends
             else
             {
                 throw new FluidClientException(
-                        "SQLUtil-WebSocket-CreateFormContainer: " +
+                        "WebSocket-CreateTableRecord: " +
                                 cause.getMessage(), cause,
                         FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
             }
@@ -141,7 +143,8 @@ public class WebSocketFormContainerClient extends
         catch (TimeoutException eParam) {
 
             throw new FluidClientException(
-                    "SQLUtil-WebSocket-CreateFormContainer: Timeout while waiting for all return data. There were '"
+                    "WebSocket-CreateTableRecord: " +
+                            "Timeout while waiting for all return data. There were '"
                             +this.messageHandler.getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
@@ -150,36 +153,36 @@ public class WebSocketFormContainerClient extends
     }
 
     /**
-     * Creates a new Form Container from {@code formToGetAncestorsForForParam}
+     * Creates a new Table Record from {@code formToGetAncestorsForForParam}
      * asynchronously.
      *
-     * @param formToCreateParam The Fluid Form create.
+     * @param tableRecordParamToCreateParam The Fluid Table Record to create.
      */
-    public void createFormAsynchronous(Form formToCreateParam) {
+    public void createTableRecordAsynchronous(TableRecord tableRecordParamToCreateParam) {
 
-        if(formToCreateParam == null)
+        if(tableRecordParamToCreateParam == null)
         {
             return;
         }
 
         //Send the actual message...
-        this.sendMessage(formToCreateParam);
+        this.sendMessage(tableRecordParamToCreateParam);
     }
 
     /**
      * Gets the single form. Still relying on a single session.
      */
-    public static class CreateFormContainerMessageHandler extends GenericListMessageHandler<Form>
+    public static class CreateTableRecordMessageHandler extends GenericListMessageHandler<TableRecord>
     {
-        private Form returnedForm;
+        private TableRecord returnedTableRecord;
 
         /**
          * The default constructor that sets a ancestor message handler.
          *
          * @param messageReceivedCallbackParam The optional message callback.
          */
-        public CreateFormContainerMessageHandler(
-                IMessageReceivedCallback<Form> messageReceivedCallbackParam) {
+        public CreateTableRecordMessageHandler(
+                IMessageReceivedCallback<TableRecord> messageReceivedCallbackParam) {
 
             super(messageReceivedCallbackParam);
         }
@@ -191,11 +194,11 @@ public class WebSocketFormContainerClient extends
          * @return new {@code Form}.
          */
         @Override
-        public Form getNewInstanceBy(JSONObject jsonObjectParam) {
+        public TableRecord getNewInstanceBy(JSONObject jsonObjectParam) {
 
-            this.returnedForm = new Form(jsonObjectParam);
+            this.returnedTableRecord = new TableRecord(jsonObjectParam);
 
-            return this.returnedForm;
+            return this.returnedTableRecord;
         }
 
         /**
@@ -203,8 +206,8 @@ public class WebSocketFormContainerClient extends
          *
          * @return The returned form.
          */
-        public Form getReturnedForm() {
-            return this.returnedForm;
+        public TableRecord getReturnedTableRecord() {
+            return this.returnedTableRecord;
         }
     }
 }

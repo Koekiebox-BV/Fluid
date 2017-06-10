@@ -170,8 +170,8 @@ public class TestFormContainerClient extends ABaseTestCase {
                     UtilGlobal.decodeBase64(serviceTicket));
         }
 
-        WebSocketFormContainerClient webSocketFormContainerClient
-                = new WebSocketFormContainerClient(BASE_URL,
+        WebSocketFormContainerCreateClient webSocketFormContainerClient
+                = new WebSocketFormContainerCreateClient(BASE_URL,
                 null, serviceTicketHex,5000);
 
         //1. Form...
@@ -521,4 +521,6 @@ public class TestFormContainerClient extends ABaseTestCase {
         formFieldClient.deleteField(tempTextPlainDescription);
         formFieldClient.deleteField(tempMultiPlainTitle);
     }
+
+
 }

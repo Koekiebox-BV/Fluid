@@ -225,6 +225,9 @@ public class WS {
                 public static final String ROOT = ("/form_container/table_record");
                 public static final String CREATE = ("/");
 
+                public static final String ROOT_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+
                 /**
                  * Root for Form Container.
                  *
@@ -243,6 +246,18 @@ public class WS {
                 public static final String formContainerTableRecordCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Electronic Form Table Record create via Web Socket.
+                 *
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code web_socket/v1/form_container/table_record/}
+                 */
+                public static final String formContainerTableRecordCreateWebSocket(String serviceTicketParam)
+                {
+                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
                 }
             }
         }
@@ -1259,8 +1274,11 @@ public class WS {
                 //Send On...
                 public static final String SEND_ON = ("/send_on");
 
+
                 //Send to Flow...
                 public static final String SEND_TO_FLOW = ("/send_to_flow");
+                public static final String SEND_TO_FLOW_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT + SEND_TO_FLOW);
 
                 //Create...
                 public static final String CREATE = ("/");
@@ -1318,11 +1336,23 @@ public class WS {
                  * URL Path for sending a Form to a Flow to follow
                  * the workflow process.
                  *
-                 * @return {@code /v1/flow_item/send_to_flow}
+                 * @return {@code /v1/flow_item/send_to_flow/}
                  */
                 public static final String sendFlowItemToFlow()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(SEND_TO_FLOW);
+                }
+
+                /**
+                 * URL Path for Send to Flow via Web Socket.
+                 *
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *
+                 * @return {@code web_socket/v1/flow_item/send_to_flow/}
+                 */
+                public static final String sendToFlowWebSocket(String serviceTicketParam)
+                {
+                    return SEND_TO_FLOW_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
                 }
 
                 /**
