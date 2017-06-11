@@ -1299,6 +1299,10 @@ public class WS {
 
                     //Locking a Form Container...
                     public static final String JOB_VIEW = "job_view";
+
+                    //Wait for Rule execution completion...
+                    public static final String WAIT_FOR_RULE_EXEC_COMPLETION =
+                            "wait_for_rule_exec_completion";
                 }
 
                 /**
@@ -1346,13 +1350,26 @@ public class WS {
                 /**
                  * URL Path for Send to Flow via Web Socket.
                  *
+                 * @param waitForRuleExecCompleteParam Wait for all the program rules to finish execution
+                 *                                     before returning web socket message is sent.
+                 *                                     The response message will include the result.
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  *
                  * @return {@code web_socket/v1/flow_item/send_to_flow/}
                  */
-                public static final String sendToFlowWebSocket(String serviceTicketParam)
+                public static final String sendToFlowWebSocket(
+                        boolean waitForRuleExecCompleteParam,
+                        String serviceTicketParam)
                 {
-                    return SEND_TO_FLOW_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
+                    String returnVal =
+                            SEND_TO_FLOW_WEB_SOCKET.concat(
+                                    CREATE).concat(
+                                            serviceTicketParam + "/" +
+                                            "?" +
+                                                    QueryParam.WAIT_FOR_RULE_EXEC_COMPLETION+"=" +
+                                                    waitForRuleExecCompleteParam);
+
+                    return returnVal;
                 }
 
                 /**

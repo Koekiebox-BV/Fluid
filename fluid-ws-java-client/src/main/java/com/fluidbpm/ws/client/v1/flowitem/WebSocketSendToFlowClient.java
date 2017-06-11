@@ -56,16 +56,21 @@ public class WebSocketSendToFlowClient extends
      *
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
+     * @param waitForRuleExecCompleteParam Wait for all the program rules to finish execution
+     *                                     before returning web socket message is sent.
+     *                                     The response message will include the result.
      */
     public WebSocketSendToFlowClient(
             String endpointBaseUrlParam,
             IMessageReceivedCallback<FluidItem> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
-            long timeoutInMillisParam) {
+            long timeoutInMillisParam,
+            boolean waitForRuleExecCompleteParam) {
         super(endpointBaseUrlParam,
                 new SendToFlowMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.FlowItem.Version1.sendToFlowWebSocket(
+                        waitForRuleExecCompleteParam,
                         serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);
