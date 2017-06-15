@@ -220,9 +220,19 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
             //Iterate each of the form containers...
             while (resultSet.next())
             {
-                returnVal.add(this.mapFormContainerTo(
+                Form mappedForm = this.mapFormContainerTo(
                         definitionAndTitle,
-                        resultSet));
+                        resultSet);
+
+                if(mappedForm == null)
+                {
+                    continue;
+                }
+
+                //Ancestor...
+                mappedForm.setAncestorId(electronicFormIdParam);
+
+                returnVal.add(mappedForm);
             }
 
             //When field data must also be included...
