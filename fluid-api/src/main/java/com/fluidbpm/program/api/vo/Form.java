@@ -934,7 +934,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if(ancestorIdLcl != null)
         {
             returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
-            returnVal.put(JSONMapping._PARENT, ancestorIdLcl);
         }
 
         //Table Field Parent Id...
@@ -1237,7 +1236,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if(ancestorIdLcl != null)
         {
             returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
-            returnVal.put(JSONMapping._PARENT, ancestorIdLcl);
         }
 
         //Table Field Parent Id...

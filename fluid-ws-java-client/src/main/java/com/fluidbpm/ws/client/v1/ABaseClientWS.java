@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
@@ -26,6 +27,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -44,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.GitDescribe;
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -80,6 +84,9 @@ public abstract class ABaseClientWS {
     private static String REGEX_EQUALS = "\\=";
 
     public static boolean IS_IN_JUNIT_TEST_MODE = false;
+
+    public static String SYSTEM_PROP_FLUID_TRUST_STORE = "fluid.httpclient.truststore";
+    public static String SYSTEM_PROP_FLUID_TRUST_STORE_PASSWORD = "fluid.httpclient.truststore.password";
 
     private CloseableHttpClient closeableHttpClient;
 
@@ -228,16 +235,18 @@ public abstract class ABaseClientWS {
                 throw new FluidClientException(
                         "Unable to reach host '"+
                                 this.endpointUrl.concat(postfixUrlParam)+"'. "+e.getMessage(),
-                        FluidClientException.ErrorCode.CONNECT_ERROR);
+                        e, FluidClientException.ErrorCode.CONNECT_ERROR);
             }
 
             if(e instanceof ConnectException)
             {
                 throw new FluidClientException(e.getMessage(),
-                        FluidClientException.ErrorCode.CONNECT_ERROR);
+                        e, FluidClientException.ErrorCode.CONNECT_ERROR);
             }
 
-            throw new FluidClientException(e.getMessage(), FluidClientException.ErrorCode.IO_ERROR);
+            throw new FluidClientException(
+                    e.getMessage(),
+                    e, FluidClientException.ErrorCode.IO_ERROR);
         }
     }
 
@@ -1004,33 +1013,71 @@ public abstract class ABaseClientWS {
         }
 
         //Only accept self signed certificate if in Junit test case.
-        if(IS_IN_JUNIT_TEST_MODE)
+        String pathToFluidTrustStore = this.getPathToFluidSpecificTrustStore();
+        //Test mode...
+        if(IS_IN_JUNIT_TEST_MODE || pathToFluidTrustStore != null)
         {
             SSLContextBuilder builder = new SSLContextBuilder();
 
             try {
                 //builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-                builder.loadTrustMaterial(new SSLTrustAll());
+                if(pathToFluidTrustStore == null)
+                {
+                    builder.loadTrustMaterial(new SSLTrustAll());
+                }
+                else
+                {
+                    String password = this.getFluidSpecificTrustStorePassword();
+                    if(password == null)
+                    {
+                        password = UtilGlobal.EMPTY;
+                    }
 
-                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
+                    if(IS_IN_JUNIT_TEST_MODE)
+                    {
+                        builder.loadTrustMaterial(
+                                new File(pathToFluidTrustStore),
+                                password.toCharArray(),
+                                new SSLTrustAll());
+                    }
+                    else
+                    {
+                        builder.loadTrustMaterial(
+                                new File(pathToFluidTrustStore),
+                                password.toCharArray());
+                    }
+                }
 
-                this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+                SSLContext sslContext = builder.build();
+
+                this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(
+                        new SSLConnectionSocketFactory(sslContext)).build();
             }
             //Changed for Java 1.6 compatibility...
             catch (NoSuchAlgorithmException e) {
 
                 throw new FluidClientException(
-                        "Unable to load self signed trust material.",
-                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
+                        "NoSuchAlgorithm: Unable to load self signed trust material. "+e.getMessage(),
+                        e, FluidClientException.ErrorCode.CRYPTOGRAPHY);
             } catch (KeyManagementException e) {
 
                 throw new FluidClientException(
-                        "Unable to load self signed trust material.",
+                        "KeyManagement: Unable to load self signed trust material. "+e.getMessage(), e,
                         FluidClientException.ErrorCode.CRYPTOGRAPHY);
             } catch (KeyStoreException e) {
 
                 throw new FluidClientException(
-                        "Unable to load self signed trust material.",
+                        "KeyStore: Unable to load self signed trust material. "+e.getMessage(), e,
+                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
+            } catch (CertificateException e) {
+
+                throw new FluidClientException(
+                        "Certificate: Unable to load self signed trust material. "+e.getMessage(), e,
+                        FluidClientException.ErrorCode.CRYPTOGRAPHY);
+            } catch (IOException ioError) {
+
+                throw new FluidClientException(
+                        "IOError: Unable to load self signed trust material. "+ioError.getMessage(), ioError,
                         FluidClientException.ErrorCode.CRYPTOGRAPHY);
             }
         }
@@ -1041,6 +1088,47 @@ public abstract class ABaseClientWS {
         }
 
         return this.closeableHttpClient;
+    }
+
+    /**
+     * Retrieves the system property for the Fluid specific trust store.
+     *
+     * @return The {@code fluid.httpclient.truststore} system property value.
+     *
+     * @see System
+     * @see java.util.Properties
+     */
+    private String getPathToFluidSpecificTrustStore()
+    {
+        String fluidSystemTrustStore =
+                System.getProperty(SYSTEM_PROP_FLUID_TRUST_STORE);
+
+        if(fluidSystemTrustStore == null || fluidSystemTrustStore.trim().isEmpty())
+        {
+            return null;
+        }
+
+        File certFile = new File(fluidSystemTrustStore);
+
+        if(certFile.exists() && certFile.isFile())
+        {
+            return fluidSystemTrustStore;
+        }
+
+        return null;
+    }
+
+    /**
+     * Retrieves the system property for the Fluid specific trust store password.
+     *
+     * @return The {@code fluid.httpclient.truststore.password} system property value.
+     *
+     * @see System
+     * @see java.util.Properties
+     */
+    private String getFluidSpecificTrustStorePassword()
+    {
+        return System.getProperty(SYSTEM_PROP_FLUID_TRUST_STORE_PASSWORD);
     }
 
     /**
