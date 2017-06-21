@@ -663,6 +663,43 @@ public class FluidItem extends ABaseFluidJSONObject {
      *         <li>Field is not found by {@code fieldNameParam}.</li>
      *     </ul>
      *
+     * @param fieldNameParam The name of the Route Field as in Fluid.
+     * @return The value for the Route Field as {@code Boolean}.
+     *
+     * @see com.fluidbpm.program.api.vo.Field.Type#TrueFalse
+     */
+    public Boolean getRouteFieldValueAsBoolean(String fieldNameParam)
+    {
+        Object obj = this.getRouteFieldValue(fieldNameParam);
+
+        if(obj == null)
+        {
+            return null;
+        }
+
+        if(obj instanceof Boolean)
+        {
+            return ((Boolean)obj);
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getUserFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
      * @param fieldNameParam The name of the Global Field as in Fluid.
      * @return The value for the Global Field as {@code String}.
      *
