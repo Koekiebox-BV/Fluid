@@ -80,12 +80,17 @@ public class WebSocketSendToFlowClient extends
      * Sends the {@code formToSendToFlowParam} to a {@code Flow} in Fluid.
      * The return value is the {@code FluidItem} created as a result.
      *
+     * The Web socket has the ability to wait for the workflow to finish
+     * and then only respond with the final result of the item.
+     *
      * @param formToSendToFlowParam The Fluid Form to send to flow.
+     * @param destinationFlowParam The destination flow.
      *
      * @return The {@code formToSendToFlowParam} created as {@code FluidItem}.
      */
     public FluidItem sendToFlowSynchronized(
-            Form formToSendToFlowParam) {
+            Form formToSendToFlowParam,
+            String destinationFlowParam) {
 
         this.getMessageHandler().clear();
 
@@ -94,10 +99,22 @@ public class WebSocketSendToFlowClient extends
             return null;
         }
 
-        //Send all the messages...
-        if(formToSendToFlowParam.getEcho() == null || formToSendToFlowParam.getEcho().trim().isEmpty())
+        if(destinationFlowParam == null ||
+                destinationFlowParam.trim().isEmpty())
         {
-            formToSendToFlowParam.setEcho(UUID.randomUUID().toString());
+            throw new FluidClientException(
+                    "No destination Flow provided.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE);
+        }
+
+        FluidItem itemToSend = new FluidItem();
+        itemToSend.setFlow(destinationFlowParam);
+        itemToSend.setForm(formToSendToFlowParam);
+
+        //Send all the messages...
+        if(itemToSend.getEcho() == null || itemToSend.getEcho().trim().isEmpty())
+        {
+            itemToSend.setEcho(UUID.randomUUID().toString());
         }
 
         CompletableFuture<List<FluidItem>> completableFuture = new CompletableFuture();
@@ -106,7 +123,7 @@ public class WebSocketSendToFlowClient extends
         this.getMessageHandler().setCompletableFuture(completableFuture);
         
         //Send the actual message...
-        this.sendMessage(formToSendToFlowParam);
+        this.sendMessage(itemToSend);
 
         try {
             List<FluidItem> returnValue = completableFuture.get(
@@ -175,7 +192,7 @@ public class WebSocketSendToFlowClient extends
     }
 
     /**
-     * Gets the single form. Still relying on a single session.
+     * Gets the single {@link FluidItem}. Still relying on a single session.
      */
     public static class SendToFlowMessageHandler extends GenericListMessageHandler<FluidItem>
     {

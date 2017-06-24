@@ -383,7 +383,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
     }
-
+    
     /**
      *
      * @param numberOfFormsParam
