@@ -21,10 +21,7 @@ import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.flow.FlowItemExecutePacket;
-import com.fluidbpm.program.api.vo.flow.FlowItemExecuteResult;
-import com.fluidbpm.program.api.vo.flow.FlowStep;
-import com.fluidbpm.program.api.vo.flow.FlowStepRule;
+import com.fluidbpm.program.api.vo.flow.*;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 
@@ -180,6 +177,52 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
         return new FlowStepRule(this.postJson(
                 flowStepRule, WS.Path.FlowStepRule.Version1.compileViewSyntax()));
+    }
+
+    /**
+     * Retrieves the exit rules by step {@code flowStepParam}.
+     * Name or id can be provided.
+     *
+     * @param flowStepParam The flow step to get the exit rules for.
+     * @return All the exit rules for the step {@code flowStepParam}.
+     */
+    public FlowStepRuleListing getExitRulesByStep(FlowStep flowStepParam)
+    {
+        if(flowStepParam == null)
+        {
+            return null;
+        }
+
+        if(this.serviceTicket != null)
+        {
+            flowStepParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepRuleListing(this.postJson(
+                flowStepParam, WS.Path.FlowStepRule.Version1.getExitRulesByStep()));
+    }
+
+    /**
+     * Retrieves the entry rules by step {@code flowStepParam}.
+     * Name or id can be provided.
+     *
+     * @param flowStepParam The flow step to get the exit rules for.
+     * @return All the entry rules for the step {@code flowStepParam}.
+     */
+    public FlowStepRuleListing getEntryRulesByStep(FlowStep flowStepParam)
+    {
+        if(flowStepParam == null)
+        {
+            return null;
+        }
+
+        if(this.serviceTicket != null)
+        {
+            flowStepParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FlowStepRuleListing(this.postJson(
+                flowStepParam, WS.Path.FlowStepRule.Version1.getEntryRulesByStep()));
     }
 
     /**

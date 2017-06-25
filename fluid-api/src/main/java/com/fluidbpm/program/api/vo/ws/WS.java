@@ -1016,6 +1016,9 @@ public class WS {
                 public static final String MOVE_DOWN = ("/move_down");
 
                 //Read...
+                public static final String READ_RULES_BY_STEP = ("/get_by_step");
+
+
                 public static final String READ = ("/get_by_id");
                 public static final String COMPILE_SYNTAX = ("/compile_syntax");
                 public static final String GET_NEXT_VALID_SYNTAX = ("/get_next_valid_syntax");
@@ -1210,6 +1213,26 @@ public class WS {
                 public static final String compileExitSyntax()
                 {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(COMPILE_SYNTAX);
+                }
+
+                /**
+                 * URL Path for Flow Step Exit {@code get_by_step} syntax.
+                 *
+                 * @return {@code v1/flow_step_rule/exit/get_by_step}
+                 */
+                public static final String getExitRulesByStep()
+                {
+                    return Version.VERSION_1.concat(ROOT_EXIT).concat(READ_RULES_BY_STEP);
+                }
+
+                /**
+                 * URL Path for Flow Step Exit {@code get_by_step} syntax.
+                 *
+                 * @return {@code v1/flow_step_rule/entry/get_by_step}
+                 */
+                public static final String getEntryRulesByStep()
+                {
+                    return Version.VERSION_1.concat(ROOT_ENTRY).concat(READ_RULES_BY_STEP);
                 }
 
                 /**
