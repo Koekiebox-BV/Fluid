@@ -203,8 +203,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
                 {
                     flowStepRule.setOrder(2L);
                 }
-                
-                if(flowStepRule.getOrder() != null && flowStepRule.getOrder().longValue() == 2L)
+                else if(flowStepRule.getOrder() != null && flowStepRule.getOrder().longValue() == 2L)
                 {
                     flowStepRule.setOrder(1L);
                 }
@@ -245,8 +244,19 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         Assert.assertNotNull("Form Fields is not set.",testFluidItem.getForm().getFormFields());
         Assert.assertNotNull("Form Fields Value is not set.",
                 testFluidItem.getForm().getFormFields().get(0));
+        Assert.assertNotNull("Form Field Value '"+
+                        this.testField.getFieldName()+"' is not set.",
+                testFluidItem.getForm().getFieldValueAsString(
+                        this.testField.getFieldName()));
 
-
+        //ZabberMan2000
+        Assert.assertEquals(
+                "Form Field Value '"+
+                        this.testField.getFieldName()+"' must be 'ZabberMan2000'.",
+                "ZabberMan2000",
+                testFluidItem.getForm().getFieldValueAsString(
+                        this.testField.getFieldName()));
+        
         if(testFluidItem.getForm().getFormFields() != null)
         {
             for(Field field : testFluidItem.getForm().getFormFields())
