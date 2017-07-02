@@ -15,6 +15,9 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -247,6 +250,44 @@ public class UserClient extends ABaseClientWS {
         try {
             return new User(this.postJson(
                     userToGetInfoFor, WS.Path.User.Version1.getByUsername()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves user information for the provided {@code emailAddressParam}.
+     *
+     * The email address must be confirmed.
+     *
+     * @param emailAddressParam The confirmed Email of the user to retrieve info for.
+     * @return User information.
+     *
+     * @see User
+     */
+    public User getUserWhereEmail(String emailAddressParam)
+    {
+        User userToGetInfoFor = new User();
+
+        if(emailAddressParam != null)
+        {
+            List<String> emailAdd = new ArrayList();
+            emailAdd.add(emailAddressParam);
+
+            userToGetInfoFor.setEmailAddresses(emailAdd);
+        }
+
+        if(this.serviceTicket != null)
+        {
+            userToGetInfoFor.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new User(this.postJson(
+                    userToGetInfoFor, WS.Path.User.Version1.getByEmail()));
         }
         //
         catch (JSONException jsonExcept) {
