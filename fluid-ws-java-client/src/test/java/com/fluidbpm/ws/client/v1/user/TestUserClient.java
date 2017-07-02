@@ -50,6 +50,8 @@ public class TestUserClient extends ABaseTestCase {
         {
             public static final String USERNAME = "junitTestingUser";
             public static final String PASSWORD = "password";
+
+            public static final String EMAIL = "patel@kapper.com";
         }
 
         public static final class Update
@@ -381,8 +383,6 @@ public class TestUserClient extends ABaseTestCase {
         TestCase.assertNotNull("User Field Value Listing must be set.",userListing.getListing());
         TestCase.assertNotNull("User Field Value must be set.",userListing.getListing().get(0));
     }
-
-
 
     /**
      *
