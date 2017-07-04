@@ -1044,7 +1044,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             JSONObject currentUserJsonObj = new JSONObject();
             currentUserJsonObj.put(
                     Field.JSONMapping.Elastic.TYPE,
-                    Field.ElasticSearchType.NESTED);
+                    Field.ElasticSearchType.OBJECT);
 
             JSONObject properties = new JSONObject();
 

@@ -157,6 +157,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
         //Nested...
         public static final String NESTED = "nested";
+
+        //Object...
+        public static final String OBJECT = "object";
     }
 
     /**
