@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.ws;
 
+import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -2242,6 +2244,14 @@ public class WS {
              */
             public static final class Version1
             {
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    public static final String POPULATE_ANCESTOR_ID = "populate_ancestor_id";
+                }
+                
                 public static final String ROOT = ("/user_query");
 
                 //Create...
@@ -2260,6 +2270,8 @@ public class WS {
 
                 //Execute...
                 public static final String EXECUTE = ("/execute");
+                public static final String EXECUTE_POPULATE_ANCESTOR_ID =
+                                ("/execute?"+POPULATE_ANCESTOR_ID+"=true");
 
                 /**
                  * Root for {@code UserQuery}.
@@ -2274,11 +2286,29 @@ public class WS {
                 /**
                  * URL Path for executing a {@code UserQuery}.
                  *
+                 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+                 *
+                 * @return {@code v1/user_query/execute}
+                 */
+                public static final String executeUserQuery(
+                        boolean populateAncestorIdParam)
+                {
+                    if(populateAncestorIdParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(EXECUTE_POPULATE_ANCESTOR_ID);
+                    }
+                    
+                    return Version.VERSION_1.concat(ROOT).concat(EXECUTE);
+                }
+                
+                /**
+                 * URL Path for executing a {@code UserQuery}.
+                 *
                  * @return {@code v1/user_query/execute}
                  */
                 public static final String executeUserQuery()
                 {
-                    return Version.VERSION_1.concat(ROOT).concat(EXECUTE);
+                    return executeUserQuery(true);
                 }
 
                 /**

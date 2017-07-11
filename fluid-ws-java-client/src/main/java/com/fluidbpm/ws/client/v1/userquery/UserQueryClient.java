@@ -198,7 +198,26 @@ public class UserQueryClient extends ABaseClientWS {
      *
      * @see FluidItemListing
      */
-    public FluidItemListing executeUserQuery(UserQuery queryToExecuteParam)
+    public FluidItemListing executeUserQuery(
+            UserQuery queryToExecuteParam)
+    {
+        return this.executeUserQuery(queryToExecuteParam, true);
+    }
+    
+    /**
+     * Executes the {@code UserQuery} {@code queryToExecuteParam}
+     * and returns the result information.
+     *
+     * @param queryToExecuteParam The UserQuery to execute.
+     * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+     *
+     * @return The UserQuery result.
+     *
+     * @see FluidItemListing
+     */
+    public FluidItemListing executeUserQuery(
+            UserQuery queryToExecuteParam,
+            boolean populateAncestorIdParam)
     {
         if(this.serviceTicket != null && queryToExecuteParam != null)
         {
@@ -207,7 +226,8 @@ public class UserQueryClient extends ABaseClientWS {
 
         try {
             return new FluidItemListing(this.postJson(
-                    queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery()));
+                    queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
+                            populateAncestorIdParam)));
         }
         //
         catch (JSONException jsonExcept) {
