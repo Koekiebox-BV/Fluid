@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.util;
+package com.fluidbpm.program.api.util.command;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,13 +31,15 @@ import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
  * See more at: https://auth0.com/
  *
  * @author jasonbruwer
- * @since v1.0
+ * @since v1.6
  *
  * @see NormalizedUserProfile
  * @see AccessTokenRequest
  * @see ABaseFluidJSONObject
  */
 public class CommandUtil {
+
+    public static final String FLUID_CLI = "fluid-cli";
 
     /**
      * Result value object when a command line operation is finish.
@@ -108,7 +110,7 @@ public class CommandUtil {
      *
      * @see CommandResult
      */
-    public static CommandResult executeCommand(String... commandParams) throws IOException {
+    public CommandResult executeCommand(String... commandParams) throws IOException {
         if (commandParams == null || commandParams.length == 0) {
             throw new IOException("Unable to execute command. No commands provided.");
         }
@@ -171,12 +173,12 @@ public class CommandUtil {
      *
      * @throws Exception If anything goes wrong during execution.
      */
-    public static CommandResult executeCommand(String objectCommandParam) throws Exception {
+    public CommandResult executeCommand(String objectCommandParam) throws Exception {
         if (objectCommandParam == null) {
             return new CommandResult(333, new String[] {
                     "No Object Command provided. 'null' not allowed." });
         }
 
-        return CommandUtil.executeCommand(new String[] { objectCommandParam });
+        return this.executeCommand(new String[] { objectCommandParam });
     }
 }
