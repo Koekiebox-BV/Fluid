@@ -43,6 +43,12 @@ public interface IActionBase extends Serializable {
      * This method will always be <code>executed</code> first when the Fluid Third Party Library
      * executes any of the sub Custom Programs.
      *
+     * The following properties are set by default;
+     *
+     * {@code JAR_LOCATION} - The relative path of the jar file executed as part of a sub-action.
+     * {@code TABLE_RECORD_PARENT_FORM_CONTAINER_ID} - The parent form container id of
+     * table records for custom form actions.
+     *
      * @see javax.sql.DataSource
      *
      * @param propertiesParam Properties applicable to each custom program.
