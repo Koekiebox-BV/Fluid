@@ -46,6 +46,10 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     private String assignmentRuleValue;
     private String statementResultAsString;
 
+    //regards to schedule and flow-program...
+    private String executePerFluidItemQuery;
+    private Boolean progressToNextPhase;
+
     /**
      * The JSON mapping for the {@code FlowItemExecuteResult} object.
      */
@@ -56,6 +60,9 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         public static final String FLUID_ITEMS = "fluidItems";
         public static final String ASSIGNMENT_RULE_VALUE = "assignmentRuleValue";
         public static final String STATEMENT_RESULT_AS_STRING = "statementResultAsString";
+
+        public static final String EXECUTE_PER_FLUID_ITEM_QUERY = "executePerFluidItemQuery";
+        public static final String PROGRESS_TO_NEXT_PHASE = "progressToNextPhase";
     }
 
     /**
@@ -104,6 +111,22 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
             this.setStatementResultAsString(
                     this.jsonObject.getString(JSONMapping.STATEMENT_RESULT_AS_STRING));
+        }
+
+        //Execute per Fluid Item Query...
+        if (!this.jsonObject.isNull(
+                JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY)) {
+
+            this.setExecutePerFluidItemQuery(this.jsonObject.getString(
+                            JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY));
+        }
+
+        //Progress to next phase...
+        if (!this.jsonObject.isNull(
+                JSONMapping.PROGRESS_TO_NEXT_PHASE)) {
+
+            this.setProgressToNextPhase(this.jsonObject.getBoolean(
+                    JSONMapping.PROGRESS_TO_NEXT_PHASE));
         }
 
         //Fluid Items...
@@ -162,6 +185,20 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
                     this.getStatementResultAsString());
         }
 
+        //Execute per Fluid Item Query...
+        if(this.getExecutePerFluidItemQuery() != null)
+        {
+            returnVal.put(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY,
+                    this.getExecutePerFluidItemQuery());
+        }
+
+        //Progress to next phase...
+        if(this.getProgressToNextPhase() != null)
+        {
+            returnVal.put(JSONMapping.PROGRESS_TO_NEXT_PHASE,
+                    this.getProgressToNextPhase());
+        }
+        
         //Fluid Items...
         if(this.getFluidItems() != null && !this.getFluidItems().isEmpty())
         {
@@ -263,7 +300,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     }
 
     /**
-     * Sets the Statement result value.
+     * Gets the Statement result value.
      *
      * @return Statement result as Text.
      */
@@ -278,5 +315,42 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
      */
     public void setStatementResultAsString(String statementResultAsStringParam) {
         this.statementResultAsString = statementResultAsStringParam;
+    }
+
+    /**
+     * Gets the ExecutePerFluidItem query.
+     *
+     * @return Execute Per Fluid Item Query Text.
+     */
+    public String getExecutePerFluidItemQuery() {
+        return this.executePerFluidItemQuery;
+    }
+
+    /**
+     * Sets the ExecutePerFluidItem query.
+     *
+     * @param executePerFluidItemQueryParam Execute Per Fluid Item Query Text.
+     */
+    public void setExecutePerFluidItemQuery(
+            String executePerFluidItemQueryParam) {
+        this.executePerFluidItemQuery = executePerFluidItemQueryParam;
+    }
+
+    /**
+     * Gets the flag to progress to the next phase.
+     *
+     * @return Progress to the next phase.
+     */
+    public Boolean getProgressToNextPhase() {
+        return this.progressToNextPhase;
+    }
+
+    /**
+     * Sets the flag to progress to the next phase.
+     *
+     * @param progressToNextPhaseParam Progress to the next phase.
+     */
+    public void setProgressToNextPhase(Boolean progressToNextPhaseParam) {
+        this.progressToNextPhase = progressToNextPhaseParam;
     }
 }
