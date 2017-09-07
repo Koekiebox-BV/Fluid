@@ -79,7 +79,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         }
 
         //Fluid Item...
-        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
+        if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEM)) {
 
             this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(
                     JSONMapping.FLUID_ITEM)));

@@ -1966,6 +1966,181 @@ public class WS {
         }
 
         /**
+         * The Custom Runner Destination Config Web Service mappings.
+         */
+        public static final class CustomRunnerDestinationConfig
+        {
+            /**
+             * Custom runner mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/custom_runner/destination_config");
+                
+                //Read...
+                public static final String READ = ("/get_environment_config");
+
+                //Write...
+                public static final String LOCK = ("/lock_environment_config");
+
+                /**
+                 * Root for Custom Runner Destination configuration.
+                 *
+                 * @return {@code /custom_runner/destination_config/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Customer Runner Destination configuration.
+                 *
+                 * @return {@code v1/custom_runner/destination_config/get_environment_config}
+                 */
+                public static final String getEnvironmentConfig()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for LOCKING Customer Runner Destination configuration.
+                 *
+                 * @return {@code v1/custom_runner/destination_config/lock_environment_config}
+                 */
+                public static final String lockEnvironmentConfig()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(LOCK);
+                }
+            }
+        }
+
+        /**
+         * The Fluid Custom Runner Web Socket mappings.
+         */
+        public static final class CustomRunner
+        {
+            /**
+             * Custom runner mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/custom_runner");
+
+                public static final String ROOT_WEB_SOCKET =
+                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+
+                //Custom Web...
+                public static final String CUSTOM_WEB = ("/custom_web");
+                public static final String CUSTOM_WEB_WEB_SOCKET =
+                        (ROOT_WEB_SOCKET + CUSTOM_WEB);
+
+                //Custom Flow Program...
+                public static final String CUSTOM_FLOW_PROGRAM = ("/custom_flow_program");
+                public static final String CUSTOM_FLOW_PROGRAM_WEB_SOCKET =
+                        (ROOT_WEB_SOCKET + CUSTOM_FLOW_PROGRAM);
+
+                //Custom Flow Program...
+                public static final String CUSTOM_SCHEDULE = ("/custom_schedule");
+                public static final String CUSTOM_SCHEDULE_WEB_SOCKET =
+                        (CUSTOM_SCHEDULE + CUSTOM_FLOW_PROGRAM);
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class PathParam
+                {
+                    public static final String TASK_IDENTIFIER = "taskIdentifier";
+                }
+
+                /**
+                 * Root for Custom Runner.
+                 *
+                 * @return {@code /custom_runner/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Custom Running a Web Form Action via Web Socket.
+                 *
+                 * @param taskIdentifierParam The task identifier to execute.
+                 *
+                 * @return {@code web_socket/v1/custom_runner/custom_web/}
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+                 */
+                public static final String executeCustomWebWebSocket(
+                        String taskIdentifierParam)
+                throws UnsupportedEncodingException
+                {
+                    String encodedValue = "";
+                    if(taskIdentifierParam != null)
+                    {
+                        encodedValue = URLEncoder.encode(taskIdentifierParam, "UTF-8");
+                    }
+
+                    String returnVal =
+                            (CUSTOM_WEB_WEB_SOCKET +
+                                    "/" + encodedValue+"/");
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for Custom Running a Flow Program via Web Socket.
+                 *
+                 * @param taskIdentifierParam The task identifier to execute.
+                 *
+                 * @return {@code web_socket/v1/custom_runner/custom_flow_program/}
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+                 */
+                public static final String executeCustomFlowProgramWebSocket(
+                        String taskIdentifierParam)
+                        throws UnsupportedEncodingException
+                {
+                    String encodedValue = "";
+                    if(taskIdentifierParam != null)
+                    {
+                        encodedValue = URLEncoder.encode(taskIdentifierParam, "UTF-8");
+                    }
+
+                    String returnVal =
+                            (CUSTOM_FLOW_PROGRAM_WEB_SOCKET +
+                                    "/" + encodedValue+"/");
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for Custom Running a Flow Program via Web Socket.
+                 *
+                 * @param taskIdentifierParam The task identifier to execute.
+                 *
+                 * @return {@code web_socket/v1/custom_runner/custom_schedule/}
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+                 */
+                public static final String executeCustomScheduleWebSocket(
+                        String taskIdentifierParam)
+                        throws UnsupportedEncodingException
+                {
+                    String encodedValue = "";
+                    if(taskIdentifierParam != null)
+                    {
+                        encodedValue = URLEncoder.encode(taskIdentifierParam, "UTF-8");
+                    }
+
+                    String returnVal =
+                            (CUSTOM_SCHEDULE_WEB_SOCKET +
+                                    "/" + encodedValue+"/");
+
+                    return returnVal;
+                }
+            }
+        }
+
+        /**
          * The SQL Util Web Service mappings.
          *
          * @see com.fluidbpm.program.api.util.sql.impl.SQLFormDefinitionUtil

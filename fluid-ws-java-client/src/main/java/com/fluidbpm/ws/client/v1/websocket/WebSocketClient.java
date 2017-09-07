@@ -35,11 +35,18 @@ public class WebSocketClient {
 
         //ContainerProvider.getWebSocketContainer()
 
-        WebSocketContainer container = ClientManager.createClient(GrizzlyClientContainer.class.getName());
+        WebSocketContainer container = ClientManager.createClient(
+                GrizzlyClientContainer.class.getName());
 
         //WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
         //WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 
+        int tenMB = (1000000 * 10);
+        int oneGB = (tenMB * 100);
+        
+        container.setDefaultMaxTextMessageBufferSize(oneGB);
+        container.setDefaultMaxBinaryMessageBufferSize(oneGB);
+        
         container.connectToServer(this, endpointURI);
     }
 

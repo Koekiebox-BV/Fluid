@@ -112,11 +112,8 @@ public class WebSocketSendToFlowClient extends
         itemToSend.setForm(formToSendToFlowParam);
 
         //Send all the messages...
-        if(itemToSend.getEcho() == null || itemToSend.getEcho().trim().isEmpty())
-        {
-            itemToSend.setEcho(UUID.randomUUID().toString());
-        }
-
+        itemToSend.setEcho(UUID.randomUUID().toString());
+        
         CompletableFuture<List<FluidItem>> completableFuture = new CompletableFuture();
 
         //Set the future...
