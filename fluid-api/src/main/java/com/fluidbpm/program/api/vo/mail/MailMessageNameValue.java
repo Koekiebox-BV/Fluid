@@ -15,6 +15,10 @@
 
 package com.fluidbpm.program.api.vo.mail;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 
 /**
@@ -32,12 +36,21 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
  * @see com.fluidbpm.program.api.vo.Attachment
  * @see ABaseFluidVO
  */
-public class MailMessageNameValue extends ABaseFluidVO {
+public class MailMessageNameValue extends ABaseFluidJSONObject {
 
     public static final long serialVersionUID = 1L;
 
     private String name;
     private String value;
+
+    /**
+     * The JSON mapping for the {@code MailMessageNameValue} object.
+     */
+    public static class JSONMapping
+    {
+        public static final String NAME = "name";
+        public static final String VALUE = "value";
+    }
 
     /**
      * Default constructor.
@@ -58,14 +71,60 @@ public class MailMessageNameValue extends ABaseFluidVO {
         this.setName(nameParam);
         this.setValue(valueParam);
     }
+    
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public MailMessageNameValue(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+
+        if (this.jsonObject == null) {
+            return;
+        }
+
+        //Name...
+        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
+
+            this.setName(this.jsonObject.getString(
+                    JSONMapping.NAME));
+        }
+
+        //Value...
+        if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
+
+            this.setValue(this.jsonObject.getString(
+                    JSONMapping.VALUE));
+        }
+    }
 
     /**
-     * Sets the id.
+     * Conversion to {@code JSONObject} from Java Object.
      *
-     * @param idParam The Primary Key.
+     * @return {@code JSONObject} representation of {@code MailMessageNameValue}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
      */
-    public MailMessageNameValue(Long idParam) {
-        super(idParam);
+    @Override
+    public JSONObject toJsonObject() throws JSONException
+    {
+        JSONObject returnVal = super.toJsonObject();
+
+        //Name...
+        if(this.getName() != null)
+        {
+            returnVal.put(JSONMapping.NAME, this.getName());
+        }
+
+        //Value...
+        if(this.getValue() != null)
+        {
+            returnVal.put(JSONMapping.VALUE, this.getValue());
+        }
+
+        return returnVal;
     }
 
     /**
