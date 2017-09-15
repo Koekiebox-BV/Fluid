@@ -51,7 +51,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     private String type;
     private String typeMetaData;
 
-    private static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
+    public static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
 
     /**
      * The JSON mapping for the {@code Field} object.

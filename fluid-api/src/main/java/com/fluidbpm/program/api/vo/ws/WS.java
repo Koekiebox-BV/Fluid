@@ -48,11 +48,77 @@ public class WS {
      */
     public static final class QueryParam
     {
+        //Forcefully perform action...
         public static final String FORCE = "force";
+
+        //Execution process in a asynchronous manner...
         public static final String ASYNC = "async";
+
+        //Id...
         public static final String ID = "id";
+
+        //The intent of the action...
+        public static final String INTENT = "intent";
     }
 
+    /**
+     * The intent of the action being performed.
+     */
+    public static enum Intent
+    {
+        Create,
+        Update,
+        Delete,
+        All;
+
+        /**
+         * Retrieves the allowed options for intent.
+         *
+         * @return The {@code enum} for {@code Intent}.
+         */
+        public static String allowedOptions()
+        {
+            StringBuilder returnVal = new StringBuilder();
+
+            for(Intent intent : Intent.values())
+            {
+                returnVal.append(intent);
+                returnVal.append("|");
+            }
+            
+            String toString = returnVal.toString();
+            return toString.substring(0,toString.length() - 1);
+        }
+
+        /**
+         * Retrieves the enum value from the {@code intentStrParam}.
+         *
+         * @param intentStrParam The intent for the action.
+         * @return The {@code enum} for {@code Intent}.
+         */
+        public static Intent getIntentFromString(String intentStrParam)
+        {
+            if(intentStrParam == null || intentStrParam.trim().isEmpty())
+            {
+                return null;
+            }
+
+            String paramLowerTrimmed = intentStrParam.trim().toLowerCase();
+
+            for(Intent intent : Intent.values())
+            {
+                String iterValIntentLowerTrim = intent.toString().toLowerCase();
+
+                if(iterValIntentLowerTrim.equals(paramLowerTrimmed))
+                {
+                    return intent;
+                }
+            }
+
+            return null;
+        }
+    }
+    
     /**
      * The URL (Universal Resource Locator) Path mappings for Fluid's
      * Web Services.
@@ -649,6 +715,14 @@ public class WS {
         public static final class FormDefinition
         {
             /**
+             * Mapping for frequently used HTTP parameters.
+             */
+            public static final class QueryParam
+            {
+                public static final String FORM_DEFINITION = "form_definition";
+            }
+
+            /**
              * Form Definition mappings.
              */
             public static final class Version1
@@ -668,6 +742,8 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String READ_BY_NAME = ("/get_by_name");
+                public static final String READ_ALL_BY_LOGGED_IN_USER =
+                        ("/get_all_by_logged_in_user");
 
                 /**
                  * Root for Form Definition.
@@ -744,6 +820,16 @@ public class WS {
                 public static final String getByName()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
+                }
+
+                /**
+                 * URL Path for Form Definitions by name.
+                 *
+                 * @return {@code v1/form_definition/get_all_by_logged_in_user}
+                 */
+                public static final String getAllByLoggedInUser()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_USER);
                 }
             }
         }

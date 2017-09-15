@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.user.User;
 
@@ -121,6 +122,25 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         public static final String DESCENDANT_IDS = "descendantIds";
 
         public static final String _PARENT = "_parent";
+    }
+
+    /**
+     *
+     */
+    private static class FlatFormJSONMapping
+    {
+        //Form...
+        public static final String FORM_ID = "form_id";
+        public static final String FORM_TITLE = "form_title";
+        public static final String FORM_STATE = "form_state";
+        public static final String FORM_TYPE = "form_type";
+        public static final String FORM_FLOW_STATE = "form_flow_state";
+        public static final String FORM_DATE_CREATED = "form_date_created";
+        public static final String FORM_DATE_LAST_UPDATED = "form_date_last_updated";
+
+        //Fields
+        public static final String FORM_FIELD_PREFIX = "form_field_";
+        public static final String FORM_FIELD_ID_PREFIX = "form_field_id_";
     }
 
     /**
@@ -1256,6 +1276,141 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             }
 
             returnVal.put(JSONMapping.DESCENDANT_IDS, array);
+        }
+
+        return returnVal;
+    }
+
+    /**
+     * Serialize {@code this} object into a JSONObject.
+     *
+     * Any fields provided with a Java {@code null} value will be stored
+     * as {@link JSONObject.Null}. {@code Field.Type.Table} fields are not supported and will be skipped.
+     *
+     * @return Flat {@code JSON} object (No inner fields).
+     *
+     * @see JSONObject
+     */
+    @XmlTransient
+    protected JSONObject convertToFlatJSONObject()
+    {
+        JSONObject returnVal = new JSONObject();
+
+        //Id...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_ID,
+                this.getId() == null ?
+                        JSONObject.NULL : this.getId());
+
+        //Title...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_TITLE,
+                this.getTitle() == null ?
+                        JSONObject.NULL : this.getTitle());
+
+        //State...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_STATE,
+                this.getState() == null ?
+                        JSONObject.NULL : this.getState());
+
+        //Form Flow State...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_FLOW_STATE,
+                this.getFlowState() == null ?
+                        JSONObject.NULL : this.getFlowState());
+
+        //Date Created...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_DATE_CREATED,
+                (this.getDateCreated() == null) ?
+                        JSONObject.NULL: this.getDateCreated().getTime());
+
+        //Date Last Updated...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_DATE_LAST_UPDATED,
+                (this.getDateLastUpdated() == null) ?
+                        JSONObject.NULL: this.getDateLastUpdated().getTime());
+
+        //Form Fields...
+        if(this.getFormFields() == null || this.getFormFields().isEmpty())
+        {
+            return returnVal;
+        }
+
+        UtilGlobal utilGlobal = new UtilGlobal();
+
+        for(Field formField : this.getFormFields())
+        {
+            String fieldName = formField.getFieldNameAsUpperCamel();
+            if(fieldName == null || fieldName.trim().isEmpty())
+            {
+                continue;
+            }
+
+            String completeFieldName =
+                    FlatFormJSONMapping.FORM_FIELD_PREFIX.concat(fieldName);
+
+            String completeFieldNameId =
+                    FlatFormJSONMapping.FORM_FIELD_ID_PREFIX.concat(fieldName);
+
+            returnVal.put(completeFieldNameId, formField.getId());
+
+            Object fieldValue = formField.getFieldValue();
+
+            if(fieldValue == null)
+            {
+                returnVal.put(
+                        completeFieldName,
+                        JSONObject.NULL);
+            }
+            //Table field...
+            else if(fieldValue instanceof TableField)
+            {
+                continue;
+            }
+            //Multiple Choice...
+            else if(fieldValue instanceof MultiChoice) {
+
+                MultiChoice multiChoice = (MultiChoice) fieldValue;
+
+                StringBuilder builder = new StringBuilder();
+                for(String selectedChoice : multiChoice.getSelectedMultiChoices())
+                {
+                    builder.append(selectedChoice);
+                    builder.append(", ");
+                }
+
+                String selectVal = builder.toString();
+                if(selectVal != null && !selectVal.trim().isEmpty())
+                {
+                    selectVal = selectVal.substring(0,selectVal.length() - 2);
+                }
+
+                returnVal.put(completeFieldName, selectVal);
+            }
+            //Other valid types...
+            else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+                    fieldValue instanceof String)
+            {
+                if((fieldValue instanceof String) &&
+                        Field.LATITUDE_AND_LONGITUDE.equals(formField.getTypeMetaData()))
+                {
+                    String formFieldValueStr = fieldValue.toString();
+
+                    double latitude = utilGlobal.getLatitudeFromFluidText(formFieldValueStr);
+                    double longitude = utilGlobal.getLongitudeFromFluidText(formFieldValueStr);
+
+                    fieldValue = (latitude + UtilGlobal.COMMA + longitude);
+                }
+
+                returnVal.put(completeFieldName, fieldValue);
+            }
+            //Date...
+            else if(fieldValue instanceof Date)
+            {
+                returnVal.put(completeFieldName, ((Date)fieldValue).getTime());
+            }
         }
 
         return returnVal;
