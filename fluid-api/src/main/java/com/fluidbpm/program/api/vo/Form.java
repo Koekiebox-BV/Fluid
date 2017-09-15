@@ -1285,7 +1285,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * Serialize {@code this} object into a JSONObject.
      *
      * Any fields provided with a Java {@code null} value will be stored
-     * as {@link JSONObject.Null}. {@code Field.Type.Table} fields are not supported and will be skipped.
+     * as {@code JSONObject.Null}. {@code Field.Type.Table} fields are not supported and will be skipped.
      *
      * @return Flat {@code JSON} object (No inner fields).
      *
