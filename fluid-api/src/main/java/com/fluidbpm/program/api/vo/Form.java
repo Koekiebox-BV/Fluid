@@ -1292,7 +1292,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see JSONObject
      */
     @XmlTransient
-    protected JSONObject convertToFlatJSONObject()
+    public JSONObject convertToFlatJSONObject()
     {
         JSONObject returnVal = new JSONObject();
 
@@ -1308,6 +1308,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                 this.getTitle() == null ?
                         JSONObject.NULL : this.getTitle());
 
+        //Form Type...
+        returnVal.put(
+                FlatFormJSONMapping.FORM_TYPE,
+                this.getFormType() == null ?
+                        JSONObject.NULL : this.getFormType());
+        
         //State...
         returnVal.put(
                 FlatFormJSONMapping.FORM_STATE,

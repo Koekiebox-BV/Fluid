@@ -161,6 +161,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String PRINT_AS_PDF = ("/print_as_pdf");
 
                 //Lock and Unlock
                 public static final String LOCK_FORM_CONTAINER = "/lock_form_container";
@@ -173,6 +174,11 @@ public class WS {
                 {
                     //Locking a Form Container...
                     public static final String JOB_VIEW = "job_view";
+                    public static final String FORM_CONTAINER = "form_container";
+                    public static final String INCLUDE_COMPANY_LOGO = "include_company_logo";
+                    public static final String INCLUDE_ANCESTOR = "include_ancestor";
+                    public static final String INCLUDE_DESCENDANTS = "include_descendants";
+                    public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
                 }
 
                 /**
@@ -275,6 +281,62 @@ public class WS {
                 {
                     return Version.VERSION_1.concat(ROOT).concat(UN_LOCK_FORM_CONTAINER);
                 }
+
+                /**
+                 * URL Path for a PDF version of the {@code Form}.
+                 *
+                 * @param formContainerIdParam The form container id.
+                 * @param includeAncestorParam Include the ancestor electronic form.
+                 * @param includeCompanyLogoParam Include the company logo.
+                 * @param includeDescendantsParam Include descendant forms.
+                 * @param includeFormPropertiesParam Include form properties.
+                 *
+                 * @return {@code v1/form_container/print_as_pdf}
+                 */
+                public static final String getPrintAsPDF(
+                        Long formContainerIdParam,
+                        boolean includeCompanyLogoParam,
+                        boolean includeAncestorParam,
+                        boolean includeDescendantsParam,
+                        boolean includeFormPropertiesParam)
+                {
+                    String returnVal =
+                            Version.VERSION_1.concat(ROOT).concat(
+                                    PRINT_AS_PDF);
+
+                    returnVal += "?";
+
+                    //Form Container Id...
+                    returnVal += FormContainer.Version1.QueryParam.FORM_CONTAINER;
+                    returnVal += "=";
+                    returnVal += formContainerIdParam;
+                    returnVal += "&";
+
+                    //Include Ancestor...
+                    returnVal += QueryParam.INCLUDE_ANCESTOR;
+                    returnVal += "=";
+                    returnVal += includeAncestorParam;
+                    returnVal += "&";
+
+                    //Include Company Logo...
+                    returnVal += QueryParam.INCLUDE_COMPANY_LOGO;
+                    returnVal += "=";
+                    returnVal += includeCompanyLogoParam;
+                    returnVal += "&";
+
+                    //Include Descendants...
+                    returnVal += QueryParam.INCLUDE_DESCENDANTS;
+                    returnVal += "=";
+                    returnVal += includeDescendantsParam;
+                    returnVal += "&";
+
+                    //Form Properties...
+                    returnVal += QueryParam.INCLUDE_FORM_PROPERTIES;
+                    returnVal += "=";
+                    returnVal += includeFormPropertiesParam;
+
+                    return returnVal;
+                }
             }
         }
 
@@ -326,6 +388,82 @@ public class WS {
                 public static final String formContainerTableRecordCreateWebSocket(String serviceTicketParam)
                 {
                     return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
+                }
+            }
+        }
+
+        /**
+         * The Attachment Web Service mappings.
+         *
+         * @see com.fluidbpm.program.api.vo.Attachment
+         */
+        public static final class Attachment
+        {
+            /**
+             * Form Container mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/attachment");
+
+                public static final String CREATE = ("/");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Read...
+                public static final String READ_BY_FORM_CONTAINER_AND_INDEX =
+                        ("/get_by_form_container_and_index");
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    public static final String FORM_CONTAINER_ID = "form_container";
+                    public static final String ATTACHMENT_INDEX = "attachment_index";
+                }
+
+                /**
+                 * Root for Form Container.
+                 *
+                 * @return {@code /attachment}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Attachment get by Form Container and Index.
+                 *
+                 * @return {@code v1/attachment/get_by_form_container_and_index}
+                 */
+                public static final String getByFormContainerAndIndex(
+                        Long formContainerIdParam,
+                        int indexParam)
+                {
+                    String returnVal =
+                            Version.VERSION_1.concat(ROOT).concat(
+                                    READ_BY_FORM_CONTAINER_AND_INDEX);
+
+                    returnVal += "?";
+
+                    //Form Container Id...
+                    returnVal += QueryParam.FORM_CONTAINER_ID;
+                    returnVal += "=";
+                    returnVal += formContainerIdParam;
+                    returnVal += "&";
+
+                    //Attachment Index...
+                    returnVal += QueryParam.ATTACHMENT_INDEX;
+                    returnVal += "=";
+                    returnVal += indexParam;
+
+                    return returnVal;
                 }
             }
         }
