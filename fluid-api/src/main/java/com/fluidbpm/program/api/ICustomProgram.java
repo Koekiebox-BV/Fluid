@@ -88,14 +88,28 @@ public interface ICustomProgram extends IActionBase {
      *
      * <p>
      * If a {@code null} is returned, the item will be completely ignored.
-     * No Creates or Updates will be performed.
+     * No Create or Update will be performed on return value {@code FluidItem}.
+     *
+     * If the {@code FluidItem.setFlowJob()} is used, the newly created item will be sent to the
+     * described 'Flow'.
+     * In addition, if {@code setInCaseOfCreateLinkToParent()} is set to {@code true}, the
+     * child will be linked to the parent.
+     * 
+     *
+     * <p>
+     * If an attachment is added to the any of the {@code executePerFluidItemQueryResultParam} items, the
+     * attachment will be added to that item if the type is (Document or Folder).
+     * The conversion type for {@code this} is called {@code FlowJobItemConverted.ConvertedType.AttachmentAddOnly}.
+     * This is an easy way to link attachments to {@code Document} items.
      *
      * @param fluidItemParam Each of the original items from {@code execute(FluidItem fluidItemParam)}. There is an option to set
      *                       a parent for the Fluid item that most likely would originate from the {@code executePerFluidItemQueryResultParam}.
      *                       This is a way of linking incoming or existing data with existing data in Fluid.
      * @param executePerFluidItemQueryResultParam The {@code executePerFluidItemQuery(FluidItem fluidItemParam)} result. Only
      *                                            attachments can be added <code>(No updates or creation of new or existing FluidItem's)</code>.
-     * @return {@code null} or {@code fluidItemParam} modified.
+     *
+     * @return {@code null} or {@code fluidItemParam} modified. If the Form id is set, an update will be performed, otherwise a create.
+     *
      * @throws Exception When a exception is {@code throw}, the Fluid Workitem will move into an error state.
      * @see FluidItem
      * @see com.fluidbpm.program.api.vo.Form

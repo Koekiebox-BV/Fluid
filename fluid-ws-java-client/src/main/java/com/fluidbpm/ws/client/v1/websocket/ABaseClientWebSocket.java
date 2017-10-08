@@ -95,7 +95,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
                 this.webSocketEndpointUrl.trim().isEmpty())
         {
             throw new FluidClientException(
-                    "Base Web Socket Enpoint URL not set.",
+                    "Base Web Socket Endpoint URL not set.",
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
 
