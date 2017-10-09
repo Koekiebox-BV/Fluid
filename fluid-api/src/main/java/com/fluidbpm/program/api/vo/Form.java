@@ -125,7 +125,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
-     *
+     * The JSON mapping for the {@code Form} object as a flat object.
      */
     private static class FlatFormJSONMapping
     {
@@ -141,6 +141,15 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         //Fields
         public static final String FORM_FIELD_PREFIX = "form_field_";
         public static final String FORM_FIELD_ID_PREFIX = "form_field_id_";
+    }
+
+    /**
+     * The state the {@code Form} can be in.
+     */
+    public static class State
+    {
+        public static final String OPEN = "Open";//1
+        public static final String LOCKED = "Locked";//2
     }
 
     /**

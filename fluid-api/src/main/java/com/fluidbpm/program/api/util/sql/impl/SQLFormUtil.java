@@ -31,6 +31,7 @@ import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
 import com.fluidbpm.program.api.vo.Field;
+import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.Form;
 
 /**
@@ -261,6 +262,93 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
     }
 
     /**
+     * Gets the descendants for the {@code electronicFormIdParam} Form with the
+     * FormContainer and FormContainerFlow state.
+     *
+     * @param electronicFormIdParam Identifier for the Form.
+     * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+     * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @return {@code List<Form>} descendants.
+     *
+     * @see Form
+     */
+    public List<Form> getFormDescendantsWithStates(
+            Long electronicFormIdParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam)
+    {
+        List<Form> returnVal = new ArrayList();
+
+        if(electronicFormIdParam == null)
+        {
+            return returnVal;
+        }
+
+        Map<Long,String> definitionAndTitle =
+                this.formDefUtil.getFormDefinitionIdAndTitle();
+
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try
+        {
+            ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
+                    this.getSQLTypeFromConnection(),
+                    ISyntax.ProcedureMapping.Form.GetFormContainersChildFormContainersWithStates);
+
+            preparedStatement = this.getConnection().prepareStatement(
+                    syntax.getPreparedStatement());
+
+            preparedStatement.setLong(1, electronicFormIdParam);
+
+            resultSet = preparedStatement.executeQuery();
+
+            //Iterate each of the form containers...
+            while (resultSet.next())
+            {
+                Form mappedForm = this.mapFormContainerTo(
+                        definitionAndTitle,
+                        resultSet);
+
+                if(mappedForm == null)
+                {
+                    continue;
+                }
+
+                //Map the states...
+                this.mapFormContainerStatesTo(mappedForm, resultSet);
+
+                //Ancestor...
+                mappedForm.setAncestorId(electronicFormIdParam);
+
+                returnVal.add(mappedForm);
+            }
+
+            //When field data must also be included...
+            if(includeFieldDataParam)
+            {
+                for(Form form : returnVal)
+                {
+                    List<Field> formFields =
+                            this.fieldUtil.getFormFields(
+                                    form.getId(),
+                                    includeTableFieldsParam);
+                    form.setFormFields(formFields);
+                }
+            }
+        }
+        //sql problem...
+        catch (SQLException sqlError) {
+            throw new FluidSQLException(sqlError);
+        }
+        //close the statements...
+        finally {
+            this.closeStatement(preparedStatement,resultSet);
+        }
+
+        return returnVal;
+    }
+
+    /**
      * Gets the ancestor for the {@code electronicFormIdParam} Form.
      *
      * @param electronicFormIdParam Identifier for the Form.
@@ -377,4 +465,71 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
         return toAdd;
     }
 
+    /**
+     * Maps the Form states with the {@code resultSetParam}.
+     *
+     * @param resultSetParam Result Set used to populate {@code Form} with.
+     *
+     * @return Form
+     *
+     * @throws SQLException If no mapping exists for Form Type.
+     *
+     * @see ResultSet
+     */
+    private void mapFormContainerStatesTo(
+            Form previousMappedForm,
+            ResultSet resultSetParam)
+            throws SQLException
+    {
+        if(previousMappedForm == null)
+        {
+            return;
+        }
+
+        //Form Container State...
+        Long formContainerState = resultSetParam.getLong(6);
+        long formContStateId = (formContainerState == null) ? 0:formContainerState.longValue();
+        if(formContStateId > 0)
+        {
+            if(formContStateId == 1)
+            {
+                previousMappedForm.setState(Form.State.OPEN);
+            }
+            else if(formContStateId == 2)
+            {
+                previousMappedForm.setState(Form.State.LOCKED);
+            }
+        }
+
+        Long formContainerFlowState = resultSetParam.getLong(7);
+        long formContFlowStateId = (formContainerFlowState == null) ? 0:formContainerFlowState.longValue();
+        if(formContFlowStateId > 0)
+        {
+            if(formContFlowStateId == 1)
+            {
+                previousMappedForm.setFlowState(
+                        FluidItem.FlowState.NotInFlow.name());
+            }
+            else if(formContFlowStateId == 2)
+            {
+                previousMappedForm.setFlowState(
+                        FluidItem.FlowState.WorkInProgress.name());
+            }
+            else if(formContFlowStateId == 3)
+            {
+                previousMappedForm.setFlowState(
+                        FluidItem.FlowState.UserSend.name());
+            }
+            else if(formContFlowStateId == 4)
+            {
+                previousMappedForm.setFlowState(
+                        FluidItem.FlowState.UserSendWorkInProgress.name());
+            }
+            else if(formContFlowStateId == 5)
+            {
+                previousMappedForm.setFlowState(
+                        FluidItem.FlowState.Archive.name());
+            }
+        }
+    }
 }

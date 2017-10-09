@@ -60,6 +60,9 @@ public interface ISyntax {
             public static final String GetFormContainersChildFormContainers =
                     "Fluid_GetFormContainersChildFormContainers";
 
+            public static final String GetFormContainersChildFormContainersWithStates =
+                    "Fluid_GetFormContainersChildFormContainersWithStates";
+
             public static final String GetFormContainersParentFormContainer =
                     "Fluid_GetFormContainersParentFormContainer";
 
@@ -143,6 +146,7 @@ public interface ISyntax {
                     FormDefinition.GetFormDefinitions,
                     Form.GetFormContainersTableFieldFormContainers,
                     Form.GetFormContainersChildFormContainers,
+                    Form.GetFormContainersChildFormContainersWithStates,
                     Form.GetFormContainersParentFormContainer,
                     Field.GetFormFieldsForFormDefinition,
                     Field.GetFormFieldsForFormContainer,
@@ -173,6 +177,10 @@ public interface ISyntax {
                 return 1;
             }
             else if(Form.GetFormContainersChildFormContainers.equals(aliasParam))
+            {
+                return 1;
+            }
+            else if(Form.GetFormContainersChildFormContainersWithStates.equals(aliasParam))
             {
                 return 1;
             }
