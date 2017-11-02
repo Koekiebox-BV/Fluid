@@ -25,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
+
 /**
  * Represents an Electronic Form with all possible Meta-Data for an item
  * in {@code Flow} / Workflow.
@@ -75,6 +77,29 @@ public class FluidItem extends ABaseFluidJSONObject {
         public static final String ATTACHMENTS = "attachments";
         public static final String FLOW_STATE = "flowState";
         public static final String FLOW = "flow";
+    }
+
+    /**
+     * The JSON mapping for the {@code FluidItem} object as a flat object.
+     */
+    private static class FlatFormJSONMapping
+    {
+        //Fluid Item...
+        public static final String FLUID_ITEM_ID = "fluid_item_id";
+        public static final String FLOW_STATE = "flow_state";
+
+        //FIELDS
+        //User...
+        public static final String USER_FIELD_PREFIX = "user_field_";
+        public static final String USER_FIELD_ID_PREFIX = "user_field_id_";
+
+        //Route...
+        public static final String ROUTE_FIELD_PREFIX = "route_field_";
+        public static final String ROUTE_FIELD_ID_PREFIX = "route_field_id_";
+
+        //Global...
+        public static final String GLOBAL_FIELD_PREFIX = "global_field_";
+        public static final String GLOBAL_FIELD_ID_PREFIX = "global_field_id_";
     }
 
     /**
@@ -465,6 +490,102 @@ public class FluidItem extends ABaseFluidJSONObject {
         if(this.getFlowState() != null)
         {
             returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState().toString());
+        }
+
+        return returnVal;
+    }
+
+    /**
+     * Serialize {@code this} object into a JSONObject.
+     *
+     * Any fields provided with a Java {@code null} value will be stored
+     * as {@code JSONObject.Null}. {@code Field.Type.Table} fields are not supported and will be skipped.
+     *
+     * @return Flat {@code JSON} object (No inner fields).
+     *
+     * @see JSONObject
+     */
+    @XmlTransient
+    public JSONObject convertToFlatJSONObject()
+    {
+        JSONObject returnVal = new JSONObject();
+
+        //Id...
+        returnVal.put(
+                FlatFormJSONMapping.FLUID_ITEM_ID,
+                this.getId() == null ?
+                        JSONObject.NULL : this.getId());
+
+        //Flow State...
+        returnVal.put(
+                FlatFormJSONMapping.FLOW_STATE,
+                (this.getFlowState() == null) ?
+                        JSONObject.NULL : this.getFlowState().name());
+
+        //Populate the Form...
+        JSONObject formJSONObjFlat =
+                (this.getForm() == null) ? null :
+                        this.getForm().convertToFlatJSONObject();
+
+        if(formJSONObjFlat != null)
+        {
+            formJSONObjFlat.keySet().forEach(
+                (toAdd) ->
+                {
+                    returnVal.put(toAdd, formJSONObjFlat.get(toAdd));
+                }
+            );
+        }
+
+        //Fields...
+        UtilGlobal utilGlobal = new UtilGlobal();
+
+        //Route Fields...
+        if(this.getRouteFields() != null)
+        {
+            this.getRouteFields().forEach(
+                    (routeFieldItem) ->
+                    {
+                        utilGlobal.setFlatFieldOnJSONObj(
+                                FlatFormJSONMapping.ROUTE_FIELD_PREFIX,
+                                FlatFormJSONMapping.ROUTE_FIELD_ID_PREFIX,
+                                routeFieldItem,
+                                returnVal
+                        );
+                    }
+            );
+        }
+
+        //User Fields...
+        if(this.getUserFields() != null)
+        {
+            this.getUserFields().forEach(
+                    (userFieldItem) ->
+                    {
+                        utilGlobal.setFlatFieldOnJSONObj(
+                                FlatFormJSONMapping.USER_FIELD_PREFIX,
+                                FlatFormJSONMapping.USER_FIELD_ID_PREFIX,
+                                userFieldItem,
+                                returnVal
+                        );
+                    }
+            );
+        }
+
+        //Global Fields...
+        if(this.getGlobalFields() != null)
+        {
+            this.getGlobalFields().forEach(
+                    (globalFieldItem) ->
+                    {
+                        utilGlobal.setFlatFieldOnJSONObj(
+                                FlatFormJSONMapping.GLOBAL_FIELD_PREFIX,
+                                FlatFormJSONMapping.GLOBAL_FIELD_ID_PREFIX,
+                                globalFieldItem,
+                                returnVal
+                        );
+                    }
+            );
         }
 
         return returnVal;

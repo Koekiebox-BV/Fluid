@@ -1353,81 +1353,20 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             return returnVal;
         }
 
+        //Set the form fields...
         UtilGlobal utilGlobal = new UtilGlobal();
-
-        for(Field formField : this.getFormFields())
-        {
-            String fieldName = formField.getFieldNameAsUpperCamel();
-            if(fieldName == null || fieldName.trim().isEmpty())
-            {
-                continue;
-            }
-
-            String completeFieldName =
-                    FlatFormJSONMapping.FORM_FIELD_PREFIX.concat(fieldName);
-
-            String completeFieldNameId =
-                    FlatFormJSONMapping.FORM_FIELD_ID_PREFIX.concat(fieldName);
-
-            returnVal.put(completeFieldNameId, formField.getId());
-
-            Object fieldValue = formField.getFieldValue();
-
-            if(fieldValue == null)
-            {
-                returnVal.put(
-                        completeFieldName,
-                        JSONObject.NULL);
-            }
-            //Table field...
-            else if(fieldValue instanceof TableField)
-            {
-                continue;
-            }
-            //Multiple Choice...
-            else if(fieldValue instanceof MultiChoice) {
-
-                MultiChoice multiChoice = (MultiChoice) fieldValue;
-
-                StringBuilder builder = new StringBuilder();
-                for(String selectedChoice : multiChoice.getSelectedMultiChoices())
+        this.getFormFields().forEach(
+                (formFieldItem) ->
                 {
-                    builder.append(selectedChoice);
-                    builder.append(", ");
+                    utilGlobal.setFlatFieldOnJSONObj(
+                            FlatFormJSONMapping.FORM_FIELD_PREFIX,
+                            FlatFormJSONMapping.FORM_FIELD_ID_PREFIX,
+                            formFieldItem,
+                            returnVal
+                    );
                 }
-
-                String selectVal = builder.toString();
-                if(selectVal != null && !selectVal.trim().isEmpty())
-                {
-                    selectVal = selectVal.substring(0,selectVal.length() - 2);
-                }
-
-                returnVal.put(completeFieldName, selectVal);
-            }
-            //Other valid types...
-            else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
-                    fieldValue instanceof String)
-            {
-                if((fieldValue instanceof String) &&
-                        Field.LATITUDE_AND_LONGITUDE.equals(formField.getTypeMetaData()))
-                {
-                    String formFieldValueStr = fieldValue.toString();
-
-                    double latitude = utilGlobal.getLatitudeFromFluidText(formFieldValueStr);
-                    double longitude = utilGlobal.getLongitudeFromFluidText(formFieldValueStr);
-
-                    fieldValue = (latitude + UtilGlobal.COMMA + longitude);
-                }
-
-                returnVal.put(completeFieldName, fieldValue);
-            }
-            //Date...
-            else if(fieldValue instanceof Date)
-            {
-                returnVal.put(completeFieldName, ((Date)fieldValue).getTime());
-            }
-        }
-
+        );
+        
         return returnVal;
     }
 

@@ -16,8 +16,15 @@
 package com.fluidbpm.program.api.util;
 
 import java.util.Base64;
+import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
+
+import org.json.JSONObject;
+
+import com.fluidbpm.program.api.vo.Field;
+import com.fluidbpm.program.api.vo.MultiChoice;
+import com.fluidbpm.program.api.vo.TableField;
 
 /**
  * Global utility class for the {@code com.fluidbpm.program.api.util} package.
@@ -365,5 +372,102 @@ public class UtilGlobal {
             return null;
         }
         return array.clone();
+    }
+
+    /**
+     * Sets the flat value on the {@code objectToSetFieldOnParam} JSON object.
+     *
+     * If the {@code fieldToExtractFromParam} is not provided, nothing will be set.
+     *
+     * If {@code fieldNamePrefixParam} or {@code fieldNameIdPrefixParam} is not set, an
+     * {@link NullPointerException} will be thrown.
+     *
+     * @param fieldNamePrefixParam The prefix field name.
+     * @param fieldNameIdPrefixParam The prefix field name for id.
+     * @param fieldToExtractFromParam The field to extract the value from.
+     * @param objectToSetFieldOnParam The JSON object to set the field value on.
+     *
+     * @see JSONObject
+     * @see Field
+     */
+    public void setFlatFieldOnJSONObj(
+            String fieldNamePrefixParam,
+            String fieldNameIdPrefixParam,
+            Field fieldToExtractFromParam,
+            JSONObject objectToSetFieldOnParam)
+    {
+        if(fieldToExtractFromParam == null)
+        {
+            return;
+        }
+
+        String fieldName = fieldToExtractFromParam.getFieldNameAsUpperCamel();
+        if(fieldName == null || fieldName.trim().isEmpty())
+        {
+            return;
+        }
+
+        String completeFieldName = fieldNamePrefixParam.concat(fieldName);
+        String completeFieldNameId = fieldNameIdPrefixParam.concat(fieldName);
+
+        objectToSetFieldOnParam.put(completeFieldNameId,
+                fieldToExtractFromParam.getId());
+
+        Object fieldValue = fieldToExtractFromParam.getFieldValue();
+
+        if(fieldValue == null)
+        {
+            objectToSetFieldOnParam.put(
+                    completeFieldName,
+                    JSONObject.NULL);
+        }
+        //Table field...
+        else if(fieldValue instanceof TableField)
+        {
+            return;
+        }
+        //Multiple Choice...
+        else if(fieldValue instanceof MultiChoice) {
+
+            MultiChoice multiChoice = (MultiChoice) fieldValue;
+
+            StringBuilder builder = new StringBuilder();
+            for(String selectedChoice : multiChoice.getSelectedMultiChoices())
+            {
+                builder.append(selectedChoice);
+                builder.append(", ");
+            }
+
+            String selectVal = builder.toString();
+            if(selectVal != null && !selectVal.trim().isEmpty())
+            {
+                selectVal = selectVal.substring(0,selectVal.length() - 2);
+            }
+
+            objectToSetFieldOnParam.put(completeFieldName, selectVal);
+        }
+        //Other valid types...
+        else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+                fieldValue instanceof String)
+        {
+            if((fieldValue instanceof String) &&
+                    Field.LATITUDE_AND_LONGITUDE.equals(
+                            fieldToExtractFromParam.getTypeMetaData()))
+            {
+                String formFieldValueStr = fieldValue.toString();
+
+                double latitude = this.getLatitudeFromFluidText(formFieldValueStr);
+                double longitude = this.getLongitudeFromFluidText(formFieldValueStr);
+
+                fieldValue = (latitude + UtilGlobal.COMMA + longitude);
+            }
+
+            objectToSetFieldOnParam.put(completeFieldName, fieldValue);
+        }
+        //Date...
+        else if(fieldValue instanceof Date)
+        {
+            objectToSetFieldOnParam.put(completeFieldName, ((Date)fieldValue).getTime());
+        }
     }
 }

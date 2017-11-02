@@ -440,6 +440,9 @@ public class WS {
                 /**
                  * URL Path for Attachment get by Form Container and Index.
                  *
+                 * @param formContainerIdParam The primary key for the form container.
+                 * @param indexParam The attachment index for the form container.
+                 *
                  * @return {@code v1/attachment/get_by_form_container_and_index}
                  */
                 public static final String getByFormContainerAndIndex(

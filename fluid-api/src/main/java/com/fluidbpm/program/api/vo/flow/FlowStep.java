@@ -85,7 +85,7 @@ public class FlowStep extends ABaseFluidJSONObject {
         public static final String MAIL_CAPTURE = "Mail Capture";
         public static final String DATABASE_CAPTURE = "Database Capture";
         public static final String SEND_MAIL = "Send Mail";
-        public static final String TWEET = "Tweet";
+        public static final String POLLING = "Polling";
         public static final String JAVA_PROGRAM = "Java Program";
         public static final String CLONE_ITEM = "Clone Item";
 
@@ -128,6 +128,9 @@ public class FlowStep extends ABaseFluidJSONObject {
             public static final String MailTemplateBodyContent = "MailTemplateBodyContent";
             public static final String IncludeAttachments = "IncludeAttachments";
             public static final String RecipientSyntax = "RecipientSyntax";
+
+            //Polling...
+            public static final String PollingType = "PollingType";
 
             //Java Program...
             public static final String TaskIdentifier = "TaskIdentifier";
