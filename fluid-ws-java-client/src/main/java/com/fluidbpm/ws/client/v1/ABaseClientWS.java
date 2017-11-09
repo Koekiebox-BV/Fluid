@@ -56,6 +56,8 @@ import com.fluidbpm.ws.client.FluidClientException;
 /**
  * Base class for all REST related calls.
  *
+ * Makes use of AutoCloseable to close streams.
+ *
  * @author jasonbruwer
  * @since v1.0
  *
@@ -66,8 +68,10 @@ import com.fluidbpm.ws.client.FluidClientException;
  * @see ContentType
  * @see StringEntity
  * @see WS
+ *
+ * @see AutoCloseable
  */
-public abstract class ABaseClientWS {
+public abstract class ABaseClientWS implements AutoCloseable{
 
     //public static final String APPLICATION_JSON_CHARSET_UTF8 = "application/json; charset=UTF-8";
 
@@ -1145,6 +1149,19 @@ public abstract class ABaseClientWS {
         Thread closeConnThread = new Thread(
                 closeConnectionRunnable,"Close ABaseClientWS Connection");
         closeConnThread.start();
+    }
+
+    /**
+     * Closes the connection stream.
+     *
+     * @see ABaseClientWS#closeAndClean()
+     * 
+     * @since 1.7
+     */
+    @Override
+    public void close() {
+
+        this.closeAndClean();
     }
 
     /**
