@@ -55,6 +55,8 @@ public class FlowStep extends ABaseFluidJSONObject {
 
     private List<StepProperty> stepProperties;
 
+    private Long flowStepParentId;
+
     /**
      * The JSON mapping for the {@code FlowStep} object.
      */
@@ -72,6 +74,8 @@ public class FlowStep extends ABaseFluidJSONObject {
         public static final String EXIT_RULES = "exitRules";
         public static final String VIEW_RULES = "viewRules";
         public static final String STEP_PROPERTIES = "stepProperties";
+
+        public static final String FLOW_STEP_PARENT_ID = "flowStepParentId";
     }
 
     /**
@@ -88,7 +92,6 @@ public class FlowStep extends ABaseFluidJSONObject {
         public static final String POLLING = "Polling";
         public static final String JAVA_PROGRAM = "Java Program";
         public static final String CLONE_ITEM = "Clone Item";
-
     }
 
     /**
@@ -318,6 +321,13 @@ public class FlowStep extends ABaseFluidJSONObject {
             this.setFlowStepType(this.jsonObject.getString(JSONMapping.FLOW_STEP_TYPE));
         }
 
+        //Flow Step Parent Id...
+        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_PARENT_ID)) {
+            
+            this.setFlowStepParentId(this.jsonObject.getLong(
+                    JSONMapping.FLOW_STEP_PARENT_ID));
+        }
+
         //Entry Rules...
         if (!this.jsonObject.isNull(JSONMapping.ENTRY_RULES)) {
 
@@ -496,6 +506,13 @@ public class FlowStep extends ABaseFluidJSONObject {
             returnVal.put(JSONMapping.FLOW_STEP_TYPE,this.getFlowStepType());
         }
 
+        //Flow Step Parent Id...
+        if(this.getFlowStepParentId() != null)
+        {
+            returnVal.put(
+                    JSONMapping.FLOW_STEP_PARENT_ID, this.getFlowStepParentId());
+        }
+
         //Entry Rules...
         if(this.getEntryRules() != null && !this.getEntryRules().isEmpty())
         {
@@ -669,6 +686,32 @@ public class FlowStep extends ABaseFluidJSONObject {
      */
     public void setFlowStepType(String flowStepTypeParam) {
         this.flowStepType = flowStepTypeParam;
+    }
+
+    /**
+     * Gets the Flow Step parent id with {@code this} Step.
+     *
+     * The parent id is the containing Step primary key.
+     *
+     * Example would be the primary key for an {@code AssignmentStep}.
+     *
+     * @return Parent Id for {@code this} Step.
+     */
+    public Long getFlowStepParentId() {
+        return this.flowStepParentId;
+    }
+
+    /**
+     * Gets the Flow Step parent id with {@code this} Step.
+     *
+     * The parent id is the containing Step primary key.
+     *
+     * Example would be the primary key for an {@code AssignmentStep}.
+     *
+     * @param flowStepParentIdParam Parent Id for {@code this} Step.
+     */
+    public void setFlowStepParentId(Long flowStepParentIdParam) {
+        this.flowStepParentId = flowStepParentIdParam;
     }
 
     /**

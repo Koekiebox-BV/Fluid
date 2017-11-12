@@ -964,7 +964,7 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for Form Definitions by name.
+                 * URL Path for Form Definitions by logged in user.
                  *
                  * @return {@code v1/form_definition/get_all_by_logged_in_user}
                  */
@@ -1116,6 +1116,13 @@ public class WS {
                 public static final String READ_ALL_VIEWS_BY_STEP =
                         ("/get_views_by_step");
 
+                public static final String POLLING = ("/polling");
+
+                public static final String ROOT_POLLING = (ROOT+POLLING);
+                
+                public static final String READ_ALL_BY_LOGGED_IN_USER =
+                        ("/get_all_by_logged_in_user");
+
                 /**
                  * Root for Flow Step.
                  *
@@ -1211,6 +1218,17 @@ public class WS {
                 public static final String getAllStepsByFlow()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_STEPS_BY_FLOW);
+                }
+
+                /**
+                 * URL Path for Polling Steps by logged in user.
+                 *
+                 * @return {@code v1/flow_step/polling/get_all_by_logged_in_user}
+                 */
+                public static final String getAllPollingStepsByLoggedInUser()
+                {
+                    return Version.VERSION_1.concat(ROOT_POLLING).concat(
+                            READ_ALL_BY_LOGGED_IN_USER);
                 }
             }
         }

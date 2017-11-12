@@ -431,17 +431,28 @@ public class UtilGlobal {
 
             MultiChoice multiChoice = (MultiChoice) fieldValue;
 
+            //Nothing provided...
+            if(multiChoice.getSelectedMultiChoices() == null ||
+                    multiChoice.getSelectedMultiChoices().isEmpty())
+            {
+
+                objectToSetFieldOnParam.put(
+                        completeFieldName,
+                        JSONObject.NULL);
+                return;
+            }
+
             StringBuilder builder = new StringBuilder();
-            for(String selectedChoice : multiChoice.getSelectedMultiChoices())
+            multiChoice.getSelectedMultiChoices().forEach(selectedChoice ->
             {
                 builder.append(selectedChoice);
                 builder.append(", ");
-            }
+            });
 
             String selectVal = builder.toString();
             if(selectVal != null && !selectVal.trim().isEmpty())
             {
-                selectVal = selectVal.substring(0,selectVal.length() - 2);
+                selectVal = selectVal.substring(0, selectVal.length() - 2);
             }
 
             objectToSetFieldOnParam.put(completeFieldName, selectVal);
