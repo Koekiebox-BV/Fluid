@@ -127,7 +127,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     /**
      * The JSON mapping for the {@code Form} object as a flat object.
      */
-    private static class FlatFormJSONMapping
+    public static class FlatFormJSONMapping
     {
         //Form...
         public static final String FORM_ID = "form_id";

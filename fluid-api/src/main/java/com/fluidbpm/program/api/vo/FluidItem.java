@@ -82,7 +82,7 @@ public class FluidItem extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code FluidItem} object as a flat object.
      */
-    private static class FlatFormJSONMapping
+    public static class FlatFormJSONMapping
     {
         //Fluid Item...
         public static final String FLUID_ITEM_ID = "fluid_item_id";
