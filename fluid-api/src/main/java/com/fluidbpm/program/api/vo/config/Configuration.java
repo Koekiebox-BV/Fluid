@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.config;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +30,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  *
  * @see ABaseFluidJSONObject
  */
+@XmlRootElement
 public class Configuration extends ABaseFluidJSONObject {
 
     public static final long serialVersionUID = 1L;

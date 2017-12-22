@@ -265,7 +265,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
         }
 
         JSONObject typeJson = new JSONObject();
-        typeJson.put(Field.JSONMapping.TYPE, parentTypeParam);
+        typeJson.put(Field.JSONMapping.FIELD_TYPE, parentTypeParam);
 
         existingPropsToUpdateParam.put(
                 Form.JSONMapping._PARENT, typeJson);

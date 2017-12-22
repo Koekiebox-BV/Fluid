@@ -266,4 +266,18 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     {
         return this.jsonObject;
     }
+
+    /**
+     * Return the Text representation of {@code this} object.
+     *
+     * @return JSON body of {@code this} object.
+     */
+    @Override
+    @XmlTransient
+    public String toString() {
+
+        JSONObject jsonObject = this.toJsonObject();
+
+        return (jsonObject == null) ? null : jsonObject.toString();
+    }
 }

@@ -133,7 +133,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.Text.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.Text.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.Text.PLAIN, createdField.getTypeMetaData());
 
@@ -145,7 +145,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.Text.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.Text.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.Text.PLAIN, updatedField.getTypeMetaData());
 
@@ -155,7 +155,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.Text.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.Text.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.Text.PLAIN, byIdField.getTypeMetaData());
 
@@ -193,7 +193,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.TrueFalse.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.TrueFalse.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.TrueFalse.TRUE_FALSE, createdField.getTypeMetaData());
 
@@ -205,7 +205,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.TrueFalse.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.TrueFalse.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.TrueFalse.TRUE_FALSE, updatedField.getTypeMetaData());
 
@@ -215,7 +215,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.TrueFalse.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.TrueFalse.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.TrueFalse.TRUE_FALSE, byIdField.getTypeMetaData());
 
@@ -253,7 +253,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.ParagraphText.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.ParagraphText.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.ParagraphText.PLAIN, createdField.getTypeMetaData());
 
@@ -265,7 +265,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.ParagraphText.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.ParagraphText.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.ParagraphText.PLAIN, updatedField.getTypeMetaData());
 
@@ -275,7 +275,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.ParagraphText.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.ParagraphText.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.ParagraphText.PLAIN, byIdField.getTypeMetaData());
 
@@ -313,7 +313,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.ParagraphText.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.ParagraphText.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.ParagraphText.HTML, createdField.getTypeMetaData());
 
@@ -325,7 +325,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.ParagraphText.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.ParagraphText.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.ParagraphText.HTML, updatedField.getTypeMetaData());
 
@@ -335,7 +335,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.ParagraphText.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.ParagraphText.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.ParagraphText.HTML, byIdField.getTypeMetaData());
 
@@ -374,7 +374,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.MultipleChoice.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.MultipleChoice.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.PLAIN, createdField.getTypeMetaData());
 
@@ -399,7 +399,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.PLAIN, updatedField.getTypeMetaData());
 
@@ -422,7 +422,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.PLAIN, byIdField.getTypeMetaData());
 
@@ -474,7 +474,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.MultipleChoice.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.MultipleChoice.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.SELECT_MANY, createdField.getTypeMetaData());
 
@@ -499,7 +499,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.SELECT_MANY, updatedField.getTypeMetaData());
 
@@ -522,7 +522,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.MultipleChoice.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.SELECT_MANY, byIdField.getTypeMetaData());
 
@@ -573,7 +573,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.DateTime.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.DateTime.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.DateTime.DATE, createdField.getTypeMetaData());
 
@@ -585,7 +585,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.DateTime.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.DateTime.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.DateTime.DATE, updatedField.getTypeMetaData());
 
@@ -595,7 +595,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.DateTime.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.DateTime.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.DateTime.DATE, byIdField.getTypeMetaData());
 
@@ -633,7 +633,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.DateTime.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.DateTime.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.DateTime.DATE_AND_TIME, createdField.getTypeMetaData());
 
@@ -645,7 +645,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.DateTime.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.DateTime.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.DateTime.DATE_AND_TIME, updatedField.getTypeMetaData());
 
@@ -655,7 +655,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.DateTime.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.DateTime.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.DateTime.DATE_AND_TIME, byIdField.getTypeMetaData());
 
@@ -693,7 +693,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
         TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
-        TestCase.assertEquals("'Type' mismatch.", Field.Type.Decimal.toString(), createdField.getType());
+        TestCase.assertEquals("'Type' mismatch.", Field.Type.Decimal.toString(), createdField.getFieldType());
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.Decimal.PLAIN, createdField.getTypeMetaData());
 
@@ -705,7 +705,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedField.getId());
         TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.FIELD_NAME_UPDATE, updatedField.getFieldName());
         TestCase.assertEquals("UPDATE: 'Description' mismatch.", TestStatics.FIELD_DESCRIPTION_UPDATE, updatedField.getFieldDescription());
-        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.Decimal.toString(), updatedField.getType());
+        TestCase.assertEquals("UPDATE: 'Type' mismatch.", Field.Type.Decimal.toString(), updatedField.getFieldType());
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.Decimal.PLAIN, updatedField.getTypeMetaData());
 
@@ -715,7 +715,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdField.getId());
         TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdField.getFieldName());
         TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdField.getFieldDescription());
-        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.Decimal.toString(), byIdField.getType());
+        TestCase.assertEquals("BY_ID: 'Type' mismatch.", Field.Type.Decimal.toString(), byIdField.getFieldType());
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.Decimal.PLAIN, byIdField.getTypeMetaData());
 

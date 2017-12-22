@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.json.JSONArray;
@@ -48,6 +49,7 @@ import com.fluidbpm.program.api.vo.role.Role;
  * @see com.fluidbpm.program.api.vo.auth0.Connection
  * @see com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile
  */
+@XmlRootElement
 public class User extends ABaseFluidJSONObject {
 
     public static final long serialVersionUID = 1L;

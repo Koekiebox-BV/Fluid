@@ -38,6 +38,7 @@ public class UtilGlobal {
     public static final String REG_EX_PIPE = "\\|";
     public static final String PIPE = "|";
     public static final String COMMA = ",";
+    public static final String COMMA_SPACE = ", ";
 
     public static final String REG_EX_COMMA = "\\,";
 

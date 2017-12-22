@@ -48,7 +48,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     private Object fieldValue;
     private String fieldDescription;
 
-    private String type;
+    private String fieldType;
     private String typeMetaData;
 
     public static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
@@ -61,7 +61,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         public static final String FIELD_NAME= "fieldName";
         public static final String FIELD_DESCRIPTION = "fieldDescription";
         public static final String FIELD_VALUE = "fieldValue";
-        public static final String TYPE = "type";
+        public static final String FIELD_TYPE = "fieldType";
         public static final String TYPE_META_DATA = "typeMetaData";
 
         /**
@@ -70,13 +70,13 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
          */
         public static final class Elastic
         {
-            public static final String TYPE = "type";
+            public static final String TYPE = "fieldType";
         }
     }
 
     /**
      * <p>
-     *     The types of Fields and Value type mapping is;
+     *     The types of Fields and Value fieldType mapping is;
      *
      *     <table>
      *         <caption>Field Fluid vs Java mapping</caption>
@@ -128,7 +128,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
-     * The field type for Elastic Search.
+     * The field fieldType for Elastic Search.
      * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}
      */
     public static class ElasticSearchType
@@ -213,7 +213,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      */
     public Field(String fieldNameParam, Object fieldValueParam) {
         this.setFieldName(fieldNameParam);
-        this.type = null;
+        this.fieldType = null;
         this.typeMetaData = null;
         this.setFieldValue(fieldValueParam);
     }
@@ -249,9 +249,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             this.setFieldDescription(this.jsonObject.getString(JSONMapping.FIELD_DESCRIPTION));
         }
 
-        //Type...
-        if (!this.jsonObject.isNull(JSONMapping.TYPE)) {
-            this.setType(this.jsonObject.getString(JSONMapping.TYPE));
+        //Field Type...
+        if (!this.jsonObject.isNull(JSONMapping.FIELD_TYPE)) {
+            this.setFieldType(this.jsonObject.getString(JSONMapping.FIELD_TYPE));
         }
 
         //Meta Data...
@@ -269,10 +269,24 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
 
                 //Multi Choices Selected Multi Choices...
-                if(jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
-                        jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES))
+                if((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
+                        jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
+                        jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED))
                 {
                     this.setFieldValue(new MultiChoice(jsonObject));
+                }
+                //[Payara] mapping for rest...
+                else if(Type.MultipleChoice.toString().equals(this.getFieldType()) &&
+                        (jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE)))
+                {
+                    String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
+                    if(MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal))
+                    {
+                        this.setFieldValue(
+                                new MultiChoice(
+                                        new JSONObject(jsonObject.getString(
+                                                MultiChoice.JSONMapping.VALUE))));
+                    }
                 }
                 //Table Field...
                 else if(jsonObject.has(TableField.JSONMapping.TABLE_RECORDS))
@@ -383,7 +397,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     public void setFieldValue(Object fieldValueParam) {
         this.fieldValue = fieldValueParam;
 
-        if(this.getType() == null && fieldValueParam != null)
+        if(this.getFieldType() == null && fieldValueParam != null)
         {
             //Date...
             if(fieldValueParam instanceof Date)
@@ -425,25 +439,25 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @see Type
      */
-    public String getType() {
-        return this.type;
+    public String getFieldType() {
+        return this.fieldType;
     }
 
     /**
      * Sets the Type of {@code this} {@code Field} as {@code String}.
      *
-     * @param typeParam The Field type.
+     * @param fieldTypeParam The Field fieldType.
      *
      * @see Type
      */
-    public void setType(String typeParam) {
-        this.type = typeParam;
+    public void setFieldType(String fieldTypeParam) {
+        this.fieldType = fieldTypeParam;
     }
 
     /**
      * Sets the Type of {@code this} {@code Field} as {@code enum}.
      *
-     * @param typeParam The Field type.
+     * @param typeParam The Field fieldType.
      *
      * @see Type
      */
@@ -452,29 +466,29 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
         if(typeParam == null)
         {
-            this.type = null;
+            this.fieldType = null;
             return;
         }
 
-        this.type = typeParam.name();
+        this.fieldType = typeParam.name();
     }
 
     /**
      * Gets the Type of {@code this} {@code Field} as {@code enum}.
      *
-     * @return The Field type.
+     * @return The Field fieldType.
      *
      * @see Type
      */
     @XmlTransient
     public Type getTypeAsEnum()
     {
-        if(this.getType() == null || this.getType().trim().isEmpty())
+        if(this.getFieldType() == null || this.getFieldType().trim().isEmpty())
         {
             return null;
         }
 
-        return Type.valueOf(this.getType());
+        return Type.valueOf(this.getFieldType());
     }
 
     /**
@@ -586,9 +600,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         }
 
         //Type...
-        if(this.getType() != null)
+        if(this.getFieldType() != null)
         {
-            returnVal.put(JSONMapping.TYPE, this.getType());
+            returnVal.put(JSONMapping.FIELD_TYPE, this.getFieldType());
         }
 
         //Type Meta Data...
@@ -744,7 +758,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         //Problem
         else {
             throw new FluidElasticSearchException(
-                    "Field Value of type '"+fieldValue.getClass().getSimpleName()
+                    "Field Value of field-type '"+fieldValue.getClass().getSimpleName()
                             +"' and Value '"+ fieldValue+"' is not supported.");
         }
 
@@ -936,9 +950,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
-     * Returns the ElasticSearch equivalent data type from the Fluid datatype.
+     * Returns the ElasticSearch equivalent data field-type from the Fluid datatype.
      *
-     * @return ElasticSearch type.
+     * @return ElasticSearch field-type.
      *
      * @see ElasticSearchType
      */
@@ -952,7 +966,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             return null;
         }
 
-        //Get the type by Fluid field type...
+        //Get the fieldType by Fluid field fieldType...
         switch (fieldType)
         {
             case ParagraphText:
@@ -985,25 +999,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
-     * JSON {@code String} value for field.
-     *
-     * @return JSON value of field.
-     */
-    @Override
-    @XmlTransient
-    public String toString() {
-
-        JSONObject jsonObj = this.toJsonObject();
-
-        if(jsonObj == null)
-        {
-            return null;
-        }
-        
-        return jsonObj.toString();
-    }
-
-    /**
      * Checks whether the provided {@code fieldParam} qualifies for
      * insert into Elastic Search.
      *
@@ -1026,7 +1021,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             return false;
         }
 
-        //Confirm the type is supported...
+        //Confirm the fieldType is supported...
         switch (fieldType){
 
             case DateTime:

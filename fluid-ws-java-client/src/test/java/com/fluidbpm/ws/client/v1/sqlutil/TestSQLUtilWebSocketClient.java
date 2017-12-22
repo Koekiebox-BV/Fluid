@@ -125,7 +125,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                     for(Field field : form.getFormFields())
                     {
                         System.out.println("|"+field.getFieldName()+"|"+
-                                field.getType()
+                                field.getFieldType()
                                 +"| ->" +field.getFieldValue());
                     }
                 }

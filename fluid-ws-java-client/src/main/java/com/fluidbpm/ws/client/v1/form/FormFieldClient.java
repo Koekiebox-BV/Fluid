@@ -1093,6 +1093,9 @@ public class FormFieldClient extends ABaseFieldClient {
     {
         Field field = new Field(fieldIdParam);
 
+        //Set for Payara server...
+        field.setFieldValue(new MultiChoice());
+
         if(this.serviceTicket != null)
         {
             field.setServiceTicket(this.serviceTicket);
