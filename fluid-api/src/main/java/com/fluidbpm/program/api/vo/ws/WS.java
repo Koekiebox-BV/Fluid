@@ -220,7 +220,7 @@ public class WS {
                  */
                 public static final String formContainerCreateWebSocket(String serviceTicketParam)
                 {
-                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
+                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam);
                 }
 
                 /**
@@ -387,7 +387,7 @@ public class WS {
                  */
                 public static final String formContainerTableRecordCreateWebSocket(String serviceTicketParam)
                 {
-                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam + "/" );
+                    return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam);
                 }
             }
         }
@@ -1634,8 +1634,7 @@ public class WS {
                     String returnVal =
                             SEND_TO_FLOW_WEB_SOCKET.concat(
                                     CREATE).concat(
-                                            serviceTicketParam + "/" +
-                                            "?" +
+                                            serviceTicketParam + "?" +
                                                     QueryParam.WAIT_FOR_RULE_EXEC_COMPLETION+"=" +
                                                     waitForRuleExecCompleteParam);
 
@@ -2484,8 +2483,7 @@ public class WS {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
                                     SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
-                                    "/"+ serviceTicketParam + "/" +
-                                            "?" +
+                                    "/"+ serviceTicketParam + "?" +
                                             QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam);
 
                     return returnVal;
@@ -2534,7 +2532,7 @@ public class WS {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
                                     SQL_UTIL_FORM_GET_DESCENDANTS).concat(
-                                    "/"+ serviceTicketParam + "/" +
+                                    "/"+ serviceTicketParam + 
                                     "?" +
                                     QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
                                     "&" +
@@ -2556,7 +2554,7 @@ public class WS {
                 {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_EXECUTE_SQL).concat(
-                                    "/"+ serviceTicketParam + "/");
+                                    "/"+ serviceTicketParam);
 
                     return returnVal;
                 }
@@ -2600,7 +2598,7 @@ public class WS {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
                                     SQL_UTIL_FORM_GET_ANCESTOR).concat(
-                                    "/"+ serviceTicketParam + "/" +
+                                    "/"+ serviceTicketParam +
                                             "?" +
                                             QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
                                             "&" +
@@ -2643,8 +2641,7 @@ public class WS {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
                                     SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
-                                    "/"+ serviceTicketParam + "/" +
-                                            "?" +
+                                    "/"+ serviceTicketParam + "?" +
                                             QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
 
                     return returnVal;

@@ -518,15 +518,18 @@ public class RouteFieldClient extends ABaseFieldClient {
      */
     public Field getFieldById(Long fieldIdParam)
     {
-        Field flow = new Field(fieldIdParam);
+        Field field = new Field(fieldIdParam);
+
+        //Set for Payara server...
+        field.setFieldValue(new MultiChoice());
 
         if(this.serviceTicket != null)
         {
-            flow.setServiceTicket(this.serviceTicket);
+            field.setServiceTicket(this.serviceTicket);
         }
 
         return new Field(this.postJson(
-                flow, Version1.getById()));
+                field, Version1.getById()));
     }
 
     /**
