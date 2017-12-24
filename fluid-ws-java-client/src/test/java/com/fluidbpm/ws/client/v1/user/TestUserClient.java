@@ -110,10 +110,10 @@ public class TestUserClient extends ABaseTestCase {
     }
 
     /**
-     *
+     * 
      */
     @Test
-    public void testUpdateUser() {
+    public void testCreateAndUpdateUser() {
         if (!this.loginClient.isConnectionValid()) {
             return;
         }
@@ -134,9 +134,14 @@ public class TestUserClient extends ABaseTestCase {
         TestCase.assertNotNull(userToUpdate);
 
         userToUpdate.setUsername(TestStatics.Update.USERNAME);
-        userToUpdate = userClient.updateUser(userToUpdate);
 
-        userClient.deleteUser(userToUpdate, true);
+        try
+        {
+            userToUpdate = userClient.updateUser(userToUpdate);
+        }
+        finally {
+            userClient.deleteUser(userToUpdate, true);
+        }
     }
 
 
