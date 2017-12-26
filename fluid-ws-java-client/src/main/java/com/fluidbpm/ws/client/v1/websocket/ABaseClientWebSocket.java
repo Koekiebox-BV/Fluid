@@ -99,6 +99,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
 
+        //Issue #23... Don't do double //...
         String completeUrl = null;
         if(this.webSocketEndpointUrl.endsWith(UtilGlobal.FORWARD_SLASH) &&
                 postFixForUrlParam.startsWith(UtilGlobal.FORWARD_SLASH))
