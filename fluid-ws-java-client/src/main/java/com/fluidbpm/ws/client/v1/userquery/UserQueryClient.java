@@ -189,6 +189,33 @@ public class UserQueryClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves all user queries for logged in {@code User}.
+     *
+     * @return UserQuery information.
+     *
+     * @see UserQueryListing
+     */
+    public UserQueryListing getAllUserQueriesByLoggedInUser()
+    {
+        UserQuery userQueryToGetInfoFor = new UserQuery();
+
+        if(this.serviceTicket != null)
+        {
+            userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new UserQueryListing(this.postJson(
+                    userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueriesByLoggedInUser()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+    
+    /**
      * Executes the {@code UserQuery} {@code queryToExecuteParam}
      * and returns the result information.
      *

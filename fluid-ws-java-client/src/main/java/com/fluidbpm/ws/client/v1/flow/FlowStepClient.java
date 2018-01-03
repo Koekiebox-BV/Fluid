@@ -269,6 +269,25 @@ public class FlowStepClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves all Assignment {@link com.fluidbpm.program.api.vo.flow.JobView}s
+     * via logged in {@code User}.
+     *
+     * @return The JobView's by logged in user.
+     */
+    public JobViewListing getJobViewsByLoggedInUser()
+    {
+        FlowStep flowStep = new FlowStep();
+
+        if(this.serviceTicket != null)
+        {
+            flowStep.setServiceTicket(this.serviceTicket);
+        }
+
+        return new JobViewListing(this.postJson(
+                flowStep, WS.Path.FlowStep.Version1.getAllViewsByLoggedInUser()));
+    }
+
+    /**
      * Retrieves all Steps via Flow.
      *
      * @param flowParam The Flow.

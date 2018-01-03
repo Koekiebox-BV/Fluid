@@ -220,6 +220,69 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
+     * Check whether {@code this} {@code User} has access
+     * to role {@code roleParam}.
+     *
+     * @param roleParam The role to check for.
+     * @return {@code true} if user has access, otherwise {@code false}.
+     *
+     * @see Role
+     */
+    @XmlTransient
+    public boolean doesUserHaveAccessToRole(Role roleParam)
+    {
+        if(roleParam == null)
+        {
+            return false;
+        }
+        
+        return this.doesUserHaveAccessToRole(roleParam.getName());
+    }
+
+    /**
+     * Check whether {@code this} {@code User} has access
+     * to role with name {@code roleParam}.
+     *
+     * @param roleNameParam The role name to check for.
+     * @return {@code true} if user has access, otherwise {@code false}.
+     *
+     * @see Role
+     */
+    @XmlTransient
+    public boolean doesUserHaveAccessToRole(String roleNameParam)
+    {
+        if(roleNameParam == null || roleNameParam.trim().isEmpty())
+        {
+            return false;
+        }
+
+        if(this.getRoles() == null || this.getRoles().isEmpty())
+        {
+            return false;
+        }
+
+        String roleNameParamLower = roleNameParam.trim().toLowerCase();
+
+        for(Role roleAtIndex : this.getRoles())
+        {
+            if(roleAtIndex.getName() == null ||
+                    roleAtIndex.getName().trim().isEmpty())
+            {
+                continue;
+            }
+
+            String iterRoleNameLower = roleAtIndex.getName().trim().toLowerCase();
+
+            if(roleNameParamLower.equals(iterRoleNameLower))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    /**
      * Gets whether a user is active.
      *
      * @return A Users state.

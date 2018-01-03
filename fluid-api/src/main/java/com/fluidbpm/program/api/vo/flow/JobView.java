@@ -27,6 +27,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  *
  * @author jasonbruwer
  * @since v1.1
+ * @version v1.8
  *
  * @see com.fluidbpm.program.api.vo.role.RoleToJobView
  */
@@ -36,6 +37,7 @@ public class JobView extends ABaseFluidJSONObject {
 
     private String rule;
     private String viewName;
+    private String viewGroupName;
     private String viewType;
 
     /**
@@ -45,6 +47,7 @@ public class JobView extends ABaseFluidJSONObject {
     {
         public static final String RULE = "rule";
         public static final String VIEW_NAME = "viewName";
+        public static final String VIEW_GROUP_NAME = "viewGroupName";
         public static final String VIEW_TYPE = "viewType";
     }
 
@@ -89,6 +92,11 @@ public class JobView extends ABaseFluidJSONObject {
             this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
         }
 
+        //View Group...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_GROUP_NAME)) {
+            this.setViewGroupName(this.jsonObject.getString(JSONMapping.VIEW_GROUP_NAME));
+        }
+
         //View Type...
         if (!this.jsonObject.isNull(JSONMapping.VIEW_TYPE)) {
             this.setViewType(this.jsonObject.getString(JSONMapping.VIEW_TYPE));
@@ -123,12 +131,30 @@ public class JobView extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets the Name of the View.
+     * Sets the Name of the View.
      *
      * @param viewNameParam View Name.
      */
     public void setViewName(String viewNameParam) {
         this.viewName = viewNameParam;
+    }
+
+    /**
+     * Gets the Name of the View Group.
+     *
+     * @return View Name.
+     */
+    public String getViewGroupName() {
+        return this.viewGroupName;
+    }
+
+    /**
+     * Sets the Group Name of the View.
+     *
+     * @param viewGroupNameParam View Name.
+     */
+    public void setViewGroupName(String viewGroupNameParam) {
+        this.viewGroupName = viewGroupNameParam;
     }
 
     /**
@@ -172,6 +198,12 @@ public class JobView extends ABaseFluidJSONObject {
         if(this.getViewName() != null)
         {
             returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
+        }
+
+        //View Group Name...
+        if(this.getViewGroupName() != null)
+        {
+            returnVal.put(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
         }
 
         //View Type...

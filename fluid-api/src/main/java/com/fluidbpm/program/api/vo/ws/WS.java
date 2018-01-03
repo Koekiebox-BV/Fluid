@@ -557,6 +557,14 @@ public class WS {
         public static final class FormField
         {
             /**
+             * Mapping for frequently used HTTP parameters.
+             */
+            public static final class QueryParam
+            {
+                public static final String EDIT_ONLY = "edit_only";
+            }
+            
+            /**
              * Form Field mappings.
              */
             public static final class Version1
@@ -576,6 +584,8 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String BY_NAME = ("/get_by_name");
+                public static final String READ_BY_FORM_DEF_AND_LOGGED_IN_USER =
+                        ("/get_by_form_definition_and_logged_in_user");
 
                 /**
                  * Root for Form Field.
@@ -652,6 +662,25 @@ public class WS {
                 public static final String getByName()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(BY_NAME);
+                }
+
+                /**
+                 * URL Path for Form Fields get by Form Definition and Logged In User.
+                 *
+                 * @param editOnlyFieldsParam Only return the fields that are editable.
+                 *
+                 * @return {@code v1/form_field/get_by_form_definition_and_logged_in_user}
+                 */
+                public static final String getByFormDefinitionAndLoggedInUser(
+                        boolean editOnlyFieldsParam)
+                {
+                    ///delete?force=true
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(
+                            READ_BY_FORM_DEF_AND_LOGGED_IN_USER);
+
+                    returnVal += ("?"+ QueryParam.EDIT_ONLY+"="+editOnlyFieldsParam);
+
+                    return returnVal;
                 }
             }
         }
@@ -1116,6 +1145,9 @@ public class WS {
                 public static final String READ_ALL_VIEWS_BY_STEP =
                         ("/get_views_by_step");
 
+                public static final String READ_ALL_VIEWS_BY_LOGGED_IN_USER =
+                        ("/get_views_by_logged_in_user");
+
                 public static final String POLLING = ("/polling");
 
                 public static final String ROOT_POLLING = (ROOT+POLLING);
@@ -1208,6 +1240,16 @@ public class WS {
                 public static final String getAllViewsByStep()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_STEP);
+                }
+
+                /**
+                 * URL Path for JobViews by logged in user.
+                 *
+                 * @return {@code v1/flow_step/get_views_by_logged_in_user}
+                 */
+                public static final String getAllViewsByLoggedInUser()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_LOGGED_IN_USER);
                 }
 
                 /**
@@ -2684,6 +2726,9 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String READ_ALL = ("/get_all_user_queries");
+                
+                public static final String READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER =
+                        ("/get_all_user_queries_by_logged_in_user");
 
                 //Execute...
                 public static final String EXECUTE = ("/execute");
@@ -2795,6 +2840,16 @@ public class WS {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
 
+                /**
+                 * URL Path for UserQuery get all by logged in {@code User}.
+                 *
+                 * @return {@code v1/user_query/get_all_user_queries_by_logged_in_user}
+                 */
+                public static final String getAllUserQueriesByLoggedInUser()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER);
+                }
             }
         }
 

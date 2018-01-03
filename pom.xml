@@ -255,6 +255,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>${version.plugin.gpg}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>

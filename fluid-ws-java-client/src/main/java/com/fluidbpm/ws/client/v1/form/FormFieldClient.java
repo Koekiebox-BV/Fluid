@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import com.fluidbpm.program.api.vo.Field;
 import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.MultiChoice;
+import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
@@ -1123,6 +1124,56 @@ public class FormFieldClient extends ABaseFieldClient {
 
         return new Field(this.postJson(
                 field, WS.Path.FormField.Version1.getByName()));
+    }
+
+    /**
+     * Retrieve the Form Fields via Form Definition name.
+     *
+     * @param formNameParam The form definition name.
+     * @param editOnlyFieldsParam Only return the fields that are editable.
+     *                            
+     * @return Form Fields for {@code formNameParam}
+     */
+    public FormFieldListing getFieldsByFormNameAndLoggedInUser(
+            String formNameParam,
+            boolean editOnlyFieldsParam)
+    {
+        Form form = new Form();
+        form.setFormType(formNameParam);
+
+        if(this.serviceTicket != null)
+        {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FormFieldListing(this.postJson(
+                form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
+                        editOnlyFieldsParam)));
+    }
+
+    /**
+     * Retrieve the Form Fields via Form Definition id.
+     *
+     * @param formTypeIdParam The form definition id.
+     * @param editOnlyFieldsParam Only return the fields that are editable.
+     *                            
+     * @return Form Fields for {@code formIdParam}
+     */
+    public FormFieldListing getFieldsByFormTypeIdAndLoggedInUser(
+            Long formTypeIdParam,
+            boolean editOnlyFieldsParam)
+    {
+        Form form = new Form();
+        form.setFormTypeId(formTypeIdParam);
+        
+        if(this.serviceTicket != null)
+        {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FormFieldListing(this.postJson(
+                form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
+                        editOnlyFieldsParam)));
     }
 
     /**

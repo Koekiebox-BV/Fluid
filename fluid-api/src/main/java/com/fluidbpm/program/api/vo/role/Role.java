@@ -18,10 +18,13 @@ package com.fluidbpm.program.api.vo.role;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
@@ -198,6 +201,37 @@ public class Role extends ABaseFluidJSONObject {
 
             this.setRoleToUserQueries(userQueryListing);
         }
+    }
+
+    /**
+     * Convert the comma separated list of roles as objects.
+     *
+     * @param roleListingParam The comma separated role listing.
+     *                         Example; {@code "Admin, Super Admin, HR, Finance"}
+     *
+     * @return The {@code roleListingParam} as {@code Role} objects.
+     */
+    @XmlTransient
+    public static List<Role> convertToObjects(String roleListingParam)
+    {
+        if(roleListingParam == null || roleListingParam.trim().isEmpty())
+        {
+            return null;
+        }
+
+        String[] listOfRoles = roleListingParam.split(UtilGlobal.REG_EX_COMMA);
+
+        List<Role> returnVal = new ArrayList<>();
+
+        for(String roleName : listOfRoles)
+        {
+            Role roleToAdd = new Role();
+            roleToAdd.setName(roleName.trim());
+
+            returnVal.add(roleToAdd);
+        }
+
+        return returnVal;
     }
 
     /**

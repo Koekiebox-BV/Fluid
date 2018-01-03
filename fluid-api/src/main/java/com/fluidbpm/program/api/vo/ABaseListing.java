@@ -255,4 +255,15 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
      */
     @XmlTransient
     public abstract T getObjectFromJSONObject(JSONObject jsonObjectParam);
+
+    /**
+     * Returns whether the listing is empty.
+     *
+     * @return {@code true} if the listing is {@code null} or empty.
+     */
+    @XmlTransient
+    public boolean isListingEmpty()
+    {
+        return (this.listing == null || this.listing.isEmpty());
+    }
 }
