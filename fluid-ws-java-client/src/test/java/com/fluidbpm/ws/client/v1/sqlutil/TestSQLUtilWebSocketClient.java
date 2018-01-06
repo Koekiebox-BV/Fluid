@@ -257,6 +257,10 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                             " - " +
                             form.getTitle());
 
+                    System.out.println("--> Current User: "+
+                            ((form.getCurrentUser() == null) ? "[Not Set]" :
+                                    form.getCurrentUser().getId()));
+
                     if(form.getFormFields() != null)
                     {
                         for(Field field : form.getFormFields())

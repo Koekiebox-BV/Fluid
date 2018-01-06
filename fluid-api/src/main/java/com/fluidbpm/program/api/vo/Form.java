@@ -234,6 +234,13 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                 currentUser.setId(jsonObj.getLong(
                         User.JSONMapping.Elastic.USER_ID));
             }
+            //Id is set, make use of that instead...
+            else if (!jsonObj.isNull(
+                    ABaseFluidJSONObject.JSONMapping.ID)) {
+
+                currentUser.setId(jsonObj.getLong(
+                        ABaseFluidJSONObject.JSONMapping.ID));
+            }
 
             //Username
             if (!jsonObj.isNull(User.JSONMapping.USERNAME)) {
@@ -268,7 +275,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             JSONArray associatedJobsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ASSOCIATED_FLOWS);
 
-            List<Flow> assFlowsObj = new ArrayList();
+            List<Flow> assFlowsObj = new ArrayList<>();
             for(int index = 0;index < associatedJobsArr.length();index++)
             {
                 assFlowsObj.add(new Flow(associatedJobsArr.getJSONObject(index)));
@@ -283,7 +290,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             JSONArray formFieldsArr = this.jsonObject.getJSONArray(
                     JSONMapping.FORM_FIELDS);
 
-            List<Field> assFormFields = new ArrayList();
+            List<Field> assFormFields = new ArrayList<>();
             for(int index = 0;index < formFieldsArr.length();index++)
             {
                 assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
@@ -320,7 +327,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         else {
             JSONArray jsonArray = this.jsonObject.getJSONArray(
                     JSONMapping.DESCENDANT_IDS);
-            List<Long> descendantIds = new ArrayList();
+            List<Long> descendantIds = new ArrayList<>();
             for(int index = 0;index < jsonArray.length();index++)
             {
                 descendantIds.add(jsonArray.getLong(index));
