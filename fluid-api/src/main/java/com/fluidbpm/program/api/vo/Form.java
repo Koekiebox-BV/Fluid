@@ -934,6 +934,30 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                     this.getDateAsLongFromJson(this.getDateLastUpdated()));
         }
 
+        //Current User...
+        if(this.getCurrentUser() != null)
+        {
+            returnVal.put(
+                    JSONMapping.CURRENT_USER,
+                    this.getCurrentUser().toJsonObject());
+        }
+
+        //State...
+        if(this.getState() != null)
+        {
+            returnVal.put(
+                    JSONMapping.STATE,
+                    this.getState());
+        }
+
+        //Flow State...
+        if(this.getFlowState() != null)
+        {
+            returnVal.put(
+                    JSONMapping.FLOW_STATE,
+                    this.getFlowState());
+        }
+
         //Form Fields...
         if(this.getFormFields() != null && !this.getFormFields().isEmpty())
         {
