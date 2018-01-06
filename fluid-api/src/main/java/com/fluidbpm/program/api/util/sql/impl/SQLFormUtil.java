@@ -33,6 +33,7 @@ import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
 import com.fluidbpm.program.api.vo.Field;
 import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.user.User;
 
 /**
  * SQL Utility class used for {@code Form} related actions.
@@ -48,6 +49,23 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 
     private SQLFormDefinitionUtil formDefUtil = null;
     private SQLFormFieldUtil fieldUtil = null;
+
+    /**
+     * Contains the SQL column indexes for {@code Form}.
+     */
+    private static class SQLColumnIndex
+    {
+        public static final int _01_FORM_ID = 1;
+        public static final int _02_FORM_TYPE = 2;
+        public static final int _03_TITLE = 3;
+        public static final int _04_CREATED = 4;
+        public static final int _05_LAST_UPDATED = 5;
+        public static final int _06_CURRENT_USER_ID = 6;
+
+        //additional...
+        public static final int _07_FORM_CONTAINER_STATE = 7;
+        public static final int _08_FORM_CONTAINER_FLOW_STATE = 8;
+    }
 
     /**
      * New instance using provided {@code connectionParam}.
@@ -433,18 +451,19 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
             ResultSet resultSetParam)
     throws SQLException
     {
-        Long formId = resultSetParam.getLong(1);
+        Long formId = resultSetParam.getLong(SQLColumnIndex._01_FORM_ID);
         String formType = definitionAndTitleParam.get(
-                resultSetParam.getLong(2));
+                resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE));
 
-        String title = resultSetParam.getString(3);
-        Date created = resultSetParam.getDate(4);
-        Date lastUpdated = resultSetParam.getDate(5);
+        String title = resultSetParam.getString(SQLColumnIndex._03_TITLE);
+        Date created = resultSetParam.getDate(SQLColumnIndex._04_CREATED);
+        Date lastUpdated = resultSetParam.getDate(SQLColumnIndex._05_LAST_UPDATED);
+        Long currentUserId = resultSetParam.getLong(SQLColumnIndex._06_CURRENT_USER_ID);
 
         if(formType == null)
         {
             throw new SQLException("No mapping found for Form Type '"+
-                    resultSetParam.getLong(1)+"'.");
+                    resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE)+"'.");
         }
 
         Form toAdd = new Form(formType);
@@ -452,14 +471,25 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
         toAdd.setId(formId);
         toAdd.setTitle(title);
 
+        //Created...
         if(created != null)
         {
             toAdd.setDateCreated(new Date(created.getTime()));
         }
 
+        //Last Updated...
         if(lastUpdated != null)
         {
             toAdd.setDateLastUpdated(new Date(lastUpdated.getTime()));
+        }
+
+        //Current User...
+        if(currentUserId != null &&
+                currentUserId.longValue() > 0)
+        {
+            User currentUser = new User();
+            currentUser.setId(currentUserId);
+            toAdd.setCurrentUser(currentUser);
         }
 
         return toAdd;
@@ -487,8 +517,10 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
         }
 
         //Form Container State...
-        Long formContainerState = resultSetParam.getLong(6);
-        long formContStateId = (formContainerState == null) ? 0:formContainerState.longValue();
+        Long formContainerState = resultSetParam.getLong(
+                SQLColumnIndex._07_FORM_CONTAINER_STATE);
+        long formContStateId = (formContainerState == null) ?
+                0: formContainerState.longValue();
         if(formContStateId > 0)
         {
             if(formContStateId == 1)
@@ -501,8 +533,10 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
             }
         }
 
-        Long formContainerFlowState = resultSetParam.getLong(7);
-        long formContFlowStateId = (formContainerFlowState == null) ? 0:formContainerFlowState.longValue();
+        Long formContainerFlowState = resultSetParam.getLong(
+                SQLColumnIndex._08_FORM_CONTAINER_FLOW_STATE);
+        long formContFlowStateId = (formContainerFlowState == null) ?
+                0: formContainerFlowState.longValue();
         if(formContFlowStateId > 0)
         {
             if(formContFlowStateId == 1)
