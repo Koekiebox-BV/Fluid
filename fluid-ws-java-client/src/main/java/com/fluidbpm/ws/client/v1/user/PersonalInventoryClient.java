@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -69,6 +70,33 @@ public class PersonalInventoryClient extends ABaseClientWS {
             return new FluidItemListing(this.postJson(
                     loggedInUser,
                     WS.Path.PersonalInventory.Version1.getAllByLoggedInUser()));
+        }
+        //rethrow as a Fluid Client exception.
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Remove the item {@code formToRemoveParam} from the personal inventory.
+     *
+     * @param formToRemoveParam The {@code Form} to remove from personal inventory.
+     *
+     * @return The Personal Inventory items removed for {@code User}.
+     */
+    public Form removeFromPersonalInventory(Form formToRemoveParam)
+    {
+        if(formToRemoveParam != null &&
+                this.serviceTicket != null)
+        {
+            formToRemoveParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new Form(this.postJson(
+                    formToRemoveParam,
+                    WS.Path.PersonalInventory.Version1.removeFromPersonalInventory()));
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {
