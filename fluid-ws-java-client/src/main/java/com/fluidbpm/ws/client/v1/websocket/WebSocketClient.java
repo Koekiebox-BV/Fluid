@@ -70,8 +70,13 @@ public class WebSocketClient {
      */
     @OnClose
     public void onClose(Session userSessionParam, CloseReason reasonParam) {
-
+        
         this.userSession = null;
+        
+        if (this.messageHandler != null) {
+            
+            this.messageHandler.connectionClosed();
+        }
     }
 
     /**

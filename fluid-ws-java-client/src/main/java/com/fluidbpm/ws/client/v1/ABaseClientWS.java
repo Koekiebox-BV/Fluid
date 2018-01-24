@@ -305,7 +305,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
             String postfixUrlParam,
             List<HeaderNameValue> headerNameValuesParam) {
 
-        //
+        //Connection is not valid...throw error...
         if(!skipCheckConnectionValidParam && !this.isConnectionValid())
         {
             throw new FluidClientException(

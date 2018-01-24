@@ -343,12 +343,16 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         Form formToUse = new Form();
         formToUse.setEcho("zool");
-        formToUse.setFieldValue("SQL Query",
+
+        //Set the SQL Query as a Field...
+        formToUse.setFieldValue(
+                "SQL Query",
                 "SELECT * FROM form_container " +
                 "WHERE id > ?" +
                 " LIMIT 0,1000;");
 
-        formToUse.getFormFields().add(new Field(1L,"Zool",new Long(1000L), Field.Type.Decimal));
+        formToUse.getFormFields().add(new Field(
+                1L,"Zool",new Long(6000L), Field.Type.Decimal));
 
         List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
 
@@ -363,6 +367,11 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
             for(FormListing listing : formListing)
             {
                 List<Form> resultForms = listing.getListing();
+
+                if(resultForms == null)
+                {
+                    continue;
+                }
 
                 for(Form form : resultForms)
                 {

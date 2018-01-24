@@ -25,6 +25,7 @@ import com.fluidbpm.program.api.vo.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.FormFlowHistoricDataContainer;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.TableRecord;
+import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -182,6 +183,26 @@ public class FormContainerClient extends ABaseClientWS {
             Form formParam,
             JobView jobViewParam)
     {
+        return this.lockFormContainer(
+                formParam, jobViewParam, null);
+    }
+    
+    /**
+     * Lock the provided form container for logged in user.
+     * If {@code userToLockAsParam} is provided and valid, that user will be used instead.
+     *
+     * @param formParam The form to lock.
+     * @param jobViewParam If retrieved from a view, the lock to view from.
+     * @param userToLockAsParam The form will be locked as this user.
+     *                          The logged in user must have permission to perform this action.
+     *
+     * @return The locked form.
+     */
+    public Form lockFormContainer(
+            Form formParam,
+            JobView jobViewParam,
+            User userToLockAsParam)
+    {
         if(this.serviceTicket != null && formParam != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
@@ -190,11 +211,14 @@ public class FormContainerClient extends ABaseClientWS {
         Long jobViewId = (jobViewParam == null) ?
                 null : jobViewParam.getId();
 
+        Long lockAsUserId = (userToLockAsParam == null) ?
+                null : userToLockAsParam.getId();
+
         try {
             return new Form(this.postJson(
                     formParam,
                     WS.Path.FormContainer.Version1.lockFormContainer(
-                            jobViewId)));
+                            jobViewId, lockAsUserId)));
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {
@@ -207,20 +231,40 @@ public class FormContainerClient extends ABaseClientWS {
      * Unlock the provided form container from the logged in user.
      *
      * @param formParam The form to unlock.
-     *
+     *                  
      * @return The un-locked form.
      */
     public Form unLockFormContainer(Form formParam)
+    {
+        return this.unLockFormContainer(formParam, null);
+    }
+
+    /**
+     * Unlock the provided form container from the logged in user.
+     *
+     * @param formParam The form to unlock.
+     * @param userToUnLockAsParam The form will be un-locked as this user.
+     *                          The logged in user must have permission to perform this action.
+     *
+     * @return The un-locked form.
+     */
+    public Form unLockFormContainer(
+            Form formParam,
+            User userToUnLockAsParam)
     {
         if(this.serviceTicket != null && formParam != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
+        Long unLockAsUserId = (userToUnLockAsParam == null) ?
+                null : userToUnLockAsParam.getId();
+
         try {
             return new Form(this.postJson(
                     formParam,
-                    WS.Path.FormContainer.Version1.unLockFormContainer()));
+                    WS.Path.FormContainer.Version1.unLockFormContainer(
+                            unLockAsUserId)));
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {

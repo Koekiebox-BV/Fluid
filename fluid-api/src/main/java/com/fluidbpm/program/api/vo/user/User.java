@@ -112,6 +112,17 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
+     * Creates a {@code new} of {@code this} with id set.
+     *
+     * @param userIdParam The {@code User} primary key.
+     */
+    public User(Long userIdParam) {
+        super();
+
+        this.setId(userIdParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

@@ -120,6 +120,15 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
             List<FormFieldListing> returnValue = completableFuture.get(
                     this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
+            //Connection was closed.. this is a problem....
+            if(this.getMessageHandler().isConnectionClosed())
+            {
+                throw new FluidClientException(
+                        "SQLUtil-WebSocket-GetFormFields: " +
+                                "The connection was closed by the server prior to the response received.",
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
+
             return returnValue;
         }
         //Interrupted...

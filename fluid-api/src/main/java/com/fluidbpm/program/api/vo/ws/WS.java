@@ -179,6 +179,7 @@ public class WS {
                     public static final String INCLUDE_ANCESTOR = "include_ancestor";
                     public static final String INCLUDE_DESCENDANTS = "include_descendants";
                     public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
+                    public static final String LOCK_FOR_USER_ID = "lock_for_user_id";
                 }
 
                 /**
@@ -247,21 +248,34 @@ public class WS {
                  * URL Path for locking a {@code Form}.
                  *
                  * @param jobViewIdParam The view selected to lock the item from.
+                 * @param lockingAsUserIdParam The form will be locked as this user.
+                 *                             The logged in user must have permission to perform this action.
                  *
                  * @return {@code /v1/form_container/lock_form_container}
                  */
                 public static final String lockFormContainer(
-                        Long jobViewIdParam)
+                        Long jobViewIdParam,
+                        Long lockingAsUserIdParam)
                 {
-                    String base = Version.VERSION_1.concat(ROOT).concat(
-                            LOCK_FORM_CONTAINER);
+                    String base = Version.VERSION_1.concat(ROOT).concat(LOCK_FORM_CONTAINER);
+                    
                     String additionString = "?";
 
-                    if(jobViewIdParam != null)
+                    if(jobViewIdParam != null &&
+                            jobViewIdParam.longValue() > 0)
                     {
-                        additionString += FlowItem.Version1.QueryParam.JOB_VIEW;
+                        additionString += FormContainer.Version1.QueryParam.JOB_VIEW;
                         additionString += "=";
                         additionString += jobViewIdParam;
+                        additionString += "&";
+                    }
+
+                    if(lockingAsUserIdParam != null &&
+                            lockingAsUserIdParam.longValue() > 0)
+                    {
+                        additionString += QueryParam.LOCK_FOR_USER_ID;
+                        additionString += "=";
+                        additionString += lockingAsUserIdParam;
                         additionString += "&";
                     }
 
@@ -275,11 +289,33 @@ public class WS {
                 /**
                  * URL Path for un-locking a {@code Form}.
                  *
+                 * @param unLockingAsUserIdParam The form will be un-locked as this user.
+                 *                             The logged in user must have permission to perform this action.
+                 *
                  * @return {@code v1/form_container/un_lock_form_container}
                  */
-                public static final String unLockFormContainer()
+                public static final String unLockFormContainer(
+                        Long unLockingAsUserIdParam)
                 {
-                    return Version.VERSION_1.concat(ROOT).concat(UN_LOCK_FORM_CONTAINER);
+                    String base = Version.VERSION_1.concat(ROOT).concat(
+                            UN_LOCK_FORM_CONTAINER);
+
+                    String additionString = "?";
+
+                    if(unLockingAsUserIdParam != null &&
+                            unLockingAsUserIdParam.longValue() > 0)
+                    {
+                        additionString += QueryParam.LOCK_FOR_USER_ID;
+                        additionString += "=";
+                        additionString += unLockingAsUserIdParam;
+                        additionString += "&";
+                    }
+
+                    //Cut of the end bit...
+                    additionString = additionString.substring(
+                            0, additionString.length() - 1);
+
+                    return base.concat(additionString);
                 }
 
                 /**

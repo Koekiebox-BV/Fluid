@@ -126,6 +126,15 @@ public class WebSocketSendToFlowClient extends
             List<FluidItem> returnValue = completableFuture.get(
                     this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
+            //Connection was closed.. this is a problem....
+            if(this.getMessageHandler().isConnectionClosed())
+            {
+                throw new FluidClientException(
+                        "WebSocket-SendToFlow: " +
+                                "The connection was closed by the server prior to the response received.",
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
+
             if(returnValue == null || returnValue.isEmpty())
             {
                 return null;

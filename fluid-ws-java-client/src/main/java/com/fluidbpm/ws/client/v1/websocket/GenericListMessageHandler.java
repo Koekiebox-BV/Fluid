@@ -129,6 +129,24 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     @Override
     public void connectionClosed() {
         this.isConnectionClosed = true;
+
+        if(this.completableFuture != null)
+        {
+            //If there was no error...
+            if(this.getErrors().isEmpty())
+            {
+                this.completableFuture.complete(this.returnValue);
+            }
+            //there was an error...
+            else
+            {
+                Error firstFluidError = this.getErrors().get(0);
+
+                this.completableFuture.completeExceptionally(new FluidClientException(
+                        firstFluidError.getErrorMessage(),
+                        firstFluidError.getErrorCode()));
+            }
+        }
     }
 
     /**

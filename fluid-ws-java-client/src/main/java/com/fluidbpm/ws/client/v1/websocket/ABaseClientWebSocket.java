@@ -152,7 +152,6 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
             //Add the echo to the listing if [GenericListMessageHandler].
-
             if(this.getMessageHandler() instanceof GenericListMessageHandler)
             {
                 GenericListMessageHandler listHandler =
@@ -193,12 +192,7 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
         }
 
         this.webSocketClient.closeSession();
-
-        if(this.messageHandlerThreadLocal.get() != null)
-        {
-            this.messageHandlerThreadLocal.get().connectionClosed();
-        }
-
+        
         super.closeConnectionNonThreaded();
     }
 
@@ -284,6 +278,23 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
      */
     protected long getTimeoutInMillis() {
         return this.timeoutInMillis;
+    }
+
+    /**
+     * Confirms whether the Web-Socket client connection session is open.
+     * 
+     * @return Whether the connection is valid or not.
+     *          {@code true} if the connection is valid.
+     */
+    @Override
+    public boolean isConnectionValid() {
+
+        if(this.webSocketClient == null)
+        {
+            return false;
+        }
+        
+        return this.webSocketClient.isSessionOpen();
     }
 
     /**

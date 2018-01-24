@@ -74,8 +74,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
      *
      * @return The SQL Execution result as {@code Form}'s.
      */
-    public List<FormListing> executeSQLSynchronized(
-            Form formWithSQLFieldParam) {
+    public List<FormListing> executeSQLSynchronized(Form formWithSQLFieldParam) {
 
         this.getMessageHandler().clear();
 
@@ -108,6 +107,15 @@ public class SQLUtilWebSocketExecuteSQLClient extends
         try {
             List<FormListing> returnValue = completableFuture.get(
                             this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
+
+            //Connection was closed.. this is a problem....
+            if(this.getMessageHandler().isConnectionClosed())
+            {
+                throw new FluidClientException(
+                        "SQLUtil-WebSocket-ExecuteSQL: " +
+                                "The connection was closed by the server prior to the response received.",
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
 
             return returnValue;
         }
