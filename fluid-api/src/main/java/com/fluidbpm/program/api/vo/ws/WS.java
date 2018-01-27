@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.ws;
 
+import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
 
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,7 @@ import java.net.URLEncoder;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 
 /**
  * <p>
@@ -176,6 +178,7 @@ public class WS {
                     public static final String JOB_VIEW = "job_view";
                     public static final String FORM_CONTAINER = "form_container";
                     public static final String INCLUDE_COMPANY_LOGO = "include_company_logo";
+                    public static final String PRINT_AS_PDF_ACCESS_TOKEN = "print_as_pdf_access_token";
                     public static final String INCLUDE_ANCESTOR = "include_ancestor";
                     public static final String INCLUDE_DESCENDANTS = "include_descendants";
                     public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
@@ -1782,7 +1785,7 @@ public class WS {
         /**
          * The Fluid Item History Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.FormFlowHistoricData
+         * @see FormFlowHistoricData
          */
         public static final class FlowItemHistory
         {
@@ -1815,6 +1818,68 @@ public class WS {
                 public static final String getByFormContainer()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
+                }
+            }
+        }
+
+        /**
+         * The Fluid Item History Web Service mappings.
+         *
+         * @see FormFlowHistoricData
+         */
+        public static final class FormHistory
+        {
+            /**
+             * Mapping for frequently used HTTP parameters.
+             */
+            public static final class QueryParam {
+                
+                public static final String INCLUDE_CURRENT = "include_current";
+            }
+
+            /**
+             * Flow Item History mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/form_history");
+
+                //Read...
+                public static final String BY_FORM_CONTAINER = ("/get_by_form_container");
+
+                /**
+                 * Root for Form value Item History.
+                 *
+                 * @return {@code /form_history/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Form History by 'Form Container'.
+                 *
+                 * @param includeCurrentParam Whether the current values should be included.
+                 *
+                 * @return {@code v1/form_history/get_by_form_container}
+                 */
+                public static final String getByFormContainer(boolean includeCurrentParam)
+                {
+                    if(!includeCurrentParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
+                    }
+
+                    String returnVal =
+                            Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
+
+                    returnVal = returnVal.concat("?");
+                    returnVal = returnVal.concat(INCLUDE_CURRENT);
+                    returnVal = returnVal.concat("=");
+                    returnVal += includeCurrentParam;
+
+                    return returnVal;
                 }
             }
         }

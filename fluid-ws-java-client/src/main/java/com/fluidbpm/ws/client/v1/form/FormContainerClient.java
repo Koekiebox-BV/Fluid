@@ -21,10 +21,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.Form;
-import com.fluidbpm.program.api.vo.FormFlowHistoricData;
-import com.fluidbpm.program.api.vo.FormFlowHistoricDataContainer;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.TableRecord;
+import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
+import com.fluidbpm.program.api.vo.historic.FormFlowHistoricDataListing;
+import com.fluidbpm.program.api.vo.historic.FormHistoricData;
+import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -139,17 +141,41 @@ public class FormContainerClient extends ABaseClientWS {
      * The Form Id must be provided.
      *
      * @param formParam The form to retrieve historic data for.
-     * @return Electronic Form historic data.
+     * @return Electronic Form Workflow historic data.
      */
-    public List<FormFlowHistoricData> getFormContainerHistoricData(Form formParam)
+    public List<FormFlowHistoricData> getFormFlowHistoricData(Form formParam)
     {
         if(formParam != null && this.serviceTicket != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
-        return new FormFlowHistoricDataContainer(this.postJson(
-                formParam, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getFormFlowHistoricDatas();
+        return new FormFlowHistoricDataListing(this.postJson(
+                formParam, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
+    }
+
+    /**
+     * Retrieves Electronic Form and Field historic information.
+     *
+     * The Form Id must be provided.
+     *
+     * @param includeCurrentParam Whether the current values should be included.
+     *
+     * @param formParam The form to retrieve historic data for.
+     * @return Electronic Form and Field historic data.
+     */
+    public List<FormHistoricData> getFormAndFieldHistoricData(
+            Form formParam,
+            boolean includeCurrentParam)
+    {
+        if(formParam != null && this.serviceTicket != null)
+        {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FormHistoricDataListing(this.postJson(
+                formParam, WS.Path.FormHistory.Version1.getByFormContainer(
+                        includeCurrentParam))).getListing();
     }
 
     /**

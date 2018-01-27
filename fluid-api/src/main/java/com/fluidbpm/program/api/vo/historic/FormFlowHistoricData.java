@@ -13,13 +13,15 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.historic;
 
 import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.user.User;
 
@@ -31,7 +33,7 @@ import com.fluidbpm.program.api.vo.user.User;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see FormFlowHistoricDataContainer
+ * @see FormFlowHistoricDataListing
  */
 public class FormFlowHistoricData extends ABaseFluidJSONObject {
 
