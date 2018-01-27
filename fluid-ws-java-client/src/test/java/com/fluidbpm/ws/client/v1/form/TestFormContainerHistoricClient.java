@@ -120,7 +120,6 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
                 new Form(674L),
                 false);
 
-
         //Confirm the historic data is set...
         TestCase.assertNotNull(formHistoricData);
 

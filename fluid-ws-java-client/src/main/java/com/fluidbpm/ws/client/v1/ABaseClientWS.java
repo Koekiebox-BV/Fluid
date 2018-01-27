@@ -396,7 +396,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
             String postfixUrlParam) {
 
         //No need to check connection...
-        return this.postJson(false, baseDomainParam,postfixUrlParam);
+        return this.postJson(false, baseDomainParam, postfixUrlParam);
     }
 
     /**

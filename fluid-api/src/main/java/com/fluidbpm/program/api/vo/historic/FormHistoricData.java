@@ -159,19 +159,19 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 
         //Field Different from Previous...
         if (!this.jsonObject.isNull(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS)) {
-            this.setFieldDifferentFromPrevious(this.jsonObject.getBoolean(
+            this.setIsFieldDifferentFromPrevious(this.jsonObject.getBoolean(
                     JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
         }
 
         //Field Type Signature...
         if (!this.jsonObject.isNull(JSONMapping.IS_FIELD_TYPE_SIGNATURE)) {
-            this.setFieldTypeSignature(this.jsonObject.getBoolean(
+            this.setIsFieldTypeSignature(this.jsonObject.getBoolean(
                     JSONMapping.IS_FIELD_TYPE_SIGNATURE));
         }
 
         //Escape Text...
         if (!this.jsonObject.isNull(JSONMapping.IS_ESCAPE_TEXT)) {
-            this.setEscapeText(
+            this.setIsEscapeText(
                     this.jsonObject.getBoolean(
                             JSONMapping.IS_ESCAPE_TEXT));
         }
@@ -247,25 +247,25 @@ public class FormHistoricData extends ABaseFluidJSONObject {
         }
 
         //Different from Previous...
-        if(this.isFieldDifferentFromPrevious() != null)
+        if(this.getIsFieldDifferentFromPrevious() != null)
         {
             returnVal.put(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS,
-                    this.isFieldDifferentFromPrevious());
+                    this.getIsFieldDifferentFromPrevious());
         }
 
         //Field type Signature...
-        if(this.isFieldTypeSignature() != null)
+        if(this.getIsFieldTypeSignature() != null)
         {
             returnVal.put(JSONMapping.IS_FIELD_TYPE_SIGNATURE,
-                    this.isFieldTypeSignature());
+                    this.getIsFieldTypeSignature());
         }
 
         //Escape Text...
-        if(this.isEscapeText() != null)
+        if(this.getIsEscapeText() != null)
         {
             returnVal.put(
                     JSONMapping.IS_ESCAPE_TEXT,
-                    this.isEscapeText());
+                    this.getIsEscapeText());
         }
 
         return returnVal;
@@ -348,16 +348,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @return Whether record has changed value.
      */
-    public Boolean isFieldDifferentFromPrevious() {
-        return this.isFieldDifferentFromPrevious;
-    }
-
-    /**
-     * Gets whether field is different from previous.
-     *
-     * @return Whether record has changed value.
-     */
-    public Boolean getFieldDifferentFromPrevious() {
+    public Boolean getIsFieldDifferentFromPrevious() {
         return this.isFieldDifferentFromPrevious;
     }
 
@@ -366,7 +357,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @param fieldDifferentFromPreviousParam Whether record has changed value.
      */
-    public void setFieldDifferentFromPrevious(
+    public void setIsFieldDifferentFromPrevious(
             Boolean fieldDifferentFromPreviousParam) {
 
         this.isFieldDifferentFromPrevious = fieldDifferentFromPreviousParam;
@@ -377,16 +368,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @return Whether record is of type signature.
      */
-    public Boolean isFieldTypeSignature() {
-        return this.isFieldTypeSignature;
-    }
-
-    /**
-     * Gets whether field is of type signature.
-     *
-     * @return Whether record is of type signature.
-     */
-    public Boolean getFieldTypeSignature() {
+    public Boolean getIsFieldTypeSignature() {
         return this.isFieldTypeSignature;
     }
 
@@ -395,7 +377,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @param fieldTypeSignatureParam Whether record is of type signature.
      */
-    public void setFieldTypeSignature(Boolean fieldTypeSignatureParam) {
+    public void setIsFieldTypeSignature(Boolean fieldTypeSignatureParam) {
         this.isFieldTypeSignature = fieldTypeSignatureParam;
     }
 
@@ -404,16 +386,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @return Whether field {@code HTML} should be escaped.
      */
-    public Boolean isEscapeText() {
-        return this.isEscapeText;
-    }
-
-    /**
-     * Gets whether field should be escaped.
-     *
-     * @return Whether field {@code HTML} should be escaped.
-     */
-    public Boolean getEscapeText() {
+    public Boolean getIsEscapeText() {
         return this.isEscapeText;
     }
 
@@ -422,7 +395,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @param escapeTextParam Whether field {@code HTML} should be escaped.
      */
-    public void setEscapeText(Boolean escapeTextParam) {
+    public void setIsEscapeText(Boolean escapeTextParam) {
         this.isEscapeText = escapeTextParam;
     }
 
