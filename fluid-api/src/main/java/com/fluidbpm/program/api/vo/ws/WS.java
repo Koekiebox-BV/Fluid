@@ -1845,7 +1845,10 @@ public class WS {
                 public static final String ROOT = ("/form_history");
 
                 //Read...
-                public static final String BY_FORM_CONTAINER = ("/get_by_form_container");
+                public static final String BY_FORM_CONTAINER =
+                        ("/get_by_form_container");
+                public static final String MOST_RECENT_BY_FORM_CONTAINER =
+                        ("/get_most_recent_by_form_container");
 
                 /**
                  * Root for Form value Item History.
@@ -1880,6 +1883,17 @@ public class WS {
                     returnVal += includeCurrentParam;
 
                     return returnVal;
+                }
+
+                /**
+                 * URL Path for Form most recent History by 'Form Container'.
+                 *
+                 * @return {@code v1/form_history/get_most_recent_by_form_container}
+                 */
+                public static final String getByMostRecentByFormContainer()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            MOST_RECENT_BY_FORM_CONTAINER);
                 }
             }
         }

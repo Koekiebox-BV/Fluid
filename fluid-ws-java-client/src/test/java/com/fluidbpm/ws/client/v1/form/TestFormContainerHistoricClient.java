@@ -134,8 +134,39 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
         }
 
         System.out.println("Total of '"+formHistoricData.size()+"' versions of form.");
-        
+    }
 
-        
+    /**
+     * Test retrieving the form field most recent historic data.
+     */
+    @Test
+    @Ignore
+    public void testRetrieveMostRecentFormFieldHistoricData()
+    {
+        if(!this.loginClient.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+        FormHistoricData data = formContainerClient.getMostRecentFormAndFieldHistoricData(
+                new Form(674L));
+
+        //Confirm the historic data is set...
+        TestCase.assertNotNull(data);
+
+        TestCase.assertNotNull(data);
+        TestCase.assertNotNull("Id not set",data.getId());
+        TestCase.assertNotNull("Date not set",data.getDate());
+        TestCase.assertNotNull("Description not set",data.getDescription());
+        TestCase.assertNotNull("Field not set",data.getField());
+        TestCase.assertNotNull("Log entry type not set",data.getLogEntryType());
     }
 }

@@ -153,7 +153,7 @@ public class FormContainerClient extends ABaseClientWS {
         return new FormFlowHistoricDataListing(this.postJson(
                 formParam, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
     }
-
+    
     /**
      * Retrieves Electronic Form and Field historic information.
      *
@@ -176,6 +176,27 @@ public class FormContainerClient extends ABaseClientWS {
         return new FormHistoricDataListing(this.postJson(
                 formParam, WS.Path.FormHistory.Version1.getByFormContainer(
                         includeCurrentParam))).getListing();
+    }
+
+    /**
+     * Retrieves Electronic Form and Field historic information for
+     * the most recent modification.
+     *
+     * The Form Id must be provided.
+     *
+     * @param formParam The form to retrieve historic data for.
+     *
+     * @return Electronic Form and Field historic data.
+     */
+    public FormHistoricData getMostRecentFormAndFieldHistoricData(Form formParam)
+    {
+        if(formParam != null && this.serviceTicket != null)
+        {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FormHistoricData(this.postJson(
+                formParam, WS.Path.FormHistory.Version1.getByMostRecentByFormContainer()));
     }
 
     /**
