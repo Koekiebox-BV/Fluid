@@ -264,11 +264,11 @@ public class TestFlowItemClient extends ABaseTestCase {
         PersonalInventoryClient personalInventoryClient =
                 new PersonalInventoryClient(BASE_URL, serviceTicket);
 
-        FluidItemListing fluidItemListing =
+        List<FluidItem> fluidItemListing =
                 personalInventoryClient.getPersonalInventoryItems();
 
         boolean contains = false;
-        for(FluidItem fluidItem : fluidItemListing.getListing())
+        for(FluidItem fluidItem : fluidItemListing)
         {
             if(lockedFormCont.getId().equals(fluidItem.getForm().getId()))
             {

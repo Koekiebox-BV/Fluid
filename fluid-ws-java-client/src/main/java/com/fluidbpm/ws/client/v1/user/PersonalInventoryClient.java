@@ -15,6 +15,8 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,7 +59,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
      *
      * @return The Personal Inventory items for the logged in {@code User}.
      */
-    public FluidItemListing getPersonalInventoryItems()
+    public List<FluidItem> getPersonalInventoryItems()
     {
         User loggedInUser = new User();
 
@@ -69,7 +71,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
         try {
             return new FluidItemListing(this.postJson(
                     loggedInUser,
-                    WS.Path.PersonalInventory.Version1.getAllByLoggedInUser()));
+                    WS.Path.PersonalInventory.Version1.getAllByLoggedInUser())).getListing();
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {
@@ -110,7 +112,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
      *
      * @return The cleared Personal Inventory items for the logged in {@code User}.
      */
-    public FluidItemListing clearPersonalInventoryItems()
+    public List<FluidItem> clearPersonalInventoryItems()
     {
         User loggedInUser = new User();
 
@@ -122,7 +124,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
         try {
             return new FluidItemListing(this.postJson(
                     loggedInUser,
-                    WS.Path.PersonalInventory.Version1.clearPersonalInventory()));
+                    WS.Path.PersonalInventory.Version1.clearPersonalInventory())).getListing();
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {
