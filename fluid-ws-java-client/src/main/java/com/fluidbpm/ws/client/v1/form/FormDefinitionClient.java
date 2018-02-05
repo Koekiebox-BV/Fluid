@@ -15,9 +15,12 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 
@@ -124,6 +127,54 @@ public class FormDefinitionClient extends ABaseClientWS {
 
         return new Form(this.postJson(
                 form, WS.Path.FormDefinition.Version1.getByName()));
+    }
+
+    /**
+     * Retrieves all Form Definitions by logged in user.
+     *
+     * @param includeTableRecordTypesParam Include the Table Record form definitions.
+     *
+     * @return List of Form Definitions.
+     */
+    public List<Form> getAllByLoggedInUser(boolean includeTableRecordTypesParam)
+    {
+        Form form = new Form();
+
+        if(this.serviceTicket != null)
+        {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        if(includeTableRecordTypesParam)
+        {
+            return new FormListing(this.postJson(
+                    form, WS.Path.FormDefinition.Version1.getAllByLoggedInUserIncludeTableTypes())).getListing();
+        }
+        else
+        {
+            return new FormListing(this.postJson(
+                    form, WS.Path.FormDefinition.Version1.getAllByLoggedInUser())).getListing();
+        }
+    }
+
+    /**
+     * Retrieves all Form Definitions where the logged in user can
+     * create a new instance of the {@code Form}.
+     *
+     * @return List of Form Definitions.
+     */
+    public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf()
+    {
+        Form form = new Form();
+
+        if(this.serviceTicket != null)
+        {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FormListing(this.postJson(
+                form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf())).
+                getListing();
     }
 
     /**

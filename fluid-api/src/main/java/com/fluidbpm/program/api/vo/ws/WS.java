@@ -294,11 +294,13 @@ public class WS {
                  *
                  * @param unLockingAsUserIdParam The form will be un-locked as this user.
                  *                             The logged in user must have permission to perform this action.
+                 * @param unlockAsyncParam Should the unlock be performed asynchronous.
                  *
                  * @return {@code v1/form_container/un_lock_form_container}
                  */
                 public static final String unLockFormContainer(
-                        Long unLockingAsUserIdParam)
+                        Long unLockingAsUserIdParam,
+                        boolean unlockAsyncParam)
                 {
                     String base = Version.VERSION_1.concat(ROOT).concat(
                             UN_LOCK_FORM_CONTAINER);
@@ -313,6 +315,12 @@ public class WS {
                         additionString += unLockingAsUserIdParam;
                         additionString += "&";
                     }
+
+                    //Asynchronous...
+                    additionString += WS.QueryParam.ASYNC;
+                    additionString += "=";
+                    additionString += unlockAsyncParam;
+                    additionString += "&";
 
                     //Cut of the end bit...
                     additionString = additionString.substring(
@@ -951,8 +959,14 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String READ_BY_NAME = ("/get_by_name");
+
+                //Read - Logged in user...
                 public static final String READ_ALL_BY_LOGGED_IN_USER =
                         ("/get_all_by_logged_in_user");
+                public static final String READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS =
+                        ("/get_all_by_logged_in_user_incl_table_defs");
+                public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE =
+                        ("/get_all_by_logged_in_can_create");
 
                 /**
                  * Root for Form Definition.
@@ -1039,6 +1053,29 @@ public class WS {
                 public static final String getAllByLoggedInUser()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_USER);
+                }
+
+                /**
+                 * URL Path for Form Definitions by logged in user.
+                 * Include the table record form definitions.
+                 *
+                 * @return {@code v1/form_definition/get_all_by_logged_in_user_incl_table_defs}
+                 */
+                public static final String getAllByLoggedInUserIncludeTableTypes()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS);
+                }
+
+                /**
+                 * URL Path for Form Definitions where logged in user can create instance of.
+                 *
+                 * @return {@code v1/form_definition/get_all_by_logged_in_can_create}
+                 */
+                public static final String getAllByLoggedInAndCanCreateInstanceOf()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            READ_ALL_BY_LOGGED_IN_CAN_CREATE);
                 }
             }
         }

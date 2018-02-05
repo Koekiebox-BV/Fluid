@@ -283,11 +283,29 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public Form unLockFormContainer(Form formParam)
     {
-        return this.unLockFormContainer(formParam, null);
+        return this.unLockFormContainer(
+                formParam, null,true);
     }
 
     /**
      * Unlock the provided form container from the logged in user.
+     *
+     * @param formParam The form to unlock.
+     * @param unlockAsyncParam Should the unlock be performed asynchronous.
+     *
+     * @return The un-locked form.
+     */
+    public Form unLockFormContainer(
+            Form formParam,
+            boolean unlockAsyncParam)
+    {
+        return this.unLockFormContainer(
+                formParam, null, unlockAsyncParam);
+    }
+
+    /**
+     * Unlock the provided form container from the logged in user.
+     * The unlock will be performed asynchronous.
      *
      * @param formParam The form to unlock.
      * @param userToUnLockAsParam The form will be un-locked as this user.
@@ -298,6 +316,25 @@ public class FormContainerClient extends ABaseClientWS {
     public Form unLockFormContainer(
             Form formParam,
             User userToUnLockAsParam)
+    {
+        return this.unLockFormContainer(
+                formParam, userToUnLockAsParam, true);
+    }
+    
+    /**
+     * Unlock the provided form container from the logged in user.
+     *
+     * @param formParam The form to unlock.
+     * @param userToUnLockAsParam The form will be un-locked as this user.
+     *                          The logged in user must have permission to perform this action.
+     * @param unlockAsyncParam Should the unlock be performed asynchronous.
+     *
+     * @return The un-locked form.
+     */
+    public Form unLockFormContainer(
+            Form formParam,
+            User userToUnLockAsParam,
+            boolean unlockAsyncParam)
     {
         if(this.serviceTicket != null && formParam != null)
         {
@@ -311,7 +348,7 @@ public class FormContainerClient extends ABaseClientWS {
             return new Form(this.postJson(
                     formParam,
                     WS.Path.FormContainer.Version1.unLockFormContainer(
-                            unLockAsUserId)));
+                            unLockAsUserId, unlockAsyncParam)));
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {

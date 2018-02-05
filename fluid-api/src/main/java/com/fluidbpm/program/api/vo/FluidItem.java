@@ -312,6 +312,19 @@ public class FluidItem extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the form on object creation.
+     *
+     * @param formParam The form to set.
+     *
+     * @see Form
+     */
+    public FluidItem(Form formParam) {
+        super();
+
+        this.setForm(formParam);
+    }
+    
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.
