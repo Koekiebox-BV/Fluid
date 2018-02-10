@@ -6,6 +6,7 @@ import java.net.URI;
 import javax.websocket.*;
 
 import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
@@ -34,9 +35,12 @@ public class WebSocketClient {
     public WebSocketClient(URI endpointURI) throws DeploymentException, IOException {
 
         //ContainerProvider.getWebSocketContainer()
-
-        WebSocketContainer container = ClientManager.createClient(
+        ClientManager clMng = ClientManager.createClient(
                 GrizzlyClientContainer.class.getName());
+
+        clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, "15000");
+        
+        WebSocketContainer container = clMng;
 
         //WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
         //WebSocketContainer container = ContainerProvider.getWebSocketContainer();

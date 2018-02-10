@@ -38,6 +38,7 @@ public class JobView extends ABaseFluidJSONObject {
     private String rule;
     private String viewName;
     private String viewGroupName;
+    private Integer viewPriority;
     private String viewType;
 
     /**
@@ -48,6 +49,7 @@ public class JobView extends ABaseFluidJSONObject {
         public static final String RULE = "rule";
         public static final String VIEW_NAME = "viewName";
         public static final String VIEW_GROUP_NAME = "viewGroupName";
+        public static final String VIEW_PRIORITY = "viewPriority";
         public static final String VIEW_TYPE = "viewType";
     }
 
@@ -95,6 +97,11 @@ public class JobView extends ABaseFluidJSONObject {
         //View Group...
         if (!this.jsonObject.isNull(JSONMapping.VIEW_GROUP_NAME)) {
             this.setViewGroupName(this.jsonObject.getString(JSONMapping.VIEW_GROUP_NAME));
+        }
+
+        //View Priority...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_PRIORITY)) {
+            this.setViewPriority(this.jsonObject.getInt(JSONMapping.VIEW_PRIORITY));
         }
 
         //View Type...
@@ -167,12 +174,30 @@ public class JobView extends ABaseFluidJSONObject {
     }
 
     /**
-     * Gets the Type of the View.
+     * Sets the Type of the View.
      *
      * @param viewTypeParam Type Name.
      */
     public void setViewType(String viewTypeParam) {
         this.viewType = viewTypeParam;
+    }
+
+    /**
+     * Gets the priority in the Group for the View.
+     *
+     * @return View Priority.
+     */
+    public Integer getViewPriority() {
+        return this.viewPriority;
+    }
+
+    /**
+     * Sets the priority in the Group for the View.
+     *
+     * @param viewPriorityParam View Priority.
+     */
+    public void setViewPriority(Integer viewPriorityParam) {
+        this.viewPriority = viewPriorityParam;
     }
 
     /**
@@ -204,6 +229,12 @@ public class JobView extends ABaseFluidJSONObject {
         if(this.getViewGroupName() != null)
         {
             returnVal.put(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
+        }
+
+        //View Priority...
+        if(this.getViewPriority() != null)
+        {
+            returnVal.put(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
         }
 
         //View Type...
