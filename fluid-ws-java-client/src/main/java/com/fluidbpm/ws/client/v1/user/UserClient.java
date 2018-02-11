@@ -15,12 +15,14 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.user.UserFieldListing;
 import com.fluidbpm.program.api.vo.user.UserListing;
@@ -39,6 +41,8 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  * @see User
  */
 public class UserClient extends ABaseClientWS {
+
+    private static final String JSON_TAG_DATA = "data";
 
     /**
      * Constructor that sets the Service Ticket from authentication.
@@ -385,4 +389,105 @@ public class UserClient extends ABaseClientWS {
         }
     }
 
+    /**
+     * Retrieve the gravatar bytes by email.
+     * The size will be 50x50.
+     * 
+     * @param emailAddressParam The email to use for the gravatar.
+     *
+     * @return JPEG image bytes.
+     */
+    public byte[] getGravatarForEmail(
+            String emailAddressParam)
+    {
+        return this.getGravatarForEmail(
+                emailAddressParam,
+                50);
+    }
+
+    /**
+     * Retrieve the gravatar bytes by email.
+     *
+     * @param emailAddressParam The email to use for the gravatar.
+     * @param sizeParam The pixel dimension for the image.
+     *
+     * @return JPEG image bytes.
+     */
+    public byte[] getGravatarForEmail(
+            String emailAddressParam,
+            int sizeParam)
+    {
+        try {
+            JSONObject gravatarJSONObj =
+                    this.getJson(
+                            WS.Path.User.Version1.getGravatarByEmail(
+                                    emailAddressParam, sizeParam));
+
+            String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
+            if(base64Text == null || base64Text.isEmpty())
+            {
+                return null;
+            }
+            
+            return UtilGlobal.decodeBase64(base64Text);
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+        }
+        //
+        catch (UnsupportedEncodingException unsEncExcept) {
+            throw new FluidClientException(unsEncExcept.getMessage(),
+                    unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
+        }
+    }
+
+    /**
+     * Retrieve the gravatar bytes for Fluid user.
+     * The size will be 50x50.
+     *
+     * @param userParam The user to get the gravatar for.
+     *
+     * @return JPEG image bytes.
+     */
+    public byte[] getGravatarForUser(User userParam)
+    {
+        return this.getGravatarForUser(userParam, 50);
+    }
+    
+    /**
+     * Retrieve the gravatar bytes for Fluid user.
+     *
+     * @param userParam The user to get the gravatar for.
+     * @param sizeParam The pixel dimension for the image.
+     *
+     * @return JPEG image bytes.
+     */
+    public byte[] getGravatarForUser(User userParam, int sizeParam)
+    {
+        if(userParam == null)
+        {
+            return null;
+        }
+
+        try {
+            JSONObject gravatarJSONObj = this.postJson(
+                            userParam,
+                            WS.Path.User.Version1.getGravatarByUser(sizeParam));
+
+            String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
+            if(base64Text == null || base64Text.isEmpty())
+            {
+                return null;
+            }
+
+            return UtilGlobal.decodeBase64(base64Text);
+        }
+        //JSON problem...
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
 }

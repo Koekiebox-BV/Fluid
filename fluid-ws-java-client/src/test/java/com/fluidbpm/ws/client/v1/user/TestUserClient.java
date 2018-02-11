@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fluidbpm.program.api.vo.role.Role;
@@ -430,5 +431,48 @@ public class TestUserClient extends ABaseTestCase {
 
         User userById = userClient.getUserById(user.getId());
         TestCase.assertNotNull(userById);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testGetUserGravatar() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+        byte[] ralfGrav = userClient.getGravatarForEmail("info@ralfebert.de");
+        TestCase.assertNotNull(ralfGrav);
+        TestCase.assertTrue("Expected some bytes.",ralfGrav.length > 0);
+    }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testGetUserGravatarByUser() {
+        if (!this.loginClient.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+        byte[] ralfGrav = userClient.getGravatarForUser(new User("admin"));
+        TestCase.assertNotNull(ralfGrav);
+        TestCase.assertTrue("Expected some bytes.",ralfGrav.length > 0);
     }
 }

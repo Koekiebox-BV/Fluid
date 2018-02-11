@@ -2012,12 +2012,19 @@ public class WS {
                 public static final String READ_USER_FIELD_VALUES_BY_USER = ("/get_user_field_values_by_user");
                 public static final String READ_ALL = ("/get_all_users");
 
+                //Gravatar...
+                public static final String GET_GRAVATAR_BY_EMAIL = ("/get_gravatar_by_email");
+                public static final String GET_GRAVATAR_BY_USER = ("/get_gravatar_by_user");
+
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
                 public static final class QueryParam
                 {
                     public static final String USERNAME = "username";
+
+                    public static final String EMAIL = "email";
+                    public static final String SIZE = "size";
                 }
 
                 /**
@@ -2143,7 +2150,6 @@ public class WS {
                     return Version.VERSION_1.concat(ROOT).concat(DE_ACTIVATE);
                 }
 
-
                 /**
                  * URL Path for Incrementing the invalid login count for a User.
                  *
@@ -2212,6 +2218,73 @@ public class WS {
                 public static final String getAllUsers()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+
+                /**
+                 * URL Path for User gravatar by email address.
+                 *
+                 * @param emailParam The email to retrieve gravatar for.
+                 * @param sizeParam The size of the image to be returned.
+                 *
+                 * @return {@code v1/user/get_gravatar_by_email?email=john@company.com&size=50}.
+                 *
+                 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+                 */
+                public static final String getGravatarByEmail(
+                        String emailParam,
+                        int sizeParam)
+                        throws UnsupportedEncodingException
+                {
+                    StringBuffer returnVal = new StringBuffer(
+                            Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_EMAIL));
+
+                    returnVal.append("?");
+                    String encodedEmail = "";
+                    if(emailParam != null)
+                    {
+                        encodedEmail = URLEncoder.encode(emailParam, "UTF-8");
+                    }
+
+                    if(sizeParam < 1 || sizeParam > 512)
+                    {
+                        sizeParam = 50;
+                    }
+
+                    returnVal.append(QueryParam.EMAIL);
+                    returnVal.append("=");
+                    returnVal.append(encodedEmail);
+                    returnVal.append("&");
+                    returnVal.append(QueryParam.SIZE);
+                    returnVal.append("=");
+                    returnVal.append(sizeParam);
+
+                    return returnVal.toString();
+                }
+
+                /**
+                 * URL Path for User gravatar by user.
+                 *
+                 * @param sizeParam The size of the image to be returned.
+                 *
+                 * @return {@code v1/user/get_gravatar_by_user?size=50}.
+                 */
+                public static final String getGravatarByUser(int sizeParam)
+                {
+                    StringBuffer returnVal = new StringBuffer(
+                            Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_USER));
+
+                    returnVal.append("?");
+
+                    if(sizeParam < 1 || sizeParam > 512)
+                    {
+                        sizeParam = 50;
+                    }
+                    
+                    returnVal.append(QueryParam.SIZE);
+                    returnVal.append("=");
+                    returnVal.append(sizeParam);
+
+                    return returnVal.toString();
                 }
             }
         }

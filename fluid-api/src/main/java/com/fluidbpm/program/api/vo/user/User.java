@@ -112,6 +112,17 @@ public class User extends ABaseFluidJSONObject {
     }
 
     /**
+     * New user object to set the username.
+     * 
+     * @param usernameParam The username.
+     */
+    public User(String usernameParam) {
+        super();
+
+        this.setUsername(usernameParam);
+    }
+
+    /**
      * Creates a {@code new} of {@code this} with id set.
      *
      * @param userIdParam The {@code User} primary key.
