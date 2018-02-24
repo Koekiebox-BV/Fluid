@@ -42,7 +42,7 @@ public class Auth0Client extends ABaseClientWS {
     public static final String AUTHORIZATION_CODE = "authorization_code";
 
     /**
-     * Constructs Auth0 Client to a provided enpoint.
+     * Constructs Auth0 Client to a provided endpoint.
      *
      * @param urlToAuth0EndpointParam The endpoint to connect to.
      */
