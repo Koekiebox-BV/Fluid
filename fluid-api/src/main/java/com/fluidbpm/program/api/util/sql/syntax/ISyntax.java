@@ -66,6 +66,7 @@ public interface ISyntax {
             public static final String GetFormContainersParentFormContainer =
                     "Fluid_GetFormContainersParentFormContainer";
 
+            public static final String GetFormContainerInfo = "Fluid_GetFormContainerInfo";
         }
 
         /**
@@ -148,6 +149,7 @@ public interface ISyntax {
                     Form.GetFormContainersChildFormContainers,
                     Form.GetFormContainersChildFormContainersWithStates,
                     Form.GetFormContainersParentFormContainer,
+                    Form.GetFormContainerInfo,
                     Field.GetFormFieldsForFormDefinition,
                     Field.GetFormFieldsForFormContainer,
                     Field.GetFormDefinitionForFormContainer,
@@ -185,6 +187,10 @@ public interface ISyntax {
                 return 1;
             }
             else if(Form.GetFormContainersParentFormContainer.equals(aliasParam))
+            {
+                return 1;
+            }
+            else if(Form.GetFormContainerInfo.equals(aliasParam))
             {
                 return 1;
             }

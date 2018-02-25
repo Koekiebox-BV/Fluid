@@ -53,7 +53,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
     /**
      * Contains the SQL column indexes for {@code Form}.
      */
-    private static class SQLColumnIndex
+    public static class SQLColumnIndex
     {
         public static final int _01_FORM_ID = 1;
         public static final int _02_FORM_TYPE = 2;
@@ -140,7 +140,9 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
                 {
                     List<Field> formFields = this.fieldUtil.getFormFields(
                                     form.getId(),
-                                    false);
+                                    false,
+                            false);
+                    
                     form.setFormFields(formFields);
                 }
             }
@@ -163,6 +165,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
      * @param electronicFormIdsParam Identifiers for the Forms to retrieve.
      * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
      * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+     *
      * @return {@code List<Form>} descendants.
      *
      * @see Form
@@ -171,7 +175,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
     public List<Form> getFormDescendants(
             List<Long> electronicFormIdsParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam) {
+            boolean includeTableFieldsParam,
+            boolean includeTableFieldFormRecordInfoParam) {
 
         if(electronicFormIdsParam == null || electronicFormIdsParam.isEmpty())
         {
@@ -183,7 +188,10 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
         for(Long electronicFormId : electronicFormIdsParam)
         {
             List<Form> forTheCycle = this.getFormDescendants(
-                    electronicFormId, includeFieldDataParam, includeTableFieldsParam);
+                    electronicFormId,
+                    includeFieldDataParam,
+                    includeTableFieldsParam,
+                    includeTableFieldFormRecordInfoParam);
 
             if(forTheCycle == null)
             {
@@ -202,6 +210,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
      * @param electronicFormIdParam Identifier for the Form.
      * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
      * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+     *
      * @return {@code List<Form>} descendants.
      *
      * @see Form
@@ -209,7 +219,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
     public List<Form> getFormDescendants(
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam)
+            boolean includeTableFieldsParam,
+            boolean includeTableFieldFormRecordInfoParam)
     {
         List<Form> returnVal = new ArrayList();
 
@@ -262,7 +273,9 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
                     List<Field> formFields =
                             this.fieldUtil.getFormFields(
                                     form.getId(),
-                                    includeTableFieldsParam);
+                                    includeTableFieldsParam,
+                                    includeTableFieldFormRecordInfoParam);
+                    
                     form.setFormFields(formFields);
                 }
             }
@@ -349,7 +362,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
                     List<Field> formFields =
                             this.fieldUtil.getFormFields(
                                     form.getId(),
-                                    includeTableFieldsParam);
+                                    includeTableFieldsParam,
+                                    false);
                     form.setFormFields(formFields);
                 }
             }
@@ -419,7 +433,9 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
             {
                 returnVal.setFormFields(
                         this.fieldUtil.getFormFields(
-                                returnVal.getId(), includeTableFieldsParam));
+                                returnVal.getId(),
+                                includeTableFieldsParam,
+                                false));
             }
 
             return returnVal;

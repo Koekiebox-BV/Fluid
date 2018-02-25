@@ -280,11 +280,14 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
      *
      * @param electronicFormIdParam The Electronic Form to fetch fields for.
      * @param includeTableFieldsParam Whether to populate the table fields.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+     *
      * @return The Form Fields for Electronic Form {@code electronicFormIdParam}.
      */
     public List<Field> getFormFields(
             Long electronicFormIdParam,
-            boolean includeTableFieldsParam)
+            boolean includeTableFieldsParam,
+            boolean includeTableFieldFormRecordInfoParam)
     {
         List<Field> returnVal = new ArrayList();
 
@@ -310,7 +313,11 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                 continue;
             }
 
-            Field fieldToAdd = this.getFormFieldValueFor(fieldMapping, electronicFormIdParam);
+            Field fieldToAdd = this.getFormFieldValueFor(
+                    fieldMapping,
+                    electronicFormIdParam,
+                    includeTableFieldFormRecordInfoParam);
+
             if(fieldToAdd == null)
             {
                 continue;
@@ -326,7 +333,10 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                     for(Form tableRecordForm : tableField.getTableRecords())
                     {
                         tableRecordForm.setFormFields(
-                                this.getFormFields(tableRecordForm.getId(),false));
+                                this.getFormFields(
+                                        tableRecordForm.getId(),
+                                        false,
+                                        false));
                     }
                 }
             }
@@ -342,11 +352,14 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
      *
      * @param formFieldMappingParam The mapping to use.
      * @param formContainerIdParam The Electronic Form Id.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+     *
      * @return Populated {@code Field} value.
      */
     public Field getFormFieldValueFor(
             FormFieldMapping formFieldMappingParam,
-            Long formContainerIdParam)
+            Long formContainerIdParam,
+            boolean includeTableFieldFormRecordInfoParam)
     {
         if(formFieldMappingParam == null)
         {
@@ -375,7 +388,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 
         //Now use a database lookup...
         Field returnVal = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement = null, preparedStatementForTblInfo = null;
         ResultSet resultSet = null;
         try
         {
@@ -485,6 +498,32 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                             formRecords.add(toAdd);
                         }
 
+                        //Retrieve the info for the table record...
+                        if(includeTableFieldFormRecordInfoParam)
+                        {
+                            ISyntax syntaxForFormContInfo = SyntaxFactory.getInstance().getSyntaxFor(
+                                    this.getSQLTypeFromConnection(),
+                                    ISyntax.ProcedureMapping.Form.GetFormContainerInfo);
+
+                            if(syntaxForFormContInfo != null)
+                            {
+                                preparedStatementForTblInfo = this.getConnection().prepareStatement(
+                                        syntax.getPreparedStatement());
+
+                                for(Form formToSetInfoOn :formRecords)
+                                {
+                                    preparedStatementForTblInfo.setLong(1, formToSetInfoOn.getId());
+
+                                    resultSet = preparedStatementForTblInfo.executeQuery();
+                                    if(resultSet.next())
+                                    {
+                                        formToSetInfoOn.setTitle(resultSet.getString(
+                                                SQLFormUtil.SQLColumnIndex._03_TITLE));
+                                    }
+                                }
+                            }
+                        }
+
                         tableField.setTableRecords(formRecords);
 
                         returnVal = new Field(
@@ -512,9 +551,10 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
         catch (SQLException sqlError) {
             throw new FluidSQLException(sqlError);
         }
-        //
+        //Close the statements...
         finally {
             this.closeStatement(preparedStatement);
+            this.closeStatement(preparedStatementForTblInfo);
         }
     }
 

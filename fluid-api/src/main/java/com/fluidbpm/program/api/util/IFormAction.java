@@ -60,6 +60,8 @@ public interface IFormAction extends IAction {
      * @param electronicFormIdParam Identifier for the Form.
      * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
      * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+     *
      * @return {@code List<Form>} descendants.
      *
      * @see Form
@@ -67,7 +69,8 @@ public interface IFormAction extends IAction {
     public List<Form> getFormDescendants(
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam);
+            boolean includeTableFieldsParam,
+            boolean includeTableFieldFormRecordInfoParam);
 
     /**
      * Gets the descendants for the {@code electronicFormIdsParam} Forms.
@@ -75,6 +78,8 @@ public interface IFormAction extends IAction {
      * @param electronicFormIdsParam Identifiers for the Forms to retrieve.
      * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
      * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+     *
      * @return {@code List<Form>} descendants.
      *
      * @see Form
@@ -82,5 +87,6 @@ public interface IFormAction extends IAction {
     public List<Form> getFormDescendants(
             List<Long> electronicFormIdsParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam);
+            boolean includeTableFieldsParam,
+            boolean includeTableFieldFormRecordInfoParam);
 }

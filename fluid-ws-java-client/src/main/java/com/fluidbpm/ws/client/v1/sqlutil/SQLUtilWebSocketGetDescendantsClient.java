@@ -58,6 +58,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param includeFieldDataParam Should Form Field data be included.
      * @param includeTableFieldsParam Should Table Fields be included.
+     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
      * @param massFetchParam Is the fetch a large fetch.
      */
     public SQLUtilWebSocketGetDescendantsClient(
@@ -67,6 +68,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             long timeoutInMillisParam,
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam,
+            boolean includeTableFieldFormRecordInfoParam,
             boolean massFetchParam) {
         super(endpointBaseUrlParam,
                 new GenericFormListingMessageHandler(messageReceivedCallbackParam),
@@ -74,9 +76,10 @@ public class SQLUtilWebSocketGetDescendantsClient extends
                 WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
                         includeFieldDataParam,
                         includeTableFieldsParam,
+                        includeTableFieldFormRecordInfoParam,
                         massFetchParam,
                         serviceTicketAsHexParam));
-
+        
         this.setServiceTicket(serviceTicketAsHexParam);
         this.massFetch = massFetchParam;
     }

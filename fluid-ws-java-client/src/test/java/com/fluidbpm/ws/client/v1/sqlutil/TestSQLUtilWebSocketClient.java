@@ -227,6 +227,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                         TimeUnit.SECONDS.toMillis(60),
                         true,
                         true,
+                        true,
                         true);
 
         long start = System.currentTimeMillis();

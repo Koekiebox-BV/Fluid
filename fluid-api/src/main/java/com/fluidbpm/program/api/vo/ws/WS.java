@@ -2695,6 +2695,8 @@ public class WS {
                 {
                     public static final String INCLUDE_FIELD_DATA = "include_field_data";
                     public static final String INCLUDE_TABLE_FIELDS = "include_table_fields";
+                    public static final String INCLUDE_TABLE_FIELD_FORM_RECORD_INFO =
+                            "include_table_field_form_record_info";
                     public static final String MASS_FETCH = "mass_fetch";
                 }
 
@@ -2784,6 +2786,7 @@ public class WS {
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
                  * @param massFetchParam Is the fetch a large fetch.
                  *                       
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
@@ -2793,6 +2796,7 @@ public class WS {
                 public static final String getDescendantsWebSocket(
                         boolean includeFieldDataParam,
                         boolean includeTableFieldsParam,
+                        boolean includeTableFieldFormRecordInfoParam,
                         boolean massFetchParam,
                         String serviceTicketParam)
                 {
@@ -2805,7 +2809,10 @@ public class WS {
                                     "&" +
                                     QueryParam.MASS_FETCH+"=" + massFetchParam +
                                     "&" +
-                                    QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+                                    QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
+                                    "&" +
+                                    QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO +"=" + includeTableFieldFormRecordInfoParam
+                            );
 
                     return returnVal;
                 }
