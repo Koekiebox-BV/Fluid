@@ -19,10 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
@@ -389,7 +386,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
         //Now use a database lookup...
         Field returnVal = null;
         PreparedStatement preparedStatement = null, preparedStatementForTblInfo = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet = null,resultSetForTblInfo = null;
         try
         {
             ISyntax syntax = SyntaxFactory.getInstance().getFieldValueSyntaxFor(
@@ -508,17 +505,32 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                             if(syntaxForFormContInfo != null)
                             {
                                 preparedStatementForTblInfo = this.getConnection().prepareStatement(
-                                        syntax.getPreparedStatement());
+                                        syntaxForFormContInfo.getPreparedStatement());
 
                                 for(Form formToSetInfoOn :formRecords)
                                 {
                                     preparedStatementForTblInfo.setLong(1, formToSetInfoOn.getId());
 
-                                    resultSet = preparedStatementForTblInfo.executeQuery();
-                                    if(resultSet.next())
+                                    resultSetForTblInfo = preparedStatementForTblInfo.executeQuery();
+                                    if(resultSetForTblInfo.next())
                                     {
-                                        formToSetInfoOn.setTitle(resultSet.getString(
+                                        formToSetInfoOn.setTitle(resultSetForTblInfo.getString(
                                                 SQLFormUtil.SQLColumnIndex._03_TITLE));
+
+                                        Date created = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._04_CREATED);
+                                        Date lastUpdated = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
+
+                                        //Created...
+                                        if(created != null)
+                                        {
+                                            formToSetInfoOn.setDateCreated(new Date(created.getTime()));
+                                        }
+
+                                        //Last Updated...
+                                        if(lastUpdated != null)
+                                        {
+                                            formToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
+                                        }
                                     }
                                 }
                             }

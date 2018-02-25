@@ -236,7 +236,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
                 generateLotsOfFormsFor(numberOfRecords,
-                        23/*1769*//*246L*/));
+                        127621));
 
         long took = (System.currentTimeMillis() - start);
 
@@ -251,6 +251,11 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                 //System.out.println("Response For ::: "+listing.getEcho());
 
                 List<Form> descendantsForms = listing.getListing();
+
+                if(descendantsForms == null)
+                {
+                    continue;
+                }
 
                 for(Form form : descendantsForms)
                 {
