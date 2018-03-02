@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
-import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
@@ -58,12 +57,12 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
      */
     public SQLUtilWebSocketGetFormFieldsClient(
             String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+            IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
             boolean includeFieldDataParam) {
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(messageReceivedCallbackParam),
+                new GenericFormFieldListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getFormFieldsWebSocket(
                         includeFieldDataParam,serviceTicketAsHexParam));
