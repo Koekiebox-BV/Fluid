@@ -13,13 +13,19 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.attachment;
 
 import java.io.File;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.Form;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -48,6 +54,8 @@ public class Attachment extends ABaseFluidJSONObject {
 
     private String attachmentDataBase64;
 
+    private Long formId;
+
     /**
      * The JSON mapping for the {@code Attachment} object.
      */
@@ -61,6 +69,8 @@ public class Attachment extends ABaseFluidJSONObject {
         public static final String DATE_LAST_UPDATED = "dateLastUpdated";
         public static final String DATE_CREATED = "dateCreated";
 
+        public static final String FORM_ID = "formId";
+        
         public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
     }
 
@@ -130,6 +140,11 @@ public class Attachment extends ABaseFluidJSONObject {
         //Content Type...
         if (!this.jsonObject.isNull(JSONMapping.CONTENT_TYPE)) {
             this.setContentType(this.jsonObject.getString(JSONMapping.CONTENT_TYPE));
+        }
+
+        //Form Id...
+        if (!this.jsonObject.isNull(JSONMapping.FORM_ID)) {
+            this.setFormId(this.jsonObject.getLong(JSONMapping.FORM_ID));
         }
 
         //Date Created...
@@ -203,6 +218,24 @@ public class Attachment extends ABaseFluidJSONObject {
      */
     public void setPath(String pathParam) {
         this.path = pathParam;
+    }
+
+    /**
+     * Gets the id of {@code this} {@code Attachment} form parent.
+     *
+     * @return Attachment associated Form Id.
+     */
+    public Long getFormId() {
+        return this.formId;
+    }
+
+    /**
+     * Sets the id of {@code this} {@code Attachment} form parent.
+     *
+     * @param formIdParam Attachment associated Form Id.
+     */
+    public void setFormId(Long formIdParam) {
+        this.formId = formIdParam;
     }
 
     /**
@@ -294,6 +327,7 @@ public class Attachment extends ABaseFluidJSONObject {
      * @param containingTextParam The text to check for <b>(not case sensitive)</b>.
      * @return Whether the {@code Attachment} name contains {@code containingTextParam}.
      */
+    @XmlTransient
     public boolean doesNameContain(String containingTextParam) {
         if (this.getName() == null || this.getName().trim().isEmpty()) {
             return false;
@@ -332,6 +366,11 @@ public class Attachment extends ABaseFluidJSONObject {
         //Content Type...
         if (this.getContentType() != null) {
             returnVal.put(JSONMapping.CONTENT_TYPE, this.getContentType());
+        }
+
+        //Form Id...
+        if (this.getFormId() != null) {
+            returnVal.put(JSONMapping.FORM_ID, this.getFormId());
         }
 
         //Name...

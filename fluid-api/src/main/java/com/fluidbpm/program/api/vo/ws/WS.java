@@ -216,6 +216,16 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Container update.
+                 *
+                 * @return {@code v1/form_container/update}
+                 */
+                public static final String formContainerUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
                  * URL Path for Electronic Form create via Web Socket.
                  *
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
@@ -225,16 +235,6 @@ public class WS {
                 public static final String formContainerCreateWebSocket(String serviceTicketParam)
                 {
                     return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam);
-                }
-
-                /**
-                 * URL Path for Form Container update.
-                 *
-                 * @return {@code v1/form_container/update}
-                 */
-                public static final String formContainerUpdate()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
                 /**
@@ -442,7 +442,7 @@ public class WS {
         /**
          * The Attachment Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Attachment
+         * @see Attachment
          */
         public static final class Attachment
         {
@@ -458,12 +458,11 @@ public class WS {
                 //Delete...
                 public static final String DELETE = ("/delete");
 
-                //Update...
-                public static final String UPDATE = ("/update");
-
                 //Read...
-                public static final String READ_BY_FORM_CONTAINER_AND_INDEX =
-                        ("/get_by_form_container_and_index");
+                public static final String READ = ("/get_by_id");
+                public static final String READ_RAW_BY_FORM_CONTAINER_AND_INDEX =
+                        ("/get_raw_by_form_container_and_index");
+                public static final String READ_ALL_BY_FORM = ("/get_all_by_form");
 
                 /**
                  * Mapping for frequently used HTTP parameters.
@@ -472,6 +471,9 @@ public class WS {
                 {
                     public static final String FORM_CONTAINER_ID = "form_container";
                     public static final String ATTACHMENT_INDEX = "attachment_index";
+
+                    public static final String INCLUDE_ATTACHMENT_DATA =
+                            "include_attachment_data";
                 }
 
                 /**
@@ -485,20 +487,49 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Form Container get by id.
+                 *
+                 * @return {@code v1/attachment/get_by_id}
+                 *
+                 * @see Attachment
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+                
+                /**
+                 * URL Path for Attachment create.
+                 *
+                 * Executing this more will cause new versions to be
+                 * created.
+                 *
+                 * Versions are bumped.
+                 *
+                 * @return {@code v1/attachment/}
+                 *
+                 * @see Attachment
+                 */
+                public static final String attachmentCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
                  * URL Path for Attachment get by Form Container and Index.
                  *
                  * @param formContainerIdParam The primary key for the form container.
                  * @param indexParam The attachment index for the form container.
                  *
-                 * @return {@code v1/attachment/get_by_form_container_and_index}
+                 * @return {@code v1/attachment/get_raw_by_form_container_and_index}
                  */
-                public static final String getByFormContainerAndIndex(
+                public static final String getRawByFormContainerAndIndex(
                         Long formContainerIdParam,
                         int indexParam)
                 {
                     String returnVal =
                             Version.VERSION_1.concat(ROOT).concat(
-                                    READ_BY_FORM_CONTAINER_AND_INDEX);
+                                    READ_RAW_BY_FORM_CONTAINER_AND_INDEX);
 
                     returnVal += "?";
 
@@ -512,6 +543,31 @@ public class WS {
                     returnVal += QueryParam.ATTACHMENT_INDEX;
                     returnVal += "=";
                     returnVal += indexParam;
+
+                    return returnVal;
+                }
+
+                /**
+                 * URL Path for Attachment get by Form Container.
+                 *
+                 * @param includeAttachmentDataParam Should attachment data be included.
+                 *                                   Note that only the latest versions will be
+                 *                                   retrieved.
+                 *
+                 * @return {@code v1/attachment/get_raw_by_form_container_and_index}
+                 */
+                public static final String getAllByFormContainer(
+                        boolean includeAttachmentDataParam)
+                {
+                    String returnVal =
+                            Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_FORM);
+
+                    returnVal += "?";
+
+                    //Form Container Id...
+                    returnVal += QueryParam.INCLUDE_ATTACHMENT_DATA;
+                    returnVal += "=";
+                    returnVal += includeAttachmentDataParam;
 
                     return returnVal;
                 }

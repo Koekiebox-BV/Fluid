@@ -699,6 +699,47 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      *     </ul>
      *
      * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The value for the Form Field as {@code Long}.
+     *
+     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     */
+    @XmlTransient
+    public Long getFieldValueAsLong(String fieldNameParam)
+    {
+        Object obj = this.getFieldValueForField(fieldNameParam);
+
+        if(obj == null)
+        {
+            return null;
+        }
+
+        if(obj instanceof Number)
+        {
+            Number casted = ((Number)obj);
+
+            return casted.longValue();
+        }
+
+        return null;
+    }
+
+    /**
+     * <p>
+     *     Returns the value of the {@code fieldNameParam} requested.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     *
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *         <li>Field Value is not of type {@code Number}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Number}.
      *
      * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
@@ -1783,7 +1824,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * <p>Sets the Form Title as in Fluid.
      *
      * <p>
-     *     If {@code titleParam} is {@code null} or empty, the
+     *     If {@code titleParam} is {@code null}, the
      *     Title will be set to <br>
      *     "[No Title from Custom Program]"
      *
@@ -1791,7 +1832,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     public void setTitle(String titleParam) {
 
-        if(titleParam == null || titleParam.trim().isEmpty())
+        if(titleParam == null)
         {
             this.title = EMPTY_TITLE_MARKER;
             return;

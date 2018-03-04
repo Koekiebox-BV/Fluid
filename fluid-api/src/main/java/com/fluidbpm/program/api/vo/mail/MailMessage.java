@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.attachment.Attachment;
 
 /**
  * Fluid representation of a Email message.
@@ -31,10 +32,10 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see com.fluidbpm.program.api.vo.Attachment
+ * @see Attachment
  * @see MailMessageAttachment
  * @see MailMessageNameValue
- * @see com.fluidbpm.program.api.vo.Attachment
+ * @see Attachment
  * @see ABaseFluidVO
  */
 public class MailMessage extends ABaseFluidJSONObject {

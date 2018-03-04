@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.attachment.Attachment;
 
 /**
  * Represents an Electronic Form with all possible Meta-Data for an item
