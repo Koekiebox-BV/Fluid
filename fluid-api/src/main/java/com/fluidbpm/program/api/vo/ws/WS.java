@@ -457,6 +457,7 @@ public class WS {
 
                 //Delete...
                 public static final String DELETE = ("/delete");
+                public static final String DELETE_FORCE = ("/delete?force=true");
 
                 //Read...
                 public static final String READ = ("/get_by_id");
@@ -471,6 +472,8 @@ public class WS {
                 {
                     public static final String FORM_CONTAINER_ID = "form_container";
                     public static final String ATTACHMENT_INDEX = "attachment_index";
+
+                    public static final String IMAGES_ONLY = "images_only";
 
                     public static final String INCLUDE_ATTACHMENT_DATA =
                             "include_attachment_data";
@@ -487,15 +490,29 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for Form Container get by id.
+                 * URL Path for Attachment get by id.
+                 *
+                 * @param includeAttachmentDataParam Should attachment data be included.
+                 *                                   Note that only the latest versions will be
+                 *                                   retrieved.
                  *
                  * @return {@code v1/attachment/get_by_id}
                  *
                  * @see Attachment
                  */
-                public static final String getById()
+                public static final String getById(boolean includeAttachmentDataParam)
                 {
-                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                    String returnVal =
+                            Version.VERSION_1.concat(ROOT).concat(READ);
+
+                    returnVal += "?";
+
+                    //Include Attachment Data...
+                    returnVal += QueryParam.INCLUDE_ATTACHMENT_DATA;
+                    returnVal += "=";
+                    returnVal += includeAttachmentDataParam;
+
+                    return returnVal;
                 }
                 
                 /**
@@ -513,6 +530,33 @@ public class WS {
                 public static final String attachmentCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Attachment delete.
+                 *
+                 * @return {@code v1/attachment/delete} <b>without</b> force.
+                 */
+                public static final String attachmentDelete()
+                {
+                    return attachmentDelete(false);
+                }
+
+                /**
+                 * URL Path for Attachment delete.
+                 *
+                 * @param forceDeleteParam Whether to forcefully delete.
+                 *
+                 * @return {@code v1/attachment/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 */
+                public static final String attachmentDelete(boolean forceDeleteParam)
+                {
+                    if(forceDeleteParam)
+                    {
+                        return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
+                    }
+
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
 
                 /**
@@ -554,20 +598,30 @@ public class WS {
                  *                                   Note that only the latest versions will be
                  *                                   retrieved.
                  *
+                 * @param imagesOnlyParam Only retrieve attachments where there the
+                 *                        content type is of {@code image}.
+                 *
                  * @return {@code v1/attachment/get_raw_by_form_container_and_index}
                  */
                 public static final String getAllByFormContainer(
-                        boolean includeAttachmentDataParam)
+                        boolean includeAttachmentDataParam,
+                        boolean imagesOnlyParam)
                 {
                     String returnVal =
                             Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_FORM);
 
                     returnVal += "?";
 
-                    //Form Container Id...
+                    //Include Attachment Data...
                     returnVal += QueryParam.INCLUDE_ATTACHMENT_DATA;
                     returnVal += "=";
                     returnVal += includeAttachmentDataParam;
+                    returnVal += "&";
+
+                    //Images Only...
+                    returnVal += QueryParam.IMAGES_ONLY;
+                    returnVal += "=";
+                    returnVal += imagesOnlyParam;
 
                     return returnVal;
                 }

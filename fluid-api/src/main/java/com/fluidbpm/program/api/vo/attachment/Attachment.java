@@ -82,6 +82,17 @@ public class Attachment extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Id associated with the Attachment.
+     *
+     * @param attachmentIdParam Attachment Id.
+     */
+    public Attachment(Long attachmentIdParam) {
+        super();
+
+        this.setId(attachmentIdParam);
+    }
+
+    /**
      * Sets the Path and Name of {@code this} {@code Attachment}.
      *
      * @param attachmentPath Sets the {@code Attachment} path.
