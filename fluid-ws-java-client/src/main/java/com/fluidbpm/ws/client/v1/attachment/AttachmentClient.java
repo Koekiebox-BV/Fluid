@@ -101,6 +101,7 @@ public class AttachmentClient extends ABaseClientWS {
      *
      * @param formParam The Form to use for lookup.
      * @param includeAttachmentDataParam Include the attachment data (Base-64).
+     *
      * @return The Attachments associated with {@code formParam}.
      */
     public List<Attachment> getAttachmentsByForm(
@@ -125,6 +126,8 @@ public class AttachmentClient extends ABaseClientWS {
      * Retrieves only {@code image} Attachments by Primary Key.
      *
      * @param formParam The Form to use for lookup.
+     * @param includeAttachmentDataParam Include the attachment data (Base-64).
+     *
      * @return The Attachment associated with {@code attachmentIdParam}.
      */
     public List<Attachment> getImageAttachmentsByForm(
