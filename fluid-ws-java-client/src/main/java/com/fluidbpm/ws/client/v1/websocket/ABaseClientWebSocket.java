@@ -115,25 +115,26 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             this.webSocketClient = new WebSocketClient(new URI(completeUrl));
             this.webSocketClient.setMessageHandler(messageHandlerParam);
         }
-        //
+        //Deploy...
         catch (DeploymentException e) {
 
             throw new FluidClientException(
-                    "Unable to create Web Socket client (Deployment). "+e.getMessage(),
+                    "Unable to create Web Socket client (Deployment). URL ["+ completeUrl+"]: "
+                            +e.getMessage(),
                     e, FluidClientException.ErrorCode.IO_ERROR);
         }
-        //
+        //I/O...
         catch (IOException e) {
 
             throw new FluidClientException(
-                    "Unable to create Web Socket client (I/O). "+e.getMessage(),
+                    "Unable to create Web Socket client (I/O). URL ["+ completeUrl+"]:"+e.getMessage(),
                     e, FluidClientException.ErrorCode.IO_ERROR);
         }
-        //
+        //URI Syntax...
         catch (URISyntaxException e) {
 
             throw new FluidClientException(
-                    "Unable to create Web Socket client (URI). "+e.getMessage(),
+                    "Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
                     e, FluidClientException.ErrorCode.IO_ERROR);
         }
     }
