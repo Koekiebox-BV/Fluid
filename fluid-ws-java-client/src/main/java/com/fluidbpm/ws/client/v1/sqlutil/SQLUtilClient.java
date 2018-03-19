@@ -86,11 +86,11 @@ public class SQLUtilClient extends ABaseClientWS {
     /**
      * Retrieves all Descendants for the {@code formToGetTableFormsForParam}.
      *
-     * @param formToGetDescendantsForParam The Fluid Form to get Table Fields for.
+     * @param formToGetDescendantsForParam The Fluid Form to get Descendants for.
      * @param includeFieldDataParam Should Descendant (Form) Field data be included?
      * @param includeTableFieldsParam Should Table Record (Form) Field data be included?
      *
-     * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+     * @return The {@code formToGetTableFormsForParam} Descendants as {@code Form}'s.
      */
     public List<Form> getDescendants(
             Form formToGetDescendantsForParam,
@@ -109,6 +109,38 @@ public class SQLUtilClient extends ABaseClientWS {
                                     includeTableFieldsParam)));
 
             return formListing.getListing();
+        }
+        //
+        catch (JSONException e) {
+            throw new FluidClientException(e.getMessage(), e,
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves the Ancestor for the {@code formToGetAncestorForParam}.
+     *
+     * @param formToGetAncestorForParam The Fluid Form to get Ancestor for.
+     * @param includeFieldDataParam Should Ancestor (Form) Field data be included?
+     * @param includeTableFieldsParam Should Table Record (Form) Field data be included?
+     *
+     * @return The {@code formToGetAncestorForParam} Ancestor as {@code Form}'s.
+     */
+    public Form getAncestor(
+            Form formToGetAncestorForParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam) {
+
+        if (formToGetAncestorForParam != null && this.serviceTicket != null) {
+            formToGetAncestorForParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new Form(
+                    this.postJson(formToGetAncestorForParam,
+                            WS.Path.SQLUtil.Version1.getAncestor(
+                                    includeFieldDataParam,
+                                    includeTableFieldsParam)));
         }
         //
         catch (JSONException e) {

@@ -121,21 +121,21 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             throw new FluidClientException(
                     "Unable to create Web Socket client (Deployment). URL ["+ completeUrl+"]: "
                             +e.getMessage(),
-                    e, FluidClientException.ErrorCode.IO_ERROR);
+                    e, FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR);
         }
         //I/O...
         catch (IOException e) {
 
             throw new FluidClientException(
                     "Unable to create Web Socket client (I/O). URL ["+ completeUrl+"]:"+e.getMessage(),
-                    e, FluidClientException.ErrorCode.IO_ERROR);
+                    e, FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
         }
         //URI Syntax...
         catch (URISyntaxException e) {
 
             throw new FluidClientException(
                     "Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
-                    e, FluidClientException.ErrorCode.IO_ERROR);
+                    e, FluidClientException.ErrorCode.WEB_SOCKET_URI_SYNTAX_ERROR);
         }
     }
 

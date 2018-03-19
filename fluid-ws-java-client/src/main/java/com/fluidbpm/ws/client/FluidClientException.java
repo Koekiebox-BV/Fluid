@@ -58,6 +58,10 @@ public class FluidClientException extends RuntimeException {
         public static final int PDF_GENERATION = 10021;
         public static final int LICENSE = 10022;
         public static final int PERMISSION_DENIED = 10023;
+
+        public static final int WEB_SOCKET_IO_ERROR = 10024;
+        public static final int WEB_SOCKET_DEPLOY_ERROR = 10025;
+        public static final int WEB_SOCKET_URI_SYNTAX_ERROR = 10026;
     }
 
     /**
