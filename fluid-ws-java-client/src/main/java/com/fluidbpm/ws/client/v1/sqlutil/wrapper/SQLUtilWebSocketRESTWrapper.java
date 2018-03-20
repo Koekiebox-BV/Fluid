@@ -18,14 +18,13 @@ package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fluidbpm.program.api.vo.Field;
 import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilClient;
-import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilWebSocketGetAncestorClient;
-import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilWebSocketGetDescendantsClient;
-import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilWebSocketGetTableFormsClient;
+import com.fluidbpm.ws.client.v1.sqlutil.*;
 
 /**
  * Wrapper class used for when WebSockets is not a
@@ -39,12 +38,14 @@ public class SQLUtilWebSocketRESTWrapper {
     //Instance...
     private String baseURL;
     private User loggedInUser;
+
     private long timeoutMillis;
 
     //Clients...
     private SQLUtilWebSocketGetAncestorClient getAncestorClient = null;
     private SQLUtilWebSocketGetDescendantsClient getDescendantsClient = null;
     private SQLUtilWebSocketGetTableFormsClient getTableFormsClient = null;
+    private SQLUtilWebSocketGetFormFieldsClient getFormFieldsClient = null;
 
     private final SQLUtilClient sqlUtilClient;
 
@@ -64,6 +65,30 @@ public class SQLUtilWebSocketRESTWrapper {
      * New wrapper instance.
      *
      * @param baseURLParam Example {@code https://[instance].fluidbpm.com/fluid-ws/}
+     * @param serviceTicketParam The service ticket for the logged in user.
+     * @param timeoutMillisParam The timeout of the request in millis.
+     */
+    public SQLUtilWebSocketRESTWrapper(
+            String baseURLParam,
+            String serviceTicketParam,
+            long timeoutMillisParam) {
+        super();
+
+        this.baseURL = baseURLParam;
+
+        this.loggedInUser = new User();
+        this.loggedInUser.setServiceTicket(serviceTicketParam);
+        this.timeoutMillis = timeoutMillisParam;
+        
+        this.sqlUtilClient = new SQLUtilClient(
+                this.baseURL,
+                this.loggedInUser.getServiceTicket());
+    }
+
+    /**
+     * New wrapper instance.
+     *
+     * @param baseURLParam Example {@code https://[instance].fluidbpm.com/fluid-ws/}
      * @param loggedInUserParam The currently logged in user.
      * @param timeoutMillisParam The timeout of the request in millis.
      */
@@ -76,12 +101,11 @@ public class SQLUtilWebSocketRESTWrapper {
         this.baseURL = baseURLParam;
         this.loggedInUser = loggedInUserParam;
         this.timeoutMillis = timeoutMillisParam;
-        
+
         this.sqlUtilClient = new SQLUtilClient(
                 this.baseURL,
                 this.loggedInUser.getServiceTicket());
     }
-
     
     /**
      * Retrieves the Ancestor for the {@code formToGetAncestorForParam}.
@@ -217,13 +241,14 @@ public class SQLUtilWebSocketRESTWrapper {
     /**
      * Retrieves all the Table (Forms) for the {@code formsToGetDescForParam}.
      *
-     * @param includeFieldDataParam Should Ancestor (Form) Field data be included?
+     * @param includeFieldDataParam Should Field data be included?
      * @param formsToGetTableFormsForParam The Fluid Form to get Descendants for.
      *
      * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
      */
     public List<FormListing> getTableForms(
-            boolean includeFieldDataParam, Form ... formsToGetTableFormsForParam)
+            boolean includeFieldDataParam,
+            Form ... formsToGetTableFormsForParam)
     {
         //DESCENDANTS...
         try {
@@ -279,6 +304,76 @@ public class SQLUtilWebSocketRESTWrapper {
                 returnVal.add(toAdd);
             }
 
+            return returnVal;
+        }
+    }
+
+    /**
+     * Retrieves all the (Fields) for the {@code formsToGetDescForParam}.
+     *
+     * @param includeFieldDataParam Should Field data be included?
+     * @param formsToGetFieldsForParam The Fluid Form to get Descendants for.
+     *
+     * @return The {@code formsToGetFieldsForParam} Fields as {@code Field}'s.
+     */
+    public List<FormFieldListing> getFormFields(
+            boolean includeFieldDataParam,
+            Form ... formsToGetFieldsForParam)
+    {
+        //FORM FIELDS...
+        try {
+            //When mode is null or [WebSocketActive]...
+            if(this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode)
+            {
+                this.getFormFieldsClient = new SQLUtilWebSocketGetFormFieldsClient(
+                        this.baseURL,
+                        null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(),
+                        this.timeoutMillis,
+                        includeFieldDataParam);
+
+                this.mode = Mode.WebSocketActive;
+            }
+        }
+        catch (FluidClientException clientExcept)
+        {
+            if(clientExcept.getErrorCode() !=
+                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR)
+            {
+                throw clientExcept;
+            }
+
+            this.mode = Mode.RESTfulActive;
+        }
+
+        if(this.getFormFieldsClient != null)
+        {
+            return this.getFormFieldsClient.getFormFieldsSynchronized(
+                    formsToGetFieldsForParam);
+        }
+        else
+        {
+            if(formsToGetFieldsForParam == null ||
+                    formsToGetFieldsForParam.length < 1)
+            {
+                return null;
+            }
+
+            List<FormFieldListing> returnVal = new ArrayList<>();
+
+            for(Form formToFetchFor : formsToGetFieldsForParam)
+            {
+                List<Field> listOfFields =
+                        this.sqlUtilClient.getFormFields(
+                                formToFetchFor,
+                                includeFieldDataParam);
+
+                FormFieldListing toAdd = new FormFieldListing();
+                toAdd.setListing(listOfFields);
+                toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
+                returnVal.add(toAdd);
+            }
+            
             return returnVal;
         }
     }

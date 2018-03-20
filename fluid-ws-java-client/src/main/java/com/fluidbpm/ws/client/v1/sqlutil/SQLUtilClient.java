@@ -20,8 +20,10 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.vo.Field;
 import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -141,6 +143,37 @@ public class SQLUtilClient extends ABaseClientWS {
                             WS.Path.SQLUtil.Version1.getAncestor(
                                     includeFieldDataParam,
                                     includeTableFieldsParam)));
+        }
+        //
+        catch (JSONException e) {
+            throw new FluidClientException(e.getMessage(), e,
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves all Fields for the {@code formToGetFieldsForParam}.
+     *
+     * @param formToGetFieldsForParam The Fluid Form to get Fields for.
+     * @param includeTableFieldsParam Should Table Field data be included?
+     *
+     * @return The {@code formToGetFieldsForParam} Fields as {@code Field}'s.
+     */
+    public List<Field> getFormFields(
+            Form formToGetFieldsForParam,
+            boolean includeTableFieldsParam) {
+
+        if (formToGetFieldsForParam != null && this.serviceTicket != null) {
+            formToGetFieldsForParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            FormFieldListing formFieldListing = new FormFieldListing(
+                    this.postJson(formToGetFieldsForParam,
+                            WS.Path.SQLUtil.Version1.getFormFields(
+                                    includeTableFieldsParam)));
+
+            return formFieldListing.getListing();
         }
         //
         catch (JSONException e) {
