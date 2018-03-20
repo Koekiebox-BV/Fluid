@@ -402,5 +402,10 @@ public class SQLUtilWebSocketRESTWrapper {
         {
             this.getTableFormsClient.closeAndClean();
         }
+
+        if(this.getFormFieldsClient != null)
+        {
+            this.getFormFieldsClient.closeAndClean();
+        }
     }
 }
