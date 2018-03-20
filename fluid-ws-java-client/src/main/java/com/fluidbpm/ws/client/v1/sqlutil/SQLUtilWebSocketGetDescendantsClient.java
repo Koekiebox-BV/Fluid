@@ -89,7 +89,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
      *
      * @param formToGetDescendantsForParam The Fluid Form to get Descendants for.
      *
-     * @return The {@code formToGetDescendantsForParam} Table Records as {@code Form}'s.
+     * @return The {@code formToGetDescendantsForParam} Descendants as {@code Form}'s.
      */
     public List<FormListing> getDescendantsSynchronized(
             Form ... formToGetDescendantsForParam) {
