@@ -18,6 +18,7 @@ package com.fluidbpm.program.api.util.command;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,8 @@ import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
 public class CommandUtil {
 
     public static final String FLUID_CLI = "fluid-cli";
+    public static final String ENCODING_UTF_8 = "UTF-8";
+
 
     /**
      * Result value object when a command line operation is finish.
@@ -111,30 +114,37 @@ public class CommandUtil {
      * @see CommandResult
      */
     public CommandResult executeCommand(String... commandParams) throws IOException {
+
         if (commandParams == null || commandParams.length == 0) {
             throw new IOException("Unable to execute command. No commands provided.");
         }
 
         List<String> returnedLines = new ArrayList();
 
+        Charset charset = Charset.forName(ENCODING_UTF_8);
+        
         try {
             Process process = null;
+            //One param...
             if (commandParams.length == 1) {
                 process = Runtime.getRuntime().exec(commandParams[0]);
             }
-            //
+            //More params...
             else {
                 process = Runtime.getRuntime().exec(commandParams);
             }
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            process.getInputStream(), charset));
 
             String readLine = null;
             while ((readLine = reader.readLine()) != null) {
                 returnedLines.add(readLine);
             }
 
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            BufferedReader errorReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream(),charset));
 
             while ((readLine = errorReader.readLine()) != null) {
                 returnedLines.add(readLine);
@@ -146,18 +156,21 @@ public class CommandUtil {
             }
             //
             catch (InterruptedException e) {
-                String commandString = (commandParams == null || commandParams.length == 0) ? "<unknown>" : commandParams[0];
+                String commandString = (commandParams == null || commandParams.length == 0) ?
+                        "<unknown>" : commandParams[0];
 
-                throw new IOException("Unable to wait for command [" + commandString + "] to exit. " + e.getMessage(), e);
+                throw new IOException("Unable to wait for command [" + commandString +
+                        "] to exit. " + e.getMessage(), e);
             }
 
             String[] rtnArr = {};
             return new CommandResult(exitValue, returnedLines.toArray(rtnArr));
         }
-        //
+        //IO Problem...
         catch (IOException ioExeption) {
 
-            String commandString = (commandParams == null || commandParams.length == 0) ? "<unknown>" : commandParams[0];
+            String commandString = (commandParams == null || commandParams.length == 0) ?
+                    "<unknown>" : commandParams[0];
 
             throw new IOException("Unable to execute command/s [" + commandString + "]. " + ioExeption.getMessage(), ioExeption);
         }
