@@ -18,8 +18,8 @@ package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.user.User;

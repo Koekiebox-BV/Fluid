@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
+import com.fluidbpm.program.api.vo.field.Field;
 
 /**
  * <p>

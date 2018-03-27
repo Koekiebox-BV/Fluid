@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseListing;
-import com.fluidbpm.program.api.vo.Field;
+import com.fluidbpm.program.api.vo.field.Field;
 
 /**
  * <p>

@@ -24,9 +24,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.MultiChoice;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;

@@ -19,7 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * <p>
@@ -31,7 +32,7 @@ import com.fluidbpm.program.api.vo.Form;
  * @since v1.1
  *
  * @see Form
- * @see com.fluidbpm.program.api.vo.Field
+ * @see Field
  * @see Role
  */
 public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
@@ -130,7 +131,7 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
      * @return Whether the {@code Form}, {@code Field} and role
      * relationship allows for viewing.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see Form
      * @see Role
      */
@@ -144,7 +145,7 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
      * @param canViewParam Whether the {@code Form}, {@code Field} and role
      * relationship allows for viewing.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see Form
      * @see Role
      */
@@ -158,7 +159,7 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
      * @return Whether the {@code Form}, {@code Field} and role
      * relationship allows for creation and modification.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see Form
      * @see Role
      */
@@ -172,7 +173,7 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
      * @param canCreateAndModifyParam Whether the {@code Form}, {@code Field} and role
      * relationship allows for creation and modification.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see Form
      * @see Role
      */

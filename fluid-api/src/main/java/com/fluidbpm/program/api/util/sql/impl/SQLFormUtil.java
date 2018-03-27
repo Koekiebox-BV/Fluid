@@ -30,9 +30,9 @@ import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.user.User;
 
 /**

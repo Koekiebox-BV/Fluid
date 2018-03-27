@@ -22,9 +22,9 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.MultiChoice;
-import com.fluidbpm.program.api.vo.TableField;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.field.TableField;
 
 /**
  * Global utility class for the {@code com.fluidbpm.program.api.util} package.

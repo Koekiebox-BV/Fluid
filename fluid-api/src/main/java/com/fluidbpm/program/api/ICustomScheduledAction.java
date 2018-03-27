@@ -16,7 +16,8 @@ package com.fluidbpm.program.api;
 
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.mail.MailMessage;
 import com.fluidbpm.program.api.vo.user.User;
 
@@ -31,8 +32,8 @@ import com.fluidbpm.program.api.vo.user.User;
  *
  * @see ICustomProgram
  * @see ICustomWebAction
- * @see com.fluidbpm.program.api.vo.Form
- * @see com.fluidbpm.program.api.vo.FluidItem
+ * @see Form
+ * @see FluidItem
  * @see com.fluidbpm.program.api.vo.flow.Flow
  * @see com.fluidbpm.program.api.vo.flow.FlowStep
  * @see com.fluidbpm.program.api.vo.flow.FlowStepRule

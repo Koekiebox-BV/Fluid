@@ -27,7 +27,11 @@ import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
-import com.fluidbpm.program.api.vo.*;
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.field.TableField;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * SQL Utility class used for {@code Field} related actions.
@@ -66,7 +70,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
          * @param nameParam Form Field Name.
          * @param descriptionParam Form Field Description.
          *
-         * @see com.fluidbpm.program.api.vo.Field.Type
+         * @see Field.Type
          */
         public FormFieldMapping(
                 Long formDefinitionIdParam,

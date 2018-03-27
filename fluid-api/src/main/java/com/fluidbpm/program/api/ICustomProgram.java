@@ -17,7 +17,8 @@ package com.fluidbpm.program.api;
 
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
  * The interface to extend when creating
@@ -28,8 +29,8 @@ import com.fluidbpm.program.api.vo.FluidItem;
  *
  * @see ICustomScheduledAction
  * @see ICustomWebAction
- * @see com.fluidbpm.program.api.vo.Form
- * @see com.fluidbpm.program.api.vo.FluidItem
+ * @see Form
+ * @see FluidItem
  *
  */
 public interface ICustomProgram extends IActionBase {
@@ -112,7 +113,7 @@ public interface ICustomProgram extends IActionBase {
      *
      * @throws Exception When a exception is {@code throw}, the Fluid Workitem will move into an error state.
      * @see FluidItem
-     * @see com.fluidbpm.program.api.vo.Form
+     * @see Form
      */
     public abstract FluidItem postProcessFluidItem(FluidItem fluidItemParam,
                                                    List<FluidItem> executePerFluidItemQueryResultParam)

@@ -26,8 +26,8 @@ import java.util.concurrent.TimeoutException;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.cache.exception.FluidCacheException;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.MultiChoice;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;

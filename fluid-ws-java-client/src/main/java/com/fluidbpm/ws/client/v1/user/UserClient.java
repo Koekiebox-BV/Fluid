@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.user.UserFieldListing;
 import com.fluidbpm.program.api.vo.user.UserListing;
@@ -64,7 +65,7 @@ public class UserClient extends ABaseClientWS {
      * @return The Created User.
      *
      * @see com.fluidbpm.program.api.vo.user.User
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see com.fluidbpm.program.api.vo.role.Role
      */
     public User createUser(User userParam)
@@ -86,7 +87,7 @@ public class UserClient extends ABaseClientWS {
      * @return The Updated User.
      *
      * @see com.fluidbpm.program.api.vo.user.User
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see com.fluidbpm.program.api.vo.role.Role
      */
     public User updateUser(User userParam)
@@ -108,7 +109,7 @@ public class UserClient extends ABaseClientWS {
      * @return The Activated User.
      *
      * @see com.fluidbpm.program.api.vo.user.User
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see com.fluidbpm.program.api.vo.role.Role
      */
     public User activateUser(User userParam)
@@ -131,7 +132,7 @@ public class UserClient extends ABaseClientWS {
      * @return The DeActivated User.
      *
      * @see com.fluidbpm.program.api.vo.user.User
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see com.fluidbpm.program.api.vo.role.Role
      */
     public User deActivateUser(User userParam)

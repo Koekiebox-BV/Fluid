@@ -18,9 +18,9 @@ package com.fluidbpm.ws.client.v1.flowitem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.flow.JobView;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;

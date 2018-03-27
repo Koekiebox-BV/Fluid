@@ -24,7 +24,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * ElasticSearch Utility class used for {@code Field} related actions. A

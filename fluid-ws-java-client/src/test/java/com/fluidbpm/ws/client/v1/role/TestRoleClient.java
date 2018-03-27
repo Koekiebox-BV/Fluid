@@ -22,11 +22,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.flow.JobViewListing;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.role.*;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;

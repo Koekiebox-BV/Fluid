@@ -24,7 +24,10 @@ import java.net.URLEncoder;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
  * <p>
@@ -140,7 +143,7 @@ public class WS {
         /**
          * The Electronic Form (Document) Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Form
+         * @see Form
          */
         public static final class FormContainer
         {
@@ -390,7 +393,7 @@ public class WS {
         /**
          * The Electronic Form (Document) Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Form
+         * @see Form
          */
         public static final class FormContainerTableRecord
         {
@@ -631,7 +634,7 @@ public class WS {
         /**
          * The Electronic Form Personal Inventory Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Form
+         * @see Form
          */
         public static final class PersonalInventory
         {
@@ -709,7 +712,7 @@ public class WS {
         /**
          * The Form Field Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Field
+         * @see Field
          */
         public static final class FormField
         {
@@ -845,7 +848,7 @@ public class WS {
         /**
          * The Route Field Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Field
+         * @see Field
          */
         public static final class RouteField
         {
@@ -941,7 +944,7 @@ public class WS {
         /**
          * The User Field Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Field
+         * @see Field
          */
         public static final class UserField
         {
@@ -1037,7 +1040,7 @@ public class WS {
         /**
          * The Form Definition Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.Form
+         * @see Form
          */
         public static final class FormDefinition
         {
@@ -1756,7 +1759,7 @@ public class WS {
         /**
          * The Fluid Item Web Service mappings.
          *
-         * @see com.fluidbpm.program.api.vo.FluidItem
+         * @see FluidItem
          */
         public static final class FlowItem
         {
@@ -2395,6 +2398,132 @@ public class WS {
                     returnVal.append(sizeParam);
 
                     return returnVal.toString();
+                }
+            }
+        }
+
+        /**
+         * The User Web Service mappings.
+         *
+         * @see com.fluidbpm.program.api.vo.user.UserNotification
+         */
+        public static final class UserNotification
+        {
+            /**
+             * User mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/user_notification");
+
+                //Create...
+                public static final String CREATE = ("/");
+
+                //Update...
+                public static final String UPDATE = ("/update");
+
+                //Mark Notification as Read...
+                public static final String MARK_AS_READ = ("/mark_as_read");
+
+                //Delete...
+                public static final String DELETE = ("/delete");
+
+                //Read...
+                public static final String READ = ("/get_by_id");
+                public static final String READ_ALL_BY_USER_AND_UNREAD = ("/get_by_user_and_unread");
+                public static final String READ_ALL_BY_USER_AND_READ = ("/get_by_user_and_read");
+
+                /**
+                 * Mapping for frequently used HTTP parameters.
+                 */
+                public static final class QueryParam
+                {
+                    //public static final String USERNAME = "username";
+
+                    //public static final String EMAIL = "email";
+                    //public static final String SIZE = "size";
+                }
+
+                /**
+                 * Root for User Notification.
+                 *
+                 * @return {@code /user_notification/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+                
+                /**
+                 * URL Path for User Notification create.
+                 *
+                 * @return {@code /v1/user_notification/}
+                 */
+                public static final String userNotificationCreate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for User Notification update.
+                 *
+                 * @return {@code v1/user_notification/update}
+                 */
+                public static final String userNotificationUpdate()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for Deleting a User Notification.
+                 *
+                 * @return {@code v1/user_notification/delete}
+                 */
+                public static final String userNotificationDelete()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(DELETE);
+                }
+
+                /**
+                 * URL Path for marking User Notification as read.
+                 *
+                 * @return {@code v1/user_notification/mark_as_read}
+                 */
+                public static final String userNotificationMarkAsRead()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(MARK_AS_READ);
+                }
+                
+                /**
+                 * URL Path for User Notification get by id.
+                 *
+                 * @return {@code v1/user_notification/get_by_id}
+                 */
+                public static final String getById()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+                
+                /**
+                 * URL Path for Un-Read User Notifications by User.
+                 *
+                 * @return {@code v1/user_notification/get_by_user_and_unread}
+                 */
+                public static final String getAllUnReadByUser() {
+                    
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            READ_ALL_BY_USER_AND_UNREAD);
+                }
+
+                /**
+                 * URL Path for Read User Notifications by User.
+                 *
+                 * @return {@code v1/user_notification/get_by_user_and_read}
+                 */
+                public static final String getAllReadByUser() {
+
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            READ_ALL_BY_USER_AND_READ);
                 }
             }
         }

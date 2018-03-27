@@ -36,9 +36,9 @@ import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchE
 import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.Form;
-import com.fluidbpm.program.api.vo.TableField;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.TableField;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * ElasticSearch base Utility class.

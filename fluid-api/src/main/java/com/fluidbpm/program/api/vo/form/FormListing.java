@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseListing;
-import com.fluidbpm.program.api.vo.Form;
 
 /**
  * <p>
@@ -30,7 +29,7 @@ import com.fluidbpm.program.api.vo.Form;
  * @author jasonbruwer
  * @since v1.1
  *
- * @see com.fluidbpm.program.api.vo.Form
+ * @see Form
  * @see ABaseListing
  */
 public class FormListing extends ABaseListing<Form> {

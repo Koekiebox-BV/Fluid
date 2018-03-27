@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.flow.Flow;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;

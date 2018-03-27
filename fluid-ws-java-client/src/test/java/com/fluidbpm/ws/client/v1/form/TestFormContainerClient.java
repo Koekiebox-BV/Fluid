@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.Form;
-import com.fluidbpm.program.api.vo.MultiChoice;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;

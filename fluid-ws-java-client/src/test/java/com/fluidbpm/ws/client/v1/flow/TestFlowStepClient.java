@@ -19,7 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.Field;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.flow.FlowStepRule;

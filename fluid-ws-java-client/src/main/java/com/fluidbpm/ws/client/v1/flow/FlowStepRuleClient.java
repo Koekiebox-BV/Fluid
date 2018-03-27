@@ -20,8 +20,8 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.FluidItem;
 import com.fluidbpm.program.api.vo.flow.*;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 

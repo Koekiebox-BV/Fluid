@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.form;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +27,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.user.User;
 
@@ -371,7 +376,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as one of the {@code Field.Type}s.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     @XmlTransient
     public Object getFieldValueForField(String fieldNameParam) {
@@ -423,7 +428,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code String}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Text
+     * @see Field.Type#Text
      */
     @XmlTransient
     public String getFieldValueAsString(String fieldNameParam)
@@ -456,7 +461,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code TableField}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Table
+     * @see Field.Type#Table
      * @see TableField
      */
     @XmlTransient
@@ -495,7 +500,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code MultiChoice}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#MultipleChoice
+     * @see Field.Type#MultipleChoice
      * @see MultiChoice
      */
     @XmlTransient
@@ -534,7 +539,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Date}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#DateTime
+     * @see Field.Type#DateTime
      */
     @XmlTransient
     public Date getFieldValueAsDate(String fieldNameParam)
@@ -583,7 +588,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Boolean}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#TrueFalse
+     * @see Field.Type#TrueFalse
      */
     @XmlTransient
     public Boolean getFieldValueAsBoolean(String fieldNameParam)
@@ -621,7 +626,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Double}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     @XmlTransient
     public Double getFieldValueAsDouble(String fieldNameParam)
@@ -660,7 +665,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Integer}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     @XmlTransient
     public Integer getFieldValueAsInt(String fieldNameParam)
@@ -701,7 +706,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Long}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     @XmlTransient
     public Long getFieldValueAsLong(String fieldNameParam)
@@ -742,7 +747,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @return The value for the Form Field as {@code Number}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     @XmlTransient
     public Number getFieldValueAsNumber(String fieldNameParam)
@@ -783,7 +788,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldNameParam The name of the Form Field as in Fluid.
      * @param fieldValueParam The value of the {@code Field}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     @XmlTransient
     public void setFieldValue(String fieldNameParam, Object fieldValueParam)
@@ -844,7 +849,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param fieldValueParam The value of the {@code Field}.
      * @param typeParam The {@code Field.Type} of {@code Field}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     @XmlTransient
     public void setFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
@@ -1745,7 +1750,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         System.out.println("\n\n*** PRINTING FORM FIELDS ***");
         if(this.getFormFields() != null)
         {
-            for(com.fluidbpm.program.api.vo.Field formField : this.getFormFields())
+            for(Field formField : this.getFormFields())
             {
                 System.out.println("Field Exists: '"+formField.getFieldName()+"' with value: "+
                         formField.getFieldValue());

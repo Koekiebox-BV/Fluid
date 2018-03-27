@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api;
 
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
  * Implement this <code>interface</code> when you want Fluid populate a
@@ -28,8 +29,8 @@ import com.fluidbpm.program.api.vo.FluidItem;
  * @author jasonbruwer
  * @since v1.8
  *
- * @see com.fluidbpm.program.api.vo.Form
- * @see com.fluidbpm.program.api.vo.Field
+ * @see Form
+ * @see Field
  *
  */
 public interface ICalculatedLabelField extends IActionBase {

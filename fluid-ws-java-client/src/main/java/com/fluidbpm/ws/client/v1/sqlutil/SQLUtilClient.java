@@ -20,11 +20,11 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;

@@ -24,13 +24,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowItemExecuteResult;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.flow.FlowStepRule;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;

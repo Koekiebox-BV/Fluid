@@ -23,9 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 
@@ -37,8 +37,8 @@ import com.fluidbpm.program.api.vo.userquery.UserQuery;
  * {@code Field}'s
  * {@code UserQuery}'s
  *
- * @see com.fluidbpm.program.api.vo.Form
- * @see com.fluidbpm.program.api.vo.Field
+ * @see Form
+ * @see Field
  *
  * @see com.fluidbpm.program.api.vo.userquery.UserQuery
  * @see com.fluidbpm.program.api.vo.flow.Flow

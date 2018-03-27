@@ -25,7 +25,7 @@ import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * SQL Utility class used for {@code Form} Definition related actions.

@@ -13,34 +13,33 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo.form;
+package com.fluidbpm.program.api.vo.user;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseListing;
-import com.fluidbpm.program.api.vo.field.Field;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Field}s.
+ *     Represents a {@code List} of {@code UserNotification}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
+ * @since v1.8
  *
- * @see Field
+ * @see UserNotification
  * @see ABaseListing
  */
-public class FormFieldListing extends ABaseListing<Field> {
+public class UserNotificationListing extends ABaseListing<UserNotification> {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
      */
-    public FormFieldListing() {
+    public UserNotificationListing() {
         super();
     }
 
@@ -49,19 +48,19 @@ public class FormFieldListing extends ABaseListing<Field> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormFieldListing(JSONObject jsonObjectParam){
+    public UserNotificationListing(JSONObject jsonObjectParam){
         super(jsonObjectParam);
     }
 
     /**
-     * Converts the {@code jsonObjectParam} to a {@code Field} object.
+     * Converts the {@code jsonObjectParam} to a {@code UserNotification} object.
      *
-     * @param jsonObjectParam The JSON object to convert to {@code Field}.
-     * @return New {@code Field} instance.
+     * @param jsonObjectParam The JSON object to convert to {@code UserNotification}.
+     * @return New {@code UserNotification} instance.
      */
     @Override
     @XmlTransient
-    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Field(jsonObjectParam);
+    public UserNotification getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new UserNotification(jsonObjectParam);
     }
 }

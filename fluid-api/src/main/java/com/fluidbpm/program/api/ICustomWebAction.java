@@ -17,7 +17,8 @@ package com.fluidbpm.program.api;
 
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.FluidItem;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
  * Implement this <code>interface</code> when you want Fluid to execute
@@ -30,8 +31,8 @@ import com.fluidbpm.program.api.vo.FluidItem;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see com.fluidbpm.program.api.vo.Form
- * @see com.fluidbpm.program.api.vo.FluidItem
+ * @see Form
+ * @see FluidItem
  *
  */
 public interface ICustomWebAction extends IActionBase {

@@ -21,8 +21,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
 
 /**

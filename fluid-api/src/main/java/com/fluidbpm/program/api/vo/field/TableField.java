@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * <p>

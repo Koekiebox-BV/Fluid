@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.field;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +27,10 @@ import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
+import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -110,7 +114,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *         </tr>
      *         <tr>
      *             <td>{@code Table}</td>
-     *             <td>{@code com.fluidbpm.program.api.vo.TableField}</td>
+     *             <td>{@code com.fluidbpm.program.api.vo.field.TableField}</td>
      *         </tr>
      *     </table>
 	 */

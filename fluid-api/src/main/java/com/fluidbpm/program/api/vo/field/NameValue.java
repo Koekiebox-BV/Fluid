@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox Innovations.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.field;
 
 import java.io.Serializable;
 

@@ -23,13 +23,13 @@ import java.util.concurrent.TimeUnit;
 import org.junit.*;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.FluidItem;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.flow.FlowStepRule;
 import com.fluidbpm.program.api.vo.flow.FlowStepRuleListing;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;

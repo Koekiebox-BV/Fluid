@@ -17,7 +17,7 @@ package com.fluidbpm.program.api.util;
 
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * Any form related actions.

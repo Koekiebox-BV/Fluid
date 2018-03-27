@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo;
+package com.fluidbpm.program.api.vo.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * Represents an Electronic Form with all possible Meta-Data for an item
@@ -623,7 +626,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the User Field as in Fluid.
      * @return The value for the User Field as {@code String}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Text
+     * @see Field.Type#Text
      */
     public String getUserFieldValueAsString(String fieldNameParam)
     {
@@ -656,7 +659,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the User Field as in Fluid.
      * @return The value for the User Field as {@code Object}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     public Object getUserFieldValue(String fieldNameParam)
     {
@@ -681,7 +684,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Route Field as in Fluid.
      * @return The value for the Route Field as {@code Object}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     public Object getRouteFieldValue(String fieldNameParam)
     {
@@ -706,7 +709,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Global Field as in Fluid.
      * @return The value for the Global Field as {@code Object}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     public Object getGlobalFieldValue(String fieldNameParam)
     {
@@ -731,7 +734,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Route Field as in Fluid.
      * @return The value for the Route Field as {@code String}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Text
+     * @see Field.Type#Text
      */
     public String getRouteFieldValueAsString(String fieldNameParam)
     {
@@ -764,7 +767,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Route Field as in Fluid.
      * @return The value for the Route Field as {@code Double}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     public Double getRouteFieldValueAsDouble(String fieldNameParam)
     {
@@ -801,7 +804,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Route Field as in Fluid.
      * @return The value for the Route Field as {@code Boolean}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#TrueFalse
+     * @see Field.Type#TrueFalse
      */
     public Boolean getRouteFieldValueAsBoolean(String fieldNameParam)
     {
@@ -838,7 +841,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Global Field as in Fluid.
      * @return The value for the Global Field as {@code String}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Text
+     * @see Field.Type#Text
      */
     public String getGlobalFieldValueAsString(String fieldNameParam)
     {
@@ -871,7 +874,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Global Field as in Fluid.
      * @return The value for the Global Field as {@code Double}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     public Double getGlobalFieldValueAsDouble(String fieldNameParam)
     {
@@ -908,7 +911,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Global Field as in Fluid.
      * @return The value for the Global Field as {@code Integer}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Decimal
+     * @see Field.Type#Decimal
      */
     public Integer getGlobalFieldValueAsInt(String fieldNameParam)
     {
@@ -948,7 +951,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldNameParam The name of the Global Field as in Fluid.
      * @param fieldValueParam The value of the {@code Field}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     public void setGlobalFieldValue(String fieldNameParam, Object fieldValueParam)
     {
@@ -1011,7 +1014,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldValueParam The value of the {@code Field}.
      * @param typeParam The {@code Field.Type} of {@code Field}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     public void setRouteFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
         if (fieldNameParam == null) {
@@ -1070,7 +1073,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      * @param fieldValueParam The value of the {@code Field}.
      * @param typeParam The {@code Field.Type} of {@code Field}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type
+     * @see Field.Type
      */
     public void setGlobalFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
         if (fieldNameParam == null) {
@@ -1398,7 +1401,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @return The Table containing {@code Form}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Table
+     * @see Field.Type#Table
      * @see Form
      */
     public Form getTableFieldParentForm() {
@@ -1412,7 +1415,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @param tableFieldParentFormParam The Table containing {@code Form}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Table
+     * @see Field.Type#Table
      * @see Form
      */
     public void setTableFieldParentForm(Form tableFieldParentFormParam) {
@@ -1428,7 +1431,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @return The Table containing {@code Form}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Table
+     * @see Field.Type#Table
      * @see Form
      */
     public String getTableFieldNameOnParentForm() {
@@ -1444,7 +1447,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @param tableFieldNameParam The Table containing {@code Form}.
      *
-     * @see com.fluidbpm.program.api.vo.Field.Type#Table
+     * @see Field.Type#Table
      * @see Form
      */
     public void setTableFieldNameOnParentForm(String tableFieldNameParam) {

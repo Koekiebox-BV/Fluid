@@ -41,7 +41,7 @@ public interface ISyntax {
         /**
          * Stored Procedures for Form Definitions.
          *
-         * @see com.fluidbpm.program.api.vo.Form
+         * @see com.fluidbpm.program.api.vo.form.Form
          */
         public static final class FormDefinition{
             public static final String GetFormDefinitions =
@@ -51,7 +51,7 @@ public interface ISyntax {
         /**
          * Stored Procedures for Form.
          *
-         * @see com.fluidbpm.program.api.vo.Form
+         * @see com.fluidbpm.program.api.vo.form.Form
          */
         public static final class Form{
             public static final String GetFormContainersTableFieldFormContainers =
@@ -72,7 +72,7 @@ public interface ISyntax {
         /**
          * Stored Procedures for Field.
          *
-         * @see com.fluidbpm.program.api.vo.Field
+         * @see com.fluidbpm.program.api.vo.field.Field
          */
         public static final class Field{
             public static final String GetFormDefinitionForFormContainer =

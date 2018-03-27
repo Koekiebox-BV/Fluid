@@ -32,8 +32,8 @@ import com.carrotsearch.hppc.cursors.ObjectCursor;
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.Field;
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * ElasticSearch Utility class used for {@code Field} mappings.
@@ -42,7 +42,7 @@ import com.fluidbpm.program.api.vo.Form;
  * @since 1.3
  * @see ABaseUtil
  * @see ABaseESUtil
- * @see com.fluidbpm.program.api.vo.Field.ElasticSearchType
+ * @see Field.ElasticSearchType
  *
  */
 public class ESFormFieldMappingUtil extends ABaseESUtil{

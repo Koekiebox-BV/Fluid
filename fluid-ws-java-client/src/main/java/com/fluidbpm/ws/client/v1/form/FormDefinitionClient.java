@@ -19,7 +19,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -56,7 +57,7 @@ public class FormDefinitionClient extends ABaseClientWS {
      * @param formDefinitionParam The Definition to create.
      * @return The Created Form Definition.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see Form
      */
     public Form createFormDefinition(Form formDefinitionParam)
@@ -76,7 +77,7 @@ public class FormDefinitionClient extends ABaseClientWS {
      * @param formDefinitionParam The Definition to update.
      * @return The Updated Form Definition.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      * @see Form
      */
     public Form updateFormDefinition(Form formDefinitionParam)

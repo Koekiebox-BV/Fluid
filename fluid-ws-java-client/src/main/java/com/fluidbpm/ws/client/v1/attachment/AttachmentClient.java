@@ -17,9 +17,9 @@ package com.fluidbpm.ws.client.v1.attachment;
 
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.Form;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.attachment.AttachmentListing;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 

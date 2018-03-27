@@ -20,8 +20,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.Form;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricDataListing;
@@ -64,7 +65,7 @@ public class FormContainerClient extends ABaseClientWS {
      * @param formParam The Form to create.
      * @return Created Form Container / Electronic Form.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      */
     public Form createFormContainer(Form formParam)
     {
@@ -104,7 +105,7 @@ public class FormContainerClient extends ABaseClientWS {
      * @param formParam The Form to update.
      * @return Updated Form Container / Electronic Form.
      *
-     * @see com.fluidbpm.program.api.vo.Field
+     * @see Field
      */
     public Form updateFormContainer(Form formParam)
     {
