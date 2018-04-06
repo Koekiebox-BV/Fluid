@@ -2430,6 +2430,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+
                 public static final String READ_ALL_BY_USER_AND_UNREAD = ("/get_by_user_and_unread");
                 public static final String READ_ALL_BY_USER_AND_READ = ("/get_by_user_and_read");
 
@@ -2438,10 +2439,8 @@ public class WS {
                  */
                 public static final class QueryParam
                 {
-                    //public static final String USERNAME = "username";
-
-                    //public static final String EMAIL = "email";
-                    //public static final String SIZE = "size";
+                    public static final String QUERY_LIMIT = "query_limit";
+                    public static final String OFFSET = "offset";
                 }
 
                 /**
@@ -2491,7 +2490,15 @@ public class WS {
                  */
                 public static final String userNotificationMarkAsRead()
                 {
-                    return Version.VERSION_1.concat(ROOT).concat(MARK_AS_READ);
+                    String additionString = "?";
+
+                    //Asynchronous...
+                    additionString += WS.QueryParam.ASYNC;
+                    additionString += "=";
+                    additionString += true;
+
+                    return Version.VERSION_1.concat(ROOT).concat(
+                            MARK_AS_READ.concat(additionString));
                 }
                 
                 /**
@@ -2507,23 +2514,81 @@ public class WS {
                 /**
                  * URL Path for Un-Read User Notifications by User.
                  *
+                 * @param queryLimitParam The query limit.
+                 * @param offsetParam The query offset.
+                 *
                  * @return {@code v1/user_notification/get_by_user_and_unread}
                  */
-                public static final String getAllUnReadByUser() {
+                public static final String getAllUnReadByUser(
+                        int queryLimitParam,
+                        int offsetParam) {
+
+                    String base = Version.VERSION_1.concat(ROOT).concat(
+                                    READ_ALL_BY_USER_AND_UNREAD);
                     
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            READ_ALL_BY_USER_AND_UNREAD);
+                    String additionString = "?";
+                    
+                    if(queryLimitParam > 0)
+                    {
+                        additionString += QueryParam.QUERY_LIMIT;
+                        additionString += "=";
+                        additionString += queryLimitParam;
+                        additionString += "&";
+                    }
+
+                    if(offsetParam > -1)
+                    {
+                        additionString += QueryParam.OFFSET;
+                        additionString += "=";
+                        additionString += offsetParam;
+                        additionString += "&";
+                    }
+
+                    //Cut of the end bit...
+                    additionString = additionString.substring(
+                            0, additionString.length() - 1);
+
+                    return base.concat(additionString);
                 }
 
                 /**
                  * URL Path for Read User Notifications by User.
                  *
+                 * @param queryLimitParam The query limit.
+                 * @param offsetParam The query offset.
+                 *
                  * @return {@code v1/user_notification/get_by_user_and_read}
                  */
-                public static final String getAllReadByUser() {
+                public static final String getAllReadByUser(
+                        int queryLimitParam,
+                        int offsetParam) {
 
-                    return Version.VERSION_1.concat(ROOT).concat(
+                    String base = Version.VERSION_1.concat(ROOT).concat(
                             READ_ALL_BY_USER_AND_READ);
+
+                    String additionString = "?";
+
+                    if(queryLimitParam > 0)
+                    {
+                        additionString += QueryParam.QUERY_LIMIT;
+                        additionString += "=";
+                        additionString += queryLimitParam;
+                        additionString += "&";
+                    }
+
+                    if(offsetParam > -1)
+                    {
+                        additionString += QueryParam.OFFSET;
+                        additionString += "=";
+                        additionString += offsetParam;
+                        additionString += "&";
+                    }
+
+                    //Cut of the end bit...
+                    additionString = additionString.substring(
+                            0, additionString.length() - 1);
+
+                    return base.concat(additionString);
                 }
             }
         }
