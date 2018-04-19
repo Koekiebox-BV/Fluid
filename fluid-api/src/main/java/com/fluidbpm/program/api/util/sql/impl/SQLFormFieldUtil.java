@@ -492,12 +492,14 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                         TableField tableField = new TableField();
 
                         List<Form> formRecords = new ArrayList();
-                        for(Long formContainerId : formContainerIds)
+
+                        //Populate all the ids for forms...
+                        formContainerIds.forEach(formContId ->
                         {
                             Form toAdd = new Form();
-                            toAdd.setId(formContainerId);
+                            toAdd.setId(formContId);
                             formRecords.add(toAdd);
-                        }
+                        });
 
                         //Retrieve the info for the table record...
                         if(includeTableFieldFormRecordInfoParam)
@@ -511,14 +513,18 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                                 preparedStatementForTblInfo = this.getConnection().prepareStatement(
                                         syntaxForFormContInfo.getPreparedStatement());
 
-                                for(Form formToSetInfoOn :formRecords)
+                                for(Form formRecordToSetInfoOn :formRecords)
                                 {
-                                    preparedStatementForTblInfo.setLong(1, formToSetInfoOn.getId());
+                                    preparedStatementForTblInfo.setLong(
+                                            1, formRecordToSetInfoOn.getId());
 
                                     resultSetForTblInfo = preparedStatementForTblInfo.executeQuery();
                                     if(resultSetForTblInfo.next())
                                     {
-                                        formToSetInfoOn.setTitle(resultSetForTblInfo.getString(
+                                        formRecordToSetInfoOn.setFormTypeId(resultSetForTblInfo.getLong(
+                                                SQLFormUtil.SQLColumnIndex._02_FORM_TYPE));
+
+                                        formRecordToSetInfoOn.setTitle(resultSetForTblInfo.getString(
                                                 SQLFormUtil.SQLColumnIndex._03_TITLE));
 
                                         Date created = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._04_CREATED);
@@ -527,13 +533,13 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                                         //Created...
                                         if(created != null)
                                         {
-                                            formToSetInfoOn.setDateCreated(new Date(created.getTime()));
+                                            formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
                                         }
 
                                         //Last Updated...
                                         if(lastUpdated != null)
                                         {
-                                            formToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
+                                            formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
                                         }
                                     }
                                 }

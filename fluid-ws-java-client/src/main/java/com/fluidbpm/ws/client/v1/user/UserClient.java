@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.user.UserFieldListing;
 import com.fluidbpm.program.api.vo.user.UserListing;
@@ -350,6 +351,33 @@ public class UserClient extends ABaseClientWS {
             return new UserListing(this.postJson(
                     userToGetInfoFor,
                     WS.Path.User.Version1.getAllUsers()));
+        }
+        //
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves all Users by {@code jobViewParam}.
+     *
+     * @return User information at {@code UserListing}
+     *
+     * @see UserListing
+     * @see JobView
+     */
+    public UserListing getAllUsersByJobView(JobView jobViewParam)
+    {
+        if(this.serviceTicket != null && jobViewParam != null)
+        {
+            jobViewParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new UserListing(this.postJson(
+                    jobViewParam,
+                    WS.Path.User.Version1.getAllUsersByJobView()));
         }
         //
         catch (JSONException jsonExcept) {

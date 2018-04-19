@@ -168,11 +168,18 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
                 "VIEW 'JUnit Zool' IF(FORM.Email Subject EQUAL 'This is cool')",
                 "VIEW 'JUnit Zool' IF(FORM.Email From Address EQUAL 'This is cool')",
 
+                //EQUAL with AND ...
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'I am a Title' AND FORM.Email Subject EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'Hello' AND FORM.Email Subject EQUAL 'Bye')",
+
                 //EQUAL against Field...
                 "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Title)",
                 "VIEW 'JUnit Zool' IF(FORM.Email Subject EQUAL FORM.Title)",
                 "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Email Subject)",
                 "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Email From Address)",
+
+                //EQUAL with AND against Field MIXED...
+                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'I am a Title' AND FORM.Email Subject EQUAL FORM.Title)",
 
                 //NOT_EQUAL...
                 "VIEW 'JUnit Zool' IF(FORM.Title NOT_EQUAL 'I am a Title')",

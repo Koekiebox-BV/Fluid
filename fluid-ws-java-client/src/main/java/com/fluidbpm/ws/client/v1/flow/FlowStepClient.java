@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.flow;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.flow.*;
+import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -285,6 +286,40 @@ public class FlowStepClient extends ABaseClientWS {
 
         return new JobViewListing(this.postJson(
                 flowStep, WS.Path.FlowStep.Version1.getAllViewsByLoggedInUser()));
+    }
+
+    /**
+     * Retrieves all Assignment {@link com.fluidbpm.program.api.vo.flow.JobView}s
+     * for {@code User}.
+     *
+     * @return The JobView's that user {@code userParam} has access to.
+     */
+    public JobViewListing getJobViewsByUser(User userParam)
+    {
+        if(this.serviceTicket != null && userParam != null)
+        {
+            userParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new JobViewListing(this.postJson(
+                userParam, WS.Path.FlowStep.Version1.getAllViewsByUser()));
+    }
+
+    /**
+     * Retrieves all Assignment {@link com.fluidbpm.program.api.vo.flow.JobView}s
+     * for {@code Flow}.
+     *
+     * @return The JobView's associated with Flow {@code flowParam}.
+     */
+    public JobViewListing getJobViewsByFlow(Flow flowParam)
+    {
+        if(this.serviceTicket != null && flowParam != null)
+        {
+            flowParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new JobViewListing(this.postJson(
+                flowParam, WS.Path.FlowStep.Version1.getAllViewsByFlow()));
     }
 
     /**

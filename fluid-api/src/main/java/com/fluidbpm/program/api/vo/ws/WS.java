@@ -1337,6 +1337,12 @@ public class WS {
                 public static final String READ_ALL_VIEWS_BY_LOGGED_IN_USER =
                         ("/get_views_by_logged_in_user");
 
+                public static final String READ_ALL_VIEWS_BY_USER =
+                        ("/get_views_by_user");
+
+                public static final String READ_ALL_VIEWS_BY_FLOW =
+                        ("/get_views_by_flow");
+
                 public static final String POLLING = ("/polling");
 
                 public static final String ROOT_POLLING = (ROOT+POLLING);
@@ -1439,6 +1445,26 @@ public class WS {
                 public static final String getAllViewsByLoggedInUser()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_LOGGED_IN_USER);
+                }
+
+                /**
+                 * URL Path for JobViews by user.
+                 *
+                 * @return {@code v1/flow_step/get_views_by_user}
+                 */
+                public static final String getAllViewsByUser()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_USER);
+                }
+
+                /**
+                 * URL Path for JobViews by {@code Flow}.
+                 *
+                 * @return {@code v1/flow_step/get_views_by_flow}
+                 */
+                public static final String getAllViewsByFlow()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_FLOW);
                 }
 
                 /**
@@ -2124,6 +2150,7 @@ public class WS {
                 public static final String READ_BY_EMAIL = ("/get_by_email");
                 public static final String READ_USER_FIELD_VALUES_BY_USER = ("/get_user_field_values_by_user");
                 public static final String READ_ALL = ("/get_all_users");
+                public static final String READ_ALL_BY_JOB_VIEW = ("/get_all_users_by_job_view");
 
                 //Gravatar...
                 public static final String GET_GRAVATAR_BY_EMAIL = ("/get_gravatar_by_email");
@@ -2331,6 +2358,16 @@ public class WS {
                 public static final String getAllUsers()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+                }
+
+                /**
+                 * URL Path for Users get by {@code JobView}.
+                 *
+                 * @return {@code v1/user/get_all_users_by_job_view}
+                 */
+                public static final String getAllUsersByJobView()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_JOB_VIEW);
                 }
 
                 /**
