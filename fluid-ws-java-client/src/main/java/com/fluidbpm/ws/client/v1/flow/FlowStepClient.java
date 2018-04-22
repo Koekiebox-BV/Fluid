@@ -292,6 +292,8 @@ public class FlowStepClient extends ABaseClientWS {
      * Retrieves all Assignment {@link com.fluidbpm.program.api.vo.flow.JobView}s
      * for {@code User}.
      *
+     * @param userParam The {@link User} to get job views for.
+     *
      * @return The JobView's that user {@code userParam} has access to.
      */
     public JobViewListing getJobViewsByUser(User userParam)
@@ -308,6 +310,8 @@ public class FlowStepClient extends ABaseClientWS {
     /**
      * Retrieves all Assignment {@link com.fluidbpm.program.api.vo.flow.JobView}s
      * for {@code Flow}.
+     *
+     * @param flowParam The flow to get {@link JobView}'s for.
      *
      * @return The JobView's associated with Flow {@code flowParam}.
      */

@@ -364,6 +364,8 @@ public class UserClient extends ABaseClientWS {
      *
      * @return User information at {@code UserListing}
      *
+     * @param jobViewParam The {@link JobView} to get users for.
+     *
      * @see UserListing
      * @see JobView
      */
