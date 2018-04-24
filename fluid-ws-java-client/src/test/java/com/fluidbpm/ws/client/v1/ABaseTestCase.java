@@ -20,13 +20,52 @@ import java.util.concurrent.TimeUnit;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 
 /**
+ * Base test case for all Fluid WS Test Cases.
+ *
+ * {@code FLUID_WS_URL}
+ * {@code FLUID_WS_USERNAME}
+ * {@code FLUID_WS_PASSWORD}
+ *
  * Created by jasonbruwer on 15/01/19.
  */
 public class ABaseTestCase {
 
-    public static String BASE_URL = "http://localhost:8080/fluid-ws/";
-    public static String USERNAME = "admin";
-    public static String PASSWORD = "12345";
+    public static String BASE_URL = getTestBASE_URL();
+    public static String USERNAME = getTestUsername();
+    public static String PASSWORD = getTestPassword();
+
+    /**
+     * 
+     * @return
+     */
+    private static String getTestBASE_URL()
+    {
+        return System.getProperty(
+                "FLUID_WS_URL",
+                "http://localhost:8080/fluid-ws/");
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static String getTestUsername()
+    {
+        return System.getProperty(
+                "FLUID_WS_USERNAME",
+                "admin");
+    }
+
+    /**
+     *
+     * @return
+     */
+    private static String getTestPassword()
+    {
+        return System.getProperty(
+                "FLUID_WS_PASSWORD",
+                "12345");
+    }
 
     /**
      *
