@@ -110,7 +110,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_TextPlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -170,7 +170,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_TrueFalse_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -230,7 +230,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_ParagraphTextPlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -290,7 +290,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_ParagraphTextHTML_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -350,7 +350,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_MultiChoicePlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -450,7 +450,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_MultiChoiceSelectMany_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -550,7 +550,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_DateTimeDate_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -610,7 +610,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_DateTimeDateAndTime_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -670,7 +670,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_DecimalPlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

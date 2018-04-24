@@ -85,7 +85,7 @@ public class TestFlowItemClient extends ABaseTestCase {
     @Test
     public void testCreateEmailFormAndSendToWorkflow()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -189,7 +189,7 @@ public class TestFlowItemClient extends ABaseTestCase {
     @Ignore
     public void testViewItemsForWorkflowStep()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

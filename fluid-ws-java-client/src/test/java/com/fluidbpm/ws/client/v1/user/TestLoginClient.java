@@ -56,7 +56,7 @@ public class TestLoginClient extends ABaseTestCase {
      */
     @Test
     public void testLogin() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 

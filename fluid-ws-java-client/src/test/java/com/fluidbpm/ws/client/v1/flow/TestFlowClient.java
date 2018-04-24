@@ -72,7 +72,7 @@ public class TestFlowClient extends ABaseTestCase {
     @Test
     public void testFlowCRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -129,7 +129,7 @@ public class TestFlowClient extends ABaseTestCase {
     @Test
     public void testInvalidCreateData()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

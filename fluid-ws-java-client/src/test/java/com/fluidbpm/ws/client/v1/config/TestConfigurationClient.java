@@ -68,7 +68,7 @@ public class TestConfigurationClient extends ABaseTestCase {
     @Test
     public void testConfigurationFetchByKey()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -96,7 +96,7 @@ public class TestConfigurationClient extends ABaseTestCase {
     @Test
     public void testConfigurationFetchAll()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

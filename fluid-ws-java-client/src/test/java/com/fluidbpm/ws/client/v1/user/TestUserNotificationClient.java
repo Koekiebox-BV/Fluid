@@ -63,7 +63,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test
     public void testCreateUserNotificationCRUD() {
         
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -118,7 +118,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test(expected = FluidClientException.class)
     public void testFetchUserInformationUnreadExcept() {
 
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
 
             throw new FluidClientException(
                     "Server is not up.",
@@ -155,7 +155,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test
     public void testFetchUserInformationUnread() {
 
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -197,7 +197,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test
     public void testFetchUserInformationRead() {
 
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 

@@ -70,7 +70,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testGetTableFormsWithSpecificId()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -146,7 +146,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testGetAncestorFormWithSpecificId()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -203,7 +203,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testGetDescendantFormsWithSpecificId()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -322,7 +322,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testExecuteSQLWhereIdGreaterThan()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

@@ -112,7 +112,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_TextPlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -172,7 +172,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_TrueFalse_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -232,7 +232,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_ParagraphTextPlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -292,7 +292,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_ParagraphTextHTML_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -353,7 +353,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @SuppressWarnings("unchecked")
     public void testRouteField_MultiChoicePlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -454,7 +454,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @SuppressWarnings("unchecked")
     public void testRouteField_MultiChoiceSelectMany_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -495,7 +495,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_DateTimeDate_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -555,7 +555,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_DateTimeDateAndTime_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -615,7 +615,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_DecimalPlain_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

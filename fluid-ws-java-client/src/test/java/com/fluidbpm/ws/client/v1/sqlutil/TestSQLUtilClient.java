@@ -78,7 +78,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     @Ignore
     public void testGetTableFormsWithSpecificId()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -128,7 +128,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     @Ignore
     public void testGetTableForms()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

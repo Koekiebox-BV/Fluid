@@ -89,7 +89,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_DateCreated()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -126,7 +126,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_DateLastUpdated()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -163,7 +163,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_FormType()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -200,7 +200,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_FormFlowState()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -237,7 +237,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_Title()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -274,7 +274,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailFromAddress()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -311,7 +311,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailToAddress()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -348,7 +348,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailSubject()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -385,7 +385,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailSentDate()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -422,7 +422,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailReceivedDate()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -459,7 +459,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailUniqueIdentifierDate()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

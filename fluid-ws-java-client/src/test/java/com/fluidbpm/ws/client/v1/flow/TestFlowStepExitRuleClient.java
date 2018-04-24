@@ -63,7 +63,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_GetNextValidSyntax()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -158,7 +158,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -176,7 +176,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CompileSucceedAndFail()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -194,7 +194,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CompileAndRunSucceed()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

@@ -121,7 +121,7 @@ public class TestUserQueryClient extends ABaseTestCase {
     @Test
     public void testUserQuery_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -181,7 +181,7 @@ public class TestUserQueryClient extends ABaseTestCase {
     @Ignore
     public void executeUserQueryWithSpecificNameVolume()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -294,7 +294,7 @@ public class TestUserQueryClient extends ABaseTestCase {
     @Ignore
     public void executeUserQueryWithSpecificName()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -350,7 +350,7 @@ public class TestUserQueryClient extends ABaseTestCase {
     @Ignore
     public void executeUserQueryWithSpecificNameNoInput()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

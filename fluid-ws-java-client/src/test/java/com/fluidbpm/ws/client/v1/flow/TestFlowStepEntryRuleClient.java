@@ -74,7 +74,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -145,7 +145,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_GetNextValidSyntax()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -269,7 +269,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileSucceed()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -327,7 +327,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileFail()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -397,7 +397,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -468,7 +468,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileAndRunSucceed_AnotherFieldValue()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

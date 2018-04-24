@@ -226,7 +226,7 @@ public class TestRoleClient extends ABaseTestCase {
      */
     @Test
     public void testRole_CRUD() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 

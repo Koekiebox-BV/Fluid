@@ -72,7 +72,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         this.loginClient = new LoginClient(BASE_URL);
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -114,7 +114,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
      */
     @Test
     public void testFetchUserByEmailWhereNotValidated() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -143,7 +143,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
      */
     @Test
     public void testFetchUserByEmail() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
         

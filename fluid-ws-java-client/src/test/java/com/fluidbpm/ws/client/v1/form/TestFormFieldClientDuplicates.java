@@ -73,7 +73,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
     @Test
     public void testFormField_TextPlain_Duplicate()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

@@ -71,7 +71,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_NoFieldName()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -108,7 +108,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_NoFieldDescription()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -145,7 +145,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_TextMasked()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -182,7 +182,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_TextBarcode()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -219,7 +219,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_MultiChoicePlain()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

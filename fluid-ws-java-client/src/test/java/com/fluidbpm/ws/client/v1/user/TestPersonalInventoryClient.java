@@ -60,7 +60,7 @@ public class TestPersonalInventoryClient extends ABaseTestCase {
      */
     @Test
     public void testCreatePersonalInventory() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 

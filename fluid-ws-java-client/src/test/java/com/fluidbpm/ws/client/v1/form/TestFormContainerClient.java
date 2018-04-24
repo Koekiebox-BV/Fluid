@@ -88,7 +88,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCRUDFormContainerBasic()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -152,7 +152,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCRUDFormContainerBasicWebSocket()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -213,7 +213,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCRUDFormContainerAdvanced()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -378,7 +378,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCreateDeleteTableRecord()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -526,7 +526,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCreateDeleteTableRecordWebSocket()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

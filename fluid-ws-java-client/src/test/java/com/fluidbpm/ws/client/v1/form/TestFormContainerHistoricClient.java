@@ -66,7 +66,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveFormFlowHistoricData()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -104,7 +104,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveFormFieldHistoricData()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -143,7 +143,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveMostRecentFormFieldHistoricData()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

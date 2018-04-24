@@ -81,7 +81,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         this.loginClient = new LoginClient(BASE_URL);
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

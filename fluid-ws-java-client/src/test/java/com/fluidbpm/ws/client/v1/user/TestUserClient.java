@@ -86,7 +86,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testCreateUser() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -115,7 +115,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testCreateAndUpdateUser() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -151,7 +151,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testActivateAndDeactivateUser() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -191,7 +191,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testCreateUserWithRole() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -243,7 +243,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testUpdateUserRole() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -298,7 +298,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testGetLoggedUserInfo() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -318,7 +318,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testGetAllUserInfo() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -343,7 +343,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testIncrementInvalidLogin() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -368,7 +368,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testGetAllUserFieldValues() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -395,7 +395,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testGetUserInfoByUsername() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -415,7 +415,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testGetUserInfoById() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -438,7 +438,7 @@ public class TestUserClient extends ABaseTestCase {
      */
     @Test
     public void testGetUserGravatar() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -460,7 +460,7 @@ public class TestUserClient extends ABaseTestCase {
     @Test
     @Ignore
     public void testGetUserGravatarByUser() {
-        if (!this.loginClient.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 

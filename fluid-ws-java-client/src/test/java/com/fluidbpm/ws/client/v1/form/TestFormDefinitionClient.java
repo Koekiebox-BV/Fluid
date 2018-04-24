@@ -93,7 +93,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testFormDefinitionCRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -223,7 +223,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testInvalidCreateData()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -312,7 +312,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testFormDefinitionSystem_Mail()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -362,7 +362,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testDuplicateCreateData()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }

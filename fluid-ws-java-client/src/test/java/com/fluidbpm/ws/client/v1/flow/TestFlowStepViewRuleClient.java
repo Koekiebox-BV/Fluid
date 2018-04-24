@@ -64,7 +64,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepViewRule_CRUD()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
@@ -143,7 +143,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepViewRule_CompileSucceed()
     {
-        if(!this.loginClient.isConnectionValid())
+        if(!this.isConnectionValid())
         {
             return;
         }
