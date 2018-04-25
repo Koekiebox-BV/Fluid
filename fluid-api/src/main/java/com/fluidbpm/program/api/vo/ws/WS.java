@@ -868,9 +868,11 @@ public class WS {
 
                 //Update...
                 public static final String UPDATE = ("/update");
+                public static final String UPDATE_VALUE = ("/update_value");
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_VALUES_BY = ("/get_values_by");
 
                 /**
                  * Root for Route Field.
@@ -930,6 +932,16 @@ public class WS {
                 }
 
                 /**
+                 * URL Path for Route Field Value update.
+                 *
+                 * @return {@code v1/route_field/update_value}
+                 */
+                public static final String routeFieldUpdateValue()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
+                }
+
+                /**
                  * URL Path for Route Field get by id.
                  *
                  * @return {@code v1/route_field/get_by_id}
@@ -937,6 +949,16 @@ public class WS {
                 public static final String getById()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for retrieving Route Field values by.
+                 *
+                 * @return {@code v1/route_field/get_values_by}
+                 */
+                public static final String getValuesBy()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_VALUES_BY);
                 }
             }
         }

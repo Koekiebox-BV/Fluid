@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.program.api.vo.item.RouteFieldListing;
 import com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
@@ -31,6 +33,7 @@ import com.fluidbpm.ws.client.v1.ABaseFieldClient;
  *
  * @author jasonbruwer
  * @since v1.0
+ * @version v1.8
  *
  * @see JSONObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.RouteField
@@ -56,108 +59,108 @@ public class RouteFieldClient extends ABaseFieldClient {
     /**
      * Create a new Plain Text field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldTextPlain(Field formFieldParam)
+    public Field createFieldTextPlain(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.Text);
-            formFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
+            routeFieldParam.setTypeAsEnum(Field.Type.Text);
+            routeFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new True False field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldTrueFalse(Field formFieldParam)
+    public Field createFieldTrueFalse(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
-            formFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
+            routeFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
+            routeFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Paragraph Text field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldParagraphTextPlain(Field formFieldParam)
+    public Field createFieldParagraphTextPlain(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
-            formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
+            routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
+            routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Paragraph HTML field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldParagraphTextHTML(Field formFieldParam)
+    public Field createFieldParagraphTextHTML(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
-            formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
+            routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
+            routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Multi Choice field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @param multiChoiceValuesParam The available multi choice values.
      * @return Created Field.
      */
     public Field createFieldMultiChoicePlain(
-            Field formFieldParam, List<String> multiChoiceValuesParam)
+            Field routeFieldParam, List<String> multiChoiceValuesParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
         if(multiChoiceValuesParam == null)
@@ -165,30 +168,30 @@ public class RouteFieldClient extends ABaseFieldClient {
             multiChoiceValuesParam = new ArrayList();
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
-            formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
-            formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+            routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
+            routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
+            routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Multi Choice select Many field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @param multiChoiceValuesParam The available multi choice values.
      * @return Created Field.
      */
     public Field createFieldMultiChoiceSelectMany(
-            Field formFieldParam, List<String> multiChoiceValuesParam)
+            Field routeFieldParam, List<String> multiChoiceValuesParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
         if(multiChoiceValuesParam == null ||
@@ -199,192 +202,192 @@ public class RouteFieldClient extends ABaseFieldClient {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
-            formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
-            formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+            routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
+            routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
+            routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Date only field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldDateTimeDate(Field formFieldParam)
+    public Field createFieldDateTimeDate(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.DateTime);
-            formFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
+            routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
+            routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Date and time field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldDateTimeDateAndTime(Field formFieldParam)
+    public Field createFieldDateTimeDateAndTime(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.DateTime);
-            formFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
+            routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
+            routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Create a new Decimal field.
      *
-     * @param formFieldParam Field to Create.
+     * @param routeFieldParam Field to Create.
      * @return Created Field.
      */
-    public Field createFieldDecimalPlain(Field formFieldParam)
+    public Field createFieldDecimalPlain(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.Decimal);
-            formFieldParam.setTypeMetaData(FieldMetaData.Decimal.PLAIN);
+            routeFieldParam.setTypeAsEnum(Field.Type.Decimal);
+            routeFieldParam.setTypeMetaData(FieldMetaData.Decimal.PLAIN);
         }
 
         return new Field(this.putJson(
-                formFieldParam, Version1.routeFieldCreate()));
+                routeFieldParam, Version1.routeFieldCreate()));
     }
 
     /**
      * Update an existing Text field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldTextPlain(Field formFieldParam)
+    public Field updateFieldTextPlain(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.Text);
-            formFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
+            routeFieldParam.setTypeAsEnum(Field.Type.Text);
+            routeFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing True False field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldTrueFalse(Field formFieldParam)
+    public Field updateFieldTrueFalse(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
-            formFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
+            routeFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
+            routeFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Paragraph Text field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldParagraphTextPlain(Field formFieldParam)
+    public Field updateFieldParagraphTextPlain(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
-            formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
+            routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
+            routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Paragraph HTML field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldParagraphTextHTML(Field formFieldParam)
+    public Field updateFieldParagraphTextHTML(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
-            formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
+            routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
+            routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Multi Choice field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @param multiChoiceValuesParam New available Multi-choices.
      * @return Updated Field.
      */
     public Field updateFieldMultiChoicePlain(
-            Field formFieldParam,
+            Field routeFieldParam,
             List<String> multiChoiceValuesParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
         if(multiChoiceValuesParam == null ||
@@ -395,31 +398,31 @@ public class RouteFieldClient extends ABaseFieldClient {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
-            formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
-            formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+            routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
+            routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
+            routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Multi Choice select many field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @param multiChoiceValuesParam New available Multi-choices.
      * @return Updated Field.
      */
     public Field updateFieldMultiChoiceSelectMany(
-            Field formFieldParam,
+            Field routeFieldParam,
             List<String> multiChoiceValuesParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
         if(multiChoiceValuesParam == null ||
@@ -430,84 +433,101 @@ public class RouteFieldClient extends ABaseFieldClient {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
-            formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
-            formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+            routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
+            routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
+            routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Date field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldDateTimeDate(Field formFieldParam)
+    public Field updateFieldDateTimeDate(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.DateTime);
-            formFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
+            routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
+            routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Date and Time field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldDateTimeDateAndTime(Field formFieldParam)
+    public Field updateFieldDateTimeDateAndTime(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.DateTime);
-            formFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
+            routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
+            routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
     }
 
     /**
      * Update an existing Decimal field.
      *
-     * @param formFieldParam Field to Update.
+     * @param routeFieldParam Field to Update.
      * @return Updated Field.
      */
-    public Field updateFieldDecimalPlain(Field formFieldParam)
+    public Field updateFieldDecimalPlain(Field routeFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
+        if(routeFieldParam != null && this.serviceTicket != null)
         {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+            routeFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
+        if(routeFieldParam != null)
         {
-            formFieldParam.setTypeAsEnum(Field.Type.Decimal);
-            formFieldParam.setTypeMetaData(FieldMetaData.Decimal.PLAIN);
+            routeFieldParam.setTypeAsEnum(Field.Type.Decimal);
+            routeFieldParam.setTypeMetaData(FieldMetaData.Decimal.PLAIN);
         }
 
         return new Field(this.postJson(
-                formFieldParam, Version1.routeFieldUpdate()));
+                routeFieldParam, Version1.routeFieldUpdate()));
+    }
+
+    /**
+     * Update an existing Route field value.
+     *
+     * @param routeFieldValueParam Field to Update.
+     * @return Updated Field.
+     */
+    public Field updateFieldValue(Field routeFieldValueParam)
+    {
+        if(routeFieldValueParam != null && this.serviceTicket != null)
+        {
+            routeFieldValueParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Field(this.postJson(
+                routeFieldValueParam, Version1.routeFieldUpdateValue()));
     }
 
     /**
@@ -530,6 +550,29 @@ public class RouteFieldClient extends ABaseFieldClient {
 
         return new Field(this.postJson(
                 field, Version1.getById()));
+    }
+
+    /**
+     * Retrieve the Route field values for {@code fluidItemParam}.
+     *
+     * If the id is not set, the {@code Form} id must be set.
+     *
+     * @param fluidItemParam The fluid item to get route fields for.
+     *
+     * @return Route Fields by the FluidItem {@code fluidItemParam}.
+     *
+     * @see RouteFieldListing
+     * @see Field
+     */
+    public List<Field> getRouteFieldValuesBy(FluidItem fluidItemParam)
+    {
+        if(this.serviceTicket != null && fluidItemParam != null)
+        {
+            fluidItemParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new RouteFieldListing(this.postJson(
+                fluidItemParam, Version1.getValuesBy())).getListing();
     }
 
     /**
