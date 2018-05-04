@@ -846,6 +846,56 @@ public class WS {
         }
 
         /**
+         * The Global Field Web Service mappings.
+         *
+         * @see Field
+         */
+        public static final class GlobalField {
+
+            /**
+             * Global Field mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/global_field");
+
+                //Read...
+                public static final String READ_VALUE_BY = ("/get_value_by");
+                public static final String READ_ALL_VALUES = ("/get_all_values");
+
+                /**
+                 * Root for Global Field.
+                 *
+                 * @return {@code /global_field}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Global Field value, get by name or id.
+                 *
+                 * @return {@code v1/global_field/get_value_by}
+                 */
+                public static final String getValueBy()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_VALUE_BY);
+                }
+
+                /**
+                 * URL Path for retrieving all Global Field values.
+                 *
+                 * @return {@code v1/global_field/get_all_values}
+                 */
+                public static final String getAllValues()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VALUES);
+                }
+            }
+        }
+
+        /**
          * The Route Field Web Service mappings.
          *
          * @see Field
@@ -1318,6 +1368,58 @@ public class WS {
                 public static final String getByName()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
+                }
+            }
+        }
+
+        /**
+         * The License Web Service mappings.
+         *
+         * @see com.fluidbpm.program.api.vo.license.LicenseRequest
+         */
+        public static final class License {
+            
+            /**
+             * License mappings.
+             */
+            public static final class Version1
+            {
+                public static final String ROOT = ("/license");
+
+                //Request...
+                public static final String REQUEST = ("/request");
+
+                //Apply...
+                public static final String APPLY = ("/apply");
+
+                /**
+                 * Root for License.
+                 *
+                 * @return {@code /license/}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for License request.
+                 *
+                 * @return {@code v1/license/request}
+                 */
+                public static final String licenseRequest()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(REQUEST);
+                }
+
+                /**
+                 * URL Path for applying a License.
+                 *
+                 * @return {@code v1/license/apply}
+                 */
+                public static final String licenseApply()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(APPLY);
                 }
             }
         }
@@ -2152,6 +2254,7 @@ public class WS {
 
                 //Create...
                 public static final String CREATE = ("/");
+                public static final String CREATE_ADMIN = ("/create_admin");
 
                 //Update...
                 public static final String UPDATE = ("/update");
@@ -2263,6 +2366,16 @@ public class WS {
                 public static final String userCreate()
                 {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for Administrator User create.
+                 *
+                 * @return {@code /v1/user/create_admin}
+                 */
+                public static final String userCreateAdmin()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE_ADMIN);
                 }
 
                 /**

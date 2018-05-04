@@ -35,7 +35,6 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
  * @see Attachment
  * @see MailMessageAttachment
  * @see MailMessageNameValue
- * @see Attachment
  * @see ABaseFluidVO
  */
 public class MailMessage extends ABaseFluidJSONObject {
