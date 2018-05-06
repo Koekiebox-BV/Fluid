@@ -28,8 +28,7 @@ import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 /**
  * Java Web Service Client for Global Field related actions.
  *
- * @author jasonbruwer
- * @since v1.0
+ * @author jasonbruwer on 2018-05-05
  * @version v1.8
  *
  * @see JSONObject

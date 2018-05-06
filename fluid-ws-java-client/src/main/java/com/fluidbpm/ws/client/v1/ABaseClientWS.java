@@ -174,7 +174,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      *
      * See: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
      */
-    private enum HttpMethod
+    protected enum HttpMethod
     {
         GET,
         POST,
@@ -582,7 +582,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
             ContentType contentTypeParam,
             String postfixUrlParam) {
 
-        //
+        //Validate Form Field and values...
         if(formNameValuesParam == null || formNameValuesParam.isEmpty())
         {
             throw new FluidClientException("No 'Name and Value' body to post.",
@@ -633,6 +633,81 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * @see ABaseFluidJSONObject
      */
     protected JSONObject executeString(
+            HttpMethod httpMethodParam,
+            boolean checkConnectionValidParam,
+            String stringParam,
+            ContentType contentTypeParam,
+            String postfixUrlParam) {
+
+        String responseBody = this.executeTxtReceiveTxt(
+                httpMethodParam,
+                checkConnectionValidParam,
+                stringParam,
+                contentTypeParam,
+                postfixUrlParam);
+
+        if(responseBody == null || responseBody.trim().isEmpty())
+        {
+            throw new FluidClientException(
+                    "No response data from '"+
+                            this.endpointUrl.concat(postfixUrlParam)+"'.",
+                    FluidClientException.ErrorCode.IO_ERROR);
+        }
+
+        try
+        {
+            JSONObject jsonOjb = new JSONObject(responseBody);
+            if(jsonOjb.isNull(Error.JSONMapping.ERROR_CODE))
+            {
+                return jsonOjb;
+            }
+
+            int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
+            if(errorCode > 0)
+            {
+                String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
+                        ? "Not set":
+                        jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
+
+                throw new FluidClientException(errorMessage, errorCode);
+            }
+
+            return jsonOjb;
+        }
+        //Invalid JSON Body...
+        catch (JSONException jsonExcept)
+        {
+            if(responseBody != null && !responseBody.trim().isEmpty())
+            {
+                throw new FluidClientException(
+                        jsonExcept.getMessage() + "\n Response Body is: \n\n" +
+                                responseBody,
+                        jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+            }
+
+            throw new FluidClientException(
+                    jsonExcept.getMessage(),
+                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Submit the {@code stringParam} as HTTP request body with JSON as a response.
+     *
+     * @param httpMethodParam The HTTP method to use.
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param stringParam The Text to submit.
+     * @param contentTypeParam The Mime / Content type to submit as.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     *
+     * @return Return body as JSON.
+     *
+     * @see HttpMethod
+     * @see JSONObject
+     * @see ContentType
+     * @see ABaseFluidJSONObject
+     */
+    protected String executeTxtReceiveTxt(
             HttpMethod httpMethodParam,
             boolean checkConnectionValidParam,
             String stringParam,
@@ -735,39 +810,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
                                 this.endpointUrl.concat(postfixUrlParam)+"'.",
                         FluidClientException.ErrorCode.IO_ERROR);
             }
-
-            JSONObject jsonOjb = new JSONObject(responseBody);
-            if(jsonOjb.isNull(Error.JSONMapping.ERROR_CODE))
-            {
-                return jsonOjb;
-            }
-
-            int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
-            if(errorCode > 0)
-            {
-                String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
-                        ? "Not set":
-                        jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
-
-                throw new FluidClientException(errorMessage, errorCode);
-            }
-
-            return jsonOjb;
-        }
-        //Invalid JSON Body...
-        catch (JSONException jsonExcept)
-        {
-            if(responseBody != null && !responseBody.trim().isEmpty())
-            {
-                throw new FluidClientException(
-                        jsonExcept.getMessage() + "\n Response Body is: \n\n" +
-                                responseBody,
-                        jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
-            }
-
-            throw new FluidClientException(
-                    jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+            
+            return responseBody;
         }
         //Fluid Client Exception...
         catch (FluidClientException fluidClientExcept)
