@@ -101,7 +101,10 @@ public class UserNotificationClient extends ABaseClientWS {
     /**
      * Marks the {@code userNotificationParam} notification as read.
      *
+     * Notification marked as read asynchronously.
+     *
      * @param userNotificationParam The User Notification to mark as read.
+     *
      * @return The Updated UserNotification.
      *
      * @see com.fluidbpm.program.api.vo.user.User
@@ -110,6 +113,25 @@ public class UserNotificationClient extends ABaseClientWS {
     public UserNotification markUserNotificationAsRead(
             UserNotification userNotificationParam)
     {
+        return this.markUserNotificationAsRead(userNotificationParam,
+                true);
+    }
+    
+    /**
+     * Marks the {@code userNotificationParam} notification as read.
+     *
+     * @param userNotificationParam The User Notification to mark as read.
+     * @param asyncParam Should the notification mark-as-read asynchronously.
+     *                   
+     * @return The Updated UserNotification.
+     *
+     * @see com.fluidbpm.program.api.vo.user.User
+     * @see UserNotification
+     */
+    public UserNotification markUserNotificationAsRead(
+            UserNotification userNotificationParam,
+            boolean asyncParam)
+    {
         if(userNotificationParam != null && this.serviceTicket != null)
         {
             userNotificationParam.setServiceTicket(this.serviceTicket);
@@ -117,7 +139,7 @@ public class UserNotificationClient extends ABaseClientWS {
 
         return new UserNotification(this.postJson(
                 userNotificationParam,
-                WS.Path.UserNotification.Version1.userNotificationMarkAsRead()));
+                WS.Path.UserNotification.Version1.userNotificationMarkAsRead(asyncParam)));
     }
 
     /**

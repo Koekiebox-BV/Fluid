@@ -2658,16 +2658,20 @@ public class WS {
                 /**
                  * URL Path for marking User Notification as read.
                  *
-                 * @return {@code v1/user_notification/mark_as_read}
+                 * Mark notification as read can be done asynchronously.
+                 *
+                 * @param asyncParam Should the notification mark as read asynchronously.
+                 *
+                 * @return {@code v1/user_notification/mark_as_read?async={asyncParam}}
                  */
-                public static final String userNotificationMarkAsRead()
+                public static final String userNotificationMarkAsRead(boolean asyncParam)
                 {
                     String additionString = "?";
 
                     //Asynchronous...
                     additionString += WS.QueryParam.ASYNC;
                     additionString += "=";
-                    additionString += true;
+                    additionString += asyncParam;
 
                     return Version.VERSION_1.concat(ROOT).concat(
                             MARK_AS_READ.concat(additionString));

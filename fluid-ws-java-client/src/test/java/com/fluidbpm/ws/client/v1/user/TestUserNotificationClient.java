@@ -220,13 +220,8 @@ public class TestUserNotificationClient extends ABaseTestCase {
                 userNotificationClient.createUserNotification(userNotificationToCreate);
 
         //2. Mark as Read...
-        userNotificationClient.markUserNotificationAsRead(created);
-
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException eParam) {
-            eParam.printStackTrace();
-        }
+        userNotificationClient.markUserNotificationAsRead(
+                created,false);
 
         //3. There should be one...
         List<UserNotification> allUserNotiForUser =
