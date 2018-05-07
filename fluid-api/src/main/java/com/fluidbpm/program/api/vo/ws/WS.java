@@ -859,6 +859,9 @@ public class WS {
             {
                 public static final String ROOT = ("/global_field");
 
+                //Update...
+                public static final String UPDATE_VALUE = ("/update_value");
+
                 //Read...
                 public static final String READ_VALUE_BY = ("/get_value_by");
                 public static final String READ_ALL_VALUES = ("/get_all_values");
@@ -871,6 +874,16 @@ public class WS {
                 @Override
                 public String toString() {
                     return ROOT;
+                }
+
+                /**
+                 * URL Path for Global Field Value update.
+                 *
+                 * @return {@code v1/global_field/update_value}
+                 */
+                public static final String globalFieldUpdateValue()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
                 }
 
                 /**

@@ -53,6 +53,23 @@ public class GlobalFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing Global field value.
+     *
+     * @param globalFieldValueParam Field to Update.
+     * @return Updated Field.
+     */
+    public Field updateFieldValue(Field globalFieldValueParam)
+    {
+        if(globalFieldValueParam != null && this.serviceTicket != null)
+        {
+            globalFieldValueParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Field(this.postJson(
+                globalFieldValueParam, Version1.globalFieldUpdateValue()));
+    }
+
+    /**
      * Retrieves field value by {@code fieldNameParam}.
      *
      * @param fieldNameParam The field name.
