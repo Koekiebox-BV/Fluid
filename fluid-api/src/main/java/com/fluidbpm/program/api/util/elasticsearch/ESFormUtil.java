@@ -243,6 +243,12 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             return returnVal;
         }
 
+        //No result...
+        if(returnVal == null)
+        {
+            return returnVal;
+        }
+
         //Populate in order to have table field data...
         for(Form descendantForm : returnVal)
         {
