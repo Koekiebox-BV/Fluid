@@ -1086,7 +1086,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject idJsonObj = new JSONObject();
             idJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.LONG);
             returnVal.put(ABaseFluidJSONObject.JSONMapping.ID, idJsonObj);
         }
@@ -1095,7 +1095,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject formTypeJsonObj = new JSONObject();
             formTypeJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.KEYWORD);
             returnVal.put(JSONMapping.FORM_TYPE, formTypeJsonObj);
         }
@@ -1104,7 +1104,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject formTypeIdJsonObj = new JSONObject();
             formTypeIdJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.LONG);
             returnVal.put(JSONMapping.FORM_TYPE_ID, formTypeIdJsonObj);
         }
@@ -1113,7 +1113,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject titleJsonObj = new JSONObject();
             titleJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.TEXT);
             returnVal.put(JSONMapping.TITLE, titleJsonObj);
         }
@@ -1122,7 +1122,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject formDescJsonObj = new JSONObject();
             formDescJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.KEYWORD);
             returnVal.put(JSONMapping.FORM_DESCRIPTION, formDescJsonObj);
         }
@@ -1131,7 +1131,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject stateJsonObj = new JSONObject();
             stateJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.KEYWORD);
             returnVal.put(JSONMapping.STATE, stateJsonObj);
         }
@@ -1140,7 +1140,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject flowStateJsonObj = new JSONObject();
             flowStateJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.KEYWORD);
             returnVal.put(JSONMapping.FLOW_STATE, flowStateJsonObj);
         }
@@ -1149,7 +1149,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject currentUserJsonObj = new JSONObject();
             currentUserJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.OBJECT);
 
             JSONObject properties = new JSONObject();
@@ -1157,14 +1157,14 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             //Current User Id...
             JSONObject currentUserUserIdJsonObj = new JSONObject();
             currentUserUserIdJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.LONG);
             properties.put(User.JSONMapping.Elastic.USER_ID, currentUserUserIdJsonObj);
 
             //Current User Id...
             JSONObject currentUserUsernameJsonObj = new JSONObject();
             currentUserUsernameJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.KEYWORD);
             properties.put(User.JSONMapping.USERNAME, currentUserUsernameJsonObj);
 
@@ -1179,7 +1179,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject dateCreatedJsonObj = new JSONObject();
             dateCreatedJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.DATE);
             returnVal.put(JSONMapping.DATE_CREATED, dateCreatedJsonObj);
         }
@@ -1188,7 +1188,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject dateLastUpdatedJsonObj = new JSONObject();
             dateLastUpdatedJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.DATE);
             returnVal.put(JSONMapping.DATE_LAST_UPDATED, dateLastUpdatedJsonObj);
         }
@@ -1214,7 +1214,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject ancestorJsonObj = new JSONObject();
             ancestorJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.LONG);
             returnVal.put(JSONMapping.ANCESTOR_ID, ancestorJsonObj);
         }
@@ -1223,7 +1223,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         {
             JSONObject tblFieldParentIdJsonObj = new JSONObject();
             tblFieldParentIdJsonObj.put(
-                    Field.JSONMapping.Elastic.TYPE,
+                    Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.LONG);
             returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, tblFieldParentIdJsonObj);
         }

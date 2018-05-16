@@ -74,7 +74,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
          */
         public static final class Elastic
         {
-            public static final String TYPE = "fieldType";
+            public static final String FIELD_TYPE = "fieldType";
+
+            //Used only for mapping types in ES...
+            public static final String MAPPING_ONLY_TYPE = "type";
         }
     }
 
@@ -646,7 +649,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
         JSONObject returnVal = new JSONObject();
 
-        returnVal.put(JSONMapping.Elastic.TYPE, elasticType);
+        returnVal.put(JSONMapping.Elastic.MAPPING_ONLY_TYPE, elasticType);
 
         return returnVal;
     }

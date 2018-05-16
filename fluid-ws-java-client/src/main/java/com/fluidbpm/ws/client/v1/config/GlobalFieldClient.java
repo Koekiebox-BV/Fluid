@@ -66,7 +66,8 @@ public class GlobalFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.postJson(
-                globalFieldValueParam, Version1.globalFieldUpdateValue()));
+                globalFieldValueParam,
+                Version1.globalFieldUpdateValue()));
     }
 
     /**
