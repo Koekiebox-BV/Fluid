@@ -74,10 +74,10 @@ public class SyntaxFactory {
      * @return implementation of {@code ISyntax}.
      *
      * @see ISyntax
-     * @see com.fluidbpm.program.api.util.sql.ABaseSQLUtil.SQLType
+     * @see com.fluidbpm.program.api.util.sql.ABaseSQLUtil.SQLServerType
      */
     public ISyntax getSyntaxFor(
-            ABaseSQLUtil.SQLType sqlTypeParam,
+            ABaseSQLUtil.SQLServerType sqlTypeParam,
             String aliasParam)
     {
 
@@ -104,7 +104,7 @@ public class SyntaxFactory {
      * @see com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil.FormFieldMapping
      */
     public ISyntax getFieldValueSyntaxFor(
-            ABaseSQLUtil.SQLType sqlTypeParam,
+            ABaseSQLUtil.SQLServerType sqlTypeParam,
             SQLFormFieldUtil.FormFieldMapping formFieldMappingParam)
     {
         Long dataType = formFieldMappingParam.dataType;

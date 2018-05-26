@@ -3181,6 +3181,10 @@ public class WS {
                 public static final String SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER =
                         ("/form_field/get_fields_by_electronic_form_id");
 
+                //Native SQL
+                public static final String SQL_UTIL_NATIVE_QUERY =
+                        ("/native/execute_query");
+
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
@@ -3412,6 +3416,18 @@ public class WS {
                                             QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
 
                     return returnVal;
+                }
+
+                /**
+                 * URL Path for executing native SQL queries.
+                 *
+                 * @see java.sql.ResultSet
+                 *
+                 * @return {@code v1/sql_util/native/execute_query}
+                 */
+                public static final String executeSQLQuery()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_NATIVE_QUERY);
                 }
             }
         }

@@ -43,7 +43,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
     /**
      * The type of SQL Database engine.
      */
-    public static enum SQLType{
+    public static enum SQLServerType{
         Unknown(UtilGlobal.EMPTY),
         MySQL("mysql"),
         MicrosoftSQL("microsoft sql server");
@@ -55,7 +55,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
          *
          * @param productNameLowerParam Product name in lower case.
          */
-        SQLType(String productNameLowerParam)
+        SQLServerType(String productNameLowerParam)
         {
             this.productName = productNameLowerParam;
         }
@@ -66,16 +66,16 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
          * @param productNameParam Product Name.
          * @return {@code enum} for SQL Type.
          */
-        public static SQLType getSQLTypeFromProductName(String productNameParam)
+        public static SQLServerType getSQLTypeFromProductName(String productNameParam)
         {
             if(productNameParam == null || productNameParam.trim().isEmpty())
             {
-                return SQLType.Unknown;
+                return SQLServerType.Unknown;
             }
 
             String paramLower = productNameParam.toLowerCase();
 
-            for(SQLType sqlType : SQLType.values())
+            for(SQLServerType sqlType : SQLServerType.values())
             {
                 if(sqlType.productName.equals(paramLower))
                 {
@@ -83,7 +83,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
                 }
             }
 
-            return SQLType.Unknown;
+            return SQLServerType.Unknown;
         }
     }
 
@@ -142,13 +142,13 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
      *
      * @return The {@code SQLType} from the {@code Connection}.
      */
-    public SQLType getSQLTypeFromConnection()
+    public SQLServerType getSQLTypeFromConnection()
     {
         try {
             String productName =
                     this.getConnection().getMetaData().getDatabaseProductName();
 
-            return SQLType.getSQLTypeFromProductName(productName);
+            return SQLServerType.getSQLTypeFromProductName(productName);
         }
         //
         catch (SQLException sqlExcept) {
