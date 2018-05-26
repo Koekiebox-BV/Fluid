@@ -62,14 +62,26 @@ public class SQLColumn extends ABaseFluidJSONObject {
     }
 
     /**
-     * Sets the Id associated with a 'User Query'.
+     * Sets all the values for the column.
      *
-     * @param userQueryIdParam UserQuery Id.
+     * @param columnNameParam The column name.
+     * @param columnIndexParam The column index.
+     * @param sqlTypeParam The SQL Type. See {@code java.sql.Types}
+     * @param sqlValueParam The value of the param at index {@code columnIndexParam}.
+     *
+     * @see java.sql.Types
      */
-    public SQLColumn(Long userQueryIdParam) {
+    public SQLColumn(
+            String columnNameParam,
+            Integer columnIndexParam,
+            Integer sqlTypeParam,
+            Object sqlValueParam) {
         super();
 
-        this.setId(userQueryIdParam);
+        this.columnName = columnNameParam;
+        this.columnIndex = columnIndexParam;
+        this.sqlType = sqlTypeParam;
+        this.sqlValue = sqlValueParam;
     }
 
     /**
@@ -205,7 +217,7 @@ public class SQLColumn extends ABaseFluidJSONObject {
      *
      * @return The SQL Type.
      *
-     * @see java.sql.SQLType
+     * @see java.sql.Types
      */
     public Integer getSqlType() {
         return this.sqlType;
@@ -216,7 +228,7 @@ public class SQLColumn extends ABaseFluidJSONObject {
      *
      * @param sqlTypeParam The SQL Type.
      *
-     * @see java.sql.SQLType
+     * @see java.sql.Types
      */
     public void setSqlType(Integer sqlTypeParam) {
         this.sqlType = sqlTypeParam;

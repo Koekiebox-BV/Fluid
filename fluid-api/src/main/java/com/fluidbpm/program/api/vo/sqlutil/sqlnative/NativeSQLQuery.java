@@ -19,6 +19,8 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -269,5 +271,17 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
      */
     public void setSqlInputs(List<SQLColumn> sqlInputsParam) {
         this.sqlInputs = sqlInputsParam;
+    }
+
+    /**
+     * Checks whether the stored procedure value is populated.
+     *
+     * @return {@code true} if stored procedure is populated, otherwise {@code false}.
+     */
+    @XmlTransient
+    public boolean isTypeStoredProcedure(){
+
+        return (this.getStoredProcedure() == null ||
+                this.getStoredProcedure().trim().isEmpty()) ? false:true;
     }
 }

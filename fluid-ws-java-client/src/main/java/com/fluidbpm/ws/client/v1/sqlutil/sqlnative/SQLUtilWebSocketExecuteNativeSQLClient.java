@@ -36,6 +36,9 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * Java Web Socket Client for {@code SQLUtil} related actions.
  * Implementation is making use of {@link CompletableFuture}.
  *
+ * {@code this} client allows one to execute native SQL using
+ * one of the configured SQL DataSources.
+ *
  * @author jasonbruwer on 2018-05-26
  * @since v1.8
  *
@@ -61,7 +64,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
         super(endpointBaseUrlParam,
                 new SQLResultSetMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
+                WS.Path.SQLUtil.Version1.getExecuteNativeSQLWebSocket(
                         serviceTicketAsHexParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);

@@ -3195,6 +3195,8 @@ public class WS {
                     public static final String INCLUDE_TABLE_FIELD_FORM_RECORD_INFO =
                             "include_table_field_form_record_info";
                     public static final String MASS_FETCH = "mass_fetch";
+
+                    public static final String CONNECTION_ALIAS = "connection_alias";
                 }
 
                 /**
@@ -3421,13 +3423,18 @@ public class WS {
                 /**
                  * URL Path for executing native SQL queries.
                  *
-                 * @see java.sql.ResultSet
-                 *
+                 * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 *                           
                  * @return {@code v1/sql_util/native/execute_query}
                  */
-                public static final String executeSQLQuery()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_NATIVE_QUERY);
+                public static final String getExecuteNativeSQLWebSocket(
+                        String serviceTicketParam) {
+
+                    String returnVal =
+                            ROOT_WEB_SOCKET.concat(SQL_UTIL_NATIVE_QUERY).concat(
+                                    "/"+ serviceTicketParam);
+
+                    return returnVal;
                 }
             }
         }
