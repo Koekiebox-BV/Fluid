@@ -462,12 +462,12 @@ public class UserClient extends ABaseClientWS {
             
             return UtilGlobal.decodeBase64(base64Text);
         }
-        //
+        //JSON Parsing...
         catch (JSONException jsonExcept) {
             throw new FluidClientException(jsonExcept.getMessage(),
                     jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
         }
-        //
+        //Encoding not supported...
         catch (UnsupportedEncodingException unsEncExcept) {
             throw new FluidClientException(unsEncExcept.getMessage(),
                     unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);

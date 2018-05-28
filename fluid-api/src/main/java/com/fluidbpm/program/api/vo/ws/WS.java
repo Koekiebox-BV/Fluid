@@ -172,6 +172,10 @@ public class WS {
                 public static final String LOCK_FORM_CONTAINER = "/lock_form_container";
                 public static final String UN_LOCK_FORM_CONTAINER = "/un_lock_form_container";
 
+                //Execute Web Action...
+                public static final String EXECUTE_CUSTOM_WEB_ACTION =
+                        ("/execute_custom_web_action");
+
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
@@ -186,6 +190,11 @@ public class WS {
                     public static final String INCLUDE_DESCENDANTS = "include_descendants";
                     public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
                     public static final String LOCK_FOR_USER_ID = "lock_for_user_id";
+
+                    //Web Action...
+                    public static final String CUSTOM_WEB_ACTION = "custom_web_action";
+                    public static final String IS_TABLE_RECORD = "is_table_record";
+                    public static final String FORM_TABLE_RECORD_BELONGS_TO = "form_table_record_belongs_to";
                 }
 
                 /**
@@ -223,9 +232,48 @@ public class WS {
                  *
                  * @return {@code v1/form_container/update}
                  */
-                public static final String formContainerUpdate()
-                {
+                public static final String formContainerUpdate() {
+
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for executing Form Container custom web action.
+                 *
+                 * @param customWebActionParam The custom web action name. Action identifier.
+                 * @param isTableRecordParam Is the form a table record form.
+                 * @param formContainerTableRecordBelongsToParam The parent form container if table record.
+                 *
+                 * @return {@code v1/form_container/execute_custom_web_action}
+                 */
+                public static final String executeCustomWebAction(
+                        String customWebActionParam,
+                        boolean isTableRecordParam,
+                        Long formContainerTableRecordBelongsToParam)
+                throws UnsupportedEncodingException{
+
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(
+                            EXECUTE_CUSTOM_WEB_ACTION);
+
+                    returnVal += "?";
+                    returnVal += QueryParam.CUSTOM_WEB_ACTION;
+                    returnVal += "=";
+                    returnVal += URLEncoder.encode(customWebActionParam, "UTF-8");
+                    returnVal += "&";
+                    returnVal += QueryParam.IS_TABLE_RECORD;
+                    returnVal += "=";
+                    returnVal += isTableRecordParam;
+
+                    if(formContainerTableRecordBelongsToParam != null &&
+                            formContainerTableRecordBelongsToParam.longValue() > 0){
+
+                        returnVal += "&";
+                        returnVal += QueryParam.FORM_TABLE_RECORD_BELONGS_TO;
+                        returnVal += "=";
+                        returnVal += formContainerTableRecordBelongsToParam;
+                    }
+                    
+                    return returnVal;
                 }
 
                 /**

@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -100,15 +101,18 @@ public class FormContainerClient extends ABaseClientWS {
     }
 
     /**
-     * Update a new Form Container / Electronic Forms.
+     * Update a Form Container / Electronic Form.
+     * The table record forms may also be updated with 
      *
      * @param formParam The Form to update.
      * @return Updated Form Container / Electronic Form.
      *
      * @see Field
+     * @see TableRecord
+     * @see Form
      */
-    public Form updateFormContainer(Form formParam)
-    {
+    public Form updateFormContainer(Form formParam) {
+        
         if(formParam != null && this.serviceTicket != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
@@ -119,14 +123,86 @@ public class FormContainerClient extends ABaseClientWS {
     }
 
     /**
+     * Execute the Custom Program with action alias {@code customWebActionParam}.
+     * This method may be used for Form and Table Records.
+     *
+     * @param customWebActionParam The custom web action name. Action identifier.
+     * @param formParam The Form to send for 3rd Party execution.
+     *
+     * @return Result after the 3rd Party Custom Web Action completed.
+     *
+     * @see Field
+     * @see Form
+     * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
+     */
+    public Form executeCustomWebAction(
+            String customWebActionParam,
+            Form formParam) {
+
+        return this.executeCustomWebAction(
+                customWebActionParam,
+                false,
+                null,
+                formParam);
+    }
+
+    /**
+     * Execute the Custom Program with action alias {@code customWebActionParam}.
+     * This method may be used for Form and Table Records.
+     *
+     * @param customWebActionParam The custom web action name. Action identifier.
+     * @param isTableRecordParam Is the form a table record form.
+     * @param formContainerTableRecordBelowsToParam The parent form container if table record.
+     * @param formParam The Form to send for 3rd Party execution.
+     *
+     * @return Result after the 3rd Party Custom Web Action completed.
+     *
+     * @see Field
+     * @see Form
+     * @see TableRecord
+     * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
+     */
+    public Form executeCustomWebAction(
+            String customWebActionParam,
+            boolean isTableRecordParam,
+            Long formContainerTableRecordBelowsToParam,
+            Form formParam) {
+        
+        if(formParam != null && this.serviceTicket != null)
+        {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        if(customWebActionParam == null || customWebActionParam.trim().isEmpty()){
+
+            throw new FluidClientException(
+                    "Custom Web Action is mandatory.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE);
+        }
+
+        try {
+            return new Form(this.postJson(
+                    formParam, WS.Path.FormContainer.Version1.executeCustomWebAction(
+                            customWebActionParam,
+                            isTableRecordParam,
+                            formContainerTableRecordBelowsToParam)));
+        }
+        //Encoding not supported...
+        catch (UnsupportedEncodingException unsEncExcept) {
+            throw new FluidClientException(unsEncExcept.getMessage(),
+                    unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
+        }
+    }
+
+    /**
      * Deletes the Form Container provided.
      * Id must be set on the Form Container.
      *
      * @param formContainerParam The Form Container to Delete.
      * @return The deleted Form Container.
      */
-    public Form deleteFormContainer(Form formContainerParam)
-    {
+    public Form deleteFormContainer(Form formContainerParam) {
+
         if(formContainerParam != null && this.serviceTicket != null)
         {
             formContainerParam.setServiceTicket(this.serviceTicket);
