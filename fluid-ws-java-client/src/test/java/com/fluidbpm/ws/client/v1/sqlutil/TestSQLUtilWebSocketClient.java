@@ -113,6 +113,10 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
                 List<Form> tableForms = listing.getListing();
 
+                if(tableForms == null){
+                    continue;
+                }
+
                 for(Form form : tableForms)
                 {
                     System.out.println("\n-> "+form.getFormType() + " - " + form.getTitle());
