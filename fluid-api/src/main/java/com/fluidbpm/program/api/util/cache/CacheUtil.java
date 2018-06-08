@@ -52,7 +52,7 @@ public class CacheUtil extends ABaseUtil {
     private int cachePort = -1;
 
     /**
-     *
+     * Aliases for properties used by the {@code CacheUtil}.
      */
     private static class PropName
     {

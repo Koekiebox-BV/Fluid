@@ -52,8 +52,36 @@ public class SQLUtilWebSocketRESTWrapper {
     //Mode...
     private Mode mode = null;
 
+    private static boolean DISABLE_WS;
+
     /**
-     * The mode
+     * Aliases for properties used by the {@code SQLUtilWebSocketRESTWrapper}.
+     */
+    private static class PropName
+    {
+        /**
+         * Keep Web Sockets disabled.
+         */
+        public static final String FLUID_API_DISABLE_WEB_SOCKETS = "FluidAPIDisableWebSocket";
+    }
+
+    //Assign the property whether ti dis
+    static {
+
+        try{
+            DISABLE_WS = Boolean.parseBoolean(
+                    System.getProperty(
+                            PropName.FLUID_API_DISABLE_WEB_SOCKETS,
+                            String.valueOf(false)).trim());
+            
+        } catch (NumberFormatException nfe){
+
+            DISABLE_WS = false;
+        }
+    }
+
+    /**
+     * The mode.
      */
     private enum Mode
     {
@@ -121,6 +149,10 @@ public class SQLUtilWebSocketRESTWrapper {
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam)
     {
+        if(DISABLE_WS){
+            this.mode = Mode.RESTfulActive;
+        }
+
         //ANCESTOR...
         try {
 
@@ -176,6 +208,10 @@ public class SQLUtilWebSocketRESTWrapper {
             boolean massFetchParam,
             Form ... formsToGetDescForParam)
     {
+        if(DISABLE_WS){
+            this.mode = Mode.RESTfulActive;
+        }
+        
         //DESCENDANTS...
         try {
             //When mode is null or [WebSocketActive]...
@@ -250,6 +286,10 @@ public class SQLUtilWebSocketRESTWrapper {
             boolean includeFieldDataParam,
             Form ... formsToGetTableFormsForParam)
     {
+        if(DISABLE_WS){
+            this.mode = Mode.RESTfulActive;
+        }
+        
         //DESCENDANTS...
         try {
             //When mode is null or [WebSocketActive]...
@@ -320,6 +360,10 @@ public class SQLUtilWebSocketRESTWrapper {
             boolean includeFieldDataParam,
             Form ... formsToGetFieldsForParam)
     {
+        if(DISABLE_WS){
+            this.mode = Mode.RESTfulActive;
+        }
+        
         //FORM FIELDS...
         try {
             //When mode is null or [WebSocketActive]...
