@@ -274,6 +274,28 @@ public abstract class ABaseClientWS implements AutoCloseable{
     /**
      * Performs an HTTP-GET request with {@code postfixUrlParam}.
      *
+     * Does not perform a connection test.
+     *
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @param headerNameValuesParam The HTTP Headers to include.
+     *
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
+     */
+    public JSONObject getJson(
+            String postfixUrlParam,
+            List<HeaderNameValue> headerNameValuesParam) {
+
+        return this.getJson(
+                false,
+                postfixUrlParam,
+                headerNameValuesParam);
+    }
+
+    /**
+     * Performs an HTTP-GET request with {@code postfixUrlParam}.
+     *
      * @param checkConnectionValidParam Check if connection to
      *                                      base endpoint is valid.
      * @param postfixUrlParam URL mapping after the Base endpoint.
