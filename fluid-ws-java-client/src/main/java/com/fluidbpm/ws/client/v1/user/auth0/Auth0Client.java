@@ -100,7 +100,8 @@ public class Auth0Client extends ABaseClientWS {
         tokenRequest.setRedirectUri(redirectUrlParam);
 
         return new AccessToken(this.postJson(
-                true, tokenRequest, WS.Path.Auth0.Version1.userToken()));
+                false,
+                tokenRequest, WS.Path.Auth0.Version1.userToken()));
     }
 
     /**

@@ -225,7 +225,10 @@ public class LoginClient extends ABaseClientWS {
         AuthResponse authResponse;
         try {
             authResponse = new AuthResponse(
-                    this.postJson(authRequest, WS.Path.User.Version1.userInitSession()));
+                    this.postJson(
+                            true,
+                            authRequest,
+                            WS.Path.User.Version1.userInitSession()));
         }
         //JSON format problem...
         catch (JSONException jsonException) {
@@ -256,9 +259,8 @@ public class LoginClient extends ABaseClientWS {
      */
     private AuthEncryptedData initializeSession(
             String passwordParam,
-            AuthResponse authResponseParam)
-    {
-
+            AuthResponse authResponseParam) {
+        
         //IV...
         byte[] ivBytes = UtilGlobal.decodeBase64(
                 authResponseParam.getIvBase64());
@@ -294,14 +296,14 @@ public class LoginClient extends ABaseClientWS {
                         ivBytes,
                         seedBytes);
 
-        try
-        {
+        try {
+            
             JSONObject jsonObj = new JSONObject(new String(decryptedEncryptedData));
 
             return new AuthEncryptedData(jsonObj);
         }
-        catch (JSONException jsonExcept)
-        {
+        catch (JSONException jsonExcept) {
+
             throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);
         }

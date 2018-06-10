@@ -256,6 +256,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
     /**
      * Performs an HTTP-GET request with {@code postfixUrlParam}.
+     * A check is not performed if the connection is valid.
      *
      * @param postfixUrlParam URL mapping after the Base endpoint.
      * @return Return body as JSON.
@@ -265,13 +266,15 @@ public abstract class ABaseClientWS implements AutoCloseable{
     public JSONObject getJson(
             String postfixUrlParam) {
 
-        return this.getJson(false, postfixUrlParam);
+        return this.getJson(
+                false,
+                postfixUrlParam);
     }
 
     /**
      * Performs an HTTP-GET request with {@code postfixUrlParam}.
      *
-     * @param skipCheckConnectionValidParam Skip to check if connection to
+     * @param checkConnectionValidParam Check if connection to
      *                                      base endpoint is valid.
      * @param postfixUrlParam URL mapping after the Base endpoint.
      *
@@ -280,18 +283,18 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * @see JSONObject
      */
     public JSONObject getJson(
-            boolean skipCheckConnectionValidParam,
+            boolean checkConnectionValidParam,
             String postfixUrlParam) {
 
         return this.getJson(
-                skipCheckConnectionValidParam,
+                checkConnectionValidParam,
                 postfixUrlParam, null);
     }
 
     /**
      * Performs an HTTP-GET request with {@code postfixUrlParam}.
      *
-     * @param skipCheckConnectionValidParam Skip to check if connection to
+     * @param checkConnectionValidParam Check if connection to
      *                                      base endpoint is valid.
      * @param postfixUrlParam URL mapping after the Base endpoint.
      * @param headerNameValuesParam The HTTP Headers to include.
@@ -301,12 +304,12 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * @see JSONObject
      */
     public JSONObject getJson(
-            boolean skipCheckConnectionValidParam,
+            boolean checkConnectionValidParam,
             String postfixUrlParam,
             List<HeaderNameValue> headerNameValuesParam) {
 
         //Connection is not valid...throw error...
-        if(!skipCheckConnectionValidParam && !this.isConnectionValid())
+        if(checkConnectionValidParam && !this.isConnectionValid())
         {
             throw new FluidClientException(
                     "Unable to reach service at '"+
@@ -555,8 +558,12 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         String bodyJsonString = baseDomainParam.toJsonObject().toString();
 
-        return this.executeString(httpMethodParam,checkConnectionValidParam,
-                bodyJsonString, contentTypeParam, postfixUrlParam);
+        return this.executeString(
+                httpMethodParam,
+                checkConnectionValidParam,
+                bodyJsonString,
+                contentTypeParam,
+                postfixUrlParam);
     }
 
     /**
@@ -721,7 +728,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
         }
 
         //Check connection...
-        if(!checkConnectionValidParam && !this.isConnectionValid())
+        if(checkConnectionValidParam && !this.isConnectionValid())
         {
             throw new FluidClientException(
                     "Unable to reach service at '"+
@@ -960,9 +967,11 @@ public abstract class ABaseClientWS implements AutoCloseable{
     {
         //Init the session to get the salt...
         try{
-            this.getJson(true, WS.Path.Test.Version1.testConnection());
+            this.getJson(
+                    false,
+                    WS.Path.Test.Version1.testConnection());
         }
-        //
+        //Connect problem...
         catch (FluidClientException flowJobExcept)
         {
             if(flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR)
