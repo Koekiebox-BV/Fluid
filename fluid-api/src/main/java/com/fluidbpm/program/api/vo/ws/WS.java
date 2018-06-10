@@ -245,6 +245,8 @@ public class WS {
                  * @param formContainerTableRecordBelongsToParam The parent form container if table record.
                  *
                  * @return {@code v1/form_container/execute_custom_web_action}
+                 *
+                 * @throws UnsupportedEncodingException If Encoding {@code UTF-8} is not supported.
                  */
                 public static final String executeCustomWebAction(
                         String customWebActionParam,
