@@ -3313,19 +3313,23 @@ public class WS {
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
+                 * @param inclTableFieldFormInfoParam Include table record field info.
                  *
                  * @return {@code v1/sql_util/form/get_descendants_by_electronic_form_id}
                  */
                 public static final String getDescendants(
                         boolean includeFieldDataParam,
-                        boolean includeTableFieldsParam)
+                        boolean includeTableFieldsParam,
+                        boolean inclTableFieldFormInfoParam)
                 {
                     return Version.VERSION_1.concat(ROOT).concat(
                             SQL_UTIL_FORM_GET_DESCENDANTS).concat(
                             "?" +
                             QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
                             "&" +
-                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
+                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
+                            "&" +
+                            QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO+"=" + inclTableFieldFormInfoParam
                     );
                 }
 

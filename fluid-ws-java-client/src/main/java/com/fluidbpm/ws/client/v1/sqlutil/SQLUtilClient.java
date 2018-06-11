@@ -91,13 +91,15 @@ public class SQLUtilClient extends ABaseClientWS {
      * @param formToGetDescendantsForParam The Fluid Form to get Descendants for.
      * @param includeFieldDataParam Should Descendant (Form) Field data be included?
      * @param includeTableFieldsParam Should Table Record (Form) Field data be included?
+     * @param inclTableFieldFormInfoParam Include table record field info.
      *
      * @return The {@code formToGetTableFormsForParam} Descendants as {@code Form}'s.
      */
     public List<Form> getDescendants(
             Form formToGetDescendantsForParam,
             boolean includeFieldDataParam,
-            boolean includeTableFieldsParam) {
+            boolean includeTableFieldsParam,
+            boolean inclTableFieldFormInfoParam) {
 
         if (formToGetDescendantsForParam != null && this.serviceTicket != null) {
             formToGetDescendantsForParam.setServiceTicket(this.serviceTicket);
@@ -108,7 +110,8 @@ public class SQLUtilClient extends ABaseClientWS {
                     this.postJson(formToGetDescendantsForParam,
                             WS.Path.SQLUtil.Version1.getDescendants(
                                     includeFieldDataParam,
-                                    includeTableFieldsParam)));
+                                    includeTableFieldsParam,
+                                    inclTableFieldFormInfoParam)));
 
             return formListing.getListing();
         }

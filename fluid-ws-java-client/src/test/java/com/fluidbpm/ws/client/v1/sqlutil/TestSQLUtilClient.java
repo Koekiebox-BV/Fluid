@@ -172,4 +172,33 @@ public class TestSQLUtilClient extends ABaseTestCase {
         //Cleanup...
         flowClient.forceDeleteFlow(createdFlow);
     }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testGetDescendants()
+    {
+        if(!this.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
+        
+        List<Form> descendants = sqlUtilClient.getDescendants(
+                new Form(2575L),
+                true,
+                true,
+                true);
+
+        TestCase.assertNotNull(descendants);
+    }
+
 }

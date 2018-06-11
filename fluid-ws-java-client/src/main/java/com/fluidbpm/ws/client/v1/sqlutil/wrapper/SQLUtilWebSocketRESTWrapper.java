@@ -262,7 +262,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         this.sqlUtilClient.getDescendants(
                                 formToFetchFor,
                                 includeFieldDataParam,
-                                includeTableFieldsParam);
+                                includeTableFieldsParam,
+                                includeTableFieldFormRecordInfoParam);
 
                 FormListing toAdd = new FormListing();
                 toAdd.setListing(listOfForms);
