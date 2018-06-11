@@ -547,7 +547,7 @@ public class TestFormContainerClient extends ABaseTestCase {
                 = new WebSocketTableRecordCreateClient(BASE_URL,
                 null, serviceTicketHex, TimeUnit.MINUTES.toMillis(2));
 
-        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL,serviceTicket);
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
         FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
         FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL,serviceTicket);
 
@@ -620,6 +620,8 @@ public class TestFormContainerClient extends ABaseTestCase {
         toCreate.setTitle("INV_12345");
 
         List<Field> fields = new ArrayList();
+
+        //Text Plain Field...
         fields.add(new Field("JUNIT Invoice Number", "INV_12345"));
         toCreate.setFormFields(fields);
 

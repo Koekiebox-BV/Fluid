@@ -232,7 +232,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                         true,
                         true,
                         true,
-                        true);
+                        false);
 
         long start = System.currentTimeMillis();
 
@@ -240,7 +240,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
                 generateLotsOfFormsFor(numberOfRecords,
-                        127621));
+                        2575));
 
         long took = (System.currentTimeMillis() - start);
 

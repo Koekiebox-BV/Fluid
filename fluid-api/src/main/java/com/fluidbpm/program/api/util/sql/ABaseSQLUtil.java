@@ -15,10 +15,7 @@
 
 package com.fluidbpm.program.api.util.sql;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
@@ -39,6 +36,7 @@ import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 public abstract class ABaseSQLUtil extends ABaseUtil {
 
     private Connection connection;
+    private DatabaseMetaData databaseMetaData;
 
     /**
      * The type of SQL Database engine.
@@ -145,12 +143,15 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
     public SQLServerType getSQLTypeFromConnection()
     {
         try {
-            String productName =
-                    this.getConnection().getMetaData().getDatabaseProductName();
+            
+            if(this.databaseMetaData == null){
+                this.databaseMetaData = this.getConnection().getMetaData();
+            }
 
-            return SQLServerType.getSQLTypeFromProductName(productName);
+            return SQLServerType.getSQLTypeFromProductName(
+                    this.databaseMetaData.getDatabaseProductName());
         }
-        //
+        //Unable to retrieve the product name.
         catch (SQLException sqlExcept) {
             throw new FluidSQLException(sqlExcept);
         }

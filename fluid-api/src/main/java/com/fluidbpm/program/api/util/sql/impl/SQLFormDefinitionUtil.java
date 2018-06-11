@@ -60,7 +60,7 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
         //Local Mapping...
         if(this.localMapping == null)
         {
-            this.localMapping = new HashMap<Long,String>();
+            this.localMapping = new HashMap();
         }
         //When already cached, use the cached value...
         else if(this.localMapping != null && !this.localMapping.isEmpty())

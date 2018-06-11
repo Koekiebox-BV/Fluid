@@ -45,6 +45,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 public class SQLFormFieldUtil extends ABaseSQLUtil{
 
     private Map<Long, List<FormFieldMapping>> localDefinitionToFieldsMapping;
+    private SQLFormDefinitionUtil sqlFormDefinitionUtil;
 
     /**
      * Fluid mapping for a Form Field.
@@ -107,6 +108,23 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
         super(connectionParam, cacheUtilParam);
 
         this.localDefinitionToFieldsMapping = new HashMap();
+    }
+
+    /**
+     * New FormField util instance using {@code connectionParam}.
+     *
+     * @param connectionParam SQL Connection to use for Fields.
+     * @param cacheUtilParam The Cache Util for better performance.
+     * @param sqlFormDefinitionUtilParam The SQL Form Def utility for form definitions.
+     *                                   Useful for Table Fields.
+     */
+    public SQLFormFieldUtil(
+            Connection connectionParam,
+            CacheUtil cacheUtilParam,
+            SQLFormDefinitionUtil sqlFormDefinitionUtilParam) {
+        this(connectionParam, cacheUtilParam);
+        
+        this.sqlFormDefinitionUtil = sqlFormDefinitionUtilParam;
     }
 
     /**
@@ -487,72 +505,75 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
                         formContainerIds.add(resultSet.getLong(1));
                     }
 
-                    if(!formContainerIds.isEmpty())
-                    {
-                        TableField tableField = new TableField();
+                    //Break if empty...
+                    if(formContainerIds.isEmpty()) {
+                        break;
+                    }
 
-                        List<Form> formRecords = new ArrayList();
+                    TableField tableField = new TableField();
 
-                        //Populate all the ids for forms...
-                        formContainerIds.forEach(formContId ->
-                        {
-                            Form toAdd = new Form();
-                            toAdd.setId(formContId);
-                            formRecords.add(toAdd);
-                        });
+                    final List<Form> formRecords = new ArrayList();
 
-                        //Retrieve the info for the table record...
-                        if(includeTableFieldFormRecordInfoParam)
-                        {
-                            ISyntax syntaxForFormContInfo = SyntaxFactory.getInstance().getSyntaxFor(
-                                    this.getSQLTypeFromConnection(),
-                                    ISyntax.ProcedureMapping.Form.GetFormContainerInfo);
+                    //Populate all the ids for forms...
+                    formContainerIds.forEach(formContId -> {
+                        
+                        formRecords.add(new Form(formContId));
+                    });
 
-                            if(syntaxForFormContInfo != null)
-                            {
-                                preparedStatementForTblInfo = this.getConnection().prepareStatement(
-                                        syntaxForFormContInfo.getPreparedStatement());
+                    //Retrieve the info for the table record...
+                    if(includeTableFieldFormRecordInfoParam) {
+                        
+                        ISyntax syntaxForFormContInfo = SyntaxFactory.getInstance().getSyntaxFor(
+                                this.getSQLTypeFromConnection(),
+                                ISyntax.ProcedureMapping.Form.GetFormContainerInfo);
 
-                                for(Form formRecordToSetInfoOn :formRecords)
+                        preparedStatementForTblInfo = this.getConnection().prepareStatement(
+                                syntaxForFormContInfo.getPreparedStatement());
+
+                        for(Form formRecordToSetInfoOn : formRecords) {
+
+                            preparedStatementForTblInfo.setLong(
+                                    1, formRecordToSetInfoOn.getId());
+
+                            resultSetForTblInfo = preparedStatementForTblInfo.executeQuery();
+                            if(resultSetForTblInfo.next()) {
+
+                                Long formTypeId = resultSetForTblInfo.getLong(
+                                        SQLFormUtil.SQLColumnIndex._02_FORM_TYPE);
+
+                                formRecordToSetInfoOn.setFormTypeId(formTypeId);
+                                formRecordToSetInfoOn.setFormType(
+                                        this.sqlFormDefinitionUtil == null ? null :
+                                                this.sqlFormDefinitionUtil.getFormDefinitionIdAndTitle().get(formTypeId)
+                                );
+
+                                formRecordToSetInfoOn.setTitle(resultSetForTblInfo.getString(
+                                        SQLFormUtil.SQLColumnIndex._03_TITLE));
+
+                                Date created = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._04_CREATED);
+                                Date lastUpdated = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
+
+                                //Created...
+                                if(created != null)
                                 {
-                                    preparedStatementForTblInfo.setLong(
-                                            1, formRecordToSetInfoOn.getId());
+                                    formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
+                                }
 
-                                    resultSetForTblInfo = preparedStatementForTblInfo.executeQuery();
-                                    if(resultSetForTblInfo.next())
-                                    {
-                                        formRecordToSetInfoOn.setFormTypeId(resultSetForTblInfo.getLong(
-                                                SQLFormUtil.SQLColumnIndex._02_FORM_TYPE));
-
-                                        formRecordToSetInfoOn.setTitle(resultSetForTblInfo.getString(
-                                                SQLFormUtil.SQLColumnIndex._03_TITLE));
-
-                                        Date created = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._04_CREATED);
-                                        Date lastUpdated = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
-
-                                        //Created...
-                                        if(created != null)
-                                        {
-                                            formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
-                                        }
-
-                                        //Last Updated...
-                                        if(lastUpdated != null)
-                                        {
-                                            formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
-                                        }
-                                    }
+                                //Last Updated...
+                                if(lastUpdated != null)
+                                {
+                                    formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
                                 }
                             }
                         }
-
-                        tableField.setTableRecords(formRecords);
-
-                        returnVal = new Field(
-                                formFieldMappingParam.name,
-                                tableField,
-                                Field.Type.Table);
                     }
+
+                    tableField.setTableRecords(formRecords);
+
+                    returnVal = new Field(
+                            formFieldMappingParam.name,
+                            tableField,
+                            Field.Type.Table);
                     //TODO __8__ encrypted field...
                 break;
                 //Label...

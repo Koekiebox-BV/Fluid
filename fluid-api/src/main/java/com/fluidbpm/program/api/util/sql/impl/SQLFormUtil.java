@@ -77,7 +77,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
         super(connectionParam, cacheUtilParam);
 
         this.formDefUtil = new SQLFormDefinitionUtil(connectionParam);
-        this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam);
+        this.fieldUtil = new SQLFormFieldUtil(
+                connectionParam, cacheUtilParam, this.formDefUtil);
     }
 
     /**
@@ -303,6 +304,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
      *
      * @see Form
      */
+    @Deprecated
     public List<Form> getFormDescendantsWithStates(
             Long electronicFormIdParam,
             boolean includeFieldDataParam,
