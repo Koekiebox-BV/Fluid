@@ -193,12 +193,40 @@ public class TestSQLUtilClient extends ABaseTestCase {
         SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
         
         List<Form> descendants = sqlUtilClient.getDescendants(
-                new Form(2575L),
+                new Form(2909L),
                 true,
                 true,
                 true);
 
         TestCase.assertNotNull(descendants);
+    }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testGetAncestor()
+    {
+        if(!this.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
+
+        Form ancestor = sqlUtilClient.getAncestor(
+                //new Form(2575L),
+                new Form(2939L),
+                true,
+                false);
+
+        TestCase.assertNotNull(ancestor);
     }
 
 }

@@ -69,6 +69,7 @@ public class FluidLicenseClient extends ABaseFieldClient {
 
         return this.executeTxtReceiveTxt(
                 HttpMethod.POST,
+                null,
                 false,
                 (licenseRequestParam == null) ? null :
                         licenseRequestParam.toJsonObject().toString(),

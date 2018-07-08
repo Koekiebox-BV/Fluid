@@ -94,8 +94,6 @@ public class SQLUtilWebSocketGetDescendantsClient extends
     public List<FormListing> getDescendantsSynchronized(
             Form ... formToGetDescendantsForParam) {
 
-        this.getMessageHandler().clear();
-
         if(formToGetDescendantsForParam == null)
         {
             return null;

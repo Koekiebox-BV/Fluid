@@ -427,6 +427,34 @@ public abstract class ABaseClientWS implements AutoCloseable{
     /**
      * Performs an HTTP-POST request with {@code postfixUrlParam}.
      *
+     * @param headerNameValuesParam The additional HTTP headers.
+     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+     * @param baseDomainParam The base domain to convert to JSON and POST
+     *                        to {@code this} endpoint.
+     * @param postfixUrlParam URL mapping after the Base endpoint.
+     * @return Return body as JSON.
+     *
+     * @see JSONObject
+     * @see ABaseFluidJSONObject
+     */
+    protected JSONObject postJson(
+            List<HeaderNameValue> headerNameValuesParam,
+            boolean checkConnectionValidParam,
+            ABaseFluidJSONObject baseDomainParam,
+            String postfixUrlParam) {
+
+        return this.executeJson(
+                HttpMethod.POST,
+                headerNameValuesParam,
+                checkConnectionValidParam,
+                baseDomainParam,
+                ContentType.APPLICATION_JSON,
+                postfixUrlParam);
+    }
+
+    /**
+     * Performs an HTTP-POST request with {@code postfixUrlParam}.
+     *
      * @param checkConnectionValidParam Check if connection to base endpoint is valid.
      * @param baseDomainParam The base domain to convert to JSON and POST
      *                        to {@code this} endpoint.
@@ -443,6 +471,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         return this.executeJson(
                 HttpMethod.POST,
+                null,
                 checkConnectionValidParam,
                 baseDomainParam,
                 ContentType.APPLICATION_JSON,
@@ -485,6 +514,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         return this.executeJson(
                 HttpMethod.DELETE,
+                null,
                 checkConnectionValidParam,
                 baseDomainParam,
                 ContentType.APPLICATION_JSON,
@@ -507,6 +537,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         return this.executeForm(
                 HttpMethod.POST,
+                null,
                 checkConnectionValidParam,
                 formNameValuesParam,
                 ContentType.APPLICATION_FORM_URLENCODED,
@@ -528,6 +559,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         return this.executeJson(
                 HttpMethod.PUT,
+                null,
                 checkConnectionValidParam,
                 baseDomainParam,
                 ContentType.APPLICATION_JSON,
@@ -553,6 +585,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * Submit a JSON based HTTP request body with JSON as a response.
      *
      * @param httpMethodParam The HTTP method to use.
+     * @param headerNameValuesParam The additional HTTP headers.
      * @param checkConnectionValidParam Check if connection to base endpoint is valid.
      * @param baseDomainParam The object to convert to JSON and submit as {@code httpMethodParam}.
      * @param contentTypeParam The Mime / Content type to submit as.
@@ -566,6 +599,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      */
     protected JSONObject executeJson(
             HttpMethod httpMethodParam,
+            List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
             ABaseFluidJSONObject baseDomainParam,
             ContentType contentTypeParam,
@@ -582,6 +616,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         return this.executeString(
                 httpMethodParam,
+                headerNameValuesParam,
                 checkConnectionValidParam,
                 bodyJsonString,
                 contentTypeParam,
@@ -592,6 +627,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * Submit a HTML Form based HTTP request body with JSON as a response.
      *
      * @param httpMethodParam The HTTP method to use.
+     * @param headerNameValuesParam The additional HTTP headers.
      * @param checkConnectionValidParam Check if connection to base endpoint is valid.
      * @param formNameValuesParam The Form name and value pairs.
      * @param contentTypeParam The Mime / Content type to submit as.
@@ -606,6 +642,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      */
     protected JSONObject executeForm(
             HttpMethod httpMethodParam,
+            List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
             List<FormNameValue> formNameValuesParam,
             ContentType contentTypeParam,
@@ -641,7 +678,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
         String bodyJsonString = strBuilder.toString();
         bodyJsonString = bodyJsonString.substring(0, bodyJsonString.length() - 1);
 
-        return this.executeString(httpMethodParam,checkConnectionValidParam,
+        return this.executeString(
+                httpMethodParam,
+                headerNameValuesParam,
+                checkConnectionValidParam,
                 bodyJsonString, contentTypeParam, postfixUrlParam);
     }
 
@@ -649,6 +689,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * Submit the {@code stringParam} as HTTP request body with JSON as a response.
      *
      * @param httpMethodParam The HTTP method to use.
+     * @param headerNameValuesParam The additional HTTP headers.
      * @param checkConnectionValidParam Check if connection to base endpoint is valid.
      * @param stringParam The Text to submit.
      * @param contentTypeParam The Mime / Content type to submit as.
@@ -663,6 +704,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      */
     protected JSONObject executeString(
             HttpMethod httpMethodParam,
+            List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
             String stringParam,
             ContentType contentTypeParam,
@@ -670,6 +712,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
         String responseBody = this.executeTxtReceiveTxt(
                 httpMethodParam,
+                headerNameValuesParam,
                 checkConnectionValidParam,
                 stringParam,
                 contentTypeParam,
@@ -724,6 +767,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
      * Submit the {@code stringParam} as HTTP request body with JSON as a response.
      *
      * @param httpMethodParam The HTTP method to use.
+     * @param headerNameValuesParam The additional HTTP headers.
      * @param checkConnectionValidParam Check if connection to base endpoint is valid.
      * @param stringParam The Text to submit.
      * @param contentTypeParam The Mime / Content type to submit as.
@@ -738,13 +782,14 @@ public abstract class ABaseClientWS implements AutoCloseable{
      */
     protected String executeTxtReceiveTxt(
             HttpMethod httpMethodParam,
+            List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
             String stringParam,
             ContentType contentTypeParam,
             String postfixUrlParam) {
 
-        if(stringParam == null || stringParam.isEmpty())
-        {
+        if(stringParam == null || stringParam.isEmpty()) {
+            
             throw new FluidClientException("No JSON body to post.",
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
@@ -816,6 +861,25 @@ public abstract class ABaseClientWS implements AutoCloseable{
                 throw new FluidClientException(
                         "URI Request is not set for HTTP Method '"+httpMethodParam+"'.",
                         FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+            }
+
+            //Set additional headers...
+            if(headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
+                
+                for(HeaderNameValue headerNameVal : headerNameValuesParam) {
+                    
+                    if(headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty())
+                    {
+                        continue;
+                    }
+
+                    if(headerNameVal.getValue() == null)
+                    {
+                        continue;
+                    }
+
+                    uriRequest.setHeader(headerNameVal.getName(), headerNameVal.getValue());
+                }
             }
 
             //When HttpEntity Enclosing Request Base...

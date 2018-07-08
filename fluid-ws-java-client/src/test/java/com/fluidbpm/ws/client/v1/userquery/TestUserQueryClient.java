@@ -363,7 +363,7 @@ public class TestUserQueryClient extends ABaseTestCase {
         UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
         UserQuery userQueryToExec = new UserQuery();
-        userQueryToExec.setName("All Zools");
+        userQueryToExec.setName("All Config Asset Type Channels");
 
         long start = System.currentTimeMillis();
 

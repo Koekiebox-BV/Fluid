@@ -85,8 +85,6 @@ public class SQLUtilWebSocketGetAncestorClient extends
      */
     public Form getAncestorSynchronized(Form formToGetAncestorForParam) {
 
-        this.getMessageHandler().clear();
-
         if(formToGetAncestorForParam == null)
         {
             return null;

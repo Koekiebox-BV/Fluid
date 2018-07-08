@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
@@ -38,7 +39,8 @@ import com.fluidbpm.program.api.vo.form.Form;
  */
 public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 
-    private Map<Long,String> localMapping;
+    private static final Map<Long,String> LOCAL_MAPPING = new HashMap();
+    private static long timeToUpdateAgain = 0;
 
     /**
      * New FormDefinition util instance using {@code connectionParam}.
@@ -57,23 +59,29 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
      */
     public Map<Long,String> getFormDefinitionIdAndTitle()
     {
-        //Local Mapping...
-        if(this.localMapping == null)
-        {
-            this.localMapping = new HashMap();
-        }
         //When already cached, use the cached value...
-        else if(this.localMapping != null && !this.localMapping.isEmpty())
+        if(!LOCAL_MAPPING.isEmpty())
         {
-            return this.localMapping;
+            Map<Long,String> returnVal = new HashMap<>(LOCAL_MAPPING);
+
+            //The id's are outdated...
+            if(System.currentTimeMillis() > timeToUpdateAgain){
+
+                synchronized (LOCAL_MAPPING)
+                {
+                    LOCAL_MAPPING.clear();
+                }
+            }
+
+            return returnVal;
         }
 
         //Only allow one thread to set the local mapping...
-        synchronized (this.localMapping)
+        synchronized (LOCAL_MAPPING)
         {
-            if(this.localMapping != null && !this.localMapping.isEmpty())
+            if(!LOCAL_MAPPING.isEmpty())
             {
-                return this.localMapping;
+                return new HashMap<>(LOCAL_MAPPING);
             }
 
             PreparedStatement preparedStatement = null;
@@ -95,8 +103,13 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
                     Long id = resultSet.getLong(1);
                     String title = resultSet.getString(2);
 
-                    this.localMapping.put(id,title);
+                    LOCAL_MAPPING.put(id,title);
                 }
+
+                //Update in 10 mins...
+                timeToUpdateAgain =
+                        (System.currentTimeMillis() +
+                                TimeUnit.MINUTES.toMillis(10));
             }
             //
             catch (SQLException sqlError) {
@@ -107,7 +120,7 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
                 this.closeStatement(preparedStatement,resultSet);
             }
 
-            return this.localMapping;
+            return new HashMap<>(LOCAL_MAPPING);
         }
     }
 }
