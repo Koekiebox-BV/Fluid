@@ -72,6 +72,11 @@ public class User extends ABaseFluidJSONObject {
     private Date dateCreated;
     private Date dateLastUpdated;
 
+    private Float timezone;
+    private String dateFormat;
+    private String timeFormat;
+    private String locale;
+
     /**
      * The JSON mapping for the {@code User} object.
      */
@@ -94,6 +99,11 @@ public class User extends ABaseFluidJSONObject {
         public static final String EMAIL_ADDRESSES = "emailAddresses";
         public static final String SALT = "salt";
         public static final String USER_FIELDS = "userFields";
+
+        public static final String TIMEZONE = "timezone";
+        public static final String DATE_FORMAT = "dateFormat";
+        public static final String TIME_FORMAT = "timeFormat";
+        public static final String LOCALE = "locale";
 
         /**
          * Elastic specific properties.
@@ -191,6 +201,30 @@ public class User extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.INVALID_LOGIN_COUNT)) {
             this.setInvalidLoginCount(this.jsonObject.getInt(
                     JSONMapping.INVALID_LOGIN_COUNT));
+        }
+
+        //Timezone...
+        if (!this.jsonObject.isNull(JSONMapping.TIMEZONE)) {
+            this.setTimezone((float)this.jsonObject.getDouble(
+                    JSONMapping.TIMEZONE));
+        }
+
+        //Date format...
+        if (!this.jsonObject.isNull(JSONMapping.DATE_FORMAT)) {
+            this.setDateFormat(this.jsonObject.getString(
+                    JSONMapping.DATE_FORMAT));
+        }
+
+        //Time format...
+        if (!this.jsonObject.isNull(JSONMapping.TIME_FORMAT)) {
+            this.setTimeFormat(this.jsonObject.getString(
+                    JSONMapping.TIME_FORMAT));
+        }
+
+        //Locale...
+        if (!this.jsonObject.isNull(JSONMapping.LOCALE)) {
+            this.setLocale(this.jsonObject.getString(
+                    JSONMapping.LOCALE));
         }
 
         //Roles...
@@ -356,6 +390,90 @@ public class User extends ABaseFluidJSONObject {
      */
     public void setUsername(String usernameParam) {
         this.username = usernameParam;
+    }
+
+    /**
+     * Gets Users timezone.
+     * See https://www.worldtimezone.com/
+     *
+     * @return A Users timezone.
+     */
+    public Float getTimezone() {
+        return this.timezone;
+    }
+
+    /**
+     * Sets Users timezone.
+     * See https://www.worldtimezone.com/
+     *
+     * @param timezoneParam A Users timezone.
+     */
+    public void setTimezone(Float timezoneParam) {
+        this.timezone = timezoneParam;
+    }
+
+    /**
+     * Gets Users date format.
+     *
+     * @return A Users date format.
+     *
+     * @see java.text.SimpleDateFormat
+     */
+    public String getDateFormat() {
+        return this.dateFormat;
+    }
+
+    /**
+     * Sets Users date format.
+     *
+     * @param dateFormatParam A Users date format.
+     *
+     * @see java.text.SimpleDateFormat
+     */
+    public void setDateFormat(String dateFormatParam) {
+        this.dateFormat = dateFormatParam;
+    }
+
+    /**
+     * Gets Users time format.
+     *
+     * @return A Users time format.
+     */
+    public String getTimeFormat() {
+        return this.timeFormat;
+    }
+
+    /**
+     * Sets Users time format.
+     *
+     * @param timeFormatParam A Users time format.
+     *
+     * @see java.text.SimpleDateFormat
+     */
+    public void setTimeFormat(String timeFormatParam) {
+        this.timeFormat = timeFormatParam;
+    }
+
+    /**
+     * Gets Users locale.
+     *
+     * @return A Users locale.
+     *
+     * @see java.util.Locale
+     */
+    public String getLocale() {
+        return this.locale;
+    }
+
+    /**
+     * Sets Users locale.
+     *
+     * @param localeParam A Users locale.
+     *
+     * @see java.text.SimpleDateFormat
+     */
+    public void setLocale(String localeParam) {
+        this.locale = localeParam;
     }
 
     /**
@@ -614,6 +732,31 @@ public class User extends ABaseFluidJSONObject {
         if(this.getSalt() != null)
         {
             returnVal.put(JSONMapping.SALT,this.getSalt());
+        }
+
+        //Timezone...
+        if(this.getTimezone() != null)
+        {
+            returnVal.put(JSONMapping.TIMEZONE,
+                    this.getTimezone().doubleValue());
+        }
+
+        //Date Format...
+        if(this.getDateFormat() != null)
+        {
+            returnVal.put(JSONMapping.DATE_FORMAT, this.getDateFormat());
+        }
+
+        //Time Format...
+        if(this.getTimeFormat() != null)
+        {
+            returnVal.put(JSONMapping.TIME_FORMAT, this.getTimeFormat());
+        }
+
+        //Locale...
+        if(this.getLocale() != null)
+        {
+            returnVal.put(JSONMapping.LOCALE, this.getLocale());
         }
 
         //Roles...
