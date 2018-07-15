@@ -182,12 +182,15 @@ public class SQLUtilWebSocketRESTWrapper {
             this.mode = Mode.RESTfulActive;
         }
 
+        Form formToUse = (formToGetAncestorForParam == null) ? null:
+                new Form(formToGetAncestorForParam.getId());
+
         return (this.getAncestorClient == null) ?
                 this.sqlUtilClient.getAncestor(
-                        formToGetAncestorForParam,
+                        formToUse,
                         includeFieldDataParam,
                         includeTableFieldsParam):
-                this.getAncestorClient.getAncestorSynchronized(formToGetAncestorForParam);
+                this.getAncestorClient.getAncestorSynchronized(formToUse);
     }
 
     /**
@@ -242,21 +245,28 @@ public class SQLUtilWebSocketRESTWrapper {
             this.mode = Mode.RESTfulActive;
         }
 
+        if(formsToGetDescForParam == null || formsToGetDescForParam.length < 1)
+        {
+            return null;
+        }
+
+        Form[] formsToFetchFor =
+                new Form[formsToGetDescForParam.length];
+        for(int index = 0;index < formsToFetchFor.length;index++){
+
+            formsToFetchFor[index] = new Form(formsToGetDescForParam[index].getId());
+        }
+
         if(this.getDescendantsClient != null)
         {
             return this.getDescendantsClient.getDescendantsSynchronized(
-                    formsToGetDescForParam);
+                    formsToFetchFor);
         }
         else
         {
-            if(formsToGetDescForParam == null || formsToGetDescForParam.length < 1)
-            {
-                return null;
-            }
-
             List<FormListing> returnVal = new ArrayList<>();
 
-            for(Form formToFetchFor : formsToGetDescForParam)
+            for(Form formToFetchFor : formsToFetchFor)
             {
                 List<Form> listOfForms =
                         this.sqlUtilClient.getDescendants(
@@ -318,21 +328,27 @@ public class SQLUtilWebSocketRESTWrapper {
             this.mode = Mode.RESTfulActive;
         }
 
+        if(formsToGetTableFormsForParam == null || formsToGetTableFormsForParam.length < 1)
+        {
+            return null;
+        }
+
+        Form[] formsToFetchFor =
+                new Form[formsToGetTableFormsForParam.length];
+        for(int index = 0;index < formsToFetchFor.length;index++){
+
+            formsToFetchFor[index] = new Form(formsToGetTableFormsForParam[index].getId());
+        }
+
         if(this.getTableFormsClient != null)
         {
-            return this.getTableFormsClient.getTableFormsSynchronized(
-                    formsToGetTableFormsForParam);
+            return this.getTableFormsClient.getTableFormsSynchronized(formsToFetchFor);
         }
         else
         {
-            if(formsToGetTableFormsForParam == null || formsToGetTableFormsForParam.length < 1)
-            {
-                return null;
-            }
-
             List<FormListing> returnVal = new ArrayList<>();
 
-            for(Form formToFetchFor : formsToGetTableFormsForParam)
+            for(Form formToFetchFor : formsToFetchFor)
             {
                 List<Form> listOfForms =
                         this.sqlUtilClient.getTableForms(
@@ -391,22 +407,29 @@ public class SQLUtilWebSocketRESTWrapper {
             this.mode = Mode.RESTfulActive;
         }
 
+        if(formsToGetFieldsForParam == null ||
+                formsToGetFieldsForParam.length < 1) {
+            
+            return null;
+        }
+
+        Form[] formsToFetchFor =
+                new Form[formsToGetFieldsForParam.length];
+        for(int index = 0;index < formsToFetchFor.length;index++){
+
+            formsToFetchFor[index] = new Form(formsToGetFieldsForParam[index].getId());
+        }
+
         if(this.getFormFieldsClient != null)
         {
             return this.getFormFieldsClient.getFormFieldsSynchronized(
-                    formsToGetFieldsForParam);
+                    formsToFetchFor);
         }
         else
         {
-            if(formsToGetFieldsForParam == null ||
-                    formsToGetFieldsForParam.length < 1)
-            {
-                return null;
-            }
-
             List<FormFieldListing> returnVal = new ArrayList<>();
 
-            for(Form formToFetchFor : formsToGetFieldsForParam)
+            for(Form formToFetchFor : formsToFetchFor)
             {
                 List<Field> listOfFields =
                         this.sqlUtilClient.getFormFields(
