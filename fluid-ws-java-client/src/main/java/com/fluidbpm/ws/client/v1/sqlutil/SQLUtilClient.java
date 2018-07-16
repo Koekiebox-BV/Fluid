@@ -147,7 +147,7 @@ public class SQLUtilClient extends ABaseClientWS {
                                     includeFieldDataParam,
                                     includeTableFieldsParam)));
         }
-        //
+        //JSON Issue...
         catch (JSONException e) {
             throw new FluidClientException(e.getMessage(), e,
                     FluidClientException.ErrorCode.JSON_PARSING);

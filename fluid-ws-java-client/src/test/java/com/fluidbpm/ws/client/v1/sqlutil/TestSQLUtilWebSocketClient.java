@@ -173,13 +173,12 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         long start = System.currentTimeMillis();
 
-        Form toGetParentFor = new Form(8457L);
+        Form toGetParentFor = new Form(4071L);
         toGetParentFor.setEcho("event-patoel");
 
         Form ancestorForm = webSocketClient.getAncestorSynchronized(toGetParentFor);
 
-        TestCase.assertNotNull(
-                "Ancestor Form not set.", ancestorForm);
+        TestCase.assertNotNull("Ancestor Form not set.", ancestorForm);
 
         long took = (System.currentTimeMillis() - start);
 

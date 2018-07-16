@@ -221,14 +221,23 @@ public abstract class ABaseClientWS implements AutoCloseable{
     {
         try {
             Object returnedObj = httpClientParam.execute(httpUriRequestParam, responseHandlerParam);
+
+            //String text came back...
             if(returnedObj instanceof String)
             {
                 return (String)returnedObj;
             }
+            //[null] - came back...
+            else if(returnedObj == null){
+
+                throw new FluidClientException(
+                        "No results, [null] response.",
+                        FluidClientException.ErrorCode.NO_RESULT);
+            }
 
             throw new FluidClientException(
                     "Expected 'String' got '"+(
-                            (returnedObj == null) ? null:returnedObj.getClass().getName()),
+                            (returnedObj == null) ? null:returnedObj.getClass().getName())+"'.",
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
         //IO Problem...

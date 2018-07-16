@@ -222,7 +222,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         Form ancestor = sqlUtilClient.getAncestor(
                 //new Form(2575L),
-                new Form(2939L),
+                new Form(4071L),
                 true,
                 false);
 
