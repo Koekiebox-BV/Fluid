@@ -3247,6 +3247,8 @@ public class WS {
                     public static final String MASS_FETCH = "mass_fetch";
 
                     public static final String CONNECTION_ALIAS = "connection_alias";
+
+                    public static final String COMPRESS_RESPONSE = "compress_response";
                 }
 
                 /**
@@ -3478,15 +3480,21 @@ public class WS {
                  * URL Path for executing native SQL queries.
                  *
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 * @param compressResponseParam Compress the SQL Result in Base-64.
                  *                           
                  * @return {@code v1/sql_util/native/execute_query}
+                 *
+                 * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
                  */
                 public static final String getExecuteNativeSQLWebSocket(
-                        String serviceTicketParam) {
+                        String serviceTicketParam,
+                        boolean compressResponseParam) {
 
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(SQL_UTIL_NATIVE_QUERY).concat(
-                                    "/"+ serviceTicketParam);
+                                    "/"+ serviceTicketParam + "?" +
+                                            QueryParam.COMPRESS_RESPONSE
+                                            +"=" + compressResponseParam);
 
                     return returnVal;
                 }

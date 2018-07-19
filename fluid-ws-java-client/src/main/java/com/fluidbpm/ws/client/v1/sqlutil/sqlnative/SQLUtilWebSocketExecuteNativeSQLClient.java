@@ -50,22 +50,50 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 
     /**
      * Constructor that sets the Service Ticket from authentication.
+     * The ResultSet will not be compressed.
      *
      * @param endpointBaseUrlParam URL to base endpoint.
      * @param messageReceivedCallbackParam Callback for when a message is received.
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
+     *
+     * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
      */
     public SQLUtilWebSocketExecuteNativeSQLClient(
             String endpointBaseUrlParam,
             IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam) {
+        this(endpointBaseUrlParam,
+                messageReceivedCallbackParam,
+                serviceTicketAsHexParam,
+                timeoutInMillisParam,
+                false);
+    }
+
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Callback for when a message is received.
+     * @param serviceTicketAsHexParam The Server issued Service Ticket.
+     * @param timeoutInMillisParam The timeout of the request in millis.
+     * @param compressResponseParam Compress the SQL Result in Base-64.
+     *
+     * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
+     */
+    public SQLUtilWebSocketExecuteNativeSQLClient(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
+            String serviceTicketAsHexParam,
+            long timeoutInMillisParam,
+            boolean compressResponseParam) {
         super(endpointBaseUrlParam,
-                new SQLResultSetMessageHandler(messageReceivedCallbackParam),
+                new SQLResultSetMessageHandler(messageReceivedCallbackParam, compressResponseParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteNativeSQLWebSocket(
-                        serviceTicketAsHexParam));
+                        serviceTicketAsHexParam,
+                        compressResponseParam));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }

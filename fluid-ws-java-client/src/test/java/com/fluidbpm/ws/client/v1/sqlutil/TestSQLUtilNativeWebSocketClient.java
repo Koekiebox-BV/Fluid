@@ -259,4 +259,103 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
     }
+
+    /**
+     *
+     */
+    @Test
+    public void testNativeSQLExecutionStoredProcCompressed()
+    {
+        if(!this.isConnectionValid())
+        {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+        String serviceTicketHex = null;
+        if(serviceTicket != null && !serviceTicket.isEmpty())
+        {
+            serviceTicketHex =
+                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+        }
+
+        SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
+                new SQLUtilWebSocketExecuteNativeSQLClient(
+                        BASE_URL,
+                        null,
+                        serviceTicketHex,
+                        TimeUnit.SECONDS.toMillis(60),
+                        true);
+
+        long start = System.currentTimeMillis();
+        int numberOfRecords = 1;
+
+        NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
+
+        nativeSQLQuery.setDatasourceName("flow-job-rescue");
+        nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
+
+        List<SQLColumn> inputs = new ArrayList<>();
+        inputs.add(new SQLColumn(
+                null,1,Types.BIGINT,
+                1L));
+
+        nativeSQLQuery.setSqlInputs(inputs);
+
+        List<SQLResultSet> resultListing =
+                webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
+
+        long took = (System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+
+        webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
+
+        long tookSecond = (System.currentTimeMillis() - start);
+
+        webSocketClient.closeAndClean();
+
+        System.out.println("Took '"+took+"|"+tookSecond+"' millis for '"+numberOfRecords+"' random records.");
+
+        if(resultListing != null)
+        {
+            System.out.println("Listing is '"+resultListing.size()+"' -> \n\n\n");
+
+            for(SQLResultSet listing : resultListing)
+            {
+                //System.out.println("Response For ::: "+listing.getEcho());
+
+                List<SQLRow> tableForms = listing.getListing();
+
+                if(tableForms == null){
+                    continue;
+                }
+
+                for(SQLRow form : tableForms)
+                {
+                    if(form.getSqlColumns() == null)
+                    {
+                        continue;
+                    }
+
+                    for(SQLColumn column : form.getSqlColumns())
+                    {
+                        System.out.println(
+                                "|"+column.getColumnName()+"|"+
+                                        column.getColumnIndex()
+                                        +"| ->" +column.getSqlValue());
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.out.println("Nothing...");
+        }
+
+        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+    }
 }
