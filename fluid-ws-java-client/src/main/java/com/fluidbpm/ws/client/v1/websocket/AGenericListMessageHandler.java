@@ -1,5 +1,8 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -7,10 +10,14 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.compress.CompressedResponse;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 
@@ -24,7 +31,7 @@ import com.fluidbpm.ws.client.FluidClientException;
  *
  * @see CompletableFuture
  */
-public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
+public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
         implements IMessageResponseHandler {
 
     private final List<T> returnValue;
@@ -36,12 +43,28 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
     private Set<String> expectedEchoMessagesBeforeComplete;
     private CompletableFuture<List<T>> completableFuture;
 
+    private boolean compressedResponse;
+
+    /**
+     * Constructor for SQLResultSet callbacks.
+     *
+     * @param messageReceivedCallbackParam The callback events.
+     * @param compressedResponseParam Compress the SQL Result in Base-64.
+     */
+    public AGenericListMessageHandler(
+            IMessageReceivedCallback<T> messageReceivedCallbackParam,
+            boolean compressedResponseParam) {
+
+        this(messageReceivedCallbackParam);
+        this.compressedResponse = compressedResponseParam;
+    }
+
     /**
      * Message handler with callback.
      *
      * @param messageReceivedCallbackParam The message callback observer.
      */
-    public GenericListMessageHandler(IMessageReceivedCallback<T> messageReceivedCallbackParam) {
+    public AGenericListMessageHandler(IMessageReceivedCallback<T> messageReceivedCallbackParam) {
 
         this.messageReceivedCallback = messageReceivedCallbackParam;
         this.returnValue = new CopyOnWriteArrayList();
@@ -85,6 +108,27 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
         //No Error...
         else
         {
+            //Uncompress the compressed response...
+            if(this.compressedResponse){
+
+                CompressedResponse compressedResponse = new CompressedResponse(jsonObject);
+
+                byte[] compressedJsonList =
+                        UtilGlobal.decodeBase64(compressedResponse.getDataBase64());
+
+                byte[] uncompressedJson = null;
+                try {
+                    uncompressedJson = this.uncompress(compressedJsonList);
+                } catch (IOException eParam) {
+                    throw new FluidClientException(
+                            "I/O issue with uncompress. "+eParam.getMessage(),
+                            eParam,
+                            FluidClientException.ErrorCode.IO_ERROR);
+                }
+
+                jsonObject = new JSONObject(new String(uncompressedJson));
+            }
+
             T messageForm = this.getNewInstanceBy(jsonObject);
 
             //Add to the list of return values...
@@ -293,5 +337,48 @@ public abstract class GenericListMessageHandler<T extends ABaseFluidJSONObject>
      */
     public List<T> getReturnValue() {
         return this.returnValue;
+    }
+
+    /**
+     * Uncompress the raw {@code compressedBytesParam}.
+     *
+     * @param compressedBytesParam The compressed bytes to uncompress.
+     *
+     * @return Uncompressed bytes.
+     *
+     * @throws IOException - If there is an issue during the un-compression.
+     */
+    protected byte[] uncompress(byte[] compressedBytesParam)
+            throws IOException {
+
+        byte[] buffer = new byte[1024];
+
+        byte[] returnVal = null;
+
+        //get the zip file content
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(compressedBytesParam));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        //get the zipped file list entry
+        ZipEntry ze = zis.getNextEntry();
+        if(ze == null){
+
+            return returnVal;
+        }
+
+        int len;
+        while ((len = zis.read(buffer)) > 0) {
+            bos.write(buffer, 0, len);
+        }
+
+        zis.closeEntry();
+        zis.close();
+
+        bos.flush();
+        bos.close();
+
+        returnVal = bos.toByteArray();
+
+        return returnVal;
     }
 }

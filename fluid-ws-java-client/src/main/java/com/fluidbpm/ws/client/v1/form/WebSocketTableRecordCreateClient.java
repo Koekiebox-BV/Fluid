@@ -29,7 +29,7 @@ import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -184,7 +184,7 @@ public class WebSocketTableRecordCreateClient extends
     /**
      * Gets the single form. Still relying on a single session.
      */
-    static class CreateTableRecordMessageHandler extends GenericListMessageHandler<TableRecord>
+    static class CreateTableRecordMessageHandler extends AGenericListMessageHandler<TableRecord>
     {
         private TableRecord returnedTableRecord;
 

@@ -30,7 +30,7 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -44,8 +44,39 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetTableFormsClient extends
-        ABaseClientWebSocket<GenericListMessageHandler> {
+        ABaseClientWebSocket<AGenericListMessageHandler> {
 
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Callback for when a message is received.
+     * @param serviceTicketAsHexParam The Server issued Service Ticket.
+     * @param timeoutInMillisParam The timeout of the request in millis.
+     * @param includeFieldDataParam Should Form Field data be included.
+     * @param compressResponseParam Compress the Form Field Result in Base-64.
+     */
+    public SQLUtilWebSocketGetTableFormsClient(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+            String serviceTicketAsHexParam,
+            long timeoutInMillisParam,
+            boolean includeFieldDataParam,
+            boolean compressResponseParam) {
+
+        super(endpointBaseUrlParam,
+                new GenericFormListingMessageHandler(
+                        messageReceivedCallbackParam, compressResponseParam),
+                timeoutInMillisParam,
+                WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
+                        includeFieldDataParam,
+                        serviceTicketAsHexParam,
+                        compressResponseParam));
+
+        this.setServiceTicket(serviceTicketAsHexParam);
+    }
+
+    
     /**
      * Constructor that sets the Service Ticket from authentication.
      *
@@ -66,7 +97,9 @@ public class SQLUtilWebSocketGetTableFormsClient extends
                 new GenericFormListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
-                        includeFieldDataParam,serviceTicketAsHexParam));
+                        includeFieldDataParam,
+                        serviceTicketAsHexParam,
+                        false));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }

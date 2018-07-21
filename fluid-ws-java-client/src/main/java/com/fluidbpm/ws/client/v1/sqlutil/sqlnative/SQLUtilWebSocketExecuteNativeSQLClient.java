@@ -29,7 +29,7 @@ import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -46,7 +46,7 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see SQLResultSet
  */
 public class SQLUtilWebSocketExecuteNativeSQLClient extends
-        ABaseClientWebSocket<GenericListMessageHandler<SQLResultSet>> {
+        ABaseClientWebSocket<AGenericListMessageHandler<SQLResultSet>> {
 
     /**
      * Constructor that sets the Service Ticket from authentication.

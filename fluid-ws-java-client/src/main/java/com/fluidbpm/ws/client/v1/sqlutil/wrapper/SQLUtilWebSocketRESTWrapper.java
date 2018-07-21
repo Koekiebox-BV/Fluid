@@ -49,6 +49,8 @@ public class SQLUtilWebSocketRESTWrapper {
 
     private final SQLUtilClient sqlUtilClient;
 
+    private static final boolean COMPRESS_RSP = true;
+
     //Mode...
     private Mode mode = null;
 
@@ -166,7 +168,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
                         includeFieldDataParam,
-                        includeTableFieldsParam);
+                        includeTableFieldsParam,
+                        COMPRESS_RSP);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -229,7 +232,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         includeFieldDataParam,
                         includeTableFieldsParam,
                         includeTableFieldFormRecordInfoParam,
-                        massFetchParam);
+                        massFetchParam,
+                        COMPRESS_RSP);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -312,7 +316,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         null,
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
-                        includeFieldDataParam);
+                        includeFieldDataParam,
+                        COMPRESS_RSP);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -391,7 +396,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         null,
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
-                        includeFieldDataParam);
+                        includeFieldDataParam,
+                        COMPRESS_RSP);
 
                 this.mode = Mode.WebSocketActive;
             }

@@ -28,7 +28,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -180,7 +180,7 @@ public class WebSocketFormContainerCreateClient extends
     /**
      * Gets the single form. Still relying on a single session.
      */
-    static class CreateFormContainerMessageHandler extends GenericListMessageHandler<Form>
+    static class CreateFormContainerMessageHandler extends AGenericListMessageHandler<Form>
     {
         private Form returnedForm;
 

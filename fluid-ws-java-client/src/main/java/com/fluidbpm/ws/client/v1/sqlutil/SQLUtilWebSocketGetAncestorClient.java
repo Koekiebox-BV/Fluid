@@ -29,7 +29,7 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -57,6 +57,41 @@ public class SQLUtilWebSocketGetAncestorClient extends
      *
      * @param includeFieldDataParam Should Form Field data be included.
      * @param includeTableFieldsParam Should Table Fields be included.
+     * @param compressResponseParam Compress the Ancestor Result in Base-64.
+     */
+    public SQLUtilWebSocketGetAncestorClient(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+            String serviceTicketAsHexParam,
+            long timeoutInMillisParam,
+            boolean includeFieldDataParam,
+            boolean includeTableFieldsParam,
+            boolean compressResponseParam) {
+        super(endpointBaseUrlParam,
+                new GetAncestorMessageHandler(
+                        messageReceivedCallbackParam, compressResponseParam),
+                timeoutInMillisParam,
+                WS.Path.SQLUtil.Version1.getAncestorWebSocket(
+                        includeFieldDataParam,
+                        includeTableFieldsParam,
+                        serviceTicketAsHexParam,
+                        compressResponseParam));
+
+        this.setServiceTicket(serviceTicketAsHexParam);
+    }
+
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     *
+     * @param messageReceivedCallbackParam Callback for when a message is received.
+     *
+     * @param serviceTicketAsHexParam The Server issued Service Ticket.
+     * @param timeoutInMillisParam The timeout of the request in millis.
+     *
+     * @param includeFieldDataParam Should Form Field data be included.
+     * @param includeTableFieldsParam Should Table Fields be included.
      */
     public SQLUtilWebSocketGetAncestorClient(
             String endpointBaseUrlParam,
@@ -71,7 +106,8 @@ public class SQLUtilWebSocketGetAncestorClient extends
                 WS.Path.SQLUtil.Version1.getAncestorWebSocket(
                         includeFieldDataParam,
                         includeTableFieldsParam,
-                        serviceTicketAsHexParam));
+                        serviceTicketAsHexParam,
+                        false));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -167,8 +203,21 @@ public class SQLUtilWebSocketGetAncestorClient extends
     /**
      * Gets the single form. Still relying on a single session.
      */
-    public static class GetAncestorMessageHandler extends GenericListMessageHandler<Form>
+    public static class GetAncestorMessageHandler extends AGenericListMessageHandler<Form>
     {
+        /**
+         * The default constructor that sets a ancestor message handler.
+         *
+         * @param messageReceivedCallbackParam The optional message callback.
+         * @param compressedResponseParam Compress the SQL Result in Base-64.
+         */
+        public GetAncestorMessageHandler(
+                IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+                boolean compressedResponseParam) {
+
+            super(messageReceivedCallbackParam, compressedResponseParam);
+        }
+        
         /**
          * The default constructor that sets a ancestor message handler.
          *

@@ -18,7 +18,7 @@ package com.fluidbpm.ws.client.v1.sqlutil;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.form.FormListing;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -27,7 +27,20 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @author jasonbruwer on 2016/03/12.
  * @since 1.1
  */
-public class GenericFormListingMessageHandler extends GenericListMessageHandler<FormListing> {
+public class GenericFormListingMessageHandler extends AGenericListMessageHandler<FormListing> {
+
+    /**
+     * Constructor for FormListing callbacks.
+     *
+     * @param messageReceivedCallbackParam The callback events.
+     * @param compressedResponseParam Compress the SQL Result in Base-64.
+     */
+    public GenericFormListingMessageHandler(
+            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+            boolean compressedResponseParam) {
+
+        super(messageReceivedCallbackParam, compressedResponseParam);
+    }
 
     /**
      * Constructor for FormListing callbacks.

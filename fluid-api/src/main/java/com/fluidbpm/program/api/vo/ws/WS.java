@@ -3293,18 +3293,22 @@ public class WS {
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
-                 *
+                 * @param compressResponseParam Compress the Descendant result in Base-64.
+                 *                              
                  * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
                  */
                 public static final String getTableFormsWebSocket(
                         boolean includeFieldDataParam,
-                        String serviceTicketParam)
+                        String serviceTicketParam,
+                        boolean compressResponseParam)
                 {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
                                     SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
                                     "/"+ serviceTicketParam + "?" +
-                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam);
+                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam + "&" +
+                                            QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam
+                            );
 
                     return returnVal;
                 }
@@ -3345,6 +3349,7 @@ public class WS {
                  * @param massFetchParam Is the fetch a large fetch.
                  *                       
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 * @param compressResponseParam Compress the Descendant result in Base-64.
                  *
                  * @return {@code /web_socket/v1/sql_util/form/get_descendants_by_electronic_form_id}
                  */
@@ -3353,7 +3358,8 @@ public class WS {
                         boolean includeTableFieldsParam,
                         boolean includeTableFieldFormRecordInfoParam,
                         boolean massFetchParam,
-                        String serviceTicketParam)
+                        String serviceTicketParam,
+                        boolean compressResponseParam)
                 {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
@@ -3366,7 +3372,9 @@ public class WS {
                                     "&" +
                                     QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
                                     "&" +
-                                    QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO +"=" + includeTableFieldFormRecordInfoParam
+                                    QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO +"=" + includeTableFieldFormRecordInfoParam +
+                                    "&" +
+                                    QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam
                             );
 
                     return returnVal;
@@ -3376,14 +3384,19 @@ public class WS {
                  * URL Path for executing SQL on the Fluid core database.
                  *
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
-                 *
+                 * @param compressResponseParam Compress the SQL Result in Base-64.
+                 *                              
                  * @return {@code /web_socket/v1/sql_util/form/execute_sql}
                  */
-                public static final String getExecuteSQLWebSocket(String serviceTicketParam)
-                {
+                public static final String getExecuteSQLWebSocket(
+                        String serviceTicketParam,
+                        boolean compressResponseParam) {
+
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_EXECUTE_SQL).concat(
-                                    "/"+ serviceTicketParam);
+                                    "/"+ serviceTicketParam + "?" +
+                                            QueryParam.COMPRESS_RESPONSE
+                                            +"=" + compressResponseParam);
 
                     return returnVal;
                 }
@@ -3416,13 +3429,15 @@ public class WS {
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 * @param compressResponseParam Compress the Ancestor Result in Base-64.
                  *
                  * @return {@code /web_socket/v1/sql_util/form/get_ancestor_by_electronic_form_id}
                  */
                 public static final String getAncestorWebSocket(
                         boolean includeFieldDataParam,
                         boolean includeTableFieldsParam,
-                        String serviceTicketParam)
+                        String serviceTicketParam,
+                        boolean compressResponseParam)
                 {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
@@ -3431,7 +3446,9 @@ public class WS {
                                             "?" +
                                             QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
                                             "&" +
-                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
+                                            "&" +
+                                            QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam);
 
                     return returnVal;
                 }
@@ -3460,18 +3477,22 @@ public class WS {
                  *
                  * @param includeTableFieldsParam Does Table Field data need to be included?
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
+                 * @param compressResponseParam Compress the Form Field Result in Base-64.
                  *
                  * @return {@code /web_socket/v1/sql_util/form_field/get_fields_by_electronic_form_id}
                  */
                 public static final String getFormFieldsWebSocket(
                         boolean includeTableFieldsParam,
-                        String serviceTicketParam)
+                        String serviceTicketParam,
+                        boolean compressResponseParam)
                 {
                     String returnVal =
                             ROOT_WEB_SOCKET.concat(
                                     SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
                                     "/"+ serviceTicketParam + "?" +
-                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam);
+                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
+                                            "&" +
+                                            QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam);
 
                     return returnVal;
                 }

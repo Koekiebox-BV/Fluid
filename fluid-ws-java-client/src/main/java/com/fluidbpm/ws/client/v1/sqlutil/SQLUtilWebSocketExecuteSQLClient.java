@@ -29,7 +29,7 @@ import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
-import com.fluidbpm.ws.client.v1.websocket.GenericListMessageHandler;
+import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 
 /**
@@ -43,10 +43,36 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see Form
  */
 public class SQLUtilWebSocketExecuteSQLClient extends
-        ABaseClientWebSocket<GenericListMessageHandler<FormListing>> {
+        ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
     /**
      * Constructor that sets the Service Ticket from authentication.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Callback for when a message is received.
+     * @param serviceTicketAsHexParam The Server issued Service Ticket.
+     * @param timeoutInMillisParam The timeout of the request in millis.
+     * @param compressResponseParam Compress the SQL Result in Base-64.
+     */
+    public SQLUtilWebSocketExecuteSQLClient(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+            String serviceTicketAsHexParam,
+            long timeoutInMillisParam,
+            boolean compressResponseParam) {
+        super(endpointBaseUrlParam,
+                new GenericFormListingMessageHandler(
+                        messageReceivedCallbackParam, compressResponseParam),
+                timeoutInMillisParam,
+                WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
+                        serviceTicketAsHexParam, compressResponseParam));
+
+        this.setServiceTicket(serviceTicketAsHexParam);
+    }
+
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     * Responses are not compressed.
      *
      * @param endpointBaseUrlParam URL to base endpoint.
      * @param messageReceivedCallbackParam Callback for when a message is received.
@@ -62,7 +88,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
                 new GenericFormListingMessageHandler(messageReceivedCallbackParam),
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
-                        serviceTicketAsHexParam));
+                        serviceTicketAsHexParam, false));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }

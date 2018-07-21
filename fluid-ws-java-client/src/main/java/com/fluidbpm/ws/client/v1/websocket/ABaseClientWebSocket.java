@@ -153,10 +153,10 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
             baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
             //Add the echo to the listing if [GenericListMessageHandler].
-            if(this.getMessageHandler() instanceof GenericListMessageHandler)
+            if(this.getMessageHandler() instanceof AGenericListMessageHandler)
             {
-                GenericListMessageHandler listHandler =
-                        (GenericListMessageHandler)this.getMessageHandler();
+                AGenericListMessageHandler listHandler =
+                        (AGenericListMessageHandler)this.getMessageHandler();
                 listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
             }
         }
