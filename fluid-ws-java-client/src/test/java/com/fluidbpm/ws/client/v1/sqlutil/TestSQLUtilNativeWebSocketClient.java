@@ -295,7 +295,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
         NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
 
-        nativeSQLQuery.setDatasourceName("flow-job-rescue");
+        nativeSQLQuery.setDatasourceName("flow-job");
         nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
 
         List<SQLColumn> inputs = new ArrayList<>();
