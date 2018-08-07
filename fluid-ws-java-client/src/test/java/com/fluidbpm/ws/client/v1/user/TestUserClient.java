@@ -380,14 +380,14 @@ public class TestUserClient extends ABaseTestCase {
         UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
         User loggedIn = userClient.getLoggedInUserInformation();
+        
+        UserFieldListing userFieldListing = userClient.getAllUserFieldValuesByUser(loggedIn);
 
-        UserFieldListing userListing = userClient.getAllUserFieldValuesByUser(loggedIn);
-
-        TestCase.assertNotNull(userListing);
+        TestCase.assertNotNull(userFieldListing);
         TestCase.assertTrue("User Field Value listing must be greater than '0'.",
-                userListing.getListingCount() > 0);
-        TestCase.assertNotNull("User Field Value Listing must be set.",userListing.getListing());
-        TestCase.assertNotNull("User Field Value must be set.",userListing.getListing().get(0));
+                userFieldListing.getListingCount() > 0);
+        TestCase.assertNotNull("User Field Value Listing must be set.",userFieldListing.getListing());
+        TestCase.assertNotNull("User Field Value must be set.",userFieldListing.getListing().get(0));
     }
 
     /**

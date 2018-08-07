@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -450,6 +451,152 @@ public class SQLUtilWebSocketRESTWrapper {
             
             return returnVal;
         }
+    }
+
+    /**
+     * Retrieves all the (Fields) for the {@code formsToGetDescForParam}.
+     *
+     * @param includeFieldDataParam Should Field data be included?
+     * @param formsToPopulateFormFieldsForParam The Fluid Form to get Descendants for.
+     */
+    public void massPopulateFormFields(
+            boolean includeFieldDataParam,
+            Form ... formsToPopulateFormFieldsForParam)
+    {
+        if(DISABLE_WS){
+            this.mode = Mode.RESTfulActive;
+        }
+
+        //FORM FIELDS...
+        try {
+            //When mode is null or [WebSocketActive]...
+            if(this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode)
+            {
+                this.getFormFieldsClient = new SQLUtilWebSocketGetFormFieldsClient(
+                        this.baseURL,
+                        null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(),
+                        this.timeoutMillis,
+                        includeFieldDataParam,
+                        COMPRESS_RSP);
+
+                this.mode = Mode.WebSocketActive;
+            }
+        }
+        catch (FluidClientException clientExcept)
+        {
+            if(clientExcept.getErrorCode() !=
+                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR)
+            {
+                throw clientExcept;
+            }
+
+            this.mode = Mode.RESTfulActive;
+        }
+
+        //Nothing to do...
+        if(formsToPopulateFormFieldsForParam == null ||
+                formsToPopulateFormFieldsForParam.length < 1) {
+
+            return;
+        }
+
+        //Populate a known echo for all of the local form caches...
+        Form[] formsToFetchForLocalCacheArr =
+                new Form[formsToPopulateFormFieldsForParam.length];
+        for(int index = 0;index < formsToFetchForLocalCacheArr.length;index++){
+
+            formsToFetchForLocalCacheArr[index] = new Form(formsToPopulateFormFieldsForParam[index].getId());
+            formsToFetchForLocalCacheArr[index].setEcho(UUID.randomUUID().toString());
+        }
+
+        List<FormFieldListing> listingReturnFieldValsPopulated = new ArrayList<>();
+
+        //Fetch all of the values in a single go...
+        if(this.getFormFieldsClient != null) {
+
+            listingReturnFieldValsPopulated =
+                    this.getFormFieldsClient.getFormFieldsSynchronized(formsToFetchForLocalCacheArr);
+        }
+        //Old Rest way of fetching all of the values...
+        else {
+            
+            for(Form formToFetchFor : formsToFetchForLocalCacheArr)
+            {
+                List<Field> listOfFields =
+                        this.sqlUtilClient.getFormFields(
+                                formToFetchFor,
+                                includeFieldDataParam);
+
+                FormFieldListing toAdd = new FormFieldListing();
+                toAdd.setListing(listOfFields);
+                toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
+                toAdd.setEcho(formToFetchFor.getEcho());
+                listingReturnFieldValsPopulated.add(toAdd);
+            }
+        }
+
+        //Populate each of the form from the param...
+        for(Form formToSetFieldsOn : formsToPopulateFormFieldsForParam){
+            
+            formToSetFieldsOn.setFormFields(
+                    this.getFieldValuesForFormFromCache(
+                            formToSetFieldsOn.getId(),
+                            listingReturnFieldValsPopulated,
+                            formsToFetchForLocalCacheArr));
+        }
+    }
+
+    /**
+     * Populate the field values from the cache.
+     *
+     * @param formIdParam The id of the form to populate.
+     * @param listingReturnFieldValsPopulatedParam The cache of field values.
+     * @param formsToFetchForLocalCacheArrParam The forms that contain the ids and echos.
+     *
+     * @return The field values for form with id {@code formIdParam}.
+     */
+    private List<Field> getFieldValuesForFormFromCache(
+            Long formIdParam,
+            List<FormFieldListing> listingReturnFieldValsPopulatedParam,
+            Form[] formsToFetchForLocalCacheArrParam){
+
+        if(formIdParam == null || formIdParam.longValue() < 1){
+
+            return null;
+        }
+
+        if(listingReturnFieldValsPopulatedParam == null ||
+                listingReturnFieldValsPopulatedParam.isEmpty()){
+
+            return null;
+        }
+
+        if(formsToFetchForLocalCacheArrParam == null ||
+                formsToFetchForLocalCacheArrParam.length == 0){
+
+            return null;
+        }
+
+        for(Form formIter : formsToFetchForLocalCacheArrParam){
+
+            //Form is a match...
+            if(formIdParam.equals(formIter.getId())){
+
+                String echoToUse = formIter.getEcho();
+
+                for(FormFieldListing fieldListing : listingReturnFieldValsPopulatedParam){
+
+                    //Echo is a match...
+                    if(echoToUse.equals(fieldListing.getEcho())){
+
+                        return fieldListing.getListing();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

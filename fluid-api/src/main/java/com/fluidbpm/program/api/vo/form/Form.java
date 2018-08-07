@@ -805,8 +805,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
         String fieldNameParamLower = fieldNameParam.toLowerCase();
 
-        for(Field field : this.getFormFields())
-        {
+        for (Iterator<Field> fieldIter = this.getFormFields().iterator();
+             fieldIter.hasNext();) {
+
+            Field field = fieldIter.next();
             if(field.getFieldName() == null || field.getFieldName().trim().length() == 0)
             {
                 continue;
@@ -866,10 +868,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         boolean valueFound = false;
 
         //Iterate the Form Fields...
-        int fieldIndex = -1;
-        for (Field field : this.getFormFields()) {
-            fieldIndex++;
+        int fieldIndex = 0;
+        for (Iterator<Field> fieldIter = this.getFormFields().iterator();
+             fieldIter.hasNext();fieldIndex++) {
 
+            Field field = fieldIter.next();
+            
             String toCheckNameLower = field.getFieldName();
             if (toCheckNameLower == null || toCheckNameLower.trim().isEmpty()) {
                 continue;
@@ -885,6 +889,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             }
         }
 
+        //Add the value if it wasn't found by name...
         if (!valueFound) {
             this.getFormFields().add(new Field(fieldNameParam, fieldValueParam, typeParam));
         }
