@@ -81,7 +81,8 @@ public class ESFormFieldUtil extends ABaseESUtil{
 
         //Search for the primary...
         List<Form> formsWithId = this.searchAndConvertHitsToFormWithAllFields(
-                QueryBuilders.queryStringQuery(primaryQuery.toString()), Index.DOCUMENT, 1,
+                QueryBuilders.queryStringQuery(primaryQuery.toString()), Index.DOCUMENT,
+                DEFAULT_OFFSET, 1,
                 new Long[]{});
 
         Form returnVal = null;

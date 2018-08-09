@@ -53,6 +53,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
     protected Client client;
     protected SQLFormFieldUtil fieldUtil = null;
 
+    protected static final int DEFAULT_OFFSET = 0;
     protected static final int MAX_NUMBER_OF_TABLE_RECORDS = 10000;
 
     //public static final String[] NO_FIELDS_MAPPER = {"_none_"};
@@ -126,7 +127,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      *
      * @param qbParam The @{code QueryBuilder} to search with.
      * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
-     * @param numberOfResultsParam The number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The number of results to return.
      * @param formTypesParam The Id's for the Form Definitions to be returned.
      * @return The {@code ElasticTypeAndId} {@code List}.
      *
@@ -136,14 +138,16 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
     public final List<ElasticTypeAndId> searchAndConvertHitsToIdsOnly(
             QueryBuilder qbParam,
             String indexParam,
-            int numberOfResultsParam,
+            int offsetParam,
+            int limitParam,
             Long ... formTypesParam) {
 
         SearchHits searchHits = this.searchWithHits(
                 qbParam,
                 indexParam,
                 true,
-                numberOfResultsParam,
+                offsetParam,
+                limitParam,
                 formTypesParam);
 
         List<ElasticTypeAndId> returnVal = null;
@@ -154,7 +158,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             returnVal = new ArrayList();
 
             if((searchHits.getHits().length != totalHits) &&
-                    (searchHits.getHits().length != numberOfResultsParam))
+                    (searchHits.getHits().length != limitParam))
             {
                 throw new FluidElasticSearchException(
                         "The Hits and fetch count has mismatch. Total hits is '"+totalHits
@@ -163,10 +167,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             }
 
             long iterationMax = totalHits;
-            if(numberOfResultsParam > 0 &&
-                    totalHits > numberOfResultsParam)
+            if(limitParam > 0 && totalHits > limitParam)
             {
-                iterationMax = numberOfResultsParam;
+                iterationMax = limitParam;
             }
 
             //Iterate...
@@ -194,7 +197,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      * @param qbParam The @{code QueryBuilder} to search with.
      * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
      * @param withNoFieldsParam Should fields be IGNORED returned.
-     * @param numberOfResultsParam The number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The max number of results to return.
      * @param formTypesParam The Id's for the Form Definitions to be returned.
      *
      * @return The Elasticsearch {@code SearchHits}.
@@ -203,7 +207,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             QueryBuilder qbParam,
             String indexParam,
             boolean withNoFieldsParam,
-            int numberOfResultsParam,
+            int offsetParam,
+            int limitParam,
             Long ... formTypesParam) {
 
         if(this.client == null)
@@ -225,10 +230,13 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
         }
 
         //The requested number of results...
-        if(numberOfResultsParam > 0)
+        if(limitParam > 0)
         {
-            searchRequestBuilder = searchRequestBuilder.setSize(
-                    numberOfResultsParam);
+            searchRequestBuilder = searchRequestBuilder.setSize(limitParam);
+        }
+
+        if(offsetParam > -1){
+            searchRequestBuilder = searchRequestBuilder.setFrom(offsetParam);
         }
 
         if(formTypesParam == null)
@@ -269,7 +277,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      * @param qbParam The @{code QueryBuilder} to search with.
      * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
      * @param withNoFieldsParam Should fields be IGNORED returned.
-     * @param numberOfResultsParam The number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The number of results to return.
      * @param formTypesParam The Id's for the Form Definitions to be returned.
      *
      * @return {@code true} if there were any {@code SearchHits} from the lookup.
@@ -278,14 +287,16 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             QueryBuilder qbParam,
             String indexParam,
             boolean withNoFieldsParam,
-            int numberOfResultsParam,
+            int offsetParam,
+            int limitParam,
             Long ... formTypesParam) {
 
         SearchHits searchHits = this.searchWithHits(
                 qbParam,
                 indexParam,
                 withNoFieldsParam,
-                numberOfResultsParam,
+                offsetParam,
+                limitParam,
                 formTypesParam);
 
         return (searchHits != null && searchHits.getTotalHits() > 0);
@@ -297,7 +308,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      * @param indexParam The ElasticSearch index to be used for lookup.
      * @param formIdsParam {@code List} of Identifiers for the Forms to return.
      * @param includeFieldDataParam Whether to populate the return {@code Form} table fields.
-     * @param maxNumberOfResultsParam The maximum number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The max number of results to return.
      *
      * @return {@code List<Form>} List of Forms.
      */
@@ -305,7 +317,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             String indexParam,
             List<Long> formIdsParam,
             boolean includeFieldDataParam,
-            int maxNumberOfResultsParam)
+            int offsetParam,
+            int limitParam)
     {
         if(formIdsParam == null || formIdsParam.isEmpty())
         {
@@ -338,7 +351,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             returnVal = this.searchAndConvertHitsToFormWithAllFields(
                     QueryBuilders.queryStringQuery(queryByIdsToString),
                     indexParam,
-                    maxNumberOfResultsParam,
+                    offsetParam,
+                    limitParam,
                     new Long[]{});
         }
         else
@@ -346,7 +360,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             returnVal = this.searchAndConvertHitsToFormWithNoFields(
                     QueryBuilders.queryStringQuery(queryByIdsToString),
                     indexParam,
-                    maxNumberOfResultsParam,
+                    offsetParam,
+                    limitParam,
                     new Long[]{});
         }
 
@@ -363,7 +378,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      *
      * @param qbParam The @{code QueryBuilder} to search with.
      * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
-     * @param numberOfResultsParam The number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The max number of results to return.
      * @param formTypesParam The Id's for the Form Definitions to be returned.
      *
      * @return The {@code SearchHits} as Fluid {@code Form}.
@@ -374,14 +390,16 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
     public final List<Form> searchAndConvertHitsToFormWithAllFields(
             QueryBuilder qbParam,
             String indexParam,
-            int numberOfResultsParam,
+            int offsetParam,
+            int limitParam,
             Long ... formTypesParam) {
 
         SearchHits searchHits = this.searchWithHits(
                 qbParam,
                 indexParam,
                 false,
-                numberOfResultsParam,
+                offsetParam,
+                limitParam,
                 formTypesParam);
 
         List<Form> returnVal = null;
@@ -392,7 +410,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             returnVal = new ArrayList();
 
             if((searchHits.getHits().length != totalHits) &&
-                    (searchHits.getHits().length != numberOfResultsParam))
+                    (searchHits.getHits().length != limitParam))
             {
                 throw new FluidElasticSearchException(
                         "The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
@@ -400,10 +418,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             }
 
             long iterationMax = totalHits;
-            if(numberOfResultsParam > 0 &&
-                    totalHits > numberOfResultsParam)
+            if(limitParam > 0 && totalHits > limitParam)
             {
-                iterationMax = numberOfResultsParam;
+                iterationMax = limitParam;
             }
 
             //Iterate...
@@ -452,7 +469,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      *
      * @param qbParam The @{code QueryBuilder} to search with.
      * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
-     * @param numberOfResultsParam The number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The max number of results to return.
      * @param formTypesParam The Id's for the Form Definitions to be returned.
      *
      * @return The {@code SearchHits} as Fluid {@code Form}.
@@ -463,14 +481,16 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
     public final List<Form> searchAndConvertHitsToFormWithNoFields(
             QueryBuilder qbParam,
             String indexParam,
-            int numberOfResultsParam,
+            int offsetParam,
+            int limitParam,
             Long ... formTypesParam) {
 
         SearchHits searchHits = this.searchWithHits(
                 qbParam,
                 indexParam,
                 false,
-                numberOfResultsParam,
+                offsetParam,
+                limitParam,
                 formTypesParam);
 
         List<Form> returnVal = null;
@@ -481,7 +501,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             returnVal = new ArrayList();
 
             if((searchHits.getHits().length != totalHits) &&
-                    (searchHits.getHits().length != numberOfResultsParam))
+                    (searchHits.getHits().length != limitParam))
             {
                 throw new FluidElasticSearchException(
                         "The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
@@ -489,10 +509,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             }
 
             long iterationMax = totalHits;
-            if(numberOfResultsParam > 0 &&
-                    totalHits > numberOfResultsParam)
+            if(limitParam > 0 && totalHits > limitParam)
             {
-                iterationMax = numberOfResultsParam;
+                iterationMax = limitParam;
             }
 
             //Iterate...
@@ -525,7 +544,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
      * @param qbParam The @{code QueryBuilder} to search with.
      * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
      * @param fieldsParam The Fluid {@code Field}'s to return after lookup.
-     * @param numberOfResultsParam The number of results to return.
+     * @param offsetParam The offset for the results to return.
+     * @param limitParam The max number of results to return.
      * @param formTypesParam The Id's for the Form Definitions to be returned.
      *
      * @return The {@code SearchHits} as Fluid {@code Form}.
@@ -537,14 +557,16 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             QueryBuilder qbParam,
             String indexParam,
             List<Field> fieldsParam,
-            int numberOfResultsParam,
+            int offsetParam,
+            int limitParam,
             Long ... formTypesParam) {
 
         SearchHits searchHits = this.searchWithHits(
                 qbParam,
                 indexParam,
                 false,
-                numberOfResultsParam,
+                offsetParam,
+                limitParam,
                 formTypesParam);
 
         List<Form> returnVal = null;
@@ -555,7 +577,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             returnVal = new ArrayList();
 
             if((searchHits.getHits().length != totalHits) &&
-                    (searchHits.getHits().length != numberOfResultsParam))
+                    (searchHits.getHits().length != limitParam))
             {
                 throw new FluidElasticSearchException(
                         "The Hits and fetch count has mismatch. Total hits is '"+totalHits
@@ -564,10 +586,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
             }
 
             long iterationMax = totalHits;
-            if(numberOfResultsParam > 0 &&
-                    totalHits > numberOfResultsParam)
+            if(limitParam > 0 && totalHits > limitParam)
             {
-                iterationMax = numberOfResultsParam;
+                iterationMax = limitParam;
             }
 
             //Iterate...
@@ -644,7 +665,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                     Index.TABLE_RECORD,
                     formIdsOnly,
                     includeFieldDataParam,
-                    MAX_NUMBER_OF_TABLE_RECORDS);
+                    DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS);
 
             if(addAllTableRecordsForReturnParam && populatedTableRecords != null)
             {

@@ -101,6 +101,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             ancestorForms = this.searchAndConvertHitsToFormWithAllFields(
                     QueryBuilders.queryStringQuery(ancestorQuery.toString()),
                     Index.DOCUMENT,
+                    DEFAULT_OFFSET,
                     1,
                     new Long[]{});
         }
@@ -109,6 +110,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             ancestorForms = this.searchAndConvertHitsToFormWithNoFields(
                     QueryBuilders.queryStringQuery(ancestorQuery.toString()),
                     Index.DOCUMENT,
+                    DEFAULT_OFFSET,
                     1,
                     new Long[]{});
         }
@@ -225,7 +227,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             returnVal = this.searchAndConvertHitsToFormWithAllFields(
                     QueryBuilders.queryStringQuery(fullQueryToExec),
                     Index.DOCUMENT,
-                    MAX_NUMBER_OF_TABLE_RECORDS,
+                    DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS,
                     new Long[]{});
         }
         else
@@ -233,7 +235,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             returnVal = this.searchAndConvertHitsToFormWithNoFields(
                     QueryBuilders.queryStringQuery(fullQueryToExec),
                     Index.DOCUMENT,
-                    MAX_NUMBER_OF_TABLE_RECORDS,
+                    DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS,
                     new Long[]{});
         }
 
@@ -292,6 +294,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             formsWithId = this.searchAndConvertHitsToFormWithAllFields(
                     QueryBuilders.queryStringQuery(primaryQuery.toString()),
                     Index.DOCUMENT,
+                    DEFAULT_OFFSET,
                     1,
                     new Long[]{});
         }
@@ -300,6 +303,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
             formsWithId = this.searchAndConvertHitsToFormWithNoFields(
                     QueryBuilders.queryStringQuery(primaryQuery.toString()),
                     Index.DOCUMENT,
+                    DEFAULT_OFFSET,
                     1,
                     new Long[]{});
         }
