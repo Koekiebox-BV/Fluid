@@ -2,14 +2,17 @@ package com.fluidbpm.ws.client.v1.websocket;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import javax.websocket.*;
 
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
+import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 
 /**
@@ -19,20 +22,23 @@ import com.fluidbpm.ws.client.FluidClientException;
  * @since 1.1
  */
 @ClientEndpoint()
-public class WebSocketClient {
+public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 
     private Session userSession = null;
-    private IMessageResponseHandler messageHandler;
+    private Map<String,RespHandler> messageHandlers;
 
     /**
      * Default constructor with an endpoint.
      * Establishes a connection to remote.
      *
-     * @param endpointURI The Endpoint URI.
+     * @param endpointURIParam The Endpoint URI.
      * @throws DeploymentException If there is a connection problem.
      * @throws IOException If there is a I/O problem.
      */
-    public WebSocketClient(URI endpointURI) throws DeploymentException, IOException {
+    public WebSocketClient(
+            URI endpointURIParam,
+            Map<String,RespHandler> messageHandlersParam) throws DeploymentException, IOException {
+        this.messageHandlers = messageHandlersParam;
 
         //ContainerProvider.getWebSocketContainer()
         ClientManager clMng = ClientManager.createClient(
@@ -51,7 +57,7 @@ public class WebSocketClient {
         container.setDefaultMaxTextMessageBufferSize(oneGB);
         container.setDefaultMaxBinaryMessageBufferSize(oneGB);
         
-        container.connectToServer(this, endpointURI);
+        container.connectToServer(this, endpointURIParam);
     }
 
     /**
@@ -74,12 +80,13 @@ public class WebSocketClient {
      */
     @OnClose
     public void onClose(Session userSessionParam, CloseReason reasonParam) {
-        
         this.userSession = null;
         
-        if (this.messageHandler != null) {
-            
-            this.messageHandler.connectionClosed();
+        if (this.messageHandlers != null) {
+
+            this.messageHandlers.values().forEach(handle ->{
+                handle.connectionClosed();
+            });
         }
     }
 
@@ -90,20 +97,19 @@ public class WebSocketClient {
      */
     @OnMessage
     public void onMessage(String messageParam) {
+        for(IMessageResponseHandler handler : this.messageHandlers.values()){
 
-        if (this.messageHandler != null) {
+            Object qualifyObj =
+                    handler.doesHandlerQualifyForProcessing(messageParam);
 
-            this.messageHandler.handleMessage(messageParam);
+            if(qualifyObj instanceof Error){
+                handler.handleMessage(qualifyObj);
+            } else if(qualifyObj instanceof JSONObject){
+
+                handler.handleMessage(qualifyObj);
+                break;
+            }
         }
-    }
-
-    /**
-     * Register message handler.
-     *
-     * @param msgHandlerParam The message handler.
-     */
-    public void setMessageHandler(IMessageResponseHandler msgHandlerParam) {
-        this.messageHandler = msgHandlerParam;
     }
 
     /**

@@ -254,9 +254,47 @@ public class UserQueryClient extends ABaseClientWS {
         try {
             return new FluidItemListing(this.postJson(
                     queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
-                            populateAncestorIdParam)));
+                            populateAncestorIdParam,-1,-1)));
         }
-        //
+        //JSON Issue...
+        catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Executes the {@code UserQuery} {@code queryToExecuteParam}
+     * and returns the result information.
+     *
+     * @param queryToExecuteParam The UserQuery to execute.
+     * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+     * @param queryLimitParam The query limit.
+     * @param offsetParam The query offset.
+     *
+     * @return The UserQuery result.
+     *
+     * @see FluidItemListing
+     */
+    public FluidItemListing executeUserQuery(
+            UserQuery queryToExecuteParam,
+            boolean populateAncestorIdParam,
+            int queryLimitParam,
+            int offsetParam)
+    {
+        if(this.serviceTicket != null && queryToExecuteParam != null)
+        {
+            queryToExecuteParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new FluidItemListing(this.postJson(
+                    queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
+                            populateAncestorIdParam,
+                            queryLimitParam,
+                            offsetParam)));
+        }
+        //JSON Issue...
         catch (JSONException jsonExcept) {
             throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);

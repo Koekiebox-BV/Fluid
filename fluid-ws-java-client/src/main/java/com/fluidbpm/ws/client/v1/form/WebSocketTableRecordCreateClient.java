@@ -17,7 +17,6 @@ package com.fluidbpm.ws.client.v1.form;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -64,7 +63,7 @@ public class WebSocketTableRecordCreateClient extends
             String serviceTicketAsHexParam,
             long timeoutInMillisParam) {
         super(endpointBaseUrlParam,
-                new CreateTableRecordMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreateWebSocket(
                         serviceTicketAsHexParam));
@@ -82,8 +81,6 @@ public class WebSocketTableRecordCreateClient extends
     public TableRecord createTableRecordSynchronized(
             TableRecord tableRecordToCreateParam) {
 
-        this.getMessageHandler().clear();
-
         if(tableRecordToCreateParam == null)
         {
             return null;
@@ -96,20 +93,18 @@ public class WebSocketTableRecordCreateClient extends
             tableRecordToCreateParam.setEcho(UUID.randomUUID().toString());
         }
 
-        CompletableFuture<List<TableRecord>> completableFuture = new CompletableFuture();
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
-        
         //Send the actual message...
-        this.sendMessage(tableRecordToCreateParam);
+        this.sendMessage(tableRecordToCreateParam, uniqueReqId);
 
         try {
-            List<TableRecord> returnValue = completableFuture.get(
+            List<TableRecord> returnValue = this.getHandler(uniqueReqId).getCF().get(
                     this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "WebSocket-CreateTableRecord: " +
@@ -157,28 +152,24 @@ public class WebSocketTableRecordCreateClient extends
             throw new FluidClientException(
                     "WebSocket-CreateTableRecord: " +
                             "Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
     }
 
     /**
-     * Creates a new Table Record from {@code formToGetAncestorsForForParam}
-     * asynchronously.
+     * Create a new instance of the handler class for {@code this} client.
      *
-     * @param tableRecordParamToCreateParam The Fluid Table Record to create.
+     * @return new instance of {@code CreateTableRecordMessageHandler}
      */
-    public void createTableRecordAsynchronous(TableRecord tableRecordParamToCreateParam) {
-
-        if(tableRecordParamToCreateParam == null)
-        {
-            return;
-        }
-
-        //Send the actual message...
-        this.sendMessage(tableRecordParamToCreateParam);
+    @Override
+    public CreateTableRecordMessageHandler getNewHandlerInstance() {
+        return new CreateTableRecordMessageHandler(this.messageReceivedCallback);
     }
 
     /**

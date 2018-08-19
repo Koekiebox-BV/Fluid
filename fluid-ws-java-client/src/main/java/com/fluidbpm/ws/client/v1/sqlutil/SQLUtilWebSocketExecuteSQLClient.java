@@ -61,11 +61,11 @@ public class SQLUtilWebSocketExecuteSQLClient extends
             long timeoutInMillisParam,
             boolean compressResponseParam) {
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(
-                        messageReceivedCallbackParam, compressResponseParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
-                        serviceTicketAsHexParam, compressResponseParam));
+                        serviceTicketAsHexParam, compressResponseParam),
+                compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -85,7 +85,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
             String serviceTicketAsHexParam,
             long timeoutInMillisParam) {
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
                         serviceTicketAsHexParam, false));
@@ -102,8 +102,6 @@ public class SQLUtilWebSocketExecuteSQLClient extends
      */
     public List<FormListing> executeSQLSynchronized(Form formWithSQLFieldParam) {
 
-        this.getMessageHandler().clear();
-
         if(formWithSQLFieldParam == null)
         {
             return null;
@@ -112,7 +110,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
         if(formWithSQLFieldParam.getFormFields() == null ||
                 formWithSQLFieldParam.getFormFields().isEmpty())
         {
-            return this.getMessageHandler().getReturnValue();
+            return null;
         }
 
         //Validate the echo...
@@ -122,20 +120,18 @@ public class SQLUtilWebSocketExecuteSQLClient extends
             formWithSQLFieldParam.setEcho(UUID.randomUUID().toString());
         }
 
-        CompletableFuture<List<FormListing>> completableFuture = new CompletableFuture();
-
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
         //Send the actual message...
-        this.sendMessage(formWithSQLFieldParam);
+        this.sendMessage(formWithSQLFieldParam, uniqueReqId);
 
         try {
-            List<FormListing> returnValue = completableFuture.get(
+            List<FormListing> returnValue = this.getHandler(uniqueReqId).getCF().get(
                             this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "SQLUtil-WebSocket-ExecuteSQL: " +
@@ -177,10 +173,23 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-ExecuteSQL: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code GenericFormListingMessageHandler}
+     */
+    @Override
+    public GenericFormListingMessageHandler getNewHandlerInstance() {
+        return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
     }
 }

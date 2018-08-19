@@ -18,7 +18,6 @@ package com.fluidbpm.ws.client.v1.sqlutil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -45,7 +44,7 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetDescendantsClient extends
-        ABaseClientWebSocket<AGenericListMessageHandler> {
+        ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
     private boolean massFetch;
 
@@ -73,8 +72,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             boolean massFetchParam,
             boolean compressResponseParam) {
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(
-                        messageReceivedCallbackParam, compressResponseParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
                         includeFieldDataParam,
@@ -82,7 +80,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
                         includeTableFieldFormRecordInfoParam,
                         massFetchParam,
                         serviceTicketAsHexParam,
-                        compressResponseParam));
+                        compressResponseParam),
+                compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
         this.massFetch = massFetchParam;
@@ -110,7 +109,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             boolean includeTableFieldFormRecordInfoParam,
             boolean massFetchParam) {
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
                         includeFieldDataParam,
@@ -134,24 +133,16 @@ public class SQLUtilWebSocketGetDescendantsClient extends
     public List<FormListing> getDescendantsSynchronized(
             Form ... formToGetDescendantsForParam) {
 
-        if(formToGetDescendantsForParam == null)
-        {
+        if(formToGetDescendantsForParam == null ||
+                formToGetDescendantsForParam.length == 0) {
             return null;
         }
 
-        if(formToGetDescendantsForParam.length == 0)
-        {
-            return this.getMessageHandler().getReturnValue();
-        }
-
-        CompletableFuture<List<FormListing>> completableFuture = new CompletableFuture();
-
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
-
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
+        
         //Mass data fetch...
-        if(this.massFetch)
-        {
+        if(this.massFetch) {
             FormListing listingToSend = new FormListing();
             List<Form> listOfValidForms = new ArrayList();
             for(Form formToSend : formToGetDescendantsForParam)
@@ -170,25 +161,25 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             listingToSend.setListing(listOfValidForms);
 
             //Send the actual message...
-            this.sendMessage(listingToSend);
+            this.sendMessage(listingToSend, uniqueReqId);
         }
         //Single...
-        else
-        {
+        else {
             //Send all the messages...
             for(Form formToSend : formToGetDescendantsForParam)
             {
                 //Send the actual message...
-                this.sendMessage(formToSend);
+                this.sendMessage(formToSend, uniqueReqId);
             }
         }
 
         try {
-            List<FormListing> returnValue = completableFuture.get(
-                    this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
+            List<FormListing> returnValue =
+                    this.getHandler(uniqueReqId).getCF().get(
+                            this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "SQLUtil-WebSocket-GetDescendants: " +
@@ -230,10 +221,24 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-GetDescendants: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code GenericFormListingMessageHandler}
+     */
+    @Override
+    public GenericFormListingMessageHandler getNewHandlerInstance() {
+        return new GenericFormListingMessageHandler(
+                this.messageReceivedCallback, this.compressResponse);
     }
 }

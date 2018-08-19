@@ -193,14 +193,15 @@ public class TestUserQueryClient extends ABaseTestCase {
 
 
         UserQuery userQueryToExec = new UserQuery();
-        userQueryToExec.setName("Get Customer By Code");
+        //userQueryToExec.setName("All Config Asset Request Complex Dependent");
+        userQueryToExec.setName("All Config Asset Request Complex Dependent By");
 
         List<Field> inputs = new ArrayList();
-
-        inputs.add(new Field("Customer Code","1.10855224"));
+        inputs.add(new Field("Group",
+                new MultiChoice("Organic Social")));
         userQueryToExec.setInputs(inputs);
 
-        int totalThreads = 50;
+        int totalThreads = 1;
         for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++)
         {
             CustomerCodeExecutionThread customerCodeExecutionThread = new CustomerCodeExecutionThread(
@@ -232,8 +233,6 @@ public class TestUserQueryClient extends ABaseTestCase {
         UserQueryClient userQueryClient;
         private UserQuery userQueryToExec;
 
-
-
         /**
          *
          * @param serviceTicketParam
@@ -260,19 +259,20 @@ public class TestUserQueryClient extends ABaseTestCase {
             for(int index = 0;index < total;index++)
             {
                 FluidItemListing itemListing =
-                        userQueryClient.executeUserQuery(this.userQueryToExec);
+                        userQueryClient.executeUserQuery(
+                                this.userQueryToExec, false,
+                                3,6);
 
                 if(itemListing.getListingCount() > 0)
                 {
                     for(FluidItem returnVal :itemListing.getListing())
                     {
-                    /*System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
-                            returnVal.getForm().getTitle() + " ]]] ***");
+                        System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+                                returnVal.getForm().getTitle() + " ]]] ***");
 
-                    for(Field formField : returnVal.getForm().getFormFields())
-                    {
-                        System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
-                    }*/
+                        for(Field formField : returnVal.getForm().getFormFields()) {
+                            System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
+                        }
                     }
                 }
             }
@@ -282,8 +282,8 @@ public class TestUserQueryClient extends ABaseTestCase {
             SUM += took;
 
             System.out.println("["+Thread.currentThread().getName()+"] Took '"+(
-                    TimeUnit.MILLISECONDS.toSeconds(took))+"' seconds for '"+total+
-                    "' executions. Avg["+TimeUnit.MILLISECONDS.toSeconds(took / total)+"]");
+                    took)+"' millis for '"+total+
+                    "' executions. Avg["+(took / total)+"]");
         }
     }
     

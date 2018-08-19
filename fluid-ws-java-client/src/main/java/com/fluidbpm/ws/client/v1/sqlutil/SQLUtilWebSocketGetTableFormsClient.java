@@ -17,7 +17,6 @@ package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -44,7 +43,7 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetTableFormsClient extends
-        ABaseClientWebSocket<AGenericListMessageHandler> {
+        ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
     /**
      * Constructor that sets the Service Ticket from authentication.
@@ -65,13 +64,13 @@ public class SQLUtilWebSocketGetTableFormsClient extends
             boolean compressResponseParam) {
 
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(
-                        messageReceivedCallbackParam, compressResponseParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
                         includeFieldDataParam,
                         serviceTicketAsHexParam,
-                        compressResponseParam));
+                        compressResponseParam),
+                compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -94,7 +93,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
             boolean includeFieldDataParam) {
 
         super(endpointBaseUrlParam,
-                new GenericFormListingMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
                         includeFieldDataParam,
@@ -114,22 +113,16 @@ public class SQLUtilWebSocketGetTableFormsClient extends
     public List<FormListing> getTableFormsSynchronized(
             Form ... formsToGetTableFormsForParam) {
 
-        this.getMessageHandler().clear();
-
-        if(formsToGetTableFormsForParam == null)
-        {
+        if(formsToGetTableFormsForParam == null) {
             return null;
         }
 
-        if(formsToGetTableFormsForParam.length == 0)
-        {
-            return this.getMessageHandler().getReturnValue();
+        if(formsToGetTableFormsForParam.length == 0) {
+            return null;
         }
 
-        CompletableFuture<List<FormListing>> completableFuture = new CompletableFuture();
-
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
         //Send all the messages...
         for(Form formToSend : formsToGetTableFormsForParam)
@@ -146,15 +139,16 @@ public class SQLUtilWebSocketGetTableFormsClient extends
             }
 
             //Send the actual message...
-            this.sendMessage(formToSend);
+            this.sendMessage(formToSend, uniqueReqId);
         }
 
         try {
-            List<FormListing> returnValue = completableFuture.get(
-                    this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
+            List<FormListing> returnValue =
+                    this.getHandler(uniqueReqId).getCF().get(
+                            this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "SQLUtil-WebSocket-GetTableRecordForms: " +
@@ -196,10 +190,23 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-GetTableRecordForms: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code GenericFormListingMessageHandler}
+     */
+    @Override
+    public GenericFormListingMessageHandler getNewHandlerInstance() {
+        return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
     }
 }

@@ -17,7 +17,6 @@ package com.fluidbpm.ws.client.v1.flowitem;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -67,7 +66,7 @@ public class WebSocketSendToFlowClient extends
             long timeoutInMillisParam,
             boolean waitForRuleExecCompleteParam) {
         super(endpointBaseUrlParam,
-                new SendToFlowMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.FlowItem.Version1.sendToFlowWebSocket(
                         waitForRuleExecCompleteParam,
@@ -92,8 +91,6 @@ public class WebSocketSendToFlowClient extends
             Form formToSendToFlowParam,
             String destinationFlowParam) {
 
-        this.getMessageHandler().clear();
-
         if(formToSendToFlowParam == null)
         {
             return null;
@@ -113,22 +110,19 @@ public class WebSocketSendToFlowClient extends
 
         //Send all the messages...
         itemToSend.setEcho(UUID.randomUUID().toString());
-        
-        CompletableFuture<List<FluidItem>> completableFuture = new CompletableFuture();
 
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
         
         //Send the actual message...
-        this.sendMessage(itemToSend);
-
+        this.sendMessage(itemToSend, uniqueReqId);
+        
         try {
-            List<FluidItem> returnValue = completableFuture.get(
+            List<FluidItem> returnValue = this.getHandler(uniqueReqId).getCF().get(
                     this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
-            {
+            if(this.getHandler(uniqueReqId).isConnectionClosed()) {
                 throw new FluidClientException(
                         "WebSocket-SendToFlow: " +
                                 "The connection was closed by the server prior to the response received.",
@@ -174,27 +168,24 @@ public class WebSocketSendToFlowClient extends
 
             throw new FluidClientException(
                     "WebSocket-SendToFlow: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
     }
 
     /**
-     * Sends {@code formToCreateParam} to Flow asynchronously.
+     * Create a new instance of the handler class for {@code this} client.
      *
-     * @param formToSendToFlowParam The Fluid Form create.
+     * @return new instance of {@code SendToFlowMessageHandler}
      */
-    public void sendToFlowAsynchronous(Form formToSendToFlowParam) {
-
-        if(formToSendToFlowParam == null)
-        {
-            return;
-        }
-
-        //Send the actual message...
-        this.sendMessage(formToSendToFlowParam);
+    @Override
+    public SendToFlowMessageHandler getNewHandlerInstance() {
+        return new SendToFlowMessageHandler(this.messageReceivedCallback);
     }
 
     /**

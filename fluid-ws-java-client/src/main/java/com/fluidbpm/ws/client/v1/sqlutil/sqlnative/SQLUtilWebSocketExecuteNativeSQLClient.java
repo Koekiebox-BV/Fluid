@@ -89,11 +89,12 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
             long timeoutInMillisParam,
             boolean compressResponseParam) {
         super(endpointBaseUrlParam,
-                new SQLResultSetMessageHandler(messageReceivedCallbackParam, compressResponseParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteNativeSQLWebSocket(
                         serviceTicketAsHexParam,
-                        compressResponseParam));
+                        compressResponseParam),
+                compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -110,8 +111,6 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
     public List<SQLResultSet> executeNativeSQLSynchronized(
             NativeSQLQuery nativeSQLQueryParam) {
 
-        this.getMessageHandler().clear();
-
         if(nativeSQLQueryParam == null)
         {
             return null;
@@ -120,7 +119,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
         if(nativeSQLQueryParam.getDatasourceName() == null ||
                 nativeSQLQueryParam.getDatasourceName().isEmpty())
         {
-            return this.getMessageHandler().getReturnValue();
+            return null;
         }
 
         //No query to execute...
@@ -129,7 +128,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
                 (nativeSQLQueryParam.getStoredProcedure() == null ||
                         nativeSQLQueryParam.getStoredProcedure().isEmpty()))
         {
-            return this.getMessageHandler().getReturnValue();
+            return null;
         }
 
         //Validate the echo...
@@ -139,20 +138,19 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
             nativeSQLQueryParam.setEcho(UUID.randomUUID().toString());
         }
 
-        CompletableFuture<List<SQLResultSet>> completableFuture = new CompletableFuture();
-
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
         //Send the actual message...
-        this.sendMessage(nativeSQLQueryParam);
+        this.sendMessage(nativeSQLQueryParam, uniqueReqId);
 
         try {
-            List<SQLResultSet> returnValue = completableFuture.get(
+            List<SQLResultSet> returnValue =
+                    this.getHandler(uniqueReqId).getCF().get(
                             this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "SQLUtil-WebSocket-ExecuteNativeSQL: " +
@@ -194,10 +192,23 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-ExecuteNativeSQL: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code CreateFormContainerMessageHandler}
+     */
+    @Override
+    public SQLResultSetMessageHandler getNewHandlerInstance() {
+        return new SQLResultSetMessageHandler(this.messageReceivedCallback, this.compressResponse);
     }
 }

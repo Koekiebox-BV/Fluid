@@ -74,20 +74,50 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
-     * 'Handles' the message.
+     * Checks whether {@code this} message handler can process
+     * the message {@code messageParam}
+     * 
+     * @param messageParam The message to check for qualification.
+     * @return The JSONObject.
      *
-     * @param messageParam The message to handle.
+     * @see JSONObject
      */
-    @Override
-    public void handleMessage(String messageParam) {
+    public Object doesHandlerQualifyForProcessing(String messageParam){
 
         JSONObject jsonObject = new JSONObject(messageParam);
 
         Error fluidError = new Error(jsonObject);
+        if(fluidError.getErrorCode() > 0) {
+            return fluidError;
+        }
+        
+        String echo = fluidError.getEcho();
+
+        //We can process the me
+        if(this.expectedEchoMessagesBeforeComplete.contains(echo)){
+            return jsonObject;
+        }
+
+        return null;
+    }
+
+    /**
+     * 'Handles' the message.
+     * If there was an error, the object will be Error
+     * If there was no error, the object will be JSONObject
+     *
+     * @param objectToProcess The message to handle in JSON format.
+     *
+     * @see Error
+     * @see JSONObject
+     */
+    @Override
+    public void handleMessage(Object objectToProcess) {
 
         //There is an error...
-        if(fluidError.getErrorCode() > 0)
-        {
+        if(objectToProcess instanceof Error) {
+
+            Error fluidError = ((Error)objectToProcess);
             this.errors.add(fluidError);
 
             //Do a message callback...
@@ -106,8 +136,9 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
             }
         }
         //No Error...
-        else
-        {
+        else {
+            JSONObject jsonObject = (JSONObject)objectToProcess;
+
             //Uncompress the compressed response...
             if(this.compressedResponse){
 
@@ -159,12 +190,18 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
     }
 
     /**
-     * Set the {@code CompletableFuture} for a list.
+     * Retrieve the stored instance of {@code CompletableFuture}.
+     * @return local instance of CompletableFuture.
      * 
-     * @param completableFutureParam The async future to make use of.
+     * @see CompletableFuture
      */
-    public void setCompletableFuture(CompletableFuture<List<T>> completableFutureParam) {
-        this.completableFuture = completableFutureParam;
+    public CompletableFuture<List<T>> getCF() {
+
+        if(this.completableFuture == null){
+            this.completableFuture = new CompletableFuture<>();
+        }
+        
+        return this.completableFuture;
     }
 
     /**

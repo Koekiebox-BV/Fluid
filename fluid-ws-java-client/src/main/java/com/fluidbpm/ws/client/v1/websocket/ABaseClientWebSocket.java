@@ -18,6 +18,9 @@ package com.fluidbpm.ws.client.v1.websocket;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.websocket.DeploymentException;
 
@@ -34,13 +37,16 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  *
  * @see ABaseClientWS
  */
-public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> extends ABaseClientWS {
+public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseHandler> extends ABaseClientWS {
 
     protected String webSocketEndpointUrl;
 
     private WebSocketClient webSocketClient;
     private long timeoutInMillis;
-    private ThreadLocal<T> messageHandlerThreadLocal;
+    private Map<String,RespHandler> messageHandler = new Hashtable<>();
+
+    protected IMessageReceivedCallback messageReceivedCallback;
+    protected boolean compressResponse;
 
     /**
      * The constant variables used.
@@ -61,28 +67,37 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
      * Default constructor.
      *
      * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageHandlerParam {@code IMessageHandler} to process incoming messages.
+     * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
+     * @param postFixForUrlParam The URL Postfix.
+     * @param compressResponseParam Expect the response to be compressed.
+     */
+    public ABaseClientWebSocket(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback messageReceivedCallbackParam,
+            long timeoutInMillisParam,
+            String postFixForUrlParam,
+            boolean compressResponseParam) {
+
+        this(endpointBaseUrlParam, messageReceivedCallbackParam, timeoutInMillisParam, postFixForUrlParam);
+        this.compressResponse = compressResponseParam;
+    }
+
+    /**
+     * Default constructor.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
      * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
      * @param postFixForUrlParam The URL Postfix.
      */
     public ABaseClientWebSocket(
             String endpointBaseUrlParam,
-            T messageHandlerParam,
+            IMessageReceivedCallback messageReceivedCallbackParam,
             long timeoutInMillisParam,
             String postFixForUrlParam) {
         super(endpointBaseUrlParam);
 
-        if(messageHandlerParam == null)
-        {
-            throw new FluidClientException(
-                    "[IMessageHandler] has not been implemented.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
-        
-        this.messageHandlerThreadLocal = new ThreadLocal<T>();
-        this.messageHandlerThreadLocal.set(messageHandlerParam);
-        
         this.timeoutInMillis = timeoutInMillisParam;
+        this.messageReceivedCallback = messageReceivedCallbackParam;
 
         if(this.webSocketEndpointUrl == null && this.endpointUrl != null)
         {
@@ -112,8 +127,8 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
         }
 
         try {
-            this.webSocketClient = new WebSocketClient(new URI(completeUrl));
-            this.webSocketClient.setMessageHandler(messageHandlerParam);
+            this.webSocketClient = new WebSocketClient(
+                    new URI(completeUrl),this.messageHandler);
         }
         //Deploy...
         catch (DeploymentException e) {
@@ -146,17 +161,19 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
      *
      * @see org.json.JSONObject
      */
-    public void sendMessage(ABaseFluidJSONObject baseFluidJSONObjectParam)
+    public void sendMessage(
+            ABaseFluidJSONObject baseFluidJSONObjectParam,
+            String requestIdParam)
     {
         if(baseFluidJSONObjectParam != null)
         {
             baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
             //Add the echo to the listing if [GenericListMessageHandler].
-            if(this.getMessageHandler() instanceof AGenericListMessageHandler)
+            if(this.getHandler(requestIdParam) instanceof AGenericListMessageHandler)
             {
                 AGenericListMessageHandler listHandler =
-                        (AGenericListMessageHandler)this.getMessageHandler();
+                        (AGenericListMessageHandler)this.getHandler(requestIdParam);
                 listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
             }
         }
@@ -198,15 +215,45 @@ public abstract class ABaseClientWebSocket<T extends IMessageResponseHandler> ex
     }
 
     /**
+     * Initiate a new request process.
+     *
+     * Synchronized.
+     *
+     * @return A randomly generated identifier for the request.
+     */
+    public synchronized String initNewRequest(){
+
+        String returnVal = UUID.randomUUID().toString();
+        
+        this.messageHandler.put(returnVal, this.getNewHandlerInstance());
+
+        return returnVal;
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of the handler for response messages.
+     */
+    public abstract RespHandler getNewHandlerInstance();
+
+    /**
      * Returns the {@code ThreadLocal} instance of MessageHandler.
      *
      * @see ThreadLocal
      *
      * @return The message handler.
      */
-    protected T getMessageHandler()
-    {
-        return this.messageHandlerThreadLocal.get();
+    protected RespHandler getHandler(String requestUniqueIdParam) {
+        return this.messageHandler.get(requestUniqueIdParam);
+    }
+
+    /**
+     * Remove the handler with identifier {@code requestUniqueIdParam}.
+     * @param requestUniqueIdParam The unique request id.
+     */
+    protected void removeHandler(String requestUniqueIdParam){
+        this.messageHandler.remove(requestUniqueIdParam);
     }
 
     /**

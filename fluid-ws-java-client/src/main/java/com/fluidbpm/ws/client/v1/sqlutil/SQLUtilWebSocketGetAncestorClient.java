@@ -17,7 +17,6 @@ package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -68,14 +67,14 @@ public class SQLUtilWebSocketGetAncestorClient extends
             boolean includeTableFieldsParam,
             boolean compressResponseParam) {
         super(endpointBaseUrlParam,
-                new GetAncestorMessageHandler(
-                        messageReceivedCallbackParam, compressResponseParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getAncestorWebSocket(
                         includeFieldDataParam,
                         includeTableFieldsParam,
                         serviceTicketAsHexParam,
-                        compressResponseParam));
+                        compressResponseParam),
+                compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -101,7 +100,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
             boolean includeFieldDataParam,
             boolean includeTableFieldsParam) {
         super(endpointBaseUrlParam,
-                new GetAncestorMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getAncestorWebSocket(
                         includeFieldDataParam,
@@ -133,20 +132,18 @@ public class SQLUtilWebSocketGetAncestorClient extends
             formToGetAncestorForParam.setEcho(UUID.randomUUID().toString());
         }
 
-        CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
-
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
         //Send the actual message...
-        this.sendMessage(formToGetAncestorForParam);
+        this.sendMessage(formToGetAncestorForParam, uniqueReqId);
         
         try {
-            List<Form> returnValue = completableFuture.get(
+            List<Form> returnValue = this.getHandler(uniqueReqId).getCF().get(
                     this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "SQLUtil-WebSocket-GetAncestor: " +
@@ -193,11 +190,24 @@ public class SQLUtilWebSocketGetAncestorClient extends
 
             throw new FluidClientException(
                     "SQLUtil-WebSocket-GetAncestor: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code GetAncestorMessageHandler}
+     */
+    @Override
+    public GetAncestorMessageHandler getNewHandlerInstance() {
+        return new GetAncestorMessageHandler(this.messageReceivedCallback, this.compressResponse);
     }
 
     /**

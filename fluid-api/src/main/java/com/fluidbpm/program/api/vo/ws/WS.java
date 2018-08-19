@@ -3540,6 +3540,10 @@ public class WS {
                 public static final class QueryParam
                 {
                     public static final String POPULATE_ANCESTOR_ID = "populate_ancestor_id";
+
+                    //List Job View content...
+                    public static final String QUERY_LIMIT = "query_limit";
+                    public static final String OFFSET = "offset";
                 }
                 
                 public static final String ROOT = ("/user_query");
@@ -3580,28 +3584,61 @@ public class WS {
                  * URL Path for executing a {@code UserQuery}.
                  *
                  * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+                 * @param queryLimitParam The query limit.
+                 * @param offsetParam The query offset.
                  *
                  * @return {@code v1/user_query/execute}
                  */
                 public static final String executeUserQuery(
-                        boolean populateAncestorIdParam)
+                        boolean populateAncestorIdParam,
+                        int queryLimitParam,
+                        int offsetParam)
                 {
-                    if(populateAncestorIdParam)
-                    {
-                        return Version.VERSION_1.concat(ROOT).concat(EXECUTE_POPULATE_ANCESTOR_ID);
-                    }
+                    String base = Version.VERSION_1.concat(ROOT).concat(EXECUTE);
+                    String additionString = "?";
                     
-                    return Version.VERSION_1.concat(ROOT).concat(EXECUTE);
+                    additionString += QueryParam.POPULATE_ANCESTOR_ID;
+                    additionString += "=";
+                    additionString += populateAncestorIdParam;
+                    additionString += "&";
+
+                    if(queryLimitParam > 0)
+                    {
+                        additionString += QueryParam.QUERY_LIMIT;
+                        additionString += "=";
+                        additionString += queryLimitParam;
+                        additionString += "&";
+                    }
+
+                    if(offsetParam > -1)
+                    {
+                        additionString += QueryParam.OFFSET;
+                        additionString += "=";
+                        additionString += offsetParam;
+                        additionString += "&";
+                    }
+
+                    //Cut of the end bit...
+                    additionString = additionString.substring(
+                            0, additionString.length() - 1);
+
+                    return base.concat(additionString);
                 }
                 
                 /**
                  * URL Path for executing a {@code UserQuery}.
                  *
+                 * @param queryLimitParam The query limit.
+                 * @param offsetParam The query offset.
+                 *
                  * @return {@code v1/user_query/execute}
                  */
-                public static final String executeUserQuery()
-                {
-                    return executeUserQuery(true);
+                public static final String executeUserQuery(
+                        int queryLimitParam,
+                        int offsetParam
+                ) {
+                    return executeUserQuery(true,
+                            queryLimitParam, offsetParam);
                 }
 
                 /**

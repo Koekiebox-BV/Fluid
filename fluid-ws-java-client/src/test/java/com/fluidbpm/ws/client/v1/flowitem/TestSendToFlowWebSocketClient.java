@@ -114,8 +114,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
                 BASE_URL, this.serviceTicket);
 
         //New synchronous client...
-        this.webSocketClient =
-                new WebSocketSendToFlowClient(
+        this.webSocketClient = new WebSocketSendToFlowClient(
                         BASE_URL,
                         null,
                         this.serviceTicketHex,

@@ -17,7 +17,6 @@ package com.fluidbpm.ws.client.v1.form;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -62,7 +61,7 @@ public class WebSocketFormContainerCreateClient extends
             String serviceTicketAsHexParam,
             long timeoutInMillisParam) {
         super(endpointBaseUrlParam,
-                new CreateFormContainerMessageHandler(messageReceivedCallbackParam),
+                messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.FormContainer.Version1.formContainerCreateWebSocket(
                         serviceTicketAsHexParam));
@@ -80,8 +79,6 @@ public class WebSocketFormContainerCreateClient extends
     public Form createFormContainerSynchronized(
             Form formToCreateParam) {
 
-        this.getMessageHandler().clear();
-
         if(formToCreateParam == null)
         {
             return null;
@@ -93,20 +90,18 @@ public class WebSocketFormContainerCreateClient extends
             formToCreateParam.setEcho(UUID.randomUUID().toString());
         }
 
-        CompletableFuture<List<Form>> completableFuture = new CompletableFuture();
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
-        //Set the future...
-        this.getMessageHandler().setCompletableFuture(completableFuture);
-        
         //Send the actual message...
-        this.sendMessage(formToCreateParam);
-
+        this.sendMessage(formToCreateParam, uniqueReqId);
+        
         try {
-            List<Form> returnValue = completableFuture.get(
+            List<Form> returnValue = this.getHandler(uniqueReqId).getCF().get(
                     this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
-            if(this.getMessageHandler().isConnectionClosed())
+            if(this.getHandler(uniqueReqId).isConnectionClosed())
             {
                 throw new FluidClientException(
                         "WebSocket-CreateFormContainer: " +
@@ -153,28 +148,24 @@ public class WebSocketFormContainerCreateClient extends
 
             throw new FluidClientException(
                     "WebSocket-CreateFormContainer: Timeout while waiting for all return data. There were '"
-                            +this.getMessageHandler().getReturnValue().size()
+                            +this.getHandler(uniqueReqId).getReturnValue().size()
                             +"' items after a Timeout of "+(
                             TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
                     ,FluidClientException.ErrorCode.IO_ERROR);
         }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
     }
 
     /**
-     * Creates a new Form Container from {@code formToGetAncestorsForForParam}
-     * asynchronously.
+     * Create a new instance of the handler class for {@code this} client.
      *
-     * @param formToCreateParam The Fluid Form create.
+     * @return new instance of {@code CreateFormContainerMessageHandler}
      */
-    public void createFormAsynchronous(Form formToCreateParam) {
-
-        if(formToCreateParam == null)
-        {
-            return;
-        }
-
-        //Send the actual message...
-        this.sendMessage(formToCreateParam);
+    @Override
+    public CreateFormContainerMessageHandler getNewHandlerInstance() {
+        return new CreateFormContainerMessageHandler(this.messageReceivedCallback);
     }
 
     /**
