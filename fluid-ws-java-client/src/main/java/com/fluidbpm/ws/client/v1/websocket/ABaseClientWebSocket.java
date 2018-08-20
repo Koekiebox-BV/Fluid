@@ -26,6 +26,7 @@ import javax.websocket.DeploymentException;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 
@@ -343,6 +344,25 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
         }
         
         return this.webSocketClient.isSessionOpen();
+    }
+
+    /**
+     * Set the {@code echo} value if not set.
+     *
+     * @param baseToSetEchoOnIfNotSetParam The value object to set {@code echo} on.
+     */
+    protected void setEchoIfNotSet(ABaseFluidVO baseToSetEchoOnIfNotSetParam){
+        if(baseToSetEchoOnIfNotSetParam == null) {
+            
+            throw new FluidClientException(
+                    "Cannot provide 'null' for value object / pojo.",
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+        }
+        else if(baseToSetEchoOnIfNotSetParam.getEcho() == null ||
+                baseToSetEchoOnIfNotSetParam.getEcho().trim().isEmpty())
+        {
+            baseToSetEchoOnIfNotSetParam.setEcho(UUID.randomUUID().toString());
+        }
     }
 
     /**

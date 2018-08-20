@@ -168,6 +168,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             //Send all the messages...
             for(Form formToSend : formToGetDescendantsForParam)
             {
+                this.setEchoIfNotSet(formToSend);
+
                 //Send the actual message...
                 this.sendMessage(formToSend, uniqueReqId);
             }

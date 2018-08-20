@@ -15,18 +15,28 @@
 
 package com.fluidbpm.ws.client.v1.websocket;
 
+import org.json.JSONObject;
+
 /**
  * Contract interface for message handler.
  *
  * @author jasonbruwer on 2016/03/11.
  * @since 1.1
+ * @version  v1.8
  */
 public interface IMessageResponseHandler {
 
     /**
+     * Checks whether {@code subclass} message handler can process
+     * the message {@code messageParam}.
      *
-     * @param messageParam
-     * @return
+     * If the handler can't process the message, a {@code null} value
+     * should be returned.
+     *
+     * @param messageParam The message to check for qualification.
+     * @return The JSONObject.
+     *
+     * @see JSONObject
      */
     public Object doesHandlerQualifyForProcessing(String messageParam);
 

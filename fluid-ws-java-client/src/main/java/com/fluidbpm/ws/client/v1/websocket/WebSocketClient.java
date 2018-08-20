@@ -97,6 +97,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      */
     @OnMessage
     public void onMessage(String messageParam) {
+
+        boolean handlerFoundForMsg = false;
         for(IMessageResponseHandler handler : this.messageHandlers.values()){
 
             Object qualifyObj =
@@ -107,8 +109,15 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             } else if(qualifyObj instanceof JSONObject){
 
                 handler.handleMessage(qualifyObj);
+                handlerFoundForMsg = true;
                 break;
             }
+        }
+
+        if(!handlerFoundForMsg){
+            throw new FluidClientException(
+                    "No handler found for message;\n"+messageParam,
+                    FluidClientException.ErrorCode.IO_ERROR);
         }
     }
 

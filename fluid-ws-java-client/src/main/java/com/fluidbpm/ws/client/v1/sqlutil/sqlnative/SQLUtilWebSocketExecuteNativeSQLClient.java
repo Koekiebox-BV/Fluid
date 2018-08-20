@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil.sqlnative;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -132,11 +131,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
         }
 
         //Validate the echo...
-        if(nativeSQLQueryParam.getEcho() == null ||
-                nativeSQLQueryParam.getEcho().trim().isEmpty())
-        {
-            nativeSQLQueryParam.setEcho(UUID.randomUUID().toString());
-        }
+        this.setEchoIfNotSet(nativeSQLQueryParam);
 
         //Start a new request...
         String uniqueReqId = this.initNewRequest();

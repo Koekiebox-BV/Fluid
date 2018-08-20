@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -127,16 +126,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
         //Send all the messages...
         for(Form formToSend : formsToGetTableFormsForParam)
         {
-            if(formToSend == null)
-            {
-                throw new FluidClientException(
-                        "Cannot provide 'null' for Form.",
-                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-            }
-            else if(formToSend.getEcho() == null || formToSend.getEcho().trim().isEmpty())
-            {
-                formToSend.setEcho(UUID.randomUUID().toString());
-            }
+            this.setEchoIfNotSet(formToSend);
 
             //Send the actual message...
             this.sendMessage(formToSend, uniqueReqId);

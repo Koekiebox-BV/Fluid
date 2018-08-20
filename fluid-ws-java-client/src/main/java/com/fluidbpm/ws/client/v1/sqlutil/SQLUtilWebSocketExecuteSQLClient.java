@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -114,11 +113,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
         }
 
         //Validate the echo...
-        if(formWithSQLFieldParam.getEcho() == null ||
-                formWithSQLFieldParam.getEcho().trim().isEmpty())
-        {
-            formWithSQLFieldParam.setEcho(UUID.randomUUID().toString());
-        }
+        this.setEchoIfNotSet(formWithSQLFieldParam);
 
         //Start a new request...
         String uniqueReqId = this.initNewRequest();

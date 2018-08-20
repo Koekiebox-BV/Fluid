@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -126,11 +125,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
         }
 
         //Send all the messages...
-        if(formToGetAncestorForParam.getEcho() == null ||
-                formToGetAncestorForParam.getEcho().trim().isEmpty())
-        {
-            formToGetAncestorForParam.setEcho(UUID.randomUUID().toString());
-        }
+        this.setEchoIfNotSet(formToGetAncestorForParam);
 
         //Start a new request...
         String uniqueReqId = this.initNewRequest();
