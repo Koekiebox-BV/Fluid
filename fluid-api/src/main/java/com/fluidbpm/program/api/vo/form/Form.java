@@ -1288,26 +1288,41 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         }
 
         //Current User...
-        if(this.getCurrentUser() != null)
-        {
-            JSONObject currentUserJsonObj = new JSONObject();
+        JSONObject currentUserJsonObj = new JSONObject();
 
-            if(this.getCurrentUser().getId() != null)
+        if(this.getCurrentUser() == null) {
+            currentUserJsonObj.put(
+                    User.JSONMapping.Elastic.USER_ID, JSONObject.NULL);
+            currentUserJsonObj.put(User.JSONMapping.USERNAME, JSONObject.NULL);
+        } else{
+
+            //Id...
+            if(this.getCurrentUser().getId() == null ||
+                    this.getCurrentUser().getId().longValue() < 1)
             {
+                currentUserJsonObj.put(
+                        User.JSONMapping.Elastic.USER_ID,
+                        JSONObject.NULL);
+            } else{
                 currentUserJsonObj.put(
                         User.JSONMapping.Elastic.USER_ID,
                         this.getCurrentUser().getId());
             }
 
-            if(this.getCurrentUser().getUsername() != null)
+            //Username...
+            if(this.getCurrentUser().getUsername() == null ||
+                    this.getCurrentUser().getUsername().trim().isEmpty())
             {
+                currentUserJsonObj.put(User.JSONMapping.USERNAME,
+                        JSONObject.NULL);
+            } else {
                 currentUserJsonObj.put(User.JSONMapping.USERNAME,
                         this.getCurrentUser().getUsername());
             }
-
-            returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
         }
 
+        returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
+        
         //Date Created...
         if(this.getDateCreated() != null)
         {

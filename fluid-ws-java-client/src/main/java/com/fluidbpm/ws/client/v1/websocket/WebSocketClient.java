@@ -32,6 +32,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * Establishes a connection to remote.
      *
      * @param endpointURIParam The Endpoint URI.
+     * @param messageHandlersParam Map of message handlers.
      * @throws DeploymentException If there is a connection problem.
      * @throws IOException If there is a I/O problem.
      */

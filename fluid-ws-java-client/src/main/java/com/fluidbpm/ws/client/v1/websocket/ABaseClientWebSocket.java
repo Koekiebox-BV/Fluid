@@ -68,6 +68,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
      * Default constructor.
      *
      * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Optional callback object (observer).
      * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
      * @param postFixForUrlParam The URL Postfix.
      * @param compressResponseParam Expect the response to be compressed.
@@ -87,6 +88,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
      * Default constructor.
      *
      * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Optional callback object (observer).
      * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
      * @param postFixForUrlParam The URL Postfix.
      */
@@ -159,6 +161,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
      * Send the {@code baseFluidJSONObjectParam} via Web Socket.
      *
      * @param baseFluidJSONObjectParam The JSONObject to send.
+     * @param requestIdParam The unique request id.
      *
      * @see org.json.JSONObject
      */
@@ -240,6 +243,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
     /**
      * Returns the {@code ThreadLocal} instance of MessageHandler.
+     *
+     * @param requestUniqueIdParam The unique request id.
      *
      * @see ThreadLocal
      *
