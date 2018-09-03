@@ -1709,7 +1709,6 @@ public class WS {
                 //Read...
                 public static final String READ_RULES_BY_STEP = ("/get_by_step");
 
-
                 public static final String READ = ("/get_by_id");
                 public static final String COMPILE_SYNTAX = ("/compile_syntax");
                 public static final String GET_NEXT_VALID_SYNTAX = ("/get_next_valid_syntax");
@@ -1999,6 +1998,8 @@ public class WS {
 
                 //Get...
                 public static final String GET_BY_JOB_VIEW = ("/get_by_job_view");
+                public static final String READ = ("/get_by_id");
+                public static final String READ_BY_FORM = ("/get_by_form");
 
                 /**
                  * Mapping for frequently used HTTP parameters.
@@ -2085,6 +2086,24 @@ public class WS {
                     return returnVal;
                 }
 
+                /**
+                 * URL Path for Flow Item get by id.
+                 *
+                 * @return {@code v1/flow_item/get_by_id}
+                 */
+                public static final String getById() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for Flow Item get by Form.
+                 *
+                 * @return {@code v1/flow_item/get_by_form}
+                 */
+                public static final String getByForm() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM);
+                }
+                
                 /**
                  * URL Path for Flow Item get by {@link com.fluidbpm.program.api.vo.flow.JobView}.
                  *
