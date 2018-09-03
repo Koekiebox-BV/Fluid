@@ -106,6 +106,8 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
      * @param nativeSQLQueryParam The SQL Query to execute.
      *
      * @return The SQL Execution result as {@code SQLResultSet}'s.
+     * 
+     * @throws FluidClientException if data-source name is not set.
      */
     public List<SQLResultSet> executeNativeSQLSynchronized(
             NativeSQLQuery nativeSQLQueryParam) {
@@ -118,7 +120,9 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
         if(nativeSQLQueryParam.getDatasourceName() == null ||
                 nativeSQLQueryParam.getDatasourceName().isEmpty())
         {
-            return null;
+            throw new FluidClientException(
+                    "No data-source name provided. Not allowed.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
         //No query to execute...
