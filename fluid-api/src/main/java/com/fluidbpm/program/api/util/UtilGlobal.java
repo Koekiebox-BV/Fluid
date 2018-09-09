@@ -35,13 +35,16 @@ import com.fluidbpm.program.api.vo.field.TableField;
 public class UtilGlobal {
 
     public static final String EMPTY = "";
-    public static final String REG_EX_PIPE = "\\|";
     public static final String PIPE = "|";
     public static final String COMMA = ",";
     public static final String COMMA_SPACE = ", ";
     public static final String FORWARD_SLASH = "/";
 
+    //RegEx...
     public static final String REG_EX_COMMA = "\\,";
+    public static final String REG_EX_PIPE = "\\|";
+
+    public static final String ZERO = "0";
 
     /**
      * The field type id mappings.
@@ -111,27 +114,27 @@ public class UtilGlobal {
      * @param textToCheckParam The Latitude and Longitude to extract Latitude from.
      * @return Geo Latitude from {@code textToCheckParam}.
      */
-    public double getLatitudeFromFluidText(String textToCheckParam)
-    {
-        if(textToCheckParam == null || textToCheckParam.isEmpty())
-        {
-            return 0.0;
+    public String getLatitudeFromFluidText(String textToCheckParam) {
+
+        if(textToCheckParam == null || textToCheckParam.isEmpty()) {
+            return EMPTY;
         }
 
-        String[] latitudeAndLongitude =
-                textToCheckParam.split(REG_EX_PIPE);
+        String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+            latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
+        }
 
-        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
-        {
-            return 0.0;
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
+            return ZERO;
         }
 
         if(latitudeAndLongitude.length > 1)
         {
-            return toDoubleSafe(latitudeAndLongitude[0]);
+            return toGoeSafe(latitudeAndLongitude[0]);
         }
 
-        return 0.0;
+        return ZERO;
     }
 
     /**
@@ -141,26 +144,26 @@ public class UtilGlobal {
      * @param textToCheckParam The Latitude and Longitude to extract Longitude from.
      * @return Geo Longitude from {@code textToCheckParam}.
      */
-    public double getLongitudeFromFluidText(String textToCheckParam)
-    {
+    public String getLongitudeFromFluidText(String textToCheckParam) {
         if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
         {
-            return 0.0;
+            return EMPTY;
         }
 
-        String[] latitudeAndLongitude =
-                textToCheckParam.split(REG_EX_PIPE);
-        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
-        {
-            return 0.0;
+        String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+            latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
+        }
+        
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
+            return ZERO;
         }
 
-        if(latitudeAndLongitude.length > 1)
-        {
-            return this.toDoubleSafe(latitudeAndLongitude[1]);
+        if(latitudeAndLongitude.length > 1) {
+            return this.toGoeSafe(latitudeAndLongitude[1]);
         }
 
-        return 0.0;
+        return ZERO;
     }
 
     /**
@@ -172,21 +175,20 @@ public class UtilGlobal {
      */
     public double getLatitudeFromElasticSearchText(String textToCheckParam)
     {
-        if(textToCheckParam == null || textToCheckParam.isEmpty())
-        {
+        if(textToCheckParam == null || textToCheckParam.isEmpty()) {
             return 0.0;
         }
 
-        String[] latitudeAndLongitude =
-                textToCheckParam.split(REG_EX_COMMA);
+        String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+            latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
+        }
 
-        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
-        {
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
             return 0.0;
         }
 
-        if(latitudeAndLongitude.length > 1)
-        {
+        if(latitudeAndLongitude.length > 1) {
             return toDoubleSafe(latitudeAndLongitude[0]);
         }
 
@@ -202,20 +204,20 @@ public class UtilGlobal {
      */
     public double getLongitudeFromElasticSearchText(String textToCheckParam)
     {
-        if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
-        {
+        if(textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
             return 0.0;
         }
 
-        String[] latitudeAndLongitude =
-                textToCheckParam.split(REG_EX_COMMA);
-        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0)
-        {
+        String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+            latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
+        }
+        
+        if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
             return 0.0;
         }
 
-        if(latitudeAndLongitude.length > 1)
-        {
+        if(latitudeAndLongitude.length > 1) {
             return this.toDoubleSafe(latitudeAndLongitude[1]);
         }
 
@@ -237,6 +239,35 @@ public class UtilGlobal {
             return Double.parseDouble(toParseParam);
         } catch (NumberFormatException e) {
             return 0D;
+        }
+    }
+
+    /**
+     * Convert the {@code toParseParam} to a double.
+     *
+     * @param toParseParam The {@code String} value to convert to {@code double}.
+     *
+     * @return {@code toParseParam} converted to a {@code double}.
+     */
+    public final String toGoeSafe(String toParseParam) {
+        if (toParseParam == null || toParseParam.trim().isEmpty()) {
+            return ZERO;
+        }
+        try {
+            for(char charToCheck : toParseParam.toCharArray()){
+
+                if(!Character.isDigit(charToCheck) && '.' != charToCheck){
+                    return ZERO;
+                }
+            }
+
+            if(toParseParam.length() > 12){
+                return toParseParam.substring(0,12);
+            }
+
+            return toParseParam;
+        } catch (NumberFormatException e) {
+            return ZERO;
         }
     }
 
@@ -469,10 +500,10 @@ public class UtilGlobal {
             {
                 String formFieldValueStr = fieldValue.toString();
 
-                double latitude = this.getLatitudeFromFluidText(formFieldValueStr);
-                double longitude = this.getLongitudeFromFluidText(formFieldValueStr);
+                String latitudeTxt = this.getLatitudeFromFluidText(formFieldValueStr);
+                String longitudeTxt = this.getLongitudeFromFluidText(formFieldValueStr);
 
-                fieldValue = (latitude + UtilGlobal.COMMA + longitude);
+                fieldValue = (latitudeTxt.concat(UtilGlobal.COMMA).concat(longitudeTxt));
             }
 
             objectToSetFieldOnParam.put(completeFieldName, fieldValue);

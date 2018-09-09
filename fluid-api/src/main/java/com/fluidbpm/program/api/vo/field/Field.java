@@ -742,17 +742,15 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
                 fieldValue instanceof String)
         {
-            if((fieldValue instanceof String) &&
-                    LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData()))
-            {
+            if((fieldValue instanceof String) && LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
                 String formFieldValueStr = fieldValue.toString();
 
                 UtilGlobal utilGlobal = new UtilGlobal();
 
-                double latitude = utilGlobal.getLatitudeFromFluidText(formFieldValueStr);
-                double longitude = utilGlobal.getLongitudeFromFluidText(formFieldValueStr);
-
-                fieldValue = (latitude + UtilGlobal.COMMA + longitude);
+                String latitude = utilGlobal.getLatitudeFromFluidText(formFieldValueStr);
+                String longitude = utilGlobal.getLongitudeFromFluidText(formFieldValueStr);
+                
+                fieldValue = (latitude.concat(UtilGlobal.COMMA).concat(longitude));
             }
 
             returnVal.put(fieldIdAsString, fieldValue);

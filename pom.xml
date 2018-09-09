@@ -207,12 +207,12 @@
             </dependency>
 
             <!--Jackson Provider-->
-            <dependency>
+            <!--dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jackson-provider</artifactId>
                 <version>${version.jboss.resteasy.jackson}</version>
                 <scope>provided</scope>
-            </dependency>
+            </dependency-->
 
             <!--Maven GPG Plugin-->
             <dependency>
