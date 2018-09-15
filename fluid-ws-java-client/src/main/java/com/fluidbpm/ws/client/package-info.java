@@ -1,6 +1,5 @@
 /**
  * Fluid-BPM Java API client classes used by Fluid-BPM.
- * <p>
  * The implementation is used for product as well as reference.
  *
  * @since 1.8
