@@ -1102,6 +1102,7 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
+                public static final String READ_BY_NAME = ("/get_by_name");
 
                 /**
                  * Root for User Field.
@@ -1140,10 +1141,8 @@ public class WS {
                  *
                  * @return {@code v1/user_field/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
-                public static final String userFieldDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String userFieldDelete(boolean forceDeleteParam) {
+                    if(forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -1155,8 +1154,7 @@ public class WS {
                  *
                  * @return {@code v1/user_field/update}
                  */
-                public static final String userFieldUpdate()
-                {
+                public static final String userFieldUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -1165,9 +1163,17 @@ public class WS {
                  *
                  * @return {@code v1/user_field/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
+                }
+
+                /**
+                 * URL Path for User Field get by name.
+                 *
+                 * @return {@code v1/user_field/get_by_name}
+                 */
+                public static final String getByName() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
                 }
             }
         }

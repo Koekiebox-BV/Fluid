@@ -148,16 +148,14 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      */
     public void sendMessage(String messageToSendParam) {
 
-        if(this.userSession == null)
-        {
+        if(this.userSession == null) {
             throw new FluidClientException(
                     "User Session is not set. Check if connection is open.",
                     FluidClientException.ErrorCode.IO_ERROR);
         }
 
         RemoteEndpoint.Async asyncRemote = null;
-        if((asyncRemote = this.userSession.getAsyncRemote()) == null)
-        {
+        if((asyncRemote = this.userSession.getAsyncRemote()) == null) {
             throw new FluidClientException(
                     "Remote Session is not set. Check if connection is open.",
                     FluidClientException.ErrorCode.IO_ERROR);
@@ -171,8 +169,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      */
     public void closeSession()
     {
-        if(this.userSession == null)
-        {
+        if(this.userSession == null) {
             return;
         }
 
@@ -194,11 +191,23 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      */
     public boolean isSessionOpen()
     {
-        if(this.userSession == null)
-        {
+        if(this.userSession == null) {
             return false;
         }
 
         return this.userSession.isOpen();
+    }
+
+    /**
+     * Return the current user session id.
+     *
+     * @return {@code Session ID} if session is open, otherwise {@code null}.
+     */
+    public String getSessionId(){
+        if(this.userSession == null) {
+            return null;
+        }
+
+        return this.userSession.getId();
     }
 }

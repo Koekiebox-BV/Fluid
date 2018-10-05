@@ -60,6 +60,7 @@ public class User extends ABaseFluidJSONObject {
 
     private String salt;
     private List<Role> roles;
+    private boolean emailUserNotification;
     private List<String> emailAddresses;
     private List<Field> userFields;
 
@@ -97,6 +98,7 @@ public class User extends ABaseFluidJSONObject {
 
         public static final String ROLES = "roles";
         public static final String EMAIL_ADDRESSES = "emailAddresses";
+        public static final String EMAIL_USER_NOTIFICATION = "emailUserNotification";
         public static final String SALT = "salt";
         public static final String USER_FIELDS = "userFields";
 
@@ -223,8 +225,15 @@ public class User extends ABaseFluidJSONObject {
 
         //Locale...
         if (!this.jsonObject.isNull(JSONMapping.LOCALE)) {
-            this.setLocale(this.jsonObject.getString(
-                    JSONMapping.LOCALE));
+            this.setLocale(this.jsonObject.getString(JSONMapping.LOCALE));
+        }
+
+        //Email User Notification...
+        if (this.jsonObject.isNull(JSONMapping.EMAIL_USER_NOTIFICATION)) {
+            this.setEmailUserNotification(false);
+        } else{
+            this.setEmailUserNotification(
+                    this.jsonObject.getBoolean(JSONMapping.EMAIL_USER_NOTIFICATION));
         }
 
         //Roles...
@@ -474,6 +483,24 @@ public class User extends ABaseFluidJSONObject {
      */
     public void setLocale(String localeParam) {
         this.locale = localeParam;
+    }
+
+    /**
+     * Gets whether user will receive email notification.
+     *
+     * @return {@code true} if user will receive email, otherwise {@code false}.
+     */
+    public boolean isEmailUserNotification() {
+        return this.emailUserNotification;
+    }
+
+    /**
+     * Sets whether user will receive email notification.
+     *
+     * @param emailUserNotificationParam Send email for notification.
+     */
+    public void setEmailUserNotification(boolean emailUserNotificationParam) {
+        this.emailUserNotification = emailUserNotificationParam;
     }
 
     /**
@@ -754,10 +781,12 @@ public class User extends ABaseFluidJSONObject {
         }
 
         //Locale...
-        if(this.getLocale() != null)
-        {
+        if(this.getLocale() != null) {
             returnVal.put(JSONMapping.LOCALE, this.getLocale());
         }
+
+        //Email Notification...
+        returnVal.put(JSONMapping.EMAIL_USER_NOTIFICATION, this.isEmailUserNotification());
 
         //Roles...
         if(this.getRoles() != null && !this.getRoles().isEmpty())

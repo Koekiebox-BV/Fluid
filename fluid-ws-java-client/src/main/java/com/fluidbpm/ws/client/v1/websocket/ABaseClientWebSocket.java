@@ -342,13 +342,24 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
      */
     @Override
     public boolean isConnectionValid() {
-
-        if(this.webSocketClient == null)
-        {
+        if(this.webSocketClient == null) {
             return false;
         }
         
         return this.webSocketClient.isSessionOpen();
+    }
+
+    /**
+     * Return the current user session id.
+     *
+     * @return {@code Session ID} if session is open, otherwise {@code null}.
+     */
+    public String getSessionId() {
+        if(this.webSocketClient == null) {
+            return null;
+        }
+
+        return this.webSocketClient.getSessionId();
     }
 
     /**
