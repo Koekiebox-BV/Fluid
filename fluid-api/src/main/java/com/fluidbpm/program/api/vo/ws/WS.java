@@ -1099,6 +1099,7 @@ public class WS {
 
                 //Update...
                 public static final String UPDATE = ("/update");
+                public static final String UPDATE_VALUE = ("/update_value");
 
                 //Read...
                 public static final String READ = ("/get_by_id");
@@ -1156,6 +1157,16 @@ public class WS {
                  */
                 public static final String userFieldUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+                }
+
+                /**
+                 * URL Path for User Field Value update.
+                 *
+                 * @return {@code v1/user_field/update_value}
+                 */
+                public static final String userFieldUpdateValue()
+                {
+                    return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
                 }
 
                 /**
@@ -2352,6 +2363,7 @@ public class WS {
                 public static final String ACTIVATE = ("/activate");
                 public static final String INCREMENT_INVALID_LOGIN =
                         ("/increment_invalid_login");
+                public static final String CHANGE_PASSWORD = ("/change_password");
 
                 //Delete...
                 public static final String DELETE = ("/delete");
@@ -2518,9 +2530,17 @@ public class WS {
                  *
                  * @return {@code v1/user/increment_invalid_login}
                  */
-                public static final String incrementInvalidLogin()
-                {
+                public static final String incrementInvalidLogin() {
                     return Version.VERSION_1.concat(ROOT).concat(INCREMENT_INVALID_LOGIN);
+                }
+
+                /**
+                 * URL Path for changing a User password.
+                 *
+                 * @return {@code v1/user/change_password}
+                 */
+                public static final String changePassword() {
+                    return Version.VERSION_1.concat(ROOT).concat(CHANGE_PASSWORD);
                 }
 
                 /**

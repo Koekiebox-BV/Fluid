@@ -169,6 +169,43 @@ public class UserClient extends ABaseClientWS {
     }
 
     /**
+     * Change the password for the currently logged in user.
+     *
+     * @param existingPasswordParam The current password.
+     * @param newPasswordParam The new password.
+     * @param confirmNewPasswordParam The new password again.
+     *
+     * @return {@code User} which password was changed.
+     */
+    public User changePasswordForLoggedInUser(
+            String existingPasswordParam,
+            String newPasswordParam,
+            String confirmNewPasswordParam) {
+        User toChangePasswordFor = new User();
+        if(this.serviceTicket != null) {
+            toChangePasswordFor.setServiceTicket(this.serviceTicket);
+        }
+
+        String existingPassword =
+                existingPasswordParam == null ? UtilGlobal.EMPTY: existingPasswordParam;
+        String newPassword =
+                newPasswordParam == null ? UtilGlobal.EMPTY: newPasswordParam;
+        String confirmNewPassword =
+                confirmNewPasswordParam == null ? UtilGlobal.EMPTY: confirmNewPasswordParam;
+
+        JSONObject passwordClear = new JSONObject();
+        passwordClear.put("existing",existingPassword);
+        passwordClear.put("new",newPassword);
+        passwordClear.put("confirm_new",confirmNewPassword);
+
+        toChangePasswordFor.setPasswordClear(passwordClear.toString());
+
+        return new User(this.postJson(
+                toChangePasswordFor,
+                WS.Path.User.Version1.changePassword()));
+    }
+
+    /**
      * Deletes the {@code User} provided.
      * Id must be set on the {@code User}.
      *

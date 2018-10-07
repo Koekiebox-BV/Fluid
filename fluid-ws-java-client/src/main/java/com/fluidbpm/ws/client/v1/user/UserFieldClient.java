@@ -469,6 +469,22 @@ public class UserFieldClient extends ABaseFieldClient {
     }
 
     /**
+     * Update an existing User field value.
+     *
+     * @param userFieldValueParam Field to Update.
+     * @return Updated Field.
+     */
+    public Field updateFieldValue(Field userFieldValueParam) {
+        if(userFieldValueParam != null && this.serviceTicket != null) {
+            userFieldValueParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new Field(this.postJson(
+                userFieldValueParam,
+                WS.Path.UserField.Version1.userFieldUpdateValue()));
+    }
+
+    /**
      * Retrieves field information by {@code fieldIdParam}.
      *
      * @param fieldIdParam The field Primary Key.
