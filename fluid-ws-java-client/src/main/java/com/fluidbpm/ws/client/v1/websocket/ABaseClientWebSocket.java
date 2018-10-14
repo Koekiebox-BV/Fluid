@@ -131,7 +131,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
         try {
             this.webSocketClient = new WebSocketClient(
-                    new URI(completeUrl),this.messageHandler);
+                    new URI(completeUrl), this.messageHandler);
         }
         //Deploy...
         catch (DeploymentException e) {

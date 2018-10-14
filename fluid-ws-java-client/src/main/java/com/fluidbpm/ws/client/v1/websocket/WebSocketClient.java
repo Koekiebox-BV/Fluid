@@ -2,6 +2,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.websocket.*;
@@ -100,7 +101,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     public void onMessage(String messageParam) {
 
         boolean handlerFoundForMsg = false;
-        for(IMessageResponseHandler handler : this.messageHandlers.values()){
+        for(IMessageResponseHandler handler :
+                new ArrayList<>(this.messageHandlers.values())){
 
             Object qualifyObj =
                     handler.doesHandlerQualifyForProcessing(messageParam);
