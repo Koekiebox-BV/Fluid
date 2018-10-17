@@ -381,6 +381,31 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     @XmlTransient
     public Object getFieldValueForField(String fieldNameParam) {
 
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValue();
+    }
+
+    /**
+     * <p>
+     *     Returns the {@code Field} of the {@code fieldNameParam} requested.
+     *
+     * <p>
+     *     The {@code fieldNameParam} <b>is not</b> case sensitive.
+     * <p>
+     *     A {@code null} will be returned if;
+     *     <ul>
+     *         <li>{@code fieldNameParam} is {@code null} or empty.</li>
+     *         <li>{@code getFormFields()} is {@code null} or empty.</li>
+     *         <li>Field is not found by {@code fieldNameParam}.</li>
+     *     </ul>
+     *
+     * @param fieldNameParam The name of the Form Field as in Fluid.
+     * @return The Form Field.
+     *
+     * @see Field
+     */
+    @XmlTransient
+    public Field getField(String fieldNameParam) {
         if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
             return null;
         }
@@ -394,16 +419,14 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         for (Field field : this.getFormFields()) {
 
             String fieldName = field.getFieldName();
-
             if (fieldName == null || fieldName.trim().isEmpty()) {
                 continue;
             }
 
             String fieldNameLower = fieldName.trim().toLowerCase();
-
             if (fieldNameParamLower.equals(fieldNameLower)) {
 
-                return field.getFieldValue();
+                return field;
             }
         }
 
