@@ -52,8 +52,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code MultiChoice} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String AVAILABLE_MULTI_CHOICES = "availableMultiChoices";
         public static final String SELECTED_MULTI_CHOICES = "selectedMultiChoices";
 
@@ -82,9 +81,21 @@ public class MultiChoice extends ABaseFluidJSONObject {
      *
      * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
      */
-    public MultiChoice(List<String> selectedMultiChoicesParam)
-    {
+    public MultiChoice(List<String> selectedMultiChoicesParam) {
         this.selectedMultiChoices = selectedMultiChoicesParam;
+    }
+
+    /**
+     * Sets the Selected and Available MultiChoices for when multiple selections are supported.
+     *
+     * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
+     * @param availableMultiChoicesParam List of Available {@code MultiChoices}s.
+     */
+    public MultiChoice(
+            List<String> selectedMultiChoicesParam,
+            List<String> availableMultiChoicesParam) {
+        this.selectedMultiChoices = selectedMultiChoicesParam;
+        this.availableMultiChoices = availableMultiChoicesParam;
     }
 
     /**
@@ -92,11 +103,9 @@ public class MultiChoice extends ABaseFluidJSONObject {
      *
      * @param selectedMultiChoiceValueParam Selected {@code MultiChoices} {@code String} value.
      */
-    public MultiChoice(String selectedMultiChoiceValueParam)
-    {
+    public MultiChoice(String selectedMultiChoiceValueParam) {
         this.selectedMultiChoices = new ArrayList();
-        if(selectedMultiChoiceValueParam != null)
-        {
+        if(selectedMultiChoiceValueParam != null) {
             this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
         }
     }
@@ -234,8 +243,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException
-    {
+    public JSONObject toJsonObject() throws JSONException {
         JSONObject returnVal = super.toJsonObject();
 
         //Available...
@@ -375,8 +383,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
     @XmlTransient
     public String combineStringArrayWith(
             List<String> listToCombineParam,
-            String separatorCharsParam)
-    {
+            String separatorCharsParam) {
         String returnValue = UtilGlobal.EMPTY;
 
         int lengthOfSepChars = (separatorCharsParam == null) ? 0 :

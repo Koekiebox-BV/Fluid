@@ -732,8 +732,7 @@ public class FormFieldClient extends ABaseFieldClient {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
-        {
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
             formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
         }
@@ -751,30 +750,39 @@ public class FormFieldClient extends ABaseFieldClient {
      */
     public Field updateFieldMultiChoicePlain(
             Field formFieldParam,
-            List<String> multiChoiceValuesParam)
-    {
-        if(formFieldParam != null && this.serviceTicket != null)
-        {
+            List<String> multiChoiceValuesParam) {
+        if(formFieldParam != null && this.serviceTicket != null) {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
         if(multiChoiceValuesParam == null ||
-                multiChoiceValuesParam.isEmpty())
-        {
+                multiChoiceValuesParam.isEmpty()) {
             throw new FluidClientException(
                     "No Multi-choice values provided.",
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
-        {
+        List<String> beforeAvail = null, beforeSelected = null;
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
             formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
+
+            if(formFieldParam.getFieldValue() instanceof MultiChoice){
+                MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
+                beforeAvail = casted.getAvailableMultiChoices();
+                beforeSelected = casted.getSelectedMultiChoices();
+            }
+
             formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
-        return new Field(this.postJson(
+        Field returnVal = new Field(this.postJson(
                 formFieldParam, WS.Path.FormField.Version1.formFieldUpdate()));
+        if(formFieldParam != null){
+            formFieldParam.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+        }
+
+        return returnVal;
     }
 
     /**
@@ -786,30 +794,39 @@ public class FormFieldClient extends ABaseFieldClient {
      */
     public Field updateFieldMultiChoicePlainWithSearch(
             Field formFieldParam,
-            List<String> multiChoiceValuesParam)
-    {
-        if(formFieldParam != null && this.serviceTicket != null)
-        {
+            List<String> multiChoiceValuesParam) {
+        if(formFieldParam != null && this.serviceTicket != null) {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
         if(multiChoiceValuesParam == null ||
-                multiChoiceValuesParam.isEmpty())
-        {
+                multiChoiceValuesParam.isEmpty()) {
             throw new FluidClientException(
                     "No Multi-choice values provided.",
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
-        {
+        List<String> beforeAvail = null, beforeSelected = null;
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
             formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN_SEARCH);
+
+            if(formFieldParam.getFieldValue() instanceof MultiChoice){
+                MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
+                beforeAvail = casted.getAvailableMultiChoices();
+                beforeSelected = casted.getSelectedMultiChoices();
+            }
+
             formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
-        return new Field(this.postJson(
+        Field returnVal = new Field(this.postJson(
                 formFieldParam, WS.Path.FormField.Version1.formFieldUpdate()));
+        if(formFieldParam != null){
+            formFieldParam.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+        }
+
+        return returnVal;
     }
 
     /**
@@ -823,8 +840,7 @@ public class FormFieldClient extends ABaseFieldClient {
             Field formFieldParam,
             List<String> multiChoiceValuesParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
-        {
+        if(formFieldParam != null && this.serviceTicket != null) {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -836,15 +852,27 @@ public class FormFieldClient extends ABaseFieldClient {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
-        {
+        List<String> beforeAvail = null, beforeSelected = null;
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
             formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
+
+            if(formFieldParam.getFieldValue() instanceof MultiChoice){
+                MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
+                beforeAvail = casted.getAvailableMultiChoices();
+                beforeSelected = casted.getSelectedMultiChoices();
+            }
+
             formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
-        return new Field(this.postJson(
+        Field returnVal = new Field(this.postJson(
                 formFieldParam, WS.Path.FormField.Version1.formFieldUpdate()));
+        if(formFieldParam != null){
+            formFieldParam.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+        }
+
+        return returnVal;
     }
 
     /**
@@ -856,10 +884,8 @@ public class FormFieldClient extends ABaseFieldClient {
      */
     public Field updateFieldMultiChoiceSelectManyWithSearch(
             Field formFieldParam,
-            List<String> multiChoiceValuesParam)
-    {
-        if(formFieldParam != null && this.serviceTicket != null)
-        {
+            List<String> multiChoiceValuesParam) {
+        if(formFieldParam != null && this.serviceTicket != null) {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -871,15 +897,27 @@ public class FormFieldClient extends ABaseFieldClient {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(formFieldParam != null)
-        {
+        List<String> beforeAvail = null, beforeSelected = null;
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
             formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY_SEARCH);
+
+            if(formFieldParam.getFieldValue() instanceof MultiChoice){
+                MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
+                beforeAvail = casted.getAvailableMultiChoices();
+                beforeSelected = casted.getSelectedMultiChoices();
+            }
+
             formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
         }
 
-        return new Field(this.postJson(
+        Field returnVal = new Field(this.postJson(
                 formFieldParam, WS.Path.FormField.Version1.formFieldUpdate()));
+        if(formFieldParam != null){
+            formFieldParam.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+        }
+
+        return returnVal;
     }
 
     /**
@@ -895,8 +933,7 @@ public class FormFieldClient extends ABaseFieldClient {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
-        {
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.DateTime);
             formFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
         }
@@ -918,8 +955,7 @@ public class FormFieldClient extends ABaseFieldClient {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
-        {
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.DateTime);
             formFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
         }
