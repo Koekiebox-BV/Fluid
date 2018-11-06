@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
@@ -84,7 +85,15 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
      */
     public Object doesHandlerQualifyForProcessing(String messageParam){
 
-        JSONObject jsonObject = new JSONObject(messageParam);
+        JSONObject jsonObject = null;
+        try{
+            jsonObject = new JSONObject(messageParam);
+        }catch (JSONException jsonExcept){
+            throw new FluidClientException(
+                    "Unable to parse ["+messageParam+"]. "+
+                            jsonExcept.getMessage(),
+                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+        }
 
         Error fluidError = new Error(jsonObject);
         if(fluidError.getErrorCode() > 0) {

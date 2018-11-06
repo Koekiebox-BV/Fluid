@@ -2376,6 +2376,7 @@ public class WS {
                 public static final String READ_USER_FIELD_VALUES_BY_USER = ("/get_user_field_values_by_user");
                 public static final String READ_ALL = ("/get_all_users");
                 public static final String READ_ALL_BY_JOB_VIEW = ("/get_all_users_by_job_view");
+                public static final String READ_ALL_BY_ROLE = ("/get_all_users_by_role");
 
                 //Gravatar...
                 public static final String GET_GRAVATAR_BY_EMAIL = ("/get_gravatar_by_email");
@@ -2608,9 +2609,17 @@ public class WS {
                  *
                  * @return {@code v1/user/get_all_users_by_job_view}
                  */
-                public static final String getAllUsersByJobView()
-                {
+                public static final String getAllUsersByJobView() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_JOB_VIEW);
+                }
+
+                /**
+                 * URL Path for Users get by {@code Role}.
+                 *
+                 * @return {@code v1/user/get_all_users_by_role}
+                 */
+                public static final String getAllUsersByRole() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_ROLE);
                 }
 
                 /**

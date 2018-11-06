@@ -104,9 +104,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         for(IMessageResponseHandler handler :
                 new ArrayList<>(this.messageHandlers.values())){
 
-            Object qualifyObj =
-                    handler.doesHandlerQualifyForProcessing(messageParam);
-
+            Object qualifyObj = handler.doesHandlerQualifyForProcessing(messageParam);
             if(qualifyObj instanceof Error){
                 handler.handleMessage(qualifyObj);
             } else if(qualifyObj instanceof JSONObject){

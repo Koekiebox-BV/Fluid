@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
+import com.fluidbpm.program.api.vo.role.Role;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.user.UserFieldListing;
 import com.fluidbpm.program.api.vo.user.UserListing;
@@ -406,10 +407,8 @@ public class UserClient extends ABaseClientWS {
      * @see UserListing
      * @see JobView
      */
-    public UserListing getAllUsersByJobView(JobView jobViewParam)
-    {
-        if(this.serviceTicket != null && jobViewParam != null)
-        {
+    public UserListing getAllUsersByJobView(JobView jobViewParam) {
+        if(this.serviceTicket != null && jobViewParam != null) {
             jobViewParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -417,9 +416,31 @@ public class UserClient extends ABaseClientWS {
             return new UserListing(this.postJson(
                     jobViewParam,
                     WS.Path.User.Version1.getAllUsersByJobView()));
+        } catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
         }
-        //
-        catch (JSONException jsonExcept) {
+    }
+
+    /**
+     * Retrieves all Users by {@code roleParam}.
+     *
+     * @return User information at {@code UserListing}
+     *
+     * @param roleParam The {@link Role} to get users for.
+     *
+     * @see UserListing
+     * @see Role
+     */
+    public UserListing getAllUsersByRole(Role roleParam) {
+        if(this.serviceTicket != null && roleParam != null) {
+            roleParam.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new UserListing(this.postJson(
+                    roleParam, WS.Path.User.Version1.getAllUsersByRole()));
+        } catch (JSONException jsonExcept) {
             throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);
         }
