@@ -64,8 +64,7 @@ public class Role extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code Role} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String NAME = "name";
         public static final String DESCRIPTION = "description";
 
@@ -91,8 +90,17 @@ public class Role extends ABaseFluidJSONObject {
      */
     public Role(Long roleIdParam) {
         super();
-
         this.setId(roleIdParam);
+    }
+
+    /**
+     * Sets the Name associated with a 'Role'.
+     *
+     * @param roleNameParam Role Name.
+     */
+    public Role(String roleNameParam) {
+        super();
+        this.setName(roleNameParam);
     }
 
     /**

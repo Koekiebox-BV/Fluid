@@ -827,4 +827,60 @@ public class User extends ABaseFluidJSONObject {
 
         return returnVal;
     }
+
+    /**
+     * Verify whether {@code this} is equal to {@code objParam}.
+     *
+     * @param objParam The object to compare to
+     * @return {@code true} if {@code objParam} equals {@code this}, otherwise {@code false}.
+     */
+    @Override
+    @XmlTransient
+    public boolean equals(Object objParam) {
+        if(!(objParam instanceof User)){
+            return false;
+        }
+
+        if(this.getId() == null && this.getUsername() == null){
+            return false;
+        }
+
+        User paramCasted = (User)objParam;
+        if(paramCasted.getId() == null && paramCasted.getUsername() == null){
+            return false;
+        }
+
+        if(this.getId() != null && paramCasted.getId() != null){
+            return (this.getId().equals(paramCasted.getId()));
+        }
+
+        if(this.getUsername() != null && paramCasted.getUsername() != null){
+            return (this.getUsername().equals(paramCasted.getUsername()));
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns a hash code value for the object. This method is
+     * supported for the benefit of hash tables such as those provided by
+     * {@link java.util.HashMap}.
+     * 
+     * @return HashCode for combined {@code id} and {@code username}.
+     */
+    @Override
+    @XmlTransient
+    public int hashCode() {
+
+        int hasRadix = 100000;
+        if(this.getId() != null){
+            hasRadix += this.getId().hashCode();
+        }
+
+        if(this.getUsername() != null){
+            hasRadix += this.getUsername().hashCode();
+        }
+
+        return hasRadix;
+    }
 }
