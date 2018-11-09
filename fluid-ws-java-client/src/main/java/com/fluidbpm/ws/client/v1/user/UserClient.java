@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.user;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONException;
@@ -440,6 +441,33 @@ public class UserClient extends ABaseClientWS {
         try {
             return new UserListing(this.postJson(
                     roleParam, WS.Path.User.Version1.getAllUsersByRole()));
+        } catch (JSONException jsonExcept) {
+            throw new FluidClientException(jsonExcept.getMessage(),
+                    FluidClientException.ErrorCode.JSON_PARSING);
+        }
+    }
+
+    /**
+     * Retrieves all Users by {@code roleParam}.
+     *
+     * @return User information at {@code UserListing}
+     *
+     * @param loggedInSinceParam The date for last logged in.
+     *
+     * @see UserListing
+     */
+    public UserListing getAllUsersWhereLoggedInSince(Date loggedInSinceParam) {
+
+        User userToPost = new User();
+        userToPost.setLoggedInDateTime(loggedInSinceParam);
+
+        if(this.serviceTicket != null) {
+            userToPost.setServiceTicket(this.serviceTicket);
+        }
+
+        try {
+            return new UserListing(this.postJson(
+                    userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince()));
         } catch (JSONException jsonExcept) {
             throw new FluidClientException(jsonExcept.getMessage(),
                     FluidClientException.ErrorCode.JSON_PARSING);

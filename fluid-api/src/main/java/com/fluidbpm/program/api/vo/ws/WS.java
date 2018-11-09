@@ -2342,8 +2342,7 @@ public class WS {
             /**
              * User mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/user");
 
                 public static final String INIT_SESSION = "/init";
@@ -2377,6 +2376,7 @@ public class WS {
                 public static final String READ_ALL = ("/get_all_users");
                 public static final String READ_ALL_BY_JOB_VIEW = ("/get_all_users_by_job_view");
                 public static final String READ_ALL_BY_ROLE = ("/get_all_users_by_role");
+                public static final String READ_ALL_BY_LOGGED_IN_SINCE = ("/get_all_users_by_logged_in_since");
 
                 //Gravatar...
                 public static final String GET_GRAVATAR_BY_EMAIL = ("/get_gravatar_by_email");
@@ -2620,6 +2620,15 @@ public class WS {
                  */
                 public static final String getAllUsersByRole() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_ROLE);
+                }
+
+                /**
+                 * URL Path for Users get by last logged in.
+                 *
+                 * @return {@code v1/user/get_all_users_by_logged_in_since}
+                 */
+                public static final String getAllUsersWhereLoggedInSince() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_SINCE);
                 }
 
                 /**
