@@ -68,18 +68,15 @@ public class FormContainerClient extends ABaseClientWS {
      *
      * @see Field
      */
-    public Form createFormContainer(Form formParam)
-    {
-        if(formParam != null && this.serviceTicket != null)
-        {
+    public Form createFormContainer(Form formParam) {
+        if(formParam != null && this.serviceTicket != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
         return new Form(this.putJson(
                 formParam, WS.Path.FormContainer.Version1.formContainerCreate()));
     }
-
-
+    
     /**
      * Create a new Table Record.
      *
@@ -88,10 +85,8 @@ public class FormContainerClient extends ABaseClientWS {
      *
      * @see TableRecord
      */
-    public TableRecord createTableRecord(TableRecord tableRecordParam)
-    {
-        if(tableRecordParam != null && this.serviceTicket != null)
-        {
+    public TableRecord createTableRecord(TableRecord tableRecordParam) {
+        if(tableRecordParam != null && this.serviceTicket != null) {
             tableRecordParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -112,9 +107,7 @@ public class FormContainerClient extends ABaseClientWS {
      * @see Form
      */
     public Form updateFormContainer(Form formParam) {
-        
-        if(formParam != null && this.serviceTicket != null)
-        {
+        if(formParam != null && this.serviceTicket != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -138,7 +131,6 @@ public class FormContainerClient extends ABaseClientWS {
     public Form executeCustomWebAction(
             String customWebActionParam,
             Form formParam) {
-
         return this.executeCustomWebAction(
                 customWebActionParam,
                 false,
@@ -168,13 +160,11 @@ public class FormContainerClient extends ABaseClientWS {
             Long formContainerTableRecordBelowsToParam,
             Form formParam) {
         
-        if(formParam != null && this.serviceTicket != null)
-        {
+        if(formParam != null && this.serviceTicket != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
         if(customWebActionParam == null || customWebActionParam.trim().isEmpty()){
-
             throw new FluidClientException(
                     "Custom Web Action is mandatory.",
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
@@ -186,9 +176,7 @@ public class FormContainerClient extends ABaseClientWS {
                             customWebActionParam,
                             isTableRecordParam,
                             formContainerTableRecordBelowsToParam)));
-        }
-        //Encoding not supported...
-        catch (UnsupportedEncodingException unsEncExcept) {
+        } catch (UnsupportedEncodingException unsEncExcept) {
             throw new FluidClientException(unsEncExcept.getMessage(),
                     unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
         }
@@ -203,8 +191,7 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public Form deleteFormContainer(Form formContainerParam) {
 
-        if(formContainerParam != null && this.serviceTicket != null)
-        {
+        if(formContainerParam != null && this.serviceTicket != null) {
             formContainerParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -220,10 +207,8 @@ public class FormContainerClient extends ABaseClientWS {
      * @param formParam The form to retrieve historic data for.
      * @return Electronic Form Workflow historic data.
      */
-    public List<FormFlowHistoricData> getFormFlowHistoricData(Form formParam)
-    {
-        if(formParam != null && this.serviceTicket != null)
-        {
+    public List<FormFlowHistoricData> getFormFlowHistoricData(Form formParam) {
+        if(formParam != null && this.serviceTicket != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -242,9 +227,9 @@ public class FormContainerClient extends ABaseClientWS {
      * @return Electronic Form and Field historic data.
      */
     public List<FormHistoricData> getFormAndFieldHistoricData(
-            Form formParam,
-            boolean includeCurrentParam)
-    {
+        Form formParam,
+        boolean includeCurrentParam
+    ) {
         if(formParam != null && this.serviceTicket != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
@@ -265,10 +250,8 @@ public class FormContainerClient extends ABaseClientWS {
      *
      * @return Electronic Form and Field historic data.
      */
-    public FormHistoricData getMostRecentFormAndFieldHistoricData(Form formParam)
-    {
-        if(formParam != null && this.serviceTicket != null)
-        {
+    public FormHistoricData getMostRecentFormAndFieldHistoricData(Form formParam) {
+        if(formParam != null && this.serviceTicket != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -282,8 +265,7 @@ public class FormContainerClient extends ABaseClientWS {
      * @param formContainerIdParam The Form Container primary key.
      * @return Form by Primary key.
      */
-    public Form getFormContainerById(Long formContainerIdParam)
-    {
+    public Form getFormContainerById(Long formContainerIdParam) {
         Form form = new Form(formContainerIdParam);
 
         if(this.serviceTicket != null)
@@ -305,8 +287,8 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public Form lockFormContainer(
             Form formParam,
-            JobView jobViewParam)
-    {
+            JobView jobViewParam
+    ) {
         return this.lockFormContainer(
                 formParam, jobViewParam, null);
     }
@@ -325,10 +307,9 @@ public class FormContainerClient extends ABaseClientWS {
     public Form lockFormContainer(
             Form formParam,
             JobView jobViewParam,
-            User userToLockAsParam)
-    {
-        if(this.serviceTicket != null && formParam != null)
-        {
+            User userToLockAsParam
+    ) {
+        if(this.serviceTicket != null && formParam != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -358,8 +339,7 @@ public class FormContainerClient extends ABaseClientWS {
      *                  
      * @return The un-locked form.
      */
-    public Form unLockFormContainer(Form formParam)
-    {
+    public Form unLockFormContainer(Form formParam) {
         return this.unLockFormContainer(
                 formParam, null,true);
     }
@@ -374,8 +354,7 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public Form unLockFormContainer(
             Form formParam,
-            boolean unlockAsyncParam)
-    {
+            boolean unlockAsyncParam) {
         return this.unLockFormContainer(
                 formParam, null, unlockAsyncParam);
     }
@@ -392,8 +371,7 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public Form unLockFormContainer(
             Form formParam,
-            User userToUnLockAsParam)
-    {
+            User userToUnLockAsParam) {
         return this.unLockFormContainer(
                 formParam, userToUnLockAsParam, true);
     }
@@ -411,8 +389,7 @@ public class FormContainerClient extends ABaseClientWS {
     public Form unLockFormContainer(
             Form formParam,
             User userToUnLockAsParam,
-            boolean unlockAsyncParam)
-    {
+            boolean unlockAsyncParam) {
         if(this.serviceTicket != null && formParam != null)
         {
             formParam.setServiceTicket(this.serviceTicket);

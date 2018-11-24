@@ -145,13 +145,11 @@ public class WS {
          *
          * @see Form
          */
-        public static final class FormContainer
-        {
+        public static final class FormContainer {
             /**
              * Form Container mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/form_container");
                 public static final String ROOT_WEB_SOCKET =
                         (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
@@ -179,8 +177,7 @@ public class WS {
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     //Locking a Form Container...
                     public static final String JOB_VIEW = "job_view";
                     public static final String FORM_CONTAINER = "form_container";
@@ -445,8 +442,7 @@ public class WS {
          *
          * @see Form
          */
-        public static final class FormContainerTableRecord
-        {
+        public static final class FormContainerTableRecord {
             /**
              * Form Container mappings.
              */
@@ -488,6 +484,52 @@ public class WS {
                 public static final String formContainerTableRecordCreateWebSocket(String serviceTicketParam)
                 {
                     return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam);
+                }
+            }
+        }
+
+        /**
+         * The Collaboration Web Service mappings.
+         *
+         * @see Collaboration
+         */
+        public static final class Collaboration {
+            /**
+             * Form Container mappings.
+             */
+            public static final class Version1 {
+                public static final String ROOT = ("/collaboration");
+
+                public static final String CREATE = ("/");
+
+                public static final String READ_ALL_TO_BY_LOGGED_IN = ("/get_all_to_by_logged_in");
+
+                /**
+                 * Root for Collaboration.
+                 *
+                 * @return {@code /collaboration}
+                 */
+                @Override
+                public String toString() {
+                    return ROOT;
+                }
+
+                /**
+                 * URL Path for Collaboration create.
+                 *
+                 * @return {@code v1/collaboration/}
+                 */
+                public static final String collaborationCreate() {
+                    return Version.VERSION_1.concat(ROOT).concat(CREATE);
+                }
+
+                /**
+                 * URL Path for fetching all Collaboration items by logged in.
+                 *
+                 * @return {@code v1/collaboration/get_all_to_by_logged_in}
+                 */
+                public static final String getAllToByLoggedIn() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TO_BY_LOGGED_IN);
                 }
             }
         }
@@ -602,8 +644,7 @@ public class WS {
                  *
                  * @return {@code v1/attachment/delete?force=forceDeleteParam} <b>with / without</b> force.
                  */
-                public static final String attachmentDelete(boolean forceDeleteParam)
-                {
+                public static final String attachmentDelete(boolean forceDeleteParam) {
                     if(forceDeleteParam)
                     {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
@@ -622,8 +663,7 @@ public class WS {
                  */
                 public static final String getRawByFormContainerAndIndex(
                         Long formContainerIdParam,
-                        int indexParam)
-                {
+                        int indexParam) {
                     String returnVal =
                             Version.VERSION_1.concat(ROOT).concat(
                                     READ_RAW_BY_FORM_CONTAINER_AND_INDEX);
@@ -658,8 +698,7 @@ public class WS {
                  */
                 public static final String getAllByFormContainer(
                         boolean includeAttachmentDataParam,
-                        boolean imagesOnlyParam)
-                {
+                        boolean imagesOnlyParam) {
                     String returnVal =
                             Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_FORM);
 
