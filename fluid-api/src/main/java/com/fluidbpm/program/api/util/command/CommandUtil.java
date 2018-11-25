@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.util.command;
 
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,7 +43,6 @@ import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
 public class CommandUtil {
 
     public static final String FLUID_CLI = "fluid-cli";
-    public static final String ENCODING_UTF_8 = "UTF-8";
 
 
     /**

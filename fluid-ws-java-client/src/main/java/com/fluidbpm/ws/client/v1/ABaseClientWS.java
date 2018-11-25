@@ -15,6 +15,8 @@
 
 package com.fluidbpm.ws.client.v1;
 
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -1042,10 +1044,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
         }
 
         try {
-            return URLEncoder.encode(textParam,"UTF-8");
-        }
-        //
-        catch (UnsupportedEncodingException e) {
+            return URLEncoder.encode(textParam,ENCODING_UTF_8);
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 

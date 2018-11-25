@@ -46,6 +46,8 @@ public class UtilGlobal {
 
     public static final String ZERO = "0";
 
+    public static final String ENCODING_UTF_8 = "UTF-8";
+
     /**
      * The field type id mappings.
      */

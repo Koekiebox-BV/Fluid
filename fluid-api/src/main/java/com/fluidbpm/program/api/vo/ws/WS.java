@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.ws;
 
+import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
 
@@ -30,12 +32,11 @@ import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
- * <p>
- *     The Mapping class used for all Fluid Representational State Transfer (REST)
- *     JSON Based Web Services.
+ * <p> The Mapping class used for all Fluid Representational State Transfer
+ * (REST) JSON Based Web Services.
  *
- *     More can be read at:
- *     {@code https://docs.oracle.com/javaee/6/tutorial/doc/gijqy.html}
+ * More can be read at:
+ * {@code https://docs.oracle.com/javaee/6/tutorial/doc/gijqy.html}
  *
  * @author jasonbruwer
  * @since v1.0
@@ -51,8 +52,7 @@ public class WS {
     /**
      * Mapping for frequently used HTTP parameters.
      */
-    public static final class QueryParam
-    {
+    public static final class QueryParam {
         //Forcefully perform action...
         public static final String FORCE = "force";
 
@@ -69,8 +69,7 @@ public class WS {
     /**
      * The intent of the action being performed.
      */
-    public static enum Intent
-    {
+    public static enum Intent {
         Create,
         Update,
         Delete,
@@ -81,18 +80,16 @@ public class WS {
          *
          * @return The {@code enum} for {@code Intent}.
          */
-        public static String allowedOptions()
-        {
+        public static String allowedOptions() {
             StringBuilder returnVal = new StringBuilder();
 
-            for(Intent intent : Intent.values())
-            {
+            for (Intent intent : Intent.values()) {
                 returnVal.append(intent);
                 returnVal.append("|");
             }
-            
+
             String toString = returnVal.toString();
-            return toString.substring(0,toString.length() - 1);
+            return toString.substring(0, toString.length() - 1);
         }
 
         /**
@@ -101,21 +98,17 @@ public class WS {
          * @param intentStrParam The intent for the action.
          * @return The {@code enum} for {@code Intent}.
          */
-        public static Intent getIntentFromString(String intentStrParam)
-        {
-            if(intentStrParam == null || intentStrParam.trim().isEmpty())
-            {
+        public static Intent getIntentFromString(String intentStrParam) {
+            if (intentStrParam == null || intentStrParam.trim().isEmpty()) {
                 return null;
             }
 
             String paramLowerTrimmed = intentStrParam.trim().toLowerCase();
 
-            for(Intent intent : Intent.values())
-            {
+            for (Intent intent : Intent.values()) {
                 String iterValIntentLowerTrim = intent.toString().toLowerCase();
 
-                if(iterValIntentLowerTrim.equals(paramLowerTrimmed))
-                {
+                if (iterValIntentLowerTrim.equals(paramLowerTrimmed)) {
                     return intent;
                 }
             }
@@ -123,20 +116,17 @@ public class WS {
             return null;
         }
     }
-    
+
     /**
-     * The URL (Universal Resource Locator) Path mappings for Fluid's
-     * Web Services.
+     * The URL (Universal Resource Locator) Path mappings for Fluid's Web Services.
      */
-    public final static class Path
-    {
+    public final static class Path {
         public static final String WEB_SOCKET = "/web_socket/";
 
         /**
          * The Version mapping for the Fluid Web Service.
          */
-        public static final class Version
-        {
+        public static final class Version {
             public static final String VERSION_1 = "v1";
         }
 
@@ -151,8 +141,7 @@ public class WS {
              */
             public static final class Version1 {
                 public static final String ROOT = ("/form_container");
-                public static final String ROOT_WEB_SOCKET =
-                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+                public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
                 public static final String CREATE = ("/");
 
@@ -171,8 +160,7 @@ public class WS {
                 public static final String UN_LOCK_FORM_CONTAINER = "/un_lock_form_container";
 
                 //Execute Web Action...
-                public static final String EXECUTE_CUSTOM_WEB_ACTION =
-                        ("/execute_custom_web_action");
+                public static final String EXECUTE_CUSTOM_WEB_ACTION = ("/execute_custom_web_action");
 
                 /**
                  * Mapping for frequently used HTTP parameters.
@@ -209,8 +197,7 @@ public class WS {
                  *
                  * @return {@code v1/form_container/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -219,8 +206,7 @@ public class WS {
                  *
                  * @return {@code v1/form_container/}
                  */
-                public static final String formContainerCreate()
-                {
+                public static final String formContainerCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -239,39 +225,37 @@ public class WS {
                  *
                  * @param customWebActionParam The custom web action name. Action identifier.
                  * @param isTableRecordParam Is the form a table record form.
-                 * @param formContainerTableRecordBelongsToParam The parent form container if table record.
+                 * @param formContainerTableRecordBelongsToParam The parent form container if
+                 *            table record.
                  *
                  * @return {@code v1/form_container/execute_custom_web_action}
                  *
-                 * @throws UnsupportedEncodingException If Encoding {@code UTF-8} is not supported.
+                 * @throws UnsupportedEncodingException If Encoding {@code UTF-8} is not
+                 *             supported.
                  */
-                public static final String executeCustomWebAction(
-                        String customWebActionParam,
-                        boolean isTableRecordParam,
-                        Long formContainerTableRecordBelongsToParam)
-                throws UnsupportedEncodingException{
+                public static final String executeCustomWebAction(String customWebActionParam, boolean isTableRecordParam, Long formContainerTableRecordBelongsToParam)
+                        throws UnsupportedEncodingException {
 
-                    String returnVal = Version.VERSION_1.concat(ROOT).concat(
-                            EXECUTE_CUSTOM_WEB_ACTION);
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(EXECUTE_CUSTOM_WEB_ACTION);
 
                     returnVal += "?";
                     returnVal += QueryParam.CUSTOM_WEB_ACTION;
                     returnVal += "=";
-                    returnVal += URLEncoder.encode(customWebActionParam, "UTF-8");
+                    returnVal += URLEncoder.encode(customWebActionParam, ENCODING_UTF_8);
                     returnVal += "&";
                     returnVal += QueryParam.IS_TABLE_RECORD;
                     returnVal += "=";
                     returnVal += isTableRecordParam;
 
-                    if(formContainerTableRecordBelongsToParam != null &&
-                            formContainerTableRecordBelongsToParam.longValue() > 0){
+                    if (formContainerTableRecordBelongsToParam != null &&
+                            formContainerTableRecordBelongsToParam.longValue() > 0) {
 
                         returnVal += "&";
                         returnVal += QueryParam.FORM_TABLE_RECORD_BELONGS_TO;
                         returnVal += "=";
                         returnVal += formContainerTableRecordBelongsToParam;
                     }
-                    
+
                     return returnVal;
                 }
 
@@ -282,8 +266,7 @@ public class WS {
                  *
                  * @return {@code web_socket/v1/form_container/}
                  */
-                public static final String formContainerCreateWebSocket(String serviceTicketParam)
-                {
+                public static final String formContainerCreateWebSocket(String serviceTicketParam) {
                     return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam);
                 }
 
@@ -292,8 +275,7 @@ public class WS {
                  *
                  * @return {@code v1/form_container/delete} <b>without</b> force.
                  */
-                public static final String formContainerDelete()
-                {
+                public static final String formContainerDelete() {
                     return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
 
@@ -301,31 +283,24 @@ public class WS {
                  * URL Path for locking a {@code Form}.
                  *
                  * @param jobViewIdParam The view selected to lock the item from.
-                 * @param lockingAsUserIdParam The form will be locked as this user.
-                 *                             The logged in user must have permission to perform this action.
+                 * @param lockingAsUserIdParam The form will be locked as this user. The logged
+                 *            in user must have permission to perform this action.
                  *
                  * @return {@code /v1/form_container/lock_form_container}
                  */
-                public static final String lockFormContainer(
-                        Long jobViewIdParam,
-                        Long lockingAsUserIdParam)
-                {
+                public static final String lockFormContainer(Long jobViewIdParam, Long lockingAsUserIdParam) {
                     String base = Version.VERSION_1.concat(ROOT).concat(LOCK_FORM_CONTAINER);
-                    
+
                     String additionString = "?";
 
-                    if(jobViewIdParam != null &&
-                            jobViewIdParam.longValue() > 0)
-                    {
+                    if (jobViewIdParam != null && jobViewIdParam.longValue() > 0) {
                         additionString += FormContainer.Version1.QueryParam.JOB_VIEW;
                         additionString += "=";
                         additionString += jobViewIdParam;
                         additionString += "&";
                     }
 
-                    if(lockingAsUserIdParam != null &&
-                            lockingAsUserIdParam.longValue() > 0)
-                    {
+                    if (lockingAsUserIdParam != null && lockingAsUserIdParam.longValue() > 0) {
                         additionString += QueryParam.LOCK_FOR_USER_ID;
                         additionString += "=";
                         additionString += lockingAsUserIdParam;
@@ -333,8 +308,7 @@ public class WS {
                     }
 
                     //Cut of the end bit...
-                    additionString = additionString.substring(
-                            0, additionString.length() - 1);
+                    additionString = additionString.substring(0, additionString.length() - 1);
 
                     return base.concat(additionString);
                 }
@@ -342,24 +316,18 @@ public class WS {
                 /**
                  * URL Path for un-locking a {@code Form}.
                  *
-                 * @param unLockingAsUserIdParam The form will be un-locked as this user.
-                 *                             The logged in user must have permission to perform this action.
+                 * @param unLockingAsUserIdParam The form will be un-locked as this user. The
+                 *            logged in user must have permission to perform this action.
                  * @param unlockAsyncParam Should the unlock be performed asynchronous.
                  *
                  * @return {@code v1/form_container/un_lock_form_container}
                  */
-                public static final String unLockFormContainer(
-                        Long unLockingAsUserIdParam,
-                        boolean unlockAsyncParam)
-                {
-                    String base = Version.VERSION_1.concat(ROOT).concat(
-                            UN_LOCK_FORM_CONTAINER);
+                public static final String unLockFormContainer(Long unLockingAsUserIdParam, boolean unlockAsyncParam) {
+                    String base = Version.VERSION_1.concat(ROOT).concat(UN_LOCK_FORM_CONTAINER);
 
                     String additionString = "?";
 
-                    if(unLockingAsUserIdParam != null &&
-                            unLockingAsUserIdParam.longValue() > 0)
-                    {
+                    if (unLockingAsUserIdParam != null && unLockingAsUserIdParam.longValue() > 0) {
                         additionString += QueryParam.LOCK_FOR_USER_ID;
                         additionString += "=";
                         additionString += unLockingAsUserIdParam;
@@ -373,8 +341,7 @@ public class WS {
                     additionString += "&";
 
                     //Cut of the end bit...
-                    additionString = additionString.substring(
-                            0, additionString.length() - 1);
+                    additionString = additionString.substring(0, additionString.length() - 1);
 
                     return base.concat(additionString);
                 }
@@ -390,16 +357,9 @@ public class WS {
                  *
                  * @return {@code v1/form_container/print_as_pdf}
                  */
-                public static final String getPrintAsPDF(
-                        Long formContainerIdParam,
-                        boolean includeCompanyLogoParam,
-                        boolean includeAncestorParam,
-                        boolean includeDescendantsParam,
-                        boolean includeFormPropertiesParam)
-                {
-                    String returnVal =
-                            Version.VERSION_1.concat(ROOT).concat(
-                                    PRINT_AS_PDF);
+                public static final String getPrintAsPDF(Long formContainerIdParam, boolean includeCompanyLogoParam, boolean includeAncestorParam, boolean includeDescendantsParam,
+                        boolean includeFormPropertiesParam) {
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(PRINT_AS_PDF);
 
                     returnVal += "?";
 
@@ -446,13 +406,11 @@ public class WS {
             /**
              * Form Container mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/form_container/table_record");
                 public static final String CREATE = ("/");
 
-                public static final String ROOT_WEB_SOCKET =
-                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+                public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
                 /**
                  * Root for Form Container.
@@ -469,8 +427,7 @@ public class WS {
                  *
                  * @return {@code /form_container/table_record/}
                  */
-                public static final String formContainerTableRecordCreate()
-                {
+                public static final String formContainerTableRecordCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -481,8 +438,7 @@ public class WS {
                  *
                  * @return {@code web_socket/v1/form_container/table_record/}
                  */
-                public static final String formContainerTableRecordCreateWebSocket(String serviceTicketParam)
-                {
+                public static final String formContainerTableRecordCreateWebSocket(String serviceTicketParam) {
                     return ROOT_WEB_SOCKET.concat(CREATE).concat(serviceTicketParam);
                 }
             }
@@ -539,13 +495,11 @@ public class WS {
          *
          * @see Attachment
          */
-        public static final class Attachment
-        {
+        public static final class Attachment {
             /**
              * Form Container mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/attachment");
 
                 public static final String CREATE = ("/");
@@ -556,22 +510,19 @@ public class WS {
 
                 //Read...
                 public static final String READ = ("/get_by_id");
-                public static final String READ_RAW_BY_FORM_CONTAINER_AND_INDEX =
-                        ("/get_raw_by_form_container_and_index");
+                public static final String READ_RAW_BY_FORM_CONTAINER_AND_INDEX = ("/get_raw_by_form_container_and_index");
                 public static final String READ_ALL_BY_FORM = ("/get_all_by_form");
 
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     public static final String FORM_CONTAINER_ID = "form_container";
                     public static final String ATTACHMENT_INDEX = "attachment_index";
 
                     public static final String IMAGES_ONLY = "images_only";
 
-                    public static final String INCLUDE_ATTACHMENT_DATA =
-                            "include_attachment_data";
+                    public static final String INCLUDE_ATTACHMENT_DATA = "include_attachment_data";
                 }
 
                 /**
@@ -587,18 +538,15 @@ public class WS {
                 /**
                  * URL Path for Attachment get by id.
                  *
-                 * @param includeAttachmentDataParam Should attachment data be included.
-                 *                                   Note that only the latest versions will be
-                 *                                   retrieved.
+                 * @param includeAttachmentDataParam Should attachment data be included. Note
+                 *            that only the latest versions will be retrieved.
                  *
                  * @return {@code v1/attachment/get_by_id}
                  *
                  * @see Attachment
                  */
-                public static final String getById(boolean includeAttachmentDataParam)
-                {
-                    String returnVal =
-                            Version.VERSION_1.concat(ROOT).concat(READ);
+                public static final String getById(boolean includeAttachmentDataParam) {
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(READ);
 
                     returnVal += "?";
 
@@ -609,12 +557,11 @@ public class WS {
 
                     return returnVal;
                 }
-                
+
                 /**
                  * URL Path for Attachment create.
                  *
-                 * Executing this more will cause new versions to be
-                 * created.
+                 * Executing this more will cause new versions to be created.
                  *
                  * Versions are bumped.
                  *
@@ -622,8 +569,7 @@ public class WS {
                  *
                  * @see Attachment
                  */
-                public static final String attachmentCreate()
-                {
+                public static final String attachmentCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -632,8 +578,7 @@ public class WS {
                  *
                  * @return {@code v1/attachment/delete} <b>without</b> force.
                  */
-                public static final String attachmentDelete()
-                {
+                public static final String attachmentDelete() {
                     return attachmentDelete(false);
                 }
 
@@ -642,11 +587,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/attachment/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/attachment/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
                 public static final String attachmentDelete(boolean forceDeleteParam) {
-                    if(forceDeleteParam)
-                    {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -661,12 +606,8 @@ public class WS {
                  *
                  * @return {@code v1/attachment/get_raw_by_form_container_and_index}
                  */
-                public static final String getRawByFormContainerAndIndex(
-                        Long formContainerIdParam,
-                        int indexParam) {
-                    String returnVal =
-                            Version.VERSION_1.concat(ROOT).concat(
-                                    READ_RAW_BY_FORM_CONTAINER_AND_INDEX);
+                public static final String getRawByFormContainerAndIndex(Long formContainerIdParam, int indexParam) {
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(READ_RAW_BY_FORM_CONTAINER_AND_INDEX);
 
                     returnVal += "?";
 
@@ -687,20 +628,16 @@ public class WS {
                 /**
                  * URL Path for Attachment get by Form Container.
                  *
-                 * @param includeAttachmentDataParam Should attachment data be included.
-                 *                                   Note that only the latest versions will be
-                 *                                   retrieved.
+                 * @param includeAttachmentDataParam Should attachment data be included. Note
+                 *            that only the latest versions will be retrieved.
                  *
-                 * @param imagesOnlyParam Only retrieve attachments where there the
-                 *                        content type is of {@code image}.
+                 * @param imagesOnlyParam Only retrieve attachments where there the content type
+                 *            is of {@code image}.
                  *
                  * @return {@code v1/attachment/get_raw_by_form_container_and_index}
                  */
-                public static final String getAllByFormContainer(
-                        boolean includeAttachmentDataParam,
-                        boolean imagesOnlyParam) {
-                    String returnVal =
-                            Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_FORM);
+                public static final String getAllByFormContainer(boolean includeAttachmentDataParam, boolean imagesOnlyParam) {
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_FORM);
 
                     returnVal += "?";
 
@@ -725,13 +662,11 @@ public class WS {
          *
          * @see Form
          */
-        public static final class PersonalInventory
-        {
+        public static final class PersonalInventory {
             /**
              * Personal Inventory mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/personal_inventory");
 
                 //Create...
@@ -759,8 +694,7 @@ public class WS {
                  *
                  * @return {@code v1/personal_inventory/}
                  */
-                public static final String formContainerAddToPersonalInventory()
-                {
+                public static final String formContainerAddToPersonalInventory() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -769,8 +703,7 @@ public class WS {
                  *
                  * @return {@code v1/personal_inventory/get_all_by_logged_in_user}
                  */
-                public static final String getAllByLoggedInUser()
-                {
+                public static final String getAllByLoggedInUser() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -779,10 +712,8 @@ public class WS {
                  *
                  * @return {@code v1/personal_inventory/remove_from_personal_inventory}
                  */
-                public static final String removeFromPersonalInventory()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            REMOVE_FROM_PERSONAL_INVENTORY);
+                public static final String removeFromPersonalInventory() {
+                    return Version.VERSION_1.concat(ROOT).concat(REMOVE_FROM_PERSONAL_INVENTORY);
                 }
 
                 /**
@@ -790,10 +721,8 @@ public class WS {
                  *
                  * @return {@code v1/personal_inventory/clear_personal_inventory}
                  */
-                public static final String clearPersonalInventory()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            CLEAR_PERSONAL_INVENTORY);
+                public static final String clearPersonalInventory() {
+                    return Version.VERSION_1.concat(ROOT).concat(CLEAR_PERSONAL_INVENTORY);
                 }
             }
         }
@@ -803,21 +732,18 @@ public class WS {
          *
          * @see Field
          */
-        public static final class FormField
-        {
+        public static final class FormField {
             /**
              * Mapping for frequently used HTTP parameters.
              */
-            public static final class QueryParam
-            {
+            public static final class QueryParam {
                 public static final String EDIT_ONLY = "edit_only";
             }
-            
+
             /**
              * Form Field mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/form_field");
 
                 //Create...
@@ -833,8 +759,7 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String BY_NAME = ("/get_by_name");
-                public static final String READ_BY_FORM_DEF_AND_LOGGED_IN_USER =
-                        ("/get_by_form_definition_and_logged_in_user");
+                public static final String READ_BY_FORM_DEF_AND_LOGGED_IN_USER = ("/get_by_form_definition_and_logged_in_user");
 
                 /**
                  * Root for Form Field.
@@ -851,8 +776,7 @@ public class WS {
                  *
                  * @return {@code /v1/form_field/}
                  */
-                public static final String formFieldCreate()
-                {
+                public static final String formFieldCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -861,8 +785,7 @@ public class WS {
                  *
                  * @return {@code v1/form_field/delete} <b>without</b> force.
                  */
-                public static final String formFieldDelete()
-                {
+                public static final String formFieldDelete() {
                     return formFieldDelete(false);
                 }
 
@@ -871,12 +794,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefulle delete.
                  *
-                 * @return {@code v1/form_field/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/form_field/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
-                public static final String formFieldDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String formFieldDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -888,8 +810,7 @@ public class WS {
                  *
                  * @return {@code v1/form_field/update}
                  */
-                public static final String formFieldUpdate()
-                {
+                public static final String formFieldUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -898,8 +819,7 @@ public class WS {
                  *
                  * @return {@code v1/form_field/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -908,8 +828,7 @@ public class WS {
                  *
                  * @return {@code v1/form_field/get_by_name}
                  */
-                public static final String getByName()
-                {
+                public static final String getByName() {
                     return Version.VERSION_1.concat(ROOT).concat(BY_NAME);
                 }
 
@@ -920,14 +839,11 @@ public class WS {
                  *
                  * @return {@code v1/form_field/get_by_form_definition_and_logged_in_user}
                  */
-                public static final String getByFormDefinitionAndLoggedInUser(
-                        boolean editOnlyFieldsParam)
-                {
+                public static final String getByFormDefinitionAndLoggedInUser(boolean editOnlyFieldsParam) {
                     ///delete?force=true
-                    String returnVal = Version.VERSION_1.concat(ROOT).concat(
-                            READ_BY_FORM_DEF_AND_LOGGED_IN_USER);
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM_DEF_AND_LOGGED_IN_USER);
 
-                    returnVal += ("?"+ QueryParam.EDIT_ONLY+"="+editOnlyFieldsParam);
+                    returnVal += ("?" + QueryParam.EDIT_ONLY + "=" + editOnlyFieldsParam);
 
                     return returnVal;
                 }
@@ -944,8 +860,7 @@ public class WS {
             /**
              * Global Field mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/global_field");
 
                 //Update...
@@ -970,8 +885,7 @@ public class WS {
                  *
                  * @return {@code v1/global_field/update_value}
                  */
-                public static final String globalFieldUpdateValue()
-                {
+                public static final String globalFieldUpdateValue() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
                 }
 
@@ -980,8 +894,7 @@ public class WS {
                  *
                  * @return {@code v1/global_field/get_value_by}
                  */
-                public static final String getValueBy()
-                {
+                public static final String getValueBy() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_VALUE_BY);
                 }
 
@@ -990,8 +903,7 @@ public class WS {
                  *
                  * @return {@code v1/global_field/get_all_values}
                  */
-                public static final String getAllValues()
-                {
+                public static final String getAllValues() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VALUES);
                 }
             }
@@ -1002,13 +914,11 @@ public class WS {
          *
          * @see Field
          */
-        public static final class RouteField
-        {
+        public static final class RouteField {
             /**
              * Route Field mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/route_field");
 
                 //Create...
@@ -1041,8 +951,7 @@ public class WS {
                  *
                  * @return {@code /v1/route_field/}
                  */
-                public static final String routeFieldCreate()
-                {
+                public static final String routeFieldCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -1051,8 +960,7 @@ public class WS {
                  *
                  * @return {@code v1/route_field/delete} <b>without</b> force.
                  */
-                public static final String routeFieldDelete()
-                {
+                public static final String routeFieldDelete() {
                     return routeFieldDelete(false);
                 }
 
@@ -1061,12 +969,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/route_field/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/route_field/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
-                public static final String routeFieldDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String routeFieldDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -1078,8 +985,7 @@ public class WS {
                  *
                  * @return {@code v1/route_field/update}
                  */
-                public static final String routeFieldUpdate()
-                {
+                public static final String routeFieldUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -1088,8 +994,7 @@ public class WS {
                  *
                  * @return {@code v1/route_field/update_value}
                  */
-                public static final String routeFieldUpdateValue()
-                {
+                public static final String routeFieldUpdateValue() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
                 }
 
@@ -1098,8 +1003,7 @@ public class WS {
                  *
                  * @return {@code v1/route_field/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -1108,8 +1012,7 @@ public class WS {
                  *
                  * @return {@code v1/route_field/get_values_by}
                  */
-                public static final String getValuesBy()
-                {
+                public static final String getValuesBy() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_VALUES_BY);
                 }
             }
@@ -1120,13 +1023,11 @@ public class WS {
          *
          * @see Field
          */
-        public static final class UserField
-        {
+        public static final class UserField {
             /**
              * User Field mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/user_field");
 
                 //Create...
@@ -1159,8 +1060,7 @@ public class WS {
                  *
                  * @return {@code /v1/user_field/}
                  */
-                public static final String userFieldCreate()
-                {
+                public static final String userFieldCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -1169,8 +1069,7 @@ public class WS {
                  *
                  * @return {@code v1/user_field/delete} <b>without</b> force.
                  */
-                public static final String userFieldDelete()
-                {
+                public static final String userFieldDelete() {
                     return userFieldDelete(false);
                 }
 
@@ -1179,10 +1078,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/user_field/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/user_field/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
                 public static final String userFieldDelete(boolean forceDeleteParam) {
-                    if(forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -1203,8 +1103,7 @@ public class WS {
                  *
                  * @return {@code v1/user_field/update_value}
                  */
-                public static final String userFieldUpdateValue()
-                {
+                public static final String userFieldUpdateValue() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
                 }
 
@@ -1233,21 +1132,18 @@ public class WS {
          *
          * @see Form
          */
-        public static final class FormDefinition
-        {
+        public static final class FormDefinition {
             /**
              * Mapping for frequently used HTTP parameters.
              */
-            public static final class QueryParam
-            {
+            public static final class QueryParam {
                 public static final String FORM_DEFINITION = "form_definition";
             }
 
             /**
              * Form Definition mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/form_definition");
 
                 //Create...
@@ -1265,12 +1161,9 @@ public class WS {
                 public static final String READ_BY_NAME = ("/get_by_name");
 
                 //Read - Logged in user...
-                public static final String READ_ALL_BY_LOGGED_IN_USER =
-                        ("/get_all_by_logged_in_user");
-                public static final String READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS =
-                        ("/get_all_by_logged_in_user_incl_table_defs");
-                public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE =
-                        ("/get_all_by_logged_in_can_create");
+                public static final String READ_ALL_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
+                public static final String READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS = ("/get_all_by_logged_in_user_incl_table_defs");
+                public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE = ("/get_all_by_logged_in_can_create");
 
                 /**
                  * Root for Form Definition.
@@ -1287,8 +1180,7 @@ public class WS {
                  *
                  * @return {@code /v1/form_definition/}
                  */
-                public static final String formDefinitionCreate()
-                {
+                public static final String formDefinitionCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -1297,8 +1189,7 @@ public class WS {
                  *
                  * @return {@code v1/form_definition/delete} <b>without</b> force.
                  */
-                public static final String formDefinitionDelete()
-                {
+                public static final String formDefinitionDelete() {
                     return formDefinitionDelete(false);
                 }
 
@@ -1307,12 +1198,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/form_definition/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/form_definition/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
-                public static final String formDefinitionDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String formDefinitionDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -1324,8 +1214,7 @@ public class WS {
                  *
                  * @return {@code v1/form_definition/update}
                  */
-                public static final String formDefinitionUpdate()
-                {
+                public static final String formDefinitionUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -1334,8 +1223,7 @@ public class WS {
                  *
                  * @return {@code v1/form_definition/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -1344,8 +1232,7 @@ public class WS {
                  *
                  * @return {@code v1/form_definition/get_by_name}
                  */
-                public static final String getByName()
-                {
+                public static final String getByName() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
                 }
 
@@ -1354,21 +1241,18 @@ public class WS {
                  *
                  * @return {@code v1/form_definition/get_all_by_logged_in_user}
                  */
-                public static final String getAllByLoggedInUser()
-                {
+                public static final String getAllByLoggedInUser() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_USER);
                 }
 
                 /**
-                 * URL Path for Form Definitions by logged in user.
-                 * Include the table record form definitions.
+                 * URL Path for Form Definitions by logged in user. Include the table record
+                 * form definitions.
                  *
                  * @return {@code v1/form_definition/get_all_by_logged_in_user_incl_table_defs}
                  */
-                public static final String getAllByLoggedInUserIncludeTableTypes()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS);
+                public static final String getAllByLoggedInUserIncludeTableTypes() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS);
                 }
 
                 /**
@@ -1376,10 +1260,8 @@ public class WS {
                  *
                  * @return {@code v1/form_definition/get_all_by_logged_in_can_create}
                  */
-                public static final String getAllByLoggedInAndCanCreateInstanceOf()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            READ_ALL_BY_LOGGED_IN_CAN_CREATE);
+                public static final String getAllByLoggedInAndCanCreateInstanceOf() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE);
                 }
             }
         }
@@ -1389,13 +1271,11 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.flow.Flow
          */
-        public static final class Flow
-        {
+        public static final class Flow {
             /**
              * Flow mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/flow");
 
                 //Create...
@@ -1427,8 +1307,7 @@ public class WS {
                  *
                  * @return {@code /v1/flow/}
                  */
-                public static final String flowCreate()
-                {
+                public static final String flowCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -1437,8 +1316,7 @@ public class WS {
                  *
                  * @return {@code v1/flow/delete} <b>without</b> force.
                  */
-                public static final String flowDelete()
-                {
+                public static final String flowDelete() {
                     return flowDelete(false);
                 }
 
@@ -1447,12 +1325,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/flow/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/flow/delete?force=forceDeleteParam} <b>with / without</b>
+                 *         force.
                  */
-                public static final String flowDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String flowDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -1464,8 +1341,7 @@ public class WS {
                  *
                  * @return {@code v1/flow/update}
                  */
-                public static final String flowUpdate()
-                {
+                public static final String flowUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -1474,8 +1350,7 @@ public class WS {
                  *
                  * @return {@code v1/flow/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -1484,8 +1359,7 @@ public class WS {
                  *
                  * @return {@code v1/flow/get_by_name}
                  */
-                public static final String getByName()
-                {
+                public static final String getByName() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
                 }
             }
@@ -1497,12 +1371,11 @@ public class WS {
          * @see com.fluidbpm.program.api.vo.license.LicenseRequest
          */
         public static final class License {
-            
+
             /**
              * License mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/license");
 
                 //Request...
@@ -1526,8 +1399,7 @@ public class WS {
                  *
                  * @return {@code v1/license/request}
                  */
-                public static final String licenseRequest()
-                {
+                public static final String licenseRequest() {
                     return Version.VERSION_1.concat(ROOT).concat(REQUEST);
                 }
 
@@ -1536,8 +1408,7 @@ public class WS {
                  *
                  * @return {@code v1/license/apply}
                  */
-                public static final String licenseApply()
-                {
+                public static final String licenseApply() {
                     return Version.VERSION_1.concat(ROOT).concat(APPLY);
                 }
             }
@@ -1548,13 +1419,11 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.flow.FlowStep
          */
-        public static final class FlowStep
-        {
+        public static final class FlowStep {
             /**
              * Flow Step mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/flow_step");
 
                 //Create...
@@ -1571,27 +1440,21 @@ public class WS {
                 public static final String READ = ("/get_by_id");
                 public static final String READ_BY_STEP = ("/get_by_step");
 
-                public static final String READ_ALL_STEPS_BY_FLOW =
-                        ("/get_steps_by_flow");
+                public static final String READ_ALL_STEPS_BY_FLOW = ("/get_steps_by_flow");
 
-                public static final String READ_ALL_VIEWS_BY_STEP =
-                        ("/get_views_by_step");
+                public static final String READ_ALL_VIEWS_BY_STEP = ("/get_views_by_step");
 
-                public static final String READ_ALL_VIEWS_BY_LOGGED_IN_USER =
-                        ("/get_views_by_logged_in_user");
+                public static final String READ_ALL_VIEWS_BY_LOGGED_IN_USER = ("/get_views_by_logged_in_user");
 
-                public static final String READ_ALL_VIEWS_BY_USER =
-                        ("/get_views_by_user");
+                public static final String READ_ALL_VIEWS_BY_USER = ("/get_views_by_user");
 
-                public static final String READ_ALL_VIEWS_BY_FLOW =
-                        ("/get_views_by_flow");
+                public static final String READ_ALL_VIEWS_BY_FLOW = ("/get_views_by_flow");
 
                 public static final String POLLING = ("/polling");
 
-                public static final String ROOT_POLLING = (ROOT+POLLING);
-                
-                public static final String READ_ALL_BY_LOGGED_IN_USER =
-                        ("/get_all_by_logged_in_user");
+                public static final String ROOT_POLLING = (ROOT + POLLING);
+
+                public static final String READ_ALL_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
 
                 /**
                  * Root for Flow Step.
@@ -1608,8 +1471,7 @@ public class WS {
                  *
                  * @return {@code /v1/flow_step/}
                  */
-                public static final String flowStepCreate()
-                {
+                public static final String flowStepCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -1618,8 +1480,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/delete} <b>without</b> force.
                  */
-                public static final String flowStepDelete()
-                {
+                public static final String flowStepDelete() {
                     return flowStepDelete(false);
                 }
 
@@ -1628,12 +1489,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/flow_step/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/flow_step/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
-                public static final String flowStepDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String flowStepDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -1645,8 +1505,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/update}
                  */
-                public static final String flowStepUpdate()
-                {
+                public static final String flowStepUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -1655,8 +1514,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -1665,8 +1523,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_by_step}
                  */
-                public static final String getByStep()
-                {
+                public static final String getByStep() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_STEP);
                 }
 
@@ -1675,8 +1532,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_views_by_step}
                  */
-                public static final String getAllViewsByStep()
-                {
+                public static final String getAllViewsByStep() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_STEP);
                 }
 
@@ -1685,8 +1541,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_views_by_logged_in_user}
                  */
-                public static final String getAllViewsByLoggedInUser()
-                {
+                public static final String getAllViewsByLoggedInUser() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_LOGGED_IN_USER);
                 }
 
@@ -1695,8 +1550,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_views_by_user}
                  */
-                public static final String getAllViewsByUser()
-                {
+                public static final String getAllViewsByUser() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_USER);
                 }
 
@@ -1705,8 +1559,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_views_by_flow}
                  */
-                public static final String getAllViewsByFlow()
-                {
+                public static final String getAllViewsByFlow() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_FLOW);
                 }
 
@@ -1715,8 +1568,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/get_steps_by_flow}
                  */
-                public static final String getAllStepsByFlow()
-                {
+                public static final String getAllStepsByFlow() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_STEPS_BY_FLOW);
                 }
 
@@ -1725,10 +1577,8 @@ public class WS {
                  *
                  * @return {@code v1/flow_step/polling/get_all_by_logged_in_user}
                  */
-                public static final String getAllPollingStepsByLoggedInUser()
-                {
-                    return Version.VERSION_1.concat(ROOT_POLLING).concat(
-                            READ_ALL_BY_LOGGED_IN_USER);
+                public static final String getAllPollingStepsByLoggedInUser() {
+                    return Version.VERSION_1.concat(ROOT_POLLING).concat(READ_ALL_BY_LOGGED_IN_USER);
                 }
             }
         }
@@ -1738,13 +1588,11 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.flow.FlowStepRule
          */
-        public static final class FlowStepRule
-        {
+        public static final class FlowStepRule {
             /**
              * Flow Step Rule mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/flow_step_rule");
 
                 public static final String ROOT_ENTRY = "/flow_step_rule/entry";
@@ -1785,8 +1633,7 @@ public class WS {
                  *
                  * @return {@code /v1/flow_step_rule/entry}
                  */
-                public static final String flowStepRuleEntryCreate()
-                {
+                public static final String flowStepRuleEntryCreate() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(CREATE);
                 }
 
@@ -1795,8 +1642,7 @@ public class WS {
                  *
                  * @return {@code /v1/flow_step_rule/exit}
                  */
-                public static final String flowStepRuleExitCreate()
-                {
+                public static final String flowStepRuleExitCreate() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(CREATE);
                 }
 
@@ -1805,8 +1651,7 @@ public class WS {
                  *
                  * @return {@code /v1/flow_step_rule/view}
                  */
-                public static final String flowStepRuleViewCreate()
-                {
+                public static final String flowStepRuleViewCreate() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(CREATE);
                 }
 
@@ -1815,8 +1660,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/delete} <b>without</b> force.
                  */
-                public static final String flowStepRuleDeleteEntry()
-                {
+                public static final String flowStepRuleDeleteEntry() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(DELETE);
                 }
 
@@ -1825,8 +1669,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/exit/delete} <b>without</b> force.
                  */
-                public static final String flowStepRuleDeleteExit()
-                {
+                public static final String flowStepRuleDeleteExit() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(DELETE);
                 }
 
@@ -1835,8 +1678,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/view/delete} <b>without</b> force.
                  */
-                public static final String flowStepRuleDeleteView()
-                {
+                public static final String flowStepRuleDeleteView() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(DELETE);
                 }
 
@@ -1845,8 +1687,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/update}
                  */
-                public static final String flowStepRuleUpdateEntry()
-                {
+                public static final String flowStepRuleUpdateEntry() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(UPDATE);
                 }
 
@@ -1855,8 +1696,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/move_up}
                  */
-                public static final String flowStepRuleMoveEntryUp()
-                {
+                public static final String flowStepRuleMoveEntryUp() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(MOVE_UP);
                 }
 
@@ -1865,8 +1705,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/move_down}
                  */
-                public static final String flowStepRuleMoveEntryDown()
-                {
+                public static final String flowStepRuleMoveEntryDown() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(MOVE_DOWN);
                 }
 
@@ -1875,8 +1714,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/exit/update}
                  */
-                public static final String flowStepRuleUpdateExit()
-                {
+                public static final String flowStepRuleUpdateExit() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(UPDATE);
                 }
 
@@ -1885,8 +1723,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/view/update}
                  */
-                public static final String flowStepRuleUpdateView()
-                {
+                public static final String flowStepRuleUpdateView() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(UPDATE);
                 }
 
@@ -1895,8 +1732,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/get_by_id}
                  */
-                public static final String getEntryById()
-                {
+                public static final String getEntryById() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(READ);
                 }
 
@@ -1905,8 +1741,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/get_next_valid_syntax}
                  */
-                public static final String getNextValidEntrySyntax()
-                {
+                public static final String getNextValidEntrySyntax() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(GET_NEXT_VALID_SYNTAX);
                 }
 
@@ -1915,19 +1750,16 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/compile_syntax}
                  */
-                public static final String compileEntrySyntax()
-                {
+                public static final String compileEntrySyntax() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX);
                 }
 
                 /**
-                 * URL Path for Flow Step Entry {@code compile} syntax and then
-                 * {@code execute}.
+                 * URL Path for Flow Step Entry {@code compile} syntax and then {@code execute}.
                  *
                  * @return {@code v1/flow_step_rule/entry/compile_syntax_and_execute}
                  */
-                public static final String compileEntrySyntaxAndExecute()
-                {
+                public static final String compileEntrySyntaxAndExecute() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(COMPILE_SYNTAX_AND_EXECUTE);
                 }
 
@@ -1936,8 +1768,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/exit/get_by_id}
                  */
-                public static final String getExitById()
-                {
+                public static final String getExitById() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(READ);
                 }
 
@@ -1946,8 +1777,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/exit/get_next_valid_syntax}
                  */
-                public static final String getNextValidExitSyntax()
-                {
+                public static final String getNextValidExitSyntax() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(GET_NEXT_VALID_SYNTAX);
                 }
 
@@ -1956,8 +1786,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/exit/compile_syntax}
                  */
-                public static final String compileExitSyntax()
-                {
+                public static final String compileExitSyntax() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(COMPILE_SYNTAX);
                 }
 
@@ -1966,8 +1795,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/exit/get_by_step}
                  */
-                public static final String getExitRulesByStep()
-                {
+                public static final String getExitRulesByStep() {
                     return Version.VERSION_1.concat(ROOT_EXIT).concat(READ_RULES_BY_STEP);
                 }
 
@@ -1976,8 +1804,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/entry/get_by_step}
                  */
-                public static final String getEntryRulesByStep()
-                {
+                public static final String getEntryRulesByStep() {
                     return Version.VERSION_1.concat(ROOT_ENTRY).concat(READ_RULES_BY_STEP);
                 }
 
@@ -1986,8 +1813,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/view/get_by_id}
                  */
-                public static final String getViewById()
-                {
+                public static final String getViewById() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(READ);
                 }
 
@@ -1996,8 +1822,7 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/view/get_next_valid_syntax}
                  */
-                public static final String getNextValidViewSyntax()
-                {
+                public static final String getNextValidViewSyntax() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(GET_NEXT_VALID_SYNTAX);
                 }
 
@@ -2006,19 +1831,16 @@ public class WS {
                  *
                  * @return {@code v1/flow_step_rule/view/compile_syntax}
                  */
-                public static final String compileViewSyntax()
-                {
+                public static final String compileViewSyntax() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(COMPILE_SYNTAX);
                 }
 
                 /**
-                 * URL Path for Flow Step View {@code compile} syntax and then
-                 * {@code execute}.
+                 * URL Path for Flow Step View {@code compile} syntax and then {@code execute}.
                  *
                  * @return {@code v1/flow_step_rule/view/compile_syntax_and_execute}
                  */
-                public static final String compileViewSyntaxAndExecute()
-                {
+                public static final String compileViewSyntaxAndExecute() {
                     return Version.VERSION_1.concat(ROOT_VIEW).concat(COMPILE_SYNTAX_AND_EXECUTE);
                 }
             }
@@ -2029,25 +1851,20 @@ public class WS {
          *
          * @see FluidItem
          */
-        public static final class FlowItem
-        {
+        public static final class FlowItem {
             /**
              * Flow Item mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/flow_item");
-                public static final String ROOT_WEB_SOCKET =
-                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+                public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
                 //Send On...
                 public static final String SEND_ON = ("/send_on");
 
-
                 //Send to Flow...
                 public static final String SEND_TO_FLOW = ("/send_to_flow");
-                public static final String SEND_TO_FLOW_WEB_SOCKET =
-                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT + SEND_TO_FLOW);
+                public static final String SEND_TO_FLOW_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT + SEND_TO_FLOW);
 
                 //Create...
                 public static final String CREATE = ("/");
@@ -2060,8 +1877,7 @@ public class WS {
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     //List Job View content...
                     public static final String QUERY_LIMIT = "query_limit";
                     public static final String OFFSET = "offset";
@@ -2072,8 +1888,7 @@ public class WS {
                     public static final String JOB_VIEW = "job_view";
 
                     //Wait for Rule execution completion...
-                    public static final String WAIT_FOR_RULE_EXEC_COMPLETION =
-                            "wait_for_rule_exec_completion";
+                    public static final String WAIT_FOR_RULE_EXEC_COMPLETION = "wait_for_rule_exec_completion";
                 }
 
                 /**
@@ -2091,53 +1906,41 @@ public class WS {
                  *
                  * @return {@code /v1/flow_item/}
                  */
-                public static final String flowItemCreate()
-                {
+                public static final String flowItemCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
                 /**
-                 * URL Path for sending a Flow Item to the next
-                 * step in the workflow process.
+                 * URL Path for sending a Flow Item to the next step in the workflow process.
                  *
                  * @return {@code /v1/flow_item/send_on}
                  */
-                public static final String sendFlowItemOn()
-                {
+                public static final String sendFlowItemOn() {
                     return Version.VERSION_1.concat(ROOT).concat(SEND_ON);
                 }
 
                 /**
-                 * URL Path for sending a Form to a Flow to follow
-                 * the workflow process.
+                 * URL Path for sending a Form to a Flow to follow the workflow process.
                  *
                  * @return {@code /v1/flow_item/send_to_flow/}
                  */
-                public static final String sendFlowItemToFlow()
-                {
+                public static final String sendFlowItemToFlow() {
                     return Version.VERSION_1.concat(ROOT).concat(SEND_TO_FLOW);
                 }
 
                 /**
                  * URL Path for Send to Flow via Web Socket.
                  *
-                 * @param waitForRuleExecCompleteParam Wait for all the program rules to finish execution
-                 *                                     before returning web socket message is sent.
-                 *                                     The response message will include the result.
+                 * @param waitForRuleExecCompleteParam Wait for all the program rules to finish
+                 *            execution before returning web socket message is sent. The
+                 *            response message will include the result.
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  *
                  * @return {@code web_socket/v1/flow_item/send_to_flow/}
                  */
-                public static final String sendToFlowWebSocket(
-                        boolean waitForRuleExecCompleteParam,
-                        String serviceTicketParam)
-                {
-                    String returnVal =
-                            SEND_TO_FLOW_WEB_SOCKET.concat(
-                                    CREATE).concat(
-                                            serviceTicketParam + "?" +
-                                                    QueryParam.WAIT_FOR_RULE_EXEC_COMPLETION+"=" +
-                                                    waitForRuleExecCompleteParam);
+                public static final String sendToFlowWebSocket(boolean waitForRuleExecCompleteParam, String serviceTicketParam) {
+                    String returnVal = SEND_TO_FLOW_WEB_SOCKET.concat(CREATE)
+                            .concat(serviceTicketParam + "?" + QueryParam.WAIT_FOR_RULE_EXEC_COMPLETION + "=" + waitForRuleExecCompleteParam);
 
                     return returnVal;
                 }
@@ -2159,9 +1962,10 @@ public class WS {
                 public static final String getByForm() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM);
                 }
-                
+
                 /**
-                 * URL Path for Flow Item get by {@link com.fluidbpm.program.api.vo.flow.JobView}.
+                 * URL Path for Flow Item get by
+                 * {@link com.fluidbpm.program.api.vo.flow.JobView}.
                  *
                  * @param queryLimitParam The query limit.
                  * @param offsetParam The query offset.
@@ -2171,40 +1975,36 @@ public class WS {
                  * @return {@code /v1/flow_item/get_by_job_view}
                  */
                 public static final String getByJobView(
-                        int queryLimitParam,
-                        int offsetParam,
-                        String sortFieldParam,
-                        String sortOrderParam)
-                {
+                    int queryLimitParam,
+                    int offsetParam,
+                    String sortFieldParam,
+                    String sortOrderParam
+                ) {
                     String base = Version.VERSION_1.concat(ROOT).concat(GET_BY_JOB_VIEW);
                     String additionString = "?";
-                    
-                    if(queryLimitParam > 0)
-                    {
+
+                    if (queryLimitParam > 0) {
                         additionString += QueryParam.QUERY_LIMIT;
                         additionString += "=";
                         additionString += queryLimitParam;
                         additionString += "&";
                     }
 
-                    if(offsetParam > -1)
-                    {
+                    if (offsetParam > -1) {
                         additionString += QueryParam.OFFSET;
                         additionString += "=";
                         additionString += offsetParam;
                         additionString += "&";
                     }
 
-                    if(sortFieldParam != null && !sortFieldParam.trim().isEmpty())
-                    {
+                    if (sortFieldParam != null && !sortFieldParam.trim().isEmpty()) {
                         additionString += QueryParam.SORT_FIELD;
                         additionString += "=";
                         additionString += sortFieldParam;
                         additionString += "&";
                     }
 
-                    if(sortOrderParam != null && !sortOrderParam.trim().isEmpty())
-                    {
+                    if (sortOrderParam != null && !sortOrderParam.trim().isEmpty()) {
                         additionString += QueryParam.SORT_ORDER;
                         additionString += "=";
                         additionString += sortOrderParam;
@@ -2212,9 +2012,8 @@ public class WS {
                     }
 
                     //Cut of the end bit...
-                    additionString = additionString.substring(
-                            0, additionString.length() - 1);
-                    
+                    additionString = additionString.substring(0, additionString.length() - 1);
+
                     return base.concat(additionString);
                 }
             }
@@ -2225,13 +2024,11 @@ public class WS {
          *
          * @see FormFlowHistoricData
          */
-        public static final class FlowItemHistory
-        {
+        public static final class FlowItemHistory {
             /**
              * Flow Item History mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/flow_item_history");
 
                 //Read...
@@ -2248,13 +2045,11 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for Form Container Flow History by
-                 * Form Container.
+                 * URL Path for Form Container Flow History by Form Container.
                  *
                  * @return {@code v1/flow_item_history/get_by_form_container}
                  */
-                public static final String getByFormContainer()
-                {
+                public static final String getByFormContainer() {
                     return Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
                 }
             }
@@ -2265,28 +2060,24 @@ public class WS {
          *
          * @see FormFlowHistoricData
          */
-        public static final class FormHistory
-        {
+        public static final class FormHistory {
             /**
              * Mapping for frequently used HTTP parameters.
              */
             public static final class QueryParam {
-                
+
                 public static final String INCLUDE_CURRENT = "include_current";
             }
 
             /**
              * Flow Item History mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/form_history");
 
                 //Read...
-                public static final String BY_FORM_CONTAINER =
-                        ("/get_by_form_container");
-                public static final String MOST_RECENT_BY_FORM_CONTAINER =
-                        ("/get_most_recent_by_form_container");
+                public static final String BY_FORM_CONTAINER = ("/get_by_form_container");
+                public static final String MOST_RECENT_BY_FORM_CONTAINER = ("/get_most_recent_by_form_container");
 
                 /**
                  * Root for Form value Item History.
@@ -2305,15 +2096,12 @@ public class WS {
                  *
                  * @return {@code v1/form_history/get_by_form_container}
                  */
-                public static final String getByFormContainer(boolean includeCurrentParam)
-                {
-                    if(!includeCurrentParam)
-                    {
+                public static final String getByFormContainer(boolean includeCurrentParam) {
+                    if (!includeCurrentParam) {
                         return Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
                     }
 
-                    String returnVal =
-                            Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
+                    String returnVal = Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
 
                     returnVal = returnVal.concat("?");
                     returnVal = returnVal.concat(INCLUDE_CURRENT);
@@ -2328,10 +2116,8 @@ public class WS {
                  *
                  * @return {@code v1/form_history/get_most_recent_by_form_container}
                  */
-                public static final String getByMostRecentByFormContainer()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            MOST_RECENT_BY_FORM_CONTAINER);
+                public static final String getByMostRecentByFormContainer() {
+                    return Version.VERSION_1.concat(ROOT).concat(MOST_RECENT_BY_FORM_CONTAINER);
                 }
             }
         }
@@ -2339,13 +2125,11 @@ public class WS {
         /**
          * The Test Web Service mappings.
          */
-        public static final class Test
-        {
+        public static final class Test {
             /**
              * Test mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/test");
                 public static final String TEST = ("/");
 
@@ -2364,8 +2148,7 @@ public class WS {
                  *
                  * @return {@code v1/test/}
                  */
-                public static final String testConnection()
-                {
+                public static final String testConnection() {
                     return Version.VERSION_1.concat(ROOT);
                 }
             }
@@ -2376,8 +2159,7 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.user.User
          */
-        public static final class User
-        {
+        public static final class User {
             /**
              * User mappings.
              */
@@ -2399,8 +2181,7 @@ public class WS {
                 //Activate / DeActivate...
                 public static final String DE_ACTIVATE = ("/de_activate");
                 public static final String ACTIVATE = ("/activate");
-                public static final String INCREMENT_INVALID_LOGIN =
-                        ("/increment_invalid_login");
+                public static final String INCREMENT_INVALID_LOGIN = ("/increment_invalid_login");
                 public static final String CHANGE_PASSWORD = ("/change_password");
 
                 //Delete...
@@ -2424,8 +2205,7 @@ public class WS {
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     public static final String USERNAME = "username";
 
                     public static final String EMAIL = "email";
@@ -2451,8 +2231,7 @@ public class WS {
                  * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
                  * @see com.fluidbpm.program.api.vo.user.User
                  */
-                public static final String userInitSession()
-                {
+                public static final String userInitSession() {
                     return Version.VERSION_1.concat(ROOT).concat(INIT_SESSION);
                 }
 
@@ -2465,8 +2244,7 @@ public class WS {
                  * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
                  * @see com.fluidbpm.program.api.vo.user.User
                  */
-                public static final String userIssueToken()
-                {
+                public static final String userIssueToken() {
                     return Version.VERSION_1.concat(ROOT).concat(ISSUE_TOKEN);
                 }
 
@@ -2479,8 +2257,7 @@ public class WS {
                  * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
                  * @see com.fluidbpm.program.api.vo.user.User
                  */
-                public static final String userTokenStatus()
-                {
+                public static final String userTokenStatus() {
                     return Version.VERSION_1.concat(ROOT).concat(TOKEN_STATUS);
                 }
 
@@ -2493,8 +2270,7 @@ public class WS {
                  * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
                  * @see com.fluidbpm.program.api.vo.user.User
                  */
-                public static final String userInformation()
-                {
+                public static final String userInformation() {
                     return Version.VERSION_1.concat(ROOT).concat(INFORMATION);
                 }
 
@@ -2503,8 +2279,7 @@ public class WS {
                  *
                  * @return {@code /v1/user/}
                  */
-                public static final String userCreate()
-                {
+                public static final String userCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -2513,8 +2288,7 @@ public class WS {
                  *
                  * @return {@code /v1/user/create_admin}
                  */
-                public static final String userCreateAdmin()
-                {
+                public static final String userCreateAdmin() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE_ADMIN);
                 }
 
@@ -2523,8 +2297,7 @@ public class WS {
                  *
                  * @return {@code v1/user/update}
                  */
-                public static final String userUpdate()
-                {
+                public static final String userUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -2533,8 +2306,7 @@ public class WS {
                  *
                  * @return {@code v1/user/delete}
                  */
-                public static final String userDelete()
-                {
+                public static final String userDelete() {
                     return userDelete(false);
                 }
 
@@ -2543,12 +2315,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/user/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/user/delete?force=forceDeleteParam} <b>with / without</b>
+                 *         force.
                  */
-                public static final String userDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String userDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -2560,8 +2331,7 @@ public class WS {
                  *
                  * @return {@code v1/user/de_activate}
                  */
-                public static final String userDeActivate()
-                {
+                public static final String userDeActivate() {
                     return Version.VERSION_1.concat(ROOT).concat(DE_ACTIVATE);
                 }
 
@@ -2588,8 +2358,7 @@ public class WS {
                  *
                  * @return {@code v1/user/activate}
                  */
-                public static final String userActivate()
-                {
+                public static final String userActivate() {
                     return Version.VERSION_1.concat(ROOT).concat(ACTIVATE);
                 }
 
@@ -2598,8 +2367,7 @@ public class WS {
                  *
                  * @return {@code v1/user/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -2608,8 +2376,7 @@ public class WS {
                  *
                  * @return {@code v1/user/get_by_username}
                  */
-                public static final String getByUsername()
-                {
+                public static final String getByUsername() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_USERNAME);
                 }
 
@@ -2618,8 +2385,7 @@ public class WS {
                  *
                  * @return {@code v1/user/get_by_email}
                  */
-                public static final String getByEmail()
-                {
+                public static final String getByEmail() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_BY_EMAIL);
                 }
 
@@ -2628,8 +2394,7 @@ public class WS {
                  *
                  * @return {@code v1/user/get_user_field_values_by_user}
                  */
-                public static final String getUserFieldValuesByUser()
-                {
+                public static final String getUserFieldValuesByUser() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_USER_FIELD_VALUES_BY_USER);
                 }
 
@@ -2638,8 +2403,7 @@ public class WS {
                  *
                  * @return {@code v1/user/get_all_users}
                  */
-                public static final String getAllUsers()
-                {
+                public static final String getAllUsers() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
 
@@ -2680,23 +2444,16 @@ public class WS {
                  *
                  * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
-                public static final String getGravatarByEmail(
-                        String emailParam,
-                        int sizeParam)
-                        throws UnsupportedEncodingException
-                {
-                    StringBuffer returnVal = new StringBuffer(
-                            Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_EMAIL));
+                public static final String getGravatarByEmail(String emailParam, int sizeParam) throws UnsupportedEncodingException {
+                    StringBuffer returnVal = new StringBuffer(Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_EMAIL));
 
                     returnVal.append("?");
                     String encodedEmail = "";
-                    if(emailParam != null)
-                    {
-                        encodedEmail = URLEncoder.encode(emailParam, "UTF-8");
+                    if (emailParam != null) {
+                        encodedEmail = URLEncoder.encode(emailParam, ENCODING_UTF_8);
                     }
 
-                    if(sizeParam < 1 || sizeParam > 512)
-                    {
+                    if (sizeParam < 1 || sizeParam > 512) {
                         sizeParam = 50;
                     }
 
@@ -2718,18 +2475,15 @@ public class WS {
                  *
                  * @return {@code v1/user/get_gravatar_by_user?size=50}.
                  */
-                public static final String getGravatarByUser(int sizeParam)
-                {
-                    StringBuffer returnVal = new StringBuffer(
-                            Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_USER));
+                public static final String getGravatarByUser(int sizeParam) {
+                    StringBuffer returnVal = new StringBuffer(Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_USER));
 
                     returnVal.append("?");
 
-                    if(sizeParam < 1 || sizeParam > 512)
-                    {
+                    if (sizeParam < 1 || sizeParam > 512) {
                         sizeParam = 50;
                     }
-                    
+
                     returnVal.append(QueryParam.SIZE);
                     returnVal.append("=");
                     returnVal.append(sizeParam);
@@ -2744,13 +2498,11 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.user.UserNotification
          */
-        public static final class UserNotification
-        {
+        public static final class UserNotification {
             /**
              * User mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/user_notification");
 
                 //Create...
@@ -2774,8 +2526,7 @@ public class WS {
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     public static final String QUERY_LIMIT = "query_limit";
                     public static final String OFFSET = "offset";
                 }
@@ -2789,14 +2540,13 @@ public class WS {
                 public String toString() {
                     return ROOT;
                 }
-                
+
                 /**
                  * URL Path for User Notification create.
                  *
                  * @return {@code /v1/user_notification/}
                  */
-                public static final String userNotificationCreate()
-                {
+                public static final String userNotificationCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -2805,8 +2555,7 @@ public class WS {
                  *
                  * @return {@code v1/user_notification/update}
                  */
-                public static final String userNotificationUpdate()
-                {
+                public static final String userNotificationUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -2815,8 +2564,7 @@ public class WS {
                  *
                  * @return {@code v1/user_notification/delete}
                  */
-                public static final String userNotificationDelete()
-                {
+                public static final String userNotificationDelete() {
                     return Version.VERSION_1.concat(ROOT).concat(DELETE);
                 }
 
@@ -2829,8 +2577,7 @@ public class WS {
                  *
                  * @return {@code v1/user_notification/mark_as_read?async={asyncParam}}
                  */
-                public static final String userNotificationMarkAsRead(boolean asyncParam)
-                {
+                public static final String userNotificationMarkAsRead(boolean asyncParam) {
                     String additionString = "?";
 
                     //Asynchronous...
@@ -2838,20 +2585,18 @@ public class WS {
                     additionString += "=";
                     additionString += asyncParam;
 
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            MARK_AS_READ.concat(additionString));
+                    return Version.VERSION_1.concat(ROOT).concat(MARK_AS_READ.concat(additionString));
                 }
-                
+
                 /**
                  * URL Path for User Notification get by id.
                  *
                  * @return {@code v1/user_notification/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
-                
+
                 /**
                  * URL Path for Un-Read User Notifications by User.
                  *
@@ -2860,25 +2605,20 @@ public class WS {
                  *
                  * @return {@code v1/user_notification/get_by_user_and_unread}
                  */
-                public static final String getAllUnReadByUser(
-                        int queryLimitParam,
-                        int offsetParam) {
+                public static final String getAllUnReadByUser(int queryLimitParam, int offsetParam) {
 
-                    String base = Version.VERSION_1.concat(ROOT).concat(
-                                    READ_ALL_BY_USER_AND_UNREAD);
-                    
+                    String base = Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_USER_AND_UNREAD);
+
                     String additionString = "?";
-                    
-                    if(queryLimitParam > 0)
-                    {
+
+                    if (queryLimitParam > 0) {
                         additionString += QueryParam.QUERY_LIMIT;
                         additionString += "=";
                         additionString += queryLimitParam;
                         additionString += "&";
                     }
 
-                    if(offsetParam > -1)
-                    {
+                    if (offsetParam > -1) {
                         additionString += QueryParam.OFFSET;
                         additionString += "=";
                         additionString += offsetParam;
@@ -2886,8 +2626,7 @@ public class WS {
                     }
 
                     //Cut of the end bit...
-                    additionString = additionString.substring(
-                            0, additionString.length() - 1);
+                    additionString = additionString.substring(0, additionString.length() - 1);
 
                     return base.concat(additionString);
                 }
@@ -2900,25 +2639,20 @@ public class WS {
                  *
                  * @return {@code v1/user_notification/get_by_user_and_read}
                  */
-                public static final String getAllReadByUser(
-                        int queryLimitParam,
-                        int offsetParam) {
+                public static final String getAllReadByUser(int queryLimitParam, int offsetParam) {
 
-                    String base = Version.VERSION_1.concat(ROOT).concat(
-                            READ_ALL_BY_USER_AND_READ);
+                    String base = Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_USER_AND_READ);
 
                     String additionString = "?";
 
-                    if(queryLimitParam > 0)
-                    {
+                    if (queryLimitParam > 0) {
                         additionString += QueryParam.QUERY_LIMIT;
                         additionString += "=";
                         additionString += queryLimitParam;
                         additionString += "&";
                     }
 
-                    if(offsetParam > -1)
-                    {
+                    if (offsetParam > -1) {
                         additionString += QueryParam.OFFSET;
                         additionString += "=";
                         additionString += offsetParam;
@@ -2926,8 +2660,7 @@ public class WS {
                     }
 
                     //Cut of the end bit...
-                    additionString = additionString.substring(
-                            0, additionString.length() - 1);
+                    additionString = additionString.substring(0, additionString.length() - 1);
 
                     return base.concat(additionString);
                 }
@@ -2939,13 +2672,11 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.role.Role
          */
-        public static final class Role
-        {
+        public static final class Role {
             /**
              * Role mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/role");
 
                 //Create...
@@ -2977,8 +2708,7 @@ public class WS {
                  *
                  * @return {@code /v1/role/}
                  */
-                public static final String roleCreate()
-                {
+                public static final String roleCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -2987,8 +2717,7 @@ public class WS {
                  *
                  * @return {@code v1/role/update}
                  */
-                public static final String roleUpdate()
-                {
+                public static final String roleUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -2997,8 +2726,7 @@ public class WS {
                  *
                  * @return {@code v1/role/delete}
                  */
-                public static final String roleDelete()
-                {
+                public static final String roleDelete() {
                     return roleDelete(false);
                 }
 
@@ -3007,12 +2735,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/role/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/role/delete?force=forceDeleteParam} <b>with / without</b>
+                 *         force.
                  */
-                public static final String roleDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String roleDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -3024,8 +2751,7 @@ public class WS {
                  *
                  * @return {@code v1/role/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -3034,8 +2760,7 @@ public class WS {
                  *
                  * @return {@code v1/role/get_all_roles}
                  */
-                public static final String getAllRoles()
-                {
+                public static final String getAllRoles() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
             }
@@ -3044,13 +2769,11 @@ public class WS {
         /**
          * The Mandrill Inbound Mail Web Service mappings.
          */
-        public static final class MandrillInbound
-        {
+        public static final class MandrillInbound {
             /**
              * Role mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/mandrill_inbound");
 
                 //Create...
@@ -3073,13 +2796,11 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.config.Configuration
          */
-        public static final class Configuration
-        {
+        public static final class Configuration {
             /**
              * Role mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/configuration");
 
                 //Update...
@@ -3104,8 +2825,7 @@ public class WS {
                  *
                  * @return {@code v1/configuration/get_by_key}
                  */
-                public static final String getByKey()
-                {
+                public static final String getByKey() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -3114,8 +2834,7 @@ public class WS {
                  *
                  * @return {@code v1/configuration/get_all_configurations}
                  */
-                public static final String getAllConfigurations()
-                {
+                public static final String getAllConfigurations() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
             }
@@ -3124,15 +2843,13 @@ public class WS {
         /**
          * The Custom Runner Destination Config Web Service mappings.
          */
-        public static final class CustomRunnerDestinationConfig
-        {
+        public static final class CustomRunnerDestinationConfig {
             /**
              * Custom runner mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/custom_runner/destination_config");
-                
+
                 //Read...
                 public static final String READ = ("/get_environment_config");
 
@@ -3154,8 +2871,7 @@ public class WS {
                  *
                  * @return {@code v1/custom_runner/destination_config/get_environment_config}
                  */
-                public static final String getEnvironmentConfig()
-                {
+                public static final String getEnvironmentConfig() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -3164,8 +2880,7 @@ public class WS {
                  *
                  * @return {@code v1/custom_runner/destination_config/lock_environment_config}
                  */
-                public static final String lockEnvironmentConfig()
-                {
+                public static final String lockEnvironmentConfig() {
                     return Version.VERSION_1.concat(ROOT).concat(LOCK);
                 }
             }
@@ -3174,38 +2889,31 @@ public class WS {
         /**
          * The Fluid Custom Runner Web Socket mappings.
          */
-        public static final class CustomRunner
-        {
+        public static final class CustomRunner {
             /**
              * Custom runner mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/custom_runner");
 
-                public static final String ROOT_WEB_SOCKET =
-                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+                public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
                 //Custom Web...
                 public static final String CUSTOM_WEB = ("/custom_web");
-                public static final String CUSTOM_WEB_WEB_SOCKET =
-                        (ROOT_WEB_SOCKET + CUSTOM_WEB);
+                public static final String CUSTOM_WEB_WEB_SOCKET = (ROOT_WEB_SOCKET + CUSTOM_WEB);
 
                 //Custom Flow Program...
                 public static final String CUSTOM_FLOW_PROGRAM = ("/custom_flow_program");
-                public static final String CUSTOM_FLOW_PROGRAM_WEB_SOCKET =
-                        (ROOT_WEB_SOCKET + CUSTOM_FLOW_PROGRAM);
+                public static final String CUSTOM_FLOW_PROGRAM_WEB_SOCKET = (ROOT_WEB_SOCKET + CUSTOM_FLOW_PROGRAM);
 
                 //Custom Flow Program...
                 public static final String CUSTOM_SCHEDULE = ("/custom_schedule");
-                public static final String CUSTOM_SCHEDULE_WEB_SOCKET =
-                        (CUSTOM_SCHEDULE + CUSTOM_FLOW_PROGRAM);
+                public static final String CUSTOM_SCHEDULE_WEB_SOCKET = (CUSTOM_SCHEDULE + CUSTOM_FLOW_PROGRAM);
 
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class PathParam
-                {
+                public static final class PathParam {
                     public static final String TASK_IDENTIFIER = "taskIdentifier";
                 }
 
@@ -3227,19 +2935,13 @@ public class WS {
                  * @return {@code web_socket/v1/custom_runner/custom_web/}
                  * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
-                public static final String executeCustomWebWebSocket(
-                        String taskIdentifierParam)
-                throws UnsupportedEncodingException
-                {
+                public static final String executeCustomWebWebSocket(String taskIdentifierParam) throws UnsupportedEncodingException {
                     String encodedValue = "";
-                    if(taskIdentifierParam != null)
-                    {
-                        encodedValue = URLEncoder.encode(taskIdentifierParam, "UTF-8");
+                    if (taskIdentifierParam != null) {
+                        encodedValue = URLEncoder.encode(taskIdentifierParam, ENCODING_UTF_8);
                     }
 
-                    String returnVal =
-                            (CUSTOM_WEB_WEB_SOCKET +
-                                    "/" + encodedValue+"/");
+                    String returnVal = (CUSTOM_WEB_WEB_SOCKET + "/" + encodedValue + "/");
 
                     return returnVal;
                 }
@@ -3252,19 +2954,13 @@ public class WS {
                  * @return {@code web_socket/v1/custom_runner/custom_flow_program/}
                  * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
-                public static final String executeCustomFlowProgramWebSocket(
-                        String taskIdentifierParam)
-                        throws UnsupportedEncodingException
-                {
+                public static final String executeCustomFlowProgramWebSocket(String taskIdentifierParam) throws UnsupportedEncodingException {
                     String encodedValue = "";
-                    if(taskIdentifierParam != null)
-                    {
-                        encodedValue = URLEncoder.encode(taskIdentifierParam, "UTF-8");
+                    if (taskIdentifierParam != null) {
+                        encodedValue = URLEncoder.encode(taskIdentifierParam, ENCODING_UTF_8);
                     }
 
-                    String returnVal =
-                            (CUSTOM_FLOW_PROGRAM_WEB_SOCKET +
-                                    "/" + encodedValue+"/");
+                    String returnVal = (CUSTOM_FLOW_PROGRAM_WEB_SOCKET + "/" + encodedValue + "/");
 
                     return returnVal;
                 }
@@ -3277,19 +2973,13 @@ public class WS {
                  * @return {@code web_socket/v1/custom_runner/custom_schedule/}
                  * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
-                public static final String executeCustomScheduleWebSocket(
-                        String taskIdentifierParam)
-                        throws UnsupportedEncodingException
-                {
+                public static final String executeCustomScheduleWebSocket(String taskIdentifierParam) throws UnsupportedEncodingException {
                     String encodedValue = "";
-                    if(taskIdentifierParam != null)
-                    {
-                        encodedValue = URLEncoder.encode(taskIdentifierParam, "UTF-8");
+                    if (taskIdentifierParam != null) {
+                        encodedValue = URLEncoder.encode(taskIdentifierParam, ENCODING_UTF_8);
                     }
 
-                    String returnVal =
-                            (CUSTOM_SCHEDULE_WEB_SOCKET +
-                                    "/" + encodedValue+"/");
+                    String returnVal = (CUSTOM_SCHEDULE_WEB_SOCKET + "/" + encodedValue + "/");
 
                     return returnVal;
                 }
@@ -3303,49 +2993,38 @@ public class WS {
          * @see com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil
          * @see com.fluidbpm.program.api.util.sql.impl.SQLFormUtil
          */
-        public static final class SQLUtil
-        {
+        public static final class SQLUtil {
             /**
              * User Query mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/sql_util");
 
-                public static final String ROOT_WEB_SOCKET =
-                        (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
+                public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
                 //[[[ EXECUTE ]]]...
                 //Form...
-                public static final String SQL_UTIL_FORM_GET_TABLE_FORMS =
-                        ("/form/get_table_forms_by_electronic_form_id");
+                public static final String SQL_UTIL_FORM_GET_TABLE_FORMS = ("/form/get_table_forms_by_electronic_form_id");
 
-                public static final String SQL_UTIL_FORM_GET_DESCENDANTS =
-                        ("/form/get_descendants_by_electronic_form_id");
+                public static final String SQL_UTIL_FORM_GET_DESCENDANTS = ("/form/get_descendants_by_electronic_form_id");
 
-                public static final String SQL_UTIL_FORM_GET_ANCESTOR =
-                        ("/form/get_ancestor_by_electronic_form_id");
+                public static final String SQL_UTIL_FORM_GET_ANCESTOR = ("/form/get_ancestor_by_electronic_form_id");
 
-                public static final String SQL_UTIL_FORM_EXECUTE_SQL =
-                        ("/form/execute_sql");
+                public static final String SQL_UTIL_FORM_EXECUTE_SQL = ("/form/execute_sql");
 
                 //Field...
-                public static final String SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER =
-                        ("/form_field/get_fields_by_electronic_form_id");
+                public static final String SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER = ("/form_field/get_fields_by_electronic_form_id");
 
                 //Native SQL
-                public static final String SQL_UTIL_NATIVE_QUERY =
-                        ("/native/execute_query");
+                public static final String SQL_UTIL_NATIVE_QUERY = ("/native/execute_query");
 
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     public static final String INCLUDE_FIELD_DATA = "include_field_data";
                     public static final String INCLUDE_TABLE_FIELDS = "include_table_fields";
-                    public static final String INCLUDE_TABLE_FIELD_FORM_RECORD_INFO =
-                            "include_table_field_form_record_info";
+                    public static final String INCLUDE_TABLE_FIELD_FORM_RECORD_INFO = "include_table_field_form_record_info";
                     public static final String MASS_FETCH = "mass_fetch";
 
                     public static final String CONNECTION_ALIAS = "connection_alias";
@@ -3356,8 +3035,7 @@ public class WS {
                 /**
                  * Mapping for frequently used HTTP or Web Socket Path parameters.
                  */
-                public static final class PathParam
-                {
+                public static final class PathParam {
                     public static final String SERVICE_TICKET = "serviceTicket";
                 }
 
@@ -3372,52 +3050,37 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for retrieving Table records for electronic
-                 * form with id {@code electronicFormIdParam}.
+                 * URL Path for retrieving Table records for electronic form with id
+                 * {@code electronicFormIdParam}.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  *
                  * @return {@code v1/sql_util/form/get_table_forms_by_electronic_form_id}
                  */
-                public static final String getTableForms(
-                        boolean includeFieldDataParam)
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
-                            "?" +
-                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam
-                    );
+                public static final String getTableForms(boolean includeFieldDataParam) {
+                    return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_GET_TABLE_FORMS).concat("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam);
                 }
 
                 /**
-                 * URL Path for retrieving Table records for electronic
-                 * form with id {@code electronicFormIdParam}.
+                 * URL Path for retrieving Table records for electronic form with id
+                 * {@code electronicFormIdParam}.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  * @param compressResponseParam Compress the Descendant result in Base-64.
-                 *                              
+                 * 
                  * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
                  */
-                public static final String getTableFormsWebSocket(
-                        boolean includeFieldDataParam,
-                        String serviceTicketParam,
-                        boolean compressResponseParam)
-                {
-                    String returnVal =
-                            ROOT_WEB_SOCKET.concat(
-                                    SQL_UTIL_FORM_GET_TABLE_FORMS).concat(
-                                    "/"+ serviceTicketParam + "?" +
-                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam + "&" +
-                                            QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam
-                            );
+                public static final String getTableFormsWebSocket(boolean includeFieldDataParam, String serviceTicketParam, boolean compressResponseParam) {
+                    String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_GET_TABLE_FORMS).concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_FIELD_DATA + "="
+                            + includeFieldDataParam + "&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam);
 
                     return returnVal;
                 }
 
                 /**
-                 * URL Path for retrieving descendants for electronic
-                 * form with id {@code electronicFormIdParam}.
+                 * URL Path for retrieving descendants for electronic form with id
+                 * {@code electronicFormIdParam}.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
@@ -3425,59 +3088,33 @@ public class WS {
                  *
                  * @return {@code v1/sql_util/form/get_descendants_by_electronic_form_id}
                  */
-                public static final String getDescendants(
-                        boolean includeFieldDataParam,
-                        boolean includeTableFieldsParam,
-                        boolean inclTableFieldFormInfoParam)
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            SQL_UTIL_FORM_GET_DESCENDANTS).concat(
-                            "?" +
-                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
-                            "&" +
-                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
-                            "&" +
-                            QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO+"=" + inclTableFieldFormInfoParam
-                    );
+                public static final String getDescendants(boolean includeFieldDataParam, boolean includeTableFieldsParam, boolean inclTableFieldFormInfoParam) {
+                    return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_GET_DESCENDANTS)
+                            .concat("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam + "&" + QueryParam.INCLUDE_TABLE_FIELDS + "=" + includeTableFieldsParam + "&"
+                                    + QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO + "=" + inclTableFieldFormInfoParam);
                 }
 
                 /**
-                 * URL Path for retrieving Table records for electronic
-                 * form with id {@code electronicFormIdParam}.
+                 * URL Path for retrieving Table records for electronic form with id
+                 * {@code electronicFormIdParam}.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
-                 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+                 * @param includeTableFieldFormRecordInfoParam Does table record form data need
+                 *            to be included.
                  * @param massFetchParam Is the fetch a large fetch.
-                 *                       
+                 * 
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  * @param compressResponseParam Compress the Descendant result in Base-64.
                  *
                  * @return {@code /web_socket/v1/sql_util/form/get_descendants_by_electronic_form_id}
                  */
-                public static final String getDescendantsWebSocket(
-                        boolean includeFieldDataParam,
-                        boolean includeTableFieldsParam,
-                        boolean includeTableFieldFormRecordInfoParam,
-                        boolean massFetchParam,
-                        String serviceTicketParam,
-                        boolean compressResponseParam)
-                {
-                    String returnVal =
-                            ROOT_WEB_SOCKET.concat(
-                                    SQL_UTIL_FORM_GET_DESCENDANTS).concat(
-                                    "/"+ serviceTicketParam + 
-                                    "?" +
-                                    QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
-                                    "&" +
-                                    QueryParam.MASS_FETCH+"=" + massFetchParam +
-                                    "&" +
-                                    QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
-                                    "&" +
-                                    QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO +"=" + includeTableFieldFormRecordInfoParam +
-                                    "&" +
-                                    QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam
-                            );
+                public static final String getDescendantsWebSocket(boolean includeFieldDataParam, boolean includeTableFieldsParam, boolean includeTableFieldFormRecordInfoParam,
+                        boolean massFetchParam, String serviceTicketParam, boolean compressResponseParam) {
+                    String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_GET_DESCENDANTS)
+                            .concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam + "&" + QueryParam.MASS_FETCH + "="
+                                    + massFetchParam + "&" + QueryParam.INCLUDE_TABLE_FIELDS + "=" + includeTableFieldsParam + "&" + QueryParam.INCLUDE_TABLE_FIELD_FORM_RECORD_INFO
+                                    + "=" + includeTableFieldFormRecordInfoParam + "&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam);
 
                     return returnVal;
                 }
@@ -3487,42 +3124,28 @@ public class WS {
                  *
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  * @param compressResponseParam Compress the SQL Result in Base-64.
-                 *                              
+                 * 
                  * @return {@code /web_socket/v1/sql_util/form/execute_sql}
                  */
-                public static final String getExecuteSQLWebSocket(
-                        String serviceTicketParam,
-                        boolean compressResponseParam) {
+                public static final String getExecuteSQLWebSocket(String serviceTicketParam, boolean compressResponseParam) {
 
-                    String returnVal =
-                            ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_EXECUTE_SQL).concat(
-                                    "/"+ serviceTicketParam + "?" +
-                                            QueryParam.COMPRESS_RESPONSE
-                                            +"=" + compressResponseParam);
+                    String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_EXECUTE_SQL)
+                            .concat("/" + serviceTicketParam + "?" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam);
 
                     return returnVal;
                 }
 
                 /**
-                 * URL Path for retrieving ancestor for electronic
-                 * form.
+                 * URL Path for retrieving ancestor for electronic form.
                  *
                  * @param includeFieldDataParam Does field data need to be included.
                  * @param includeTableFieldsParam Does table field data need to be included.
                  *
                  * @return {@code v1/sql_util/form/get_ancestor_by_electronic_form_id}
                  */
-                public static final String getAncestor(
-                        boolean includeFieldDataParam,
-                        boolean includeTableFieldsParam)
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            SQL_UTIL_FORM_GET_ANCESTOR).concat(
-                            "?" +
-                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
-                            "&" +
-                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
-                    );
+                public static final String getAncestor(boolean includeFieldDataParam, boolean includeTableFieldsParam) {
+                    return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_GET_ANCESTOR)
+                            .concat("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam + "&" + QueryParam.INCLUDE_TABLE_FIELDS + "=" + includeTableFieldsParam);
                 }
 
                 /**
@@ -3535,47 +3158,29 @@ public class WS {
                  *
                  * @return {@code /web_socket/v1/sql_util/form/get_ancestor_by_electronic_form_id}
                  */
-                public static final String getAncestorWebSocket(
-                        boolean includeFieldDataParam,
-                        boolean includeTableFieldsParam,
-                        String serviceTicketParam,
-                        boolean compressResponseParam)
-                {
-                    String returnVal =
-                            ROOT_WEB_SOCKET.concat(
-                                    SQL_UTIL_FORM_GET_ANCESTOR).concat(
-                                    "/"+ serviceTicketParam +
-                                            "?" +
-                                            QueryParam.INCLUDE_FIELD_DATA+"=" + includeFieldDataParam +
-                                            "&" +
-                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
-                                            "&" +
-                                            QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam);
+                public static final String getAncestorWebSocket(boolean includeFieldDataParam, boolean includeTableFieldsParam, String serviceTicketParam,
+                        boolean compressResponseParam) {
+                    String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_GET_ANCESTOR)
+                            .concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam + "&" + QueryParam.INCLUDE_TABLE_FIELDS + "="
+                                    + includeTableFieldsParam + "&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam);
 
                     return returnVal;
                 }
 
                 /**
-                 * URL Path for retrieving Form Fields for electronic
-                 * form.
+                 * URL Path for retrieving Form Fields for electronic form.
                  *
                  * @param includeTableFieldsParam Does Table Field data need to be included?
                  *
                  * @return {@code v1/sql_util/form_field/get_fields_by_electronic_form_id}
                  */
-                public static final String getFormFields(
-                        boolean includeTableFieldsParam)
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
-                            "?" +
-                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam
-                    );
+                public static final String getFormFields(boolean includeTableFieldsParam) {
+                    return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER)
+                            .concat("?" + QueryParam.INCLUDE_TABLE_FIELDS + "=" + includeTableFieldsParam);
                 }
 
                 /**
-                 * URL Path for retrieving Form Fields for electronic
-                 * form using a Web Socket.
+                 * URL Path for retrieving Form Fields for electronic form using a Web Socket.
                  *
                  * @param includeTableFieldsParam Does Table Field data need to be included?
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
@@ -3583,18 +3188,9 @@ public class WS {
                  *
                  * @return {@code /web_socket/v1/sql_util/form_field/get_fields_by_electronic_form_id}
                  */
-                public static final String getFormFieldsWebSocket(
-                        boolean includeTableFieldsParam,
-                        String serviceTicketParam,
-                        boolean compressResponseParam)
-                {
-                    String returnVal =
-                            ROOT_WEB_SOCKET.concat(
-                                    SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat(
-                                    "/"+ serviceTicketParam + "?" +
-                                            QueryParam.INCLUDE_TABLE_FIELDS+"=" + includeTableFieldsParam +
-                                            "&" +
-                                            QueryParam.COMPRESS_RESPONSE +"=" + compressResponseParam);
+                public static final String getFormFieldsWebSocket(boolean includeTableFieldsParam, String serviceTicketParam, boolean compressResponseParam) {
+                    String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_TABLE_FIELDS + "="
+                            + includeTableFieldsParam + "&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam);
 
                     return returnVal;
                 }
@@ -3604,20 +3200,15 @@ public class WS {
                  *
                  * @param serviceTicketParam The service ticket in hex-decimal text format.
                  * @param compressResponseParam Compress the SQL Result in Base-64.
-                 *                           
+                 * 
                  * @return {@code v1/sql_util/native/execute_query}
                  *
                  * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
                  */
-                public static final String getExecuteNativeSQLWebSocket(
-                        String serviceTicketParam,
-                        boolean compressResponseParam) {
+                public static final String getExecuteNativeSQLWebSocket(String serviceTicketParam, boolean compressResponseParam) {
 
-                    String returnVal =
-                            ROOT_WEB_SOCKET.concat(SQL_UTIL_NATIVE_QUERY).concat(
-                                    "/"+ serviceTicketParam + "?" +
-                                            QueryParam.COMPRESS_RESPONSE
-                                            +"=" + compressResponseParam);
+                    String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_NATIVE_QUERY)
+                            .concat("/" + serviceTicketParam + "?" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam);
 
                     return returnVal;
                 }
@@ -3629,25 +3220,22 @@ public class WS {
          *
          * @see com.fluidbpm.program.api.vo.userquery.UserQuery
          */
-        public static final class UserQuery
-        {
+        public static final class UserQuery {
             /**
              * User Query mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     public static final String POPULATE_ANCESTOR_ID = "populate_ancestor_id";
 
                     //List Job View content...
                     public static final String QUERY_LIMIT = "query_limit";
                     public static final String OFFSET = "offset";
                 }
-                
+
                 public static final String ROOT = ("/user_query");
 
                 //Create...
@@ -3663,14 +3251,12 @@ public class WS {
                 //Read...
                 public static final String READ = ("/get_by_id");
                 public static final String READ_ALL = ("/get_all_user_queries");
-                
-                public static final String READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER =
-                        ("/get_all_user_queries_by_logged_in_user");
+
+                public static final String READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER = ("/get_all_user_queries_by_logged_in_user");
 
                 //Execute...
                 public static final String EXECUTE = ("/execute");
-                public static final String EXECUTE_POPULATE_ANCESTOR_ID =
-                                ("/execute?"+POPULATE_ANCESTOR_ID+"=true");
+                public static final String EXECUTE_POPULATE_ANCESTOR_ID = ("/execute?" + POPULATE_ANCESTOR_ID + "=true");
 
                 /**
                  * Root for {@code UserQuery}.
@@ -3685,35 +3271,30 @@ public class WS {
                 /**
                  * URL Path for executing a {@code UserQuery}.
                  *
-                 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+                 * @param populateAncestorIdParam - Whether the ancestor id should be populated
+                 *            (when applicable).
                  * @param queryLimitParam The query limit.
                  * @param offsetParam The query offset.
                  *
                  * @return {@code v1/user_query/execute}
                  */
-                public static final String executeUserQuery(
-                        boolean populateAncestorIdParam,
-                        int queryLimitParam,
-                        int offsetParam)
-                {
+                public static final String executeUserQuery(boolean populateAncestorIdParam, int queryLimitParam, int offsetParam) {
                     String base = Version.VERSION_1.concat(ROOT).concat(EXECUTE);
                     String additionString = "?";
-                    
+
                     additionString += QueryParam.POPULATE_ANCESTOR_ID;
                     additionString += "=";
                     additionString += populateAncestorIdParam;
                     additionString += "&";
 
-                    if(queryLimitParam > 0)
-                    {
+                    if (queryLimitParam > 0) {
                         additionString += QueryParam.QUERY_LIMIT;
                         additionString += "=";
                         additionString += queryLimitParam;
                         additionString += "&";
                     }
 
-                    if(offsetParam > -1)
-                    {
+                    if (offsetParam > -1) {
                         additionString += QueryParam.OFFSET;
                         additionString += "=";
                         additionString += offsetParam;
@@ -3721,12 +3302,11 @@ public class WS {
                     }
 
                     //Cut of the end bit...
-                    additionString = additionString.substring(
-                            0, additionString.length() - 1);
+                    additionString = additionString.substring(0, additionString.length() - 1);
 
                     return base.concat(additionString);
                 }
-                
+
                 /**
                  * URL Path for executing a {@code UserQuery}.
                  *
@@ -3735,12 +3315,8 @@ public class WS {
                  *
                  * @return {@code v1/user_query/execute}
                  */
-                public static final String executeUserQuery(
-                        int queryLimitParam,
-                        int offsetParam
-                ) {
-                    return executeUserQuery(true,
-                            queryLimitParam, offsetParam);
+                public static final String executeUserQuery(int queryLimitParam, int offsetParam) {
+                    return executeUserQuery(true, queryLimitParam, offsetParam);
                 }
 
                 /**
@@ -3748,8 +3324,7 @@ public class WS {
                  *
                  * @return {@code /v1/user_query/}
                  */
-                public static final String userQueryCreate()
-                {
+                public static final String userQueryCreate() {
                     return Version.VERSION_1.concat(ROOT).concat(CREATE);
                 }
 
@@ -3758,8 +3333,7 @@ public class WS {
                  *
                  * @return {@code v1/user_query/update}
                  */
-                public static final String userQueryUpdate()
-                {
+                public static final String userQueryUpdate() {
                     return Version.VERSION_1.concat(ROOT).concat(UPDATE);
                 }
 
@@ -3768,8 +3342,7 @@ public class WS {
                  *
                  * @return {@code v1/user_query/delete}
                  */
-                public static final String userQueryDelete()
-                {
+                public static final String userQueryDelete() {
                     return userQueryDelete(false);
                 }
 
@@ -3778,12 +3351,11 @@ public class WS {
                  *
                  * @param forceDeleteParam Whether to forcefully delete.
                  *
-                 * @return {@code v1/user_query/delete?force=forceDeleteParam} <b>with / without</b> force.
+                 * @return {@code v1/user_query/delete?force=forceDeleteParam} <b>with /
+                 *         without</b> force.
                  */
-                public static final String userQueryDelete(boolean forceDeleteParam)
-                {
-                    if(forceDeleteParam)
-                    {
+                public static final String userQueryDelete(boolean forceDeleteParam) {
+                    if (forceDeleteParam) {
                         return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
                     }
 
@@ -3795,8 +3367,7 @@ public class WS {
                  *
                  * @return {@code v1/user_query/get_by_id}
                  */
-                public static final String getById()
-                {
+                public static final String getById() {
                     return Version.VERSION_1.concat(ROOT).concat(READ);
                 }
 
@@ -3805,8 +3376,7 @@ public class WS {
                  *
                  * @return {@code v1/user_query/get_all_user_queries}
                  */
-                public static final String getAllUserQueries()
-                {
+                public static final String getAllUserQueries() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
                 }
 
@@ -3815,10 +3385,8 @@ public class WS {
                  *
                  * @return {@code v1/user_query/get_all_user_queries_by_logged_in_user}
                  */
-                public static final String getAllUserQueriesByLoggedInUser()
-                {
-                    return Version.VERSION_1.concat(ROOT).concat(
-                            READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER);
+                public static final String getAllUserQueriesByLoggedInUser() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER);
                 }
             }
         }
@@ -3830,25 +3398,21 @@ public class WS {
          * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
          * @see com.fluidbpm.program.api.vo.user.User
          */
-        public static final class Auth0
-        {
+        public static final class Auth0 {
             /**
              * Auth0 mappings.
              */
-            public static final class Version1
-            {
+            public static final class Version1 {
                 public static final String ROOT = ("/oauth");
 
                 public static final String TOKEN = "/token";
-                public static final String USER_INFO_WITH_ACCESS_TOKEN =
-                        "/userinfo/?access_token=";
+                public static final String USER_INFO_WITH_ACCESS_TOKEN = "/userinfo/?access_token=";
                 public static final String USER_INFO = "/userinfo";
 
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
-                public static final class QueryParam
-                {
+                public static final class QueryParam {
                     public static final String USERNAME = "username";
                 }
 
@@ -3871,43 +3435,34 @@ public class WS {
                  * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
                  * @see com.fluidbpm.program.api.vo.user.User
                  */
-                public static final String userToken()
-                {
+                public static final String userToken() {
                     return ROOT.concat(TOKEN);
                 }
 
                 /**
-                 * Used to get {@code User} information via the
-                 * {@code accessTokenValueParam}.
+                 * Used to get {@code User} information via the {@code accessTokenValueParam}.
                  *
-                 * @param accessTokenValueParam The access token to get user
-                 *                              information from.
+                 * @param accessTokenValueParam The access token to get user information from.
                  * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
                  * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
-                public static final String userInfo(String accessTokenValueParam)
-                throws UnsupportedEncodingException
-                {
-                    String encodedValue = "";
-
-                    if(accessTokenValueParam != null)
-                    {
-                        encodedValue = URLEncoder.encode(accessTokenValueParam, "UTF-8");
+                public static final String userInfo(String accessTokenValueParam) throws UnsupportedEncodingException {
+                    String encodedValue = EMPTY;
+                    if (accessTokenValueParam != null) {
+                        encodedValue = URLEncoder.encode(accessTokenValueParam, ENCODING_UTF_8);
                     }
 
                     return USER_INFO_WITH_ACCESS_TOKEN.concat(encodedValue);
                 }
 
                 /**
-                 * Used to get {@code User} information via the
-                 * {@code accessTokenValueParam} in the HTTP header.
+                 * Used to get {@code User} information via the {@code accessTokenValueParam} in
+                 * the HTTP header.
                  *
                  * @return {@code /oath/userinfo?access_token=accessTokenValueParam}
                  * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
                  */
-                public static final String userInfo()
-                        throws UnsupportedEncodingException
-                {
+                public static final String userInfo() throws UnsupportedEncodingException {
                     return USER_INFO;
                 }
             }
