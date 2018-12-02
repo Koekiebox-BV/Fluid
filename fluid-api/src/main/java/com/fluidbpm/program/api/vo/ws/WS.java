@@ -459,6 +459,7 @@ public class WS {
                 public static final String CREATE = ("/");
 
                 public static final String READ_ALL_TO_BY_LOGGED_IN = ("/get_all_to_by_logged_in");
+                public static final String READ_ALL_TO_BY_FORM = ("/get_all_to_by_form");
 
                 /**
                  * Root for Collaboration.
@@ -483,9 +484,22 @@ public class WS {
                  * URL Path for fetching all Collaboration items by logged in.
                  *
                  * @return {@code v1/collaboration/get_all_to_by_logged_in}
+                 *
+                 * @see com.fluidbpm.program.api.vo.user.User
                  */
                 public static final String getAllToByLoggedIn() {
                     return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TO_BY_LOGGED_IN);
+                }
+
+                /**
+                 * URL Path for fetching all Collaboration items by Form.
+                 *
+                 * @return {@code v1/collaboration/get_all_to_by_form}
+                 *
+                 * @see Form
+                 */
+                public static final String getAllToByForm() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TO_BY_FORM);
                 }
             }
         }

@@ -90,5 +90,22 @@ public class CollaborationClient extends ABaseClientWS {
                 collaborationListing, WS.Path.Collaboration.Version1.getAllToByLoggedIn())).getListing();
     }
 
+    /**
+     * Retrieve all Collaboration items TO where {@code Form} is {@code formParam}.
+     *
+     * @param formParam The form to fetch collaborations to where sent 'TO'.
+     *
+     * @return Created Collaboration's based on {@code formParam}.
+     *
+     * @see Collaboration
+     */
+    public List<Collaboration> getAllToByForm(Form formParam) {
 
+        if(formParam != null && this.serviceTicket != null) {
+            formParam.setServiceTicket(this.serviceTicket);
+        }
+
+        return new CollaborationListing(this.postJson(
+                formParam, WS.Path.Collaboration.Version1.getAllToByForm())).getListing();
+    }
 }
