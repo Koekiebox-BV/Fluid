@@ -189,8 +189,7 @@ public class TestFormFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_TextPlain_CRUD()
     {
-        if(!this.isConnectionValid())
-        {
+        if(!this.isConnectionValid()) {
             return;
         }
 
@@ -1427,8 +1426,7 @@ public class TestFormFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_Table_CRUD()
     {
-        if(!this.isConnectionValid())
-        {
+        if(!this.isConnectionValid()) {
             return;
         }
 

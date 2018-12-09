@@ -64,6 +64,23 @@ public class Collaboration extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the collaboration for a creation.
+     *
+     * @param formContainerParam The Form for the collaboration.
+     * @param fromUserParam The from user.
+     * @param toUserParam The to user.
+     *
+     * @see Form
+     * @see User
+     */
+    public Collaboration(Form formContainerParam, User fromUserParam, User toUserParam) {
+        this();
+        this.setFormContainer(formContainerParam);
+        this.setFromUser(fromUserParam);
+        this.setToUser(toUserParam);
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.

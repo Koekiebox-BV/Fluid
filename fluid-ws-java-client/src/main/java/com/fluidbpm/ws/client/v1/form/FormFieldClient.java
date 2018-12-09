@@ -61,13 +61,11 @@ public class FormFieldClient extends ABaseFieldClient {
      */
     public Field createFieldTextPlain(Field formFieldParam)
     {
-        if(formFieldParam != null && this.serviceTicket != null)
-        {
+        if(formFieldParam != null && this.serviceTicket != null) {
             formFieldParam.setServiceTicket(this.serviceTicket);
         }
 
-        if(formFieldParam != null)
-        {
+        if(formFieldParam != null) {
             formFieldParam.setTypeAsEnum(Field.Type.Text);
             formFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
         }

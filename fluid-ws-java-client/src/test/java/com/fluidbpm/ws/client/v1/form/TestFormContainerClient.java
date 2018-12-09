@@ -18,10 +18,12 @@ package com.fluidbpm.ws.client.v1.form;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
@@ -33,6 +35,7 @@ import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 
 import junit.framework.TestCase;
@@ -211,10 +214,51 @@ public class TestFormContainerClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testCRUDFormContainerAdvanced()
-    {
-        if(!this.isConnectionValid())
-        {
+    @Ignore
+    public void testCRUDFormContainerWithEncryptedField() {
+
+        if(!this.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
+        FlowItemClient flowItemClient = new FlowItemClient(BASE_URL, serviceTicket);
+
+        Form formContEncToCreate = new Form("Form Test");
+        formContEncToCreate.setTitle("Created At "+new Date());
+        formContEncToCreate.setFieldValue(
+                "Field Crap",UUID.randomUUID().toString(), Field.Type.Text);
+        formContEncToCreate.setFieldValue(
+                "Sample Encrypt Field", UUID.randomUUID().toString(), Field.Type.TextEncrypted);
+
+        Form createdForm = formContainerClient.createFormContainer(formContEncToCreate);
+
+        flowItemClient.sendFormToFlow(createdForm, "Encrypted");
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException eParam) {
+            eParam.printStackTrace();
+        }
+
+        Form freshFetchById = formContainerClient.getFormContainerById(createdForm.getId());
+
+        System.out.println(freshFetchById.getTitle());
+        System.out.println("-- ENC-FIELD-VAL --> "+
+                freshFetchById.getFieldValueAsString("Sample Encrypt Field"));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testCRUDFormContainerAdvanced() {
+        if(!this.isConnectionValid()) {
             return;
         }
 
@@ -261,13 +305,11 @@ public class TestFormContainerClient extends ABaseTestCase {
         FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL, serviceTicket);
         Form createdFormDef = null;
 
-        try
-        {
+        try {
             createdFormDef = formDefinitionClient.getFormDefinitionByName(
                     TestFormDefinitionClient.TestStatics.FORM_TYPE);
         }
-        catch(FluidClientException fce)
-        {
+        catch(FluidClientException fce) {
             if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
             {
                 TestCase.fail(fce.getMessage());
