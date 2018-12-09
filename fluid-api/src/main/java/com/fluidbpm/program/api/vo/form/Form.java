@@ -648,14 +648,16 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     {
         Object obj = this.getFieldValueForField(fieldNameParam);
 
-        if(obj == null)
-        {
+        if(obj == null) {
             return null;
         }
 
-        if(obj instanceof Double)
-        {
+        if(obj instanceof Double) {
             return (Double)obj;
+        }
+
+        if(obj instanceof Number) {
+            return ((Number)obj).doubleValue();
         }
 
         return null;

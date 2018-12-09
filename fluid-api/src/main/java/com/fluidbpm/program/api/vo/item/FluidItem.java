@@ -769,17 +769,18 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field.Type#Decimal
      */
-    public Double getRouteFieldValueAsDouble(String fieldNameParam)
-    {
+    public Double getRouteFieldValueAsDouble(String fieldNameParam) {
         Object obj = this.getRouteFieldValue(fieldNameParam);
 
-        if(obj == null)
-        {
+        if(obj == null) {
             return null;
         }
 
-        if(obj instanceof Number)
-        {
+        if(obj instanceof Double) {
+            return ((Double)obj);
+        }
+
+        if(obj instanceof Number) {
             return ((Number)obj).doubleValue();
         }
 
@@ -876,17 +877,18 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field.Type#Decimal
      */
-    public Double getGlobalFieldValueAsDouble(String fieldNameParam)
-    {
+    public Double getGlobalFieldValueAsDouble(String fieldNameParam) {
         Object obj = this.getFieldValueForField(fieldNameParam, this.getGlobalFields());
 
-        if(obj == null)
-        {
+        if(obj == null) {
             return null;
         }
 
-        if(obj instanceof Number)
-        {
+        if(obj instanceof Number) {
+            return ((Number)obj).doubleValue();
+        }
+
+        if(obj instanceof Number) {
             return ((Number)obj).doubleValue();
         }
 
