@@ -1715,18 +1715,13 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     @Override
     @XmlTransient
     public boolean equals(Object objParam) {
-
-        if(objParam == null || this.getId() == null)
-        {
+        if(objParam == null || this.getId() == null) {
             return false;
         }
 
-        if(objParam instanceof Form)
-        {
+        if(objParam instanceof Form) {
             Form paramCasted = (Form)objParam;
-
-            if(paramCasted.getId() == null)
-            {
+            if(paramCasted.getId() == null) {
                 return false;
             }
 

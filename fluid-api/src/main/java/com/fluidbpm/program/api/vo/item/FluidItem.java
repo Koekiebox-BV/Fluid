@@ -807,8 +807,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field.Type#TrueFalse
      */
-    public Boolean getRouteFieldValueAsBoolean(String fieldNameParam)
-    {
+    public Boolean getRouteFieldValueAsBoolean(String fieldNameParam) {
         Object obj = this.getRouteFieldValue(fieldNameParam);
 
         if(obj == null)
@@ -1454,5 +1453,31 @@ public class FluidItem extends ABaseFluidJSONObject {
      */
     public void setTableFieldNameOnParentForm(String tableFieldNameParam) {
         this.tableFieldNameOnParentForm = tableFieldNameParam;
+    }
+
+    /**
+     * Compares {@code objParam} against {@code this} to see
+     * if they are equal.
+     *
+     * @param objParam The object to compare against.
+     * @return Whether {@code objParam} is equal.
+     */
+    @Override
+    @XmlTransient
+    public boolean equals(Object objParam) {
+        if(objParam == null || this.getId() == null) {
+            return false;
+        }
+
+        if(objParam instanceof FluidItem) {
+            FluidItem paramCasted = (FluidItem)objParam;
+            if(paramCasted.getId() == null) {
+                return false;
+            }
+
+            return (this.getId().equals(paramCasted.getId()));
+        }
+
+        return false;
     }
 }
