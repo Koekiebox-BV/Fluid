@@ -126,26 +126,39 @@ public class FlowItemClient extends ABaseClientWS {
     }
 
     /**
-     * Send a workflow item currently in an {@code Assignment} step to   
+     * Send a workflow item currently in an {@code Assignment} step to.
+     * Collaborator user send on is not allowed.
      *
      * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
      *
      * @return The Fluid item that was sent on.
      */
+    public FluidItem sendFlowItemOn(FluidItem flowJobItemParam) {
+        return this.sendFlowItemOn(flowJobItemParam, false);
+    }
+
+    /**
+     * Send a workflow item currently in an {@code Assignment} step to   
+     *
+     * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
+     * @param allowCollaboratorToSendOnParam All a collaborator user to also send on.
+     *
+     * @return The Fluid item that was sent on.
+     */
     public FluidItem sendFlowItemOn(
-            FluidItem flowJobItemParam) {
+            FluidItem flowJobItemParam,
+            boolean allowCollaboratorToSendOnParam
+    ) {
 
         if (flowJobItemParam != null && this.serviceTicket != null) {
             flowJobItemParam.setServiceTicket(this.serviceTicket);
         }
 
         try {
-
             return new FluidItem(this.postJson(
-                    flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn()));
-        }
-        //
-        catch (JSONException e) {
+                    flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn(
+                            allowCollaboratorToSendOnParam)));
+        } catch (JSONException e) {
             throw new FluidClientException(e.getMessage(), e,
                     FluidClientException.ErrorCode.JSON_PARSING);
         }

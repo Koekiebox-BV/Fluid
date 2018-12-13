@@ -1903,6 +1903,10 @@ public class WS {
 
                     //Wait for Rule execution completion...
                     public static final String WAIT_FOR_RULE_EXEC_COMPLETION = "wait_for_rule_exec_completion";
+
+                    //Allow a collaborator user to send the item on...
+                    public static final String ALLOW_COLLABORATOR_SEND_ON =
+                            "allow_collaborator_send_on";
                 }
 
                 /**
@@ -1927,10 +1931,16 @@ public class WS {
                 /**
                  * URL Path for sending a Flow Item to the next step in the workflow process.
                  *
+                 * @param allowCollaboratorToSendOnParam All a collaborator user to also send on.
+                 *
                  * @return {@code /v1/flow_item/send_on}
                  */
-                public static final String sendFlowItemOn() {
-                    return Version.VERSION_1.concat(ROOT).concat(SEND_ON);
+                public static final String sendFlowItemOn(
+                        boolean allowCollaboratorToSendOnParam
+                ) {
+                    return Version.VERSION_1.concat(ROOT).concat(SEND_ON)
+                            .concat("?" + QueryParam.ALLOW_COLLABORATOR_SEND_ON
+                                    + "=" + allowCollaboratorToSendOnParam);
                 }
 
                 /**
