@@ -395,6 +395,210 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Gets the value of {@code this} {@code Field} as a {@code String}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public String getFieldValueAsString() {
+        Object returnObj = this.getFieldValue();
+        return (returnObj == null) ? null : returnObj.toString();
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code Double}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public Double getFieldValueAsDouble() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof Double) {
+            return (Double)obj;
+        }
+
+        if(obj instanceof Number) {
+            return ((Number)obj).doubleValue();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code Long}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public Long getFieldValueAsLong() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof Long) {
+            return (Long)obj;
+        }
+
+        if(obj instanceof Number) {
+            return ((Long)obj).longValue();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code Integer}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public Integer getFieldValueAsInteger() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof Integer) {
+            return (Integer)obj;
+        }
+
+        if(obj instanceof Number) {
+            return ((Integer)obj).intValue();
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code Number}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public Number getFieldValueAsNumber() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof Number) {
+            return (Number)obj;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code Boolean}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public Boolean getFieldValueAsBoolean() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof Boolean) {
+            return (Boolean)obj;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code Date}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     */
+    @XmlTransient
+    public Date getFieldValueAsDate() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        //Real Date...
+        if(obj instanceof Date) {
+            return (Date)obj;
+        }
+        //Long...
+        else if(obj instanceof Long) {
+            Long longValue = (Long)obj;
+
+            if(longValue.longValue() > 0) {
+                return new Date(longValue.longValue());
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code MultiChoice}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     * @see MultiChoice
+     */
+    @XmlTransient
+    public MultiChoice getFieldValueAsMultiChoice() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof MultiChoice) {
+            return (MultiChoice)obj;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the value of {@code this} {@code Field} as a {@code TableField}.
+     *
+     * @return The Field Value.
+     *
+     * @see Type
+     * @see TableField
+     */
+    @XmlTransient
+    public TableField getFieldValueAsTableField() {
+        Object obj = this.getFieldValue();
+        if(obj == null) {
+            return null;
+        }
+
+        if(obj instanceof TableField) {
+            return (TableField)obj;
+        }
+
+        return null;
+    }
+
+    /**
      * Sets the value of {@code this} {@code Field}.
      *
      * @param fieldValueParam The New Field Value.

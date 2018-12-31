@@ -273,8 +273,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                     JSONMapping.ASSOCIATED_FLOWS);
 
             List<Flow> assFlowsObj = new ArrayList<>();
-            for(int index = 0;index < associatedJobsArr.length();index++)
-            {
+            for(int index = 0;index < associatedJobsArr.length();index++) {
                 assFlowsObj.add(new Flow(associatedJobsArr.getJSONObject(index)));
             }
 
@@ -288,8 +287,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                     JSONMapping.FORM_FIELDS);
 
             List<Field> assFormFields = new ArrayList<>();
-            for(int index = 0;index < formFieldsArr.length();index++)
-            {
+            for(int index = 0;index < formFieldsArr.length();index++) {
                 assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
             }
 
@@ -300,8 +298,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if(this.jsonObject.isNull(JSONMapping.ANCESTOR_ID))
         {
             this.setAncestorId(null);
-        }
-        else {
+        } else {
             this.setAncestorId(this.jsonObject.getLong(
                     JSONMapping.ANCESTOR_ID));
         }
@@ -310,8 +307,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if(this.jsonObject.isNull(JSONMapping.TABLE_FIELD_PARENT_ID))
         {
             this.setTableFieldParentId(null);
-        }
-        else {
+        } else {
             this.setTableFieldParentId(this.jsonObject.getLong(
                     JSONMapping.TABLE_FIELD_PARENT_ID));
         }
@@ -320,21 +316,17 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if(this.jsonObject.isNull(JSONMapping.DESCENDANT_IDS))
         {
             this.setDescendantIds(null);
-        }
-        else {
+        } else {
             JSONArray jsonArray = this.jsonObject.getJSONArray(
                     JSONMapping.DESCENDANT_IDS);
             List<Long> descendantIds = new ArrayList<>();
-            for(int index = 0;index < jsonArray.length();index++)
-            {
+            for(int index = 0;index < jsonArray.length();index++) {
                 descendantIds.add(jsonArray.getLong(index));
             }
 
-            if(descendantIds.isEmpty())
-            {
+            if(descendantIds.isEmpty()) {
                 this.setDescendantIds(null);
-            }
-            else {
+            } else {
                 this.setDescendantIds(descendantIds);
             }
         }
@@ -407,9 +399,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         }
 
         String fieldNameParamLower = fieldNameParam.trim().toLowerCase();
-
         for (Field field : this.getFormFields()) {
-
             String fieldName = field.getFieldName();
             if (fieldName == null || fieldName.trim().isEmpty()) {
                 continue;
@@ -417,7 +407,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
             String fieldNameLower = fieldName.trim().toLowerCase();
             if (fieldNameParamLower.equals(fieldNameLower)) {
-
                 return field;
             }
         }
@@ -446,16 +435,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#Text
      */
     @XmlTransient
-    public String getFieldValueAsString(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        return obj.toString();
+    public String getFieldValueAsString(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsString();
     }
 
     /**
@@ -480,21 +462,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see TableField
      */
     @XmlTransient
-    public TableField getFieldValueAsTableField(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        if(obj instanceof TableField)
-        {
-            return (TableField)obj;
-        }
-
-        return null;
+    public TableField getFieldValueAsTableField(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsTableField();
     }
 
     /**
@@ -519,21 +489,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see MultiChoice
      */
     @XmlTransient
-    public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        if(obj instanceof MultiChoice)
-        {
-            return (MultiChoice)obj;
-        }
-
-        return null;
+    public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsMultiChoice();
     }
 
     /**
@@ -557,32 +515,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#DateTime
      */
     @XmlTransient
-    public Date getFieldValueAsDate(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        //Real Date...
-        if(obj instanceof Date)
-        {
-            return (Date)obj;
-        }
-        //Long...
-        else if(obj instanceof Long)
-        {
-            Long longValue = (Long)obj;
-
-            if(longValue.longValue() > 0)
-            {
-                return new Date(longValue.longValue());
-            }
-        }
-
-        return null;
+    public Date getFieldValueAsDate(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsDate();
     }
 
     /**
@@ -606,21 +541,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#TrueFalse
      */
     @XmlTransient
-    public Boolean getFieldValueAsBoolean(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        if(obj instanceof Boolean)
-        {
-            return (Boolean)obj;
-        }
-
-        return null;
+    public Boolean getFieldValueAsBoolean(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsBoolean();
     }
 
     /**
@@ -644,23 +567,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#Decimal
      */
     @XmlTransient
-    public Double getFieldValueAsDouble(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null) {
-            return null;
-        }
-
-        if(obj instanceof Double) {
-            return (Double)obj;
-        }
-
-        if(obj instanceof Number) {
-            return ((Number)obj).doubleValue();
-        }
-
-        return null;
+    public Double getFieldValueAsDouble(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsDouble();
     }
 
     /**
@@ -685,23 +594,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#Decimal
      */
     @XmlTransient
-    public Integer getFieldValueAsInt(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        if(obj instanceof Number)
-        {
-            Number casted = ((Number)obj);
-
-            return casted.intValue();
-        }
-
-        return null;
+    public Integer getFieldValueAsInt(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsInteger();
     }
 
     /**
@@ -726,23 +621,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#Decimal
      */
     @XmlTransient
-    public Long getFieldValueAsLong(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        if(obj instanceof Number)
-        {
-            Number casted = ((Number)obj);
-
-            return casted.longValue();
-        }
-
-        return null;
+    public Long getFieldValueAsLong(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsLong();
     }
 
     /**
@@ -767,21 +648,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type#Decimal
      */
     @XmlTransient
-    public Number getFieldValueAsNumber(String fieldNameParam)
-    {
-        Object obj = this.getFieldValueForField(fieldNameParam);
-
-        if(obj == null)
-        {
-            return null;
-        }
-
-        if(obj instanceof Number)
-        {
-            return ((Number)obj);
-        }
-
-        return null;
+    public Number getFieldValueAsNumber(String fieldNameParam) {
+        Field fieldWithName = this.getField(fieldNameParam);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsNumber();
     }
 
     /**
@@ -808,8 +677,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @see Field.Type
      */
     @XmlTransient
-    public void setFieldValue(String fieldNameParam, Object fieldValueParam)
-    {
+    public void setFieldValue(String fieldNameParam, Object fieldValueParam) {
         if(fieldNameParam == null || fieldNameParam.trim().length() == 0)
         {
             return;
@@ -945,9 +813,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     @Override
     @XmlTransient
-    //@JsonIgnore
-    public JSONObject toJsonObject() throws JSONException
-    {
+    public JSONObject toJsonObject() throws JSONException {
         JSONObject returnVal = super.toJsonObject();
 
         //Form Type...
@@ -1694,11 +1560,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     @Override
     @XmlTransient
     public String toString() {
-
         JSONObject jsonObj = this.toJsonObject();
-
-        if(jsonObj == null)
-        {
+        if(jsonObj == null) {
             return null;
         }
 
@@ -1741,35 +1604,13 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     @Override
     @XmlTransient
     public int hashCode() {
-
         int hash = 10000000;
-
-        if(this.getId() == null)
-        {
+        if(this.getId() == null) {
             return hash;
         }
         
         hash += this.getId().hashCode();
-
         return hash;
-    }
-
-    /**
-     * Prints all the Fields and their values to the standard
-     * {@code System.out}.
-     */
-    @XmlTransient
-    public void printFormFields()
-    {
-        System.out.println("\n\n*** PRINTING FORM FIELDS ***");
-        if(this.getFormFields() != null)
-        {
-            for(Field formField : this.getFormFields())
-            {
-                System.out.println("Field Exists: '"+formField.getFieldName()+"' with value: "+
-                        formField.getFieldValue());
-            }
-        }
     }
 
     /**
@@ -2102,5 +1943,20 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     public void setDescendantIds(List<Long> descendantIdsParam) {
         this.descendantIds = descendantIdsParam;
+    }
+
+    /**
+     * Prints all the Fields and their values to the standard
+     * {@code System.out}.
+     */
+    @XmlTransient
+    public void printFormFields() {
+        System.out.println("\n\n*** PRINTING FORM FIELDS ***");
+        if(this.getFormFields() != null) {
+            for(Field formField : this.getFormFields()) {
+                System.out.println("Field Exists: '"+formField.getFieldName()+"' with value: "+
+                        formField.getFieldValue());
+            }
+        }
     }
 }
