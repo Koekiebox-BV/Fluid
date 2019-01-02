@@ -176,6 +176,10 @@ public class WS {
                     public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
                     public static final String LOCK_FOR_USER_ID = "lock_for_user_id";
 
+                    //Remove from Personal Inventory...
+                    public static final String REMOVE_FROM_PERSONAL_INVENTORY =
+                            "remove_from_personal_inventory";
+
                     //Web Action...
                     public static final String CUSTOM_WEB_ACTION = "custom_web_action";
                     public static final String IS_TABLE_RECORD = "is_table_record";
@@ -319,10 +323,15 @@ public class WS {
                  * @param unLockingAsUserIdParam The form will be un-locked as this user. The
                  *            logged in user must have permission to perform this action.
                  * @param unlockAsyncParam Should the unlock be performed asynchronous.
+                 * @param removeFromPersonalInventoryParam Remove from Personal Inventory when unlocked.
                  *
                  * @return {@code v1/form_container/un_lock_form_container}
                  */
-                public static final String unLockFormContainer(Long unLockingAsUserIdParam, boolean unlockAsyncParam) {
+                public static final String unLockFormContainer(
+                    Long unLockingAsUserIdParam,
+                    boolean unlockAsyncParam,
+                    boolean removeFromPersonalInventoryParam
+                ) {
                     String base = Version.VERSION_1.concat(ROOT).concat(UN_LOCK_FORM_CONTAINER);
 
                     String additionString = "?";
@@ -338,6 +347,12 @@ public class WS {
                     additionString += WS.QueryParam.ASYNC;
                     additionString += "=";
                     additionString += unlockAsyncParam;
+                    additionString += "&";
+
+                    //Remove from Personal Inventory...
+                    additionString += QueryParam.REMOVE_FROM_PERSONAL_INVENTORY;
+                    additionString += "=";
+                    additionString += removeFromPersonalInventoryParam;
                     additionString += "&";
 
                     //Cut of the end bit...

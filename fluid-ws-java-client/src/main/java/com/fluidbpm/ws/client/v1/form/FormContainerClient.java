@@ -334,6 +334,7 @@ public class FormContainerClient extends ABaseClientWS {
 
     /**
      * Unlock the provided form container from the logged in user.
+     * Item will not be removed from users Personal Inventory.
      *
      * @param formParam The form to unlock.
      *                  
@@ -341,11 +342,12 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public Form unLockFormContainer(Form formParam) {
         return this.unLockFormContainer(
-                formParam, null,true);
+                formParam, null,true,false);
     }
 
     /**
      * Unlock the provided form container from the logged in user.
+     * Item will not be removed from users Personal Inventory.
      *
      * @param formParam The form to unlock.
      * @param unlockAsyncParam Should the unlock be performed asynchronous.
@@ -356,12 +358,13 @@ public class FormContainerClient extends ABaseClientWS {
             Form formParam,
             boolean unlockAsyncParam) {
         return this.unLockFormContainer(
-                formParam, null, unlockAsyncParam);
+                formParam, null, unlockAsyncParam, false);
     }
 
     /**
      * Unlock the provided form container from the logged in user.
      * The unlock will be performed asynchronous.
+     * Item will not be removed from users Personal Inventory.
      *
      * @param formParam The form to unlock.
      * @param userToUnLockAsParam The form will be un-locked as this user.
@@ -373,11 +376,13 @@ public class FormContainerClient extends ABaseClientWS {
             Form formParam,
             User userToUnLockAsParam) {
         return this.unLockFormContainer(
-                formParam, userToUnLockAsParam, true);
+                formParam, userToUnLockAsParam, true, false);
     }
-    
+
     /**
      * Unlock the provided form container from the logged in user.
+     * The unlock will be performed asynchronous.
+     * Item will not be removed from users Personal Inventory.
      *
      * @param formParam The form to unlock.
      * @param userToUnLockAsParam The form will be un-locked as this user.
@@ -390,8 +395,30 @@ public class FormContainerClient extends ABaseClientWS {
             Form formParam,
             User userToUnLockAsParam,
             boolean unlockAsyncParam) {
-        if(this.serviceTicket != null && formParam != null)
-        {
+        return this.unLockFormContainer(
+                formParam,
+                userToUnLockAsParam,
+                unlockAsyncParam,
+                false);
+    }
+    
+    /**
+     * Unlock the provided form container from the logged in user.
+     *
+     * @param formParam The form to unlock.
+     * @param userToUnLockAsParam The form will be un-locked as this user.
+     *                          The logged in user must have permission to perform this action.
+     * @param unlockAsyncParam Should the unlock be performed asynchronous.
+     * @param removeFromPersonalInventoryParam Remove from Personal Inventory when unlocked.
+     *
+     * @return The un-locked form.
+     */
+    public Form unLockFormContainer(
+            Form formParam,
+            User userToUnLockAsParam,
+            boolean unlockAsyncParam,
+            boolean removeFromPersonalInventoryParam) {
+        if(this.serviceTicket != null && formParam != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -402,7 +429,9 @@ public class FormContainerClient extends ABaseClientWS {
             return new Form(this.postJson(
                     formParam,
                     WS.Path.FormContainer.Version1.unLockFormContainer(
-                            unLockAsUserId, unlockAsyncParam)));
+                            unLockAsUserId,
+                            unlockAsyncParam,
+                            removeFromPersonalInventoryParam)));
         }
         //rethrow as a Fluid Client exception.
         catch (JSONException jsonExcept) {
