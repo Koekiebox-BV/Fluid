@@ -451,7 +451,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         }
 
         if(obj instanceof Number) {
-            return ((Long)obj).longValue();
+            return ((Number)obj).longValue();
         }
 
         return null;
@@ -476,7 +476,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         }
 
         if(obj instanceof Number) {
-            return ((Integer)obj).intValue();
+            return ((Number)obj).intValue();
         }
 
         return null;
@@ -545,7 +545,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         //Long...
         else if(obj instanceof Long) {
             Long longValue = (Long)obj;
-
             if(longValue.longValue() > 0) {
                 return new Date(longValue.longValue());
             }
