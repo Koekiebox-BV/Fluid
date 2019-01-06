@@ -686,8 +686,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field.Type
      */
-    public Object getRouteFieldValue(String fieldNameParam)
-    {
+    public Object getRouteFieldValue(String fieldNameParam) {
         return this.getFieldValueForField(fieldNameParam, this.getRouteFields());
     }
 

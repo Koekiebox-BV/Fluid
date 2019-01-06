@@ -23,8 +23,8 @@ package com.fluidbpm.program.api.util;
  */
 public interface IAction {
 
-    /**
-     * Close any open connection used by the subclass.
-     */
-    public abstract void closeConnection();
+	/**
+	 * Close any open connection used by the subclass.
+	 */
+	public abstract void closeConnection();
 }

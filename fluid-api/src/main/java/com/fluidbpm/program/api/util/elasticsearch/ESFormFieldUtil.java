@@ -37,72 +37,72 @@ import com.fluidbpm.program.api.vo.form.Form;
  */
 public class ESFormFieldUtil extends ABaseESUtil{
 
-    /**
-     * Initialise with the ElasticSearch client.
-     *
-     * @param connectionParam SQL Connection to use.
-     * @param esClientParam The ES Client.
-     * @param cacheUtilParam The Cache Util for better performance.
-     */
-    public ESFormFieldUtil(Connection connectionParam, Client esClientParam, CacheUtil cacheUtilParam) {
+	/**
+	 * Initialise with the ElasticSearch client.
+	 *
+	 * @param connectionParam SQL Connection to use.
+	 * @param esClientParam The ES Client.
+	 * @param cacheUtilParam The Cache Util for better performance.
+	 */
+	public ESFormFieldUtil(Connection connectionParam, Client esClientParam, CacheUtil cacheUtilParam) {
 
-        super(connectionParam, esClientParam, cacheUtilParam);
-    }
+		super(connectionParam, esClientParam, cacheUtilParam);
+	}
 
-    /**
-     * Initialise with the ElasticSearch client.
-     *
-     * @param esClientParam The ES Client.
-     */
-    public ESFormFieldUtil(Client esClientParam) {
-        super(esClientParam);
-    }
+	/**
+	 * Initialise with the ElasticSearch client.
+	 *
+	 * @param esClientParam The ES Client.
+	 */
+	public ESFormFieldUtil(Client esClientParam) {
+		super(esClientParam);
+	}
 
-    /**
-     * Retrieves the Form Fields {@code VALUES} for the Electronic Form with id
-     * {@code electronicFormIdParam}.
-     *
-     * @param electronicFormIdParam The Electronic Form to fetch fields for.
-     * @param includeTableFieldsParam Whether to populate the table fields.
-     * @return The Form Fields for Electronic Form
-     *         {@code electronicFormIdParam}.
-     */
-    public Form getFormFields(Long electronicFormIdParam, boolean includeTableFieldsParam) {
+	/**
+	 * Retrieves the Form Fields {@code VALUES} for the Electronic Form with id
+	 * {@code electronicFormIdParam}.
+	 *
+	 * @param electronicFormIdParam The Electronic Form to fetch fields for.
+	 * @param includeTableFieldsParam Whether to populate the table fields.
+	 * @return The Form Fields for Electronic Form
+	 *         {@code electronicFormIdParam}.
+	 */
+	public Form getFormFields(Long electronicFormIdParam, boolean includeTableFieldsParam) {
 
-        if (electronicFormIdParam == null) {
-            return null;
-        }
+		if (electronicFormIdParam == null) {
+			return null;
+		}
 
-        //Query using the descendantId directly...
-        StringBuffer primaryQuery = new StringBuffer(ABaseFluidJSONObject.JSONMapping.ID);
-        primaryQuery.append(":\"");
-        primaryQuery.append(electronicFormIdParam);
-        primaryQuery.append("\"");
+		//Query using the descendantId directly...
+		StringBuffer primaryQuery = new StringBuffer(ABaseFluidJSONObject.JSONMapping.ID);
+		primaryQuery.append(":\"");
+		primaryQuery.append(electronicFormIdParam);
+		primaryQuery.append("\"");
 
-        //Search for the primary...
-        List<Form> formsWithId = this.searchAndConvertHitsToFormWithAllFields(
-                QueryBuilders.queryStringQuery(primaryQuery.toString()), Index.DOCUMENT,
-                DEFAULT_OFFSET, 1,
-                new Long[]{});
+		//Search for the primary...
+		List<Form> formsWithId = this.searchAndConvertHitsToFormWithAllFields(
+				QueryBuilders.queryStringQuery(primaryQuery.toString()), Index.DOCUMENT,
+				DEFAULT_OFFSET, 1,
+				new Long[]{});
 
-        Form returnVal = null;
-        if (formsWithId != null && !formsWithId.isEmpty()) {
-            returnVal = formsWithId.get(0);
-        }
+		Form returnVal = null;
+		if (formsWithId != null && !formsWithId.isEmpty()) {
+			returnVal = formsWithId.get(0);
+		}
 
-        //No result...
-        if (returnVal == null) {
-            return null;
-        }
+		//No result...
+		if (returnVal == null) {
+			return null;
+		}
 
-        //Skip Table fields...
-        if (!includeTableFieldsParam) {
-            return returnVal;
-        }
+		//Skip Table fields...
+		if (!includeTableFieldsParam) {
+			return returnVal;
+		}
 
-        //Populate the Table Fields...
-        this.populateTableFields(false, true, returnVal.getFormFields());
+		//Populate the Table Fields...
+		this.populateTableFields(false, true, returnVal.getFormFields());
 
-        return returnVal;
-    }
+		return returnVal;
+	}
 }

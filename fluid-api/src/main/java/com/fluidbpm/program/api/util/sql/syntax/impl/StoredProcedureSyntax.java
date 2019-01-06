@@ -27,46 +27,45 @@ import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
  */
 public class StoredProcedureSyntax implements ISyntax {
 
-    private String returnVal = null;
+	private String returnVal = null;
 
-    /**
-     * Sets the Stored Procedure name and number of parameters.
-     *
-     * @param storedProcedureNameParam The stored procedure.
-     * @param numberOfParamsParam The number of parameters.
-     */
-    public StoredProcedureSyntax(
-            String storedProcedureNameParam,
-            int numberOfParamsParam) {
-        super();
+	/**
+	 * Sets the Stored Procedure name and number of parameters.
+	 *
+	 * @param storedProcedureNameParam The stored procedure.
+	 * @param numberOfParamsParam The number of parameters.
+	 */
+	public StoredProcedureSyntax(
+			String storedProcedureNameParam,
+			int numberOfParamsParam
+	) {
+		super();
+		String assignment = ("{CALL "+storedProcedureNameParam+"(");
 
-        String assignment = ("{CALL "+storedProcedureNameParam+"(");
+		if(numberOfParamsParam > 0) {
+			for(int counter = 0;counter < numberOfParamsParam;counter++)
+			{
+				assignment += "?";
+				assignment += ",";
+			}
 
-        if(numberOfParamsParam > 0)
-        {
-            for(int counter = 0;counter < numberOfParamsParam;counter++)
-            {
-                assignment += "?";
-                assignment += ",";
-            }
+			assignment = (assignment.substring(0,assignment.length() -1));
+		}
 
-            assignment = (assignment.substring(0,assignment.length() -1));
-        }
+		assignment += ")}";
 
-        assignment += ")}";
+		this.returnVal = assignment;
+	}
 
-        this.returnVal = assignment;
-    }
-
-    /**
-     * Implementation call for executing the stored procedure.
-     *
-     * @return SQL to Execute with Java {@code PreparedStatement}.
-     *
-     * @see java.sql.PreparedStatement
-     */
-    @Override
-    public String getPreparedStatement() {
-        return this.returnVal;
-    }
+	/**
+	 * Implementation call for executing the stored procedure.
+	 *
+	 * @return SQL to Execute with Java {@code PreparedStatement}.
+	 *
+	 * @see java.sql.PreparedStatement
+	 */
+	@Override
+	public String getPreparedStatement() {
+		return this.returnVal;
+	}
 }

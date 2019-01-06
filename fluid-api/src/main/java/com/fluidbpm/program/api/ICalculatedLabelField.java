@@ -35,27 +35,27 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
  */
 public interface ICalculatedLabelField extends IActionBase {
 
-    /**
-     * <code>Execute Order (2)</code>
-     *
-     * The Fluid {@code Field} associated with the {@code sub-class} implementation.
-     * If there are conflicting field names, only the first will be executed.
-     *
-     * @return The Fluid Implementation <code>Field Identifier</code>.
-     */
-    public abstract String getLabelFieldApplicable();
-    
-    /**
-     * <code>Execute Order (3)</code>
-     *
-     * @param fluidItemParam {@code FluidItem} that may be used to calculate the field label.
-     *
-     * @return The value of the field. String and primitive data types are supported.
-     * @throws Exception If any problems occur during execution.
-     *         The field with have a value of {@code -Error Retrieving Value-}
-     *
-     * @see FluidItem
-     * @see Field
-     */
-    public abstract Object calculateFieldValue(FluidItem fluidItemParam) throws Exception;
+	/**
+	 * <code>Execute Order (2)</code>
+	 *
+	 * The Fluid {@code Field} associated with the {@code sub-class} implementation.
+	 * If there are conflicting field names, only the first will be executed.
+	 *
+	 * @return The Fluid Implementation <code>Field Identifier</code>.
+	 */
+	public abstract String getLabelFieldApplicable();
+
+	/**
+	 * <code>Execute Order (3)</code>
+	 *
+	 * @param fluidItemParam {@code FluidItem} that may be used to calculate the field label.
+	 *
+	 * @return The value of the field. String and primitive data types are supported.
+	 * @throws Exception If any problems occur during execution.
+	 *         The field with have a value of {@code -Error Retrieving Value-}
+	 *
+	 * @see FluidItem
+	 * @see Field
+	 */
+	public abstract Object calculateFieldValue(FluidItem fluidItemParam) throws Exception;
 }

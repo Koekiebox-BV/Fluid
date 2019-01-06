@@ -14,9 +14,9 @@
  */
 package com.fluidbpm.program.api.util.cache.exception;
 
-import java.sql.SQLException;
-
 import com.fluidbpm.program.api.util.exception.UtilException;
+
+import java.sql.SQLException;
 
 /**
  * Exception class related to Caching Exceptions exclusively.
@@ -29,24 +29,24 @@ import com.fluidbpm.program.api.util.exception.UtilException;
  */
 public class FluidCacheException extends UtilException {
 
-    /**
-     * Constructor used to wrap a traditional {@code Exception}
-     * into an {@code FluidCacheException}.
-     *
-     * @param messageParam Exception message.
-     */
-    public FluidCacheException(String messageParam) {
-        super("Cache Problem: "+messageParam ,ErrorCode.CACHE);
-    }
+	/**
+	 * Constructor used to wrap a traditional {@code Exception}
+	 * into an {@code FluidCacheException}.
+	 *
+	 * @param messageParam Exception message.
+	 */
+	public FluidCacheException(String messageParam) {
+		super("Cache Problem: "+messageParam ,ErrorCode.CACHE);
+	}
 
-    /**
-     * Constructor used to wrap a traditional {@code Exception}
-     * into an {@code FluidCacheException}.
-     *
-     * @param messageParam Exception message.
-     * @param exceptionParam Traditional Java Exception.
-     */
-    public FluidCacheException(String messageParam, Exception exceptionParam) {
-        super("Cache Problem: "+messageParam,exceptionParam ,ErrorCode.CACHE);
-    }
+	/**
+	 * Constructor used to wrap a traditional {@code Exception}
+	 * into an {@code FluidCacheException}.
+	 *
+	 * @param messageParam Exception message.
+	 * @param exceptionParam Traditional Java Exception.
+	 */
+	public FluidCacheException(String messageParam, Exception exceptionParam) {
+		super("Cache Problem: "+messageParam,exceptionParam ,ErrorCode.CACHE);
+	}
 }

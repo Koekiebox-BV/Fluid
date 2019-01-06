@@ -31,96 +31,96 @@ import com.fluidbpm.program.api.util.exception.UtilException;
  */
 public class DocumentToPDFConvert {
 
-    private CommandUtil commandUtil;
+	private CommandUtil commandUtil;
 
-    //fluid-cli doc-to-pdf-convert -i /fluid_host_system_mapping/1.docx -o /fluid_host_system_mapping/1.pdf
-    private static final String COMMAND_CONVERT_DOC_TO_PDF = "doc-to-pdf-convert";
+	//fluid-cli doc-to-pdf-convert -i /fluid_host_system_mapping/1.docx -o /fluid_host_system_mapping/1.pdf
+	private static final String COMMAND_CONVERT_DOC_TO_PDF = "doc-to-pdf-convert";
 
-    /**
-     * Default constructor creating instance of {@code CommandUtil}.
-     */
-    public DocumentToPDFConvert() {
-        super();
-        
-        this.commandUtil = new CommandUtil();
-    }
+	/**
+	 * Default constructor creating instance of {@code CommandUtil}.
+	 */
+	public DocumentToPDFConvert() {
+		super();
 
-    /**
-     * Makes use of the Fluid Core to convert a document into a PDF file.
-     *
-     * @param inputDocumentParam The file to convert to PDF.
-     * @return The {@code File} object of the result PDF.
-     *
-     * @throws UtilException If anything goes wrong during execution.
-     */
-    public File convertDocumentToPDF(File inputDocumentParam) {
+		this.commandUtil = new CommandUtil();
+	}
 
-        if(inputDocumentParam == null ||
-                !inputDocumentParam.exists())
-        {
-            throw new UtilException(
-                    "Input document to convert not provided or does not exist.",
-                    UtilException.ErrorCode.COMMAND);
-        }
+	/**
+	 * Makes use of the Fluid Core to convert a document into a PDF file.
+	 *
+	 * @param inputDocumentParam The file to convert to PDF.
+	 * @return The {@code File} object of the result PDF.
+	 *
+	 * @throws UtilException If anything goes wrong during execution.
+	 */
+	public File convertDocumentToPDF(File inputDocumentParam) {
 
-        if(!inputDocumentParam.isFile())
-        {
-            throw new UtilException(
-                    "Input document '' is not a file.",
-                    UtilException.ErrorCode.COMMAND);
-        }
+		if(inputDocumentParam == null ||
+				!inputDocumentParam.exists())
+		{
+			throw new UtilException(
+					"Input document to convert not provided or does not exist.",
+					UtilException.ErrorCode.COMMAND);
+		}
 
-        File parentFolder = inputDocumentParam.getParentFile();
-        String inputFilenameWithoutExt = inputDocumentParam.getName();
+		if(!inputDocumentParam.isFile())
+		{
+			throw new UtilException(
+					"Input document '' is not a file.",
+					UtilException.ErrorCode.COMMAND);
+		}
 
-        int indexOfDot = -1;
-        if((indexOfDot = inputFilenameWithoutExt.indexOf('.')) > -1)
-        {
-            inputFilenameWithoutExt = inputFilenameWithoutExt.substring(0,indexOfDot);
-        }
-        
-        File generatedPdfFileOut = new File(parentFolder.getAbsolutePath().concat(
-                File.separator).concat(inputFilenameWithoutExt).concat(".pdf"));
+		File parentFolder = inputDocumentParam.getParentFile();
+		String inputFilenameWithoutExt = inputDocumentParam.getName();
 
-        String completeOutputPath = generatedPdfFileOut.getAbsolutePath();
+		int indexOfDot = -1;
+		if((indexOfDot = inputFilenameWithoutExt.indexOf('.')) > -1)
+		{
+			inputFilenameWithoutExt = inputFilenameWithoutExt.substring(0,indexOfDot);
+		}
 
-        try {
-            CommandUtil.CommandResult commandResult =
-                    this.commandUtil.executeCommand(
-                            CommandUtil.FLUID_CLI,
-                            COMMAND_CONVERT_DOC_TO_PDF,
-                            "-i",
-                            inputDocumentParam.getAbsolutePath(),
-                            "-o",
-                            completeOutputPath);
+		File generatedPdfFileOut = new File(parentFolder.getAbsolutePath().concat(
+				File.separator).concat(inputFilenameWithoutExt).concat(".pdf"));
 
-            //There is a problem...
-            if(commandResult.getExitCode() != 0)
-            {
-                throw new UtilException(
-                        "Unable to convert '"+
-                                inputDocumentParam.getName()+
-                                "' to PDF. "+ commandResult.toString(),
-                        UtilException.ErrorCode.COMMAND);
-            }
+		String completeOutputPath = generatedPdfFileOut.getAbsolutePath();
 
-            File returnVal = new File(completeOutputPath);
-            if(!returnVal.exists())
-            {
-                throw new UtilException(
-                        "Command executed, but no output file. Expected PDF at '"+
-                                completeOutputPath+"'.",
-                        UtilException.ErrorCode.GENERAL);
-            }
-            
-            return returnVal;
-        }
-        //
-        catch (IOException eParam) {
+		try {
+			CommandUtil.CommandResult commandResult =
+					this.commandUtil.executeCommand(
+							CommandUtil.FLUID_CLI,
+							COMMAND_CONVERT_DOC_TO_PDF,
+							"-i",
+							inputDocumentParam.getAbsolutePath(),
+							"-o",
+							completeOutputPath);
 
-            throw new UtilException(
-                    "Problem executing command. "+eParam.getMessage(),
-                    eParam,UtilException.ErrorCode.GENERAL);
-        }
-    }
+			//There is a problem...
+			if(commandResult.getExitCode() != 0)
+			{
+				throw new UtilException(
+						"Unable to convert '"+
+								inputDocumentParam.getName()+
+								"' to PDF. "+ commandResult.toString(),
+						UtilException.ErrorCode.COMMAND);
+			}
+
+			File returnVal = new File(completeOutputPath);
+			if(!returnVal.exists())
+			{
+				throw new UtilException(
+						"Command executed, but no output file. Expected PDF at '"+
+								completeOutputPath+"'.",
+						UtilException.ErrorCode.GENERAL);
+			}
+
+			return returnVal;
+		}
+		//
+		catch (IOException eParam) {
+
+			throw new UtilException(
+					"Problem executing command. "+eParam.getMessage(),
+					eParam,UtilException.ErrorCode.GENERAL);
+		}
+	}
 }

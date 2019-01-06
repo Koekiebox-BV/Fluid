@@ -12,6 +12,7 @@
  * Dissemination of this information or reproduction of this material is strictly
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
+
 package com.fluidbpm.program.api.util.elasticsearch.exception;
 
 import java.sql.SQLException;
@@ -29,24 +30,24 @@ import com.fluidbpm.program.api.util.exception.UtilException;
  */
 public class FluidElasticSearchException extends UtilException {
 
-    /**
-     * Constructor used to wrap a traditional {@code Exception}
-     * into an {@code FluidElasticSearchException}.
-     *
-     * @param messageParam Exception message.
-     */
-    public FluidElasticSearchException(String messageParam) {
-        super("ElasticSearch Problem: "+messageParam ,ErrorCode.CACHE);
-    }
+	/**
+	 * Constructor used to wrap a traditional {@code Exception}
+	 * into an {@code FluidElasticSearchException}.
+	 *
+	 * @param messageParam Exception message.
+	 */
+	public FluidElasticSearchException(String messageParam) {
+		super("ElasticSearch Problem: "+messageParam ,ErrorCode.CACHE);
+	}
 
-    /**
-     * Constructor used to wrap a traditional {@code Exception}
-     * into an {@code FluidElasticSearchException}.
-     *
-     * @param messageParam Exception message.
-     * @param exceptionParam Traditional Java Exception.
-     */
-    public FluidElasticSearchException(String messageParam, Exception exceptionParam) {
-        super("ElasticSearch Problem: "+messageParam,exceptionParam ,ErrorCode.CACHE);
-    }
+	/**
+	 * Constructor used to wrap a traditional {@code Exception}
+	 * into an {@code FluidElasticSearchException}.
+	 *
+	 * @param messageParam Exception message.
+	 * @param exceptionParam Traditional Java Exception.
+	 */
+	public FluidElasticSearchException(String messageParam, Exception exceptionParam) {
+		super("ElasticSearch Problem: "+messageParam,exceptionParam ,ErrorCode.CACHE);
+	}
 }

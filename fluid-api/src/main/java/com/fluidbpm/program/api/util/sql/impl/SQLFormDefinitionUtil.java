@@ -39,88 +39,88 @@ import com.fluidbpm.program.api.vo.form.Form;
  */
 public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 
-    private static final Map<Long,String> LOCAL_MAPPING = new HashMap();
-    private static long timeToUpdateAgain = 0;
+	private static final Map<Long,String> LOCAL_MAPPING = new HashMap();
+	private static long timeToUpdateAgain = 0;
 
-    /**
-     * New FormDefinition util instance using {@code connectionParam}.
-     *
-     * @param connectionParam SQL Connection to use for Fields.
-     */
-    public SQLFormDefinitionUtil(Connection connectionParam) {
-        super(connectionParam);
-    }
+	/**
+	 * New FormDefinition util instance using {@code connectionParam}.
+	 *
+	 * @param connectionParam SQL Connection to use for Fields.
+	 */
+	public SQLFormDefinitionUtil(Connection connectionParam) {
+		super(connectionParam);
+	}
 
-    /**
-     * Retrieves the Form Definition and Title mapping
-     * currently stored in Fluid.
-     *
-     * @return Form Definition Id and Title.
-     */
-    public Map<Long,String> getFormDefinitionIdAndTitle()
-    {
-        //When already cached, use the cached value...
-        if(!LOCAL_MAPPING.isEmpty())
-        {
-            Map<Long,String> returnVal = new HashMap<>(LOCAL_MAPPING);
+	/**
+	 * Retrieves the Form Definition and Title mapping
+	 * currently stored in Fluid.
+	 *
+	 * @return Form Definition Id and Title.
+	 */
+	public Map<Long,String> getFormDefinitionIdAndTitle()
+	{
+		//When already cached, use the cached value...
+		if(!LOCAL_MAPPING.isEmpty())
+		{
+			Map<Long,String> returnVal = new HashMap<>(LOCAL_MAPPING);
 
-            //The id's are outdated...
-            if(System.currentTimeMillis() > timeToUpdateAgain){
+			//The id's are outdated...
+			if(System.currentTimeMillis() > timeToUpdateAgain){
 
-                synchronized (LOCAL_MAPPING)
-                {
-                    LOCAL_MAPPING.clear();
-                }
-            }
+				synchronized (LOCAL_MAPPING)
+				{
+					LOCAL_MAPPING.clear();
+				}
+			}
 
-            return returnVal;
-        }
+			return returnVal;
+		}
 
-        //Only allow one thread to set the local mapping...
-        synchronized (LOCAL_MAPPING)
-        {
-            if(!LOCAL_MAPPING.isEmpty())
-            {
-                return new HashMap<>(LOCAL_MAPPING);
-            }
+		//Only allow one thread to set the local mapping...
+		synchronized (LOCAL_MAPPING)
+		{
+			if(!LOCAL_MAPPING.isEmpty())
+			{
+				return new HashMap<>(LOCAL_MAPPING);
+			}
 
-            PreparedStatement preparedStatement = null;
-            ResultSet resultSet = null;
-            try
-            {
-                ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
-                        this.getSQLTypeFromConnection(),
-                        ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
+			PreparedStatement preparedStatement = null;
+			ResultSet resultSet = null;
+			try
+			{
+				ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
+						this.getSQLTypeFromConnection(),
+						ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
 
-                preparedStatement = this.getConnection().prepareStatement(
-                        syntax.getPreparedStatement());
+				preparedStatement = this.getConnection().prepareStatement(
+						syntax.getPreparedStatement());
 
-                resultSet = preparedStatement.executeQuery();
+				resultSet = preparedStatement.executeQuery();
 
-                //Iterate each of the form containers...
-                while (resultSet.next())
-                {
-                    Long id = resultSet.getLong(1);
-                    String title = resultSet.getString(2);
+				//Iterate each of the form containers...
+				while (resultSet.next())
+				{
+					Long id = resultSet.getLong(1);
+					String title = resultSet.getString(2);
 
-                    LOCAL_MAPPING.put(id,title);
-                }
+					LOCAL_MAPPING.put(id,title);
+				}
 
-                //Update in 10 mins...
-                timeToUpdateAgain =
-                        (System.currentTimeMillis() +
-                                TimeUnit.MINUTES.toMillis(10));
-            }
-            //
-            catch (SQLException sqlError) {
-                throw new FluidSQLException(sqlError);
-            }
-            //
-            finally {
-                this.closeStatement(preparedStatement,resultSet);
-            }
+				//Update in 10 mins...
+				timeToUpdateAgain =
+						(System.currentTimeMillis() +
+								TimeUnit.MINUTES.toMillis(10));
+			}
+			//
+			catch (SQLException sqlError) {
+				throw new FluidSQLException(sqlError);
+			}
+			//
+			finally {
+				this.closeStatement(preparedStatement,resultSet);
+			}
 
-            return new HashMap<>(LOCAL_MAPPING);
-        }
-    }
+			return new HashMap<>(LOCAL_MAPPING);
+		}
+	}
 }
