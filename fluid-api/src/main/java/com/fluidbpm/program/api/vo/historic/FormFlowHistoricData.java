@@ -56,8 +56,7 @@ public class FormFlowHistoricData extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code FormFlowHistoricData} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String DATE_CREATED = "dateCreated";
         public static final String RULE_EXECUTED = "ruleExecuted";
         public static final String RULE_EXECUTED_RESULT = "ruleExecutedResult";
