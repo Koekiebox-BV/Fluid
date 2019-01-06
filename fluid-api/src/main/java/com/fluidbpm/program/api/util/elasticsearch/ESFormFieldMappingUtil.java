@@ -69,8 +69,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 	 */
 	public void mergeMappingForIndex(
 			String indexParam,
-			Form fluidFormMappingToUpdateParam)
-	{
+			Form fluidFormMappingToUpdateParam) {
 		this.mergeMappingForIndex(
 				indexParam, null, fluidFormMappingToUpdateParam);
 	}
@@ -123,8 +122,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 
 		for(ObjectCursor mappingKey : getExistingIndex.getMappings().keys()) {
 			//Found index...
-			if(!mappingKey.value.toString().equals(indexParam))
-			{
+			if(!mappingKey.value.toString().equals(indexParam)) {
 				continue;
 			}
 
@@ -244,8 +242,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			JSONObject existingPropsToUpdateParam,
 			String parentTypeParam
 	) {
-		if(parentTypeParam == null || parentTypeParam.trim().length() == 0)
-		{
+		if(parentTypeParam == null || parentTypeParam.trim().length() == 0) {
 			return;
 		}
 
@@ -267,16 +264,14 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 	public GetIndexResponse getOrCreateIndex(String indexParam) {
 		if(this.doesIndexExist(indexParam)) {
 			return this.client.admin().indices().prepareGetIndex().get();
-		}
-		else {
+		} else {
 			CreateIndexRequestBuilder createIndexRequestBuilder =
 					this.client.admin().indices().prepareCreate(indexParam);
 
 			CreateIndexResponse mappingCreateResponse =
 					createIndexRequestBuilder.execute().actionGet();
 
-			if(!mappingCreateResponse.isAcknowledged())
-			{
+			if(!mappingCreateResponse.isAcknowledged()) {
 				throw new FluidElasticSearchException(
 						"Index Creation for '"+
 								indexParam+"' not acknowledged by ElasticSearch.");
