@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -52,19 +53,22 @@ public class SQLUtilWebSocketExecuteSQLClient extends
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param compressResponseParam Compress the SQL Result in Base-64.
+     * @param compressResponseCharsetParam Compress response using provided charset.
      */
     public SQLUtilWebSocketExecuteSQLClient(
             String endpointBaseUrlParam,
             IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
-            boolean compressResponseParam) {
+            boolean compressResponseParam,
+            String compressResponseCharsetParam) {
         super(endpointBaseUrlParam,
                 messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
-                        serviceTicketAsHexParam, compressResponseParam),
-                compressResponseParam);
+                        serviceTicketAsHexParam,
+                        compressResponseParam,
+                        compressResponseCharsetParam), compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -87,7 +91,9 @@ public class SQLUtilWebSocketExecuteSQLClient extends
                 messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
-                        serviceTicketAsHexParam, false));
+                        serviceTicketAsHexParam,
+                        false,
+                        UtilGlobal.EMPTY));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }

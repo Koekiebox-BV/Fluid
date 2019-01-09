@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
@@ -50,7 +51,8 @@ public class SQLUtilWebSocketRESTWrapper {
 
     private final SQLUtilClient sqlUtilClient;
 
-    private static final boolean COMPRESS_RSP = true;
+    public static boolean COMPRESS_RSP = true;
+    public static String COMPRESS_RSP_CHARSET = UtilGlobal.EMPTY;
 
     //Mode...
     private Mode mode = null;
@@ -170,7 +172,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         this.timeoutMillis,
                         includeFieldDataParam,
                         includeTableFieldsParam,
-                        COMPRESS_RSP);
+                        COMPRESS_RSP,
+                        COMPRESS_RSP_CHARSET);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -234,7 +237,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         includeTableFieldsParam,
                         includeTableFieldFormRecordInfoParam,
                         massFetchParam,
-                        COMPRESS_RSP);
+                        COMPRESS_RSP,
+                        COMPRESS_RSP_CHARSET);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -318,7 +322,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
                         includeFieldDataParam,
-                        COMPRESS_RSP);
+                        COMPRESS_RSP,
+                        COMPRESS_RSP_CHARSET);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -398,7 +403,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
                         includeFieldDataParam,
-                        COMPRESS_RSP);
+                        COMPRESS_RSP,
+                        COMPRESS_RSP_CHARSET);
 
                 this.mode = Mode.WebSocketActive;
             }
@@ -478,7 +484,8 @@ public class SQLUtilWebSocketRESTWrapper {
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
                         includeFieldDataParam,
-                        COMPRESS_RSP);
+                        COMPRESS_RSP,
+                        COMPRESS_RSP_CHARSET);
 
                 this.mode = Mode.WebSocketActive;
             }

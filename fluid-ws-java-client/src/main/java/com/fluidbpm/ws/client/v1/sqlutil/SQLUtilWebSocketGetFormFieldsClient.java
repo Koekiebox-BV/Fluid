@@ -22,6 +22,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -53,6 +54,7 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param includeFieldDataParam Should Form Field data be included.
      * @param compressResponseParam Compress the Form Field Result in Base-64.
+     * @param compressResponseCharsetParam Compress response using provided charset.
      */
     public SQLUtilWebSocketGetFormFieldsClient(
             String endpointBaseUrlParam,
@@ -60,14 +62,16 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
             boolean includeFieldDataParam,
-            boolean compressResponseParam) {
+            boolean compressResponseParam,
+            String compressResponseCharsetParam) {
         super(endpointBaseUrlParam,
                 messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getFormFieldsWebSocket(
                         includeFieldDataParam,
                         serviceTicketAsHexParam,
-                        compressResponseParam),
+                        compressResponseParam,
+                        compressResponseCharsetParam),
                 compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
@@ -94,7 +98,8 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
                 WS.Path.SQLUtil.Version1.getFormFieldsWebSocket(
                         includeFieldDataParam,
                         serviceTicketAsHexParam,
-                        false));
+                        false,
+                        UtilGlobal.EMPTY));
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }

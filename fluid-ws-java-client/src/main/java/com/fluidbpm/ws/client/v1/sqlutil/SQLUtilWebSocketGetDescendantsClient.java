@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -60,6 +61,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
      * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
      * @param massFetchParam Is the fetch a large fetch.
      * @param compressResponseParam Compress the Descendants result in Base-64.
+     * @param compressResponseCharsetParam Compress response using provided charset.
      */
     public SQLUtilWebSocketGetDescendantsClient(
             String endpointBaseUrlParam,
@@ -70,7 +72,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
             boolean includeTableFieldsParam,
             boolean includeTableFieldFormRecordInfoParam,
             boolean massFetchParam,
-            boolean compressResponseParam) {
+            boolean compressResponseParam,
+            String compressResponseCharsetParam) {
         super(endpointBaseUrlParam,
                 messageReceivedCallbackParam,
                 timeoutInMillisParam,
@@ -80,7 +83,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
                         includeTableFieldFormRecordInfoParam,
                         massFetchParam,
                         serviceTicketAsHexParam,
-                        compressResponseParam),
+                        compressResponseParam,
+                        compressResponseCharsetParam),
                 compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
@@ -117,7 +121,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
                         includeTableFieldFormRecordInfoParam,
                         massFetchParam,
                         serviceTicketAsHexParam,
-                        false));
+                        false,
+                        UtilGlobal.EMPTY));
         
         this.setServiceTicket(serviceTicketAsHexParam);
         this.massFetch = massFetchParam;

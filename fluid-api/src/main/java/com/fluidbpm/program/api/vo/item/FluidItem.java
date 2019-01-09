@@ -710,8 +710,7 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field.Type
      */
-    public Object getGlobalFieldValue(String fieldNameParam)
-    {
+    public Object getGlobalFieldValue(String fieldNameParam) {
         return this.getFieldValueForField(fieldNameParam,this.getGlobalFields());
     }
 
@@ -735,13 +734,11 @@ public class FluidItem extends ABaseFluidJSONObject {
      *
      * @see Field.Type#Text
      */
-    public String getRouteFieldValueAsString(String fieldNameParam)
-    {
+    public String getRouteFieldValueAsString(String fieldNameParam) {
         Object obj = this.getFieldValueForField(
                 fieldNameParam,this.getRouteFields());
 
-        if(obj == null)
-        {
+        if(obj == null) {
             return null;
         }
 

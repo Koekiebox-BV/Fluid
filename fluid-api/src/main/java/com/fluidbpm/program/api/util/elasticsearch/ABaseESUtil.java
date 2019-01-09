@@ -167,18 +167,15 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			long iterationMax = totalHits;
-			if(limitParam > 0 && totalHits > limitParam)
-			{
+			if(limitParam > 0 && totalHits > limitParam) {
 				iterationMax = limitParam;
 			}
 
 			//Iterate...
-			for(int index = 0;index < iterationMax;index++)
-			{
+			for(int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 				String idAsString;
-				if((idAsString = searchHit.getId()) == null)
-				{
+				if((idAsString = searchHit.getId()) == null) {
 					continue;
 				}
 
@@ -209,10 +206,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			boolean withNoFieldsParam,
 			int offsetParam,
 			int limitParam,
-			Long ... formTypesParam) {
-
-		if(this.client == null)
-		{
+			Long ... formTypesParam
+	) {
+		if(this.client == null) {
 			throw new ElasticsearchException("Elasticsearch client is not set.");
 		}
 
@@ -422,10 +418,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 					continue;
 				}
 
+				this.printInfoOnSourceFromES(searchHit);
+
 				Form formFromSource = new Form();
 
 				JSONObject jsonObject = new JSONObject(source);
-
 				List<Field> fieldsForForm = null;
 				//Is Form Type available...
 				if(jsonObject.has(Form.JSONMapping.FORM_TYPE_ID)) {
@@ -440,8 +437,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				}
 
 				formFromSource.populateFromElasticSearchJson(
-						jsonObject,
-						fieldsForForm);
+						jsonObject, fieldsForForm);
 
 				returnVal.add(formFromSource);
 			}
@@ -506,6 +502,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				if((source = searchHit.getSourceAsString()) == null) {
 					continue;
 				}
+
+				this.printInfoOnSourceFromES(searchHit);
 
 				Form formFromSource = new Form();
 
@@ -578,6 +576,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				if((source = searchHit.getSourceAsString()) == null) {
 					continue;
 				}
+
+				this.printInfoOnSourceFromES(searchHit);
 
 				Form formFromSource = new Form();
 
@@ -727,4 +727,10 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			this.baseESUtil.closeConnectionNonThreaded();
 		}
 	}
+
+	/**
+	 * Do nothing.
+	 * @param searchHitParam Search Hit to perform functions on.
+	 */
+	private void printInfoOnSourceFromES(SearchHit searchHitParam) { }
 }

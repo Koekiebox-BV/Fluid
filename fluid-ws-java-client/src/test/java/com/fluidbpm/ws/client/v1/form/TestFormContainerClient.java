@@ -110,7 +110,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         List<Field> fields = new ArrayList();
         fields.add(new Field(TestStatics.FieldName.EMAIL_FROM_ADDRESS, "zapper@zool.com"));
         fields.add(new Field(TestStatics.FieldName.EMAIL_TO_ADDRESS, "pateldream@correct.com"));
-        fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject..."));
+        fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject... \uD83D\uDE00"));
 
         toCreate.setFormFields(fields);
 
@@ -140,6 +140,9 @@ public class TestFormContainerClient extends ABaseTestCase {
                 updatedForm.getFormFields());
         TestCase.assertEquals("The number of 'Form Fields' is not equal.",
                 4, updatedForm.getFormFields().size());
+
+        Form fetchedForm = formContainerClient.getFormContainerById(createdForm.getId());
+        System.out.println(fetchedForm.getFieldValueAsString(TestStatics.FieldName.EMAIL_SUBJECT));
 
         Form deletedForm = formContainerClient.deleteFormContainer(updatedForm);
 

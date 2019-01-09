@@ -3,6 +3,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
     private CompletableFuture<List<T>> completableFuture;
 
     private boolean compressedResponse;
+
+    public static Charset CHARSET = null;
 
     /**
      * Constructor for SQLResultSet callbacks.
@@ -394,21 +397,29 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
      *
      * @throws IOException - If there is an issue during the un-compression.
      */
-    protected byte[] uncompress(byte[] compressedBytesParam)
-            throws IOException {
+    protected byte[] uncompress(
+            byte[] compressedBytesParam
+    ) throws IOException {
 
         byte[] buffer = new byte[1024];
 
         byte[] returnVal = null;
+        ZipInputStream zis = null;
+        if(CHARSET == null) {
+            zis = new ZipInputStream(
+                    new ByteArrayInputStream(compressedBytesParam));
+        } else {
+            zis = new ZipInputStream(
+                    new ByteArrayInputStream(compressedBytesParam),
+                    CHARSET);
+        }
 
         //get the zip file content
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(compressedBytesParam));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         //get the zipped file list entry
         ZipEntry ze = zis.getNextEntry();
         if(ze == null){
-
             return returnVal;
         }
 

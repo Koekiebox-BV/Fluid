@@ -288,7 +288,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
                         null,
                         serviceTicketHex,
                         TimeUnit.SECONDS.toMillis(60),
-                        true);
+                        true,"");
 
         long start = System.currentTimeMillis();
         int numberOfRecords = 1;

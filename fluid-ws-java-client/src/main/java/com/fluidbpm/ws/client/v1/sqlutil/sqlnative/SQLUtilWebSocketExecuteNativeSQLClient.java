@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -67,7 +68,8 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
                 messageReceivedCallbackParam,
                 serviceTicketAsHexParam,
                 timeoutInMillisParam,
-                false);
+                false,
+                UtilGlobal.EMPTY);
     }
 
     /**
@@ -78,6 +80,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
      * @param serviceTicketAsHexParam The Server issued Service Ticket.
      * @param timeoutInMillisParam The timeout of the request in millis.
      * @param compressResponseParam Compress the SQL Result in Base-64.
+     * @param compressResponseCharsetParam Compress response using provided charset.
      *
      * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
      */
@@ -86,13 +89,15 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
             IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
             long timeoutInMillisParam,
-            boolean compressResponseParam) {
+            boolean compressResponseParam,
+            String compressResponseCharsetParam) {
         super(endpointBaseUrlParam,
                 messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.SQLUtil.Version1.getExecuteNativeSQLWebSocket(
                         serviceTicketAsHexParam,
-                        compressResponseParam),
+                        compressResponseParam,
+                        compressResponseCharsetParam),
                 compressResponseParam);
 
         this.setServiceTicket(serviceTicketAsHexParam);
