@@ -3286,6 +3286,7 @@ public class WS {
 				 */
 				public static final class QueryParam {
 					public static final String POPULATE_ANCESTOR_ID = "populate_ancestor_id";
+					public static final String FORCE_USE_DATABASE = "force_use_database";
 
 					//List Job View content...
 					public static final String QUERY_LIMIT = "query_limit";
@@ -3334,9 +3335,41 @@ public class WS {
 				 *
 				 * @return {@code v1/user_query/execute}
 				 */
-				public static final String executeUserQuery(boolean populateAncestorIdParam, int queryLimitParam, int offsetParam) {
+				public static final String executeUserQuery(
+						boolean populateAncestorIdParam,
+						int queryLimitParam,
+						int offsetParam) {
+
+					return executeUserQuery(
+							populateAncestorIdParam,
+							false,
+							queryLimitParam,
+							offsetParam);
+				}
+
+				/**
+				 * URL Path for executing a {@code UserQuery}.
+				 *
+				 * @param populateAncestorIdParam - Whether the ancestor id should be populated
+				 *            (when applicable).
+				 * @param forceUseDatabaseParam Force to use underlying database.
+				 * @param queryLimitParam The query limit.
+				 * @param offsetParam The query offset.
+				 *
+				 * @return {@code v1/user_query/execute}
+				 */
+				public static final String executeUserQuery(
+						boolean populateAncestorIdParam,
+						boolean forceUseDatabaseParam,
+						int queryLimitParam,
+						int offsetParam) {
 					String base = Version.VERSION_1.concat(ROOT).concat(EXECUTE);
 					String additionString = "?";
+
+					additionString += QueryParam.FORCE_USE_DATABASE;
+					additionString += "=";
+					additionString += forceUseDatabaseParam;
+					additionString += "&";
 
 					additionString += QueryParam.POPULATE_ANCESTOR_ID;
 					additionString += "=";
@@ -3361,6 +3394,27 @@ public class WS {
 					additionString = additionString.substring(0, additionString.length() - 1);
 
 					return base.concat(additionString);
+				}
+
+				/**
+				 * URL Path for executing a {@code UserQuery}.
+				 *
+				 * @param queryLimitParam The query limit.
+				 * @param offsetParam The query offset.
+				 * @param forceUseDatabaseParam Force to use underlying database.
+				 *
+				 * @return {@code v1/user_query/execute}
+				 */
+				public static final String executeUserQuery(
+						int queryLimitParam,
+						int offsetParam,
+						boolean forceUseDatabaseParam
+				) {
+					return executeUserQuery(
+							true,
+							forceUseDatabaseParam,
+							queryLimitParam,
+							offsetParam);
 				}
 
 				/**

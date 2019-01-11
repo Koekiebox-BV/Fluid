@@ -37,267 +37,277 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class UserQueryClient extends ABaseClientWS {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public UserQueryClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public UserQueryClient(
+			String endpointBaseUrlParam,
+			String serviceTicketParam) {
+		super(endpointBaseUrlParam);
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-    /**
-     * Creates a new {@code UserQuery}.
-     *
-     * @param userQueryParam The {@code UserQuery} to create.
-     * @return The Created User Query.
-     *
-     * @see com.fluidbpm.program.api.vo.userquery.UserQuery
-     */
-    public UserQuery createUserQuery(UserQuery userQueryParam)
-    {
-        if(userQueryParam != null && this.serviceTicket != null)
-        {
-            userQueryParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Creates a new {@code UserQuery}.
+	 *
+	 * @param userQueryParam The {@code UserQuery} to create.
+	 * @return The Created User Query.
+	 *
+	 * @see com.fluidbpm.program.api.vo.userquery.UserQuery
+	 */
+	public UserQuery createUserQuery(UserQuery userQueryParam)
+	{
+		if(userQueryParam != null && this.serviceTicket != null)
+		{
+			userQueryParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new UserQuery(this.putJson(
-                userQueryParam,
-                WS.Path.UserQuery.Version1.userQueryCreate()));
-    }
+		return new UserQuery(this.putJson(
+				userQueryParam,
+				WS.Path.UserQuery.Version1.userQueryCreate()));
+	}
 
-    /**
-     * Updates an existing {@code UserQuery}.
-     *
-     * @param userQueryParam The {@code UserQuery} to update.
-     * @return The Updated UserQuery.
-     *
-     * @see UserQuery
-     */
-    public UserQuery updateUserQuery(UserQuery userQueryParam)
-    {
-        if(userQueryParam != null && this.serviceTicket != null)
-        {
-            userQueryParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Updates an existing {@code UserQuery}.
+	 *
+	 * @param userQueryParam The {@code UserQuery} to update.
+	 * @return The Updated UserQuery.
+	 *
+	 * @see UserQuery
+	 */
+	public UserQuery updateUserQuery(UserQuery userQueryParam)
+	{
+		if(userQueryParam != null && this.serviceTicket != null)
+		{
+			userQueryParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new UserQuery(this.postJson(
-                userQueryParam,
-                WS.Path.UserQuery.Version1.userQueryUpdate()));
-    }
+		return new UserQuery(this.postJson(
+				userQueryParam,
+				WS.Path.UserQuery.Version1.userQueryUpdate()));
+	}
 
-    /**
-     * Deletes the {@code UserQuery} provided.
-     * Id must be set on the {@code UserQuery}.
-     *
-     * @param userQueryToDeleteParam The UserQuery to Delete.
-     * @return The deleted UserQuery.
-     */
-    public UserQuery deleteUserQuery(
-            UserQuery userQueryToDeleteParam)
-    {
-        if(userQueryToDeleteParam != null && this.serviceTicket != null)
-        {
-            userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Deletes the {@code UserQuery} provided.
+	 * Id must be set on the {@code UserQuery}.
+	 *
+	 * @param userQueryToDeleteParam The UserQuery to Delete.
+	 * @return The deleted UserQuery.
+	 */
+	public UserQuery deleteUserQuery(
+			UserQuery userQueryToDeleteParam)
+	{
+		if(userQueryToDeleteParam != null && this.serviceTicket != null)
+		{
+			userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new UserQuery(this.postJson(userQueryToDeleteParam,
-                WS.Path.UserQuery.Version1.userQueryDelete()));
-    }
+		return new UserQuery(this.postJson(userQueryToDeleteParam,
+				WS.Path.UserQuery.Version1.userQueryDelete()));
+	}
 
-    /**
-     * Deletes the {@code UserQuery} provided.
-     * Id must be set on the {@code UserQuery}.
-     *
-     * @param userQueryToDeleteParam The UserQuery to Delete.
-     * @param forcefullyDeleteParam Delete the UserQuery forcefully.
-     * @return The deleted UserQuery.
-     */
-    public UserQuery deleteUserQuery(
-            UserQuery userQueryToDeleteParam,
-            boolean forcefullyDeleteParam)
-    {
-        if(userQueryToDeleteParam != null && this.serviceTicket != null)
-        {
-            userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Deletes the {@code UserQuery} provided.
+	 * Id must be set on the {@code UserQuery}.
+	 *
+	 * @param userQueryToDeleteParam The UserQuery to Delete.
+	 * @param forcefullyDeleteParam Delete the UserQuery forcefully.
+	 * @return The deleted UserQuery.
+	 */
+	public UserQuery deleteUserQuery(
+			UserQuery userQueryToDeleteParam,
+			boolean forcefullyDeleteParam)
+	{
+		if(userQueryToDeleteParam != null && this.serviceTicket != null)
+		{
+			userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new UserQuery(this.postJson(userQueryToDeleteParam,
-                WS.Path.UserQuery.Version1.userQueryDelete(forcefullyDeleteParam)));
-    }
+		return new UserQuery(this.postJson(userQueryToDeleteParam,
+				WS.Path.UserQuery.Version1.userQueryDelete(forcefullyDeleteParam)));
+	}
 
-    /**
-     * Retrieves User Query information for the provided {@code userQueryIdParam}.
-     *
-     * @param userQueryIdParam The ID of the {@code UserQuery} to retrieve info for.
-     *
-     * @return UserQuery information.
-     *
-     * @see UserQuery
-     */
-    public UserQuery getUserQueryById(Long userQueryIdParam)
-    {
-        UserQuery userQueryToGetInfoFor = new UserQuery();
-        userQueryToGetInfoFor.setId(userQueryIdParam);
+	/**
+	 * Retrieves User Query information for the provided {@code userQueryIdParam}.
+	 *
+	 * @param userQueryIdParam The ID of the {@code UserQuery} to retrieve info for.
+	 *
+	 * @return UserQuery information.
+	 *
+	 * @see UserQuery
+	 */
+	public UserQuery getUserQueryById(Long userQueryIdParam)
+	{
+		UserQuery userQueryToGetInfoFor = new UserQuery();
+		userQueryToGetInfoFor.setId(userQueryIdParam);
 
-        if(this.serviceTicket != null)
-        {
-            userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if(this.serviceTicket != null)
+		{
+			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserQuery(this.postJson(
-                    userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getById()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserQuery(this.postJson(
+					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getById()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all user query information.
-     *
-     * @return UserQuery information.
-     *
-     * @see UserQueryListing
-     */
-    public UserQueryListing getAllUserQueries()
-    {
-        UserQuery userQueryToGetInfoFor = new UserQuery();
+	/**
+	 * Retrieves all user query information.
+	 *
+	 * @return UserQuery information.
+	 *
+	 * @see UserQueryListing
+	 */
+	public UserQueryListing getAllUserQueries() {
+		UserQuery userQueryToGetInfoFor = new UserQuery();
 
-        if(this.serviceTicket != null)
-        {
-            userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if(this.serviceTicket != null) {
+			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserQueryListing(this.postJson(
-                    userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueries()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserQueryListing(this.postJson(
+					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueries()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all user queries for logged in {@code User}.
-     *
-     * @return UserQuery information.
-     *
-     * @see UserQueryListing
-     */
-    public UserQueryListing getAllUserQueriesByLoggedInUser()
-    {
-        UserQuery userQueryToGetInfoFor = new UserQuery();
+	/**
+	 * Retrieves all user queries for logged in {@code User}.
+	 *
+	 * @return UserQuery information.
+	 *
+	 * @see UserQueryListing
+	 */
+	public UserQueryListing getAllUserQueriesByLoggedInUser() {
+		UserQuery userQueryToGetInfoFor = new UserQuery();
 
-        if(this.serviceTicket != null)
-        {
-            userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if(this.serviceTicket != null) {
+			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserQueryListing(this.postJson(
-                    userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueriesByLoggedInUser()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
-    
-    /**
-     * Executes the {@code UserQuery} {@code queryToExecuteParam}
-     * and returns the result information.
-     *
-     * @param queryToExecuteParam The UserQuery to execute.
-     *
-     * @return The UserQuery result.
-     *
-     * @see FluidItemListing
-     */
-    public FluidItemListing executeUserQuery(
-            UserQuery queryToExecuteParam)
-    {
-        return this.executeUserQuery(queryToExecuteParam, true);
-    }
-    
-    /**
-     * Executes the {@code UserQuery} {@code queryToExecuteParam}
-     * and returns the result information.
-     *
-     * @param queryToExecuteParam The UserQuery to execute.
-     * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
-     *
-     * @return The UserQuery result.
-     *
-     * @see FluidItemListing
-     */
-    public FluidItemListing executeUserQuery(
-            UserQuery queryToExecuteParam,
-            boolean populateAncestorIdParam)
-    {
-        if(this.serviceTicket != null && queryToExecuteParam != null)
-        {
-            queryToExecuteParam.setServiceTicket(this.serviceTicket);
-        }
+		try {
+			return new UserQueryListing(this.postJson(
+					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueriesByLoggedInUser()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        try {
-            return new FluidItemListing(this.postJson(
-                    queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
-                            populateAncestorIdParam,-1,-1)));
-        }
-        //JSON Issue...
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+	/**
+	 * Executes the {@code UserQuery} {@code queryToExecuteParam}
+	 * and returns the result information.
+	 *
+	 * @param queryToExecuteParam The UserQuery to execute.
+	 *
+	 * @return The UserQuery result.
+	 *
+	 * @see FluidItemListing
+	 */
+	public FluidItemListing executeUserQuery(UserQuery queryToExecuteParam) {
+		return this.executeUserQuery(queryToExecuteParam, true);
+	}
 
-    /**
-     * Executes the {@code UserQuery} {@code queryToExecuteParam}
-     * and returns the result information.
-     *
-     * @param queryToExecuteParam The UserQuery to execute.
-     * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
-     * @param queryLimitParam The query limit.
-     * @param offsetParam The query offset.
-     *
-     * @return The UserQuery result.
-     *
-     * @see FluidItemListing
-     */
-    public FluidItemListing executeUserQuery(
-            UserQuery queryToExecuteParam,
-            boolean populateAncestorIdParam,
-            int queryLimitParam,
-            int offsetParam)
-    {
-        if(this.serviceTicket != null && queryToExecuteParam != null)
-        {
-            queryToExecuteParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Executes the {@code UserQuery} {@code queryToExecuteParam}
+	 * and returns the result information.
+	 *
+	 * @param queryToExecuteParam The UserQuery to execute.
+	 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+	 *
+	 *
+	 * @return The UserQuery result.
+	 *
+	 * @see FluidItemListing
+	 */
+	public FluidItemListing executeUserQuery(
+			UserQuery queryToExecuteParam,
+			boolean populateAncestorIdParam
+	) {
+		return this.executeUserQuery(
+				queryToExecuteParam,
+				populateAncestorIdParam,
+				-1,
+				-1,
+				false);
+	}
 
-        try {
-            return new FluidItemListing(this.postJson(
-                    queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
-                            populateAncestorIdParam,
-                            queryLimitParam,
-                            offsetParam)));
-        }
-        //JSON Issue...
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+	/**
+	 * Executes the {@code UserQuery} {@code queryToExecuteParam}
+	 * and returns the result information.
+	 *
+	 * @param queryToExecuteParam The UserQuery to execute.
+	 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The query offset.
+	 *
+	 * @return The UserQuery result.
+	 *
+	 * @see FluidItemListing
+	 */
+	public FluidItemListing executeUserQuery(
+			UserQuery queryToExecuteParam,
+			boolean populateAncestorIdParam,
+			int queryLimitParam,
+			int offsetParam
+	) {
+		return this.executeUserQuery(
+				queryToExecuteParam,
+				populateAncestorIdParam,
+				queryLimitParam,
+				offsetParam,
+				false);
+	}
+
+	/**
+	 * Executes the {@code UserQuery} {@code queryToExecuteParam}
+	 * and returns the result information.
+	 *
+	 * @param queryToExecuteParam The UserQuery to execute.
+	 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The query offset.
+	 * @param forceUseDatabaseParam Force to use underlying database.
+	 *
+	 * @return The UserQuery result.
+	 *
+	 * @see FluidItemListing
+	 */
+	public FluidItemListing executeUserQuery(
+			UserQuery queryToExecuteParam,
+			boolean populateAncestorIdParam,
+			int queryLimitParam,
+			int offsetParam,
+			boolean forceUseDatabaseParam
+	) {
+		if(this.serviceTicket != null && queryToExecuteParam != null) {
+			queryToExecuteParam.setServiceTicket(this.serviceTicket);
+		}
+
+		try {
+			return new FluidItemListing(this.postJson(
+					queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
+							populateAncestorIdParam,
+							forceUseDatabaseParam,
+							queryLimitParam,
+							offsetParam)));
+		} catch (JSONException jsonExcept) {
+			//JSON Issue...
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 }

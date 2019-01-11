@@ -119,10 +119,8 @@ public class TestUserQueryClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testUserQuery_CRUD()
-    {
-        if(!this.isConnectionValid())
-        {
+    public void testUserQuery_CRUD() {
+        if(!this.isConnectionValid()) {
             return;
         }
 
@@ -179,10 +177,8 @@ public class TestUserQueryClient extends ABaseTestCase {
      */
     @Test
     @Ignore
-    public void executeUserQueryWithSpecificNameVolume()
-    {
-        if(!this.isConnectionValid())
-        {
+    public void executeUserQueryWithSpecificNameVolume() {
+        if(!this.isConnectionValid()) {
             return;
         }
 
@@ -191,19 +187,16 @@ public class TestUserQueryClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-
         UserQuery userQueryToExec = new UserQuery();
-        //userQueryToExec.setName("All Config Asset Request Complex Dependent");
-        userQueryToExec.setName("All Config Asset Request Complex Dependent By");
+        userQueryToExec.setName("All By Form Type");
 
         List<Field> inputs = new ArrayList();
-        inputs.add(new Field("Group",
-                new MultiChoice("Organic Social")));
+        inputs.add(new Field("Form Type",
+                new MultiChoice("Form Test")));
         userQueryToExec.setInputs(inputs);
 
         int totalThreads = 1;
-        for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++)
-        {
+        for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++) {
             CustomerCodeExecutionThread customerCodeExecutionThread = new CustomerCodeExecutionThread(
                     serviceTicket, userQueryToExec);
 
@@ -214,9 +207,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 
         try {
             Thread.sleep(TimeUnit.MINUTES.toMillis(1));
-        }
-        //
-        catch (InterruptedException eParam) {
+        } catch (InterruptedException eParam) {
             eParam.printStackTrace();
         }
 
@@ -228,8 +219,7 @@ public class TestUserQueryClient extends ABaseTestCase {
     /**
      *
      */
-    private class CustomerCodeExecutionThread implements Runnable
-    {
+    private class CustomerCodeExecutionThread implements Runnable {
         UserQueryClient userQueryClient;
         private UserQuery userQueryToExec;
 
@@ -260,13 +250,12 @@ public class TestUserQueryClient extends ABaseTestCase {
             {
                 FluidItemListing itemListing =
                         userQueryClient.executeUserQuery(
-                                this.userQueryToExec, false,
-                                3,6);
+                                this.userQueryToExec,
+								false,
+                                1000,0);
 
-                if(itemListing.getListingCount() > 0)
-                {
-                    for(FluidItem returnVal :itemListing.getListing())
-                    {
+                if(itemListing.getListingCount() > 0) {
+                    for(FluidItem returnVal :itemListing.getListing()) {
                         System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
                                 returnVal.getForm().getTitle() + " ]]] ***");
 
