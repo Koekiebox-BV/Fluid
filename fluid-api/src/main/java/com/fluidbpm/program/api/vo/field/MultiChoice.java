@@ -111,6 +111,20 @@ public class MultiChoice extends ABaseFluidJSONObject {
     }
 
     /**
+     * Sets the Selected MultiChoices for when multiple selections are supported.
+     *
+     * @param selectedMultiChoiceValuesParam Selected {@code MultiChoices} {@code String[]} value.
+     */
+    public MultiChoice(String ... selectedMultiChoiceValuesParam) {
+        this.selectedMultiChoices = new ArrayList();
+        if(selectedMultiChoiceValuesParam != null) {
+            for(String str : selectedMultiChoiceValuesParam) {
+                this.selectedMultiChoices.add(str);
+            }
+        }
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}
      *
      * @param jsonObjectParam The JSON Object.

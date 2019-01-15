@@ -79,10 +79,8 @@ public class UserQueryClient extends ABaseClientWS {
 	 *
 	 * @see UserQuery
 	 */
-	public UserQuery updateUserQuery(UserQuery userQueryParam)
-	{
-		if(userQueryParam != null && this.serviceTicket != null)
-		{
+	public UserQuery updateUserQuery(UserQuery userQueryParam) {
+		if(userQueryParam != null && this.serviceTicket != null) {
 			userQueryParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -99,10 +97,9 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @return The deleted UserQuery.
 	 */
 	public UserQuery deleteUserQuery(
-			UserQuery userQueryToDeleteParam)
-	{
-		if(userQueryToDeleteParam != null && this.serviceTicket != null)
-		{
+			UserQuery userQueryToDeleteParam
+	) {
+		if(userQueryToDeleteParam != null && this.serviceTicket != null) {
 			userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -120,10 +117,9 @@ public class UserQueryClient extends ABaseClientWS {
 	 */
 	public UserQuery deleteUserQuery(
 			UserQuery userQueryToDeleteParam,
-			boolean forcefullyDeleteParam)
-	{
-		if(userQueryToDeleteParam != null && this.serviceTicket != null)
-		{
+			boolean forcefullyDeleteParam
+	) {
+		if(userQueryToDeleteParam != null && this.serviceTicket != null) {
 			userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -140,13 +136,11 @@ public class UserQueryClient extends ABaseClientWS {
 	 *
 	 * @see UserQuery
 	 */
-	public UserQuery getUserQueryById(Long userQueryIdParam)
-	{
+	public UserQuery getUserQueryById(Long userQueryIdParam) {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 		userQueryToGetInfoFor.setId(userQueryIdParam);
 
-		if(this.serviceTicket != null)
-		{
+		if(this.serviceTicket != null) {
 			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
 

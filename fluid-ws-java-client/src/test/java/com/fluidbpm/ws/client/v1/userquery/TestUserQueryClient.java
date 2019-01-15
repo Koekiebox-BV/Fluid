@@ -41,341 +41,341 @@ import junit.framework.TestCase;
  */
 public class TestUserQueryClient extends ABaseTestCase {
 
-    private LoginClient loginClient;
+	private LoginClient loginClient;
 
-    /**
-     *
-     */
-    public static final class TestStatics{
-        public static final String NAME = "JUnit Run the Query";
-        public static final String DESCRIPTION = "This is a JUnit test query.";
+	/**
+	 *
+	 */
+	public static final class TestStatics{
+		public static final String NAME = "JUnit Run the Query";
+		public static final String DESCRIPTION = "This is a JUnit test query.";
 
-        public static final String RULE_NR_1 = "[Form Type] = INPUT_VALUE";
-        public static final Long RESULT_FIELD_1 = 1L;
-        public static final String RESULT_FIELD_1_NAME = "Email From Address";
+		public static final String RULE_NR_1 = "[Form Type] = INPUT_VALUE";
+		public static final Long RESULT_FIELD_1 = 1L;
+		public static final String RESULT_FIELD_1_NAME = "Email From Address";
 
-        public static final String UPDATE_NAME = "JUnit Run the Query - Updated";
-        public static final String UPDATE_DESCRIPTION = "This is a JUnit test query. Updated";
+		public static final String UPDATE_NAME = "JUnit Run the Query - Updated";
+		public static final String UPDATE_DESCRIPTION = "This is a JUnit test query. Updated";
 
-        /**
-         *
-         * @param ruleParam
-         * @return
-         */
-        public static List<String> toRuleListing(String ruleParam)
-        {
-            List<String> returnVal = new ArrayList();
+		/**
+		 *
+		 * @param ruleParam
+		 * @return
+		 */
+		public static List<String> toRuleListing(String ruleParam)
+		{
+			List<String> returnVal = new ArrayList();
 
-            if(ruleParam != null){
-                returnVal.add(ruleParam);
-            }
+			if(ruleParam != null){
+				returnVal.add(ruleParam);
+			}
 
-            return returnVal;
-        }
+			return returnVal;
+		}
 
-        /**
-         *
-         * @param fieldIdParam
-         * @param nameParam
-         * @return
-         */
-        public static List<Field> toFieldListing(
-                Long fieldIdParam,
-                String nameParam)
-        {
-            List<Field> returnVal = new ArrayList();
+		/**
+		 *
+		 * @param fieldIdParam
+		 * @param nameParam
+		 * @return
+		 */
+		public static List<Field> toFieldListing(
+				Long fieldIdParam,
+				String nameParam)
+		{
+			List<Field> returnVal = new ArrayList();
 
-            Field field = new Field(fieldIdParam);
-            field.setFieldName(nameParam);
+			Field field = new Field(fieldIdParam);
+			field.setFieldName(nameParam);
 
-            returnVal.add(field);
+			returnVal.add(field);
 
-            return returnVal;
-        }
+			return returnVal;
+		}
 
-    }
+	}
 
-    /**
-     *
-     */
-    @Before
-    public void init()
-    {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+	/**
+	 *
+	 */
+	@Before
+	public void init()
+	{
+		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient(BASE_URL);
-    }
+		this.loginClient = new LoginClient(BASE_URL);
+	}
 
-    /**
-     *
-     */
-    @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
-    }
+	/**
+	 *
+	 */
+	@After
+	public void destroy()
+	{
+		this.loginClient.closeAndClean();
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testUserQuery_CRUD() {
-        if(!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testUserQuery_CRUD() {
+		if(!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
+		UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
-        //1. Text...
-        UserQuery toCreate = new UserQuery();
-        toCreate.setName(TestStatics.NAME);
-        toCreate.setDescription(TestStatics.DESCRIPTION);
-        toCreate.setRules(TestStatics.toRuleListing(TestStatics.RULE_NR_1));
-        toCreate.setInputs(TestStatics.toFieldListing(
-                TestStatics.RESULT_FIELD_1,
-                TestStatics.RESULT_FIELD_1_NAME));
+		//1. Text...
+		UserQuery toCreate = new UserQuery();
+		toCreate.setName(TestStatics.NAME);
+		toCreate.setDescription(TestStatics.DESCRIPTION);
+		toCreate.setRules(TestStatics.toRuleListing(TestStatics.RULE_NR_1));
+		toCreate.setInputs(TestStatics.toFieldListing(
+				TestStatics.RESULT_FIELD_1,
+				TestStatics.RESULT_FIELD_1_NAME));
 
-        //2. Create...
-        UserQuery createdUserQuery = userQueryClient.createUserQuery(toCreate);
+		//2. Create...
+		UserQuery createdUserQuery = userQueryClient.createUserQuery(toCreate);
 
-        TestCase.assertNotNull("The 'Id' needs to be set.", createdUserQuery.getId());
-        TestCase.assertEquals("'Name' mismatch.", TestStatics.NAME, createdUserQuery.getName());
-        TestCase.assertEquals("'Description' mismatch.", TestStatics.DESCRIPTION,
-                createdUserQuery.getDescription());
+		TestCase.assertNotNull("The 'Id' needs to be set.", createdUserQuery.getId());
+		TestCase.assertEquals("'Name' mismatch.", TestStatics.NAME, createdUserQuery.getName());
+		TestCase.assertEquals("'Description' mismatch.", TestStatics.DESCRIPTION,
+				createdUserQuery.getDescription());
 
-        //3. Update...
-        createdUserQuery.setName(TestStatics.UPDATE_NAME);
-        createdUserQuery.setDescription(TestStatics.UPDATE_DESCRIPTION);
-        UserQuery updatedUserQuery = userQueryClient.updateUserQuery(createdUserQuery);
+		//3. Update...
+		createdUserQuery.setName(TestStatics.UPDATE_NAME);
+		createdUserQuery.setDescription(TestStatics.UPDATE_DESCRIPTION);
+		UserQuery updatedUserQuery = userQueryClient.updateUserQuery(createdUserQuery);
 
-        TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedUserQuery.getId());
-        TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.UPDATE_NAME,
-                updatedUserQuery.getName());
-        TestCase.assertEquals("UPDATE: 'Description' mismatch.",
-                TestStatics.UPDATE_DESCRIPTION, updatedUserQuery.getDescription());
+		TestCase.assertNotNull("UPDATE: The 'Id' needs to be set.", updatedUserQuery.getId());
+		TestCase.assertEquals("UPDATE: 'Name' mismatch.", TestStatics.UPDATE_NAME,
+				updatedUserQuery.getName());
+		TestCase.assertEquals("UPDATE: 'Description' mismatch.",
+				TestStatics.UPDATE_DESCRIPTION, updatedUserQuery.getDescription());
 
-        //4. Get by Id...
-        UserQuery byIdUserQuery = userQueryClient.getUserQueryById(updatedUserQuery.getId());
+		//4. Get by Id...
+		UserQuery byIdUserQuery = userQueryClient.getUserQueryById(updatedUserQuery.getId());
 
-        TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdUserQuery.getId());
-        TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdUserQuery.getName());
-        TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdUserQuery.getDescription());
+		TestCase.assertNotNull("BY_ID: The 'Id' needs to be set.", byIdUserQuery.getId());
+		TestCase.assertNotNull("BY_ID: The 'Name' needs to be set.", byIdUserQuery.getName());
+		TestCase.assertNotNull("BY_ID: The 'Description' needs to be set.", byIdUserQuery.getDescription());
 
-        //5. Delete...
-        UserQuery deletedUserQuery = userQueryClient.deleteUserQuery(byIdUserQuery,true);
-        TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedUserQuery.getId());
-    }
+		//5. Delete...
+		UserQuery deletedUserQuery = userQueryClient.deleteUserQuery(byIdUserQuery,true);
+		TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedUserQuery.getId());
+	}
 
-    /**
-     * Use this for VOLUME testing...
-     *
-     */
-    @Test
-    @Ignore
-    public void executeUserQueryWithSpecificNameVolume() {
-        if(!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 * Use this for VOLUME testing...
+	 *
+	 */
+	@Test
+	@Ignore
+	public void executeUserQueryWithSpecificNameVolume() {
+		if(!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserQuery userQueryToExec = new UserQuery();
-        userQueryToExec.setName("All By Form Type");
+		UserQuery userQueryToExec = new UserQuery();
+		userQueryToExec.setName("All By Form Type");
 
-        List<Field> inputs = new ArrayList();
-        inputs.add(new Field("Form Type",
-                new MultiChoice("Form Test")));
-        userQueryToExec.setInputs(inputs);
+		List<Field> inputs = new ArrayList();
+		inputs.add(new Field("Form Type",
+				new MultiChoice("Form Test", "Form Test Two")));
+		userQueryToExec.setInputs(inputs);
 
-        int totalThreads = 1;
-        for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++) {
-            CustomerCodeExecutionThread customerCodeExecutionThread = new CustomerCodeExecutionThread(
-                    serviceTicket, userQueryToExec);
+		int totalThreads = 1;
+		for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++) {
+			CustomerCodeExecutionThread customerCodeExecutionThread = new CustomerCodeExecutionThread(
+					serviceTicket, userQueryToExec);
 
-            Thread zoolThread = new Thread(
-                    customerCodeExecutionThread,"SpeedTest --> "+(threadIndex + 1));
-            zoolThread.start();
-        }
+			Thread zoolThread = new Thread(
+					customerCodeExecutionThread,"SpeedTest --> "+(threadIndex + 1));
+			zoolThread.start();
+		}
 
-        try {
-            Thread.sleep(TimeUnit.MINUTES.toMillis(1));
-        } catch (InterruptedException eParam) {
-            eParam.printStackTrace();
-        }
+		try {
+			Thread.sleep(TimeUnit.MINUTES.toMillis(1));
+		} catch (InterruptedException eParam) {
+			eParam.printStackTrace();
+		}
 
-        System.out.println("Sum score "+SUM + " (less is better)");
-    }
+		System.out.println("Sum score "+SUM + " (less is better)");
+	}
 
-    public static long SUM = 0;
+	public static long SUM = 0;
 
-    /**
-     *
-     */
-    private class CustomerCodeExecutionThread implements Runnable {
-        UserQueryClient userQueryClient;
-        private UserQuery userQueryToExec;
+	/**
+	 *
+	 */
+	private class CustomerCodeExecutionThread implements Runnable {
+		UserQueryClient userQueryClient;
+		private UserQuery userQueryToExec;
 
-        /**
-         *
-         * @param serviceTicketParam
-         * @param userQueryToExecParam
-         */
-        public CustomerCodeExecutionThread(
-                String serviceTicketParam,
-                UserQuery userQueryToExecParam) {
-            this.userQueryToExec = userQueryToExecParam;
+		/**
+		 *
+		 * @param serviceTicketParam
+		 * @param userQueryToExecParam
+		 */
+		public CustomerCodeExecutionThread(
+				String serviceTicketParam,
+				UserQuery userQueryToExecParam) {
+			this.userQueryToExec = userQueryToExecParam;
 
-            this.userQueryClient = new UserQueryClient(BASE_URL, serviceTicketParam);
-        }
+			this.userQueryClient = new UserQueryClient(BASE_URL, serviceTicketParam);
+		}
 
-        /**
-         *
-         */
-        @Override
-        public void run() {
-            long start = System.currentTimeMillis();
+		/**
+		 *
+		 */
+		@Override
+		public void run() {
+			long start = System.currentTimeMillis();
 
-            System.out.println("Starting ["+Thread.currentThread().getName()+"]");
+			System.out.println("Starting ["+Thread.currentThread().getName()+"]");
 
-            int total = 1;
-            for(int index = 0;index < total;index++)
-            {
-                FluidItemListing itemListing =
-                        userQueryClient.executeUserQuery(
-                                this.userQueryToExec,
+			int total = 1;
+			for(int index = 0;index < total;index++)
+			{
+				FluidItemListing itemListing =
+						userQueryClient.executeUserQuery(
+								this.userQueryToExec,
 								false,
-                                1000,0);
+								1000,0);
 
-                if(itemListing.getListingCount() > 0) {
-                    for(FluidItem returnVal :itemListing.getListing()) {
-                        System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
-                                returnVal.getForm().getTitle() + " ]]] ***");
+				if(itemListing.getListingCount() > 0) {
+					for(FluidItem returnVal :itemListing.getListing()) {
+						System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+								returnVal.getForm().getTitle() + " ]]] ***");
 
-                        for(Field formField : returnVal.getForm().getFormFields()) {
-                            System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
-                        }
-                    }
-                }
-            }
+						for(Field formField : returnVal.getForm().getFormFields()) {
+							System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
+						}
+					}
+				}
+			}
 
-            long took = (System.currentTimeMillis() - start);
+			long took = (System.currentTimeMillis() - start);
 
-            SUM += took;
+			SUM += took;
 
-            System.out.println("["+Thread.currentThread().getName()+"] Took '"+(
-                    took)+"' millis for '"+total+
-                    "' executions. Avg["+(took / total)+"]");
-        }
-    }
-    
-    /**
-     * Use this for testing...
-     */
-    @Test
-    @Ignore
-    public void executeUserQueryWithSpecificName()
-    {
-        if(!this.isConnectionValid())
-        {
-            return;
-        }
+			System.out.println("["+Thread.currentThread().getName()+"] Took '"+(
+					took)+"' millis for '"+total+
+					"' executions. Avg["+(took / total)+"]");
+		}
+	}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+	/**
+	 * Use this for testing...
+	 */
+	@Test
+	@Ignore
+	public void executeUserQueryWithSpecificName()
+	{
+		if(!this.isConnectionValid())
+		{
+			return;
+		}
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserQuery userQueryToExec = new UserQuery();
-        userQueryToExec.setName("Client is Input");
+		UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
-        List<Field> inputs = new ArrayList();
+		UserQuery userQueryToExec = new UserQuery();
+		userQueryToExec.setName("Client is Input");
 
-        List<String> selectedClients = new ArrayList();
-        selectedClients.add("PPC");
+		List<Field> inputs = new ArrayList();
 
-        MultiChoice selectedMultiChoices = new MultiChoice(selectedClients);
+		List<String> selectedClients = new ArrayList();
+		selectedClients.add("PPC");
 
-        inputs.add(new Field("Client",selectedMultiChoices));
-        userQueryToExec.setInputs(inputs);
+		MultiChoice selectedMultiChoices = new MultiChoice(selectedClients);
 
-        long start = System.currentTimeMillis();
+		inputs.add(new Field("Client",selectedMultiChoices));
+		userQueryToExec.setInputs(inputs);
 
-        FluidItemListing itemListing =
-                userQueryClient.executeUserQuery(userQueryToExec);
+		long start = System.currentTimeMillis();
 
-        if(itemListing.getListingCount() > 0)
-        {
-            for(FluidItem returnVal :itemListing.getListing())
-            {
-                System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
-                        returnVal.getForm().getTitle() + " ]]] ***");
+		FluidItemListing itemListing =
+				userQueryClient.executeUserQuery(userQueryToExec);
 
-                for(Field formField : returnVal.getForm().getFormFields())
-                {
-                    System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
-                }
-            }
-        }
+		if(itemListing.getListingCount() > 0)
+		{
+			for(FluidItem returnVal :itemListing.getListing())
+			{
+				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+						returnVal.getForm().getTitle() + " ]]] ***");
 
-        long took = (System.currentTimeMillis() - start);
-        System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
-                "' records.");
-    }
+				for(Field formField : returnVal.getForm().getFormFields())
+				{
+					System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
+				}
+			}
+		}
 
-    /**
-     * Use this for testing...
-     */
-    @Test
-    @Ignore
-    public void executeUserQueryWithSpecificNameNoInput()
-    {
-        if(!this.isConnectionValid())
-        {
-            return;
-        }
+		long took = (System.currentTimeMillis() - start);
+		System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
+				"' records.");
+	}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+	/**
+	 * Use this for testing...
+	 */
+	@Test
+	@Ignore
+	public void executeUserQueryWithSpecificNameNoInput()
+	{
+		if(!this.isConnectionValid())
+		{
+			return;
+		}
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserQuery userQueryToExec = new UserQuery();
-        userQueryToExec.setName("All Config Asset Type Channels");
+		UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
 
-        long start = System.currentTimeMillis();
+		UserQuery userQueryToExec = new UserQuery();
+		userQueryToExec.setName("All Config Asset Type Channels");
 
-        FluidItemListing itemListing =
-                userQueryClient.executeUserQuery(userQueryToExec);
+		long start = System.currentTimeMillis();
 
-        if(itemListing.getListingCount() > 0)
-        {
-            for(FluidItem returnVal :itemListing.getListing())
-            {
-                System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
-                        returnVal.getForm().getTitle() + " ]]] ***");
+		FluidItemListing itemListing =
+				userQueryClient.executeUserQuery(userQueryToExec);
 
-                for(Field formField : returnVal.getForm().getFormFields())
-                {
-                    System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
-                }
-            }
-        }
+		if(itemListing.getListingCount() > 0)
+		{
+			for(FluidItem returnVal :itemListing.getListing())
+			{
+				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+						returnVal.getForm().getTitle() + " ]]] ***");
 
-        long took = (System.currentTimeMillis() - start);
-        System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
-                "' records.");
-    }
+				for(Field formField : returnVal.getForm().getFormFields())
+				{
+					System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
+				}
+			}
+		}
+
+		long took = (System.currentTimeMillis() - start);
+		System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
+				"' records.");
+	}
 
 }
