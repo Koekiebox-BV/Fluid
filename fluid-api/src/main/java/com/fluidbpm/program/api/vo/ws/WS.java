@@ -18,6 +18,7 @@ package com.fluidbpm.program.api.vo.ws;
 import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
 import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
 
 import java.io.UnsupportedEncodingException;
@@ -962,6 +963,13 @@ public class WS {
 				public static final String READ_VALUES_BY = ("/get_values_by");
 
 				/**
+				 * Mapping for frequently used HTTP parameters.
+				 */
+				public static final class QueryParam {
+					public static final String FLUID_ITEM = "fluid_item";
+				}
+
+				/**
 				 * Root for Route Field.
 				 *
 				 * @return {@code /route_field}
@@ -1026,10 +1034,17 @@ public class WS {
 				/**
 				 * URL Path for Route Field Value create.
 				 *
+				 * @param fluidItemIdParam The id of the Fluid item to create Route field for.
+				 *
 				 * @return {@code v1/route_field/create_value}
 				 */
-				public static final String routeFieldCreateValue() {
-					return Version.VERSION_1.concat(ROOT).concat(CREATE_VALUE);
+				public static final String routeFieldCreateValue(Long fluidItemIdParam) {
+					if(fluidItemIdParam == null || fluidItemIdParam.longValue() < 1) {
+						return Version.VERSION_1.concat(ROOT).concat(CREATE_VALUE);
+					}
+
+					return Version.VERSION_1.concat(ROOT).concat(CREATE_VALUE).concat(
+							"?").concat(FLUID_ITEM).concat("=").concat(fluidItemIdParam.toString());
 				}
 
 				/**

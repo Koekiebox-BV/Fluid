@@ -480,15 +480,21 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * Create an new 'Route field' value.
 	 *
 	 * @param routeFieldValueToCreateParam Field to Create.
+	 * @param fluidItemParam Fluid item to create field for.
 	 * @return Created Field.
 	 */
-	public Field createFieldValue(Field routeFieldValueToCreateParam) {
+	public Field createFieldValue(
+			Field routeFieldValueToCreateParam,
+			FluidItem fluidItemParam) {
 		if(routeFieldValueToCreateParam != null && this.serviceTicket != null) {
 			routeFieldValueToCreateParam.setServiceTicket(this.serviceTicket);
 		}
 
+		Long fluidItmId = (fluidItemParam == null) ? null : fluidItemParam.getId();
+
 		return new Field(this.putJson(
-				routeFieldValueToCreateParam, Version1.routeFieldCreateValue()));
+				routeFieldValueToCreateParam,
+				Version1.routeFieldCreateValue(fluidItmId)));
 	}
 
 	/**
