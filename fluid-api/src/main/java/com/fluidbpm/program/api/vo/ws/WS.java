@@ -955,6 +955,7 @@ public class WS {
 				//Update...
 				public static final String UPDATE = ("/update");
 				public static final String UPDATE_VALUE = ("/update_value");
+				public static final String CREATE_VALUE = ("/create_value");
 
 				//Read...
 				public static final String READ = ("/get_by_id");
@@ -1020,6 +1021,15 @@ public class WS {
 				 */
 				public static final String routeFieldUpdateValue() {
 					return Version.VERSION_1.concat(ROOT).concat(UPDATE_VALUE);
+				}
+
+				/**
+				 * URL Path for Route Field Value create.
+				 *
+				 * @return {@code v1/route_field/create_value}
+				 */
+				public static final String routeFieldCreateValue() {
+					return Version.VERSION_1.concat(ROOT).concat(CREATE_VALUE);
 				}
 
 				/**

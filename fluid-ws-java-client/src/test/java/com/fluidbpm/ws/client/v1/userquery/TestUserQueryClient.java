@@ -193,6 +193,11 @@ public class TestUserQueryClient extends ABaseTestCase {
 		List<Field> inputs = new ArrayList();
 		inputs.add(new Field("Form Type",
 				new MultiChoice("Form Test", "Form Test Two")));
+		inputs.add(new Field("Age Group",
+				new MultiChoice(
+						"Ten to Twenty",
+						"Thirty to Forty",
+						"Twenty To Thirty")));
 		userQueryToExec.setInputs(inputs);
 
 		int totalThreads = 1;
@@ -246,13 +251,12 @@ public class TestUserQueryClient extends ABaseTestCase {
 			System.out.println("Starting ["+Thread.currentThread().getName()+"]");
 
 			int total = 1;
-			for(int index = 0;index < total;index++)
-			{
+			for(int index = 0;index < total;index++) {
 				FluidItemListing itemListing =
 						userQueryClient.executeUserQuery(
 								this.userQueryToExec,
 								false,
-								1000,0);
+								-1,-1);
 
 				if(itemListing.getListingCount() > 0) {
 					for(FluidItem returnVal :itemListing.getListing()) {

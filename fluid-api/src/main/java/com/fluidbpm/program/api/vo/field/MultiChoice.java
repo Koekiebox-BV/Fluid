@@ -41,381 +41,363 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  */
 public class MultiChoice extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    private List<String> availableMultiChoices;
-    private String availableMultiChoicesCombined;
+	private List<String> availableMultiChoices;
+	private String availableMultiChoicesCombined;
 
-    private List<String> selectedMultiChoices;
-    private String selectedMultiChoicesCombined;
-    
-    /**
-     * The JSON mapping for the {@code MultiChoice} object.
-     */
-    public static class JSONMapping {
-        public static final String AVAILABLE_MULTI_CHOICES = "availableMultiChoices";
-        public static final String SELECTED_MULTI_CHOICES = "selectedMultiChoices";
+	private List<String> selectedMultiChoices;
+	private String selectedMultiChoicesCombined;
 
-        public static final String AVAILABLE_CHOICES = "availableChoices";
-        public static final String SELECTED_CHOICES = "selectedChoices";
+	/**
+	 * The JSON mapping for the {@code MultiChoice} object.
+	 */
+	public static class JSONMapping {
+		public static final String AVAILABLE_MULTI_CHOICES = "availableMultiChoices";
+		public static final String SELECTED_MULTI_CHOICES = "selectedMultiChoices";
 
-        public static final String AVAILABLE_CHOICES_COMBINED = "availableChoicesCombined";
-        public static final String SELECTED_CHOICES_COMBINED = "selectedChoicesCombined";
+		public static final String AVAILABLE_CHOICES = "availableChoices";
+		public static final String SELECTED_CHOICES = "selectedChoices";
 
-        //For Payara mapping of [type] and [value]...
-        public static final String TYPE = "type";
-        public static final String TYPE_STRING = "string";
+		public static final String AVAILABLE_CHOICES_COMBINED = "availableChoicesCombined";
+		public static final String SELECTED_CHOICES_COMBINED = "selectedChoicesCombined";
 
-        public static final String VALUE = "value";
-    }
+		//For Payara mapping of [type] and [value]...
+		public static final String TYPE = "type";
+		public static final String TYPE_STRING = "string";
 
-    /**
-     * Default constructor.
-     */
-    public MultiChoice() {
-        super();
-    }
+		public static final String VALUE = "value";
+	}
 
-    /**
-     * Sets the Selected MultiChoices for when multiple selections are supported.
-     *
-     * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
-     */
-    public MultiChoice(List<String> selectedMultiChoicesParam) {
-        this.selectedMultiChoices = selectedMultiChoicesParam;
-    }
+	/**
+	 * Default constructor.
+	 */
+	public MultiChoice() {
+		super();
+	}
 
-    /**
-     * Sets the Selected and Available MultiChoices for when multiple selections are supported.
-     *
-     * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
-     * @param availableMultiChoicesParam List of Available {@code MultiChoices}s.
-     */
-    public MultiChoice(
-            List<String> selectedMultiChoicesParam,
-            List<String> availableMultiChoicesParam) {
-        this.selectedMultiChoices = selectedMultiChoicesParam;
-        this.availableMultiChoices = availableMultiChoicesParam;
-    }
+	/**
+	 * Sets the Selected MultiChoices for when multiple selections are supported.
+	 *
+	 * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
+	 */
+	public MultiChoice(List<String> selectedMultiChoicesParam) {
+		this.selectedMultiChoices = selectedMultiChoicesParam;
+	}
 
-    /**
-     * Sets the Selected MultiChoices for when multiple selections are supported.
-     *
-     * @param selectedMultiChoiceValueParam Selected {@code MultiChoices} {@code String} value.
-     */
-    public MultiChoice(String selectedMultiChoiceValueParam) {
-        this.selectedMultiChoices = new ArrayList();
-        if(selectedMultiChoiceValueParam != null) {
-            this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
-        }
-    }
+	/**
+	 * Sets the Selected and Available MultiChoices for when multiple selections are supported.
+	 *
+	 * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
+	 * @param availableMultiChoicesParam List of Available {@code MultiChoices}s.
+	 */
+	public MultiChoice(
+			List<String> selectedMultiChoicesParam,
+			List<String> availableMultiChoicesParam) {
+		this.selectedMultiChoices = selectedMultiChoicesParam;
+		this.availableMultiChoices = availableMultiChoicesParam;
+	}
 
-    /**
-     * Sets the Selected MultiChoices for when multiple selections are supported.
-     *
-     * @param selectedMultiChoiceValuesParam Selected {@code MultiChoices} {@code String[]} value.
-     */
-    public MultiChoice(String ... selectedMultiChoiceValuesParam) {
-        this.selectedMultiChoices = new ArrayList();
-        if(selectedMultiChoiceValuesParam != null) {
-            for(String str : selectedMultiChoiceValuesParam) {
-                this.selectedMultiChoices.add(str);
-            }
-        }
-    }
+	/**
+	 * Sets the Selected MultiChoices for when multiple selections are supported.
+	 *
+	 * @param selectedMultiChoiceValueParam Selected {@code MultiChoices} {@code String} value.
+	 */
+	public MultiChoice(String selectedMultiChoiceValueParam) {
+		this.selectedMultiChoices = new ArrayList();
+		if(selectedMultiChoiceValueParam != null) {
+			this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
+		}
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public MultiChoice(JSONObject jsonObjectParam) {
-        super(jsonObjectParam);
+	/**
+	 * Sets the Selected MultiChoices for when multiple selections are supported.
+	 *
+	 * @param selectedMultiChoiceValuesParam Selected {@code MultiChoices} {@code String[]} value.
+	 */
+	public MultiChoice(String ... selectedMultiChoiceValuesParam) {
+		this.selectedMultiChoices = new ArrayList();
+		if(selectedMultiChoiceValuesParam != null) {
+			for(String str : selectedMultiChoiceValuesParam) {
+				this.selectedMultiChoices.add(str);
+			}
+		}
+	}
 
-        if(this.jsonObject == null)
-        {
-            return;
-        }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public MultiChoice(JSONObject jsonObjectParam) {
+		super(jsonObjectParam);
 
-        //Available Multiple Choices...
-        if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_MULTI_CHOICES)) {
+		if(this.jsonObject == null) {
+			return;
+		}
 
-            JSONArray arrayOfString =
-                    this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_MULTI_CHOICES);
+		//Available Multiple Choices...
+		if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_MULTI_CHOICES)) {
 
-            this.availableMultiChoices = new ArrayList();
+			JSONArray arrayOfString =
+					this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_MULTI_CHOICES);
 
-            for(int index = 0;index < arrayOfString.length();index++)
-            {
-                this.availableMultiChoices.add(arrayOfString.getString(index));
-            }
-        }
-        else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES)) {
+			this.availableMultiChoices = new ArrayList();
 
-            JSONArray arrayOfString =
-                    this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_CHOICES);
+			for(int index = 0;index < arrayOfString.length();index++)
+			{
+				this.availableMultiChoices.add(arrayOfString.getString(index));
+			}
+		} else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES)) {
 
-            this.availableMultiChoices = new ArrayList();
+			JSONArray arrayOfString =
+					this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_CHOICES);
 
-            for(int index = 0;index < arrayOfString.length();index++)
-            {
-                this.availableMultiChoices.add(arrayOfString.getString(index));
-            }
-        }
-        else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
+			this.availableMultiChoices = new ArrayList();
 
-            String combinedAvailChoices =
-                    this.jsonObject.getString(JSONMapping.AVAILABLE_CHOICES_COMBINED);
+			for(int index = 0;index < arrayOfString.length();index++)
+			{
+				this.availableMultiChoices.add(arrayOfString.getString(index));
+			}
+		} else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
 
-            if(combinedAvailChoices != null && !combinedAvailChoices.isEmpty())
-            {
-                this.availableMultiChoices = new ArrayList();
+			String combinedAvailChoices =
+					this.jsonObject.getString(JSONMapping.AVAILABLE_CHOICES_COMBINED);
 
-                String[] pipeSplit = combinedAvailChoices.split(UtilGlobal.REG_EX_PIPE);
+			if(combinedAvailChoices != null && !combinedAvailChoices.isEmpty()) {
+				this.availableMultiChoices = new ArrayList();
 
-                if(pipeSplit != null && pipeSplit.length > 0)
-                {
-                    for(int index = 0;index < pipeSplit.length;index++)
-                    {
-                        this.availableMultiChoices.add(pipeSplit[index]);
-                    }
-                }
-            }
-        }
+				String[] pipeSplit = combinedAvailChoices.split(UtilGlobal.REG_EX_PIPE);
 
-        //Avail - Populate combined...
-        if(this.availableMultiChoices != null)
-        {
-            this.availableMultiChoicesCombined =
-                    this.combineStringArrayWith(
-                            this.availableMultiChoices,
-                            UtilGlobal.PIPE);
-        }
+				if(pipeSplit != null && pipeSplit.length > 0) {
+					for(int index = 0;index < pipeSplit.length;index++) {
+						this.availableMultiChoices.add(pipeSplit[index]);
+					}
+				}
+			}
+		}
 
-        //Selected Multiple Choices...
-        if (!this.jsonObject.isNull(JSONMapping.SELECTED_MULTI_CHOICES)) {
+		//Avail - Populate combined...
+		if(this.availableMultiChoices != null) {
+			this.availableMultiChoicesCombined =
+					this.combineStringArrayWith(
+							this.availableMultiChoices,
+							UtilGlobal.PIPE);
+		}
 
-            JSONArray arrayOfString =
-                    this.jsonObject.getJSONArray(JSONMapping.SELECTED_MULTI_CHOICES);
+		//Selected Multiple Choices...
+		if (!this.jsonObject.isNull(JSONMapping.SELECTED_MULTI_CHOICES)) {
 
-            this.selectedMultiChoices = new ArrayList();
+			JSONArray arrayOfString =
+					this.jsonObject.getJSONArray(JSONMapping.SELECTED_MULTI_CHOICES);
 
-            for(int index = 0;index < arrayOfString.length();index++)
-            {
-                this.selectedMultiChoices.add(arrayOfString.getString(index));
-            }
-        }
-        else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES)) {
+			this.selectedMultiChoices = new ArrayList();
 
-            JSONArray arrayOfString =
-                    this.jsonObject.getJSONArray(JSONMapping.SELECTED_CHOICES);
+			for(int index = 0;index < arrayOfString.length();index++)
+			{
+				this.selectedMultiChoices.add(arrayOfString.getString(index));
+			}
+		} else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES)) {
 
-            this.selectedMultiChoices = new ArrayList();
+			JSONArray arrayOfString =
+					this.jsonObject.getJSONArray(JSONMapping.SELECTED_CHOICES);
 
-            for(int index = 0;index < arrayOfString.length();index++)
-            {
-                this.selectedMultiChoices.add(arrayOfString.getString(index));
-            }
-        }
-        else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES_COMBINED)) {
+			this.selectedMultiChoices = new ArrayList();
 
-            String combinedSelectedChoices =
-                    this.jsonObject.getString(JSONMapping.SELECTED_CHOICES_COMBINED);
+			for(int index = 0;index < arrayOfString.length();index++) {
+				this.selectedMultiChoices.add(arrayOfString.getString(index));
+			}
+		} else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES_COMBINED)) {
 
-            if(combinedSelectedChoices != null && !combinedSelectedChoices.isEmpty())
-            {
-                this.selectedMultiChoices = new ArrayList();
+			String combinedSelectedChoices =
+					this.jsonObject.getString(JSONMapping.SELECTED_CHOICES_COMBINED);
 
-                String[] pipeSplit = combinedSelectedChoices.split(UtilGlobal.REG_EX_PIPE);
+			if(combinedSelectedChoices != null && !combinedSelectedChoices.isEmpty()) {
+				this.selectedMultiChoices = new ArrayList();
 
-                if(pipeSplit != null && pipeSplit.length > 0)
-                {
-                    for(int index = 0;index < pipeSplit.length;index++)
-                    {
-                        this.selectedMultiChoices.add(pipeSplit[index]);
-                    }
-                }
-            }
-        }
+				String[] pipeSplit = combinedSelectedChoices.split(UtilGlobal.REG_EX_PIPE);
 
-        //Selected - Populate combined...
-        if(this.selectedMultiChoices != null)
-        {
-            this.selectedMultiChoicesCombined =
-                    this.combineStringArrayWith(
-                            this.selectedMultiChoices,
-                            UtilGlobal.PIPE);
-        }
-    }
+				if(pipeSplit != null && pipeSplit.length > 0) {
+					for(int index = 0;index < pipeSplit.length;index++) {
+						this.selectedMultiChoices.add(pipeSplit[index]);
+					}
+				}
+			}
+		}
 
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code MultiChoice}.
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+		//Selected - Populate combined...
+		if(this.selectedMultiChoices != null) {
+			this.selectedMultiChoicesCombined =
+					this.combineStringArrayWith(
+							this.selectedMultiChoices,
+							UtilGlobal.PIPE);
+		}
+	}
 
-        //Available...
-        if(this.getAvailableMultiChoices() != null)
-        {
-            List<String> availChoices = this.getAvailableMultiChoices();
+	/**
+	 * Conversion to {@code JSONObject} from Java Object.
+	 *
+	 * @return {@code JSONObject} representation of {@code MultiChoice}.
+	 * @throws JSONException If there is a problem with the JSON Body.
+	 *
+	 * @see ABaseFluidJSONObject#toJsonObject()
+	 */
+	@Override
+	public JSONObject toJsonObject() throws JSONException {
+		JSONObject returnVal = super.toJsonObject();
 
-            returnVal.put(JSONMapping.AVAILABLE_MULTI_CHOICES,
-                    new JSONArray(availChoices.toArray()));
+		//Available...
+		if(this.getAvailableMultiChoices() != null) {
+			List<String> availChoices = this.getAvailableMultiChoices();
 
-            returnVal.put(JSONMapping.AVAILABLE_CHOICES,
-                    new JSONArray(availChoices.toArray()));
+			returnVal.put(JSONMapping.AVAILABLE_MULTI_CHOICES,
+					new JSONArray(availChoices.toArray()));
 
-            returnVal.put(
-                    JSONMapping.AVAILABLE_CHOICES_COMBINED,
-                    this.combineStringArrayWith(
-                            availChoices,
-                            UtilGlobal.PIPE));
-        }
+			returnVal.put(JSONMapping.AVAILABLE_CHOICES,
+					new JSONArray(availChoices.toArray()));
 
-        //Selected...
-        if(this.getSelectedMultiChoices() != null)
-        {
-            List<String> selectChoices = this.getSelectedMultiChoices();
+			returnVal.put(
+					JSONMapping.AVAILABLE_CHOICES_COMBINED,
+					this.combineStringArrayWith(
+							availChoices,
+							UtilGlobal.PIPE));
+		}
 
-            returnVal.put(JSONMapping.SELECTED_MULTI_CHOICES,
-                    new JSONArray(selectChoices.toArray()));
+		//Selected...
+		if(this.getSelectedMultiChoices() != null) {
+			List<String> selectChoices = this.getSelectedMultiChoices();
 
-            returnVal.put(JSONMapping.SELECTED_CHOICES,
-                    new JSONArray(selectChoices.toArray()));
+			returnVal.put(JSONMapping.SELECTED_MULTI_CHOICES,
+					new JSONArray(selectChoices.toArray()));
 
-            returnVal.put(
-                    JSONMapping.SELECTED_CHOICES_COMBINED,
-                    this.combineStringArrayWith(
-                            selectChoices,
-                            UtilGlobal.PIPE));
-        }
+			returnVal.put(JSONMapping.SELECTED_CHOICES,
+					new JSONArray(selectChoices.toArray()));
 
-        return returnVal;
-    }
+			returnVal.put(
+					JSONMapping.SELECTED_CHOICES_COMBINED,
+					this.combineStringArrayWith(
+							selectChoices,
+							UtilGlobal.PIPE));
+		}
 
-    /**
-     * Constructs a {@code String} value for the selected MultiChoices.
-     *
-     * @return Comma separated list of Selected MultiChoices.
-     *
-     * @see MultiChoice#getSelectedMultiChoices()
-     */
-    @Override
-    public String toString() {
+		return returnVal;
+	}
 
-        return this.combineStringArrayWith(
-                this.getSelectedMultiChoices(),
-                UtilGlobal.COMMA_SPACE);
-    }
+	/**
+	 * Constructs a {@code String} value for the selected MultiChoices.
+	 *
+	 * @return Comma separated list of Selected MultiChoices.
+	 *
+	 * @see MultiChoice#getSelectedMultiChoices()
+	 */
+	@Override
+	public String toString() {
 
-    /**
-     * Gets Available MultiChoices.
-     *
-     * @return {@code List} of available multi choices.
-     */
-    public List<String> getAvailableMultiChoices() {
-        return this.availableMultiChoices;
-    }
+		return this.combineStringArrayWith(
+				this.getSelectedMultiChoices(),
+				UtilGlobal.COMMA_SPACE);
+	}
 
-    /**
-     * Sets Available MultiChoices.
-     *
-     * @param availableMultiChoices {@code List} of available multi choices.
-     */
-    public void setAvailableMultiChoices(List<String> availableMultiChoices) {
-        this.availableMultiChoices = availableMultiChoices;
-    }
+	/**
+	 * Gets Available MultiChoices.
+	 *
+	 * @return {@code List} of available multi choices.
+	 */
+	public List<String> getAvailableMultiChoices() {
+		return this.availableMultiChoices;
+	}
 
-    /**
-     * Gets Selected MultiChoices.
-     *
-     * @return {@code List} of selected multi choices.
-     */
-    public List<String> getSelectedMultiChoices() {
-        return this.selectedMultiChoices;
-    }
+	/**
+	 * Sets Available MultiChoices.
+	 *
+	 * @param availableMultiChoices {@code List} of available multi choices.
+	 */
+	public void setAvailableMultiChoices(List<String> availableMultiChoices) {
+		this.availableMultiChoices = availableMultiChoices;
+	}
 
-    /**
-     * Sets Selected MultiChoices.
-     *
-     * @param selectedMultiChoices {@code List} of selected multi choices.
-     */
-    public void setSelectedMultiChoices(List<String> selectedMultiChoices) {
-        this.selectedMultiChoices = selectedMultiChoices;
-    }
+	/**
+	 * Gets Selected MultiChoices.
+	 *
+	 * @return {@code List} of selected multi choices.
+	 */
+	public List<String> getSelectedMultiChoices() {
+		return this.selectedMultiChoices;
+	}
 
-    /**
-     * Gets Selected MultiChoices combined Text.
-     *
-     * @return {@code List} of selected multi choices combined.
-     */
-    public String getSelectedMultiChoicesCombined() {
-        return this.selectedMultiChoicesCombined;
-    }
+	/**
+	 * Sets Selected MultiChoices.
+	 *
+	 * @param selectedMultiChoices {@code List} of selected multi choices.
+	 */
+	public void setSelectedMultiChoices(List<String> selectedMultiChoices) {
+		this.selectedMultiChoices = selectedMultiChoices;
+	}
 
-    /**
-     * Sets Selected MultiChoices combined.
-     *
-     * @param selectedMultiChoicesCombinedParam combined text of multi choices.
-     */
-    public void setSelectedMultiChoicesCombined(String selectedMultiChoicesCombinedParam) {
-        this.selectedMultiChoicesCombined = selectedMultiChoicesCombinedParam;
-    }
+	/**
+	 * Gets Selected MultiChoices combined Text.
+	 *
+	 * @return {@code List} of selected multi choices combined.
+	 */
+	public String getSelectedMultiChoicesCombined() {
+		return this.selectedMultiChoicesCombined;
+	}
 
-    /**
-     * Gets Available MultiChoices combined Text.
-     *
-     * @return {@code List} of available multi choices combined.
-     */
-    public String getAvailableMultiChoicesCombined() {
-        return this.availableMultiChoicesCombined;
-    }
+	/**
+	 * Sets Selected MultiChoices combined.
+	 *
+	 * @param selectedMultiChoicesCombinedParam combined text of multi choices.
+	 */
+	public void setSelectedMultiChoicesCombined(String selectedMultiChoicesCombinedParam) {
+		this.selectedMultiChoicesCombined = selectedMultiChoicesCombinedParam;
+	}
 
-    /**
-     * Sets Available MultiChoices combined.
-     *
-     * @param availableMultiChoicesCombinedParam combined text of multi choices.
-     */
-    public void setAvailableMultiChoicesCombined(String availableMultiChoicesCombinedParam) {
-        this.availableMultiChoicesCombined = availableMultiChoicesCombinedParam;
-    }
+	/**
+	 * Gets Available MultiChoices combined Text.
+	 *
+	 * @return {@code List} of available multi choices combined.
+	 */
+	public String getAvailableMultiChoicesCombined() {
+		return this.availableMultiChoicesCombined;
+	}
 
-    /**
-     * Combine {@code listToCombineParam} into a single {@code String}.
-     *
-     * @param listToCombineParam To combine.
-     * @param separatorCharsParam The char used to separate with.
-     *
-     * @return The combined text value.
-     */
-    @XmlTransient
-    public String combineStringArrayWith(
-            List<String> listToCombineParam,
-            String separatorCharsParam) {
-        String returnValue = UtilGlobal.EMPTY;
+	/**
+	 * Sets Available MultiChoices combined.
+	 *
+	 * @param availableMultiChoicesCombinedParam combined text of multi choices.
+	 */
+	public void setAvailableMultiChoicesCombined(String availableMultiChoicesCombinedParam) {
+		this.availableMultiChoicesCombined = availableMultiChoicesCombinedParam;
+	}
 
-        int lengthOfSepChars = (separatorCharsParam == null) ? 0 :
-                separatorCharsParam.length();
+	/**
+	 * Combine {@code listToCombineParam} into a single {@code String}.
+	 *
+	 * @param listToCombineParam To combine.
+	 * @param separatorCharsParam The char used to separate with.
+	 *
+	 * @return The combined text value.
+	 */
+	@XmlTransient
+	public String combineStringArrayWith(
+			List<String> listToCombineParam,
+			String separatorCharsParam) {
+		String returnValue = UtilGlobal.EMPTY;
 
-        if(listToCombineParam != null && !listToCombineParam.isEmpty())
-        {
-            StringBuffer concatBuffer = new StringBuffer();
-            for(String toAdd : listToCombineParam)
-            {
-                concatBuffer.append(toAdd);
-                concatBuffer.append(separatorCharsParam);
-            }
+		int lengthOfSepChars = (separatorCharsParam == null) ? 0 :
+				separatorCharsParam.length();
 
-            String concatString = concatBuffer.toString();
-            returnValue = concatString.substring(0, concatString.length() - lengthOfSepChars);
-        }
+		if(listToCombineParam != null && !listToCombineParam.isEmpty()) {
+			StringBuffer concatBuffer = new StringBuffer();
+			for(String toAdd : listToCombineParam) {
+				concatBuffer.append(toAdd);
+				concatBuffer.append(separatorCharsParam);
+			}
 
-        return returnValue;
-    }
+			String concatString = concatBuffer.toString();
+			returnValue = concatString.substring(0, concatString.length() - lengthOfSepChars);
+		}
+
+		return returnValue;
+	}
 }
