@@ -53,6 +53,23 @@ public class FlowItemClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves the Form Container by Primary key.
+     *
+     * @param formIdParam The Form primary key.
+     * @return Form by Primary key.
+     */
+    public FluidItem getFluidItemByFormId(Long formIdParam) {
+        Form form = new Form(formIdParam);
+
+        if(this.serviceTicket != null) {
+            form.setServiceTicket(this.serviceTicket);
+        }
+
+        return new FluidItem(this.postJson(
+                form, WS.Path.FlowItem.Version1.getByForm()));
+    }
+
+    /**
      * Creates a new Fluid Item that will be sent to the {@code flowJobItemParam}
      * Flow.
      *
@@ -188,9 +205,7 @@ public class FlowItemClient extends ABaseClientWS {
 
             return new FluidItem(this.postJson(
                     itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
-        }
-        //
-        catch (JSONException e) {
+        } catch (JSONException e) {
             throw new FluidClientException(e.getMessage(), e,
                     FluidClientException.ErrorCode.JSON_PARSING);
         }

@@ -34,6 +34,13 @@ import com.fluidbpm.program.api.vo.field.TableField;
  */
 public class UtilGlobal {
 
+	/**
+	 * Raygun API key for error tracking.
+	 */
+	public static final class Raygun {
+		public static String API_KEY = null;
+	}
+
 	public static final String EMPTY = "";
 	public static final String PIPE = "|";
 	public static final String COMMA = ",";

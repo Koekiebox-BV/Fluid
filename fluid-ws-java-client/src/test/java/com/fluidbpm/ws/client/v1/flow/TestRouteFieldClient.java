@@ -20,10 +20,12 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -613,10 +615,8 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_DecimalPlain_CRUD()
-    {
-        if(!this.isConnectionValid())
-        {
+    public void testRouteField_DecimalPlain_CRUD() {
+        if(!this.isConnectionValid()) {
             return;
         }
 
@@ -667,5 +667,32 @@ public class TestRouteFieldClient extends ABaseTestCase {
         //5. Delete...
         Field deletedField = routeFieldClient.deleteField(byIdField);
         TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedField.getId());
+    }
+
+    /**
+     *
+     */
+    @Test
+    @Ignore
+    public void testRouteFieldTextSetVal() {
+        if (!this.isConnectionValid()) {
+            return;
+        }
+
+        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+        TestCase.assertNotNull(appRequestToken);
+
+        String serviceTicket = appRequestToken.getServiceTicket();
+
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
+
+
+        FluidItem fldItm = new FluidItem();
+        fldItm.setId(2L);
+        Field createdField = routeFieldClient.createFieldValue(
+                new Field("Encrypt Display","This is a test.", Field.Type.Text),
+                fldItm);
+
+        System.out.println(createdField);
     }
 }

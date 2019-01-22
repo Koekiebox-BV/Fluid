@@ -268,8 +268,7 @@ public class FormContainerClient extends ABaseClientWS {
     public Form getFormContainerById(Long formContainerIdParam) {
         Form form = new Form(formContainerIdParam);
 
-        if(this.serviceTicket != null)
-        {
+        if(this.serviceTicket != null) {
             form.setServiceTicket(this.serviceTicket);
         }
 
