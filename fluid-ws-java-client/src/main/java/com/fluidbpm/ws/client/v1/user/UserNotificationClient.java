@@ -15,7 +15,9 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,220 +41,288 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class UserNotificationClient extends ABaseClientWS {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public UserNotificationClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public UserNotificationClient(
+			String endpointBaseUrlParam,
+			String serviceTicketParam) {
+		super(endpointBaseUrlParam);
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-    /**
-     * Creates a new {@code UserNotification} for a user.
-     * The user will be notified through the Fluid User Dashboard or 3rd Party application.
-     *
-     * @param userNotificationParam The {@code UserNotification} to create.
-     * @return The Created User Notification.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see UserNotification
-     */
-    public UserNotification createUserNotification(UserNotification userNotificationParam)
-    {
-        if(userNotificationParam != null && this.serviceTicket != null)
-        {
-            userNotificationParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Creates a new {@code UserNotification} for a user.
+	 * The user will be notified through the Fluid User Dashboard or 3rd Party application.
+	 *
+	 * @param userNotificationParam The {@code UserNotification} to create.
+	 * @return The Created User Notification.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see UserNotification
+	 */
+	public UserNotification createUserNotification(UserNotification userNotificationParam)
+	{
+		if(userNotificationParam != null && this.serviceTicket != null)
+		{
+			userNotificationParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new UserNotification(this.putJson(
-                userNotificationParam,
-                WS.Path.UserNotification.Version1.userNotificationCreate()));
-    }
+		return new UserNotification(this.putJson(
+				userNotificationParam,
+				WS.Path.UserNotification.Version1.userNotificationCreate()));
+	}
 
-    /**
-     * Creates a new {@code UserNotification} for a user.
-     * The user will be notified through the Fluid User Dashboard or 3rd Party application.
-     *
-     * @param userNotificationParam The User Notification to update.
-     * @return The Updated UserNotification.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see UserNotification
-     */
-    public UserNotification updateUserNotification(
-            UserNotification userNotificationParam)
-    {
-        if(userNotificationParam != null && this.serviceTicket != null)
-        {
-            userNotificationParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Creates a new {@code UserNotification} for a user.
+	 * The user will be notified through the Fluid User Dashboard or 3rd Party application.
+	 *
+	 * @param userNotificationParam The User Notification to update.
+	 * @return The Updated UserNotification.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see UserNotification
+	 */
+	public UserNotification updateUserNotification(
+			UserNotification userNotificationParam)
+	{
+		if(userNotificationParam != null && this.serviceTicket != null)
+		{
+			userNotificationParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new UserNotification(this.postJson(
-                userNotificationParam,
-                WS.Path.UserNotification.Version1.userNotificationUpdate()));
-    }
+		return new UserNotification(this.postJson(
+				userNotificationParam,
+				WS.Path.UserNotification.Version1.userNotificationUpdate()));
+	}
 
-    /**
-     * Marks the {@code userNotificationParam} notification as read.
-     *
-     * Notification marked as read asynchronously.
-     *
-     * @param userNotificationParam The User Notification to mark as read.
-     *
-     * @return The Updated UserNotification.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see UserNotification
-     */
-    public UserNotification markUserNotificationAsRead(
-            UserNotification userNotificationParam)
-    {
-        return this.markUserNotificationAsRead(userNotificationParam,
-                true);
-    }
-    
-    /**
-     * Marks the {@code userNotificationParam} notification as read.
-     *
-     * @param userNotificationParam The User Notification to mark as read.
-     * @param asyncParam Should the notification mark-as-read asynchronously.
-     *                   
-     * @return The Updated UserNotification.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see UserNotification
-     */
-    public UserNotification markUserNotificationAsRead(
-            UserNotification userNotificationParam,
-            boolean asyncParam)
-    {
-        if(userNotificationParam != null && this.serviceTicket != null)
-        {
-            userNotificationParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Marks the {@code userNotificationParam} notification as read.
+	 *
+	 * Notification marked as read asynchronously.
+	 *
+	 * @param userNotificationParam The User Notification to mark as read.
+	 *
+	 * @return The Updated UserNotification.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see UserNotification
+	 */
+	public UserNotification markUserNotificationAsRead(
+			UserNotification userNotificationParam)
+	{
+		return this.markUserNotificationAsRead(userNotificationParam,
+				true);
+	}
 
-        return new UserNotification(this.postJson(
-                userNotificationParam,
-                WS.Path.UserNotification.Version1.userNotificationMarkAsRead(asyncParam)));
-    }
+	/**
+	 * Marks the {@code userNotificationParam} notification as read.
+	 *
+	 * @param userNotificationParam The User Notification to mark as read.
+	 * @param asyncParam Should the notification mark-as-read asynchronously.
+	 *
+	 * @return The Updated UserNotification.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see UserNotification
+	 */
+	public UserNotification markUserNotificationAsRead(
+			UserNotification userNotificationParam,
+			boolean asyncParam)
+	{
+		if(userNotificationParam != null && this.serviceTicket != null)
+		{
+			userNotificationParam.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Deletes the {@code UserNotification} provided.
-     * Id must be set on the {@code UserNotification}.
-     *
-     * @param userNotificationToDeleteParam The User Notification to Delete.
-     * @return The deleted User Notification.
-     */
-    public UserNotification deleteUserNotification(
-            UserNotification userNotificationToDeleteParam)
-    {
-        if(userNotificationToDeleteParam != null && this.serviceTicket != null)
-        {
-            userNotificationToDeleteParam.setServiceTicket(this.serviceTicket);
-        }
+		return new UserNotification(this.postJson(
+				userNotificationParam,
+				WS.Path.UserNotification.Version1.userNotificationMarkAsRead(asyncParam)));
+	}
 
-        return new UserNotification(this.postJson(userNotificationToDeleteParam,
-                WS.Path.UserNotification.Version1.userNotificationDelete()));
-    }
+	/**
+	 * Deletes the {@code UserNotification} provided.
+	 * Id must be set on the {@code UserNotification}.
+	 *
+	 * @param userNotificationToDeleteParam The User Notification to Delete.
+	 * @return The deleted User Notification.
+	 */
+	public UserNotification deleteUserNotification(
+			UserNotification userNotificationToDeleteParam)
+	{
+		if(userNotificationToDeleteParam != null && this.serviceTicket != null)
+		{
+			userNotificationToDeleteParam.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Deletes the {@code UserNotification} provided.
-     * Id must be set on the {@code UserNotification}.
-     *
-     * @param userNotificationPkParam The Id of the User Notification to fetch.
-     * @return The User Notification by PK.
-     */
-    public UserNotification getUserNotificationById(
-            Long userNotificationPkParam)
-    {
-        UserNotification userNoti = new UserNotification();
-        userNoti.setId(userNotificationPkParam);
+		return new UserNotification(this.postJson(userNotificationToDeleteParam,
+				WS.Path.UserNotification.Version1.userNotificationDelete()));
+	}
 
-        if(this.serviceTicket != null)
-        {
-            userNoti.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Deletes the {@code UserNotification} provided.
+	 * Id must be set on the {@code UserNotification}.
+	 *
+	 * @param userNotificationPkParam The Id of the User Notification to fetch.
+	 * @return The User Notification by PK.
+	 */
+	public UserNotification getUserNotificationById(
+			Long userNotificationPkParam)
+	{
+		UserNotification userNoti = new UserNotification();
+		userNoti.setId(userNotificationPkParam);
 
-        try {
-            return new UserNotification(this.postJson(
-                    userNoti, WS.Path.UserNotification.Version1.getById()));
-        }
-        //Json format issues...
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		if(this.serviceTicket != null)
+		{
+			userNoti.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Retrieves all {@code READ} User Notification items for the logged in user.
-     *
-     * @param queryLimitParam The query limit.
-     * @param offsetParam The query offset.
-     *
-     * @return The User Notification items for the logged in {@code User}.
-     */
-    public List<UserNotification> getAllReadByLoggedInUser(
-            int queryLimitParam,
-            int offsetParam)
-    {
-        User loggedInUser = new User();
+		try {
+			return new UserNotification(this.postJson(
+					userNoti, WS.Path.UserNotification.Version1.getById()));
+		}
+		//Json format issues...
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        if(this.serviceTicket != null)
-        {
-            loggedInUser.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Retrieves all {@code READ} User Notification items for the logged in user.
+	 *
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The query offset.
+	 *
+	 * @return The User Notification items for the logged in {@code User}.
+	 */
+	public List<UserNotification> getAllReadByLoggedInUser(
+			int queryLimitParam,
+			int offsetParam
+	) {
+		User loggedInUser = new User();
 
-        try {
-            return new UserNotificationListing(this.postJson(
-                    loggedInUser,
-                    WS.Path.UserNotification.Version1.getAllReadByUser(
-                            queryLimitParam,
-                            offsetParam))).getListing();
-        }
-        //rethrow as a Fluid Client exception.
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		if(this.serviceTicket != null)
+		{
+			loggedInUser.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Retrieves all {@code UNREAD} User Notification items for the logged in user.
-     *
-     * @param queryLimitParam The query limit.
-     * @param offsetParam The query offset.
-     *
-     * @return The User Notification items for the logged in {@code User}.
-     */
-    public List<UserNotification> getAllUnReadByLoggedInUser(
-            int queryLimitParam,
-            int offsetParam) {
-        
-        User loggedInUser = new User();
+		try {
+			return new UserNotificationListing(this.postJson(
+					loggedInUser,
+					WS.Path.UserNotification.Version1.getAllReadByUser(
+							queryLimitParam,
+							offsetParam))).getListing();
+		} catch (JSONException jsonExcept) {
+			//rethrow as a Fluid Client exception.
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        if(this.serviceTicket != null)
-        {
-            loggedInUser.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Retrieves all {@code UNREAD} User Notification items for the logged in user.
+	 *
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The query offset.
+	 *
+	 * @return The User Notification items for the logged in {@code User}.
+	 */
+	public List<UserNotification> getAllUnReadByLoggedInUser(
+			int queryLimitParam,
+			int offsetParam
+	) {
+		User loggedInUser = new User();
 
-        try {
-            return new UserNotificationListing(this.postJson(
-                    loggedInUser,
-                    WS.Path.UserNotification.Version1.getAllUnReadByUser(
-                            queryLimitParam, offsetParam
-                    ))).getListing();
-        }
-        //rethrow as a Fluid Client exception.
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		if(this.serviceTicket != null) {
+			loggedInUser.setServiceTicket(this.serviceTicket);
+		}
+
+		try {
+			return new UserNotificationListing(this.postJson(
+					loggedInUser,
+					WS.Path.UserNotification.Version1.getAllUnReadByUser(
+							queryLimitParam, offsetParam
+					))).getListing();
+		} catch (JSONException jsonExcept) {
+			//rethrow as a Fluid Client exception.
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
+
+	/**
+	 * Retrieves all User Notification items for user {@code userParam}
+	 * between date {@code fromDateParam} and {@code toDateParam}.
+	 *
+	 * @param userParam The user to retrieve notifications for.
+	 * @param fromDateParam The notification from date.
+	 * @param toDateParam The notification to date.
+	 *
+	 * @return The User Notification items for the logged in {@code User}.
+	 */
+	public List<UserNotification> getAllByUserAndDateBetween(
+			User userParam,
+			Date fromDateParam,
+			Date toDateParam
+	) {
+		return this.getAllByUserAndDateBetween(
+				userParam,
+				-1,
+				-1,
+				fromDateParam,
+				toDateParam
+		);
+	}
+
+	/**
+	 * Retrieves all User Notification items for user {@code userParam}
+	 * between date {@code fromDateParam} and {@code toDateParam}.
+	 *
+	 * @param userParam The user to retrieve notifications for.
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The query offset.
+	 * @param fromDateParam The notification from date.
+	 * @param toDateParam The notification to date.
+	 *
+	 * @return The User Notification items for the logged in {@code User}.
+	 */
+	public List<UserNotification> getAllByUserAndDateBetween(
+			User userParam,
+			int queryLimitParam,
+			int offsetParam,
+			Date fromDateParam,
+			Date toDateParam
+	) {
+		if(this.serviceTicket != null && userParam != null) {
+			userParam.setServiceTicket(this.serviceTicket);
+		}
+
+		long fromDate =
+				(fromDateParam == null) ?
+						System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7)
+						: fromDateParam.getTime();
+		long toDate =
+				(toDateParam == null) ?
+						System.currentTimeMillis() : toDateParam.getTime();
+
+		try {
+			return new UserNotificationListing(this.postJson(
+					userParam,
+					WS.Path.UserNotification.Version1.getAllByUserAndDate(
+							queryLimitParam,
+							offsetParam,
+							fromDate,
+							toDate
+					))).getListing();
+		} catch (JSONException jsonExcept) {
+			//rethrow as a Fluid Client exception.
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 }

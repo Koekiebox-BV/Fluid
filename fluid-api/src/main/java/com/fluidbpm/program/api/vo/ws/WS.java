@@ -2572,6 +2572,7 @@ public class WS {
 
 				public static final String READ_ALL_BY_USER_AND_UNREAD = ("/get_by_user_and_unread");
 				public static final String READ_ALL_BY_USER_AND_READ = ("/get_by_user_and_read");
+				public static final String READ_ALL_BY_USER_AND_DATE = ("/get_by_user_and_date");
 
 				/**
 				 * Mapping for frequently used HTTP parameters.
@@ -2579,6 +2580,8 @@ public class WS {
 				public static final class QueryParam {
 					public static final String QUERY_LIMIT = "query_limit";
 					public static final String OFFSET = "offset";
+					public static final String DATE_FROM = "date_from";
+					public static final String DATE_TO = "date_to";
 				}
 
 				/**
@@ -2708,6 +2711,56 @@ public class WS {
 						additionString += offsetParam;
 						additionString += "&";
 					}
+
+					//Cut of the end bit...
+					additionString = additionString.substring(0, additionString.length() - 1);
+
+					return base.concat(additionString);
+				}
+
+				/**
+				 * URL Path for Read User Notifications by User and Date.
+				 *
+				 * @param queryLimitParam The query limit.
+				 * @param offsetParam The query offset.
+				 * @param dateFromParam The from date in millis.
+				 * @param dateToParam The to date in millis.
+				 *
+				 * @return {@code v1/user_notification/get_by_user_and_date}
+				 */
+				public static final String getAllByUserAndDate(
+						int queryLimitParam,
+						int offsetParam,
+						long dateFromParam,
+						long dateToParam) {
+
+					String base = Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_USER_AND_DATE);
+
+					String additionString = "?";
+
+					if (queryLimitParam > 0) {
+						additionString += QueryParam.QUERY_LIMIT;
+						additionString += "=";
+						additionString += queryLimitParam;
+						additionString += "&";
+					}
+
+					if (offsetParam > -1) {
+						additionString += QueryParam.OFFSET;
+						additionString += "=";
+						additionString += offsetParam;
+						additionString += "&";
+					}
+
+					additionString += QueryParam.DATE_FROM;
+					additionString += "=";
+					additionString += dateFromParam;
+					additionString += "&";
+
+					additionString += QueryParam.DATE_TO;
+					additionString += "=";
+					additionString += dateToParam;
+					additionString += "&";
 
 					//Cut of the end bit...
 					additionString = additionString.substring(0, additionString.length() - 1);
