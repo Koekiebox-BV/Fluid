@@ -45,207 +45,194 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetDescendantsClient extends
-        ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
+		ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
-    private boolean massFetch;
+	private boolean massFetch;
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     * @param includeFieldDataParam Should Form Field data be included.
-     * @param includeTableFieldsParam Should Table Fields be included.
-     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
-     * @param massFetchParam Is the fetch a large fetch.
-     * @param compressResponseParam Compress the Descendants result in Base-64.
-     * @param compressResponseCharsetParam Compress response using provided charset.
-     */
-    public SQLUtilWebSocketGetDescendantsClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam,
-            boolean includeFieldDataParam,
-            boolean includeTableFieldsParam,
-            boolean includeTableFieldFormRecordInfoParam,
-            boolean massFetchParam,
-            boolean compressResponseParam,
-            String compressResponseCharsetParam) {
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
-                        includeFieldDataParam,
-                        includeTableFieldsParam,
-                        includeTableFieldFormRecordInfoParam,
-                        massFetchParam,
-                        serviceTicketAsHexParam,
-                        compressResponseParam,
-                        compressResponseCharsetParam),
-                compressResponseParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param includeFieldDataParam Should Form Field data be included.
+	 * @param includeTableFieldsParam Should Table Fields be included.
+	 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+	 * @param massFetchParam Is the fetch a large fetch.
+	 * @param compressResponseParam Compress the Descendants result in Base-64.
+	 * @param compressResponseCharsetParam Compress response using provided charset.
+	 */
+	public SQLUtilWebSocketGetDescendantsClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam,
+			boolean includeFieldDataParam,
+			boolean includeTableFieldsParam,
+			boolean includeTableFieldFormRecordInfoParam,
+			boolean massFetchParam,
+			boolean compressResponseParam,
+			String compressResponseCharsetParam) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
+						includeFieldDataParam,
+						includeTableFieldsParam,
+						includeTableFieldFormRecordInfoParam,
+						massFetchParam,
+						serviceTicketAsHexParam,
+						compressResponseParam,
+						compressResponseCharsetParam),
+				compressResponseParam);
 
-        this.setServiceTicket(serviceTicketAsHexParam);
-        this.massFetch = massFetchParam;
-    }
+		this.setServiceTicket(serviceTicketAsHexParam);
+		this.massFetch = massFetchParam;
+	}
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     * @param includeFieldDataParam Should Form Field data be included.
-     * @param includeTableFieldsParam Should Table Fields be included.
-     * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
-     * @param massFetchParam Is the fetch a large fetch.
-     */
-    public SQLUtilWebSocketGetDescendantsClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam,
-            boolean includeFieldDataParam,
-            boolean includeTableFieldsParam,
-            boolean includeTableFieldFormRecordInfoParam,
-            boolean massFetchParam) {
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
-                        includeFieldDataParam,
-                        includeTableFieldsParam,
-                        includeTableFieldFormRecordInfoParam,
-                        massFetchParam,
-                        serviceTicketAsHexParam,
-                        false,
-                        UtilGlobal.EMPTY));
-        
-        this.setServiceTicket(serviceTicketAsHexParam);
-        this.massFetch = massFetchParam;
-    }
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param includeFieldDataParam Should Form Field data be included.
+	 * @param includeTableFieldsParam Should Table Fields be included.
+	 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+	 * @param massFetchParam Is the fetch a large fetch.
+	 */
+	public SQLUtilWebSocketGetDescendantsClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam,
+			boolean includeFieldDataParam,
+			boolean includeTableFieldsParam,
+			boolean includeTableFieldFormRecordInfoParam,
+			boolean massFetchParam) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getDescendantsWebSocket(
+						includeFieldDataParam,
+						includeTableFieldsParam,
+						includeTableFieldFormRecordInfoParam,
+						massFetchParam,
+						serviceTicketAsHexParam,
+						false,
+						UtilGlobal.EMPTY));
 
-    /**
-     * Retrieves all the Descendants (Forms) for the {@code formToGetTableFormsForParam}.
-     *
-     * @param formToGetDescendantsForParam The Fluid Form to get Descendants for.
-     *
-     * @return The {@code formToGetDescendantsForParam} Descendants as {@code Form}'s.
-     */
-    public List<FormListing> getDescendantsSynchronized(
-            Form ... formToGetDescendantsForParam) {
+		this.setServiceTicket(serviceTicketAsHexParam);
+		this.massFetch = massFetchParam;
+	}
 
-        if(formToGetDescendantsForParam == null ||
-                formToGetDescendantsForParam.length == 0) {
-            return null;
-        }
+	/**
+	 * Retrieves all the Descendants (Forms) for the {@code formToGetTableFormsForParam}.
+	 *
+	 * @param formToGetDescendantsForParam The Fluid Form to get Descendants for.
+	 *
+	 * @return The {@code formToGetDescendantsForParam} Descendants as {@code Form}'s.
+	 */
+	public List<FormListing> getDescendantsSynchronized(
+			Form ... formToGetDescendantsForParam) {
 
-        //Start a new request...
-        String uniqueReqId = this.initNewRequest();
-        
-        //Mass data fetch...
-        if(this.massFetch) {
-            FormListing listingToSend = new FormListing();
-            List<Form> listOfValidForms = new ArrayList();
-            for(Form formToSend : formToGetDescendantsForParam)
-            {
-                if(formToSend == null)
-                {
-                    throw new FluidClientException(
-                            "Cannot provide 'null' for Form.",
-                            FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-                }
+		if(formToGetDescendantsForParam == null ||
+				formToGetDescendantsForParam.length == 0) {
+			return null;
+		}
 
-                listOfValidForms.add(new Form(formToSend.getId()));
-            }
+		//Start a new request...
+		String uniqueReqId = this.initNewRequest();
 
-            listingToSend.setEcho(UUID.randomUUID().toString());
-            listingToSend.setListing(listOfValidForms);
+		//Mass data fetch...
+		if(this.massFetch) {
+			FormListing listingToSend = new FormListing();
+			List<Form> listOfValidForms = new ArrayList();
+			for(Form formToSend : formToGetDescendantsForParam) {
+				if(formToSend == null) {
+					throw new FluidClientException(
+							"Cannot provide 'null' for Form.",
+							FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+				}
 
-            //Send the actual message...
-            this.sendMessage(listingToSend, uniqueReqId);
-        }
-        //Single...
-        else {
-            //Send all the messages...
-            for(Form formToSend : formToGetDescendantsForParam)
-            {
-                this.setEchoIfNotSet(formToSend);
+				listOfValidForms.add(new Form(formToSend.getId()));
+			}
 
-                //Send the actual message...
-                this.sendMessage(formToSend, uniqueReqId);
-            }
-        }
+			listingToSend.setEcho(UUID.randomUUID().toString());
+			listingToSend.setListing(listOfValidForms);
 
-        try {
-            List<FormListing> returnValue =
-                    this.getHandler(uniqueReqId).getCF().get(
-                            this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
+			//Send the actual message...
+			this.sendMessage(listingToSend, uniqueReqId);
+		} else {
+			//Single...
+			//Send all the messages...
+			for(Form formToSend : formToGetDescendantsForParam) {
+				this.setEchoIfNotSet(formToSend);
 
-            //Connection was closed.. this is a problem....
-            if(this.getHandler(uniqueReqId).isConnectionClosed())
-            {
-                throw new FluidClientException(
-                        "SQLUtil-WebSocket-GetDescendants: " +
-                                "The connection was closed by the server prior to the response received.",
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
+				//Send the actual message...
+				this.sendMessage(formToSend, uniqueReqId);
+			}
+		}
 
-            return returnValue;
-        }
-        //Interrupted...
-        catch (InterruptedException exceptParam) {
+		try {
+			List<FormListing> returnValue =
+					this.getHandler(uniqueReqId).getCF().get(
+							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
-            throw new FluidClientException(
-                    "SQLUtil-WebSocket-Interrupted-GetDescendants: " +
-                            exceptParam.getMessage(),
-                    exceptParam,
-                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-        }
-        //Error on the web-socket...
-        catch (ExecutionException executeProblem) {
+			//Connection was closed.. this is a problem....
+			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+				throw new FluidClientException(
+						"SQLUtil-WebSocket-GetDescendants: " +
+								"The connection was closed by the server prior to the response received.",
+						FluidClientException.ErrorCode.IO_ERROR);
+			}
 
-            Throwable cause = executeProblem.getCause();
+			return returnValue;
+		} catch (InterruptedException exceptParam) {
+			//Interrupted...
 
-            //Fluid client exception...
-            if(cause instanceof FluidClientException)
-            {
-                throw (FluidClientException)cause;
-            }
-            else
-            {
-                throw new FluidClientException(
-                        "SQLUtil-WebSocket-GetDescendants: " +
-                                cause.getMessage(), cause,
-                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-            }
-        }
-        //Timeout...
-        catch (TimeoutException eParam) {
+			throw new FluidClientException(
+					"SQLUtil-WebSocket-Interrupted-GetDescendants: " +
+							exceptParam.getMessage(),
+					exceptParam,
+					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+		} catch (ExecutionException executeProblem) {
+			//Error on the web-socket...
 
-            throw new FluidClientException(
-                    "SQLUtil-WebSocket-GetDescendants: Timeout while waiting for all return data. There were '"
-                            +this.getHandler(uniqueReqId).getReturnValue().size()
-                            +"' items after a Timeout of "+(
-                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                    ,FluidClientException.ErrorCode.IO_ERROR);
-        }
-        finally {
-            this.removeHandler(uniqueReqId);
-        }
-    }
+			Throwable cause = executeProblem.getCause();
 
-    /**
-     * Create a new instance of the handler class for {@code this} client.
-     *
-     * @return new instance of {@code GenericFormListingMessageHandler}
-     */
-    @Override
-    public GenericFormListingMessageHandler getNewHandlerInstance() {
-        return new GenericFormListingMessageHandler(
-                this.messageReceivedCallback, this.compressResponse);
-    }
+			//Fluid client exception...
+			if(cause instanceof FluidClientException) {
+				throw (FluidClientException)cause;
+			} else {
+				throw new FluidClientException(
+						"SQLUtil-WebSocket-GetDescendants: " +
+								cause.getMessage(), cause,
+						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+			}
+		} catch (TimeoutException eParam) {
+			//Timeout...
+			throw new FluidClientException(
+					"SQLUtil-WebSocket-GetDescendants: Timeout while waiting for all return data. There were '"
+							+this.getHandler(uniqueReqId).getReturnValue().size()
+							+"' items after a Timeout of "+(
+							TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
+					,FluidClientException.ErrorCode.IO_ERROR);
+		} finally {
+			this.removeHandler(uniqueReqId);
+		}
+	}
+
+	/**
+	 * Create a new instance of the handler class for {@code this} client.
+	 *
+	 * @return new instance of {@code GenericFormListingMessageHandler}
+	 */
+	@Override
+	public GenericFormListingMessageHandler getNewHandlerInstance() {
+		return new GenericFormListingMessageHandler(
+				this.messageReceivedCallback, this.compressResponse);
+	}
 }
