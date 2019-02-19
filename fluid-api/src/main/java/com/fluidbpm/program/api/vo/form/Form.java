@@ -1911,7 +1911,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		System.out.println("\n\n*** PRINTING FORM FIELDS ***");
 		if(this.getFormFields() != null) {
 			for(Field formField : this.getFormFields()) {
-				System.out.println("Field Exists: '"+formField.getFieldName()+"' with value: "+
+				System.out.println("Field : '"+formField.getFieldName()+"' with value: "+
 						formField.getFieldValue());
 			}
 		}

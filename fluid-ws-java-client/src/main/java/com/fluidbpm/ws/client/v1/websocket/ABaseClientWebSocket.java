@@ -19,14 +19,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.websocket.DeploymentException;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 
@@ -40,375 +43,416 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseHandler> extends ABaseClientWS {
 
-    protected String webSocketEndpointUrl;
+	protected String webSocketEndpointUrl;
 
-    private WebSocketClient webSocketClient;
-    private long timeoutInMillis;
-    private Map<String,RespHandler> messageHandler = new Hashtable<>();
+	private WebSocketClient webSocketClient;
+	private long timeoutInMillis;
+	private Map<String,RespHandler> messageHandler = new Hashtable<>();
 
-    protected IMessageReceivedCallback messageReceivedCallback;
-    protected boolean compressResponse;
+	protected IMessageReceivedCallback messageReceivedCallback;
+	protected boolean compressResponse;
 
-    /**
-     * The constant variables used.
-     */
-    public static class Constant
-    {
-        public static final String HTTP = "http";
-        public static final String HTTPS = "https";
+	/**
+	 * The constant variables used.
+	 */
+	public static class Constant
+	{
+		public static final String HTTP = "http";
+		public static final String HTTPS = "https";
 
-        public static final String WS = "ws";
-        public static final String WSS = "wss";
+		public static final String WS = "ws";
+		public static final String WSS = "wss";
 
-        public static final String SCHEME_SEP = "://";
-        public static final String COLON = ":";
-    }
+		public static final String SCHEME_SEP = "://";
+		public static final String COLON = ":";
+	}
 
-    /**
-     * Default constructor.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Optional callback object (observer).
-     * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
-     * @param postFixForUrlParam The URL Postfix.
-     * @param compressResponseParam Expect the response to be compressed.
-     */
-    public ABaseClientWebSocket(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback messageReceivedCallbackParam,
-            long timeoutInMillisParam,
-            String postFixForUrlParam,
-            boolean compressResponseParam) {
+	/**
+	 * Default constructor.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Optional callback object (observer).
+	 * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
+	 * @param postFixForUrlParam The URL Postfix.
+	 * @param compressResponseParam Expect the response to be compressed.
+	 */
+	public ABaseClientWebSocket(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback messageReceivedCallbackParam,
+			long timeoutInMillisParam,
+			String postFixForUrlParam,
+			boolean compressResponseParam) {
 
-        this(endpointBaseUrlParam, messageReceivedCallbackParam, timeoutInMillisParam, postFixForUrlParam);
-        this.compressResponse = compressResponseParam;
-    }
+		this(endpointBaseUrlParam, messageReceivedCallbackParam, timeoutInMillisParam, postFixForUrlParam);
+		this.compressResponse = compressResponseParam;
+	}
 
-    /**
-     * Default constructor.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Optional callback object (observer).
-     * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
-     * @param postFixForUrlParam The URL Postfix.
-     */
-    public ABaseClientWebSocket(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback messageReceivedCallbackParam,
-            long timeoutInMillisParam,
-            String postFixForUrlParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Default constructor.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Optional callback object (observer).
+	 * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
+	 * @param postFixForUrlParam The URL Postfix.
+	 */
+	public ABaseClientWebSocket(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback messageReceivedCallbackParam,
+			long timeoutInMillisParam,
+			String postFixForUrlParam) {
+		super(endpointBaseUrlParam);
 
-        this.timeoutInMillis = timeoutInMillisParam;
-        this.messageReceivedCallback = messageReceivedCallbackParam;
+		this.timeoutInMillis = timeoutInMillisParam;
+		this.messageReceivedCallback = messageReceivedCallbackParam;
 
-        if(this.webSocketEndpointUrl == null && this.endpointUrl != null)
-        {
-            this.webSocketEndpointUrl =
-                    this.getWebSocketBaseURIFrom(this.endpointUrl);
-        }
+		if(this.webSocketEndpointUrl == null && this.endpointUrl != null)
+		{
+			this.webSocketEndpointUrl =
+					this.getWebSocketBaseURIFrom(this.endpointUrl);
+		}
 
-        //Confirm Web Socket Endpoint is set.
-        if(this.webSocketEndpointUrl == null ||
-                this.webSocketEndpointUrl.trim().isEmpty())
-        {
-            throw new FluidClientException(
-                    "Base Web Socket Endpoint URL not set.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
+		//Confirm Web Socket Endpoint is set.
+		if(this.webSocketEndpointUrl == null ||
+				this.webSocketEndpointUrl.trim().isEmpty())
+		{
+			throw new FluidClientException(
+					"Base Web Socket Endpoint URL not set.",
+					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+		}
 
-        //Issue #23... Don't do double //...
-        String completeUrl = null;
-        if(this.webSocketEndpointUrl.endsWith(UtilGlobal.FORWARD_SLASH) &&
-                postFixForUrlParam.startsWith(UtilGlobal.FORWARD_SLASH))
-        {
-            completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam.substring(1));
-        }
-        else
-        {
-            completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam);
-        }
+		//Issue #23... Don't do double //...
+		String completeUrl = null;
+		if(this.webSocketEndpointUrl.endsWith(UtilGlobal.FORWARD_SLASH) &&
+				postFixForUrlParam.startsWith(UtilGlobal.FORWARD_SLASH))
+		{
+			completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam.substring(1));
+		}
+		else
+		{
+			completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam);
+		}
 
-        try {
-            this.webSocketClient = new WebSocketClient(
-                    new URI(completeUrl), this.messageHandler);
-        }
-        //Deploy...
-        catch (DeploymentException e) {
+		try {
+			this.webSocketClient = new WebSocketClient(
+					new URI(completeUrl), this.messageHandler);
+		}
+		//Deploy...
+		catch (DeploymentException e) {
 
-            throw new FluidClientException(
-                    "Unable to create Web Socket client (Deployment). URL ["+ completeUrl+"]: "
-                            +e.getMessage(),
-                    e, FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR);
-        }
-        //I/O...
-        catch (IOException e) {
+			throw new FluidClientException(
+					"Unable to create Web Socket client (Deployment). URL ["+ completeUrl+"]: "
+							+e.getMessage(),
+					e, FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR);
+		}
+		//I/O...
+		catch (IOException e) {
 
-            throw new FluidClientException(
-                    "Unable to create Web Socket client (I/O). URL ["+ completeUrl+"]:"+e.getMessage(),
-                    e, FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
-        }
-        //URI Syntax...
-        catch (URISyntaxException e) {
+			throw new FluidClientException(
+					"Unable to create Web Socket client (I/O). URL ["+ completeUrl+"]:"+e.getMessage(),
+					e, FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
+		}
+		//URI Syntax...
+		catch (URISyntaxException e) {
 
-            throw new FluidClientException(
-                    "Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
-                    e, FluidClientException.ErrorCode.WEB_SOCKET_URI_SYNTAX_ERROR);
-        }
-    }
+			throw new FluidClientException(
+					"Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
+					e, FluidClientException.ErrorCode.WEB_SOCKET_URI_SYNTAX_ERROR);
+		}
+	}
 
-    /**
-     * Send the {@code baseFluidJSONObjectParam} via Web Socket.
-     *
-     * @param baseFluidJSONObjectParam The JSONObject to send.
-     * @param requestIdParam The unique request id.
-     *
-     * @see org.json.JSONObject
-     */
-    public void sendMessage(
-            ABaseFluidJSONObject baseFluidJSONObjectParam,
-            String requestIdParam)
-    {
-        if(baseFluidJSONObjectParam != null)
-        {
-            baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
+	/**
+	 * Send the {@code baseFluidJSONObjectParam} via Web Socket.
+	 *
+	 * @param baseFluidJSONObjectParam The JSONObject to send.
+	 * @param requestIdParam The unique request id.
+	 *
+	 * @see org.json.JSONObject
+	 */
+	public void sendMessage(
+			ABaseFluidJSONObject baseFluidJSONObjectParam,
+			String requestIdParam)
+	{
+		if(baseFluidJSONObjectParam != null) {
+			baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
-            //Add the echo to the listing if [GenericListMessageHandler].
-            if(this.getHandler(requestIdParam) instanceof AGenericListMessageHandler)
-            {
-                AGenericListMessageHandler listHandler =
-                        (AGenericListMessageHandler)this.getHandler(requestIdParam);
-                listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
-            }
-        }
+			//Add the echo to the listing if [GenericListMessageHandler].
+			if(this.getHandler(requestIdParam) instanceof AGenericListMessageHandler) {
+				AGenericListMessageHandler listHandler =
+						(AGenericListMessageHandler)this.getHandler(requestIdParam);
+				listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
+			}
+		}
 
-        this.webSocketClient.sendMessage(baseFluidJSONObjectParam);
-    }
+		this.webSocketClient.sendMessage(baseFluidJSONObjectParam);
+	}
 
-    /**
-     * If the HTTP Client is set, this will
-     * close and clean any connections that needs to be closed.
-     *
-     * @since v1.1
-     */
-    @Override
-    public void closeAndClean()
-    {
-        CloseConnectionRunnable closeConnectionRunnable =
-                new CloseConnectionRunnable(this);
+	/**
+	 * If the HTTP Client is set, this will
+	 * close and clean any connections that needs to be closed.
+	 *
+	 * @since v1.1
+	 */
+	@Override
+	public void closeAndClean()
+	{
+		CloseConnectionRunnable closeConnectionRunnable =
+				new CloseConnectionRunnable(this);
 
-        Thread closeConnThread = new Thread(
-                closeConnectionRunnable,"Close ABaseClientWebSocket Connection");
-        closeConnThread.start();
-    }
+		Thread closeConnThread = new Thread(
+				closeConnectionRunnable,"Close ABaseClientWebSocket Connection");
+		closeConnThread.start();
+	}
 
-    /**
-     * Close the SQL and ElasticSearch Connection, but not in
-     * a separate {@code Thread}.
-     */
-    protected void closeConnectionNonThreaded()
-    {
-        if(this.webSocketClient == null)
-        {
-            return;
-        }
+	/**
+	 * Close the SQL and ElasticSearch Connection, but not in
+	 * a separate {@code Thread}.
+	 */
+	protected void closeConnectionNonThreaded()
+	{
+		if(this.webSocketClient == null)
+		{
+			return;
+		}
 
-        this.webSocketClient.closeSession();
-        
-        super.closeConnectionNonThreaded();
-    }
+		this.webSocketClient.closeSession();
 
-    /**
-     * Initiate a new request process.
-     *
-     * Synchronized.
-     *
-     * @return A randomly generated identifier for the request.
-     */
-    public synchronized String initNewRequest(){
+		super.closeConnectionNonThreaded();
+	}
 
-        String returnVal = UUID.randomUUID().toString();
-        
-        this.messageHandler.put(returnVal, this.getNewHandlerInstance());
+	/**
+	 * Initiate a new request process.
+	 *
+	 * Synchronized.
+	 *
+	 * @return A randomly generated identifier for the request.
+	 */
+	public synchronized String initNewRequest(){
 
-        return returnVal;
-    }
+		String returnVal = UUID.randomUUID().toString();
+		this.messageHandler.put(returnVal, this.getNewHandlerInstance());
 
-    /**
-     * Create a new instance of the handler class for {@code this} client.
-     *
-     * @return new instance of the handler for response messages.
-     */
-    public abstract RespHandler getNewHandlerInstance();
+		return returnVal;
+	}
 
-    /**
-     * Returns the {@code ThreadLocal} instance of MessageHandler.
-     *
-     * @param requestUniqueIdParam The unique request id.
-     *
-     * @see ThreadLocal
-     *
-     * @return The message handler.
-     */
-    protected RespHandler getHandler(String requestUniqueIdParam) {
-        return this.messageHandler.get(requestUniqueIdParam);
-    }
+	/**
+	 * Create a new instance of the handler class for {@code this} client.
+	 *
+	 * @return new instance of the handler for response messages.
+	 */
+	public abstract RespHandler getNewHandlerInstance();
 
-    /**
-     * Remove the handler with identifier {@code requestUniqueIdParam}.
-     * @param requestUniqueIdParam The unique request id.
-     */
-    protected void removeHandler(String requestUniqueIdParam){
-        this.messageHandler.remove(requestUniqueIdParam);
-    }
+	/**
+	 * Returns the {@code ThreadLocal} instance of MessageHandler.
+	 *
+	 * @param requestUniqueIdParam The unique request id.
+	 *
+	 * @see ThreadLocal
+	 *
+	 * @return The message handler.
+	 */
+	protected RespHandler getHandler(String requestUniqueIdParam) {
+		return this.messageHandler.get(requestUniqueIdParam);
+	}
 
-    /**
-     * Retrieves the Web Service URL from {@code webServiceURLParam}.
-     *
-     * @param webServiceURLParam The Web Service URL to convert.
-     * @return The Web Socket URL version of {@code webServiceURLParam}.
-     */
-    private String getWebSocketBaseURIFrom(String webServiceURLParam)
-    {
-        if(webServiceURLParam == null)
-        {
-            return null;
-        }
+	/**
+	 * Remove the handler with identifier {@code requestUniqueIdParam}.
+	 * @param requestUniqueIdParam The unique request id.
+	 */
+	protected void removeHandler(String requestUniqueIdParam){
+		this.messageHandler.remove(requestUniqueIdParam);
+	}
 
-        if(webServiceURLParam.trim().length() == 0)
-        {
-            return UtilGlobal.EMPTY;
-        }
+	/**
+	 * Retrieves the Web Service URL from {@code webServiceURLParam}.
+	 *
+	 * @param webServiceURLParam The Web Service URL to convert.
+	 * @return The Web Socket URL version of {@code webServiceURLParam}.
+	 */
+	private String getWebSocketBaseURIFrom(String webServiceURLParam)
+	{
+		if(webServiceURLParam == null)
+		{
+			return null;
+		}
 
-        URI uri = URI.create(webServiceURLParam);
-        StringBuilder returnBuffer = new StringBuilder();
+		if(webServiceURLParam.trim().length() == 0)
+		{
+			return UtilGlobal.EMPTY;
+		}
 
-        String scheme = uri.getScheme();
+		URI uri = URI.create(webServiceURLParam);
+		StringBuilder returnBuffer = new StringBuilder();
 
-        if(scheme == null)
-        {
-            throw new FluidClientException(
-                    "Unable to get scheme from '"+webServiceURLParam+"' URL.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
+		String scheme = uri.getScheme();
 
-        scheme = scheme.trim().toLowerCase();
+		if(scheme == null)
+		{
+			throw new FluidClientException(
+					"Unable to get scheme from '"+webServiceURLParam+"' URL.",
+					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+		}
 
-        //https://localhost:8443/fluid-ws/
-        //Scheme...
-        if(Constant.HTTP.equals(scheme)) {
+		scheme = scheme.trim().toLowerCase();
 
-            returnBuffer.append(Constant.WS);
-        }
-        else if(Constant.HTTPS.equals(scheme)) {
+		//https://localhost:8443/fluid-ws/
+		//Scheme...
+		if(Constant.HTTP.equals(scheme)) {
 
-            returnBuffer.append(Constant.WSS);
-        }
-        else {
-            returnBuffer.append(uri.getScheme());
-        }
+			returnBuffer.append(Constant.WS);
+		}
+		else if(Constant.HTTPS.equals(scheme)) {
 
-        // ://
-        returnBuffer.append(Constant.SCHEME_SEP);
-        returnBuffer.append(uri.getHost());
+			returnBuffer.append(Constant.WSS);
+		}
+		else {
+			returnBuffer.append(uri.getScheme());
+		}
 
-        // 80 / 443
-        if(uri.getPort() > 0)
-        {
-            returnBuffer.append(Constant.COLON);
-            returnBuffer.append(uri.getPort());
-        }
+		// ://
+		returnBuffer.append(Constant.SCHEME_SEP);
+		returnBuffer.append(uri.getHost());
 
-        // /fluid-ws/
-        returnBuffer.append(uri.getPath());
+		// 80 / 443
+		if(uri.getPort() > 0)
+		{
+			returnBuffer.append(Constant.COLON);
+			returnBuffer.append(uri.getPort());
+		}
 
-        return returnBuffer.toString();
-    }
+		// /fluid-ws/
+		returnBuffer.append(uri.getPath());
 
-    /**
-     * The timeout in millis.
-     *
-     * @return Timeout in millis.
-     */
-    protected long getTimeoutInMillis() {
-        return this.timeoutInMillis;
-    }
+		return returnBuffer.toString();
+	}
 
-    /**
-     * Confirms whether the Web-Socket client connection session is open.
-     * 
-     * @return Whether the connection is valid or not.
-     *          {@code true} if the connection is valid.
-     */
-    @Override
-    public boolean isConnectionValid() {
-        if(this.webSocketClient == null) {
-            return false;
-        }
-        
-        return this.webSocketClient.isSessionOpen();
-    }
+	/**
+	 * The timeout in millis.
+	 *
+	 * @return Timeout in millis.
+	 */
+	protected long getTimeoutInMillis() {
+		return this.timeoutInMillis;
+	}
 
-    /**
-     * Return the current user session id.
-     *
-     * @return {@code Session ID} if session is open, otherwise {@code null}.
-     */
-    public String getSessionId() {
-        if(this.webSocketClient == null) {
-            return null;
-        }
+	/**
+	 * Confirms whether the Web-Socket client connection session is open.
+	 *
+	 * @return Whether the connection is valid or not.
+	 *          {@code true} if the connection is valid.
+	 */
+	@Override
+	public boolean isConnectionValid() {
+		if(this.webSocketClient == null) {
+			return false;
+		}
 
-        return this.webSocketClient.getSessionId();
-    }
+		return this.webSocketClient.isSessionOpen();
+	}
 
-    /**
-     * Set the {@code echo} value if not set.
-     *
-     * @param baseToSetEchoOnIfNotSetParam The value object to set {@code echo} on.
-     */
-    protected void setEchoIfNotSet(ABaseFluidVO baseToSetEchoOnIfNotSetParam){
-        if(baseToSetEchoOnIfNotSetParam == null) {
-            
-            throw new FluidClientException(
-                    "Cannot provide 'null' for value object / pojo.",
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
-        else if(baseToSetEchoOnIfNotSetParam.getEcho() == null ||
-                baseToSetEchoOnIfNotSetParam.getEcho().trim().isEmpty())
-        {
-            baseToSetEchoOnIfNotSetParam.setEcho(UUID.randomUUID().toString());
-        }
-    }
+	/**
+	 * Return the current user session id.
+	 *
+	 * @return {@code Session ID} if session is open, otherwise {@code null}.
+	 */
+	public String getSessionId() {
+		if(this.webSocketClient == null) {
+			return null;
+		}
 
-    /**
-     * Utility class to close the connection in a thread.
-     */
-    private static class CloseConnectionRunnable implements Runnable{
+		return this.webSocketClient.getSessionId();
+	}
 
-        private ABaseClientWebSocket baseClientWebSocket;
+	/**
+	 * Set the {@code echo} value if not set.
+	 *
+	 * @param baseToSetEchoOnIfNotSetParam The value object to set {@code echo} on.
+	 */
+	protected void setEchoIfNotSet(ABaseFluidVO baseToSetEchoOnIfNotSetParam){
 
-        /**
-         * The resource to close.
-         *
-         * @param baseClientWebSocketParam Base WS utility to close.
-         */
-        CloseConnectionRunnable(ABaseClientWebSocket baseClientWebSocketParam) {
-            this.baseClientWebSocket = baseClientWebSocketParam;
-        }
+	    if(baseToSetEchoOnIfNotSetParam == null) {
+			throw new FluidClientException(
+					"Cannot provide 'null' for value object / pojo.",
+					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+		} else if(baseToSetEchoOnIfNotSetParam.getEcho() == null ||
+				baseToSetEchoOnIfNotSetParam.getEcho().trim().isEmpty()) {
+			baseToSetEchoOnIfNotSetParam.setEcho(UUID.randomUUID().toString());
+		}
+	}
 
-        /**
-         * Performs the threaded operation.
-         */
-        @Override
-        public void run() {
+	/**
+	 * Generate a verbose Exception message.
+	 *
+	 * @param prefixParam The component prefix.
+	 * @param uniqueReqIdParam The unique request reference.
+	 * @param numberOfSentItemsParam The number of items already sent.
+	 * @return Verbose error message.
+	 */
+	protected String getExceptionMessageVerbose(
+			String prefixParam,
+			String uniqueReqIdParam,
+			int numberOfSentItemsParam
+	) {
+		StringBuilder formFieldsCombined = new StringBuilder();
+		int returnValSize = -1;
+		RespHandler respHandler = this.getHandler(uniqueReqIdParam);
+		if(respHandler instanceof AGenericListMessageHandler) {
+			List<? extends ABaseFluidJSONObject> returnValue =
+					((AGenericListMessageHandler)respHandler).getReturnValue();
+			if(returnValue != null) {
+				returnValSize = returnValue.size();
 
-            if(this.baseClientWebSocket == null)
-            {
-                return;
-            }
+				returnValue.forEach(listingItm -> {
+					if(listingItm instanceof ABaseListing) {
+						ABaseListing castedToListing = (ABaseListing)listingItm;
 
-            this.baseClientWebSocket.closeConnectionNonThreaded();
-        }
-    }
+						if(castedToListing != null) {
+							castedToListing.getListing().forEach(formItm -> {
+								formFieldsCombined.append(formItm.toString());
+							});
+						}
+					} else {
+						formFieldsCombined.append(listingItm.toString());
+					}
+				});
+			}
+		}
+
+		return (prefixParam + ": " +
+				"Timeout while waiting for all return data. There were '"+
+				returnValSize +"' items after a Timeout of "+(
+				TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds on req-ref-nr '"+
+				uniqueReqIdParam+"'. Expected a total of '" + numberOfSentItemsParam + "' forms. Returned-Data '"+
+				formFieldsCombined.toString()+"'.");
+	}
+
+	/**
+	 * Utility class to close the connection in a thread.
+	 */
+	private static class CloseConnectionRunnable implements Runnable{
+
+		private ABaseClientWebSocket baseClientWebSocket;
+
+		/**
+		 * The resource to close.
+		 *
+		 * @param baseClientWebSocketParam Base WS utility to close.
+		 */
+		CloseConnectionRunnable(ABaseClientWebSocket baseClientWebSocketParam) {
+			this.baseClientWebSocket = baseClientWebSocketParam;
+		}
+
+		/**
+		 * Performs the threaded operation.
+		 */
+		@Override
+		public void run() {
+
+			if(this.baseClientWebSocket == null)
+			{
+				return;
+			}
+
+			this.baseClientWebSocket.closeConnectionNonThreaded();
+		}
+	}
 }

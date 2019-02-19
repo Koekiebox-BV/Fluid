@@ -29,38 +29,38 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  */
 public class GenericFormFieldListingMessageHandler extends AGenericListMessageHandler<FormFieldListing> {
 
-    /**
-     * Constructor for FormListing callbacks.
-     *
-     * @param messageReceivedCallbackParam The callback events.
-     * @param compressedResponseParam Compress the SQL Result in Base-64.
-     */
-    public GenericFormFieldListingMessageHandler(
-            IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam,
-            boolean compressedResponseParam) {
+	/**
+	 * Constructor for FormListing callbacks.
+	 *
+	 * @param messageReceivedCallbackParam The callback events.
+	 * @param compressedResponseParam Compress the SQL Result in Base-64.
+	 */
+	public GenericFormFieldListingMessageHandler(
+			IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam,
+			boolean compressedResponseParam) {
 
-        super(messageReceivedCallbackParam, compressedResponseParam);
-    }
-    
-    /**
-     * Constructor for FormFieldListing callbacks.
-     *
-     * @param messageReceivedCallbackParam The callback events.
-     */
-    public GenericFormFieldListingMessageHandler(
-            IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam) {
+		super(messageReceivedCallbackParam, compressedResponseParam);
+	}
 
-        super(messageReceivedCallbackParam);
-    }
+	/**
+	 * Constructor for FormFieldListing callbacks.
+	 *
+	 * @param messageReceivedCallbackParam The callback events.
+	 */
+	public GenericFormFieldListingMessageHandler(
+			IMessageReceivedCallback<FormFieldListing> messageReceivedCallbackParam) {
 
-    /**
-     * New {@code FormFieldListing} by {@code jsonObjectParam}
-     *
-     * @param jsonObjectParam The JSON Object to parse.
-     * @return new {@code FormFieldListing}.
-     */
-    @Override
-    public FormFieldListing getNewInstanceBy(JSONObject jsonObjectParam) {
-        return new FormFieldListing(jsonObjectParam);
-    }
+		super(messageReceivedCallbackParam);
+	}
+
+	/**
+	 * New {@code FormFieldListing} by {@code jsonObjectParam}
+	 *
+	 * @param jsonObjectParam The JSON Object to parse.
+	 * @return new {@code FormFieldListing}.
+	 */
+	@Override
+	public FormFieldListing getNewInstanceBy(JSONObject jsonObjectParam) {
+		return new FormFieldListing(jsonObjectParam);
+	}
 }

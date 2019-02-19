@@ -62,8 +62,7 @@ public class SQLUtilWebSocketRESTWrapper {
 	/**
 	 * Aliases for properties used by the {@code SQLUtilWebSocketRESTWrapper}.
 	 */
-	private static class PropName
-	{
+	private static class PropName {
 		/**
 		 * Keep Web Sockets disabled.
 		 */
@@ -73,14 +72,13 @@ public class SQLUtilWebSocketRESTWrapper {
 	//Assign the property whether ti dis
 	static {
 
-		try{
+		try {
 			DISABLE_WS = Boolean.parseBoolean(
 					System.getProperty(
 							PropName.FLUID_API_DISABLE_WEB_SOCKETS,
 							String.valueOf(false)).trim());
 
-		} catch (NumberFormatException nfe){
-
+		} catch (NumberFormatException nfe) {
 			DISABLE_WS = false;
 		}
 	}
@@ -88,8 +86,7 @@ public class SQLUtilWebSocketRESTWrapper {
 	/**
 	 * The mode.
 	 */
-	private enum Mode
-	{
+	private enum Mode {
 		WebSocketActive,
 		RESTfulActive
 	}
@@ -104,7 +101,8 @@ public class SQLUtilWebSocketRESTWrapper {
 	public SQLUtilWebSocketRESTWrapper(
 			String baseURLParam,
 			String serviceTicketParam,
-			long timeoutMillisParam) {
+			long timeoutMillisParam
+	) {
 		super();
 
 		this.baseURL = baseURLParam;
@@ -128,7 +126,8 @@ public class SQLUtilWebSocketRESTWrapper {
 	public SQLUtilWebSocketRESTWrapper(
 			String baseURLParam,
 			User loggedInUserParam,
-			long timeoutMillisParam) {
+			long timeoutMillisParam
+	) {
 		super();
 
 		this.baseURL = baseURLParam;
@@ -152,19 +151,17 @@ public class SQLUtilWebSocketRESTWrapper {
 	public Form getAncestor(
 			Form formToGetAncestorForParam,
 			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam)
-	{
-		if(DISABLE_WS){
+			boolean includeTableFieldsParam
+	) {
+		if(DISABLE_WS) {
 			this.mode = Mode.RESTfulActive;
 		}
 
 		//ANCESTOR...
 		try {
-
 			//When mode is null or [WebSocketActive]...
 			if(this.getAncestorClient == null &&
-					Mode.RESTfulActive != this.mode)
-			{
+					Mode.RESTfulActive != this.mode) {
 				this.getAncestorClient = new SQLUtilWebSocketGetAncestorClient(
 						this.baseURL,
 						null,
@@ -177,12 +174,9 @@ public class SQLUtilWebSocketRESTWrapper {
 
 				this.mode = Mode.WebSocketActive;
 			}
-		}
-		catch (FluidClientException clientExcept)
-		{
+		} catch (FluidClientException clientExcept) {
 			if(clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR)
-			{
+					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
 
@@ -218,7 +212,7 @@ public class SQLUtilWebSocketRESTWrapper {
 			boolean massFetchParam,
 			Form ... formsToGetDescForParam)
 	{
-		if(DISABLE_WS){
+		if(DISABLE_WS) {
 			this.mode = Mode.RESTfulActive;
 		}
 		
@@ -245,7 +239,6 @@ public class SQLUtilWebSocketRESTWrapper {
 					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
-
 			this.mode = Mode.RESTfulActive;
 		}
 
@@ -255,7 +248,7 @@ public class SQLUtilWebSocketRESTWrapper {
 
 		Form[] formsToFetchFor =
 				new Form[formsToGetDescForParam.length];
-		for(int index = 0;index < formsToFetchFor.length;index++){
+		for(int index = 0;index < formsToFetchFor.length;index++) {
 			formsToFetchFor[index] = new Form(formsToGetDescForParam[index].getId());
 		}
 
@@ -293,9 +286,9 @@ public class SQLUtilWebSocketRESTWrapper {
 	 */
 	public List<FormListing> getTableForms(
 			boolean includeFieldDataParam,
-			Form ... formsToGetTableFormsForParam)
-	{
-		if(DISABLE_WS){
+			Form ... formsToGetTableFormsForParam
+	) {
+		if(DISABLE_WS) {
 			this.mode = Mode.RESTfulActive;
 		}
 
@@ -303,8 +296,7 @@ public class SQLUtilWebSocketRESTWrapper {
 		try {
 			//When mode is null or [WebSocketActive]...
 			if(this.getTableFormsClient == null &&
-					Mode.RESTfulActive != this.mode)
-			{
+					Mode.RESTfulActive != this.mode) {
 				this.getTableFormsClient = new SQLUtilWebSocketGetTableFormsClient(
 						this.baseURL,
 						null,
@@ -316,27 +308,22 @@ public class SQLUtilWebSocketRESTWrapper {
 
 				this.mode = Mode.WebSocketActive;
 			}
-		}
-		catch (FluidClientException clientExcept)
-		{
+		} catch (FluidClientException clientExcept) {
 			if(clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR)
-			{
+					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
 
 			this.mode = Mode.RESTfulActive;
 		}
 
-		if(formsToGetTableFormsForParam == null || formsToGetTableFormsForParam.length < 1)
-		{
+		if(formsToGetTableFormsForParam == null || formsToGetTableFormsForParam.length < 1) {
 			return null;
 		}
 
 		Form[] formsToFetchFor =
 				new Form[formsToGetTableFormsForParam.length];
-		for(int index = 0;index < formsToFetchFor.length;index++){
-
+		for(int index = 0;index < formsToFetchFor.length;index++) {
 			formsToFetchFor[index] = new Form(formsToGetTableFormsForParam[index].getId());
 		}
 
@@ -371,17 +358,16 @@ public class SQLUtilWebSocketRESTWrapper {
 	 */
 	public List<FormFieldListing> getFormFields(
 			boolean includeFieldDataParam,
-			Form ... formsToGetFieldsForParam)
-	{
-		if(DISABLE_WS){
+			Form ... formsToGetFieldsForParam
+	) {
+		if(DISABLE_WS) {
 			this.mode = Mode.RESTfulActive;
 		}
 
 		//FORM FIELDS...
 		try {
 			//When mode is null or [WebSocketActive]...
-			if(this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode)
-			{
+			if(this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode) {
 				this.getFormFieldsClient = new SQLUtilWebSocketGetFormFieldsClient(
 						this.baseURL,
 						null,
@@ -393,42 +379,32 @@ public class SQLUtilWebSocketRESTWrapper {
 
 				this.mode = Mode.WebSocketActive;
 			}
-		}
-		catch (FluidClientException clientExcept)
-		{
+		} catch (FluidClientException clientExcept) {
 			if(clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR)
-			{
+					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
-
 			this.mode = Mode.RESTfulActive;
 		}
 
 		if(formsToGetFieldsForParam == null ||
 				formsToGetFieldsForParam.length < 1) {
-
 			return null;
 		}
 
 		Form[] formsToFetchFor =
 				new Form[formsToGetFieldsForParam.length];
-		for(int index = 0;index < formsToFetchFor.length;index++){
-
+		for(int index = 0;index < formsToFetchFor.length;index++) {
 			formsToFetchFor[index] = new Form(formsToGetFieldsForParam[index].getId());
 		}
 
-		if(this.getFormFieldsClient != null)
-		{
+		if(this.getFormFieldsClient != null) {
 			return this.getFormFieldsClient.getFormFieldsSynchronized(
 					formsToFetchFor);
-		}
-		else
-		{
+		} else {
 			List<FormFieldListing> returnVal = new ArrayList<>();
 
-			for(Form formToFetchFor : formsToFetchFor)
-			{
+			for(Form formToFetchFor : formsToFetchFor) {
 				List<Field> listOfFields =
 						this.sqlUtilClient.getFormFields(
 								formToFetchFor,
@@ -452,17 +428,16 @@ public class SQLUtilWebSocketRESTWrapper {
 	 */
 	public void massPopulateFormFields(
 			boolean includeFieldDataParam,
-			Form ... formsToPopulateFormFieldsForParam)
-	{
-		if(DISABLE_WS){
+			Form ... formsToPopulateFormFieldsForParam
+	) {
+		if(DISABLE_WS) {
 			this.mode = Mode.RESTfulActive;
 		}
 
 		//FORM FIELDS...
 		try {
 			//When mode is null or [WebSocketActive]...
-			if(this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode)
-			{
+			if(this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode) {
 				this.getFormFieldsClient = new SQLUtilWebSocketGetFormFieldsClient(
 						this.baseURL,
 						null,
@@ -474,12 +449,9 @@ public class SQLUtilWebSocketRESTWrapper {
 
 				this.mode = Mode.WebSocketActive;
 			}
-		}
-		catch (FluidClientException clientExcept)
-		{
+		} catch (FluidClientException clientExcept) {
 			if(clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR)
-			{
+					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
 
@@ -489,14 +461,13 @@ public class SQLUtilWebSocketRESTWrapper {
 		//Nothing to do...
 		if(formsToPopulateFormFieldsForParam == null ||
 				formsToPopulateFormFieldsForParam.length < 1) {
-
 			return;
 		}
 
 		//Populate a known echo for all of the local form caches...
 		Form[] formsToFetchForLocalCacheArr =
 				new Form[formsToPopulateFormFieldsForParam.length];
-		for(int index = 0;index < formsToFetchForLocalCacheArr.length;index++){
+		for(int index = 0;index < formsToFetchForLocalCacheArr.length;index++) {
 
 			formsToFetchForLocalCacheArr[index] = new Form(formsToPopulateFormFieldsForParam[index].getId());
 			formsToFetchForLocalCacheArr[index].setEcho(UUID.randomUUID().toString());
@@ -506,15 +477,11 @@ public class SQLUtilWebSocketRESTWrapper {
 
 		//Fetch all of the values in a single go...
 		if(this.getFormFieldsClient != null) {
-
 			listingReturnFieldValsPopulated =
 					this.getFormFieldsClient.getFormFieldsSynchronized(formsToFetchForLocalCacheArr);
-		}
-		//Old Rest way of fetching all of the values...
-		else {
-
-			for(Form formToFetchFor : formsToFetchForLocalCacheArr)
-			{
+		} else {
+			//Old Rest way of fetching all of the values...
+			for(Form formToFetchFor : formsToFetchForLocalCacheArr) {
 				List<Field> listOfFields =
 						this.sqlUtilClient.getFormFields(
 								formToFetchFor,
@@ -529,8 +496,7 @@ public class SQLUtilWebSocketRESTWrapper {
 		}
 
 		//Populate each of the form from the param...
-		for(Form formToSetFieldsOn : formsToPopulateFormFieldsForParam){
-
+		for(Form formToSetFieldsOn : formsToPopulateFormFieldsForParam) {
 			formToSetFieldsOn.setFormFields(
 					this.getFieldValuesForFormFromCache(
 							formToSetFieldsOn.getId(),
@@ -553,35 +519,26 @@ public class SQLUtilWebSocketRESTWrapper {
 			List<FormFieldListing> listingReturnFieldValsPopulatedParam,
 			Form[] formsToFetchForLocalCacheArrParam){
 
-		if(formIdParam == null || formIdParam.longValue() < 1){
-
+		if(formIdParam == null || formIdParam.longValue() < 1) {
 			return null;
 		}
 
 		if(listingReturnFieldValsPopulatedParam == null ||
-				listingReturnFieldValsPopulatedParam.isEmpty()){
-
+				listingReturnFieldValsPopulatedParam.isEmpty()) {
 			return null;
 		}
 
 		if(formsToFetchForLocalCacheArrParam == null ||
-				formsToFetchForLocalCacheArrParam.length == 0){
-
+				formsToFetchForLocalCacheArrParam.length == 0) {
 			return null;
 		}
 
-		for(Form formIter : formsToFetchForLocalCacheArrParam){
-
+		for(Form formIter : formsToFetchForLocalCacheArrParam) {
 			//Form is a match...
-			if(formIdParam.equals(formIter.getId())){
-
+			if(formIdParam.equals(formIter.getId())) {
 				String echoToUse = formIter.getEcho();
-
-				for(FormFieldListing fieldListing : listingReturnFieldValsPopulatedParam){
-
-					//Echo is a match...
-					if(echoToUse.equals(fieldListing.getEcho())){
-
+				for(FormFieldListing fieldListing : listingReturnFieldValsPopulatedParam) {
+					if(echoToUse.equals(fieldListing.getEcho())) {
 						return fieldListing.getListing();
 					}
 				}
@@ -594,30 +551,24 @@ public class SQLUtilWebSocketRESTWrapper {
 	/**
 	 * Close any clients used during lifetime of {@code this} object.
 	 */
-	public void closeAndClean()
-	{
-		if(this.sqlUtilClient != null)
-		{
+	public void closeAndClean() {
+		if(this.sqlUtilClient != null) {
 			this.sqlUtilClient.closeAndClean();
 		}
 
-		if(this.getAncestorClient != null)
-		{
+		if(this.getAncestorClient != null) {
 			this.getAncestorClient.closeAndClean();
 		}
 
-		if(this.getDescendantsClient != null)
-		{
+		if(this.getDescendantsClient != null) {
 			this.getDescendantsClient.closeAndClean();
 		}
 
-		if(this.getTableFormsClient != null)
-		{
+		if(this.getTableFormsClient != null) {
 			this.getTableFormsClient.closeAndClean();
 		}
 
-		if(this.getFormFieldsClient != null)
-		{
+		if(this.getFormFieldsClient != null) {
 			this.getFormFieldsClient.closeAndClean();
 		}
 	}

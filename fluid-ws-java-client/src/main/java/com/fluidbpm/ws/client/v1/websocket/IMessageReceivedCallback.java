@@ -12,17 +12,17 @@ import com.fluidbpm.program.api.vo.ws.Error;
  */
 public interface IMessageReceivedCallback<T extends ABaseFluidJSONObject> {
 
-    /**
-     * When an error message is sent back.
-     *
-     * @param errorReceivedParam The error message.
-     */
-    public abstract void errorMessageReceived(Error errorReceivedParam);
+	/**
+	 * When an error message is sent back.
+	 *
+	 * @param errorReceivedParam The error message.
+	 */
+	public abstract void errorMessageReceived(Error errorReceivedParam);
 
-    /**
-     * When a {@code T} message is received.
-     *
-     * @param messageReceivedParam The message received.
-     */
-    public abstract void messageReceived(T messageReceivedParam);
+	/**
+	 * When a {@code T} message is received.
+	 *
+	 * @param messageReceivedParam The message received.
+	 */
+	public abstract void messageReceived(T messageReceivedParam);
 }

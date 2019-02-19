@@ -29,37 +29,36 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  */
 public class GenericFormListingMessageHandler extends AGenericListMessageHandler<FormListing> {
 
-    /**
-     * Constructor for FormListing callbacks.
-     *
-     * @param messageReceivedCallbackParam The callback events.
-     * @param compressedResponseParam Compress the SQL Result in Base-64.
-     */
-    public GenericFormListingMessageHandler(
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            boolean compressedResponseParam) {
+	/**
+	 * Constructor for FormListing callbacks.
+	 *
+	 * @param messageReceivedCallbackParam The callback events.
+	 * @param compressedResponseParam Compress the SQL Result in Base-64.
+	 */
+	public GenericFormListingMessageHandler(
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			boolean compressedResponseParam) {
 
-        super(messageReceivedCallbackParam, compressedResponseParam);
-    }
+		super(messageReceivedCallbackParam, compressedResponseParam);
+	}
 
-    /**
-     * Constructor for FormListing callbacks.
-     *
-     * @param messageReceivedCallbackParam The callback events.
-     */
-    public GenericFormListingMessageHandler(IMessageReceivedCallback<FormListing> messageReceivedCallbackParam) {
+	/**
+	 * Constructor for FormListing callbacks.
+	 *
+	 * @param messageReceivedCallbackParam The callback events.
+	 */
+	public GenericFormListingMessageHandler(IMessageReceivedCallback<FormListing> messageReceivedCallbackParam) {
+		super(messageReceivedCallbackParam);
+	}
 
-        super(messageReceivedCallbackParam);
-    }
-
-    /**
-     * New {@code FormListing} by {@code jsonObjectParam}
-     *
-     * @param jsonObjectParam The JSON Object to parse.
-     * @return new {@code FormListing}.
-     */
-    @Override
-    public FormListing getNewInstanceBy(JSONObject jsonObjectParam) {
-        return new FormListing(jsonObjectParam);
-    }
+	/**
+	 * New {@code FormListing} by {@code jsonObjectParam}
+	 *
+	 * @param jsonObjectParam The JSON Object to parse.
+	 * @return new {@code FormListing}.
+	 */
+	@Override
+	public FormListing getNewInstanceBy(JSONObject jsonObjectParam) {
+		return new FormListing(jsonObjectParam);
+	}
 }

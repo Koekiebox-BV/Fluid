@@ -147,6 +147,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 		String uniqueReqId = this.initNewRequest();
 
 		//Mass data fetch...
+		int numberOfSentForms = 0;
 		if(this.massFetch) {
 			FormListing listingToSend = new FormListing();
 			List<Form> listOfValidForms = new ArrayList();
@@ -165,6 +166,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 
 			//Send the actual message...
 			this.sendMessage(listingToSend, uniqueReqId);
+			numberOfSentForms++;
 		} else {
 			//Single...
 			//Send all the messages...
@@ -173,6 +175,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 
 				//Send the actual message...
 				this.sendMessage(formToSend, uniqueReqId);
+				numberOfSentForms++;
 			}
 		}
 
@@ -214,12 +217,12 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 			}
 		} catch (TimeoutException eParam) {
 			//Timeout...
+			String errMessage = this.getExceptionMessageVerbose(
+					"SQLUtil-WebSocket-GetDescendants",
+					uniqueReqId,
+					numberOfSentForms);
 			throw new FluidClientException(
-					"SQLUtil-WebSocket-GetDescendants: Timeout while waiting for all return data. There were '"
-							+this.getHandler(uniqueReqId).getReturnValue().size()
-							+"' items after a Timeout of "+(
-							TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-					,FluidClientException.ErrorCode.IO_ERROR);
+					errMessage, FluidClientException.ErrorCode.IO_ERROR);
 		} finally {
 			this.removeHandler(uniqueReqId);
 		}

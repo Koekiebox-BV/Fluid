@@ -43,154 +43,147 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see Form
  */
 public class SQLUtilWebSocketExecuteSQLClient extends
-        ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
+		ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     * @param compressResponseParam Compress the SQL Result in Base-64.
-     * @param compressResponseCharsetParam Compress response using provided charset.
-     */
-    public SQLUtilWebSocketExecuteSQLClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam,
-            boolean compressResponseParam,
-            String compressResponseCharsetParam) {
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
-                        serviceTicketAsHexParam,
-                        compressResponseParam,
-                        compressResponseCharsetParam), compressResponseParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param compressResponseParam Compress the SQL Result in Base-64.
+	 * @param compressResponseCharsetParam Compress response using provided charset.
+	 */
+	public SQLUtilWebSocketExecuteSQLClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam,
+			boolean compressResponseParam,
+			String compressResponseCharsetParam) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
+						serviceTicketAsHexParam,
+						compressResponseParam,
+						compressResponseCharsetParam), compressResponseParam);
 
-        this.setServiceTicket(serviceTicketAsHexParam);
-    }
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     * Responses are not compressed.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     */
-    public SQLUtilWebSocketExecuteSQLClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam) {
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
-                        serviceTicketAsHexParam,
-                        false,
-                        UtilGlobal.EMPTY));
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 * Responses are not compressed.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 */
+	public SQLUtilWebSocketExecuteSQLClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getExecuteSQLWebSocket(
+						serviceTicketAsHexParam,
+						false,
+						UtilGlobal.EMPTY));
 
-        this.setServiceTicket(serviceTicketAsHexParam);
-    }
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
 
-    /**
-     * Retrieves all the Descendants (Forms) for the {@code formToGetTableFormsForParam}.
-     *
-     * @param formWithSQLFieldParam The Fluid Form to Execute custom SQL for.
-     *
-     * @return The SQL Execution result as {@code Form}'s.
-     */
-    public List<FormListing> executeSQLSynchronized(Form formWithSQLFieldParam) {
+	/**
+	 * Retrieves all the Descendants (Forms) for the {@code formToGetTableFormsForParam}.
+	 *
+	 * @param formWithSQLFieldParam The Fluid Form to Execute custom SQL for.
+	 *
+	 * @return The SQL Execution result as {@code Form}'s.
+	 */
+	public List<FormListing> executeSQLSynchronized(Form formWithSQLFieldParam) {
 
-        if(formWithSQLFieldParam == null)
-        {
-            return null;
-        }
+		if(formWithSQLFieldParam == null) {
+			return null;
+		}
 
-        if(formWithSQLFieldParam.getFormFields() == null ||
-                formWithSQLFieldParam.getFormFields().isEmpty())
-        {
-            return null;
-        }
+		if(formWithSQLFieldParam.getFormFields() == null ||
+				formWithSQLFieldParam.getFormFields().isEmpty()) {
+			return null;
+		}
 
-        //Validate the echo...
-        this.setEchoIfNotSet(formWithSQLFieldParam);
+		//Validate the echo...
+		this.setEchoIfNotSet(formWithSQLFieldParam);
 
-        //Start a new request...
-        String uniqueReqId = this.initNewRequest();
+		//Start a new request...
+		String uniqueReqId = this.initNewRequest();
 
-        //Send the actual message...
-        this.sendMessage(formWithSQLFieldParam, uniqueReqId);
+		//Send the actual message...
+		int numberOfSentForms = 0;
+		this.sendMessage(formWithSQLFieldParam, uniqueReqId);
+		numberOfSentForms++;
 
-        try {
-            List<FormListing> returnValue = this.getHandler(uniqueReqId).getCF().get(
-                            this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
+		try {
+			List<FormListing> returnValue = this.getHandler(uniqueReqId).getCF().get(
+							this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
-            //Connection was closed.. this is a problem....
-            if(this.getHandler(uniqueReqId).isConnectionClosed())
-            {
-                throw new FluidClientException(
-                        "SQLUtil-WebSocket-ExecuteSQL: " +
-                                "The connection was closed by the server prior to the response received.",
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
+			//Connection was closed.. this is a problem....
+			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+				throw new FluidClientException(
+						"SQLUtil-WebSocket-ExecuteSQL: " +
+								"The connection was closed by the server prior to the response received.",
+						FluidClientException.ErrorCode.IO_ERROR);
+			}
 
-            return returnValue;
-        }
-        //Interrupted...
-        catch (InterruptedException exceptParam) {
+			return returnValue;
+		} catch (InterruptedException exceptParam) {
+			//Interrupted...
+			throw new FluidClientException(
+					"SQLUtil-WebSocket-Interrupted-ExecuteSQL: " +
+							exceptParam.getMessage(),
+					exceptParam,
+					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+		} catch (ExecutionException executeProblem) {
+			//Error on the web-socket...
 
-            throw new FluidClientException(
-                    "SQLUtil-WebSocket-Interrupted-ExecuteSQL: " +
-                            exceptParam.getMessage(),
-                    exceptParam,
-                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-        }
-        //Error on the web-socket...
-        catch (ExecutionException executeProblem) {
+			Throwable cause = executeProblem.getCause();
 
-            Throwable cause = executeProblem.getCause();
+			//Fluid client exception...
+			if(cause instanceof FluidClientException) {
+				throw (FluidClientException)cause;
+			} else {
+				throw new FluidClientException(
+						"SQLUtil-WebSocket-ExecuteSQL: " +
+								cause.getMessage(), cause,
+						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+			}
+		} catch (TimeoutException eParam) {
+			//Timeout...
 
-            //Fluid client exception...
-            if(cause instanceof FluidClientException)
-            {
-                throw (FluidClientException)cause;
-            }
-            else
-            {
-                throw new FluidClientException(
-                        "SQLUtil-WebSocket-ExecuteSQL: " +
-                                cause.getMessage(), cause,
-                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-            }
-        }
-        //Timeout...
-        catch (TimeoutException eParam) {
+			String errMessage = this.getExceptionMessageVerbose(
+					"SQLUtil-WebSocket-ExecuteSQL",
+					uniqueReqId,
+					numberOfSentForms);
 
-            throw new FluidClientException(
-                    "SQLUtil-WebSocket-ExecuteSQL: Timeout while waiting for all return data. There were '"
-                            +this.getHandler(uniqueReqId).getReturnValue().size()
-                            +"' items after a Timeout of "+(
-                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                    ,FluidClientException.ErrorCode.IO_ERROR);
-        }
-        finally {
-            this.removeHandler(uniqueReqId);
-        }
-    }
+			throw new FluidClientException(errMessage,
+					FluidClientException.ErrorCode.IO_ERROR);
+		}
+		finally {
+			this.removeHandler(uniqueReqId);
+		}
+	}
 
-    /**
-     * Create a new instance of the handler class for {@code this} client.
-     *
-     * @return new instance of {@code GenericFormListingMessageHandler}
-     */
-    @Override
-    public GenericFormListingMessageHandler getNewHandlerInstance() {
-        return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
-    }
+	/**
+	 * Create a new instance of the handler class for {@code this} client.
+	 *
+	 * @return new instance of {@code GenericFormListingMessageHandler}
+	 */
+	@Override
+	public GenericFormListingMessageHandler getNewHandlerInstance() {
+		return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
+	}
 }

@@ -43,165 +43,156 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetTableFormsClient extends
-        ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
+		ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     * @param includeFieldDataParam Should Form Field data be included.
-     * @param compressResponseParam Compress the Form Field Result in Base-64.
-     * @param compressResponseCharsetParam Compress response using provided charset.
-     */
-    public SQLUtilWebSocketGetTableFormsClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam,
-            boolean includeFieldDataParam,
-            boolean compressResponseParam,
-            String compressResponseCharsetParam) {
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param includeFieldDataParam Should Form Field data be included.
+	 * @param compressResponseParam Compress the Form Field Result in Base-64.
+	 * @param compressResponseCharsetParam Compress response using provided charset.
+	 */
+	public SQLUtilWebSocketGetTableFormsClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam,
+			boolean includeFieldDataParam,
+			boolean compressResponseParam,
+			String compressResponseCharsetParam) {
 
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
-                        includeFieldDataParam,
-                        serviceTicketAsHexParam,
-                        compressResponseParam,
-                        compressResponseCharsetParam),
-                compressResponseParam);
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
+						includeFieldDataParam,
+						serviceTicketAsHexParam,
+						compressResponseParam,
+						compressResponseCharsetParam),
+				compressResponseParam);
 
-        this.setServiceTicket(serviceTicketAsHexParam);
-    }
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
 
-    
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     * @param includeFieldDataParam Should Form Field data be included.
-     */
-    public SQLUtilWebSocketGetTableFormsClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam,
-            boolean includeFieldDataParam) {
 
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
-                        includeFieldDataParam,
-                        serviceTicketAsHexParam,
-                        false,
-                        UtilGlobal.EMPTY));
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param includeFieldDataParam Should Form Field data be included.
+	 */
+	public SQLUtilWebSocketGetTableFormsClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam,
+			boolean includeFieldDataParam) {
 
-        this.setServiceTicket(serviceTicketAsHexParam);
-    }
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
+						includeFieldDataParam,
+						serviceTicketAsHexParam,
+						false,
+						UtilGlobal.EMPTY));
 
-    /**
-     * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
-     *
-     * @param formsToGetTableFormsForParam The Fluid Form to get Table Fields for.
-     *
-     * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
-     */
-    public List<FormListing> getTableFormsSynchronized(
-            Form ... formsToGetTableFormsForParam) {
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
 
-        if(formsToGetTableFormsForParam == null) {
-            return null;
-        }
+	/**
+	 * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
+	 *
+	 * @param formsToGetTableFormsForParam The Fluid Form to get Table Fields for.
+	 *
+	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+	 */
+	public List<FormListing> getTableFormsSynchronized(
+			Form ... formsToGetTableFormsForParam) {
 
-        if(formsToGetTableFormsForParam.length == 0) {
-            return null;
-        }
+		if(formsToGetTableFormsForParam == null) {
+			return null;
+		}
 
-        //Start a new request...
-        String uniqueReqId = this.initNewRequest();
+		if(formsToGetTableFormsForParam.length == 0) {
+			return null;
+		}
 
-        //Send all the messages...
-        for(Form formToSend : formsToGetTableFormsForParam)
-        {
-            this.setEchoIfNotSet(formToSend);
+		//Start a new request...
+		String uniqueReqId = this.initNewRequest();
 
-            //Send the actual message...
-            this.sendMessage(formToSend, uniqueReqId);
-        }
+		//Send all the messages...
+		int numberOfSentForms = 0;
+		for(Form formToSend : formsToGetTableFormsForParam) {
+			this.setEchoIfNotSet(formToSend);
 
-        try {
-            List<FormListing> returnValue =
-                    this.getHandler(uniqueReqId).getCF().get(
-                            this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
+			//Send the actual message...
+			this.sendMessage(formToSend, uniqueReqId);
+			numberOfSentForms++;
+		}
 
-            //Connection was closed.. this is a problem....
-            if(this.getHandler(uniqueReqId).isConnectionClosed())
-            {
-                throw new FluidClientException(
-                        "SQLUtil-WebSocket-GetTableRecordForms: " +
-                                "The connection was closed by the server prior to the response received.",
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
+		try {
+			List<FormListing> returnValue =
+					this.getHandler(uniqueReqId).getCF().get(
+							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
-            return returnValue;
-        }
-        //Interrupted...
-        catch (InterruptedException exceptParam) {
+			//Connection was closed.. this is a problem....
+			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+				throw new FluidClientException(
+						"SQLUtil-WebSocket-GetTableRecordForms: " +
+								"The connection was closed by the server prior to the response received.",
+						FluidClientException.ErrorCode.IO_ERROR);
+			}
 
-            throw new FluidClientException(
-                    "SQLUtil-WebSocket-Interrupted-GetTableRecordForms: " +
-                            exceptParam.getMessage(),
-                    exceptParam,
-                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-        }
-        //Error on the web-socket...
-        catch (ExecutionException executeProblem) {
+			return returnValue;
+		} catch (InterruptedException exceptParam) {
+			//Interrupted...
 
-            Throwable cause = executeProblem.getCause();
+			throw new FluidClientException(
+					"SQLUtil-WebSocket-Interrupted-GetTableRecordForms: " +
+							exceptParam.getMessage(),
+					exceptParam,
+					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+		} catch (ExecutionException executeProblem) {
+			//Error on the web-socket...
+			Throwable cause = executeProblem.getCause();
 
-            //Fluid client exception...
-            if(cause instanceof FluidClientException)
-            {
-                throw (FluidClientException)cause;
-            }
-            else
-            {
-                throw new FluidClientException(
-                        "SQLUtil-WebSocket-GetTableRecordForms: " +
-                                cause.getMessage(), cause,
-                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-            }
-        }
-        //Timeout...
-        catch (TimeoutException eParam) {
+			//Fluid client exception...
+			if(cause instanceof FluidClientException) {
+				throw (FluidClientException)cause;
+			} else {
+				throw new FluidClientException(
+						"SQLUtil-WebSocket-GetTableRecordForms: " +
+								cause.getMessage(), cause,
+						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+			}
+		} catch (TimeoutException eParam) {
 
-            throw new FluidClientException(
-                    "SQLUtil-WebSocket-GetTableRecordForms: Timeout while waiting for all return data. There were '"
-                            +this.getHandler(uniqueReqId).getReturnValue().size()
-                            +"' items after a Timeout of "+(
-                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                    ,FluidClientException.ErrorCode.IO_ERROR);
-        }
-        finally {
-            this.removeHandler(uniqueReqId);
-        }
-    }
+			String errMessage = this.getExceptionMessageVerbose(
+							"SQLUtil-WebSocket-GetTableRecordForms",
+							uniqueReqId,
+							numberOfSentForms);
+			throw new FluidClientException(
+					errMessage, FluidClientException.ErrorCode.IO_ERROR);
+		} finally {
+			this.removeHandler(uniqueReqId);
+		}
+	}
 
-    /**
-     * Create a new instance of the handler class for {@code this} client.
-     *
-     * @return new instance of {@code GenericFormListingMessageHandler}
-     */
-    @Override
-    public GenericFormListingMessageHandler getNewHandlerInstance() {
-        return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
-    }
+	/**
+	 * Create a new instance of the handler class for {@code this} client.
+	 *
+	 * @return new instance of {@code GenericFormListingMessageHandler}
+	 */
+	@Override
+	public GenericFormListingMessageHandler getNewHandlerInstance() {
+		return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
+	}
 }

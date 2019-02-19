@@ -26,30 +26,30 @@ import org.json.JSONObject;
  */
 public interface IMessageResponseHandler {
 
-    /**
-     * Checks whether {@code subclass} message handler can process
-     * the message {@code messageParam}.
-     *
-     * If the handler can't process the message, a {@code null} value
-     * should be returned.
-     *
-     * @param messageParam The message to check for qualification.
-     * @return The JSONObject.
-     *
-     * @see JSONObject
-     */
-    public Object doesHandlerQualifyForProcessing(String messageParam);
+	/**
+	 * Checks whether {@code subclass} message handler can process
+	 * the message {@code messageParam}.
+	 *
+	 * If the handler can't process the message, a {@code null} value
+	 * should be returned.
+	 *
+	 * @param messageParam The message to check for qualification.
+	 * @return The JSONObject.
+	 *
+	 * @see JSONObject
+	 */
+	public Object doesHandlerQualifyForProcessing(String messageParam);
 
-    /**
-     * Handle the {@code messageParam}.
-     *
-     * @param messageParam The message from the server.
-     */
-    public abstract void handleMessage(Object messageParam);
+	/**
+	 * Handle the {@code messageParam}.
+	 *
+	 * @param messageParam The message from the server.
+	 */
+	public abstract void handleMessage(Object messageParam);
 
-    /**
-     * When a connection closed has been initiated
-     * remotely.
-     */
-    public abstract void connectionClosed();
+	/**
+	 * When a connection closed has been initiated
+	 * remotely.
+	 */
+	public abstract void connectionClosed();
 }
