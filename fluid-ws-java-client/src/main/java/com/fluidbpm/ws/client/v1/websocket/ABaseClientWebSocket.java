@@ -404,12 +404,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 				returnValue.forEach(listingItm -> {
 					if(listingItm instanceof ABaseListing) {
 						ABaseListing castedToListing = (ABaseListing)listingItm;
-
-						if(castedToListing != null) {
-							castedToListing.getListing().forEach(formItm -> {
-								formFieldsCombined.append(formItm.toString());
-							});
-						}
+						formFieldsCombined.append(castedToListing.toJsonObject().toString());
 					} else {
 						formFieldsCombined.append(listingItm.toString());
 					}
