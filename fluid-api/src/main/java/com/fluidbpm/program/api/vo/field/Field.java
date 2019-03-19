@@ -810,14 +810,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Type...
-		if(this.getFieldType() != null)
-		{
+		if(this.getFieldType() != null) {
 			returnVal.put(JSONMapping.FIELD_TYPE, this.getFieldType());
 		}
 
 		//Type Meta Data...
-		if(this.getTypeMetaData() != null)
-		{
+		if(this.getTypeMetaData() != null) {
 			returnVal.put(JSONMapping.TYPE_META_DATA,this.getTypeMetaData());
 		}
 
@@ -839,21 +837,17 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	public JSONObject toJsonMappingForElasticSearch() throws JSONException {
 
 		String fieldNameUpperCamel = this.getFieldNameAsUpperCamel();
-		if(fieldNameUpperCamel == null)
-		{
+		if(fieldNameUpperCamel == null) {
 			return null;
 		}
 
 		String elasticType = this.getElasticSearchFieldType();
-		if(elasticType == null)
-		{
+		if(elasticType == null) {
 			return null;
 		}
 
 		JSONObject returnVal = new JSONObject();
-
 		returnVal.put(JSONMapping.Elastic.MAPPING_ONLY_TYPE, elasticType);
-
 		return returnVal;
 	}
 
@@ -869,8 +863,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public JSONObject toJsonForElasticSearch() throws JSONException {
 
-		if(!this.doesFieldQualifyForElasticSearchInsert())
-		{
+		if(!this.doesFieldQualifyForElasticSearchInsert()) {
 			return null;
 		}
 
@@ -880,13 +873,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		Object fieldValue = this.getFieldValue();
 
 		//Table Field...
-		if(fieldValue instanceof TableField)
-		{
+		if(fieldValue instanceof TableField) {
 			TableField tableField = (TableField)this.getFieldValue();
 
 			if(tableField.getTableRecords() != null &&
-					!tableField.getTableRecords().isEmpty())
-			{
+					!tableField.getTableRecords().isEmpty()) {
 				JSONArray array = new JSONArray();
 				for(Form record : tableField.getTableRecords())
 				{
@@ -900,51 +891,39 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 				returnVal.put(fieldIdAsString, array);
 			}
-		}
-		//Multiple Choice...
-		else if(fieldValue instanceof MultiChoice)
-		{
+		} else if(fieldValue instanceof MultiChoice) {
+			//Multiple Choice...
 			MultiChoice multiChoice = (MultiChoice)this.getFieldValue();
 
 			if(multiChoice.getSelectedMultiChoices() != null &&
-					!multiChoice.getSelectedMultiChoices().isEmpty())
-			{
+					!multiChoice.getSelectedMultiChoices().isEmpty()) {
 				JSONArray array = new JSONArray();
 
-				for(String selectedChoice : multiChoice.getSelectedMultiChoices())
-				{
+				for(String selectedChoice : multiChoice.getSelectedMultiChoices()) {
 					Long selectedChoiceAsLong = null;
 
-					try{
+					try {
 						if(!selectedChoice.isEmpty() &&
-								Character.isDigit(selectedChoice.charAt(0)))
-						{
+								Character.isDigit(selectedChoice.charAt(0))) {
 							selectedChoiceAsLong = Long.parseLong(selectedChoice);
 						}
-					}
-					catch (NumberFormatException nfe)
-					{
+					} catch (NumberFormatException nfe) {
 						selectedChoiceAsLong = null;
 					}
 
 					//When not long, store as is...
-					if(selectedChoiceAsLong == null)
-					{
+					if(selectedChoiceAsLong == null) {
 						array.put(selectedChoice);
-					}
-					else
-					{
+					} else {
 						array.put(selectedChoiceAsLong.longValue());
 					}
 				}
 
 				returnVal.put(fieldIdAsString, array);
 			}
-		}
-		//Other valid types...
-		else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
-				fieldValue instanceof String)
-		{
+		} else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+				fieldValue instanceof String) {
+			//Other valid types...
 			if((fieldValue instanceof String) && LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
 				String formFieldValueStr = fieldValue.toString();
 
@@ -957,14 +936,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			}
 
 			returnVal.put(fieldIdAsString, fieldValue);
-		}
-		//Date...
-		else if(fieldValue instanceof Date)
-		{
+		} else if(fieldValue instanceof Date) {
+			//Date...
 			returnVal.put(fieldIdAsString, ((Date)fieldValue).getTime());
-		}
-		//Problem
-		else {
+		} else {
+			//Problem...
 			throw new FluidElasticSearchException(
 					"Field Value of field-type '"+fieldValue.getClass().getSimpleName()
 							+"' and Value '"+ fieldValue+"' is not supported.");
@@ -986,7 +962,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public Field populateFromElasticSearchJson(
-			JSONObject jsonObjectParam
+		JSONObject jsonObjectParam
 	) throws JSONException {
 		if(this.getFieldNameAsUpperCamel() == null) {
 			return null;
@@ -1145,30 +1121,24 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see ElasticSearchType
 	 */
 	@XmlTransient
-	public String getElasticSearchFieldType()
-	{
+	public String getElasticSearchFieldType() {
 		Type fieldType = this.getTypeAsEnum();
-
-		if(fieldType == null)
-		{
+		if(fieldType == null) {
 			return null;
 		}
 
 		//Get the fieldType by Fluid field fieldType...
-		switch (fieldType)
-		{
+		switch (fieldType) {
 			case ParagraphText:
 				return ElasticSearchType.TEXT;
 			case Text:
 
 				String metaData = this.getTypeMetaData();
-				if(metaData == null || metaData.isEmpty())
-				{
+				if(metaData == null || metaData.isEmpty()) {
 					return ElasticSearchType.TEXT;
 				}
 
-				if(LATITUDE_AND_LONGITUDE.equals(metaData))
-				{
+				if(LATITUDE_AND_LONGITUDE.equals(metaData)) {
 					return ElasticSearchType.GEO_POINT;
 				}
 

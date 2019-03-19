@@ -173,8 +173,7 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 			//Timeout...
 			String errMessage = this.getExceptionMessageVerbose(
 					"SQLUtil-WebSocket-GetFormFields",
-					uniqueReqId,
-					numberOfSentForms);
+					uniqueReqId, (Object[]) formsToGetFieldListingForForParam);
 			throw new FluidClientException(
 					errMessage, FluidClientException.ErrorCode.IO_ERROR);
 		} finally {

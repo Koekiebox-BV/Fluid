@@ -384,15 +384,29 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 *
 	 * @param prefixParam The component prefix.
 	 * @param uniqueReqIdParam The unique request reference.
-	 * @param numberOfSentItemsParam The number of items already sent.
+	 * @param sentItemsParam The items sent to the host.
 	 * @return Verbose error message.
 	 */
 	protected String getExceptionMessageVerbose(
 			String prefixParam,
 			String uniqueReqIdParam,
-			int numberOfSentItemsParam
+			Object ... sentItemsParam
 	) {
-		StringBuilder formFieldsCombined = new StringBuilder();
+		//Request...
+		StringBuilder formFieldsCombined = new StringBuilder(),
+				formFieldsRequestCombined = new StringBuilder();
+
+		if(sentItemsParam != null) {
+			for(Object objSent : sentItemsParam) {
+				if(objSent == null) {
+					continue;
+				}
+				formFieldsRequestCombined.append(objSent.toString());
+				formFieldsRequestCombined.append("|");
+			}
+		}
+
+		//Response...
 		int returnValSize = -1;
 		RespHandler respHandler = this.getHandler(uniqueReqIdParam);
 		if(respHandler instanceof AGenericListMessageHandler) {
@@ -408,16 +422,31 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 					} else {
 						formFieldsCombined.append(listingItm.toString());
 					}
+
+					formFieldsCombined.append("|");
 				});
 			}
+		}
+
+		String reqToString = formFieldsRequestCombined.toString(),
+		respToString = formFieldsCombined.toString();
+
+		if(reqToString.length() > 0) {
+			reqToString = reqToString.substring(0, reqToString.length() - 1);
+		}
+
+		if(respToString.length() > 0) {
+			respToString = respToString.substring(0, respToString.length() - 1);
 		}
 
 		return (prefixParam + ": " +
 				"Timeout while waiting for all return data. There were '"+
 				returnValSize +"' items after a Timeout of "+(
 				TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds on req-ref-nr '"+
-				uniqueReqIdParam+"'. Expected a total of '" + numberOfSentItemsParam + "' forms. Returned-Data '"+
-				formFieldsCombined.toString()+"'.");
+				uniqueReqIdParam+"'. Expected a total of '" +
+				(sentItemsParam == null ? 0: sentItemsParam.length) + "' forms. " +
+				"Request-Data '"+ reqToString+"'. \n" +
+				"Returned-Data '"+ respToString+"'.");
 	}
 
 	/**

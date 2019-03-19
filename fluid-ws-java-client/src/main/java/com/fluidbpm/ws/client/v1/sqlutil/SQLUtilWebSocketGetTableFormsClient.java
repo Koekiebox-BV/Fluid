@@ -174,13 +174,10 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
 			}
 		} catch (TimeoutException eParam) {
-
 			String errMessage = this.getExceptionMessageVerbose(
 							"SQLUtil-WebSocket-GetTableRecordForms",
-							uniqueReqId,
-							numberOfSentForms);
-			throw new FluidClientException(
-					errMessage, FluidClientException.ErrorCode.IO_ERROR);
+							uniqueReqId, (Object[]) formsToGetTableFormsForParam);
+			throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
 		} finally {
 			this.removeHandler(uniqueReqId);
 		}

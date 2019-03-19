@@ -182,7 +182,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
 			String errMessage = this.getExceptionMessageVerbose(
 					"SQLUtil-WebSocket-GetAncestor",
 					uniqueReqId,
-					numberOfSentForms);
+					formToGetAncestorForParam);
 
 			throw new FluidClientException(
 					errMessage, FluidClientException.ErrorCode.IO_ERROR);

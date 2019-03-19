@@ -163,11 +163,10 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 			}
 		} catch (TimeoutException eParam) {
 			//Timeout...
-
 			String errMessage = this.getExceptionMessageVerbose(
 					"SQLUtil-WebSocket-ExecuteSQL",
 					uniqueReqId,
-					numberOfSentForms);
+					formWithSQLFieldParam);
 
 			throw new FluidClientException(errMessage,
 					FluidClientException.ErrorCode.IO_ERROR);

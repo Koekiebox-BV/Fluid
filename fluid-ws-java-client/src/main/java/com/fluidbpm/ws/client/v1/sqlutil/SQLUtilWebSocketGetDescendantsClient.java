@@ -219,8 +219,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 			//Timeout...
 			String errMessage = this.getExceptionMessageVerbose(
 					"SQLUtil-WebSocket-GetDescendants",
-					uniqueReqId,
-					numberOfSentForms);
+					uniqueReqId, (Object[]) formToGetDescendantsForParam);
 			throw new FluidClientException(
 					errMessage, FluidClientException.ErrorCode.IO_ERROR);
 		} finally {
