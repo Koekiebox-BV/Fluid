@@ -43,170 +43,164 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see Form
  */
 public class WebSocketFormContainerCreateClient extends
-        ABaseClientWebSocket<WebSocketFormContainerCreateClient.CreateFormContainerMessageHandler> {
+		ABaseClientWebSocket<WebSocketFormContainerCreateClient.CreateFormContainerMessageHandler> {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     *
-     * @param messageReceivedCallbackParam Callback for when a message is received.
-     *
-     * @param serviceTicketAsHexParam The Server issued Service Ticket.
-     * @param timeoutInMillisParam The timeout of the request in millis.
-     */
-    public WebSocketFormContainerCreateClient(
-            String endpointBaseUrlParam,
-            IMessageReceivedCallback<Form> messageReceivedCallbackParam,
-            String serviceTicketAsHexParam,
-            long timeoutInMillisParam) {
-        super(endpointBaseUrlParam,
-                messageReceivedCallbackParam,
-                timeoutInMillisParam,
-                WS.Path.FormContainer.Version1.formContainerCreateWebSocket(
-                        serviceTicketAsHexParam));
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 *
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 *
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 */
+	public WebSocketFormContainerCreateClient(
+			String endpointBaseUrlParam,
+			IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+			String serviceTicketAsHexParam,
+			long timeoutInMillisParam) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.FormContainer.Version1.formContainerCreateWebSocket(
+						serviceTicketAsHexParam));
 
-        this.setServiceTicket(serviceTicketAsHexParam);
-    }
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
 
-    /**
-     * Creates a new (Form) for the {@code formToCreateParam}.
-     *
-     * @param formToCreateParam The Fluid Form to create.
-     *
-     * @return The {@code formToCreateParam} created as {@code Form}.
-     */
-    public Form createFormContainerSynchronized(
-            Form formToCreateParam) {
+	/**
+	 * Creates a new (Form) for the {@code formToCreateParam}.
+	 *
+	 * @param formToCreateParam The Fluid Form to create.
+	 *
+	 * @return The {@code formToCreateParam} created as {@code Form}.
+	 */
+	public Form createFormContainerSynchronized(
+			Form formToCreateParam) {
 
-        if(formToCreateParam == null)
-        {
-            return null;
-        }
+		if(formToCreateParam == null)
+		{
+			return null;
+		}
 
-        //Send all the messages...
-        if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().trim().isEmpty())
-        {
-            formToCreateParam.setEcho(UUID.randomUUID().toString());
-        }
+		//Send all the messages...
+		if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().trim().isEmpty())
+		{
+			formToCreateParam.setEcho(UUID.randomUUID().toString());
+		}
 
-        //Start a new request...
-        String uniqueReqId = this.initNewRequest();
+		//Start a new request...
+		String uniqueReqId = this.initNewRequest();
 
-        //Send the actual message...
-        this.sendMessage(formToCreateParam, uniqueReqId);
-        
-        try {
-            List<Form> returnValue = this.getHandler(uniqueReqId).getCF().get(
-                    this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
+		//Send the actual message...
+		this.sendMessage(formToCreateParam, uniqueReqId);
 
-            //Connection was closed.. this is a problem....
-            if(this.getHandler(uniqueReqId).isConnectionClosed())
-            {
-                throw new FluidClientException(
-                        "WebSocket-CreateFormContainer: " +
-                                "The connection was closed by the server prior to the response received.",
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
+		try {
+			List<Form> returnValue = this.getHandler(uniqueReqId).getCF().get(
+					this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
-            if(returnValue == null || returnValue.isEmpty())
-            {
-                return null;
-            }
+			//Connection was closed.. this is a problem....
+			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+				throw new FluidClientException(
+						"WebSocket-CreateFormContainer: " +
+								"The connection was closed by the server prior to the response received.",
+						FluidClientException.ErrorCode.IO_ERROR);
+			}
 
-            return returnValue.get(0);
-        }
-        //Interrupted...
-        catch (InterruptedException exceptParam) {
+			if(returnValue == null || returnValue.isEmpty()) {
+				return null;
+			}
 
-            throw new FluidClientException(
-                    "WebSocket-Interrupted-CreateFormContainer: " +
-                            exceptParam.getMessage(),
-                    exceptParam,
-                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-        }
-        //Error on the web-socket...
-        catch (ExecutionException executeProblem) {
+			return returnValue.get(0);
+		}
+		//Interrupted...
+		catch (InterruptedException exceptParam) {
 
-            Throwable cause = executeProblem.getCause();
+			throw new FluidClientException(
+					"WebSocket-Interrupted-CreateFormContainer: " +
+							exceptParam.getMessage(),
+					exceptParam,
+					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+		} catch (ExecutionException executeProblem) {
+			//Error on the web-socket...
+			Throwable cause = executeProblem.getCause();
 
-            //Fluid client exception...
-            if(cause instanceof FluidClientException)
-            {
-                throw (FluidClientException)cause;
-            }
-            else
-            {
-                throw new FluidClientException(
-                        "WebSocket-CreateFormContainer: " +
-                                cause.getMessage(), cause,
-                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-            }
-        }
-        //Timeout...
-        catch (TimeoutException eParam) {
+			//Fluid client exception...
+			if(cause instanceof FluidClientException)
+			{
+				throw (FluidClientException)cause;
+			}
+			else
+			{
+				throw new FluidClientException(
+						"WebSocket-CreateFormContainer: " +
+								cause.getMessage(), cause,
+						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+			}
+		} catch (TimeoutException eParam) {
+			//Timeout...
+			String errMessage = this.getExceptionMessageVerbose(
+					"WebSocket-CreateFormContainer",
+					uniqueReqId,
+					formToCreateParam);
+			throw new FluidClientException(
+					errMessage, FluidClientException.ErrorCode.IO_ERROR);
+		}
+		finally {
+			this.removeHandler(uniqueReqId);
+		}
+	}
 
-            throw new FluidClientException(
-                    "WebSocket-CreateFormContainer: Timeout while waiting for all return data. There were '"
-                            +this.getHandler(uniqueReqId).getReturnValue().size()
-                            +"' items after a Timeout of "+(
-                            TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds."
-                    ,FluidClientException.ErrorCode.IO_ERROR);
-        }
-        finally {
-            this.removeHandler(uniqueReqId);
-        }
-    }
+	/**
+	 * Create a new instance of the handler class for {@code this} client.
+	 *
+	 * @return new instance of {@code CreateFormContainerMessageHandler}
+	 */
+	@Override
+	public CreateFormContainerMessageHandler getNewHandlerInstance() {
+		return new CreateFormContainerMessageHandler(this.messageReceivedCallback);
+	}
 
-    /**
-     * Create a new instance of the handler class for {@code this} client.
-     *
-     * @return new instance of {@code CreateFormContainerMessageHandler}
-     */
-    @Override
-    public CreateFormContainerMessageHandler getNewHandlerInstance() {
-        return new CreateFormContainerMessageHandler(this.messageReceivedCallback);
-    }
+	/**
+	 * Gets the single form. Still relying on a single session.
+	 */
+	static class CreateFormContainerMessageHandler extends AGenericListMessageHandler<Form>
+	{
+		private Form returnedForm;
 
-    /**
-     * Gets the single form. Still relying on a single session.
-     */
-    static class CreateFormContainerMessageHandler extends AGenericListMessageHandler<Form>
-    {
-        private Form returnedForm;
+		/**
+		 * The default constructor that sets a ancestor message handler.
+		 *
+		 * @param messageReceivedCallbackParam The optional message callback.
+		 */
+		public CreateFormContainerMessageHandler(
+				IMessageReceivedCallback<Form> messageReceivedCallbackParam) {
 
-        /**
-         * The default constructor that sets a ancestor message handler.
-         *
-         * @param messageReceivedCallbackParam The optional message callback.
-         */
-        public CreateFormContainerMessageHandler(
-                IMessageReceivedCallback<Form> messageReceivedCallbackParam) {
+			super(messageReceivedCallbackParam);
+		}
 
-            super(messageReceivedCallbackParam);
-        }
+		/**
+		 * New {@code Form} by {@code jsonObjectParam}
+		 *
+		 * @param jsonObjectParam The JSON Object to parse.
+		 * @return new {@code Form}.
+		 */
+		@Override
+		public Form getNewInstanceBy(JSONObject jsonObjectParam) {
 
-        /**
-         * New {@code Form} by {@code jsonObjectParam}
-         *
-         * @param jsonObjectParam The JSON Object to parse.
-         * @return new {@code Form}.
-         */
-        @Override
-        public Form getNewInstanceBy(JSONObject jsonObjectParam) {
+			this.returnedForm = new Form(jsonObjectParam);
 
-            this.returnedForm = new Form(jsonObjectParam);
+			return this.returnedForm;
+		}
 
-            return this.returnedForm;
-        }
-
-        /**
-         * Gets the value from that was returned after the WS call.
-         *
-         * @return The returned form.
-         */
-        public Form getReturnedForm() {
-            return this.returnedForm;
-        }
-    }
+		/**
+		 * Gets the value from that was returned after the WS call.
+		 *
+		 * @return The returned form.
+		 */
+		public Form getReturnedForm() {
+			return this.returnedForm;
+		}
+	}
 }

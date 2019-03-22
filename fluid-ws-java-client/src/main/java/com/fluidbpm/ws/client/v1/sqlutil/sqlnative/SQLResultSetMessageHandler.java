@@ -14,28 +14,27 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  */
 public class SQLResultSetMessageHandler extends AGenericListMessageHandler<SQLResultSet> {
 
-    /**
-     * Constructor for SQLResultSet callbacks.
-     *
-     * @param messageReceivedCallbackParam The callback events.
-     * @param compressedResponseParam Compress the SQL Result in Base-64.
-     */
-    public SQLResultSetMessageHandler(
-            IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
-            boolean compressedResponseParam) {
+	/**
+	 * Constructor for SQLResultSet callbacks.
+	 *
+	 * @param messageReceivedCallbackParam The callback events.
+	 * @param compressedResponseParam Compress the SQL Result in Base-64.
+	 */
+	public SQLResultSetMessageHandler(
+			IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
+			boolean compressedResponseParam
+    ) {
+		super(messageReceivedCallbackParam, compressedResponseParam);
+	}
 
-        super(messageReceivedCallbackParam, compressedResponseParam);
-    }
-
-    /**
-     * New {@code SQLResultSet} by {@code jsonObjectParam}
-     *
-     * @param jsonObjectParam The JSON Object to parse.
-     * @return new {@code SQLResultSet}.
-     */
-    @Override
-    public SQLResultSet getNewInstanceBy(JSONObject jsonObjectParam) {
-
-        return new SQLResultSet(jsonObjectParam);
-    }
+	/**
+	 * New {@code SQLResultSet} by {@code jsonObjectParam}
+	 *
+	 * @param jsonObjectParam The JSON Object to parse.
+	 * @return new {@code SQLResultSet}.
+	 */
+	@Override
+	public SQLResultSet getNewInstanceBy(JSONObject jsonObjectParam) {
+		return new SQLResultSet(jsonObjectParam);
+	}
 }
