@@ -78,34 +78,28 @@ public class UtilGlobal {
 	 * @return The converted value.
 	 */
 	public String toCamelUpperCase(String inputParam) {
-
-		if(inputParam == null)
-		{
+		if(inputParam == null) {
 			return null;
 		}
 
-		if(inputParam.isEmpty())
-		{
+		if(inputParam.isEmpty()) {
 			return EMPTY;
 		}
 
 		char[] original = inputParam.toCharArray();
-
 		StringBuilder titleCase =
 				new StringBuilder(Character.toString(
 						Character.toLowerCase(original[0])));
 
 		boolean nextTitleCase = false;
-		for(int index = 1;index < original.length;index++)
-		{
+		for(int index = 1;index < original.length;index++) {
 			char c = original[index];
 
 			if (Character.isSpaceChar(c)) {
 				nextTitleCase = true;
 				continue;
-			}
-			//Just add...
-			else if (nextTitleCase) {
+			} else if (nextTitleCase) {
+				//Just add...
 				c = Character.toTitleCase(c);
 				nextTitleCase = false;
 			}

@@ -116,6 +116,42 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 		JSONObject newContentMappingBuilderFromParam =
 				fluidFormMappingToUpdateParam.toJsonMappingForElasticSearch();
 
+		this.mergeMappingForIndex(
+				indexParam,
+				parentTypeParam,
+				formTypeString,
+				newContentMappingBuilderFromParam);
+	}
+
+	/**
+	 * Creates / Updates the index {@code indexParam} with mappings
+	 * provided in {@code fluidFormMappingToUpdateParam}.
+	 *
+	 * @param indexParam The ElasticSearch index effected.
+	 * @param parentTypeParam The {@code _parent} type to be set.
+	 * @param formTypeString The {@code _type} type to be set.
+	 * @param newContentMappingBuilderFromParam The new JSON mapping properties.
+	 *
+	 * @see Form
+	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
+	 */
+	public void mergeMappingForIndex(
+			String indexParam,
+			String parentTypeParam,
+			String formTypeString,
+			JSONObject newContentMappingBuilderFromParam
+	) {
+		if(indexParam == null) {
+			throw new FluidElasticSearchException(
+					"Index name '"+indexParam+"' is invalid.");
+		}
+
+		//The Form mapping to update...
+		if(newContentMappingBuilderFromParam == null) {
+			throw new FluidElasticSearchException(
+					"'JSON Object' for mapping not set.");
+		}
+
 		//Retrieve and update...
 		GetIndexResponse getExistingIndex = this.getOrCreateIndex(indexParam);
 		JSONObject existingPropsToUpdate = null;
@@ -157,8 +193,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 					newContentMappingBuilderFromParam);
 
 			//Set the additional properties...
-			this.setAdditionalProps(
-					existingPropsToUpdate, parentTypeParam);
+			this.setAdditionalProps(existingPropsToUpdate, parentTypeParam);
 
 			PutMappingRequestBuilder putMappingRequestBuilder =
 					this.client.admin().indices().preparePutMapping(indexParam);

@@ -75,8 +75,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 * @param indexParam The index to check.
 		 * @return {@code true} for valid index and {@code false} for invalid index.
 		 */
-		public static boolean isIndexValid(String indexParam)
-		{
+		public static boolean isIndexValid(String indexParam) {
 			if(DOCUMENT.equals(indexParam))
 			{
 				return true;
@@ -88,6 +87,28 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			else if(TABLE_RECORD.equals(indexParam))
 			{
 				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Checks to see whether {@code indexParam} is a valid
+		 * index type.
+		 *
+		 * @param indexParam The index to check.
+		 * @return {@code true} for valid index and {@code false} for invalid index.
+		 */
+		public static boolean isIndexNameValid(String indexParam) {
+
+			if(indexParam == null || indexParam.trim().isEmpty()) {
+				return false;
+			}
+
+			for(char character : indexParam.toCharArray()) {
+				if(Character.LOWERCASE_LETTER != Character.getType(character)) {
+					return false;
+				}
 			}
 
 			return false;

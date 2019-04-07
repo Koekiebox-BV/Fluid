@@ -56,6 +56,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	private String typeMetaData;
 
 	public static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
+	public static final String PLAIN_KEYWORD = "Plain Keyword";
 
 	/**
 	 * The JSON mapping for the {@code Field} object.
@@ -360,8 +361,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code getFieldName()} as upper_camel_case.
 	 */
 	@XmlTransient
-	public String getFieldNameAsUpperCamel()
-	{
+	public String getFieldNameAsUpperCamel() {
 		return new UtilGlobal().toCamelUpperCase(this.getFieldName());
 	}
 
@@ -1132,7 +1132,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			case ParagraphText:
 				return ElasticSearchType.TEXT;
 			case Text:
-
 				String metaData = this.getTypeMetaData();
 				if(metaData == null || metaData.isEmpty()) {
 					return ElasticSearchType.TEXT;
@@ -1140,6 +1139,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 				if(LATITUDE_AND_LONGITUDE.equals(metaData)) {
 					return ElasticSearchType.GEO_POINT;
+				}
+
+				if(PLAIN_KEYWORD.equals(metaData)) {
+					return ElasticSearchType.KEYWORD;
 				}
 
 				return ElasticSearchType.TEXT;
