@@ -1064,14 +1064,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Get the listing of form fields...
-		if(this.getFormFields() != null &&
-				!this.getFormFields().isEmpty())
-		{
-			for(Field toAdd : this.getFormFields())
-			{
+		if(this.getFormFields() != null && !this.getFormFields().isEmpty()) {
+			for(Field toAdd : this.getFormFields()) {
 				JSONObject convertedField = toAdd.toJsonMappingForElasticSearch();
-				if(convertedField == null)
-				{
+				if(convertedField == null) {
 					continue;
 				}
 
@@ -1154,7 +1150,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 					User.JSONMapping.Elastic.USER_ID, JSONObject.NULL);
 			currentUserJsonObj.put(User.JSONMapping.USERNAME, JSONObject.NULL);
 		} else {
-
 			//Id...
 			if(this.getCurrentUser().getId() == null ||
 					this.getCurrentUser().getId().longValue() < 1) {
@@ -1490,6 +1485,16 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 				this.setDescendantIds(descendantIds);
 			}
 		}
+	}
+
+	/**
+	 * Converts the {@code getFormType} to upper_camel_case.
+	 *
+	 * @return {@code getFieldName()} as upper_camel_case.
+	 */
+	@XmlTransient
+	public String getFormTypeAsUpperCamel() {
+		return new UtilGlobal().toCamelUpperCase(this.getFormType());
 	}
 
 	/**

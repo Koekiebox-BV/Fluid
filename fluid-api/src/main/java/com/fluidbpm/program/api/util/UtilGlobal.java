@@ -87,7 +87,7 @@ public class UtilGlobal {
 		}
 
 		char[] original = inputParam.toCharArray();
-		StringBuilder titleCase =
+		StringBuilder returnBuffer =
 				new StringBuilder(Character.toString(
 						Character.toLowerCase(original[0])));
 
@@ -99,15 +99,14 @@ public class UtilGlobal {
 				nextTitleCase = true;
 				continue;
 			} else if (nextTitleCase) {
-				//Just add...
 				c = Character.toTitleCase(c);
 				nextTitleCase = false;
 			}
 
-			titleCase.append(c);
+			returnBuffer.append(c);
 		}
 
-		return titleCase.toString();
+		return returnBuffer.toString();
 	}
 
 	/**

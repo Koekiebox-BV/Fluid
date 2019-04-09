@@ -76,19 +76,13 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 * @return {@code true} for valid index and {@code false} for invalid index.
 		 */
 		public static boolean isIndexValid(String indexParam) {
-			if(DOCUMENT.equals(indexParam))
-			{
+			if(DOCUMENT.equals(indexParam)) {
+				return true;
+			} else if(FOLDER.equals(indexParam)) {
+				return true;
+			} else if(TABLE_RECORD.equals(indexParam)) {
 				return true;
 			}
-			else if(FOLDER.equals(indexParam))
-			{
-				return true;
-			}
-			else if(TABLE_RECORD.equals(indexParam))
-			{
-				return true;
-			}
-
 			return false;
 		}
 
@@ -97,21 +91,23 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 * index type.
 		 *
 		 * @param indexParam The index to check.
-		 * @return {@code true} for valid index and {@code false} for invalid index.
+		 * @throws FluidElasticSearchException if validation fails.
 		 */
-		public static boolean isIndexNameValid(String indexParam) {
-
+		public static void validateIndexName(String indexParam) {
 			if(indexParam == null || indexParam.trim().isEmpty()) {
-				return false;
+				throw new FluidElasticSearchException("Index name is empty. Not allowed.");
 			}
 
+			int charIndex = 1;
 			for(char character : indexParam.toCharArray()) {
-				if(Character.LOWERCASE_LETTER != Character.getType(character)) {
-					return false;
+				int charType = Character.getType(character);
+				if(Character.LOWERCASE_LETTER != charType && '_' != character) {
+					throw new FluidElasticSearchException(
+							"Index name '"+ indexParam+"' is invalid. " +
+									"See character at index '"+ charIndex+":"+character+"' which is of type '"+charType+"'.");
 				}
+				charIndex++;
 			}
-
-			return false;
 		}
 	}
 

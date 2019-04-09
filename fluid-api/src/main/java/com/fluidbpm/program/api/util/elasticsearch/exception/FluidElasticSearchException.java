@@ -37,7 +37,7 @@ public class FluidElasticSearchException extends UtilException {
 	 * @param messageParam Exception message.
 	 */
 	public FluidElasticSearchException(String messageParam) {
-		super("ElasticSearch Problem: "+messageParam ,ErrorCode.CACHE);
+		super("ElasticSearch Problem: "+messageParam ,ErrorCode.ELASTIC);
 	}
 
 	/**
@@ -48,6 +48,6 @@ public class FluidElasticSearchException extends UtilException {
 	 * @param exceptionParam Traditional Java Exception.
 	 */
 	public FluidElasticSearchException(String messageParam, Exception exceptionParam) {
-		super("ElasticSearch Problem: "+messageParam,exceptionParam ,ErrorCode.CACHE);
+		super("ElasticSearch Problem: "+messageParam,exceptionParam ,ErrorCode.ELASTIC);
 	}
 }

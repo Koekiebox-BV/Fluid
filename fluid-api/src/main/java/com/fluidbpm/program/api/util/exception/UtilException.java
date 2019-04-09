@@ -40,6 +40,7 @@ public class UtilException extends RuntimeException {
 		public static final int SQL = 10002;
 		public static final int CACHE = 10003;
 		public static final int COMMAND = 10004;
+		public static final int ELASTIC = 10005;
 	}
 
 	/**
