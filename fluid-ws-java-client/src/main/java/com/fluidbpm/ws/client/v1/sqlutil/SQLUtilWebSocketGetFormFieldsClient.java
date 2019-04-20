@@ -73,7 +73,6 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 						compressResponseParam,
 						compressResponseCharsetParam),
 				compressResponseParam);
-
 		this.setServiceTicket(serviceTicketAsHexParam);
 	}
 
@@ -100,7 +99,6 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 						serviceTicketAsHexParam,
 						false,
 						UtilGlobal.EMPTY));
-
 		this.setServiceTicket(serviceTicketAsHexParam);
 	}
 
@@ -126,13 +124,11 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 		String uniqueReqId = this.initNewRequest();
 
 		//Send all the messages...
-		int numberOfSentForms = 0;
 		for(Form formToSend : formsToGetFieldListingForForParam) {
 			this.setEchoIfNotSet(formToSend);
 
 			//Send the actual message...
 			this.sendMessage(formToSend, uniqueReqId);
-			numberOfSentForms++;
 		}
 
 		try {
@@ -169,7 +165,7 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 								cause.getMessage(), cause,
 						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
 			}
-		} catch (TimeoutException eParam) {
+		} catch (TimeoutException timeoutErrParam) {
 			//Timeout...
 			String errMessage = this.getExceptionMessageVerbose(
 					"SQLUtil-WebSocket-GetFormFields",

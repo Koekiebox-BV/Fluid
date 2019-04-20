@@ -58,7 +58,7 @@
         <version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
 
         <!--Elasticsearch-->
-        <version.elasticsearch>5.6.9</version.elasticsearch>
+        <version.elasticsearch>6.7.1</version.elasticsearch>
 
         <!--GlassFish Tyrus-->
         <version.glassfish.tyrus.core>1.13.1</version.glassfish.tyrus.core>

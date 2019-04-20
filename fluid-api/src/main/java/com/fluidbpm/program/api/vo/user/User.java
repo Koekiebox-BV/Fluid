@@ -82,8 +82,7 @@ public class User extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code User} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String USERNAME = "username";
 
 		public static final String ACTIVE = "active";
@@ -111,8 +110,7 @@ public class User extends ABaseFluidJSONObject {
 		/**
 		 * Elastic specific properties.
 		 */
-		public static final class Elastic
-		{
+		public static final class Elastic {
 			public static final String USER_ID = "userId";
 		}
 	}
@@ -131,7 +129,6 @@ public class User extends ABaseFluidJSONObject {
 	 */
 	public User(String usernameParam) {
 		super();
-
 		this.setUsername(usernameParam);
 	}
 
@@ -142,8 +139,19 @@ public class User extends ABaseFluidJSONObject {
 	 */
 	public User(Long userIdParam) {
 		super();
-
 		this.setId(userIdParam);
+	}
+
+	/**
+	 * Creates a {@code new} of {@code this} with id set.
+	 *
+	 * @param userIdParam The {@code User} primary key.
+	 * @param usernameParam The {@code User} username.
+	 */
+	public User(Long userIdParam, String usernameParam) {
+		super();
+		this.setId(userIdParam);
+		this.setUsername(usernameParam);
 	}
 
 	/**

@@ -18,10 +18,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import javax.websocket.DeploymentException;
@@ -47,7 +44,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
 	private WebSocketClient webSocketClient;
 	private long timeoutInMillis;
-	private Map<String,RespHandler> messageHandler = new Hashtable<>();
+	private Map<String,RespHandler> messageHandler;
 
 	protected IMessageReceivedCallback messageReceivedCallback;
 	protected boolean compressResponse;
@@ -55,8 +52,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	/**
 	 * The constant variables used.
 	 */
-	public static class Constant
-	{
+	public static class Constant {
 		public static final String HTTP = "http";
 		public static final String HTTPS = "https";
 
@@ -82,7 +78,6 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 			long timeoutInMillisParam,
 			String postFixForUrlParam,
 			boolean compressResponseParam) {
-
 		this(endpointBaseUrlParam, messageReceivedCallbackParam, timeoutInMillisParam, postFixForUrlParam);
 		this.compressResponse = compressResponseParam;
 	}
@@ -102,19 +97,20 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 			String postFixForUrlParam) {
 		super(endpointBaseUrlParam);
 
+		this.messageHandler = new HashMap<>();
+		this.messageHandler = Collections.synchronizedMap(this.messageHandler);
+
 		this.timeoutInMillis = timeoutInMillisParam;
 		this.messageReceivedCallback = messageReceivedCallbackParam;
 
-		if(this.webSocketEndpointUrl == null && this.endpointUrl != null)
-		{
+		if(this.webSocketEndpointUrl == null && this.endpointUrl != null) {
 			this.webSocketEndpointUrl =
 					this.getWebSocketBaseURIFrom(this.endpointUrl);
 		}
 
 		//Confirm Web Socket Endpoint is set.
 		if(this.webSocketEndpointUrl == null ||
-				this.webSocketEndpointUrl.trim().isEmpty())
-		{
+				this.webSocketEndpointUrl.trim().isEmpty()) {
 			throw new FluidClientException(
 					"Base Web Socket Endpoint URL not set.",
 					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
@@ -123,37 +119,28 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		//Issue #23... Don't do double //...
 		String completeUrl = null;
 		if(this.webSocketEndpointUrl.endsWith(UtilGlobal.FORWARD_SLASH) &&
-				postFixForUrlParam.startsWith(UtilGlobal.FORWARD_SLASH))
-		{
+				postFixForUrlParam.startsWith(UtilGlobal.FORWARD_SLASH)) {
 			completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam.substring(1));
-		}
-		else
-		{
+		} else {
 			completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam);
 		}
 
 		try {
 			this.webSocketClient = new WebSocketClient(
 					new URI(completeUrl), this.messageHandler);
-		}
-		//Deploy...
-		catch (DeploymentException e) {
-
+		} catch (DeploymentException e) {
+			//Deploy...
 			throw new FluidClientException(
 					"Unable to create Web Socket client (Deployment). URL ["+ completeUrl+"]: "
 							+e.getMessage(),
 					e, FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR);
-		}
-		//I/O...
-		catch (IOException e) {
-
+		} catch (IOException e) {
+			//I/O...
 			throw new FluidClientException(
 					"Unable to create Web Socket client (I/O). URL ["+ completeUrl+"]:"+e.getMessage(),
 					e, FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
-		}
-		//URI Syntax...
-		catch (URISyntaxException e) {
-
+		} catch (URISyntaxException e) {
+			//URI Syntax...
 			throw new FluidClientException(
 					"Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
 					e, FluidClientException.ErrorCode.WEB_SOCKET_URI_SYNTAX_ERROR);
@@ -170,8 +157,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 */
 	public void sendMessage(
 			ABaseFluidJSONObject baseFluidJSONObjectParam,
-			String requestIdParam)
-	{
+			String requestIdParam
+	) {
 		if(baseFluidJSONObjectParam != null) {
 			baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
@@ -193,8 +180,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @since v1.1
 	 */
 	@Override
-	public void closeAndClean()
-	{
+	public void closeAndClean() {
 		CloseConnectionRunnable closeConnectionRunnable =
 				new CloseConnectionRunnable(this);
 
@@ -207,10 +193,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * Close the SQL and ElasticSearch Connection, but not in
 	 * a separate {@code Thread}.
 	 */
-	protected void closeConnectionNonThreaded()
-	{
-		if(this.webSocketClient == null)
-		{
+	protected void closeConnectionNonThreaded() {
+		if(this.webSocketClient == null) {
 			return;
 		}
 
@@ -226,8 +210,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 *
 	 * @return A randomly generated identifier for the request.
 	 */
-	public synchronized String initNewRequest(){
-
+	public synchronized String initNewRequest() {
 		String returnVal = UUID.randomUUID().toString();
 		this.messageHandler.put(returnVal, this.getNewHandlerInstance());
 
@@ -268,15 +251,12 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @param webServiceURLParam The Web Service URL to convert.
 	 * @return The Web Socket URL version of {@code webServiceURLParam}.
 	 */
-	private String getWebSocketBaseURIFrom(String webServiceURLParam)
-	{
-		if(webServiceURLParam == null)
-		{
+	private String getWebSocketBaseURIFrom(String webServiceURLParam) {
+		if(webServiceURLParam == null) {
 			return null;
 		}
 
-		if(webServiceURLParam.trim().length() == 0)
-		{
+		if(webServiceURLParam.trim().length() == 0) {
 			return UtilGlobal.EMPTY;
 		}
 
@@ -284,9 +264,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		StringBuilder returnBuffer = new StringBuilder();
 
 		String scheme = uri.getScheme();
-
-		if(scheme == null)
-		{
+		if(scheme == null) {
 			throw new FluidClientException(
 					"Unable to get scheme from '"+webServiceURLParam+"' URL.",
 					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
@@ -297,14 +275,10 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		//https://localhost:8443/fluid-ws/
 		//Scheme...
 		if(Constant.HTTP.equals(scheme)) {
-
 			returnBuffer.append(Constant.WS);
-		}
-		else if(Constant.HTTPS.equals(scheme)) {
-
+		} else if(Constant.HTTPS.equals(scheme)) {
 			returnBuffer.append(Constant.WSS);
-		}
-		else {
+		} else {
 			returnBuffer.append(uri.getScheme());
 		}
 
@@ -313,8 +287,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		returnBuffer.append(uri.getHost());
 
 		// 80 / 443
-		if(uri.getPort() > 0)
-		{
+		if(uri.getPort() > 0) {
 			returnBuffer.append(Constant.COLON);
 			returnBuffer.append(uri.getPort());
 		}
@@ -394,7 +367,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	) {
 		//Request...
 		StringBuilder formFieldsCombined = new StringBuilder(),
-				formFieldsRequestCombined = new StringBuilder();
+				formFieldsRequestCombined = new StringBuilder(),
+				expectedMessagesCombined = new StringBuilder();
 
 		if(sentItemsParam != null) {
 			for(Object objSent : sentItemsParam) {
@@ -402,7 +376,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 					continue;
 				}
 				formFieldsRequestCombined.append(objSent.toString());
-				formFieldsRequestCombined.append("|");
+				formFieldsRequestCombined.append(UtilGlobal.PIPE);
 			}
 		}
 
@@ -410,11 +384,10 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		int returnValSize = -1;
 		RespHandler respHandler = this.getHandler(uniqueReqIdParam);
 		if(respHandler instanceof AGenericListMessageHandler) {
-			List<? extends ABaseFluidJSONObject> returnValue =
-					((AGenericListMessageHandler)respHandler).getReturnValue();
+			AGenericListMessageHandler handlerCasted = ((AGenericListMessageHandler)respHandler);
+			List<? extends ABaseFluidJSONObject> returnValue = handlerCasted.getReturnValue();
 			if(returnValue != null) {
 				returnValSize = returnValue.size();
-
 				returnValue.forEach(listingItm -> {
 					if(listingItm instanceof ABaseListing) {
 						ABaseListing castedToListing = (ABaseListing)listingItm;
@@ -423,13 +396,23 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 						formFieldsCombined.append(listingItm.toString());
 					}
 
-					formFieldsCombined.append("|");
+					formFieldsCombined.append(UtilGlobal.PIPE);
+				});
+			}
+
+			Set<String> expectedMessages =
+					handlerCasted.getExpectedEchoMessagesBeforeComplete();
+			if(expectedMessages != null) {
+				expectedMessages.forEach(expItm -> {
+					expectedMessagesCombined.append(expItm);
+					expectedMessagesCombined.append(UtilGlobal.PIPE);
 				});
 			}
 		}
 
 		String reqToString = formFieldsRequestCombined.toString(),
-		respToString = formFieldsCombined.toString();
+		respToString = formFieldsCombined.toString(),
+		expectedToString = expectedMessagesCombined.toString();
 
 		if(reqToString.length() > 0) {
 			reqToString = reqToString.substring(0, reqToString.length() - 1);
@@ -439,6 +422,10 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 			respToString = respToString.substring(0, respToString.length() - 1);
 		}
 
+		if(expectedToString.length() > 0) {
+			expectedToString = expectedToString.substring(0, expectedToString.length() - 1);
+		}
+
 		return (prefixParam + ": " +
 				"Timeout while waiting for all return data. There were '"+
 				returnValSize +"' items after a Timeout of "+(
@@ -446,14 +433,14 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 				uniqueReqIdParam+"'. Expected a total of '" +
 				(sentItemsParam == null ? 0: sentItemsParam.length) + "' forms. " +
 				"Request-Data '"+ reqToString+"'. \n" +
-				"Returned-Data '"+ respToString+"'.");
+				"Returned-Data '"+ respToString+"'. \n" +
+				"Expected '"+ expectedToString +"'.");
 	}
 
 	/**
 	 * Utility class to close the connection in a thread.
 	 */
-	private static class CloseConnectionRunnable implements Runnable{
-
+	private static class CloseConnectionRunnable implements Runnable {
 		private ABaseClientWebSocket baseClientWebSocket;
 
 		/**
@@ -470,9 +457,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		 */
 		@Override
 		public void run() {
-
-			if(this.baseClientWebSocket == null)
-			{
+			if(this.baseClientWebSocket == null) {
 				return;
 			}
 

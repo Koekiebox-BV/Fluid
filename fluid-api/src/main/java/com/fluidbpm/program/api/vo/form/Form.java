@@ -1144,7 +1144,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Current User...
 		JSONObject currentUserJsonObj = new JSONObject();
-
 		if(this.getCurrentUser() == null) {
 			currentUserJsonObj.put(
 					User.JSONMapping.Elastic.USER_ID, JSONObject.NULL);
@@ -1172,7 +1171,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 						this.getCurrentUser().getUsername());
 			}
 		}
-
 		returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
 
 		//Date Created...

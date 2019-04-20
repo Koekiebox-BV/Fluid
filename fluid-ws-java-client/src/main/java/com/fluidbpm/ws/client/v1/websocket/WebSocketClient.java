@@ -26,7 +26,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 
 	private Session userSession = null;
-	private Map<String,RespHandler> messageHandlers;
+	private Map<String, RespHandler> messageHandlers;
 
 	/**
 	 * Default constructor with an endpoint.
@@ -46,7 +46,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 		ClientManager clMng = ClientManager.createClient(
 				GrizzlyClientContainer.class.getName());
 
-		clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, "15000");
+		clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, String.valueOf(15000));
 
 		WebSocketContainer container = clMng;
 
@@ -85,8 +85,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 		this.userSession = null;
 
 		if (this.messageHandlers != null) {
-
-			this.messageHandlers.values().forEach(handle ->{
+			this.messageHandlers.values().forEach(handle -> {
 				handle.connectionClosed();
 			});
 		}
@@ -101,7 +100,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	public void onMessage(String messageParam) {
 
 		boolean handlerFoundForMsg = false;
-		for(IMessageResponseHandler handler : new ArrayList<>(this.messageHandlers.values())) {
+		for(IMessageResponseHandler handler :
+				new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
 			Object qualifyObj = handler.doesHandlerQualifyForProcessing(messageParam);
 			if(qualifyObj instanceof Error) {
 				handler.handleMessage(qualifyObj);

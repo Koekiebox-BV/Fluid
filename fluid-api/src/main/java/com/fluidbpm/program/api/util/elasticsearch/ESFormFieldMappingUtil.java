@@ -15,13 +15,11 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
-import java.io.IOException;
-
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.get.GetIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -171,15 +169,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 				if(casted.containsKey(formTypeString) &&
 						casted.get(formTypeString) instanceof MappingMetaData) {
 					MappingMetaData mappingMetaData = (MappingMetaData)casted.get(formTypeString);
-
-					try {
-						existingPropsToUpdate = new JSONObject(mappingMetaData.source().string());
-						break;
-					} catch (IOException eParam) {
-						throw new FluidElasticSearchException(
-								"Unable to retrieve source from 'Mapping Meta-Data'. "+
-										eParam.getMessage(),eParam);
-					}
+					existingPropsToUpdate = new JSONObject(mappingMetaData.source().string());
 				}
 			}
 		}
@@ -202,9 +192,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			putMappingRequestBuilder = putMappingRequestBuilder.setSource(
 					existingPropsToUpdate.toString(), XContentType.JSON);
 
-			PutMappingResponse putMappingResponse = putMappingRequestBuilder.get();
-
-			if(!putMappingResponse.isAcknowledged()) {
+			AcknowledgedResponse acknowledgedResponse = putMappingRequestBuilder.get();
+			if(!acknowledgedResponse.isAcknowledged()) {
 				throw new FluidElasticSearchException(
 						"Index Update for Creating '"+
 								indexParam+"' and type '"+
@@ -257,9 +246,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 		putMappingRequestBuilder = putMappingRequestBuilder.setSource(
 				existingPropsToUpdate.toString(), XContentType.JSON);
 
-		PutMappingResponse putMappingResponse = putMappingRequestBuilder.get();
-
-		if(!putMappingResponse.isAcknowledged()) {
+		AcknowledgedResponse acknowledgedResponse = putMappingRequestBuilder.get();
+		if(!acknowledgedResponse.isAcknowledged()) {
 			throw new FluidElasticSearchException(
 					"Index Update for '"+
 							indexParam+"' and type '"+
