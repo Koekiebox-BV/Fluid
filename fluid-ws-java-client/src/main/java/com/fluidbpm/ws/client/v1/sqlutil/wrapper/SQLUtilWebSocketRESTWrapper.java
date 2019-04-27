@@ -351,13 +351,13 @@ public class SQLUtilWebSocketRESTWrapper {
 	/**
 	 * Retrieves all the (Fields) for the {@code formsToGetDescForParam}.
 	 *
-	 * @param includeFieldDataParam Should Field data be included?
+	 * @param includeTableFieldDataParam Should Table Record Field data be included?
 	 * @param formsToGetFieldsForParam The Fluid Form to get Descendants for.
 	 *
 	 * @return The {@code formsToGetFieldsForParam} Fields as {@code Field}'s.
 	 */
 	public List<FormFieldListing> getFormFields(
-			boolean includeFieldDataParam,
+			boolean includeTableFieldDataParam,
 			Form ... formsToGetFieldsForParam
 	) {
 		if(DISABLE_WS) {
@@ -373,7 +373,7 @@ public class SQLUtilWebSocketRESTWrapper {
 						null,
 						this.loggedInUser.getServiceTicketAsHexUpper(),
 						this.timeoutMillis,
-						includeFieldDataParam,
+						includeTableFieldDataParam,
 						COMPRESS_RSP,
 						COMPRESS_RSP_CHARSET);
 
@@ -408,7 +408,7 @@ public class SQLUtilWebSocketRESTWrapper {
 				List<Field> listOfFields =
 						this.sqlUtilClient.getFormFields(
 								formToFetchFor,
-								includeFieldDataParam);
+								includeTableFieldDataParam);
 
 				FormFieldListing toAdd = new FormFieldListing();
 				toAdd.setListing(listOfFields);

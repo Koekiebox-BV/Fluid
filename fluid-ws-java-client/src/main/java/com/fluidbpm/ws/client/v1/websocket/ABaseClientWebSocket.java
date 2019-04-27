@@ -432,9 +432,9 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 				TimeUnit.MILLISECONDS.toSeconds(this.getTimeoutInMillis()))+" seconds on req-ref-nr '"+
 				uniqueReqIdParam+"'. Expected a total of '" +
 				(sentItemsParam == null ? 0: sentItemsParam.length) + "' forms. " +
-				"Request-Data '"+ reqToString+"'. \n" +
-				"Returned-Data '"+ respToString+"'. \n" +
-				"Expected '"+ expectedToString +"'.");
+				"\nRequest-Data '"+ reqToString+"'. \n" +
+				"\nReturned-Data '"+ respToString+"'. \n" +
+				"\nExpected-Data '"+ expectedToString +"'.");
 	}
 
 	/**
