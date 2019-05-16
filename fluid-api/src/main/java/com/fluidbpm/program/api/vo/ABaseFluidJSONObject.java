@@ -54,17 +54,16 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	/**
 	 * The JSON mapping for the {@code ABaseFluidJSONObject} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String ID = "id";
 		public static final String SERVICE_TICKET = "serviceTicket";
+		public static final String REQUEST_UUID = "requestUuid";
 		public static final String ECHO = "echo";
 
 		/**
 		 * Elastic specific properties.
 		 */
-		public static final class Elastic
-		{
+		public static final class Elastic {
 			public static final String PROPERTIES = "properties";
 		}
 	}
@@ -86,37 +85,27 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
 		this.jsonObject = jsonObjectParam;
 
-		if(this.jsonObject == null)
-		{
+		if(this.jsonObject == null) {
 			return;
 		}
 
 		//Id...
 		if (!this.jsonObject.isNull(JSONMapping.ID)) {
-
 			Object idObject = this.jsonObject.get(JSONMapping.ID);
 
-			//Long Id...
-			if(idObject instanceof Number)
-			{
+			if(idObject instanceof Number) {
+				//Long Id...
 				this.setId(this.jsonObject.getLong(JSONMapping.ID));
-			}
-			//String Id...
-			else if(idObject instanceof String)
-			{
+			} else if(idObject instanceof String) {
+				//String Id...
 				String idStr = this.jsonObject.getString(JSONMapping.ID);
 
-				try
-				{
+				try {
 					this.setId(Long.parseLong(idStr));
-				}
-				catch (NumberFormatException nfe)
-				{
+				} catch (NumberFormatException nfe) {
 					this.setId(null);
 				}
-			}
-			else
-			{
+			} else {
 				throw new IllegalArgumentException(
 						"Unable to parse Field '"+JSONMapping.ID+"'.");
 			}
@@ -125,6 +114,11 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 		//Service Ticket...
 		if (!this.jsonObject.isNull(JSONMapping.SERVICE_TICKET)) {
 			this.setServiceTicket(this.jsonObject.getString(JSONMapping.SERVICE_TICKET));
+		}
+
+		//Request UUID...
+		if (!this.jsonObject.isNull(JSONMapping.REQUEST_UUID)) {
+			this.setRequestUuid(this.jsonObject.getString(JSONMapping.REQUEST_UUID));
 		}
 
 		//Echo...
@@ -145,25 +139,26 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @see org.json.JSONObject
 	 */
 	@XmlTransient
-	public JSONObject toJsonObject() throws JSONException
-	{
+	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
-		if(this.getId() != null)
-		{
+		if(this.getId() != null) {
 			returnVal.put(JSONMapping.ID,this.getId());
 		}
 
 		//Service Ticket...
-		if(this.getServiceTicket() != null)
-		{
+		if(this.getServiceTicket() != null) {
 			returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
 		}
 
+		//Request UUID...
+		if(this.getRequestUuid() != null) {
+			returnVal.put(JSONMapping.REQUEST_UUID, this.getRequestUuid());
+		}
+
 		//Echo...
-		if(this.getEcho() != null)
-		{
+		if(this.getEcho() != null) {
 			returnVal.put(JSONMapping.ECHO, this.getEcho());
 		}
 
@@ -180,10 +175,8 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 *
 	 */
 	@XmlTransient
-	private Date getLongAsDateFromJson(Long longValueParam)
-	{
-		if(longValueParam == null)
-		{
+	private Date getLongAsDateFromJson(Long longValueParam) {
+		if(longValueParam == null) {
 			return null;
 		}
 
@@ -197,11 +190,9 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @return The value of the JSON Object as a {@code java.util.Date}.
 	 */
 	@XmlTransient
-	public Date getDateFieldValueFromFieldWithName(String fieldNameParam)
-	{
+	public Date getDateFieldValueFromFieldWithName(String fieldNameParam) {
 		if((fieldNameParam == null || fieldNameParam.trim().isEmpty()) ||
-				(this.jsonObject == null || this.jsonObject.isNull(fieldNameParam)))
-		{
+				(this.jsonObject == null || this.jsonObject.isNull(fieldNameParam))) {
 			return null;
 		}
 
@@ -266,7 +257,6 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	public String toString() {
 
 		JSONObject jsonObject = this.toJsonObject();
-
 		return (jsonObject == null) ? null : jsonObject.toString();
 	}
 }

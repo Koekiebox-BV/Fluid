@@ -279,19 +279,16 @@ public class UtilGlobal {
 	 * @param base64StringParam String to convert to {@code byte[]}.
 	 * @return byte[].
 	 */
-	public static byte[] decodeBase64(String base64StringParam)
-	{
-		if(base64StringParam == null)
-		{
+	public static byte[] decodeBase64(String base64StringParam) {
+		if(base64StringParam == null) {
 			return null;
 		}
 
-		if(base64StringParam.isEmpty())
-		{
+		if(base64StringParam.isEmpty()) {
 			return new byte[]{};
 		}
 
-		return Base64.getDecoder().decode(base64StringParam);
+		return Base64.getMimeDecoder().decode(base64StringParam);
 	}
 
 	/**
@@ -300,8 +297,7 @@ public class UtilGlobal {
 	 * @param bytesParam bytes to convert to Hex.
 	 * @return Hex String in upper case.
 	 */
-	public static String encodeBase16(byte[] bytesParam)
-	{
+	public static String encodeBase16(byte[] bytesParam) {
 		if(bytesParam == null)
 		{
 			return null;
@@ -323,8 +319,7 @@ public class UtilGlobal {
 	 */
 	public static byte[] decodeBase16(String stringParam) {
 
-		if(stringParam == null)
-		{
+		if(stringParam == null) {
 			return null;
 		}
 
@@ -349,19 +344,16 @@ public class UtilGlobal {
 	 * @param bytesParam bytes to convert to Base64.
 	 * @return Base64 String.
 	 */
-	public static String encodeBase64(byte[] bytesParam)
-	{
-		if(bytesParam == null)
-		{
+	public static String encodeBase64(byte[] bytesParam) {
+		if(bytesParam == null) {
 			return null;
 		}
 
-		if(bytesParam.length == 0)
-		{
+		if(bytesParam.length == 0) {
 			return UtilGlobal.EMPTY;
 		}
 
-		return Base64.getEncoder().encodeToString(bytesParam);
+		return Base64.getMimeEncoder().encodeToString(bytesParam);
 	}
 
 	/**

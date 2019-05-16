@@ -121,8 +121,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	public ABaseESUtil(
 			Connection connectionParam,
 			Client esClientParam,
-			CacheUtil cacheUtilParam) {
-
+			CacheUtil cacheUtilParam
+	) {
 		super(connectionParam, cacheUtilParam);
 		this.client = esClientParam;
 		this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam);
@@ -157,8 +157,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			String indexParam,
 			int offsetParam,
 			int limitParam,
-			Long ... formTypesParam) {
-
+			Long ... formTypesParam
+	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
 				indexParam,
@@ -175,8 +175,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			returnVal = new ArrayList();
 
 			if((searchHits.getHits().length != totalHits) &&
-					(searchHits.getHits().length != limitParam))
-			{
+					(searchHits.getHits().length != limitParam)) {
 				throw new FluidElasticSearchException(
 						"The Hits and fetch count has mismatch. Total hits is '"+totalHits
 								+"' while hits is '"+
@@ -243,29 +242,24 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		}
 
 		//The requested number of results...
-		if(limitParam > 0)
-		{
+		if(limitParam > 0) {
 			searchRequestBuilder = searchRequestBuilder.setSize(limitParam);
 		}
 
-		if(offsetParam > -1){
+		if(offsetParam > -1) {
 			searchRequestBuilder = searchRequestBuilder.setFrom(offsetParam);
 		}
 
-		if(formTypesParam == null)
-		{
+		if(formTypesParam == null) {
 			formTypesParam = new Long[]{};
 		}
 
 		//If Types is set...
-		if(formTypesParam != null && formTypesParam.length > 0)
-		{
+		if(formTypesParam != null && formTypesParam.length > 0) {
 			String[] formTypesAsString = new String[formTypesParam.length];
-			for(int index = 0;index < formTypesParam.length;index++)
-			{
+			for(int index = 0;index < formTypesParam.length;index++) {
 				Long formTypeId = formTypesParam[index];
-				if(formTypeId == null)
-				{
+				if(formTypeId == null) {
 					continue;
 				}
 
@@ -276,7 +270,6 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 
 		//Perform the actual search...
 		SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
-
 		if (searchResponse == null) {
 			return null;
 		}
@@ -302,8 +295,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			boolean withNoFieldsParam,
 			int offsetParam,
 			int limitParam,
-			Long ... formTypesParam) {
-
+			Long ... formTypesParam
+	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
 				indexParam,
@@ -621,7 +614,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	protected final List<Form> populateTableFields(
 			boolean addAllTableRecordsForReturnParam,
 			boolean includeFieldDataParam,
-			List<Field> formFieldsParam) {
+			List<Field> formFieldsParam
+	) {
 		if(formFieldsParam == null || formFieldsParam.isEmpty()) {
 			return null;
 		}

@@ -80,6 +80,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	//Protected variables used by subclasses...
 	protected String endpointUrl = "https://localhost:8443/fluid-ws/";
 	protected String serviceTicket;
+	protected String requestUuid;
 
 	private static String EQUALS = "=";
 	private static String AMP = "&";
@@ -194,6 +195,37 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		} else {
 			this.endpointUrl = endpointBaseUrlParam;
 		}
+	}
+
+	/**
+	 * Creates a new client and sets the Base Endpoint URL.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public ABaseClientWS(
+			String endpointBaseUrlParam,
+			String serviceTicketParam
+	) {
+		this(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+	}
+
+	/**
+	 * Creates a new client and sets the Base Endpoint URL.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param requestUuidParam The unique identifier per request.
+	 */
+	public ABaseClientWS(
+			String endpointBaseUrlParam,
+			String serviceTicketParam,
+			String requestUuidParam
+	) {
+		this(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+		this.setRequestUuid(requestUuidParam);
 	}
 
 	/**
@@ -1047,6 +1079,24 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 */
 	public void setServiceTicket(String serviceTicketParam) {
 		this.serviceTicket = serviceTicketParam;
+	}
+
+	/**
+	 * Gets the request UUID for tracing purposes.
+	 *
+	 * @return Request UUID
+	 */
+	public String getRequestUuid() {
+		return this.requestUuid;
+	}
+
+	/**
+	 * Sets the request UUID for tracing purposes.
+	 *
+	 * @param requestUuidParam The unique identifier for the request.
+	 */
+	public void setRequestUuid(String requestUuidParam) {
+		this.requestUuid = requestUuidParam;
 	}
 
 	/**

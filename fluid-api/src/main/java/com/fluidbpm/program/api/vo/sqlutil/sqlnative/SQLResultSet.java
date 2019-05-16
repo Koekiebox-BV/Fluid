@@ -34,33 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  */
 public class SQLResultSet extends ABaseListing<SQLRow> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public SQLResultSet() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public SQLResultSet() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public SQLResultSet(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public SQLResultSet(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code SQLRow} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code SQLRow}.
-     * @return New {@code SQLRow} instance.
-     */
-    @Override
-    @XmlTransient
-    public SQLRow getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new SQLRow(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code SQLRow} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code SQLRow}.
+	 * @return New {@code SQLRow} instance.
+	 */
+	@Override
+	@XmlTransient
+	public SQLRow getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new SQLRow(jsonObjectParam);
+	}
 }

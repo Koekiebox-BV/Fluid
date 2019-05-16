@@ -80,10 +80,9 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 	public Form getFormAncestor(
 			Long electronicFormIdParam,
 			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam)
-	{
-		if(electronicFormIdParam == null)
-		{
+			boolean includeTableFieldsParam
+	) {
+		if(electronicFormIdParam == null) {
 			return null;
 		}
 
@@ -96,17 +95,14 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 
 		//Search for the Ancestor...
 		List<Form> ancestorForms = null;
-		if(includeFieldDataParam)
-		{
+		if(includeFieldDataParam) {
 			ancestorForms = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(ancestorQuery.toString()),
 					Index.DOCUMENT,
 					DEFAULT_OFFSET,
 					1,
 					new Long[]{});
-		}
-		else
-		{
+		} else {
 			ancestorForms = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(ancestorQuery.toString()),
 					Index.DOCUMENT,
@@ -116,20 +112,17 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 		}
 
 		Form returnVal = null;
-		if(ancestorForms != null && !ancestorForms.isEmpty())
-		{
+		if(ancestorForms != null && !ancestorForms.isEmpty()) {
 			returnVal = ancestorForms.get(0);
 		}
 
 		//No result...
-		if(returnVal == null)
-		{
+		if(returnVal == null) {
 			return null;
 		}
 
 		//Whether table field data should be included...
-		if(!includeTableFieldsParam)
-		{
+		if(!includeTableFieldsParam) {
 			return returnVal;
 		}
 
@@ -159,10 +152,9 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 			Long electronicFormIdParam,
 			boolean includeFieldDataParam,
 			boolean includeTableFieldsParam,
-			boolean includeTableFieldFormRecordInfoParam) {
-
-		if(electronicFormIdParam == null)
-		{
+			boolean includeTableFieldFormRecordInfoParam
+	) {
+		if(electronicFormIdParam == null) {
 			return null;
 		}
 
@@ -222,16 +214,13 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 
 		//Search for the Descendants...
 		List<Form> returnVal = null;
-		if(includeFieldDataParam)
-		{
+		if(includeFieldDataParam) {
 			returnVal = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(fullQueryToExec),
 					Index.DOCUMENT,
 					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS,
 					new Long[]{});
-		}
-		else
-		{
+		} else {
 			returnVal = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(fullQueryToExec),
 					Index.DOCUMENT,
@@ -240,20 +229,17 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 		}
 
 		//Whether table field data should be included...
-		if(!includeTableFieldsParam)
-		{
+		if(!includeTableFieldsParam) {
 			return returnVal;
 		}
 
 		//No result...
-		if(returnVal == null)
-		{
+		if(returnVal == null) {
 			return returnVal;
 		}
 
 		//Populate in order to have table field data...
-		for(Form descendantForm : returnVal)
-		{
+		for(Form descendantForm : returnVal) {
 			this.populateTableFields(
 					false,
 					includeFieldDataParam,
@@ -273,10 +259,9 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 	 */
 	public List<Form> getFormTableForms(
 			Long electronicFormIdParam,
-			boolean includeFieldDataParam)
-	{
-		if(electronicFormIdParam == null)
-		{
+			boolean includeFieldDataParam
+	) {
+		if(electronicFormIdParam == null) {
 			return null;
 		}
 
@@ -289,17 +274,14 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 
 		//Search for the primary...
 		List<Form> formsWithId = null;
-		if(includeFieldDataParam)
-		{
+		if(includeFieldDataParam) {
 			formsWithId = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(primaryQuery.toString()),
 					Index.DOCUMENT,
 					DEFAULT_OFFSET,
 					1,
 					new Long[]{});
-		}
-		else
-		{
+		} else {
 			formsWithId = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(primaryQuery.toString()),
 					Index.DOCUMENT,
@@ -309,8 +291,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 		}
 
 		Form returnVal = null;
-		if(formsWithId != null && !formsWithId.isEmpty())
-		{
+		if(formsWithId != null && !formsWithId.isEmpty()) {
 			returnVal = formsWithId.get(0);
 		}
 

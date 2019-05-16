@@ -45,7 +45,6 @@ public class ESFormFieldUtil extends ABaseESUtil{
 	 * @param cacheUtilParam The Cache Util for better performance.
 	 */
 	public ESFormFieldUtil(Connection connectionParam, Client esClientParam, CacheUtil cacheUtilParam) {
-
 		super(connectionParam, esClientParam, cacheUtilParam);
 	}
 
@@ -81,7 +80,8 @@ public class ESFormFieldUtil extends ABaseESUtil{
 
 		//Search for the primary...
 		List<Form> formsWithId = this.searchAndConvertHitsToFormWithAllFields(
-				QueryBuilders.queryStringQuery(primaryQuery.toString()), Index.DOCUMENT,
+				QueryBuilders.queryStringQuery(primaryQuery.toString()),
+				Index.DOCUMENT,
 				DEFAULT_OFFSET, 1,
 				new Long[]{});
 

@@ -99,7 +99,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL,serviceTicket);
+        FormFieldClient formFieldClient = new FormFieldClient(BASE_URL, serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();

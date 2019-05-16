@@ -41,269 +41,264 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  */
 public class NativeSQLQuery extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    private String datasourceName;
-    
-    private String query;
-    private String storedProcedure;
+	private String datasourceName;
 
-    private List<SQLColumn> sqlInputs;
+	private String query;
+	private String storedProcedure;
 
-    /**
-     * The JSON mapping for the {@code NativeSQLQuery} object.
-     */
-    public static class JSONMapping {
-        
-        public static final String DATASOURCE_NAME = "datasourceName";
-        public static final String QUERY = "query";
-        public static final String STORED_PROCEDURE = "storedProcedure";
-        
-        public static final String SQL_INPUTS = "sqlInputs";
-    }
+	private List<SQLColumn> sqlInputs;
 
-    /**
-     * Default constructor.
-     */
-    public NativeSQLQuery() {
-        super();
-    }
+	/**
+	 * The JSON mapping for the {@code NativeSQLQuery} object.
+	 */
+	public static class JSONMapping {
 
-    /**
-     * Sets the Id associated with a 'User Query'.
-     *
-     * @param userQueryIdParam UserQuery Id.
-     */
-    public NativeSQLQuery(Long userQueryIdParam) {
-        super();
+		public static final String DATASOURCE_NAME = "datasourceName";
+		public static final String QUERY = "query";
+		public static final String STORED_PROCEDURE = "storedProcedure";
 
-        this.setId(userQueryIdParam);
-    }
+		public static final String SQL_INPUTS = "sqlInputs";
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public NativeSQLQuery(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
+	/**
+	 * Default constructor.
+	 */
+	public NativeSQLQuery() {
+		super();
+	}
 
-        if(this.jsonObject == null)
-        {
-            return;
-        }
+	/**
+	 * Sets the Id associated with a 'User Query'.
+	 *
+	 * @param userQueryIdParam UserQuery Id.
+	 */
+	public NativeSQLQuery(Long userQueryIdParam) {
+		super();
 
-        //Datasource Name...
-        if (!this.jsonObject.isNull(JSONMapping.DATASOURCE_NAME)) {
-            this.setDatasourceName(
-                    this.jsonObject.getString(JSONMapping.DATASOURCE_NAME));
-        }
+		this.setId(userQueryIdParam);
+	}
 
-        //Query...
-        if (!this.jsonObject.isNull(JSONMapping.QUERY)) {
-            this.setQuery(this.jsonObject.getString(JSONMapping.QUERY));
-        }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public NativeSQLQuery(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
 
-        //Stored Procedure...
-        if (!this.jsonObject.isNull(JSONMapping.STORED_PROCEDURE)) {
-            this.setStoredProcedure(
-                    this.jsonObject.getString(JSONMapping.STORED_PROCEDURE));
-        }
-        
-        //Inputs...
-        if (!this.jsonObject.isNull(JSONMapping.SQL_INPUTS)) {
+		if(this.jsonObject == null)
+		{
+			return;
+		}
 
-            JSONArray rulesArr = this.jsonObject.getJSONArray(
-                    JSONMapping.SQL_INPUTS);
+		//Datasource Name...
+		if (!this.jsonObject.isNull(JSONMapping.DATASOURCE_NAME)) {
+			this.setDatasourceName(
+					this.jsonObject.getString(JSONMapping.DATASOURCE_NAME));
+		}
 
-            List<SQLColumn> inputs = new ArrayList();
-            for(int index = 0;index < rulesArr.length();index++)
-            {
-                inputs.add(new SQLColumn(rulesArr.getJSONObject(index)));
-            }
+		//Query...
+		if (!this.jsonObject.isNull(JSONMapping.QUERY)) {
+			this.setQuery(this.jsonObject.getString(JSONMapping.QUERY));
+		}
 
-            this.setSqlInputs(inputs);
-        }
-        else{
-            this.setSqlInputs(null);
-        }
-    }
+		//Stored Procedure...
+		if (!this.jsonObject.isNull(JSONMapping.STORED_PROCEDURE)) {
+			this.setStoredProcedure(
+					this.jsonObject.getString(JSONMapping.STORED_PROCEDURE));
+		}
 
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code UserQuery}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException {
+		//Inputs...
+		if (!this.jsonObject.isNull(JSONMapping.SQL_INPUTS)) {
 
-        JSONObject returnVal = super.toJsonObject();
+			JSONArray rulesArr = this.jsonObject.getJSONArray(
+					JSONMapping.SQL_INPUTS);
 
-        //Datasource Name...
-        if(this.getDatasourceName() != null) {
-            
-            returnVal.put(JSONMapping.DATASOURCE_NAME,
-                    this.getDatasourceName());
-        }
+			List<SQLColumn> inputs = new ArrayList();
+			for(int index = 0;index < rulesArr.length();index++)
+			{
+				inputs.add(new SQLColumn(rulesArr.getJSONObject(index)));
+			}
 
-        //Query...
-        if(this.getQuery() != null) {
+			this.setSqlInputs(inputs);
+		}
+		else{
+			this.setSqlInputs(null);
+		}
+	}
 
-            returnVal.put(JSONMapping.QUERY, this.getQuery());
-        }
+	/**
+	 * Conversion to {@code JSONObject} from Java Object.
+	 *
+	 * @return {@code JSONObject} representation of {@code UserQuery}
+	 * @throws JSONException If there is a problem with the JSON Body.
+	 *
+	 * @see ABaseFluidJSONObject#toJsonObject()
+	 */
+	@Override
+	public JSONObject toJsonObject() throws JSONException {
 
-        //Stored Procedure...
-        if(this.getStoredProcedure() != null) {
+		JSONObject returnVal = super.toJsonObject();
 
-            returnVal.put(
-                    JSONMapping.STORED_PROCEDURE,
-                    this.getStoredProcedure());
-        }
+		//Datasource Name...
+		if(this.getDatasourceName() != null) {
+			returnVal.put(JSONMapping.DATASOURCE_NAME,
+					this.getDatasourceName());
+		}
 
-        //Inputs...
-        if(this.getSqlInputs() != null)
-        {
-            JSONArray jsonArray = new JSONArray();
+		//Query...
+		if(this.getQuery() != null) {
+			returnVal.put(JSONMapping.QUERY, this.getQuery());
+		}
 
-            for(SQLColumn toAdd : this.getSqlInputs())
-            {
-                jsonArray.put(toAdd.toJsonObject());
-            }
+		//Stored Procedure...
+		if(this.getStoredProcedure() != null) {
+			returnVal.put(
+					JSONMapping.STORED_PROCEDURE,
+					this.getStoredProcedure());
+		}
 
-            returnVal.put(JSONMapping.SQL_INPUTS, jsonArray);
-        }
-        
-        return returnVal;
-    }
+		//Inputs...
+		if(this.getSqlInputs() != null) {
+			JSONArray jsonArray = new JSONArray();
 
-    /**
-     * Gets name of the datasource alias to use as lookup.
-     *
-     * @return The datasource name.
-     *
-     * @see javax.sql.DataSource
-     */
-    public String getDatasourceName() {
-        return this.datasourceName;
-    }
+			for(SQLColumn toAdd : this.getSqlInputs()) {
+				jsonArray.put(toAdd.toJsonObject());
+			}
 
-    /**
-     * Sets name of the datasource alias to use as lookup.
-     *
-     * @param datasourceNameParam The datasource name.
-     *
-     * @see javax.sql.DataSource
-     */
-    public void setDatasourceName(String datasourceNameParam) {
-        this.datasourceName = datasourceNameParam;
-    }
+			returnVal.put(JSONMapping.SQL_INPUTS, jsonArray);
+		}
 
-    /**
-     * Gets SQL Query to execute.
-     * If the query is not provided, the stored procedure should be.
-     *
-     * @return The SQL Query to execute.
-     *
-     * @see PreparedStatement#executeQuery()
-     */
-    public String getQuery() {
-        return this.query;
-    }
+		return returnVal;
+	}
 
-    /**
-     * Sets SQL Query to execute.
-     * If the query is not provided, the stored procedure should be.
-     *
-     * @param queryParam The SQL Query to execute.
-     *
-     * @see PreparedStatement#executeQuery() 
-     */
-    public void setQuery(String queryParam) {
-        this.query = queryParam;
-    }
+	/**
+	 * Gets name of the datasource alias to use as lookup.
+	 *
+	 * @return The datasource name.
+	 *
+	 * @see javax.sql.DataSource
+	 */
+	public String getDatasourceName() {
+		return this.datasourceName;
+	}
 
-    /**
-     * Get the stored procedure to execute.
-     *
-     * The format for the procedure is as follows;
-     *
-     * {@code {{call spShowSuppliers(?,?,?)}}}
-     * {@code {{call spShowSuppliers()}}}
-     *
-     * @return The stored procedure.
-     */
-    public String getStoredProcedure() {
-        return this.storedProcedure;
-    }
+	/**
+	 * Sets name of the datasource alias to use as lookup.
+	 *
+	 * @param datasourceNameParam The datasource name.
+	 *
+	 * @see javax.sql.DataSource
+	 */
+	public void setDatasourceName(String datasourceNameParam) {
+		this.datasourceName = datasourceNameParam;
+	}
 
-    /**
-     * Set the stored procedure to execute.
-     *
-     * The format for the procedure is as follows;
-     *
-     * {@code {{call spShowSuppliers(?,?,?)}}}
-     * {@code {{call spShowSuppliers()}}}
-     *
-     * @param storedProcedureParam The stored procedure to execute.
-     *
-     * @see java.sql.Connection#prepareCall(String)
-     */
-    public void setStoredProcedure(String storedProcedureParam) {
-        this.storedProcedure = storedProcedureParam;
-    }
+	/**
+	 * Gets SQL Query to execute.
+	 * If the query is not provided, the stored procedure should be.
+	 *
+	 * @return The SQL Query to execute.
+	 *
+	 * @see PreparedStatement#executeQuery()
+	 */
+	public String getQuery() {
+		return this.query;
+	}
 
-    /**
-     * Add a SQL input parameter.
-     * If the sql inputs is {@code null}, a new instance
-     * of {@code ArrayList} will be created prior to adding the parameter.
-     *
-     * @param sqlInputToAddParam The SQL Input to add.
-     *
-     * @see SQLColumn
-     */
-    @XmlTransient
-    public void addSqlInput(SQLColumn sqlInputToAddParam){
-        if(this.sqlInputs == null){
-            this.sqlInputs = new ArrayList<>();
-        }
+	/**
+	 * Sets SQL Query to execute.
+	 * If the query is not provided, the stored procedure should be.
+	 *
+	 * @param queryParam The SQL Query to execute.
+	 *
+	 * @see PreparedStatement#executeQuery()
+	 */
+	public void setQuery(String queryParam) {
+		this.query = queryParam;
+	}
 
-        if(sqlInputToAddParam == null){
-            return;
-        }
+	/**
+	 * Get the stored procedure to execute.
+	 *
+	 * The format for the procedure is as follows;
+	 *
+	 * {@code {{call spShowSuppliers(?,?,?)}}}
+	 * {@code {{call spShowSuppliers()}}}
+	 *
+	 * @return The stored procedure.
+	 */
+	public String getStoredProcedure() {
+		return this.storedProcedure;
+	}
 
-        this.sqlInputs.add(sqlInputToAddParam);
-    }
+	/**
+	 * Set the stored procedure to execute.
+	 *
+	 * The format for the procedure is as follows;
+	 *
+	 * {@code {{call spShowSuppliers(?,?,?)}}}
+	 * {@code {{call spShowSuppliers()}}}
+	 *
+	 * @param storedProcedureParam The stored procedure to execute.
+	 *
+	 * @see java.sql.Connection#prepareCall(String)
+	 */
+	public void setStoredProcedure(String storedProcedureParam) {
+		this.storedProcedure = storedProcedureParam;
+	}
 
-    /**
-     * Get the SQL input parameters.
-     *
-     * @return The SQL input parameters.
-     */
-    public List<SQLColumn> getSqlInputs() {
-        return this.sqlInputs;
-    }
+	/**
+	 * Add a SQL input parameter.
+	 * If the sql inputs is {@code null}, a new instance
+	 * of {@code ArrayList} will be created prior to adding the parameter.
+	 *
+	 * @param sqlInputToAddParam The SQL Input to add.
+	 *
+	 * @see SQLColumn
+	 */
+	@XmlTransient
+	public void addSqlInput(SQLColumn sqlInputToAddParam){
+		if(this.sqlInputs == null){
+			this.sqlInputs = new ArrayList<>();
+		}
 
-    /**
-     * Set the SQL input parameters.
-     *
-     * @param sqlInputsParam The SQL input parameters.
-     */
-    public void setSqlInputs(List<SQLColumn> sqlInputsParam) {
-        this.sqlInputs = sqlInputsParam;
-    }
+		if(sqlInputToAddParam == null){
+			return;
+		}
 
-    /**
-     * Checks whether the stored procedure value is populated.
-     *
-     * @return {@code true} if stored procedure is populated, otherwise {@code false}.
-     */
-    @XmlTransient
-    public boolean isTypeStoredProcedure(){
+		this.sqlInputs.add(sqlInputToAddParam);
+	}
 
-        return (this.getStoredProcedure() == null ||
-                this.getStoredProcedure().trim().isEmpty()) ? false:true;
-    }
+	/**
+	 * Get the SQL input parameters.
+	 *
+	 * @return The SQL input parameters.
+	 */
+	public List<SQLColumn> getSqlInputs() {
+		return this.sqlInputs;
+	}
+
+	/**
+	 * Set the SQL input parameters.
+	 *
+	 * @param sqlInputsParam The SQL input parameters.
+	 */
+	public void setSqlInputs(List<SQLColumn> sqlInputsParam) {
+		this.sqlInputs = sqlInputsParam;
+	}
+
+	/**
+	 * Checks whether the stored procedure value is populated.
+	 *
+	 * @return {@code true} if stored procedure is populated, otherwise {@code false}.
+	 */
+	@XmlTransient
+	public boolean isTypeStoredProcedure(){
+
+		return (this.getStoredProcedure() == null ||
+				this.getStoredProcedure().trim().isEmpty()) ? false:true;
+	}
 }

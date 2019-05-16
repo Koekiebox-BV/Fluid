@@ -34,9 +34,38 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 	 * Creates a new client and sets the Base Endpoint URL.
 	 *
 	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param requestUuidParam The unique identifier per request.
 	 */
-	public ABaseFieldClient(String endpointBaseUrlParam) {
-		super(endpointBaseUrlParam);
+	public ABaseFieldClient(
+			String endpointBaseUrlParam,
+			String serviceTicketParam,
+			String requestUuidParam
+	) {
+		super(endpointBaseUrlParam, serviceTicketParam, requestUuidParam);
+	}
+
+	/**
+	 * Creates a new client and sets the Base Endpoint URL.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public ABaseFieldClient(
+			String endpointBaseUrlParam,
+			String serviceTicketParam
+	) {
+		super(endpointBaseUrlParam, serviceTicketParam, null);
+	}
+
+	/**
+	 * Creates a new client and sets the Base Endpoint URL.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 */
+	public ABaseFieldClient(String endpointBaseUrlParam
+	) {
+		super(endpointBaseUrlParam, null, null);
 	}
 
 	/**
