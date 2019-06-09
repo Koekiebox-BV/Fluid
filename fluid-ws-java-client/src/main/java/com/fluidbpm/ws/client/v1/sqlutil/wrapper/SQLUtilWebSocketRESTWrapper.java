@@ -632,5 +632,9 @@ public class SQLUtilWebSocketRESTWrapper {
 		if(this.getFormFieldsClient != null) {
 			this.getFormFieldsClient.closeAndClean();
 		}
+
+		if(this.sqlUtilWebSocketExecNativeClient != null) {
+			this.sqlUtilWebSocketExecNativeClient.closeAndClean();
+		}
 	}
 }
