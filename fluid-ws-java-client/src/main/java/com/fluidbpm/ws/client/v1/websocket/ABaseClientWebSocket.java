@@ -156,8 +156,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @see org.json.JSONObject
 	 */
 	public void sendMessage(
-			ABaseFluidJSONObject baseFluidJSONObjectParam,
-			String requestIdParam
+		ABaseFluidJSONObject baseFluidJSONObjectParam,
+		String requestIdParam
 	) {
 		if(baseFluidJSONObjectParam != null) {
 			baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
@@ -211,7 +211,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @return A randomly generated identifier for the request.
 	 */
 	public synchronized String initNewRequest() {
-		String returnVal = UUID.randomUUID().toString();
+		String returnVal = UtilGlobal.randomUUID();
 		this.messageHandler.put(returnVal, this.getNewHandlerInstance());
 
 		return returnVal;
@@ -348,7 +348,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
 		} else if(baseToSetEchoOnIfNotSetParam.getEcho() == null ||
 				baseToSetEchoOnIfNotSetParam.getEcho().trim().isEmpty()) {
-			baseToSetEchoOnIfNotSetParam.setEcho(UUID.randomUUID().toString());
+			baseToSetEchoOnIfNotSetParam.setEcho(UtilGlobal.randomUUID());
 		}
 	}
 

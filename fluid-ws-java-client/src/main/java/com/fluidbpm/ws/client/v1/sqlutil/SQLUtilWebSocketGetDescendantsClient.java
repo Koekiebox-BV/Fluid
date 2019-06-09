@@ -17,7 +17,6 @@ package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -161,7 +160,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 				listOfValidForms.add(new Form(formToSend.getId()));
 			}
 
-			listingToSend.setEcho(UUID.randomUUID().toString());
+			listingToSend.setEcho(UtilGlobal.randomUUID());
 			listingToSend.setListing(listOfValidForms);
 
 			//Send the actual message...

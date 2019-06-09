@@ -16,13 +16,13 @@
 package com.fluidbpm.ws.client.v1.form;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -88,7 +88,7 @@ public class WebSocketTableRecordCreateClient extends
 		//Send all the messages...
 		if(tableRecordToCreateParam.getEcho() == null ||
 				tableRecordToCreateParam.getEcho().trim().isEmpty()) {
-			tableRecordToCreateParam.setEcho(UUID.randomUUID().toString());
+			tableRecordToCreateParam.setEcho(UtilGlobal.randomUUID());
 		}
 
 		//Start a new request...

@@ -17,16 +17,18 @@ package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.sqlutil.*;
+import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
 
 /**
  * Wrapper class used for when WebSockets is not a
@@ -48,6 +50,8 @@ public class SQLUtilWebSocketRESTWrapper {
 	private SQLUtilWebSocketGetDescendantsClient getDescendantsClient = null;
 	private SQLUtilWebSocketGetTableFormsClient getTableFormsClient = null;
 	private SQLUtilWebSocketGetFormFieldsClient getFormFieldsClient = null;
+	
+	private SQLUtilWebSocketExecuteNativeSQLClient sqlUtilWebSocketExecNativeClient = null;
 
 	private final SQLUtilClient sqlUtilClient;
 
@@ -421,6 +425,63 @@ public class SQLUtilWebSocketRESTWrapper {
 	}
 
 	/**
+	 * Executes all the sql queries {@code nativeSQLQueriesParam}.
+	 *
+	 * @param nativeSQLQueriesParam The queries to execute.
+	 *
+	 * @return Each fo the ResultSets for {@code nativeSQLQueriesParam}.
+	 *
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
+	 */
+	public List<SQLResultSet> executeNativeSQL(NativeSQLQuery ... nativeSQLQueriesParam) {
+		if(DISABLE_WS) {
+			this.mode = Mode.RESTfulActive;
+		}
+
+		//NATIVE SQL QUERIES...
+		try {
+			//When mode is null or [WebSocketActive]...
+			if(this.sqlUtilWebSocketExecNativeClient == null && Mode.RESTfulActive != this.mode) {
+				this.sqlUtilWebSocketExecNativeClient = new SQLUtilWebSocketExecuteNativeSQLClient(
+						this.baseURL,
+						null,
+						this.loggedInUser.getServiceTicketAsHexUpper(),
+						this.timeoutMillis,
+						COMPRESS_RSP,
+						COMPRESS_RSP_CHARSET
+				);
+
+				this.mode = Mode.WebSocketActive;
+			}
+		} catch (FluidClientException clientExcept) {
+			if(clientExcept.getErrorCode() !=
+					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
+				throw clientExcept;
+			}
+			this.mode = Mode.RESTfulActive;
+		}
+
+		if(nativeSQLQueriesParam == null || nativeSQLQueriesParam.length < 1) {
+			return null;
+		}
+
+		if(this.sqlUtilWebSocketExecNativeClient != null) {
+			return this.sqlUtilWebSocketExecNativeClient.executeNativeSQLSynchronized(nativeSQLQueriesParam);
+		} else {
+			List<SQLResultSet> returnVal = new ArrayList<>();
+
+			for(NativeSQLQuery sqlToExec : nativeSQLQueriesParam) {
+				SQLResultSet resultSet = this.sqlUtilClient.executeSQL(sqlToExec);
+				returnVal.add(resultSet);
+			}
+
+			return returnVal;
+		}
+	}
+
+	/**
 	 * Retrieves all the (Fields) for the {@code formsToGetDescForParam}.
 	 *
 	 * @param includeFieldDataParam Should Field data be included?
@@ -470,7 +531,7 @@ public class SQLUtilWebSocketRESTWrapper {
 		for(int index = 0;index < formsToFetchForLocalCacheArr.length;index++) {
 
 			formsToFetchForLocalCacheArr[index] = new Form(formsToPopulateFormFieldsForParam[index].getId());
-			formsToFetchForLocalCacheArr[index].setEcho(UUID.randomUUID().toString());
+			formsToFetchForLocalCacheArr[index].setEcho(UtilGlobal.randomUUID());
 		}
 
 		List<FormFieldListing> listingReturnFieldValsPopulated = new ArrayList<>();

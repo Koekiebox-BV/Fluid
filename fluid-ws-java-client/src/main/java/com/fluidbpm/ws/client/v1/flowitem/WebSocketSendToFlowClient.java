@@ -16,13 +16,13 @@
 package com.fluidbpm.ws.client.v1.flowitem;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -109,7 +109,7 @@ public class WebSocketSendToFlowClient extends
 		itemToSend.setForm(formToSendToFlowParam);
 
 		//Send all the messages...
-		itemToSend.setEcho(UUID.randomUUID().toString());
+		itemToSend.setEcho(UtilGlobal.randomUUID());
 
 		//Start a new request...
 		String uniqueReqId = this.initNewRequest();

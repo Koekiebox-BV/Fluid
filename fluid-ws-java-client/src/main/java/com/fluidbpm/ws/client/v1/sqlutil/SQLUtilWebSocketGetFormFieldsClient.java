@@ -122,7 +122,6 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 
 		//Start a new request...
 		String uniqueReqId = this.initNewRequest();
-
 		//Send all the messages...
 		for(Form formToSend : formsToGetFieldListingForForParam) {
 			this.setEchoIfNotSet(formToSend);
@@ -170,8 +169,7 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 			String errMessage = this.getExceptionMessageVerbose(
 					"SQLUtil-WebSocket-GetFormFields",
 					uniqueReqId, (Object[]) formsToGetFieldListingForForParam);
-			throw new FluidClientException(
-					errMessage, FluidClientException.ErrorCode.IO_ERROR);
+			throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
 		} finally {
 			this.removeHandler(uniqueReqId);
 		}

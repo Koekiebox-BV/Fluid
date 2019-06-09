@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -422,7 +421,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
             //Pic a random form...
             long randomId = idsToPicFrom[0];
 
-            String uuidForm1 = UUID.randomUUID().toString();
+            String uuidForm1 = UtilGlobal.randomUUID();
             Form form1 = new Form(randomId);
             form1.setEcho(uuidForm1);
             //System.out.println("ExpectResponse: "+uuidForm1);

@@ -3327,11 +3327,25 @@ public class WS {
 				/**
 				 * URL Path for executing native SQL queries.
 				 *
+				 * @return {@code v1/sql_util/native/execute_query}
+				 *
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
+				 */
+				public static final String getExecuteNativeSQL() {
+					return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_NATIVE_QUERY);
+				}
+
+				/**
+				 * URL Path for executing native SQL queries for web-sockets.
+				 *
 				 * @param serviceTicketParam The service ticket in hex-decimal text format.
 				 * @param compressResponseParam Compress the SQL Result in Base-64.
 				 * @param compressResponseCharsetParam Compress response using provided charset.
 				 *
-				 * @return {@code v1/sql_util/native/execute_query}
+				 * @return {@code /web_socket/v1/sql_util/native/execute_query}
 				 *
 				 * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
 				 */

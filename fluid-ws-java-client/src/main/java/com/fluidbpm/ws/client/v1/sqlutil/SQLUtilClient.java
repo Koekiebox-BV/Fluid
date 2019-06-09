@@ -25,6 +25,8 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -49,7 +51,6 @@ public class SQLUtilClient extends ABaseClientWS {
 	 */
 	public SQLUtilClient(String endpointBaseUrlParam, String serviceTicketParam) {
 		super(endpointBaseUrlParam);
-
 		this.setServiceTicket(serviceTicketParam);
 	}
 
@@ -62,24 +63,21 @@ public class SQLUtilClient extends ABaseClientWS {
 	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
 	 */
 	public List<Form> getTableForms(
-			Form formToGetTableFormsForParam,
-			boolean includeFieldDataParam) {
-
+		Form formToGetTableFormsForParam,
+		boolean includeFieldDataParam
+	) {
 		if (formToGetTableFormsForParam != null && this.serviceTicket != null) {
 			formToGetTableFormsForParam.setServiceTicket(this.serviceTicket);
 		}
 
 		try {
-
 			FormListing formListing = new FormListing(
 					this.postJson(formToGetTableFormsForParam,
 							WS.Path.SQLUtil.Version1.getTableForms(
 									includeFieldDataParam)));
 
 			return formListing.getListing();
-		}
-		//
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
@@ -96,11 +94,11 @@ public class SQLUtilClient extends ABaseClientWS {
 	 * @return The {@code formToGetTableFormsForParam} Descendants as {@code Form}'s.
 	 */
 	public List<Form> getDescendants(
-			Form formToGetDescendantsForParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam,
-			boolean inclTableFieldFormInfoParam) {
-
+		Form formToGetDescendantsForParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam,
+		boolean inclTableFieldFormInfoParam
+	) {
 		if (formToGetDescendantsForParam != null && this.serviceTicket != null) {
 			formToGetDescendantsForParam.setServiceTicket(this.serviceTicket);
 		}
@@ -114,9 +112,7 @@ public class SQLUtilClient extends ABaseClientWS {
 									inclTableFieldFormInfoParam)));
 
 			return formListing.getListing();
-		}
-		//
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
@@ -132,10 +128,10 @@ public class SQLUtilClient extends ABaseClientWS {
 	 * @return The {@code formToGetAncestorForParam} Ancestor as {@code Form}'s.
 	 */
 	public Form getAncestor(
-			Form formToGetAncestorForParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam) {
-
+		Form formToGetAncestorForParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam
+	) {
 		if (formToGetAncestorForParam != null && this.serviceTicket != null) {
 			formToGetAncestorForParam.setServiceTicket(this.serviceTicket);
 		}
@@ -146,9 +142,7 @@ public class SQLUtilClient extends ABaseClientWS {
 							WS.Path.SQLUtil.Version1.getAncestor(
 									includeFieldDataParam,
 									includeTableFieldsParam)));
-		}
-		//JSON Issue...
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
@@ -163,9 +157,9 @@ public class SQLUtilClient extends ABaseClientWS {
 	 * @return The {@code formToGetFieldsForParam} Fields as {@code Field}'s.
 	 */
 	public List<Field> getFormFields(
-			Form formToGetFieldsForParam,
-			boolean includeTableFieldsParam) {
-
+		Form formToGetFieldsForParam,
+		boolean includeTableFieldsParam
+	) {
 		if (formToGetFieldsForParam != null && this.serviceTicket != null) {
 			formToGetFieldsForParam.setServiceTicket(this.serviceTicket);
 		}
@@ -177,9 +171,37 @@ public class SQLUtilClient extends ABaseClientWS {
 									includeTableFieldsParam)));
 
 			return formFieldListing.getListing();
+		} catch (JSONException e) {
+			throw new FluidClientException(e.getMessage(), e,
+					FluidClientException.ErrorCode.JSON_PARSING);
 		}
-		//
-		catch (JSONException e) {
+	}
+
+	/**
+	 * Executes the sql query {@code sqlQueryParam} and returns
+	 * the result as {@code SQLResultSet}
+	 *
+	 * @param sqlQueryParam The native SQL query to execute.
+	 *
+	 * @return The ResultSet in the form of {@code SQLResultSet}.
+	 *
+	 * @see SQLResultSet
+	 * @see NativeSQLQuery
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
+	 */
+	public SQLResultSet executeSQL(NativeSQLQuery sqlQueryParam) {
+
+		if (sqlQueryParam != null && this.serviceTicket != null) {
+			sqlQueryParam.setServiceTicket(this.serviceTicket);
+		}
+
+		try {
+			SQLResultSet resultSet = new SQLResultSet(
+					this.postJson(sqlQueryParam,
+							WS.Path.SQLUtil.Version1.getExecuteNativeSQL()));
+			return resultSet;
+		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}

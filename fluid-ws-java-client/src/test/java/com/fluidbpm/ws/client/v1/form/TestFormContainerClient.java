@@ -18,7 +18,6 @@ package com.fluidbpm.ws.client.v1.form;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -235,9 +234,9 @@ public class TestFormContainerClient extends ABaseTestCase {
         Form formContEncToCreate = new Form("Form Test");
         formContEncToCreate.setTitle("Created At "+new Date());
         formContEncToCreate.setFieldValue(
-                "Field Crap",UUID.randomUUID().toString(), Field.Type.Text);
+                "Field Crap", UtilGlobal.randomUUID(), Field.Type.Text);
         formContEncToCreate.setFieldValue(
-                "Sample Encrypt Field", UUID.randomUUID().toString(), Field.Type.TextEncrypted);
+                "Sample Encrypt Field", UtilGlobal.randomUUID(), Field.Type.TextEncrypted);
 
         Form createdForm = formContainerClient.createFormContainer(formContEncToCreate);
 

@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.util;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -507,5 +508,15 @@ public class UtilGlobal {
 		{
 			objectToSetFieldOnParam.put(completeFieldName, ((Date)fieldValue).getTime());
 		}
+	}
+
+	/**
+	 * Create a random UUID using {@code UUID.randomUUID()}.
+	 * Example; 91e4da00-b858-4ccc-a0c3-7acad7415911
+	 *
+	 * @return Random 36 character string.
+	 */
+	public static String randomUUID() {
+		return UUID.randomUUID().toString();
 	}
 }

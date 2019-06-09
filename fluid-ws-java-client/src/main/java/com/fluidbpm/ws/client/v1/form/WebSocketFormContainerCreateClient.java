@@ -16,13 +16,13 @@
 package com.fluidbpm.ws.client.v1.form;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -87,7 +87,7 @@ public class WebSocketFormContainerCreateClient extends
 		//Send all the messages...
 		if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().trim().isEmpty())
 		{
-			formToCreateParam.setEcho(UUID.randomUUID().toString());
+			formToCreateParam.setEcho(UtilGlobal.randomUUID());
 		}
 
 		//Start a new request...
