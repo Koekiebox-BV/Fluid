@@ -182,6 +182,10 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
 	 */
 	@Override
 	public GenericFormFieldListingMessageHandler getNewHandlerInstance() {
-		return new GenericFormFieldListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
+		return new GenericFormFieldListingMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient,
+				this.compressResponse
+		);
 	}
 }

@@ -34,33 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  */
 public class FormListing extends ABaseListing<Form> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public FormListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public FormListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public FormListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public FormListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code Form} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code Form}.
-     * @return New {@code Form} instance.
-     */
-    @Override
-    @XmlTransient
-    public Form getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Form(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code Form} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code Form}.
+	 * @return New {@code Form} instance.
+	 */
+	@Override
+	@XmlTransient
+	public Form getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new Form(jsonObjectParam);
+	}
 }

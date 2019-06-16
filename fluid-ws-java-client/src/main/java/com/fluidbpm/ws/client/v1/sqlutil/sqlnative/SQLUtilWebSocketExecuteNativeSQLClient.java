@@ -191,6 +191,10 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 	 */
 	@Override
 	public SQLResultSetMessageHandler getNewHandlerInstance() {
-		return new SQLResultSetMessageHandler(this.messageReceivedCallback, this.compressResponse);
+		return new SQLResultSetMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient,
+				this.compressResponse
+		);
 	}
 }

@@ -30,6 +30,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 /**
  * Java Web Socket Client for {@code SQLUtil} related actions.
@@ -60,14 +61,15 @@ public class SQLUtilWebSocketGetAncestorClient extends
 	 * @param compressResponseCharsetParam Compress response using provided charset.
 	 */
 	public SQLUtilWebSocketGetAncestorClient(
-			String endpointBaseUrlParam,
-			IMessageReceivedCallback<Form> messageReceivedCallbackParam,
-			String serviceTicketAsHexParam,
-			long timeoutInMillisParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam,
-			boolean compressResponseParam,
-			String compressResponseCharsetParam) {
+		String endpointBaseUrlParam,
+		IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+		String serviceTicketAsHexParam,
+		long timeoutInMillisParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam,
+		boolean compressResponseParam,
+		String compressResponseCharsetParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -96,12 +98,13 @@ public class SQLUtilWebSocketGetAncestorClient extends
 	 * @param includeTableFieldsParam Should Table Fields be included.
 	 */
 	public SQLUtilWebSocketGetAncestorClient(
-			String endpointBaseUrlParam,
-			IMessageReceivedCallback<Form> messageReceivedCallbackParam,
-			String serviceTicketAsHexParam,
-			long timeoutInMillisParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam) {
+		String endpointBaseUrlParam,
+		IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+		String serviceTicketAsHexParam,
+		long timeoutInMillisParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -123,8 +126,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
 	 * @return The {@code formToGetDescendantsForParam} Table Records as {@code Form}'s.
 	 */
 	public Form getAncestorSynchronized(Form formToGetAncestorForParam) {
-
-		if(formToGetAncestorForParam == null) {
+		if (formToGetAncestorForParam == null) {
 			return null;
 		}
 
@@ -135,23 +137,21 @@ public class SQLUtilWebSocketGetAncestorClient extends
 		String uniqueReqId = this.initNewRequest();
 
 		//Send the actual message...
-		int numberOfSentForms = 0;
 		this.sendMessage(formToGetAncestorForParam, uniqueReqId);
-		numberOfSentForms++;
 
 		try {
 			List<Form> returnValue = this.getHandler(uniqueReqId).getCF().get(
 					this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"SQLUtil-WebSocket-GetAncestor: " +
 								"The connection was closed by the server prior to the response received.",
 						FluidClientException.ErrorCode.IO_ERROR);
 			}
 
-			if(returnValue == null || returnValue.isEmpty()) {
+			if (returnValue == null || returnValue.isEmpty()) {
 				return null;
 			}
 
@@ -168,8 +168,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
 			Throwable cause = executeProblem.getCause();
 
 			//Fluid client exception...
-			if(cause instanceof FluidClientException)
-			{
+			if (cause instanceof FluidClientException) {
 				throw (FluidClientException)cause;
 			} else {
 				throw new FluidClientException(
@@ -198,35 +197,45 @@ public class SQLUtilWebSocketGetAncestorClient extends
 	 */
 	@Override
 	public GetAncestorMessageHandler getNewHandlerInstance() {
-		return new GetAncestorMessageHandler(this.messageReceivedCallback, this.compressResponse);
+		return new GetAncestorMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient,
+				this.compressResponse
+		);
 	}
 
 	/**
 	 * Gets the single form. Still relying on a single session.
 	 */
-	public static class GetAncestorMessageHandler extends AGenericListMessageHandler<Form>
-	{
+	public static class GetAncestorMessageHandler extends AGenericListMessageHandler<Form> {
 		/**
 		 * The default constructor that sets a ancestor message handler.
 		 *
 		 * @param messageReceivedCallbackParam The optional message callback.
+		 * @param webSocketClientParam The web-socket client.
 		 * @param compressedResponseParam Compress the SQL Result in Base-64.
 		 */
 		public GetAncestorMessageHandler(
-				IMessageReceivedCallback<Form> messageReceivedCallbackParam,
-				boolean compressedResponseParam) {
-
-			super(messageReceivedCallbackParam, compressedResponseParam);
+			IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+			WebSocketClient webSocketClientParam,
+			boolean compressedResponseParam
+		) {
+			super(messageReceivedCallbackParam,
+					webSocketClientParam,
+					compressedResponseParam);
 		}
 
 		/**
 		 * The default constructor that sets a ancestor message handler.
 		 *
 		 * @param messageReceivedCallbackParam The optional message callback.
+		 * @param webSocketClientParam The web-socket client.
 		 */
-		public GetAncestorMessageHandler(IMessageReceivedCallback<Form> messageReceivedCallbackParam) {
-
-			super(messageReceivedCallbackParam);
+		public GetAncestorMessageHandler(
+			IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+			WebSocketClient webSocketClientParam
+		) {
+			super(messageReceivedCallbackParam, webSocketClientParam);
 		}
 
 		/**
@@ -237,7 +246,6 @@ public class SQLUtilWebSocketGetAncestorClient extends
 		 */
 		@Override
 		public Form getNewInstanceBy(JSONObject jsonObjectParam) {
-
 			return new Form(jsonObjectParam);
 		}
 	}

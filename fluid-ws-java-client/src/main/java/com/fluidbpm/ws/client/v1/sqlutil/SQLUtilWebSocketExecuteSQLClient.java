@@ -61,7 +61,8 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 			String serviceTicketAsHexParam,
 			long timeoutInMillisParam,
 			boolean compressResponseParam,
-			String compressResponseCharsetParam) {
+			String compressResponseCharsetParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -69,7 +70,6 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 						serviceTicketAsHexParam,
 						compressResponseParam,
 						compressResponseCharsetParam), compressResponseParam);
-
 		this.setServiceTicket(serviceTicketAsHexParam);
 	}
 
@@ -86,7 +86,8 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 			String endpointBaseUrlParam,
 			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
 			String serviceTicketAsHexParam,
-			long timeoutInMillisParam) {
+			long timeoutInMillisParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -107,11 +108,11 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 	 */
 	public List<FormListing> executeSQLSynchronized(Form formWithSQLFieldParam) {
 
-		if(formWithSQLFieldParam == null) {
+		if (formWithSQLFieldParam == null) {
 			return null;
 		}
 
-		if(formWithSQLFieldParam.getFormFields() == null ||
+		if (formWithSQLFieldParam.getFormFields() == null ||
 				formWithSQLFieldParam.getFormFields().isEmpty()) {
 			return null;
 		}
@@ -123,16 +124,14 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 		String uniqueReqId = this.initNewRequest();
 
 		//Send the actual message...
-		int numberOfSentForms = 0;
 		this.sendMessage(formWithSQLFieldParam, uniqueReqId);
-		numberOfSentForms++;
 
 		try {
 			List<FormListing> returnValue = this.getHandler(uniqueReqId).getCF().get(
 							this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"SQLUtil-WebSocket-ExecuteSQL: " +
 								"The connection was closed by the server prior to the response received.",
@@ -170,8 +169,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 
 			throw new FluidClientException(errMessage,
 					FluidClientException.ErrorCode.IO_ERROR);
-		}
-		finally {
+		} finally {
 			this.removeHandler(uniqueReqId);
 		}
 	}
@@ -183,6 +181,10 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 	 */
 	@Override
 	public GenericFormListingMessageHandler getNewHandlerInstance() {
-		return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
+		return new GenericFormListingMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient,
+				this.compressResponse
+		);
 	}
 }

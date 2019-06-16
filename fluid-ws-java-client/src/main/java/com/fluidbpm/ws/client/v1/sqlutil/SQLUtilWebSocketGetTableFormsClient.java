@@ -190,6 +190,10 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 	 */
 	@Override
 	public GenericFormListingMessageHandler getNewHandlerInstance() {
-		return new GenericFormListingMessageHandler(this.messageReceivedCallback, this.compressResponse);
+		return new GenericFormListingMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient,
+				this.compressResponse
+		);
 	}
 }

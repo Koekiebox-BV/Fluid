@@ -180,8 +180,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	public Form(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if(this.jsonObject == null)
-		{
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -225,19 +224,16 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//User...
 		if (!this.jsonObject.isNull(JSONMapping.CURRENT_USER)) {
-
-			JSONObject jsonObj = this.jsonObject.getJSONObject(
-					JSONMapping.CURRENT_USER);
+			JSONObject jsonObj = this.jsonObject.getJSONObject(JSONMapping.CURRENT_USER);
 			User currentUser = new User();
 
 			//User Id
 			if (!jsonObj.isNull(User.JSONMapping.Elastic.USER_ID)) {
 				currentUser.setId(jsonObj.getLong(
 						User.JSONMapping.Elastic.USER_ID));
-			}
-			//Id is set, make use of that instead...
-			else if (!jsonObj.isNull(
+			} else if (!jsonObj.isNull(
 					ABaseFluidJSONObject.JSONMapping.ID)) {
+				//Id is set, make use of that instead...
 				currentUser.setId(jsonObj.getLong(ABaseFluidJSONObject.JSONMapping.ID));
 			}
 
@@ -268,7 +264,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Associated Flows...
 		if (!this.jsonObject.isNull(JSONMapping.ASSOCIATED_FLOWS)) {
-
 			JSONArray associatedJobsArr = this.jsonObject.getJSONArray(
 					JSONMapping.ASSOCIATED_FLOWS);
 
@@ -282,12 +277,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Form Fields...
 		if (!this.jsonObject.isNull(JSONMapping.FORM_FIELDS)) {
-
 			JSONArray formFieldsArr = this.jsonObject.getJSONArray(
 					JSONMapping.FORM_FIELDS);
 
 			List<Field> assFormFields = new ArrayList<>();
-			for(int index = 0;index < formFieldsArr.length();index++) {
+			for (int index = 0;index < formFieldsArr.length();index++) {
 				assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
 			}
 
@@ -295,8 +289,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Ancestor...
-		if(this.jsonObject.isNull(JSONMapping.ANCESTOR_ID))
-		{
+		if (this.jsonObject.isNull(JSONMapping.ANCESTOR_ID)) {
 			this.setAncestorId(null);
 		} else {
 			this.setAncestorId(this.jsonObject.getLong(
@@ -304,8 +297,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Table Field Parent Id...
-		if(this.jsonObject.isNull(JSONMapping.TABLE_FIELD_PARENT_ID))
-		{
+		if (this.jsonObject.isNull(JSONMapping.TABLE_FIELD_PARENT_ID)) {
 			this.setTableFieldParentId(null);
 		} else {
 			this.setTableFieldParentId(this.jsonObject.getLong(
@@ -313,18 +305,17 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Descendant Ids...
-		if(this.jsonObject.isNull(JSONMapping.DESCENDANT_IDS))
-		{
+		if (this.jsonObject.isNull(JSONMapping.DESCENDANT_IDS)) {
 			this.setDescendantIds(null);
 		} else {
 			JSONArray jsonArray = this.jsonObject.getJSONArray(
 					JSONMapping.DESCENDANT_IDS);
 			List<Long> descendantIds = new ArrayList<>();
-			for(int index = 0;index < jsonArray.length();index++) {
+			for (int index = 0;index < jsonArray.length();index++) {
 				descendantIds.add(jsonArray.getLong(index));
 			}
 
-			if(descendantIds.isEmpty()) {
+			if (descendantIds.isEmpty()) {
 				this.setDescendantIds(null);
 			} else {
 				this.setDescendantIds(descendantIds);
@@ -364,7 +355,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public Object getFieldValueForField(String fieldNameParam) {
-
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValue();
 	}
@@ -398,20 +388,14 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			return null;
 		}
 
-		String fieldNameParamLower = fieldNameParam.trim().toLowerCase();
-		for (Field field : this.getFormFields()) {
-			String fieldName = field.getFieldName();
-			if (fieldName == null || fieldName.trim().isEmpty()) {
-				continue;
-			}
-
-			String fieldNameLower = fieldName.trim().toLowerCase();
-			if (fieldNameParamLower.equals(fieldNameLower)) {
-				return field;
-			}
-		}
-
-		return null;
+		String fieldNameLower = fieldNameParam.toLowerCase();
+		Field fieldWithName =
+				this.getFormFields().stream()
+						.filter(itm -> itm.getFieldName() != null &&
+								fieldNameLower.equals(itm.getFieldName().toLowerCase()))
+						.findFirst()
+						.orElse(null);
+		return fieldWithName;
 	}
 
 	/**
@@ -678,37 +662,53 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public void setFieldValue(String fieldNameParam, Object fieldValueParam) {
-		if(fieldNameParam == null || fieldNameParam.trim().length() == 0)
-		{
-			return;
-		}
 
-		if(this.getFormFields() == null || this.getFormFields().isEmpty())
-		{
+		if (this.getFormFields() == null) {
 			this.setFormFields(new ArrayList());
 		}
 
-		String fieldNameParamLower = fieldNameParam.toLowerCase();
+		this.setFieldValue(this.getFormFields(), fieldNameParam, fieldValueParam, null);
+	}
 
-		for (Iterator<Field> fieldIter = this.getFormFields().iterator();
-			 fieldIter.hasNext();) {
-
-			Field field = fieldIter.next();
-			if(field.getFieldName() == null || field.getFieldName().trim().length() == 0)
-			{
-				continue;
-			}
-
-			String fieldNameLower = field.getFieldName().toLowerCase();
-			if(fieldNameParamLower.equals(fieldNameLower))
-			{
-				field.setFieldValue(fieldValueParam);
-				return;
-			}
+	/**
+	 * Set the field value to {@code fieldValueParam} where name is {@code fieldNameParam}
+	 * on the list {@code fieldToSelectFrom}.
+	 *
+	 * @param fieldToSelectFrom The field listing to set or add to.
+	 * @param fieldNameParam The name of the field.
+	 * @param fieldValueParam The new value.
+	 * @param typeParam The type of field.
+	 */
+	private void setFieldValue(
+		List<Field> fieldToSelectFrom,
+		String fieldNameParam,
+		Object fieldValueParam,
+		Field.Type typeParam
+	) {
+		if (fieldToSelectFrom == null) {
+			return;
 		}
 
-		//When the Field is not added previously...
-		this.getFormFields().add(new Field(fieldNameParam,fieldValueParam));
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
+			return;
+		}
+
+		String fieldNameLower = fieldNameParam.toLowerCase();
+		Field fieldWithName =
+				fieldToSelectFrom.stream()
+						.filter(itm ->	itm.getFieldName() != null &&
+								fieldNameLower.equals(itm.getFieldName().toLowerCase()))
+						.findFirst()
+						.orElse(null);
+		if (fieldWithName == null) {
+			fieldToSelectFrom.add(new Field(fieldNameParam, fieldValueParam, typeParam));
+		} else {
+			fieldWithName.setFieldValue(fieldValueParam);
+
+			if (typeParam != null) {
+				fieldWithName.setTypeAsEnum(typeParam);
+			}
+		}
 	}
 
 	/**
@@ -744,40 +744,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			return;
 		}
 
-		if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
+		if (this.getFormFields() == null) {
 			this.setFormFields(new ArrayList());
 		}
-
-		String paramLower = fieldNameParam.toLowerCase().trim();
-
-		boolean valueFound = false;
-
-		//Iterate the Form Fields...
-		int fieldIndex = 0;
-		for (Iterator<Field> fieldIter = this.getFormFields().iterator();
-			 fieldIter.hasNext();fieldIndex++) {
-
-			Field field = fieldIter.next();
-
-			String toCheckNameLower = field.getFieldName();
-			if (toCheckNameLower == null || toCheckNameLower.trim().isEmpty()) {
-				continue;
-			}
-
-			toCheckNameLower = toCheckNameLower.trim().toLowerCase();
-
-			if (paramLower.equals(toCheckNameLower)) {
-				valueFound = true;
-				this.getFormFields().get(fieldIndex).setFieldValue(fieldValueParam);
-				this.getFormFields().get(fieldIndex).setTypeAsEnum(typeParam);
-				break;
-			}
-		}
-
-		//Add the value if it wasn't found by name...
-		if (!valueFound) {
-			this.getFormFields().add(new Field(fieldNameParam, fieldValueParam, typeParam));
-		}
+		
+		this.setFieldValue(this.getFormFields(), fieldNameParam, fieldValueParam, typeParam);
 	}
 
 	/**
@@ -794,7 +765,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public boolean isFormType(String formTypeParam) {
-
 		if ((formTypeParam == null || formTypeParam.trim().isEmpty()) ||
 				(this.getFormType() == null || this.getFormType().trim().isEmpty())) {
 			return false;
@@ -1113,38 +1083,38 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Form Type...
-		if(this.getFormType() != null) {
+		if (this.getFormType() != null) {
 			returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
 		}
 
 		//Form Type Id...
-		if(this.getFormTypeId() != null) {
+		if (this.getFormTypeId() != null) {
 			returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
 		}
 
 		//Title...
-		if(this.getTitle() != null) {
+		if (this.getTitle() != null) {
 			returnVal.put(JSONMapping.TITLE, this.getTitle());
 		}
 
 		//Form Description...
-		if(this.getFormDescription() != null) {
+		if (this.getFormDescription() != null) {
 			returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
 		}
 
 		//State...
-		if(this.getState() != null) {
+		if (this.getState() != null) {
 			returnVal.put(JSONMapping.STATE, this.getState());
 		}
 
 		//Flow State...
-		if(this.getFlowState() != null) {
+		if (this.getFlowState() != null) {
 			returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState());
 		}
 
 		//Current User...
 		JSONObject currentUserJsonObj = new JSONObject();
-		if(this.getCurrentUser() == null) {
+		if (this.getCurrentUser() == null) {
 			currentUserJsonObj.put(
 					User.JSONMapping.Elastic.USER_ID, JSONObject.NULL);
 			currentUserJsonObj.put(User.JSONMapping.USERNAME, JSONObject.NULL);
@@ -1174,8 +1144,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
 
 		//Date Created...
-		if(this.getDateCreated() != null)
-		{
+		if(this.getDateCreated() != null) {
 			returnVal.put(JSONMapping.DATE_CREATED,
 					this.getDateAsLongFromJson(this.getDateCreated()));
 		}
@@ -1188,10 +1157,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Form Fields...
 		if(this.getFormFields() != null && !this.getFormFields().isEmpty()) {
-			for(Field toAdd : this.getFormFields()) {
+			this.getFormFields().forEach(toAdd ->{
 				JSONObject convertedFieldObj = toAdd.toJsonForElasticSearch();
-				if(convertedFieldObj == null) {
-					continue;
+				if (convertedFieldObj == null) {
+					return;
 				}
 
 				Iterator<String> iterKeys = convertedFieldObj.keys();
@@ -1199,7 +1168,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 					String key = iterKeys.next();
 					returnVal.put(key, convertedFieldObj.get(key));
 				}
-			}
+			});
 		}
 
 		//Ancestor...
@@ -1217,7 +1186,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		//Descendant Ids...
 		if(this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
 			JSONArray array = new JSONArray();
-
 			for(Long formId : this.getDescendantIds()) {
 				array.put(formId);
 			}
@@ -1239,8 +1207,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see JSONObject
 	 */
 	@XmlTransient
-	public JSONObject convertToFlatJSONObject()
-	{
+	public JSONObject convertToFlatJSONObject() {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
@@ -1294,8 +1261,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		//Set the form fields...
 		UtilGlobal utilGlobal = new UtilGlobal();
 		this.getFormFields().forEach(
-				(formFieldItem) ->
-				{
+				(formFieldItem) -> {
 					utilGlobal.setFlatFieldOnJSONObj(
 							FlatFormJSONMapping.FORM_FIELD_PREFIX,
 							FlatFormJSONMapping.FORM_FIELD_ID_PREFIX,
@@ -1324,56 +1290,55 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			JSONObject jsonObjectParam,
 			List<Field> formFieldsParam
 	) throws JSONException {
-
 		this.jsonObject = jsonObjectParam;
-		if(jsonObjectParam == null) {
+		if (jsonObjectParam == null) {
 			return;
 		}
 
 		//Id...
-		if(jsonObjectParam.isNull(ABaseFluidJSONObject.JSONMapping.ID)) {
+		if (jsonObjectParam.isNull(ABaseFluidJSONObject.JSONMapping.ID)) {
 			this.setId(null);
 		} else {
 			this.setId(jsonObjectParam.getLong(ABaseFluidJSONObject.JSONMapping.ID));
 		}
 
 		//Form Type...
-		if(jsonObjectParam.isNull(JSONMapping.FORM_TYPE)) {
+		if (jsonObjectParam.isNull(JSONMapping.FORM_TYPE)) {
 			this.setFormType(null);
 		} else {
 			this.setFormType(jsonObjectParam.getString(JSONMapping.FORM_TYPE));
 		}
 
 		//Form Type Id...
-		if(jsonObjectParam.isNull(JSONMapping.FORM_TYPE_ID)) {
+		if (jsonObjectParam.isNull(JSONMapping.FORM_TYPE_ID)) {
 			this.setFormTypeId(null);
 		} else {
 			this.setFormTypeId(jsonObjectParam.getLong(JSONMapping.FORM_TYPE_ID));
 		}
 
 		//Title...
-		if(jsonObjectParam.isNull(JSONMapping.TITLE)) {
+		if (jsonObjectParam.isNull(JSONMapping.TITLE)) {
 			this.setTitle(null);
 		} else {
 			this.setTitle(jsonObjectParam.getString(JSONMapping.TITLE));
 		}
 
 		//Flow State...
-		if(jsonObjectParam.isNull(JSONMapping.FLOW_STATE)) {
+		if (jsonObjectParam.isNull(JSONMapping.FLOW_STATE)) {
 			this.setFlowState(null);
 		} else {
 			this.setFlowState(jsonObjectParam.getString(JSONMapping.FLOW_STATE));
 		}
 
 		//State...
-		if(jsonObjectParam.isNull(JSONMapping.STATE)) {
+		if (jsonObjectParam.isNull(JSONMapping.STATE)) {
 			this.setState(null);
 		} else {
 			this.setState(jsonObjectParam.getString(JSONMapping.STATE));
 		}
 
 		//Form Description...
-		if(jsonObjectParam.isNull(JSONMapping.FORM_DESCRIPTION)) {
+		if (jsonObjectParam.isNull(JSONMapping.FORM_DESCRIPTION)) {
 			this.setFormDescription(null);
 		} else {
 			this.setFormDescription(jsonObjectParam.getString(
@@ -1381,7 +1346,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Date Created...
-		if(jsonObjectParam.isNull(JSONMapping.DATE_CREATED)) {
+		if (jsonObjectParam.isNull(JSONMapping.DATE_CREATED)) {
 			this.setDateCreated(null);
 		} else {
 			this.setDateCreated(new Date(
@@ -1389,7 +1354,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Date Last Updated...
-		if(jsonObjectParam.isNull(JSONMapping.DATE_LAST_UPDATED)) {
+		if (jsonObjectParam.isNull(JSONMapping.DATE_LAST_UPDATED)) {
 			this.setDateLastUpdated(null);
 		} else {
 			this.setDateLastUpdated(new Date(
@@ -1397,7 +1362,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Current User...
-		if(jsonObjectParam.isNull(JSONMapping.CURRENT_USER)) {
+		if (jsonObjectParam.isNull(JSONMapping.CURRENT_USER)) {
 			this.setCurrentUser(null);
 		} else {
 			JSONObject currUserJsonObj =
@@ -1418,10 +1383,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Form Fields...
-		if(formFieldsParam == null || formFieldsParam.isEmpty()) {
+		if (formFieldsParam == null || formFieldsParam.isEmpty()) {
 			this.setFormFields(null);
 		} else {
-            //There are fields...
+			//There are fields...
 			List<Field> fieldsToSet = new ArrayList();
 
 			for(Field formField : formFieldsParam) {
@@ -1442,7 +1407,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Ancestor...
-		if(jsonObjectParam.isNull(JSONMapping.ANCESTOR_ID)) {
+		if (jsonObjectParam.isNull(JSONMapping.ANCESTOR_ID)) {
 			this.setAncestorId(null);
 		} else {
 			this.setAncestorId(jsonObjectParam.getLong(
@@ -1450,7 +1415,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Table Field Parent Id...
-		if(jsonObjectParam.isNull(JSONMapping.TABLE_FIELD_PARENT_ID)) {
+		if (jsonObjectParam.isNull(JSONMapping.TABLE_FIELD_PARENT_ID)) {
 			this.setTableFieldParentId(null);
 		} else {
 			this.setTableFieldParentId(jsonObjectParam.getLong(
@@ -1458,7 +1423,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Descendant Ids...
-		if(jsonObjectParam.isNull(JSONMapping.DESCENDANT_IDS)) {
+		if (jsonObjectParam.isNull(JSONMapping.DESCENDANT_IDS)) {
 			this.setDescendantIds(null);
 		} else {
 			Object objectDescendantIds =
@@ -1466,18 +1431,18 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 			List<Long> descendantIds = new ArrayList();
 			//Array...
-			if(objectDescendantIds instanceof JSONArray) {
+			if (objectDescendantIds instanceof JSONArray) {
 				JSONArray jsonArray = (JSONArray) objectDescendantIds;
 
-				for(int index = 0;index < jsonArray.length();index++) {
+				for (int index = 0;index < jsonArray.length();index++) {
 					descendantIds.add(jsonArray.getLong(index));
 				}
 			} else if(objectDescendantIds instanceof Number) {
-                //Number...
+				//Number...
 				descendantIds.add(((Number)objectDescendantIds).longValue());
 			}
 
-			if(descendantIds.isEmpty()) {
+			if (descendantIds.isEmpty()) {
 				this.setDescendantIds(null);
 			} else {
 				this.setDescendantIds(descendantIds);
@@ -1634,9 +1599,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @param titleParam Form Title.
 	 */
 	public void setTitle(String titleParam) {
-
-		if(titleParam == null)
-		{
+		if(titleParam == null) {
 			this.title = EMPTY_TITLE_MARKER;
 			return;
 		}
@@ -1895,8 +1858,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public void printFormFields() {
 		System.out.println("\n\n*** PRINTING FORM FIELDS ***");
-		if(this.getFormFields() != null) {
-			for(Field formField : this.getFormFields()) {
+		if (this.getFormFields() != null) {
+			for (Field formField : this.getFormFields()) {
 				System.out.println("Field : '"+formField.getFieldName()+"' with value: "+
 						formField.getFieldValue());
 			}

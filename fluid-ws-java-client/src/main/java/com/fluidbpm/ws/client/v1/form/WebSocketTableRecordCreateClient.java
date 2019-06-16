@@ -30,6 +30,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 /**
  * Java Web Socket Client for {@code TableRecord} related actions.
@@ -156,7 +157,10 @@ public class WebSocketTableRecordCreateClient extends
 	 */
 	@Override
 	public CreateTableRecordMessageHandler getNewHandlerInstance() {
-		return new CreateTableRecordMessageHandler(this.messageReceivedCallback);
+		return new CreateTableRecordMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient
+		);
 	}
 
 	/**
@@ -170,11 +174,13 @@ public class WebSocketTableRecordCreateClient extends
 		 * The default constructor that sets a ancestor message handler.
 		 *
 		 * @param messageReceivedCallbackParam The optional message callback.
+		 * @param webSocketClientParam The web-socket client.
 		 */
 		public CreateTableRecordMessageHandler(
-				IMessageReceivedCallback<TableRecord> messageReceivedCallbackParam) {
-
-			super(messageReceivedCallbackParam);
+				IMessageReceivedCallback<TableRecord> messageReceivedCallbackParam,
+				WebSocketClient webSocketClientParam
+		) {
+			super(messageReceivedCallbackParam, webSocketClientParam);
 		}
 
 		/**

@@ -29,6 +29,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 /**
  * Java Web Socket Client for {@code Form} related actions.
@@ -159,7 +160,10 @@ public class WebSocketFormContainerCreateClient extends
 	 */
 	@Override
 	public CreateFormContainerMessageHandler getNewHandlerInstance() {
-		return new CreateFormContainerMessageHandler(this.messageReceivedCallback);
+		return new CreateFormContainerMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient
+		);
 	}
 
 	/**
@@ -173,11 +177,13 @@ public class WebSocketFormContainerCreateClient extends
 		 * The default constructor that sets a ancestor message handler.
 		 *
 		 * @param messageReceivedCallbackParam The optional message callback.
+		 * @param webSocketClientParam The web-socket client.
 		 */
 		public CreateFormContainerMessageHandler(
-				IMessageReceivedCallback<Form> messageReceivedCallbackParam) {
-
-			super(messageReceivedCallbackParam);
+			IMessageReceivedCallback<Form> messageReceivedCallbackParam,
+			WebSocketClient webSocketClientParam
+		) {
+			super(messageReceivedCallbackParam, webSocketClientParam);
 		}
 
 		/**
@@ -188,9 +194,7 @@ public class WebSocketFormContainerCreateClient extends
 		 */
 		@Override
 		public Form getNewInstanceBy(JSONObject jsonObjectParam) {
-
 			this.returnedForm = new Form(jsonObjectParam);
-
 			return this.returnedForm;
 		}
 

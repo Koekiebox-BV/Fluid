@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 /**
  * A handler for {@code SQLResultSet}'s.
@@ -18,13 +19,15 @@ public class SQLResultSetMessageHandler extends AGenericListMessageHandler<SQLRe
 	 * Constructor for SQLResultSet callbacks.
 	 *
 	 * @param messageReceivedCallbackParam The callback events.
+	 * @param webSocketClientParam The web-socket client.   
 	 * @param compressedResponseParam Compress the SQL Result in Base-64.
 	 */
 	public SQLResultSetMessageHandler(
-			IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
-			boolean compressedResponseParam
-    ) {
-		super(messageReceivedCallbackParam, compressedResponseParam);
+		IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
+		WebSocketClient webSocketClientParam,
+		boolean compressedResponseParam
+	) {
+		super(messageReceivedCallbackParam, webSocketClientParam, compressedResponseParam);
 	}
 
 	/**

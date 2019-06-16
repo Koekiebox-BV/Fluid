@@ -30,6 +30,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 /**
  * Java Web Socket Client for sending {@code Form} to a specific Flow.
@@ -179,25 +180,29 @@ public class WebSocketSendToFlowClient extends
 	 */
 	@Override
 	public SendToFlowMessageHandler getNewHandlerInstance() {
-		return new SendToFlowMessageHandler(this.messageReceivedCallback);
+		return new SendToFlowMessageHandler(
+				this.messageReceivedCallback,
+				this.webSocketClient
+		);
 	}
 
 	/**
 	 * Gets the single {@link FluidItem}. Still relying on a single session.
 	 */
-	public static class SendToFlowMessageHandler extends AGenericListMessageHandler<FluidItem>
-	{
+	public static class SendToFlowMessageHandler extends AGenericListMessageHandler<FluidItem> {
 		private FluidItem returnedFluidItem;
 
 		/**
 		 * The default constructor that sets a ancestor message handler.
 		 *
 		 * @param messageReceivedCallbackParam The optional message callback.
+		 * @param webSocketClientParam The web-socket client.
 		 */
 		public SendToFlowMessageHandler(
-				IMessageReceivedCallback<FluidItem> messageReceivedCallbackParam) {
-
-			super(messageReceivedCallbackParam);
+				IMessageReceivedCallback<FluidItem> messageReceivedCallbackParam,
+				WebSocketClient webSocketClientParam
+		) {
+			super(messageReceivedCallbackParam, webSocketClientParam);
 		}
 
 		/**
@@ -208,9 +213,7 @@ public class WebSocketSendToFlowClient extends
 		 */
 		@Override
 		public FluidItem getNewInstanceBy(JSONObject jsonObjectParam) {
-
 			this.returnedFluidItem = new FluidItem(jsonObjectParam);
-
 			return this.returnedFluidItem;
 		}
 

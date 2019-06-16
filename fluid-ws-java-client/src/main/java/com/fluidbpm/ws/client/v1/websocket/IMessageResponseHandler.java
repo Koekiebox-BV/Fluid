@@ -38,7 +38,7 @@ public interface IMessageResponseHandler {
 	 *
 	 * @see JSONObject
 	 */
-	public Object doesHandlerQualifyForProcessing(String messageParam);
+	public abstract Object doesHandlerQualifyForProcessing(String messageParam);
 
 	/**
 	 * Handle the {@code messageParam}.

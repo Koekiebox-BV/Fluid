@@ -41,10 +41,10 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseHandler> extends ABaseClientWS {
 
 	protected String webSocketEndpointUrl;
+	protected WebSocketClient webSocketClient;
 
-	private WebSocketClient webSocketClient;
 	private long timeoutInMillis;
-	private Map<String,RespHandler> messageHandler;
+	private Map<String, RespHandler> messageHandler;
 
 	protected IMessageReceivedCallback messageReceivedCallback;
 	protected boolean compressResponse;
@@ -159,11 +159,11 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		ABaseFluidJSONObject baseFluidJSONObjectParam,
 		String requestIdParam
 	) {
-		if(baseFluidJSONObjectParam != null) {
+		if (baseFluidJSONObjectParam != null) {
 			baseFluidJSONObjectParam.setServiceTicket(this.serviceTicket);
 
 			//Add the echo to the listing if [GenericListMessageHandler].
-			if(this.getHandler(requestIdParam) instanceof AGenericListMessageHandler) {
+			if (this.getHandler(requestIdParam) instanceof AGenericListMessageHandler) {
 				AGenericListMessageHandler listHandler =
 						(AGenericListMessageHandler)this.getHandler(requestIdParam);
 				listHandler.addExpectedMessage(baseFluidJSONObjectParam.getEcho());
@@ -181,12 +181,10 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 */
 	@Override
 	public void closeAndClean() {
-		CloseConnectionRunnable closeConnectionRunnable =
-				new CloseConnectionRunnable(this);
-
-		Thread closeConnThread = new Thread(
-				closeConnectionRunnable,"Close ABaseClientWebSocket Connection");
-		closeConnThread.start();
+		new Thread(() -> {
+			this.closeConnectionNonThreaded();
+		},"Close "+this.getClass().getSimpleName()+" Connection")
+				.start();
 	}
 
 	/**
@@ -194,12 +192,11 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * a separate {@code Thread}.
 	 */
 	protected void closeConnectionNonThreaded() {
-		if(this.webSocketClient == null) {
+		if (this.webSocketClient == null) {
 			return;
 		}
 
 		this.webSocketClient.closeSession();
-
 		super.closeConnectionNonThreaded();
 	}
 
@@ -315,10 +312,9 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 */
 	@Override
 	public boolean isConnectionValid() {
-		if(this.webSocketClient == null) {
+		if (this.webSocketClient == null) {
 			return false;
 		}
-
 		return this.webSocketClient.isSessionOpen();
 	}
 
@@ -328,7 +324,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @return {@code Session ID} if session is open, otherwise {@code null}.
 	 */
 	public String getSessionId() {
-		if(this.webSocketClient == null) {
+		if (this.webSocketClient == null) {
 			return null;
 		}
 
@@ -342,11 +338,11 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 */
 	protected void setEchoIfNotSet(ABaseFluidVO baseToSetEchoOnIfNotSetParam){
 
-	    if(baseToSetEchoOnIfNotSetParam == null) {
+		if (baseToSetEchoOnIfNotSetParam == null) {
 			throw new FluidClientException(
 					"Cannot provide 'null' for value object / pojo.",
 					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-		} else if(baseToSetEchoOnIfNotSetParam.getEcho() == null ||
+		} else if (baseToSetEchoOnIfNotSetParam.getEcho() == null ||
 				baseToSetEchoOnIfNotSetParam.getEcho().trim().isEmpty()) {
 			baseToSetEchoOnIfNotSetParam.setEcho(UtilGlobal.randomUUID());
 		}
@@ -435,33 +431,5 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 				"\nRequest-Data '"+ reqToString+"'. \n" +
 				"\nReturned-Data '"+ respToString+"'. \n" +
 				"\nExpected-Data '"+ expectedToString +"'.");
-	}
-
-	/**
-	 * Utility class to close the connection in a thread.
-	 */
-	private static class CloseConnectionRunnable implements Runnable {
-		private ABaseClientWebSocket baseClientWebSocket;
-
-		/**
-		 * The resource to close.
-		 *
-		 * @param baseClientWebSocketParam Base WS utility to close.
-		 */
-		CloseConnectionRunnable(ABaseClientWebSocket baseClientWebSocketParam) {
-			this.baseClientWebSocket = baseClientWebSocketParam;
-		}
-
-		/**
-		 * Performs the threaded operation.
-		 */
-		@Override
-		public void run() {
-			if(this.baseClientWebSocket == null) {
-				return;
-			}
-
-			this.baseClientWebSocket.closeConnectionNonThreaded();
-		}
 	}
 }

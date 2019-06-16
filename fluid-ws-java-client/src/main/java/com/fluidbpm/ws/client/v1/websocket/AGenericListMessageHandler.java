@@ -36,6 +36,8 @@ import com.fluidbpm.ws.client.FluidClientException;
 public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 		implements IMessageResponseHandler {
 
+	private WebSocketClient webSocketClient;
+	
 	private final List<T> returnValue;
 	private List<Error> errors;
 
@@ -53,13 +55,15 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * Constructor for SQLResultSet callbacks.
 	 *
 	 * @param messageReceivedCallbackParam The callback events.
+	 * @param webSocketClientParam The web-socket client.
 	 * @param compressedResponseParam Compress the SQL Result in Base-64.
 	 */
 	public AGenericListMessageHandler(
-			IMessageReceivedCallback<T> messageReceivedCallbackParam,
-			boolean compressedResponseParam) {
-
-		this(messageReceivedCallbackParam);
+		IMessageReceivedCallback<T> messageReceivedCallbackParam,
+		WebSocketClient webSocketClientParam,
+		boolean compressedResponseParam
+	) {
+		this(messageReceivedCallbackParam, webSocketClientParam);
 		this.compressedResponse = compressedResponseParam;
 	}
 
@@ -67,10 +71,14 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * Message handler with callback.
 	 *
 	 * @param messageReceivedCallbackParam The message callback observer.
+	 * @param webSocketClientParam The web-socket client.
 	 */
-	public AGenericListMessageHandler(IMessageReceivedCallback<T> messageReceivedCallbackParam) {
-
+	public AGenericListMessageHandler(
+		IMessageReceivedCallback<T> messageReceivedCallbackParam,
+		WebSocketClient webSocketClientParam
+	) {
 		this.messageReceivedCallback = messageReceivedCallbackParam;
+		this.webSocketClient = webSocketClientParam;
 		this.returnValue = new CopyOnWriteArrayList();
 		this.errors = new CopyOnWriteArrayList();
 		this.expectedEchoMessagesBeforeComplete = new CopyOnWriteArraySet();
@@ -105,7 +113,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 
 		String echo = fluidError.getEcho();
 		//We can process the me...
-		if(this.expectedEchoMessagesBeforeComplete.contains(echo)) {
+		if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
 			return jsonObject;
 		}
 
@@ -124,20 +132,18 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 */
 	@Override
 	public void handleMessage(Object objectToProcess) {
-
 		//There is an error...
-		if(objectToProcess instanceof Error) {
-
+		if (objectToProcess instanceof Error) {
 			Error fluidError = ((Error)objectToProcess);
 			this.errors.add(fluidError);
 
 			//Do a message callback...
-			if(this.messageReceivedCallback != null) {
+			if (this.messageReceivedCallback != null) {
 				this.messageReceivedCallback.errorMessageReceived(fluidError);
 			}
 
 			//If complete future is provided...
-			if(this.completableFuture != null) {
+			if (this.completableFuture != null) {
 				this.completableFuture.completeExceptionally(
 						new FluidClientException(
 								fluidError.getErrorMessage(),
@@ -148,7 +154,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 			JSONObject jsonObject = (JSONObject)objectToProcess;
 
 			//Uncompress the compressed response...
-			if(this.compressedResponse) {
+			if (this.compressedResponse) {
 				CompressedResponse compressedResponse = new CompressedResponse(jsonObject);
 
 				byte[] compressedJsonList =
@@ -171,22 +177,25 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 			//Add to the list of return values...
 			this.returnValue.add(messageForm);
 
+			//Do a message callback...
+			if (this.messageReceivedCallback != null) {
+				this.messageReceivedCallback.messageReceived(messageForm);
+			}
+
 			//Completable future is set, and all response messages received...
-			if(this.completableFuture != null) {
+			if (this.completableFuture != null) {
 				String echo = messageForm.getEcho();
-				if(echo != null && !echo.trim().isEmpty()) {
+				if (echo != null && !echo.trim().isEmpty()) {
 					this.expectedEchoMessagesBeforeComplete.remove(echo);
 				}
 
-				//All expected messages received...
-				if(this.expectedEchoMessagesBeforeComplete.isEmpty()) {
+				if (this.webSocketClient.getSentMessages() == this.webSocketClient.getReceivedMessages()) {
+					//Sent and received messages match...
+					this.completableFuture.complete(this.returnValue);
+				} else if (this.expectedEchoMessagesBeforeComplete.isEmpty()) {
+					//All expected messages received...
 					this.completableFuture.complete(this.returnValue);
 				}
-			}
-
-			//Do a message callback...
-			if(this.messageReceivedCallback != null) {
-				this.messageReceivedCallback.messageReceived(messageForm);
 			}
 		}
 	}
@@ -198,7 +207,6 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @see CompletableFuture
 	 */
 	public CompletableFuture<List<T>> getCF() {
-
 		if(this.completableFuture == null) {
 			this.completableFuture = new CompletableFuture<>();
 		}

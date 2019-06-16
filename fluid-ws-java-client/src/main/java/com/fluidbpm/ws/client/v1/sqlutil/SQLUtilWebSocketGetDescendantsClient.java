@@ -72,7 +72,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 			boolean includeTableFieldFormRecordInfoParam,
 			boolean massFetchParam,
 			boolean compressResponseParam,
-			String compressResponseCharsetParam) {
+			String compressResponseCharsetParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -110,7 +111,8 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 			boolean includeFieldDataParam,
 			boolean includeTableFieldsParam,
 			boolean includeTableFieldFormRecordInfoParam,
-			boolean massFetchParam) {
+			boolean massFetchParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -135,9 +137,9 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 	 * @return The {@code formToGetDescendantsForParam} Descendants as {@code Form}'s.
 	 */
 	public List<FormListing> getDescendantsSynchronized(
-			Form ... formToGetDescendantsForParam) {
-
-		if(formToGetDescendantsForParam == null ||
+			Form ... formToGetDescendantsForParam
+	) {
+		if (formToGetDescendantsForParam == null ||
 				formToGetDescendantsForParam.length == 0) {
 			return null;
 		}
@@ -146,12 +148,11 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 		String uniqueReqId = this.initNewRequest();
 
 		//Mass data fetch...
-		int numberOfSentForms = 0;
-		if(this.massFetch) {
+		if (this.massFetch) {
 			FormListing listingToSend = new FormListing();
 			List<Form> listOfValidForms = new ArrayList();
-			for(Form formToSend : formToGetDescendantsForParam) {
-				if(formToSend == null) {
+			for (Form formToSend : formToGetDescendantsForParam) {
+				if (formToSend == null) {
 					throw new FluidClientException(
 							"Cannot provide 'null' for Form.",
 							FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
@@ -165,16 +166,14 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 
 			//Send the actual message...
 			this.sendMessage(listingToSend, uniqueReqId);
-			numberOfSentForms++;
 		} else {
 			//Single...
 			//Send all the messages...
-			for(Form formToSend : formToGetDescendantsForParam) {
+			for (Form formToSend : formToGetDescendantsForParam) {
 				this.setEchoIfNotSet(formToSend);
 
 				//Send the actual message...
 				this.sendMessage(formToSend, uniqueReqId);
-				numberOfSentForms++;
 			}
 		}
 
@@ -184,7 +183,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"SQLUtil-WebSocket-GetDescendants: " +
 								"The connection was closed by the server prior to the response received.",
@@ -204,7 +203,6 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 			//Error on the web-socket...
 
 			Throwable cause = executeProblem.getCause();
-
 			//Fluid client exception...
 			if(cause instanceof FluidClientException) {
 				throw (FluidClientException)cause;
@@ -234,6 +232,9 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 	@Override
 	public GenericFormListingMessageHandler getNewHandlerInstance() {
 		return new GenericFormListingMessageHandler(
-				this.messageReceivedCallback, this.compressResponse);
+				this.messageReceivedCallback,
+				this.webSocketClient,
+				this.compressResponse
+		);
 	}
 }

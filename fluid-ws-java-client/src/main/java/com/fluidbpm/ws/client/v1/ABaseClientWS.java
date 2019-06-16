@@ -374,13 +374,13 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		try {
 			HttpGet httpGet = new HttpGet(this.endpointUrl.concat(postfixUrlParam));
 
-			if(headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
-				for(HeaderNameValue headerNameVal : headerNameValuesParam) {
-					if(headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) {
+			if (headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
+				for (HeaderNameValue headerNameVal : headerNameValuesParam) {
+					if (headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) {
 						continue;
 					}
 
-					if(headerNameVal.getValue() == null) {
+					if (headerNameVal.getValue() == null) {
 						continue;
 					}
 
@@ -395,7 +395,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			String responseBody = this.executeHttp(
 					httpclient, httpGet, responseHandler, postfixUrlParam);
 
-			if(responseBody == null || responseBody.trim().isEmpty()) {
+			if (responseBody == null || responseBody.trim().isEmpty()) {
 				throw new FluidClientException(
 						"No response data from '"+
 								this.endpointUrl.concat(postfixUrlParam)+"'.",
@@ -404,13 +404,13 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
 			JSONObject jsonOjb = new JSONObject(responseBody);
 
-			if(jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) {
+			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) {
 				return jsonOjb;
 			}
 
 			int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
 
-			if(errorCode > 0) {
+			if (errorCode > 0) {
 				String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
 						? "Not set":
 						jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
@@ -487,8 +487,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	protected JSONObject postJson(
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
-			String postfixUrlParam) {
-
+			String postfixUrlParam
+	) {
 		return this.executeJson(
 				HttpMethod.POST,
 				null,
@@ -510,8 +510,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 */
 	protected JSONObject deleteJson(
 			ABaseFluidJSONObject baseDomainParam,
-			String postfixUrlParam) {
-
+			String postfixUrlParam
+	) {
 		//No need to check connection...
 		return this.deleteJson(false, baseDomainParam, postfixUrlParam);
 	}
@@ -530,8 +530,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	protected JSONObject deleteJson(
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
-			String postfixUrlParam) {
-
+			String postfixUrlParam
+	) {
 		return this.executeJson(
 				HttpMethod.DELETE,
 				null,
@@ -553,8 +553,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	protected JSONObject postForm(
 			boolean checkConnectionValidParam,
 			List<FormNameValue> formNameValuesParam,
-			String postfixUrlParam) {
-
+			String postfixUrlParam
+	) {
 		return this.executeForm(
 				HttpMethod.POST,
 				null,
@@ -575,8 +575,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	protected JSONObject putJson(
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
-			String postfixUrlParam) {
-
+			String postfixUrlParam
+	) {
 		return this.executeJson(
 				HttpMethod.PUT,
 				null,
@@ -595,8 +595,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 */
 	protected JSONObject putJson(
 			ABaseFluidJSONObject baseDomainParam,
-			String postfixUrlParam) {
-
+			String postfixUrlParam
+	) {
 		//Create without connection check...
 		return this.putJson(false, baseDomainParam, postfixUrlParam);
 	}

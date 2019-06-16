@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 /**
  * A Form Listing handler for {@code FormListing}'s.
@@ -33,22 +34,28 @@ public class GenericFormListingMessageHandler extends AGenericListMessageHandler
 	 * Constructor for FormListing callbacks.
 	 *
 	 * @param messageReceivedCallbackParam The callback events.
+	 * @param webSocketClientParam The web-socket client.
 	 * @param compressedResponseParam Compress the SQL Result in Base-64.
 	 */
 	public GenericFormListingMessageHandler(
 			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			WebSocketClient webSocketClientParam,
 			boolean compressedResponseParam) {
 
-		super(messageReceivedCallbackParam, compressedResponseParam);
+		super(messageReceivedCallbackParam, webSocketClientParam, compressedResponseParam);
 	}
 
 	/**
 	 * Constructor for FormListing callbacks.
 	 *
 	 * @param messageReceivedCallbackParam The callback events.
+	 * @param webSocketClientParam The web-socket client.   
 	 */
-	public GenericFormListingMessageHandler(IMessageReceivedCallback<FormListing> messageReceivedCallbackParam) {
-		super(messageReceivedCallbackParam);
+	public GenericFormListingMessageHandler(
+			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+			WebSocketClient webSocketClientParam
+	) {
+		super(messageReceivedCallbackParam, webSocketClientParam);
 	}
 
 	/**

@@ -607,36 +607,24 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	public void setFieldValue(Object fieldValueParam) {
 		this.fieldValue = fieldValueParam;
 
-		if(this.getFieldType() == null && fieldValueParam != null)
-		{
+		if (this.getFieldType() == null && fieldValueParam != null) {
 			//Date...
-			if(fieldValueParam instanceof Date)
-			{
+			if (fieldValueParam instanceof Date) {
 				this.setTypeAsEnum(Type.DateTime);
-			}
-			//Number...
-			else if(fieldValueParam instanceof Number)
-			{
+			} else if(fieldValueParam instanceof Number) {
+				//Number...
 				this.setTypeAsEnum(Type.Decimal);
-			}
-			//MultiChoice...
-			else if(fieldValueParam instanceof MultiChoice)
-			{
+			} else if(fieldValueParam instanceof MultiChoice) {
+				//MultiChoice...
 				this.setTypeAsEnum(Type.MultipleChoice);
-			}
-			//Table Field...
-			else if(fieldValueParam instanceof TableField)
-			{
+			} else if(fieldValueParam instanceof TableField) {
+				//Table Field...
 				this.setTypeAsEnum(Type.Table);
-			}
-			//Text...
-			else if(fieldValueParam instanceof String)
-			{
+			} else if(fieldValueParam instanceof String) {
+				//Text...
 				this.setTypeAsEnum(Type.Text);
-			}
-			//Boolean...
-			else if(fieldValueParam instanceof Boolean)
-			{
+			} else if(fieldValueParam instanceof Boolean) {
+				//Boolean...
 				this.setTypeAsEnum(Type.TrueFalse);
 			}
 		}
@@ -673,9 +661,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public void setTypeAsEnum(Type typeParam) {
-
-		if(typeParam == null)
-		{
+		if(typeParam == null) {
 			this.fieldType = null;
 			return;
 		}
@@ -691,10 +677,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
-	public Type getTypeAsEnum()
-	{
-		if(this.getFieldType() == null || this.getFieldType().trim().isEmpty())
-		{
+	public Type getTypeAsEnum() {
+		if(this.getFieldType() == null || this.getFieldType().trim().isEmpty()) {
 			return null;
 		}
 
@@ -749,28 +733,23 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() throws JSONException
-	{
+	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Field Name...
-		if(this.getFieldName() != null)
-		{
+		if (this.getFieldName() != null) {
 			returnVal.put(JSONMapping.FIELD_NAME,this.getFieldName());
 		}
 
 		//Field Description...
-		if(this.getFieldDescription() != null)
-		{
+		if (this.getFieldDescription() != null) {
 			returnVal.put(JSONMapping.FIELD_DESCRIPTION,this.getFieldDescription());
 		}
 
 		//Field Value...
-		if(this.getFieldValue() != null)
-		{
+		if(this.getFieldValue() != null) {
 			//Text...
-			if(this.getFieldValue() instanceof String)
-			{
+			if(this.getFieldValue() instanceof String) {
 				returnVal.put(JSONMapping.FIELD_VALUE, this.getFieldValue());
 			}
 			//Decimal...
@@ -810,12 +789,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		}
 
 		//Type...
-		if(this.getFieldType() != null) {
+		if (this.getFieldType() != null) {
 			returnVal.put(JSONMapping.FIELD_TYPE, this.getFieldType());
 		}
 
 		//Type Meta Data...
-		if(this.getTypeMetaData() != null) {
+		if (this.getTypeMetaData() != null) {
 			returnVal.put(JSONMapping.TYPE_META_DATA,this.getTypeMetaData());
 		}
 
