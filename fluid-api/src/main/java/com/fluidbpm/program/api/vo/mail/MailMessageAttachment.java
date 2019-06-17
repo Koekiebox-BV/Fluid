@@ -111,14 +111,14 @@ public class MailMessageAttachment extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Attachment Path...
-        if(this.getAttachmentPath() != null)
+        if (this.getAttachmentPath() != null)
         {
             returnVal.put(JSONMapping.ATTACHMENT_PATH,
                     this.getAttachmentPath());
         }
 
         //Attachment Data Base64...
-        if(this.getAttachmentDataBase64() != null)
+        if (this.getAttachmentDataBase64() != null)
         {
             returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
                     this.getAttachmentDataBase64());

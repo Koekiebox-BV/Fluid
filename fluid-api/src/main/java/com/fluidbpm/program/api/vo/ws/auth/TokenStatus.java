@@ -87,7 +87,7 @@ public class TokenStatus extends ABaseFluidJSONObject {
      */
     public boolean isExpired()
     {
-        if(this.getExpirationTime() == null)
+        if (this.getExpirationTime() == null)
         {
             return true;
         }

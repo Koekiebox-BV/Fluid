@@ -103,7 +103,7 @@ public class ABaseTestCase {
         try {
             boolean isConValid = loginClient.isConnectionValid();
 
-            if(!isConValid)
+            if (!isConValid)
             {
                 System.err.println("Connection to '"
                         +BASE_URL+"' is not valid!");

@@ -66,7 +66,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 		{
 			List<String> returnVal = new ArrayList();
 
-			if(ruleParam != null){
+			if (ruleParam != null){
 				returnVal.add(ruleParam);
 			}
 
@@ -120,7 +120,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testUserQuery_CRUD() {
-		if(!this.isConnectionValid()) {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
@@ -178,7 +178,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void executeUserQueryWithSpecificNameVolume() {
-		if(!this.isConnectionValid()) {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
@@ -201,7 +201,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 		userQueryToExec.setInputs(inputs);
 
 		int totalThreads = 1;
-		for(int threadIndex = 0;threadIndex < totalThreads;threadIndex++) {
+		for (int threadIndex = 0;threadIndex < totalThreads;threadIndex++) {
 			CustomerCodeExecutionThread customerCodeExecutionThread = new CustomerCodeExecutionThread(
 					serviceTicket, userQueryToExec);
 
@@ -251,19 +251,19 @@ public class TestUserQueryClient extends ABaseTestCase {
 			System.out.println("Starting ["+Thread.currentThread().getName()+"]");
 
 			int total = 1;
-			for(int index = 0;index < total;index++) {
+			for (int index = 0;index < total;index++) {
 				FluidItemListing itemListing =
 						userQueryClient.executeUserQuery(
 								this.userQueryToExec,
 								false,
 								-1,-1);
 
-				if(itemListing.getListingCount() > 0) {
-					for(FluidItem returnVal :itemListing.getListing()) {
+				if (itemListing.getListingCount() > 0) {
+					for (FluidItem returnVal :itemListing.getListing()) {
 						System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
 								returnVal.getForm().getTitle() + " ]]] ***");
 
-						for(Field formField : returnVal.getForm().getFormFields()) {
+						for (Field formField : returnVal.getForm().getFormFields()) {
 							System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
 						}
 					}
@@ -287,7 +287,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	@Ignore
 	public void executeUserQueryWithSpecificName()
 	{
-		if(!this.isConnectionValid())
+		if (!this.isConnectionValid())
 		{
 			return;
 		}
@@ -317,14 +317,14 @@ public class TestUserQueryClient extends ABaseTestCase {
 		FluidItemListing itemListing =
 				userQueryClient.executeUserQuery(userQueryToExec);
 
-		if(itemListing.getListingCount() > 0)
+		if (itemListing.getListingCount() > 0)
 		{
-			for(FluidItem returnVal :itemListing.getListing())
+			for (FluidItem returnVal :itemListing.getListing())
 			{
 				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
 						returnVal.getForm().getTitle() + " ]]] ***");
 
-				for(Field formField : returnVal.getForm().getFormFields())
+				for (Field formField : returnVal.getForm().getFormFields())
 				{
 					System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
 				}
@@ -343,7 +343,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	@Ignore
 	public void executeUserQueryWithSpecificNameNoInput()
 	{
-		if(!this.isConnectionValid())
+		if (!this.isConnectionValid())
 		{
 			return;
 		}
@@ -363,14 +363,14 @@ public class TestUserQueryClient extends ABaseTestCase {
 		FluidItemListing itemListing =
 				userQueryClient.executeUserQuery(userQueryToExec);
 
-		if(itemListing.getListingCount() > 0)
+		if (itemListing.getListingCount() > 0)
 		{
-			for(FluidItem returnVal :itemListing.getListing())
+			for (FluidItem returnVal :itemListing.getListing())
 			{
 				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
 						returnVal.getForm().getTitle() + " ]]] ***");
 
-				for(Field formField : returnVal.getForm().getFormFields())
+				for (Field formField : returnVal.getForm().getFormFields())
 				{
 					System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
 				}

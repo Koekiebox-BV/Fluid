@@ -111,7 +111,7 @@ public class Role extends ABaseFluidJSONObject {
     public Role(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -134,7 +134,7 @@ public class Role extends ABaseFluidJSONObject {
 
             List<String> adminPermissionList = new ArrayList();
 
-            for(int index = 0;index < adminPermissionListing.length();index++)
+            for (int index = 0;index < adminPermissionListing.length();index++)
             {
                 adminPermissionList.add(adminPermissionListing.getString(index));
             }
@@ -150,7 +150,7 @@ public class Role extends ABaseFluidJSONObject {
 
             List<RoleToFormDefinition> roleToFormDefListing = new ArrayList();
 
-            for(int index = 0;index < roleToFormDefArray.length();index++)
+            for (int index = 0;index < roleToFormDefArray.length();index++)
             {
                 roleToFormDefListing.add(
                         new RoleToFormDefinition(roleToFormDefArray.getJSONObject(index)));
@@ -167,7 +167,7 @@ public class Role extends ABaseFluidJSONObject {
 
             List<RoleToFormFieldToFormDefinition> roleToFormDefListing = new ArrayList();
 
-            for(int index = 0;index < roleToFormDefArray.length();index++)
+            for (int index = 0;index < roleToFormDefArray.length();index++)
             {
                 roleToFormDefListing.add(
                         new RoleToFormFieldToFormDefinition(roleToFormDefArray.getJSONObject(index)));
@@ -184,7 +184,7 @@ public class Role extends ABaseFluidJSONObject {
 
             List<RoleToJobView> roleToFormDefListing = new ArrayList();
 
-            for(int index = 0;index < roleToJobViewDefArray.length();index++)
+            for (int index = 0;index < roleToJobViewDefArray.length();index++)
             {
                 roleToFormDefListing.add(
                         new RoleToJobView(roleToJobViewDefArray.getJSONObject(index)));
@@ -201,7 +201,7 @@ public class Role extends ABaseFluidJSONObject {
 
             List<RoleToUserQuery> userQueryListing = new ArrayList();
 
-            for(int index = 0;index < userQueryArray.length();index++)
+            for (int index = 0;index < userQueryArray.length();index++)
             {
                 userQueryListing.add(
                         new RoleToUserQuery(userQueryArray.getJSONObject(index)));
@@ -222,7 +222,7 @@ public class Role extends ABaseFluidJSONObject {
     @XmlTransient
     public static List<Role> convertToObjects(String roleListingParam)
     {
-        if(roleListingParam == null || roleListingParam.trim().isEmpty())
+        if (roleListingParam == null || roleListingParam.trim().isEmpty())
         {
             return null;
         }
@@ -231,7 +231,7 @@ public class Role extends ABaseFluidJSONObject {
 
         List<Role> returnVal = new ArrayList<>();
 
-        for(String roleName : listOfRoles)
+        for (String roleName : listOfRoles)
         {
             Role roleToAdd = new Role();
             roleToAdd.setName(roleName.trim());
@@ -396,24 +396,24 @@ public class Role extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if(this.getName() != null)
+        if (this.getName() != null)
         {
             returnVal.put(JSONMapping.NAME,this.getName());
         }
 
         //Description...
-        if(this.getDescription() != null)
+        if (this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
         }
 
         //Admin Permissions...
-        if(this.getAdminPermissions() != null &&
+        if (this.getAdminPermissions() != null &&
                 !this.getAdminPermissions().isEmpty())
         {
             JSONArray adminPerArr = new JSONArray();
 
-            for(String toAdd : this.getAdminPermissions())
+            for (String toAdd : this.getAdminPermissions())
             {
                 adminPerArr.put(toAdd);
             }
@@ -422,11 +422,11 @@ public class Role extends ABaseFluidJSONObject {
         }
 
         //Role to Form Definitions...
-        if(this.getRoleToFormDefinitions() != null &&
+        if (this.getRoleToFormDefinitions() != null &&
                 !this.getRoleToFormDefinitions().isEmpty())
         {
             JSONArray roleToFormDefArr = new JSONArray();
-            for(RoleToFormDefinition toAdd :this.getRoleToFormDefinitions())
+            for (RoleToFormDefinition toAdd :this.getRoleToFormDefinitions())
             {
                 roleToFormDefArr.put(toAdd.toJsonObject());
             }
@@ -435,11 +435,11 @@ public class Role extends ABaseFluidJSONObject {
         }
 
         //Role To Form Field To Form Definition...
-        if(this.getRoleToFormFieldToFormDefinitions() != null &&
+        if (this.getRoleToFormFieldToFormDefinitions() != null &&
                 !this.getRoleToFormFieldToFormDefinitions().isEmpty())
         {
             JSONArray roleToJobViewArr = new JSONArray();
-            for(RoleToFormFieldToFormDefinition toAdd :this.getRoleToFormFieldToFormDefinitions())
+            for (RoleToFormFieldToFormDefinition toAdd :this.getRoleToFormFieldToFormDefinitions())
             {
                 roleToJobViewArr.put(toAdd.toJsonObject());
             }
@@ -448,11 +448,11 @@ public class Role extends ABaseFluidJSONObject {
         }
 
         //Role to Job Views...
-        if(this.getRoleToJobViews() != null &&
+        if (this.getRoleToJobViews() != null &&
                 !this.getRoleToJobViews().isEmpty())
         {
             JSONArray roleToJobViewArr = new JSONArray();
-            for(RoleToJobView toAdd :this.getRoleToJobViews())
+            for (RoleToJobView toAdd :this.getRoleToJobViews())
             {
                 roleToJobViewArr.put(toAdd.toJsonObject());
             }
@@ -461,11 +461,11 @@ public class Role extends ABaseFluidJSONObject {
         }
 
         //Role to User Queries...
-        if(this.getRoleToUserQueries() != null &&
+        if (this.getRoleToUserQueries() != null &&
                 !this.getRoleToUserQueries().isEmpty())
         {
             JSONArray userQueriesArr = new JSONArray();
-            for(RoleToUserQuery toAdd :this.getRoleToUserQueries())
+            for (RoleToUserQuery toAdd :this.getRoleToUserQueries())
             {
                 userQueriesArr.put(toAdd.toJsonObject());
             }

@@ -90,7 +90,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCRUDFormContainerBasic()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -157,7 +157,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCRUDFormContainerBasicWebSocket()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -167,7 +167,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
         String serviceTicketHex = null;
-        if(serviceTicket != null && !serviceTicket.isEmpty())
+        if (serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex = UtilGlobal.encodeBase16(
                     UtilGlobal.decodeBase64(serviceTicket));
@@ -219,7 +219,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Ignore
     public void testCRUDFormContainerWithEncryptedField() {
 
-        if(!this.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -260,7 +260,7 @@ public class TestFormContainerClient extends ABaseTestCase {
      */
     @Test
     public void testCRUDFormContainerAdvanced() {
-        if(!this.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 
@@ -280,13 +280,13 @@ public class TestFormContainerClient extends ABaseTestCase {
                 new FormFieldClient(BASE_URL, serviceTicket);
 
         Field createdField = null;
-        try{
+        try {
             createdField = formFieldClient.getFieldByName(
                     TestFormFieldClient.TestStatics.FIELD_NAME);
         }
         catch(FluidClientException fce)
         {
-            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
             {
                 TestCase.fail(fce.getMessage());
             }
@@ -312,7 +312,7 @@ public class TestFormContainerClient extends ABaseTestCase {
                     TestFormDefinitionClient.TestStatics.FORM_TYPE);
         }
         catch(FluidClientException fce) {
-            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
             {
                 TestCase.fail(fce.getMessage());
             }
@@ -422,7 +422,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCreateDeleteTableRecord()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -541,7 +541,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         TestCase.assertEquals("Expected 3 Table Fields.",
                 3,formFields.size());
 
-        for(Field formField : formFields)
+        for (Field formField : formFields)
         {
             TestCase.assertNotNull("Form Field Id is not set. " +
                     "Expected value to be set.",
@@ -570,7 +570,7 @@ public class TestFormContainerClient extends ABaseTestCase {
     @Test
     public void testCreateDeleteTableRecordWebSocket()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -581,7 +581,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
         String serviceTicketHex = null;
-        if(serviceTicket != null && !serviceTicket.isEmpty())
+        if (serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex = UtilGlobal.encodeBase16(
                     UtilGlobal.decodeBase64(serviceTicket));
@@ -698,7 +698,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
         long now = System.currentTimeMillis();
         int totalCount = 40;
-        for(int counter = 0;counter < totalCount;counter++)
+        for (int counter = 0;counter < totalCount;counter++)
         {
             TableRecord toAdd = new TableRecord();
 
@@ -723,7 +723,7 @@ public class TestFormContainerClient extends ABaseTestCase {
         TestCase.assertEquals("Expected 3 Table Fields.",
                 3,formFields.size());
 
-        for(Field formField : formFields)
+        for (Field formField : formFields)
         {
             TestCase.assertNotNull("Form Field Id is not set. " +
                             "Expected value to be set.",
@@ -731,9 +731,9 @@ public class TestFormContainerClient extends ABaseTestCase {
         }
 
         //DELETE THE ITEMS...
-        if(!additionalForSpeed.isEmpty())
+        if (!additionalForSpeed.isEmpty())
         {
-            for(TableRecord toDel : additionalForSpeed)
+            for (TableRecord toDel : additionalForSpeed)
             {
                 formContainerClient.deleteFormContainer(toDel.getFormContainer());
             }

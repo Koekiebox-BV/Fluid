@@ -61,7 +61,7 @@ public class FlowItemClient extends ABaseClientWS {
     public FluidItem getFluidItemByFormId(Long formIdParam) {
         Form form = new Form(formIdParam);
 
-        if(this.serviceTicket != null) {
+        if (this.serviceTicket != null) {
             form.setServiceTicket(this.serviceTicket);
         }
 
@@ -86,7 +86,7 @@ public class FlowItemClient extends ABaseClientWS {
         }
 
         //Flow Job Item Step etc...
-        if(flowJobItemParam != null)
+        if (flowJobItemParam != null)
         {
             flowJobItemParam.setFlow(flowNameParam);
         }
@@ -120,7 +120,7 @@ public class FlowItemClient extends ABaseClientWS {
             String sortFieldParam,
             String sortOrderParam)
     {
-        if(this.serviceTicket != null && jobViewParam != null)
+        if (this.serviceTicket != null && jobViewParam != null)
         {
             jobViewParam.setServiceTicket(this.serviceTicket);
         }

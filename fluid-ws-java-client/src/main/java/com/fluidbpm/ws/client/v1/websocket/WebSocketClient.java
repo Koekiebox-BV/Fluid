@@ -113,7 +113,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 			Object qualifyObj = handler.doesHandlerQualifyForProcessing(messageParam);
 			if (qualifyObj instanceof Error) {
 				handler.handleMessage(qualifyObj);
-			} else if(qualifyObj instanceof JSONObject) {
+			} else if (qualifyObj instanceof JSONObject) {
 				handler.handleMessage(qualifyObj);
 				handlerFoundForMsg = true;
 				break;
@@ -134,7 +134,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	 */
 	public void sendMessage(ABaseFluidJSONObject aBaseFluidJSONObjectParam) {
 
-		if(aBaseFluidJSONObjectParam == null) {
+		if (aBaseFluidJSONObjectParam == null) {
 			throw new FluidClientException(
 					"No JSON Object to send.",
 					FluidClientException.ErrorCode.IO_ERROR);

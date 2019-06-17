@@ -95,7 +95,7 @@ public class CompressedResponse extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Data Base64...
-        if(this.getDataBase64() != null)
+        if (this.getDataBase64() != null)
         {
             returnVal.put(JSONMapping.DATA_BASE_64,
                     this.getDataBase64());

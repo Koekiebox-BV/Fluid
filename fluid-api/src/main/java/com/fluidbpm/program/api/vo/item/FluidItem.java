@@ -146,7 +146,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		public FluidItemProperty(JSONObject jsonObjectParam) {
 			super(jsonObjectParam);
 
-			if(this.jsonObject == null)
+			if (this.jsonObject == null)
 			{
 				return;
 			}
@@ -175,12 +175,12 @@ public class FluidItem extends ABaseFluidJSONObject {
 			JSONObject returnVal = super.toJsonObject();
 
 			//Name...
-			if(this.getName() != null) {
+			if (this.getName() != null) {
 				returnVal.put(JSONMapping.NAME, this.getName());
 			}
 
 			//Value...
-			if(this.getValue() != null) {
+			if (this.getValue() != null) {
 				returnVal.put(JSONMapping.VALUE, this.getValue());
 			}
 
@@ -461,7 +461,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		//Route Fields...
 		if (this.getRouteFields() != null && !this.getRouteFields().isEmpty()) {
 			JSONArray fieldsArr = new JSONArray();
-			for(Field toAdd :this.getRouteFields()) {
+			for (Field toAdd :this.getRouteFields()) {
 				fieldsArr.put(toAdd.toJsonObject());
 			}
 
@@ -471,7 +471,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		//Global Fields...
 		if (this.getGlobalFields() != null && !this.getGlobalFields().isEmpty()) {
 			JSONArray fieldsArr = new JSONArray();
-			for(Field toAdd :this.getGlobalFields()) {
+			for (Field toAdd :this.getGlobalFields()) {
 				fieldsArr.put(toAdd.toJsonObject());
 			}
 
@@ -481,7 +481,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		//Attachments...
 		if (this.getAttachments() != null) {
 			JSONArray jsonArray = new JSONArray();
-			for(Attachment toAdd : this.getAttachments()) {
+			for (Attachment toAdd : this.getAttachments()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
 
@@ -1042,7 +1042,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 								fieldNameLower.equals(itm.getFieldName().toLowerCase()))
 						.findFirst()
 						.orElse(null);
-		if(fieldWithName == null) {
+		if (fieldWithName == null) {
 			fieldToSelectFrom.add(new Field(fieldNameParam, fieldValueParam, typeParam));
 		} else {
 			fieldWithName.setFieldValue(fieldValueParam);
@@ -1355,7 +1355,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		if (objParam instanceof FluidItem) {
 			FluidItem paramCasted = (FluidItem)objParam;
-			if(paramCasted.getId() == null) {
+			if (paramCasted.getId() == null) {
 				return false;
 			}
 

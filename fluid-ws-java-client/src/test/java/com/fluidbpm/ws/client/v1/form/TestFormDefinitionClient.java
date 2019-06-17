@@ -93,7 +93,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testFormDefinitionCRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -223,7 +223,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testInvalidCreateData()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -241,7 +241,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         toCreate.setFormType(TestStatics.FORM_TYPE);
         toCreate.setFormDescription(TestStatics.FORM_DESCRIPTION);
 
-        try{
+        try {
             formDefinitionClient.createFormDefinition(toCreate);
 
             TestCase.fail("Expected an error due to Associated Fields being empty.");
@@ -271,7 +271,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         toCreate.setFormFields(fieldsToUse);
 
         //2. Create - NAME...
-        try{
+        try {
             formDefinitionClient.createFormDefinition(toCreate);
 
             TestCase.fail("Expected an error due to Type being empty.");
@@ -290,7 +290,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         toCreate.setFormDescription("");
         toCreate.setFormFields(fieldsToUse);
 
-        try{
+        try {
             formDefinitionClient.createFormDefinition(toCreate);
 
             TestCase.fail("Expected an error due to Description being empty.");
@@ -312,7 +312,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testFormDefinitionSystem_Mail()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -341,7 +341,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         toCreate.setFormFields(fieldsToUse);
 
         //2. Create...
-        try{
+        try {
             formDefinitionClient.createFormDefinition(toCreate);
 
             TestCase.fail("Should not be allowed to create a system form definition.");
@@ -362,7 +362,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testDuplicateCreateData()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -392,7 +392,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
         toCreate.setFormFields(fieldsToUse);
 
         //2. Create - NAME...
-        try{
+        try {
             toCreate = formDefinitionClient.createFormDefinition(toCreate);
 
             formDefinitionClient.createFormDefinition(toCreate);

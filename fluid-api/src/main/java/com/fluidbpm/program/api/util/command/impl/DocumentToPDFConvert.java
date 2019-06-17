@@ -55,7 +55,7 @@ public class DocumentToPDFConvert {
 	 */
 	public File convertDocumentToPDF(File inputDocumentParam) {
 
-		if(inputDocumentParam == null ||
+		if (inputDocumentParam == null ||
 				!inputDocumentParam.exists())
 		{
 			throw new UtilException(
@@ -63,7 +63,7 @@ public class DocumentToPDFConvert {
 					UtilException.ErrorCode.COMMAND);
 		}
 
-		if(!inputDocumentParam.isFile())
+		if (!inputDocumentParam.isFile())
 		{
 			throw new UtilException(
 					"Input document '' is not a file.",
@@ -95,7 +95,7 @@ public class DocumentToPDFConvert {
 							completeOutputPath);
 
 			//There is a problem...
-			if(commandResult.getExitCode() != 0)
+			if (commandResult.getExitCode() != 0)
 			{
 				throw new UtilException(
 						"Unable to convert '"+
@@ -105,7 +105,7 @@ public class DocumentToPDFConvert {
 			}
 
 			File returnVal = new File(completeOutputPath);
-			if(!returnVal.exists())
+			if (!returnVal.exists())
 			{
 				throw new UtilException(
 						"Command executed, but no output file. Expected PDF at '"+

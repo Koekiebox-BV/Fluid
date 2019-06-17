@@ -91,7 +91,7 @@ public class NameValue implements Serializable{
      */
     public String toString()
     {
-        if(this.value == null)
+        if (this.value == null)
         {
             return null;
         }

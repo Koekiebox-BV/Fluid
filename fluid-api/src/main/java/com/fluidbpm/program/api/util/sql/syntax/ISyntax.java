@@ -118,12 +118,12 @@ public interface ISyntax {
 		 * @return Whether stored procedure is part of {@code this} mapping.
 		 */
 		public static boolean isStoredProcedureMapping(String aliasParam) {
-			if(aliasParam == null || aliasParam.trim().isEmpty()) {
+			if (aliasParam == null || aliasParam.trim().isEmpty()) {
 				return false;
 			}
 
-			for(String alias :  allAliases()) {
-				if(alias.equals(aliasParam)) {
+			for (String alias :  allAliases()) {
+				if (alias.equals(aliasParam)) {
 					return true;
 				}
 			}
@@ -167,55 +167,55 @@ public interface ISyntax {
 		 */
 		public static int getParamCountForAlias(String aliasParam) {
 			//Forms...
-			if(Form.GetFormContainersTableFieldFormContainers.equals(aliasParam)) {
+			if (Form.GetFormContainersTableFieldFormContainers.equals(aliasParam)) {
 				return 1;
 			}
-			else if(Form.GetFormContainersChildFormContainers.equals(aliasParam)) {
+			else if (Form.GetFormContainersChildFormContainers.equals(aliasParam)) {
 				return 1;
 			}
-			else if(Form.GetFormContainersChildFormContainersWithStates.equals(aliasParam)) {
+			else if (Form.GetFormContainersChildFormContainersWithStates.equals(aliasParam)) {
 				return 1;
 			}
-			else if(Form.GetFormContainersParentFormContainer.equals(aliasParam)) {
+			else if (Form.GetFormContainersParentFormContainer.equals(aliasParam)) {
 				return 1;
 			}
-			else if(Form.GetFormContainerInfo.equals(aliasParam)) {
+			else if (Form.GetFormContainerInfo.equals(aliasParam)) {
 				return 1;
 			}
 			//Fields...
-			else if(Field.GetFormFieldsForFormContainer.equals(aliasParam)) {
+			else if (Field.GetFormFieldsForFormContainer.equals(aliasParam)) {
 				return 1;
 			}
-			else if(Field.GetFormFieldsForFormDefinition.equals(aliasParam)) {
+			else if (Field.GetFormFieldsForFormDefinition.equals(aliasParam)) {
 				return 1;
 			}
 			//Form Definition by Container...
-			else if(Field.GetFormDefinitionForFormContainer.equals(aliasParam)) {
+			else if (Field.GetFormDefinitionForFormContainer.equals(aliasParam)) {
 				return 1;
 			}
 			//Specific Values...
-			else if(Field.GetFormFieldValue_1_Text.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_1_Text.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldValue_2_TrueFalse.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_2_TrueFalse.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldValue_3_ParagraphText.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_3_ParagraphText.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldValue_4_MultiChoice.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_4_MultiChoice.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldMultipleValue_4_MultiChoice.equals(aliasParam)) {
+			else if (Field.GetFormFieldMultipleValue_4_MultiChoice.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldValue_5_DateTime.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_5_DateTime.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldValue_6_Decimal.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_6_Decimal.equals(aliasParam)) {
 				return 3;
 			}
-			else if(Field.GetFormFieldValue_7_TableField.equals(aliasParam)) {
+			else if (Field.GetFormFieldValue_7_TableField.equals(aliasParam)) {
 				return 3;
 			}
 

@@ -64,7 +64,7 @@ public class ConfigurationClient extends ABaseClientWS {
 
         configuration.setKey(configurationKeyParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             configuration.setServiceTicket(this.serviceTicket);
         }
@@ -82,7 +82,7 @@ public class ConfigurationClient extends ABaseClientWS {
     {
         Configuration configuration = new Configuration();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             configuration.setServiceTicket(this.serviceTicket);
         }

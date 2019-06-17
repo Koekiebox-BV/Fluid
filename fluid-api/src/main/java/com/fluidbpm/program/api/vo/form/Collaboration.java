@@ -169,37 +169,37 @@ public class Collaboration extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Form Container...
-        if(this.getFormContainer() != null) {
+        if (this.getFormContainer() != null) {
             returnVal.put(JSONMapping.FORM_CONTAINER,
                     this.getFormContainer().toJsonObject());
         }
 
         //Message...
-        if(this.getMessage() != null) {
+        if (this.getMessage() != null) {
             returnVal.put(JSONMapping.MESSAGE, this.getMessage());
         }
 
         //Date Read...
-        if(this.getDateRead() != null) {
+        if (this.getDateRead() != null) {
             returnVal.put(JSONMapping.DATE_READ,
                     this.getDateAsLongFromJson(this.getDateRead()));
         }
 
         //Date Sent...
-        if(this.getDateSent() != null) {
+        if (this.getDateSent() != null) {
             returnVal.put(JSONMapping.DATE_SENT,
                     this.getDateAsLongFromJson(this.getDateSent()));
         }
 
         //From User...
-        if(this.getFromUser() != null) {
+        if (this.getFromUser() != null) {
             returnVal.put(
                     JSONMapping.FROM_USER,
                     this.getFromUser().toJsonObject());
         }
 
         //To User...
-        if(this.getToUser() != null) {
+        if (this.getToUser() != null) {
             returnVal.put(
                     JSONMapping.TO_USER,
                     this.getToUser().toJsonObject());

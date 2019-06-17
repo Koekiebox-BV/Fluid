@@ -42,8 +42,8 @@ public class StoredProcedureSyntax implements ISyntax {
 		super();
 		String assignment = ("{CALL "+storedProcedureNameParam+"(");
 
-		if(numberOfParamsParam > 0) {
-			for(int counter = 0;counter < numberOfParamsParam;counter++)
+		if (numberOfParamsParam > 0) {
+			for (int counter = 0;counter < numberOfParamsParam;counter++)
 			{
 				assignment += "?";
 				assignment += ",";

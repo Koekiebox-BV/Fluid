@@ -66,7 +66,7 @@ public class SQLRow extends ABaseFluidJSONObject {
     public SQLRow(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -78,7 +78,7 @@ public class SQLRow extends ABaseFluidJSONObject {
                     JSONMapping.SQL_COLUMNS);
 
             List<SQLColumn> sqlColumns = new ArrayList();
-            for(int index = 0;index < rulesArr.length();index++)
+            for (int index = 0;index < rulesArr.length();index++)
             {
                 sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
             }
@@ -104,11 +104,11 @@ public class SQLRow extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //SQL Columns...
-        if(this.getSqlColumns() != null)
+        if (this.getSqlColumns() != null)
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(SQLColumn toAdd : this.getSqlColumns())
+            for (SQLColumn toAdd : this.getSqlColumns())
             {
                 jsonArray.put(toAdd.toJsonObject());
             }

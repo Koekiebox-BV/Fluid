@@ -72,7 +72,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         this.loginClient = new LoginClient(BASE_URL);
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -88,7 +88,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
             this.createdUser = this.userClient.getUserWhereUsername(
                     TestStatics.Create.USERNAME);
 
-            if(this.createdUser != null)
+            if (this.createdUser != null)
             {
                 this.userClient.deleteUser(
                         this.createdUser, true);
@@ -126,7 +126,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
         }
         catch (FluidClientException fce)
         {
-            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
             {
                 TestCase.fail(fce.getMessage());
             }
@@ -162,22 +162,22 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
     @After
     public void destroy()
     {
-        if(this.loginClient != null)
+        if (this.loginClient != null)
         {
             this.loginClient.closeAndClean();
         }
 
         //Delete the instances...
-        if(this.createdUser != null &&
+        if (this.createdUser != null &&
                 this.createdUser.getId() != null)
         {
-            if(this.userClient != null)
+            if (this.userClient != null)
             {
                 this.userClient.deleteUser(this.createdUser,true);
             }
         }
 
-        if(this.userClient != null)
+        if (this.userClient != null)
         {
             this.userClient.closeAndClean();
         }

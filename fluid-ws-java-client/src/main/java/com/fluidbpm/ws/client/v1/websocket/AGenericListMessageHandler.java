@@ -107,7 +107,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 		}
 
 		Error fluidError = new Error(jsonObject);
-		if(fluidError.getErrorCode() > 0) {
+		if (fluidError.getErrorCode() > 0) {
 			return fluidError;
 		}
 
@@ -207,7 +207,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @see CompletableFuture
 	 */
 	public CompletableFuture<List<T>> getCF() {
-		if(this.completableFuture == null) {
+		if (this.completableFuture == null) {
 			this.completableFuture = new CompletableFuture<>();
 		}
 
@@ -221,9 +221,9 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	public void connectionClosed() {
 		this.isConnectionClosed = true;
 
-		if(this.completableFuture != null) {
+		if (this.completableFuture != null) {
 			//If there was no error...
-			if(this.getErrors().isEmpty()) {
+			if (this.getErrors().isEmpty()) {
 				this.completableFuture.complete(this.returnValue);
 			} else {
 				//there was an error...
@@ -261,7 +261,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @param expectedMessageEchoParam The echo to expect.
 	 */
 	public void addExpectedMessage(String expectedMessageEchoParam) {
-		if(expectedMessageEchoParam == null ||
+		if (expectedMessageEchoParam == null ||
 				expectedMessageEchoParam.trim().isEmpty()) {
 			return;
 		}
@@ -316,7 +316,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	private List<String> getEchoMessagesFromReturnValue() {
 		List<String> returnListing = new ArrayList();
 
-		if(this.returnValue == null) {
+		if (this.returnValue == null) {
 			return returnListing;
 		}
 
@@ -326,7 +326,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 		//Only add where the ECHO message is set...
 		while(iterForReturnVal.hasNext()) {
 			T returnVal = iterForReturnVal.next();
-			if(returnVal.getEcho() == null) {
+			if (returnVal.getEcho() == null) {
 				continue;
 			}
 
@@ -347,7 +347,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	public boolean doReturnValueEchoMessageContainAll(
 			List<String> echoMessageParam
 	) {
-		if(echoMessageParam == null || echoMessageParam.isEmpty())
+		if (echoMessageParam == null || echoMessageParam.isEmpty())
 		{
 			return false;
 		}
@@ -355,8 +355,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 		List<String> allReturnValueEchoMessages =
 				this.getEchoMessagesFromReturnValue();
 
-		for(String toCheckFor: echoMessageParam) {
-			if(!allReturnValueEchoMessages.contains(toCheckFor)) {
+		for (String toCheckFor: echoMessageParam) {
+			if (!allReturnValueEchoMessages.contains(toCheckFor)) {
 				return false;
 			}
 		}
@@ -398,7 +398,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 
 		byte[] returnVal = null;
 		ZipInputStream zis = null;
-		if(CHARSET == null) {
+		if (CHARSET == null) {
 			zis = new ZipInputStream(
 					new ByteArrayInputStream(compressedBytesParam));
 		} else {
@@ -412,7 +412,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 
 		//get the zipped file list entry
 		ZipEntry ze = zis.getNextEntry();
-		if(ze == null){
+		if (ze == null){
 			return returnVal;
 		}
 

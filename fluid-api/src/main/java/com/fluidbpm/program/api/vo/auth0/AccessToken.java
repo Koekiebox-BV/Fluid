@@ -65,7 +65,7 @@ public class AccessToken extends ABaseFluidJSONObject {
     public AccessToken(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -154,19 +154,19 @@ public class AccessToken extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Access Token...
-        if(this.getAccessToken() != null)
+        if (this.getAccessToken() != null)
         {
             returnVal.put(JSONMapping.ACCESS_TOKEN,this.getAccessToken());
         }
 
         //Id Token...
-        if(this.getIdToken() != null)
+        if (this.getIdToken() != null)
         {
             returnVal.put(JSONMapping.ID_TOKEN,this.getIdToken());
         }
 
         //Token Type...
-        if(this.getTokenType() != null)
+        if (this.getTokenType() != null)
         {
             returnVal.put(JSONMapping.TOKEN_TYPE,this.getTokenType());
         }

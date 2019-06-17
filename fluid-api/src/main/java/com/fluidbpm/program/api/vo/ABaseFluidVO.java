@@ -113,11 +113,11 @@ public class ABaseFluidVO implements Serializable {
 	public String getServiceTicketAsHexUpper() {
 
 		String serviceTicket = this.getServiceTicket();
-		if(serviceTicket == null) {
+		if (serviceTicket == null) {
 			return null;
 		}
 
-		if(serviceTicket.isEmpty()) {
+		if (serviceTicket.isEmpty()) {
 			return serviceTicket;
 		}
 
@@ -135,11 +135,11 @@ public class ABaseFluidVO implements Serializable {
 	 */
 	private String bytesToHex(byte[] bytesToConvert) {
 
-		if(bytesToConvert == null) {
+		if (bytesToConvert == null) {
 			return null;
 		}
 
-		if(bytesToConvert.length == 0) {
+		if (bytesToConvert.length == 0) {
 			return UtilGlobal.EMPTY;
 		}
 

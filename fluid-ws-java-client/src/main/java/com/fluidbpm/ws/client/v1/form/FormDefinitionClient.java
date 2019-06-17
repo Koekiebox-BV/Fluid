@@ -74,7 +74,7 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @see Form
 	 */
 	public Form createFormDefinition(Form formDefinitionParam) {
-		if(formDefinitionParam != null && this.serviceTicket != null) {
+		if (formDefinitionParam != null && this.serviceTicket != null) {
 			formDefinitionParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -92,7 +92,7 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @see Form
 	 */
 	public Form updateFormDefinition(Form formDefinitionParam) {
-		if(formDefinitionParam != null && this.serviceTicket != null) {
+		if (formDefinitionParam != null && this.serviceTicket != null) {
 			formDefinitionParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -110,7 +110,7 @@ public class FormDefinitionClient extends ABaseClientWS {
 	public Form getFormDefinitionById(Long formDefinitionIdParam) {
 		Form form = new Form(formDefinitionIdParam);
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
 
@@ -127,11 +127,11 @@ public class FormDefinitionClient extends ABaseClientWS {
 	public Form getFormDefinitionByName(String formDefinitionNameParam) {
 		Form form = new Form(formDefinitionNameParam);
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
 
-		if(this.requestUuid != null) {
+		if (this.requestUuid != null) {
 			form.setRequestUuid(this.requestUuid);
 		}
 		
@@ -149,15 +149,15 @@ public class FormDefinitionClient extends ABaseClientWS {
 	public List<Form> getAllByLoggedInUser(boolean includeTableRecordTypesParam) {
 		Form form = new Form();
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
 
-		if(this.requestUuid != null) {
+		if (this.requestUuid != null) {
 			form.setRequestUuid(this.requestUuid);
 		}
 
-		if(includeTableRecordTypesParam) {
+		if (includeTableRecordTypesParam) {
 			return new FormListing(this.postJson(
 					form, WS.Path.FormDefinition.Version1.getAllByLoggedInUserIncludeTableTypes())).getListing();
 		} else {
@@ -175,11 +175,11 @@ public class FormDefinitionClient extends ABaseClientWS {
 	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf() {
 		Form form = new Form();
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
 
-		if(this.requestUuid != null) {
+		if (this.requestUuid != null) {
 			form.setRequestUuid(this.requestUuid);
 		}
 
@@ -196,11 +196,11 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @return The deleted Form Definition.
 	 */
 	public Form deleteFormDefinition(Form formDefinitionParam) {
-		if(formDefinitionParam != null && this.serviceTicket != null) {
+		if (formDefinitionParam != null && this.serviceTicket != null) {
 			formDefinitionParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(formDefinitionParam != null && this.requestUuid != null) {
+		if (formDefinitionParam != null && this.requestUuid != null) {
 			formDefinitionParam.setRequestUuid(this.requestUuid);
 		}
 

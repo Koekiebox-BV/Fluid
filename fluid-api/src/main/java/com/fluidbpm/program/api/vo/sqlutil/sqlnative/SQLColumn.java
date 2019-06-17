@@ -92,7 +92,7 @@ public class SQLColumn extends ABaseFluidJSONObject {
     public SQLColumn(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -140,28 +140,28 @@ public class SQLColumn extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if(this.getColumnName() != null)
+        if (this.getColumnName() != null)
         {
             returnVal.put(JSONMapping.COLUMN_NAME,
                     this.getColumnName());
         }
         
         //Index...
-        if(this.getColumnIndex() != null)
+        if (this.getColumnIndex() != null)
         {
             returnVal.put(JSONMapping.COLUMN_INDEX,
                     this.getColumnIndex());
         }
 
         //SQL Type...
-        if(this.getSqlType() != null)
+        if (this.getSqlType() != null)
         {
             returnVal.put(
                     JSONMapping.SQL_TYPE,this.getSqlType());
         }
 
         //SQL Value...
-        if(this.getSqlValue() != null)
+        if (this.getSqlValue() != null)
         {
             returnVal.put(JSONMapping.SQL_VALUE,
                     this.getSqlValue());

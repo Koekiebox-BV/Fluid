@@ -103,13 +103,13 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		this.timeoutInMillis = timeoutInMillisParam;
 		this.messageReceivedCallback = messageReceivedCallbackParam;
 
-		if(this.webSocketEndpointUrl == null && this.endpointUrl != null) {
+		if (this.webSocketEndpointUrl == null && this.endpointUrl != null) {
 			this.webSocketEndpointUrl =
 					this.getWebSocketBaseURIFrom(this.endpointUrl);
 		}
 
 		//Confirm Web Socket Endpoint is set.
-		if(this.webSocketEndpointUrl == null ||
+		if (this.webSocketEndpointUrl == null ||
 				this.webSocketEndpointUrl.trim().isEmpty()) {
 			throw new FluidClientException(
 					"Base Web Socket Endpoint URL not set.",
@@ -118,7 +118,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
 		//Issue #23... Don't do double //...
 		String completeUrl = null;
-		if(this.webSocketEndpointUrl.endsWith(UtilGlobal.FORWARD_SLASH) &&
+		if (this.webSocketEndpointUrl.endsWith(UtilGlobal.FORWARD_SLASH) &&
 				postFixForUrlParam.startsWith(UtilGlobal.FORWARD_SLASH)) {
 			completeUrl = (this.webSocketEndpointUrl + postFixForUrlParam.substring(1));
 		} else {
@@ -249,11 +249,11 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @return The Web Socket URL version of {@code webServiceURLParam}.
 	 */
 	private String getWebSocketBaseURIFrom(String webServiceURLParam) {
-		if(webServiceURLParam == null) {
+		if (webServiceURLParam == null) {
 			return null;
 		}
 
-		if(webServiceURLParam.trim().length() == 0) {
+		if (webServiceURLParam.trim().length() == 0) {
 			return UtilGlobal.EMPTY;
 		}
 
@@ -261,7 +261,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		StringBuilder returnBuffer = new StringBuilder();
 
 		String scheme = uri.getScheme();
-		if(scheme == null) {
+		if (scheme == null) {
 			throw new FluidClientException(
 					"Unable to get scheme from '"+webServiceURLParam+"' URL.",
 					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
@@ -271,9 +271,9 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
 		//https://localhost:8443/fluid-ws/
 		//Scheme...
-		if(Constant.HTTP.equals(scheme)) {
+		if (Constant.HTTP.equals(scheme)) {
 			returnBuffer.append(Constant.WS);
-		} else if(Constant.HTTPS.equals(scheme)) {
+		} else if (Constant.HTTPS.equals(scheme)) {
 			returnBuffer.append(Constant.WSS);
 		} else {
 			returnBuffer.append(uri.getScheme());
@@ -284,7 +284,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		returnBuffer.append(uri.getHost());
 
 		// 80 / 443
-		if(uri.getPort() > 0) {
+		if (uri.getPort() > 0) {
 			returnBuffer.append(Constant.COLON);
 			returnBuffer.append(uri.getPort());
 		}
@@ -366,9 +366,9 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 				formFieldsRequestCombined = new StringBuilder(),
 				expectedMessagesCombined = new StringBuilder();
 
-		if(sentItemsParam != null) {
-			for(Object objSent : sentItemsParam) {
-				if(objSent == null) {
+		if (sentItemsParam != null) {
+			for (Object objSent : sentItemsParam) {
+				if (objSent == null) {
 					continue;
 				}
 				formFieldsRequestCombined.append(objSent.toString());
@@ -379,13 +379,13 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		//Response...
 		int returnValSize = -1;
 		RespHandler respHandler = this.getHandler(uniqueReqIdParam);
-		if(respHandler instanceof AGenericListMessageHandler) {
+		if (respHandler instanceof AGenericListMessageHandler) {
 			AGenericListMessageHandler handlerCasted = ((AGenericListMessageHandler)respHandler);
 			List<? extends ABaseFluidJSONObject> returnValue = handlerCasted.getReturnValue();
-			if(returnValue != null) {
+			if (returnValue != null) {
 				returnValSize = returnValue.size();
 				returnValue.forEach(listingItm -> {
-					if(listingItm instanceof ABaseListing) {
+					if (listingItm instanceof ABaseListing) {
 						ABaseListing castedToListing = (ABaseListing)listingItm;
 						formFieldsCombined.append(castedToListing.toJsonObject().toString());
 					} else {
@@ -398,7 +398,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
 			Set<String> expectedMessages =
 					handlerCasted.getExpectedEchoMessagesBeforeComplete();
-			if(expectedMessages != null) {
+			if (expectedMessages != null) {
 				expectedMessages.forEach(expItm -> {
 					expectedMessagesCombined.append(expItm);
 					expectedMessagesCombined.append(UtilGlobal.PIPE);
@@ -410,15 +410,15 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		respToString = formFieldsCombined.toString(),
 		expectedToString = expectedMessagesCombined.toString();
 
-		if(reqToString.length() > 0) {
+		if (reqToString.length() > 0) {
 			reqToString = reqToString.substring(0, reqToString.length() - 1);
 		}
 
-		if(respToString.length() > 0) {
+		if (respToString.length() > 0) {
 			respToString = respToString.substring(0, respToString.length() - 1);
 		}
 
-		if(expectedToString.length() > 0) {
+		if (expectedToString.length() > 0) {
 			expectedToString = expectedToString.substring(0, expectedToString.length() - 1);
 		}
 

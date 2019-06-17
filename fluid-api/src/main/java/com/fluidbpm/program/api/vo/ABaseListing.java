@@ -72,7 +72,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	public ABaseListing(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 
-		if(this.jsonObject == null) {
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -86,7 +86,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 
 			List<T> listing = new ArrayList();
 
-			for(int index = 0;index < listingArrCount;index++)
+			for (int index = 0;index < listingArrCount;index++)
 			{
 				listing.add(this.getObjectFromJSONObject(
 						listingArray.getJSONObject(index)));
@@ -206,11 +206,11 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 
 		//Listing...
 		int listingCountFromListing = 0;
-		if(this.getListing() != null && !this.getListing().isEmpty())
+		if (this.getListing() != null && !this.getListing().isEmpty())
 		{
 			JSONArray jsonArray = new JSONArray();
 			listingCountFromListing = this.getListing().size();
-			for(T toAdd :this.getListing())
+			for (T toAdd :this.getListing())
 			{
 				jsonArray.put(toAdd.toJsonObject());
 			}
@@ -219,7 +219,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 		}
 
 		//Listing count...
-		if(this.getListingCount() == null)
+		if (this.getListingCount() == null)
 		{
 			returnVal.put(JSONMapping.LISTING_COUNT, new Integer(listingCountFromListing));
 		}
@@ -229,13 +229,13 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 		}
 
 		//Listing index...
-		if(this.getListingIndex() != null)
+		if (this.getListingIndex() != null)
 		{
 			returnVal.put(JSONMapping.LISTING_INDEX, this.getListingIndex());
 		}
 
 		//Listing page...
-		if(this.getListingIndex() != null)
+		if (this.getListingIndex() != null)
 		{
 			returnVal.put(JSONMapping.LISTING_PAGE, this.getListingPage());
 		}

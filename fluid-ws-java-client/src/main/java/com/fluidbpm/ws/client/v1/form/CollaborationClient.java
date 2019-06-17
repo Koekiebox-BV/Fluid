@@ -65,7 +65,7 @@ public class CollaborationClient extends ABaseClientWS {
         CollaborationListing collaborationListing = new CollaborationListing();
         collaborationListing.setListing(collaborationsParam);
 
-        if(this.serviceTicket != null) {
+        if (this.serviceTicket != null) {
             collaborationListing.setServiceTicket(this.serviceTicket);
         }
 
@@ -82,7 +82,7 @@ public class CollaborationClient extends ABaseClientWS {
      */
     public List<Collaboration> getAllToByLoggedIn() {
         CollaborationListing collaborationListing = new CollaborationListing();
-        if(this.serviceTicket != null) {
+        if (this.serviceTicket != null) {
             collaborationListing.setServiceTicket(this.serviceTicket);
         }
 
@@ -101,7 +101,7 @@ public class CollaborationClient extends ABaseClientWS {
      */
     public List<Collaboration> getAllToByForm(Form formParam) {
 
-        if(formParam != null && this.serviceTicket != null) {
+        if (formParam != null && this.serviceTicket != null) {
             formParam.setServiceTicket(this.serviceTicket);
         }
 

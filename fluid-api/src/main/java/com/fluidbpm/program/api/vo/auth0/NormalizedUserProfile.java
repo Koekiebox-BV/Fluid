@@ -118,7 +118,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         public Identity(JSONObject jsonObjectParam) {
             super(jsonObjectParam);
 
-            if(this.jsonObject == null)
+            if (this.jsonObject == null)
             {
                 return;
             }
@@ -258,25 +258,25 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
             JSONObject returnVal = super.toJsonObject();
 
             //Access Token...
-            if(this.getAccessToken() != null)
+            if (this.getAccessToken() != null)
             {
                 returnVal.put(JSONMapping.ACCESS_TOKEN, this.getAccessToken());
             }
 
             //Provider...
-            if(this.getProvider() != null)
+            if (this.getProvider() != null)
             {
                 returnVal.put(JSONMapping.PROVIDER, this.getProvider());
             }
 
             //User Id...
-            if(this.getUserId() != null)
+            if (this.getUserId() != null)
             {
                 returnVal.put(JSONMapping.USER_ID, this.getUserId());
             }
 
             //Connection...
-            if(this.getConnection() != null)
+            if (this.getConnection() != null)
             {
                 returnVal.put(JSONMapping.CONNECTION, this.getConnection());
             }
@@ -303,7 +303,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     public NormalizedUserProfile(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -360,7 +360,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 
             JSONArray identityListing = this.jsonObject.getJSONArray(JSONMapping.IDENTITIES);
 
-            for(int index = 0;index < identityListing.length();index++)
+            for (int index = 0;index < identityListing.length();index++)
             {
                 this.identities.add(new Identity(identityListing.getJSONObject(index)));
             }
@@ -556,14 +556,14 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
      */
     public String getListOfProvidersFromIdentities()
     {
-        if(this.getIdentities() == null || this.getIdentities().isEmpty())
+        if (this.getIdentities() == null || this.getIdentities().isEmpty())
         {
             return "";
         }
 
         StringBuilder returnVal = new StringBuilder();
 
-        for(Identity identity : this.getIdentities())
+        for (Identity identity : this.getIdentities())
         {
             returnVal.append(identity.getProvider());
             returnVal.append(",");
@@ -587,19 +587,19 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //User Id...
-        if(this.getUserId() != null)
+        if (this.getUserId() != null)
         {
             returnVal.put(JSONMapping.USER_ID, this.getUserId());
         }
 
         //Name...
-        if(this.getName() != null)
+        if (this.getName() != null)
         {
             returnVal.put(JSONMapping.NAME, this.getName());
         }
 
         //Email...
-        if(this.getEmail() != null)
+        if (this.getEmail() != null)
         {
             returnVal.put(JSONMapping.EMAIL, this.getEmail());
         }
@@ -608,40 +608,40 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
         returnVal.put(JSONMapping.EMAIL_VERIFIED, this.isEmailVerified());
 
         //Nickname...
-        if(this.getNickname() != null)
+        if (this.getNickname() != null)
         {
             returnVal.put(JSONMapping.NICKNAME, this.getNickname());
         }
 
         //Picture...
-        if(this.getPicture() != null)
+        if (this.getPicture() != null)
         {
             returnVal.put(JSONMapping.PICTURE, this.getPicture());
         }
 
         //Given Name...
-        if(this.getGivenName() != null)
+        if (this.getGivenName() != null)
         {
             returnVal.put(JSONMapping.GIVEN_NAME, this.getGivenName());
         }
 
         //Family Name...
-        if(this.getFamilyName() != null)
+        if (this.getFamilyName() != null)
         {
             returnVal.put(JSONMapping.FAMILY_NAME, this.getFamilyName());
         }
 
         //Locale...
-        if(this.getLocale() != null)
+        if (this.getLocale() != null)
         {
             returnVal.put(JSONMapping.LOCALE, this.getLocale());
         }
 
         //Identities...
-        if(this.getIdentities() != null && !this.getIdentities().isEmpty())
+        if (this.getIdentities() != null && !this.getIdentities().isEmpty())
         {
             JSONArray identitiesArr = new JSONArray();
-            for(Identity toAdd :this.getIdentities())
+            for (Identity toAdd :this.getIdentities())
             {
                 identitiesArr.put(toAdd.toJsonObject());
             }

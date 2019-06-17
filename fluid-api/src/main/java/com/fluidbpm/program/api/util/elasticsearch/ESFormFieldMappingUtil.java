@@ -90,19 +90,19 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			String parentTypeParam,
 			Form fluidFormMappingToUpdateParam
 	) {
-		if(indexParam == null) {
+		if (indexParam == null) {
 			throw new FluidElasticSearchException(
 					"Index name '"+indexParam+"' is invalid.");
 		}
 
 		//The Form mapping to update...
-		if(fluidFormMappingToUpdateParam == null) {
+		if (fluidFormMappingToUpdateParam == null) {
 			throw new FluidElasticSearchException(
 					"Form for mapping not set.");
 		}
 
 		//Form Type Id...
-		if(fluidFormMappingToUpdateParam.getFormTypeId() == null ||
+		if (fluidFormMappingToUpdateParam.getFormTypeId() == null ||
 				fluidFormMappingToUpdateParam.getFormTypeId().longValue() < 1) {
 			throw new FluidElasticSearchException(
 					"Form 'FormType' not set for mapping.");
@@ -139,13 +139,13 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			String formTypeString,
 			JSONObject newContentMappingBuilderFromParam
 	) {
-		if(indexParam == null) {
+		if (indexParam == null) {
 			throw new FluidElasticSearchException(
 					"Index name '"+indexParam+"' is invalid.");
 		}
 
 		//The Form mapping to update...
-		if(newContentMappingBuilderFromParam == null) {
+		if (newContentMappingBuilderFromParam == null) {
 			throw new FluidElasticSearchException(
 					"'JSON Object' for mapping not set.");
 		}
@@ -154,19 +154,19 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 		GetIndexResponse getExistingIndex = this.getOrCreateIndex(indexParam);
 		JSONObject existingPropsToUpdate = null;
 
-		for(ObjectCursor mappingKey : getExistingIndex.getMappings().keys()) {
+		for (ObjectCursor mappingKey : getExistingIndex.getMappings().keys()) {
 			//Found index...
-			if(!mappingKey.value.toString().equals(indexParam)) {
+			if (!mappingKey.value.toString().equals(indexParam)) {
 				continue;
 			}
 
 			//Found a match...
 			Object obj = getExistingIndex.getMappings().get(mappingKey.value.toString());
-			if(obj instanceof ImmutableOpenMap) {
+			if (obj instanceof ImmutableOpenMap) {
 				ImmutableOpenMap casted = (ImmutableOpenMap)obj;
 
 				//Type...
-				if(casted.containsKey(formTypeString) &&
+				if (casted.containsKey(formTypeString) &&
 						casted.get(formTypeString) instanceof MappingMetaData) {
 					MappingMetaData mappingMetaData = (MappingMetaData)casted.get(formTypeString);
 					existingPropsToUpdate = new JSONObject(mappingMetaData.source().string());
@@ -175,7 +175,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 		}
 
 		//No mapping for the type create a new one...
-		if(existingPropsToUpdate == null) {
+		if (existingPropsToUpdate == null) {
 			existingPropsToUpdate = new JSONObject();
 
 			existingPropsToUpdate.put(
@@ -193,7 +193,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 					existingPropsToUpdate.toString(), XContentType.JSON);
 
 			AcknowledgedResponse acknowledgedResponse = putMappingRequestBuilder.get();
-			if(!acknowledgedResponse.isAcknowledged()) {
+			if (!acknowledgedResponse.isAcknowledged()) {
 				throw new FluidElasticSearchException(
 						"Index Update for Creating '"+
 								indexParam+"' and type '"+
@@ -210,21 +210,21 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 						ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES);
 
 		//Merge existing with new...
-		for(String existingKey : existingPropertiesUpdated.keySet()) {
+		for (String existingKey : existingPropertiesUpdated.keySet()) {
 			newContentMappingBuilderFromParam.put(existingKey,
 					existingPropertiesUpdated.get(existingKey));
 		}
 
 		//Check to see whether there are any new fields added...
 		boolean noChanges = true;
-		for(String possibleExistingKey : newContentMappingBuilderFromParam.keySet()) {
-			if(!existingPropertiesUpdated.has(possibleExistingKey)) {
+		for (String possibleExistingKey : newContentMappingBuilderFromParam.keySet()) {
+			if (!existingPropertiesUpdated.has(possibleExistingKey)) {
 				noChanges = false;
 				break;
 			}
 		}
 
-		if(noChanges) {
+		if (noChanges) {
 			return;
 		}
 
@@ -247,7 +247,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 				existingPropsToUpdate.toString(), XContentType.JSON);
 
 		AcknowledgedResponse acknowledgedResponse = putMappingRequestBuilder.get();
-		if(!acknowledgedResponse.isAcknowledged()) {
+		if (!acknowledgedResponse.isAcknowledged()) {
 			throw new FluidElasticSearchException(
 					"Index Update for '"+
 							indexParam+"' and type '"+
@@ -265,7 +265,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			JSONObject existingPropsToUpdateParam,
 			String parentTypeParam
 	) {
-		if(parentTypeParam == null || parentTypeParam.trim().length() == 0) {
+		if (parentTypeParam == null || parentTypeParam.trim().length() == 0) {
 			return;
 		}
 
@@ -285,7 +285,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 	 * @see GetIndexResponse
 	 */
 	public GetIndexResponse getOrCreateIndex(String indexParam) {
-		if(this.doesIndexExist(indexParam)) {
+		if (this.doesIndexExist(indexParam)) {
 			return this.client.admin().indices().prepareGetIndex().get();
 		} else {
 			CreateIndexRequestBuilder createIndexRequestBuilder =
@@ -294,7 +294,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			CreateIndexResponse mappingCreateResponse =
 					createIndexRequestBuilder.execute().actionGet();
 
-			if(!mappingCreateResponse.isAcknowledged()) {
+			if (!mappingCreateResponse.isAcknowledged()) {
 				throw new FluidElasticSearchException(
 						"Index Creation for '"+
 								indexParam+"' not acknowledged by ElasticSearch.");

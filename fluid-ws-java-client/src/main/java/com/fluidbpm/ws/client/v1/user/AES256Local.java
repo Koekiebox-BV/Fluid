@@ -55,7 +55,7 @@ public class AES256Local {
      */
     public static byte[] generateRandom(int seedParam) {
 
-        if(AES256Local.secureRandom == null)
+        if (AES256Local.secureRandom == null)
         {
             AES256Local.secureRandom = new SecureRandom();
         }

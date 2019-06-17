@@ -1039,7 +1039,7 @@ public class WS {
 				 * @return {@code v1/route_field/create_value}
 				 */
 				public static final String routeFieldCreateValue(Long fluidItemIdParam) {
-					if(fluidItemIdParam == null || fluidItemIdParam.longValue() < 1) {
+					if (fluidItemIdParam == null || fluidItemIdParam.longValue() < 1) {
 						return Version.VERSION_1.concat(ROOT).concat(CREATE_VALUE);
 					}
 

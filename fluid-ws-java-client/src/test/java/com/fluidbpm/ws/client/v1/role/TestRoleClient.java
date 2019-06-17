@@ -162,9 +162,9 @@ public class TestRoleClient extends ABaseTestCase {
 
             List<RoleToJobView> returnVal = new ArrayList();
 
-            if(jobViewsParam != null)
+            if (jobViewsParam != null)
             {
-                for(JobView jobView : jobViewsParam)
+                for (JobView jobView : jobViewsParam)
                 {
                     RoleToJobView toAdd = new RoleToJobView();
                     toAdd.setJobView(jobView);
@@ -186,9 +186,9 @@ public class TestRoleClient extends ABaseTestCase {
 
             List<RoleToUserQuery> returnVal = new ArrayList();
 
-            if(userQueriesParam != null)
+            if (userQueriesParam != null)
             {
-                for(UserQuery userQuery : userQueriesParam)
+                for (UserQuery userQuery : userQueriesParam)
                 {
                     RoleToUserQuery toAdd = new RoleToUserQuery();
                     toAdd.setUserQuery(userQuery);
@@ -250,7 +250,7 @@ public class TestRoleClient extends ABaseTestCase {
         }
         catch (FluidClientException fce)
         {
-            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
             {
                 TestCase.fail(fce.getMessage());
             }
@@ -274,7 +274,7 @@ public class TestRoleClient extends ABaseTestCase {
         }
         catch (FluidClientException fce)
         {
-            if(fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
             {
                 TestCase.fail(fce.getMessage());
             }

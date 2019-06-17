@@ -162,7 +162,7 @@ public class User extends ABaseFluidJSONObject {
 	public User(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 
-		if(this.jsonObject == null)
+		if (this.jsonObject == null)
 		{
 			return;
 		}
@@ -252,7 +252,7 @@ public class User extends ABaseFluidJSONObject {
 
 			List<Role> roleListingList = new ArrayList();
 
-			for(int index = 0;index < roleListing.length();index++)
+			for (int index = 0;index < roleListing.length();index++)
 			{
 				roleListingList.add(new Role(roleListing.getJSONObject(index)));
 			}
@@ -268,7 +268,7 @@ public class User extends ABaseFluidJSONObject {
 
 			List<String> emailAddressList = new ArrayList();
 
-			for(int index = 0;index < emailListing.length();index++)
+			for (int index = 0;index < emailListing.length();index++)
 			{
 				emailAddressList.add(emailListing.getString(index));
 			}
@@ -283,7 +283,7 @@ public class User extends ABaseFluidJSONObject {
 
 			List<Field> userFieldListingList = new ArrayList();
 
-			for(int index = 0;index < userFieldListing.length();index++)
+			for (int index = 0;index < userFieldListing.length();index++)
 			{
 				userFieldListingList.add(
 						new Field(userFieldListing.getJSONObject(index)));
@@ -305,7 +305,7 @@ public class User extends ABaseFluidJSONObject {
 	@XmlTransient
 	public boolean doesUserHaveAccessToRole(Role roleParam)
 	{
-		if(roleParam == null)
+		if (roleParam == null)
 		{
 			return false;
 		}
@@ -325,21 +325,21 @@ public class User extends ABaseFluidJSONObject {
 	@XmlTransient
 	public boolean doesUserHaveAccessToRole(String roleNameParam)
 	{
-		if(roleNameParam == null || roleNameParam.trim().isEmpty())
+		if (roleNameParam == null || roleNameParam.trim().isEmpty())
 		{
 			return false;
 		}
 
-		if(this.getRoles() == null || this.getRoles().isEmpty())
+		if (this.getRoles() == null || this.getRoles().isEmpty())
 		{
 			return false;
 		}
 
 		String roleNameParamLower = roleNameParam.trim().toLowerCase();
 
-		for(Role roleAtIndex : this.getRoles())
+		for (Role roleAtIndex : this.getRoles())
 		{
-			if(roleAtIndex.getName() == null ||
+			if (roleAtIndex.getName() == null ||
 					roleAtIndex.getName().trim().isEmpty())
 			{
 				continue;
@@ -347,7 +347,7 @@ public class User extends ABaseFluidJSONObject {
 
 			String iterRoleNameLower = roleAtIndex.getName().trim().toLowerCase();
 
-			if(roleNameParamLower.equals(iterRoleNameLower))
+			if (roleNameParamLower.equals(iterRoleNameLower))
 			{
 				return true;
 			}
@@ -719,78 +719,78 @@ public class User extends ABaseFluidJSONObject {
 				this.getInvalidLoginCount());
 
 		//Username...
-		if(this.getUsername() != null)
+		if (this.getUsername() != null)
 		{
 			returnVal.put(JSONMapping.USERNAME,this.getUsername());
 		}
 
 		//Password Sha 256...
-		if(this.getPasswordSha256() != null)
+		if (this.getPasswordSha256() != null)
 		{
 			returnVal.put(JSONMapping.PASSWORD_SHA_256,this.getPasswordSha256());
 		}
 
 		//Password Clear...
-		if(this.getPasswordClear() != null)
+		if (this.getPasswordClear() != null)
 		{
 			returnVal.put(JSONMapping.PASSWORD_CLEAR,this.getPasswordClear());
 		}
 
 		//Date Created...
-		if(this.getDateCreated() != null)
+		if (this.getDateCreated() != null)
 		{
 			returnVal.put(User.JSONMapping.DATE_CREATED,
 					this.getDateAsLongFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
-		if(this.getDateLastUpdated() != null)
+		if (this.getDateLastUpdated() != null)
 		{
 			returnVal.put(User.JSONMapping.DATE_LAST_UPDATED,
 					this.getDateAsLongFromJson(this.getDateLastUpdated()));
 		}
 
 		//Password Changed At...
-		if(this.getPasswordChangedAt() != null)
+		if (this.getPasswordChangedAt() != null)
 		{
 			returnVal.put(JSONMapping.PASSWORD_CHANGED_AT,
 					this.getDateAsLongFromJson(this.getPasswordChangedAt()));
 		}
 
 		//Logged In Date Time...
-		if(this.getLoggedInDateTime() != null)
+		if (this.getLoggedInDateTime() != null)
 		{
 			returnVal.put(JSONMapping.LOGGED_IN_DATE_TIME,
 					this.getDateAsLongFromJson(this.getLoggedInDateTime()));
 		}
 
 		//SALT...
-		if(this.getSalt() != null)
+		if (this.getSalt() != null)
 		{
 			returnVal.put(JSONMapping.SALT,this.getSalt());
 		}
 
 		//Timezone...
-		if(this.getTimezone() != null)
+		if (this.getTimezone() != null)
 		{
 			returnVal.put(JSONMapping.TIMEZONE,
 					this.getTimezone().doubleValue());
 		}
 
 		//Date Format...
-		if(this.getDateFormat() != null)
+		if (this.getDateFormat() != null)
 		{
 			returnVal.put(JSONMapping.DATE_FORMAT, this.getDateFormat());
 		}
 
 		//Time Format...
-		if(this.getTimeFormat() != null)
+		if (this.getTimeFormat() != null)
 		{
 			returnVal.put(JSONMapping.TIME_FORMAT, this.getTimeFormat());
 		}
 
 		//Locale...
-		if(this.getLocale() != null) {
+		if (this.getLocale() != null) {
 			returnVal.put(JSONMapping.LOCALE, this.getLocale());
 		}
 
@@ -798,10 +798,10 @@ public class User extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.EMAIL_USER_NOTIFICATION, this.isEmailUserNotification());
 
 		//Roles...
-		if(this.getRoles() != null && !this.getRoles().isEmpty())
+		if (this.getRoles() != null && !this.getRoles().isEmpty())
 		{
 			JSONArray rolesArr = new JSONArray();
-			for(Role toAdd :this.getRoles())
+			for (Role toAdd :this.getRoles())
 			{
 				rolesArr.put(toAdd.toJsonObject());
 			}
@@ -810,11 +810,11 @@ public class User extends ABaseFluidJSONObject {
 		}
 
 		//Email Addresses...
-		if(this.getEmailAddresses() != null &&
+		if (this.getEmailAddresses() != null &&
 				!this.getEmailAddresses().isEmpty())
 		{
 			JSONArray emailArr = new JSONArray();
-			for(String toAdd :this.getEmailAddresses())
+			for (String toAdd :this.getEmailAddresses())
 			{
 				emailArr.put(toAdd);
 			}
@@ -823,10 +823,10 @@ public class User extends ABaseFluidJSONObject {
 		}
 
 		//User Fields...
-		if(this.getUserFields() != null && !this.getUserFields().isEmpty())
+		if (this.getUserFields() != null && !this.getUserFields().isEmpty())
 		{
 			JSONArray userFieldsArr = new JSONArray();
-			for(Field toAdd :this.getUserFields())
+			for (Field toAdd :this.getUserFields())
 			{
 				userFieldsArr.put(toAdd.toJsonObject());
 			}
@@ -846,24 +846,24 @@ public class User extends ABaseFluidJSONObject {
 	@Override
 	@XmlTransient
 	public boolean equals(Object objParam) {
-		if(!(objParam instanceof User)){
+		if (!(objParam instanceof User)){
 			return false;
 		}
 
-		if(this.getId() == null && this.getUsername() == null){
+		if (this.getId() == null && this.getUsername() == null){
 			return false;
 		}
 
 		User paramCasted = (User)objParam;
-		if(paramCasted.getId() == null && paramCasted.getUsername() == null){
+		if (paramCasted.getId() == null && paramCasted.getUsername() == null){
 			return false;
 		}
 
-		if(this.getId() != null && paramCasted.getId() != null){
+		if (this.getId() != null && paramCasted.getId() != null){
 			return (this.getId().equals(paramCasted.getId()));
 		}
 
-		if(this.getUsername() != null && paramCasted.getUsername() != null){
+		if (this.getUsername() != null && paramCasted.getUsername() != null){
 			return (this.getUsername().equals(paramCasted.getUsername()));
 		}
 
@@ -946,11 +946,11 @@ public class User extends ABaseFluidJSONObject {
 	public int hashCode() {
 
 		int hasRadix = 100000;
-		if(this.getId() != null){
+		if (this.getId() != null){
 			hasRadix += this.getId().hashCode();
 		}
 
-		if(this.getUsername() != null){
+		if (this.getUsername() != null){
 			hasRadix += this.getUsername().hashCode();
 		}
 

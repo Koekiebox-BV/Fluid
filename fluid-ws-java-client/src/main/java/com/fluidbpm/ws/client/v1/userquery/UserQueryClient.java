@@ -61,7 +61,7 @@ public class UserQueryClient extends ABaseClientWS {
 	 */
 	public UserQuery createUserQuery(UserQuery userQueryParam)
 	{
-		if(userQueryParam != null && this.serviceTicket != null)
+		if (userQueryParam != null && this.serviceTicket != null)
 		{
 			userQueryParam.setServiceTicket(this.serviceTicket);
 		}
@@ -80,7 +80,7 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @see UserQuery
 	 */
 	public UserQuery updateUserQuery(UserQuery userQueryParam) {
-		if(userQueryParam != null && this.serviceTicket != null) {
+		if (userQueryParam != null && this.serviceTicket != null) {
 			userQueryParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -99,7 +99,7 @@ public class UserQueryClient extends ABaseClientWS {
 	public UserQuery deleteUserQuery(
 			UserQuery userQueryToDeleteParam
 	) {
-		if(userQueryToDeleteParam != null && this.serviceTicket != null) {
+		if (userQueryToDeleteParam != null && this.serviceTicket != null) {
 			userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -119,7 +119,7 @@ public class UserQueryClient extends ABaseClientWS {
 			UserQuery userQueryToDeleteParam,
 			boolean forcefullyDeleteParam
 	) {
-		if(userQueryToDeleteParam != null && this.serviceTicket != null) {
+		if (userQueryToDeleteParam != null && this.serviceTicket != null) {
 			userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -140,7 +140,7 @@ public class UserQueryClient extends ABaseClientWS {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 		userQueryToGetInfoFor.setId(userQueryIdParam);
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
 
@@ -163,7 +163,7 @@ public class UserQueryClient extends ABaseClientWS {
 	public UserQueryListing getAllUserQueries() {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
 
@@ -188,7 +188,7 @@ public class UserQueryClient extends ABaseClientWS {
 	public UserQueryListing getAllUserQueriesByLoggedInUser() {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
 
@@ -287,7 +287,7 @@ public class UserQueryClient extends ABaseClientWS {
 			int offsetParam,
 			boolean forceUseDatabaseParam
 	) {
-		if(this.serviceTicket != null && queryToExecuteParam != null) {
+		if (this.serviceTicket != null && queryToExecuteParam != null) {
 			queryToExecuteParam.setServiceTicket(this.serviceTicket);
 		}
 

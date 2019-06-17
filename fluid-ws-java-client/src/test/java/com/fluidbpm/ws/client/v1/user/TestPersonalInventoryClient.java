@@ -77,7 +77,7 @@ public class TestPersonalInventoryClient extends ABaseTestCase {
             List<FluidItem> persInvItems =
                     personalInventoryClient.getPersonalInventoryItems();
 
-            for(FluidItem itm : persInvItems)
+            for (FluidItem itm : persInvItems)
             {
                 System.out.println(
                         "--> "+itm.getForm().getTitle()+" <-- : "+
@@ -86,7 +86,7 @@ public class TestPersonalInventoryClient extends ABaseTestCase {
         }
         catch (FluidClientException clientExcept)
         {
-            if(clientExcept.getErrorCode() !=
+            if (clientExcept.getErrorCode() !=
                     FluidClientException.ErrorCode.NO_RESULT)
             {
                 throw clientExcept;

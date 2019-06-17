@@ -81,7 +81,7 @@ public class TableField extends ABaseFluidJSONObject {
     public TableField(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -99,7 +99,7 @@ public class TableField extends ABaseFluidJSONObject {
                     JSONMapping.TABLE_RECORDS);
 
             List<Form> assForms = new ArrayList();
-            for(int index = 0;index < formsArr.length();index++)
+            for (int index = 0;index < formsArr.length();index++)
             {
                 assForms.add(new Form(formsArr.getJSONObject(index)));
             }
@@ -158,16 +158,16 @@ public class TableField extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Sum Decimals...
-        if(this.getSumDecimals() != null)
+        if (this.getSumDecimals() != null)
         {
             returnVal.put(JSONMapping.SUM_DECIMALS, this.getSumDecimals());
         }
 
         //Table Field Records...
-        if(this.getTableRecords() != null && !this.getTableRecords().isEmpty())
+        if (this.getTableRecords() != null && !this.getTableRecords().isEmpty())
         {
             JSONArray assoFormsArr = new JSONArray();
-            for(Form toAdd :this.getTableRecords())
+            for (Form toAdd :this.getTableRecords())
             {
                 assoFormsArr.put(toAdd.toJsonObject());
             }
@@ -188,7 +188,7 @@ public class TableField extends ABaseFluidJSONObject {
 
         JSONObject jsonObject = this.toJsonObject();
 
-        if(jsonObject != null)
+        if (jsonObject != null)
         {
             return jsonObject.toString();
         }

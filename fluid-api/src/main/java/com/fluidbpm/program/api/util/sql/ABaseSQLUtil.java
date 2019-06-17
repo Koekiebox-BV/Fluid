@@ -65,14 +65,14 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 		 * @return {@code enum} for SQL Type.
 		 */
 		public static SQLServerType getSQLTypeFromProductName(String productNameParam) {
-			if(productNameParam == null || productNameParam.trim().isEmpty()) {
+			if (productNameParam == null || productNameParam.trim().isEmpty()) {
 				return SQLServerType.Unknown;
 			}
 
 			String paramLower = productNameParam.toLowerCase();
 
-			for(SQLServerType sqlType : SQLServerType.values()) {
-				if(sqlType.productName.equals(paramLower)) {
+			for (SQLServerType sqlType : SQLServerType.values()) {
+				if (sqlType.productName.equals(paramLower)) {
 					return sqlType;
 				}
 			}
@@ -107,12 +107,12 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 	 * Close the SQL Connection.
 	 */
 	public void closeConnection() {
-		if(this.connection == null) {
+		if (this.connection == null) {
 			return;
 		}
 
 		try {
-			if(this.connection.isClosed()) {
+			if (this.connection.isClosed()) {
 				return;
 			}
 
@@ -129,7 +129,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 	 */
 	public SQLServerType getSQLTypeFromConnection() {
 		try {
-			if(this.databaseMetaData == null){
+			if (this.databaseMetaData == null){
 				this.databaseMetaData = this.getConnection().getMetaData();
 			}
 
@@ -147,7 +147,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 	 * @return local Connection.
 	 */
 	public Connection getConnection() {
-		if(this.connection == null) {
+		if (this.connection == null) {
 			throw new FluidSQLException(new SQLException(
 					"Connection is not set. Critical!!!"));
 		}
@@ -167,7 +167,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 	protected void closeStatement(PreparedStatement preparedStatementParam,
 								  ResultSet resultSetParam
 	) {
-		if(resultSetParam == null) {
+		if (resultSetParam == null) {
 			this.closeStatement(preparedStatementParam);
 			return;
 		}
@@ -188,7 +188,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 	 * @see PreparedStatement
 	 */
 	protected void closeStatement(PreparedStatement preparedStatementParam) {
-		if(preparedStatementParam == null)
+		if (preparedStatementParam == null)
 		{
 			return;
 		}

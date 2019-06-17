@@ -69,7 +69,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testGetTableFormsWithSpecificId()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -79,7 +79,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
         String serviceTicketHex = null;
-        if(serviceTicket != null && !serviceTicket.isEmpty())
+        if (serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex =
                     UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
@@ -102,30 +102,30 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
 
-        if(formListing != null)
+        if (formListing != null)
         {
             System.out.println("Listing is '"+formListing.size()+"' -> \n\n\n");
 
-            for(FormListing listing : formListing)
+            for (FormListing listing : formListing)
             {
                 //System.out.println("Response For ::: "+listing.getEcho());
 
                 List<Form> tableForms = listing.getListing();
 
-                if(tableForms == null){
+                if (tableForms == null){
                     continue;
                 }
 
-                for(Form form : tableForms)
+                for (Form form : tableForms)
                 {
                     System.out.println("\n-> "+form.getFormType() + " - " + form.getTitle());
 
-                    if(form.getFormFields() == null)
+                    if (form.getFormFields() == null)
                     {
                         continue;
                     }
 
-                    for(Field field : form.getFormFields())
+                    for (Field field : form.getFormFields())
                     {
                         System.out.println("|"+field.getFieldName()+"|"+
                                 field.getFieldType()
@@ -149,7 +149,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testGetAncestorFormWithSpecificId()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -159,7 +159,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
         String serviceTicketHex = null;
-        if(serviceTicket != null && !serviceTicket.isEmpty())
+        if (serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex =
                     UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
@@ -188,9 +188,9 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
         System.out.println(ancestorForm.getFormType() +
                 " - " + ancestorForm.getTitle());
 
-        if(ancestorForm.getFormFields() != null)
+        if (ancestorForm.getFormFields() != null)
         {
-            for(Field field : ancestorForm.getFormFields())
+            for (Field field : ancestorForm.getFormFields())
             {
                 System.out.println("["+field.getFieldName()+"] = '"+
                         field.getFieldValue()+"'");
@@ -205,7 +205,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testGetDescendantFormsWithSpecificId()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -215,7 +215,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
         String serviceTicketHex = null;
-        if(serviceTicket != null && !serviceTicket.isEmpty())
+        if (serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex =
                     UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
@@ -246,20 +246,20 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
 
-        if(formListing != null)
+        if (formListing != null)
         {
-            for(FormListing listing : formListing)
+            for (FormListing listing : formListing)
             {
                 //System.out.println("Response For ::: "+listing.getEcho());
 
                 List<Form> descendantsForms = listing.getListing();
 
-                if(descendantsForms == null)
+                if (descendantsForms == null)
                 {
                     continue;
                 }
 
-                for(Form form : descendantsForms)
+                for (Form form : descendantsForms)
                 {
                     System.out.println("\n--> "+form.getFormType() +
                             " - " +
@@ -269,33 +269,33 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
                             ((form.getCurrentUser() == null) ? "[Not Set]" :
                                     form.getCurrentUser().getId()));
 
-                    if(form.getFormFields() != null)
+                    if (form.getFormFields() != null)
                     {
-                        for(Field field : form.getFormFields())
+                        for (Field field : form.getFormFields())
                         {
                             System.out.println("["+field.getFieldName()+"] = '"+
                                     field.getFieldValue()+"'");
 
-                            if(field.getTypeAsEnum() == Field.Type.Table)
+                            if (field.getTypeAsEnum() == Field.Type.Table)
                             {
                                 TableField tableField =
                                         form.getFieldValueAsTableField(field.getFieldName());
 
-                                if(tableField == null ||
+                                if (tableField == null ||
                                         (tableField.getTableRecords() == null ||
                                                 tableField.getTableRecords().isEmpty()))
                                 {
                                     continue;
                                 }
 
-                                for(Form tableRecord : tableField.getTableRecords())
+                                for (Form tableRecord : tableField.getTableRecords())
                                 {
-                                    if(tableRecord.getFormFields() == null)
+                                    if (tableRecord.getFormFields() == null)
                                     {
                                         continue;
                                     }
 
-                                    for(Field tableRecordField : tableRecord.getFormFields())
+                                    for (Field tableRecordField : tableRecord.getFormFields())
                                     {
                                         System.out.println("["+field.getFieldName()+":"+
                                                 tableRecordField.getFieldName()+"] = '"+
@@ -324,7 +324,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testExecuteSQLWhereIdGreaterThan()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -334,7 +334,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         String serviceTicket = appRequestToken.getServiceTicket();
         String serviceTicketHex = null;
-        if(serviceTicket != null && !serviceTicket.isEmpty())
+        if (serviceTicket != null && !serviceTicket.isEmpty())
         {
             serviceTicketHex =
                     UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
@@ -370,26 +370,26 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
         System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
 
-        if(formListing != null)
+        if (formListing != null)
         {
-            for(FormListing listing : formListing)
+            for (FormListing listing : formListing)
             {
                 List<Form> resultForms = listing.getListing();
 
-                if(resultForms == null)
+                if (resultForms == null)
                 {
                     continue;
                 }
 
-                for(Form form : resultForms)
+                for (Form form : resultForms)
                 {
                     System.out.println(form.getFormTypeId() +
                             " - " +
                             form.getTitle());
 
-                    if(form.getFormFields() != null)
+                    if (form.getFormFields() != null)
                     {
-                        for(Field field : form.getFormFields())
+                        for (Field field : form.getFormFields())
                         {
                             System.out.println("["+field.getFieldName()+"] = '"+
                                     field.getFieldValue()+"'");
@@ -416,7 +416,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
             int numberOfFormsParam,long ... idsToPicFrom)
     {
         Form[] returnVal = new Form[numberOfFormsParam];
-        for(int index = 0;index < numberOfFormsParam; index++)
+        for (int index = 0;index < numberOfFormsParam; index++)
         {
             //Pic a random form...
             long randomId = idsToPicFrom[0];

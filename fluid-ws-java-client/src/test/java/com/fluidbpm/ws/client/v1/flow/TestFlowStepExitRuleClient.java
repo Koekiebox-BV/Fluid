@@ -63,7 +63,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_GetNextValidSyntax()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -106,9 +106,9 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
                 4,nextValidSyntaxWords.size());
 
         boolean isScope = false;
-        for(String iter : nextValidSyntaxWords)
+        for (String iter : nextValidSyntaxWords)
         {
-            if(iter.equals("FORM."))
+            if (iter.equals("FORM."))
             {
                 isScope = true;
             }
@@ -123,9 +123,9 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
         Assert.assertTrue("Expected at least 5 fields.",
                 nextValidSyntaxWords.size() > 5);
 
-        for(String iter : nextValidSyntaxWords)
+        for (String iter : nextValidSyntaxWords)
         {
-            if(!iter.startsWith("FORM."))
+            if (!iter.startsWith("FORM."))
             {
                 Assert.fail("Did not start with FORM. "+iter);
             }
@@ -158,7 +158,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -176,7 +176,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CompileSucceedAndFail()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -194,7 +194,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CompileAndRunSucceed()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

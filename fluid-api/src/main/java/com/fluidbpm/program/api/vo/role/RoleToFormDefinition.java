@@ -81,7 +81,7 @@ public class RoleToFormDefinition extends ABaseFluidJSONObject {
     public RoleToFormDefinition(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -203,28 +203,28 @@ public class RoleToFormDefinition extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Can Create...
-        if(this.isCanCreate() != null)
+        if (this.isCanCreate() != null)
         {
             returnVal.put(JSONMapping.CAN_CREATE,
                     this.isCanCreate().booleanValue());
         }
 
         //Attachment can View...
-        if(this.isAttachmentsView() != null)
+        if (this.isAttachmentsView() != null)
         {
             returnVal.put(JSONMapping.ATTACHMENTS_VIEW,
                     this.isAttachmentsView().booleanValue());
         }
 
         //Attachment can Create or Modify...
-        if(this.isAttachmentsCreateUpdate() != null)
+        if (this.isAttachmentsCreateUpdate() != null)
         {
             returnVal.put(JSONMapping.ATTACHMENTS_CREATE_UPDATE,
                     this.isAttachmentsCreateUpdate().booleanValue());
         }
 
         //Form Definition...
-        if(this.getFormDefinition() != null)
+        if (this.getFormDefinition() != null)
         {
             returnVal.put(JSONMapping.FORM_DEFINITION,
                     this.getFormDefinition().toJsonObject());

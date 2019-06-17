@@ -78,7 +78,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     @Ignore
     public void testGetTableFormsWithSpecificId()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -97,14 +97,14 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         long start = System.currentTimeMillis();
 
-        for(Form forToSend :testForms)
+        for (Form forToSend :testForms)
         {
             List<Form> tableForms = sqlUtilClient.getTableForms(
                     forToSend,true);
 
-            if(tableForms != null && tableForms.size() > 0)
+            if (tableForms != null && tableForms.size() > 0)
             {
-                for(Form form : tableForms)
+                for (Form form : tableForms)
                 {
                     /*System.out.println(form.getFormType() +
                             " - " +
@@ -128,7 +128,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     @Ignore
     public void testGetTableForms()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -180,7 +180,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     @Ignore
     public void testGetDescendants()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -208,7 +208,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
     @Ignore
     public void testGetAncestor()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

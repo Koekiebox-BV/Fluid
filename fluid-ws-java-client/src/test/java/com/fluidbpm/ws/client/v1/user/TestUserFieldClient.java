@@ -110,7 +110,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_TextPlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -170,7 +170,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_TrueFalse_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -230,7 +230,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_ParagraphTextPlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -290,7 +290,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_ParagraphTextHTML_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -350,7 +350,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_MultiChoicePlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -378,7 +378,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.PLAIN, createdField.getTypeMetaData());
 
-        if(!(createdField.getFieldValue() instanceof MultiChoice))
+        if (!(createdField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -403,7 +403,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.PLAIN, updatedField.getTypeMetaData());
 
-        if(!(updatedField.getFieldValue() instanceof MultiChoice))
+        if (!(updatedField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -426,7 +426,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.PLAIN, byIdField.getTypeMetaData());
 
-        if(!(byIdField.getFieldValue() instanceof MultiChoice))
+        if (!(byIdField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -450,7 +450,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_MultiChoiceSelectMany_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -478,7 +478,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.SELECT_MANY, createdField.getTypeMetaData());
 
-        if(!(createdField.getFieldValue() instanceof MultiChoice))
+        if (!(createdField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -503,7 +503,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.SELECT_MANY, updatedField.getTypeMetaData());
 
-        if(!(updatedField.getFieldValue() instanceof MultiChoice))
+        if (!(updatedField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -526,7 +526,7 @@ public class TestUserFieldClient extends ABaseTestCase {
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 UserFieldClient.FieldMetaData.MultiChoice.SELECT_MANY, byIdField.getTypeMetaData());
 
-        if(!(byIdField.getFieldValue() instanceof MultiChoice))
+        if (!(byIdField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -550,7 +550,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_DateTimeDate_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -610,7 +610,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_DateTimeDateAndTime_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -670,7 +670,7 @@ public class TestUserFieldClient extends ABaseTestCase {
     @Test
     public void testFormField_DecimalPlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

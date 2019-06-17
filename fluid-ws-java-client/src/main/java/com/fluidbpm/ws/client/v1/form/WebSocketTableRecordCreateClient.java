@@ -82,12 +82,12 @@ public class WebSocketTableRecordCreateClient extends
 	public TableRecord createTableRecordSynchronized(
 			TableRecord tableRecordToCreateParam
 	) {
-		if(tableRecordToCreateParam == null) {
+		if (tableRecordToCreateParam == null) {
 			return null;
 		}
 
 		//Send all the messages...
-		if(tableRecordToCreateParam.getEcho() == null ||
+		if (tableRecordToCreateParam.getEcho() == null ||
 				tableRecordToCreateParam.getEcho().trim().isEmpty()) {
 			tableRecordToCreateParam.setEcho(UtilGlobal.randomUUID());
 		}
@@ -103,14 +103,14 @@ public class WebSocketTableRecordCreateClient extends
 					this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"WebSocket-CreateTableRecord: " +
 								"The connection was closed by the server prior to the response received.",
 						FluidClientException.ErrorCode.IO_ERROR);
 			}
 
-			if(returnValue == null || returnValue.isEmpty()) {
+			if (returnValue == null || returnValue.isEmpty()) {
 				return null;
 			}
 
@@ -126,7 +126,7 @@ public class WebSocketTableRecordCreateClient extends
 			//Error on the web-socket...
 			Throwable cause = executeProblem.getCause();
 			//Fluid client exception...
-			if(cause instanceof FluidClientException)
+			if (cause instanceof FluidClientException)
 			{
 				throw (FluidClientException)cause;
 			}

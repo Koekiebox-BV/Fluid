@@ -118,7 +118,7 @@ public class TestFlowStepClient extends ABaseTestCase {
     @Test
     public void testFlowStep_Assignment_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

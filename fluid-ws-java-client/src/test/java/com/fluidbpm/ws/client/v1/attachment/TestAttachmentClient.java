@@ -70,7 +70,7 @@ public class TestAttachmentClient extends ABaseTestCase {
     @Test
     public void testAttachmentCRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

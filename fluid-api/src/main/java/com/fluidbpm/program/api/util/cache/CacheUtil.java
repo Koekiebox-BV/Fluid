@@ -121,14 +121,14 @@ public class CacheUtil extends ABaseUtil {
 		public static Field.Type getFluidTypeFromFlowJobType(
 				String flowJobTypeParam)
 		{
-			if(flowJobTypeParam == null || flowJobTypeParam.trim().isEmpty())
+			if (flowJobTypeParam == null || flowJobTypeParam.trim().isEmpty())
 			{
 				return null;
 			}
 
-			for(FlowJobTypeMapping mapping : values())
+			for (FlowJobTypeMapping mapping : values())
 			{
-				if(flowJobTypeParam.equals(mapping.flowJobDataTypeDesc))
+				if (flowJobTypeParam.equals(mapping.flowJobDataTypeDesc))
 				{
 					return mapping.fluidType;
 				}
@@ -158,7 +158,7 @@ public class CacheUtil extends ABaseUtil {
 			Field returnVal = new Field();
 
 			//No table field...
-			if(FlowJobType.TABLE_FIELD.equals(this.dataType))
+			if (FlowJobType.TABLE_FIELD.equals(this.dataType))
 			{
 				return null;
 			}
@@ -204,12 +204,12 @@ public class CacheUtil extends ABaseUtil {
 		this.cacheHost = cacheHostParam;
 		this.cachePort = cachePortParam;
 
-		if(this.cacheHost == null || this.cacheHost.trim().isEmpty())
+		if (this.cacheHost == null || this.cacheHost.trim().isEmpty())
 		{
 			throw new FluidCacheException("Cache Host cannot be empty.");
 		}
 
-		if(this.cachePort < 1 || this.cachePort > 65535)
+		if (this.cachePort < 1 || this.cachePort > 65535)
 		{
 			throw new FluidCacheException("Cache Port number '"+this.cachePort+"' is invalid.");
 		}
@@ -275,7 +275,7 @@ public class CacheUtil extends ABaseUtil {
 	 */
 	public List<String> getMemcacheServersDescription()
 	{
-		if(this.memcachedClient == null)
+		if (this.memcachedClient == null)
 		{
 			throw new FluidCacheException(
 					"MemCached client is not set.");
@@ -294,7 +294,7 @@ public class CacheUtil extends ABaseUtil {
 	@SuppressWarnings("unchecked")
 	private CachedFieldValue getCacheFieldValueFromObject(Object objWithKeyParam)
 	{
-		if(objWithKeyParam == null)
+		if (objWithKeyParam == null)
 		{
 			return null;
 		}
@@ -312,14 +312,14 @@ public class CacheUtil extends ABaseUtil {
 		//Word...
 		Object getWordObj = CacheUtil.invoke(methodGetWord, objWithKeyParam);
 		String getWordVal = null;
-		if(getWordObj instanceof String)
+		if (getWordObj instanceof String)
 		{
 			getWordVal = (String)getWordObj;
 		}
 
 		//Value...
 		Object getValueObj;
-		if(FlowJobType.MULTIPLE_CHOICE.equals(getWordVal))
+		if (FlowJobType.MULTIPLE_CHOICE.equals(getWordVal))
 		{
 			MultiChoice multiChoice = new MultiChoice();
 
@@ -331,7 +331,7 @@ public class CacheUtil extends ABaseUtil {
 			Object availChoicesObj =
 					CacheUtil.invoke(methodAvailableChoices, objWithKeyParam);
 
-			if(availChoicesObj instanceof List)
+			if (availChoicesObj instanceof List)
 			{
 				multiChoice.setAvailableMultiChoices((List)availChoicesObj);
 			}
@@ -344,7 +344,7 @@ public class CacheUtil extends ABaseUtil {
 			Object selectedChoicesObj =
 					invoke(methodSelectedChoices, objWithKeyParam);
 
-			if(selectedChoicesObj instanceof List)
+			if (selectedChoicesObj instanceof List)
 			{
 				multiChoice.setSelectedMultiChoices((List)selectedChoicesObj);
 			}
@@ -356,12 +356,12 @@ public class CacheUtil extends ABaseUtil {
 			getValueObj = CacheUtil.invoke(methodGetValue, objWithKeyParam);
 		}
 
-		if(getValueObj == null)
+		if (getValueObj == null)
 		{
 			return null;
 		}
 
-		if(getWordVal == null)
+		if (getWordVal == null)
 		{
 			throw new FluidCacheException(
 					"Get Word value is 'null'. Not allowed.");
@@ -387,7 +387,7 @@ public class CacheUtil extends ABaseUtil {
 	private static Method getMethod(Class clazzParam, String nameParam)
 	{
 		try {
-			if(clazzParam == null || nameParam == null)
+			if (clazzParam == null || nameParam == null)
 			{
 				return null;
 			}
@@ -455,7 +455,7 @@ public class CacheUtil extends ABaseUtil {
 		StringBuilder stringBuff = new StringBuilder();
 
 		//Form Definition...
-		if(formDefIdParam == null)
+		if (formDefIdParam == null)
 		{
 			stringBuff.append(NULL);
 		}
@@ -467,7 +467,7 @@ public class CacheUtil extends ABaseUtil {
 		stringBuff.append(DASH);
 
 		//Form Container...
-		if(formContIdParam == null)
+		if (formContIdParam == null)
 		{
 			stringBuff.append(NULL);
 		}
@@ -479,7 +479,7 @@ public class CacheUtil extends ABaseUtil {
 		stringBuff.append(DASH);
 
 		//Form Field...
-		if(formFieldIdParam == null)
+		if (formFieldIdParam == null)
 		{
 			stringBuff.append(NULL);
 		}
@@ -498,12 +498,12 @@ public class CacheUtil extends ABaseUtil {
 	 */
 	private MemcachedClient initXMemcachedClient()
 	{
-		if(this.memcachedClient != null && !this.memcachedClient.isShutdown())
+		if (this.memcachedClient != null && !this.memcachedClient.isShutdown())
 		{
 			return this.memcachedClient;
 		}
 
-		try{
+		try {
 			this.memcachedClient = new XMemcachedClient(
 					this.cacheHost,this.cachePort);
 
@@ -522,7 +522,7 @@ public class CacheUtil extends ABaseUtil {
 	 */
 	public void shutdown()
 	{
-		if(this.memcachedClient != null &&
+		if (this.memcachedClient != null &&
 				!this.memcachedClient.isShutdown())
 		{
 			try {

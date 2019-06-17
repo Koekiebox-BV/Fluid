@@ -69,7 +69,7 @@ public class Auth0Client extends ABaseClientWS {
             String redirectUrlParam)
     {
 
-        if(clientIdParam == null || clientIdParam.trim().isEmpty())
+        if (clientIdParam == null || clientIdParam.trim().isEmpty())
         {
             throw new FluidClientException(
                     "Client Id must be provided.",
@@ -77,14 +77,14 @@ public class Auth0Client extends ABaseClientWS {
         }
 
 
-        if(clientSecretParam == null || clientSecretParam.trim().isEmpty())
+        if (clientSecretParam == null || clientSecretParam.trim().isEmpty())
         {
             throw new FluidClientException(
                     "Client Secret must be provided.",
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(codeParam == null || codeParam.trim().isEmpty())
+        if (codeParam == null || codeParam.trim().isEmpty())
         {
             throw new FluidClientException(
                     "Code must be provided.",
@@ -116,7 +116,7 @@ public class Auth0Client extends ABaseClientWS {
      */
     public NormalizedUserProfile getUserProfileInfo(AccessToken accessTokenParam)
     {
-        if(accessTokenParam == null || (accessTokenParam.getAccessToken() == null ||
+        if (accessTokenParam == null || (accessTokenParam.getAccessToken() == null ||
                 accessTokenParam.getAccessToken().trim().isEmpty()))
         {
             throw new FluidClientException(

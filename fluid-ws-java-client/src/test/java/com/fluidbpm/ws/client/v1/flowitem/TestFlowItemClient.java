@@ -85,7 +85,7 @@ public class TestFlowItemClient extends ABaseTestCase {
     @Test
     public void testCreateEmailFormAndSendToWorkflow()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -165,7 +165,7 @@ public class TestFlowItemClient extends ABaseTestCase {
         //TODO @Jason current state must also be NOT IN FLOW..
 
         //Confirm item is no longer in flow due to exit rule...
-        try{
+        try {
             flowClient.deleteFlow(createdFlow);
 
             TestCase.fail("Not allowed to Delete Flow ");
@@ -189,7 +189,7 @@ public class TestFlowItemClient extends ABaseTestCase {
     @Ignore
     public void testViewItemsForWorkflowStep()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -220,9 +220,9 @@ public class TestFlowItemClient extends ABaseTestCase {
                 itemListingFromView.getListingCount().intValue() > 0);
 
         FluidItem fluidItemToSendOn = null;
-        for(FluidItem fluidItem : itemListingFromView.getListing())
+        for (FluidItem fluidItem : itemListingFromView.getListing())
         {
-            if(fluidItemToSendOn == null)
+            if (fluidItemToSendOn == null)
             {
                 fluidItemToSendOn = fluidItem;
             }
@@ -233,9 +233,9 @@ public class TestFlowItemClient extends ABaseTestCase {
             System.out.println("Form Id - "+fluidItem.getForm().getId());
             System.out.println("Form Title - "+fluidItem.getForm().getTitle());
 
-            if(fluidItem.getRouteFields() != null)
+            if (fluidItem.getRouteFields() != null)
             {
-                for(Field routeField : fluidItem.getRouteFields())
+                for (Field routeField : fluidItem.getRouteFields())
                 {
                     System.out.println("RF["+
                             routeField.getFieldName()+"] : "+
@@ -248,7 +248,7 @@ public class TestFlowItemClient extends ABaseTestCase {
         }
         
         //Fluid item is not set... just stop...
-        if(fluidItemToSendOn == null)
+        if (fluidItemToSendOn == null)
         {
             return;
         }
@@ -268,16 +268,16 @@ public class TestFlowItemClient extends ABaseTestCase {
                 personalInventoryClient.getPersonalInventoryItems();
 
         boolean contains = false;
-        for(FluidItem fluidItem : fluidItemListing)
+        for (FluidItem fluidItem : fluidItemListing)
         {
-            if(lockedFormCont.getId().equals(fluidItem.getForm().getId()))
+            if (lockedFormCont.getId().equals(fluidItem.getForm().getId()))
             {
                 contains = true;
                 break;
             }
         }
 
-        if(!contains)
+        if (!contains)
         {
             TestCase.fail("Personal Inventory does not contain '"+
                     lockedFormCont.getTitle()+"'.");

@@ -81,7 +81,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
         this.loginClient = new LoginClient(BASE_URL);
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -90,7 +90,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         TestCase.assertNotNull(appRequestToken);
 
         this.serviceTicket = appRequestToken.getServiceTicket();
-        if(serviceTicket != null && !this.serviceTicket.isEmpty())
+        if (serviceTicket != null && !this.serviceTicket.isEmpty())
         {
             this.serviceTicketHex =
                     UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(
@@ -128,7 +128,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         {
             Flow flowToDelete = this.flowClient.getFlowByName(jUnitTestFlowName);
 
-            if(flowToDelete != null)
+            if (flowToDelete != null)
             {
                 this.flowClient.forceDeleteFlow(flowToDelete);
             }
@@ -192,17 +192,17 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         FlowStepRuleListing exitRuleListing =
                 this.flowStepRuleClient.getExitRulesByStep(introductFlowStep);
 
-        if(exitRuleListing != null &&
+        if (exitRuleListing != null &&
                 exitRuleListing.getListing() != null)
         {
-            for(FlowStepRule flowStepRule : exitRuleListing.getListing())
+            for (FlowStepRule flowStepRule : exitRuleListing.getListing())
             {
                 //When its 1, make it 2...
-                if(flowStepRule.getOrder() != null && flowStepRule.getOrder().longValue() == 1L)
+                if (flowStepRule.getOrder() != null && flowStepRule.getOrder().longValue() == 1L)
                 {
                     flowStepRule.setOrder(2L);
                 }
-                else if(flowStepRule.getOrder() != null && flowStepRule.getOrder().longValue() == 2L)
+                else if (flowStepRule.getOrder() != null && flowStepRule.getOrder().longValue() == 2L)
                 {
                     flowStepRule.setOrder(1L);
                 }
@@ -219,7 +219,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
     @Ignore
     public void testWebSocketSendToFlowClientWaitForRule()
     {
-        if(this.serviceTicket == null || this.serviceTicket.isEmpty())
+        if (this.serviceTicket == null || this.serviceTicket.isEmpty())
         {
             return;
         }
@@ -256,9 +256,9 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
                 testFluidItem.getForm().getFieldValueAsString(
                         this.testField.getFieldName()));
         
-        if(testFluidItem.getForm().getFormFields() != null)
+        if (testFluidItem.getForm().getFormFields() != null)
         {
-            for(Field field : testFluidItem.getForm().getFormFields())
+            for (Field field : testFluidItem.getForm().getFormFields())
             {
                 System.out.println("["+field.getFieldName()+"] = '"+
                         field.getFieldValue()+"'");
@@ -275,66 +275,66 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
     public void destroy()
     {
         //Delete the instances...
-        if(this.testForm != null &&
+        if (this.testForm != null &&
                 this.testForm.getId() != null)
         {
             this.formContainerClient.deleteFormContainer(this.testForm);
         }
 
-        if(this.testFormDefinition != null &&
+        if (this.testFormDefinition != null &&
                 this.testFormDefinition.getId() != null)
         {
             this.formDefinitionClient.deleteFormDefinition(this.testFormDefinition);
         }
 
-        if(this.testField != null && this.testField.getId() != null)
+        if (this.testField != null && this.testField.getId() != null)
         {
             this.formFieldClient.deleteField(this.testField);
         }
 
-        if(this.flowStepRule != null && this.flowStepRule.getId() != null)
+        if (this.flowStepRule != null && this.flowStepRule.getId() != null)
         {
             this.flowStepRuleClient.deleteFlowStepExitRule(this.flowStepRule);
         }
         
-        if(this.testFlow != null &&
+        if (this.testFlow != null &&
                 this.testFlow.getId() != null)
         {
             this.flowClient.deleteFlow(this.testFlow);
         }
 
         //Close the clients...
-        if(this.webSocketClient != null)
+        if (this.webSocketClient != null)
         {
             this.webSocketClient.closeAndClean();
         }
 
-        if(this.flowStepRuleClient != null)
+        if (this.flowStepRuleClient != null)
         {
             this.flowStepRuleClient.closeAndClean();
         }
         
-        if(this.flowClient != null)
+        if (this.flowClient != null)
         {
             this.flowClient.closeAndClean();
         }
         
-        if(this.loginClient != null)
+        if (this.loginClient != null)
         {
             this.loginClient.closeAndClean();
         }
 
-        if(this.formContainerClient != null)
+        if (this.formContainerClient != null)
         {
             this.formContainerClient.closeAndClean();
         }
 
-        if(this.formDefinitionClient != null)
+        if (this.formDefinitionClient != null)
         {
             this.formDefinitionClient.closeAndClean();
         }
 
-        if(this.formFieldClient != null)
+        if (this.formFieldClient != null)
         {
             this.formFieldClient.closeAndClean();
         }

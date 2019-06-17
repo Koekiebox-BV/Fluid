@@ -76,11 +76,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 * @return {@code true} for valid index and {@code false} for invalid index.
 		 */
 		public static boolean isIndexValid(String indexParam) {
-			if(DOCUMENT.equals(indexParam)) {
+			if (DOCUMENT.equals(indexParam)) {
 				return true;
-			} else if(FOLDER.equals(indexParam)) {
+			} else if (FOLDER.equals(indexParam)) {
 				return true;
-			} else if(TABLE_RECORD.equals(indexParam)) {
+			} else if (TABLE_RECORD.equals(indexParam)) {
 				return true;
 			}
 			return false;
@@ -94,14 +94,14 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 * @throws FluidElasticSearchException if validation fails.
 		 */
 		public static void validateIndexName(String indexParam) {
-			if(indexParam == null || indexParam.trim().isEmpty()) {
+			if (indexParam == null || indexParam.trim().isEmpty()) {
 				throw new FluidElasticSearchException("Index name is empty. Not allowed.");
 			}
 
 			int charIndex = 1;
-			for(char character : indexParam.toCharArray()) {
+			for (char character : indexParam.toCharArray()) {
 				int charType = Character.getType(character);
-				if(Character.LOWERCASE_LETTER != charType && '_' != character) {
+				if (Character.LOWERCASE_LETTER != charType && '_' != character) {
 					throw new FluidElasticSearchException(
 							"Index name '"+ indexParam+"' is invalid. " +
 									"See character at index '"+ charIndex+":"+character+"' which is of type '"+charType+"'.");
@@ -183,12 +183,12 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			long iterationMax = totalHits;
-			if(limitParam > 0 && totalHits > limitParam) {
+			if (limitParam > 0 && totalHits > limitParam) {
 				iterationMax = limitParam;
 			}
 
 			//Iterate...
-			for(int index = 0;index < iterationMax;index++) {
+			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 				String idAsString;
 				if((idAsString = searchHit.getId()) == null) {
@@ -224,7 +224,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			int limitParam,
 			Long ... formTypesParam
 	) {
-		if(this.client == null) {
+		if (this.client == null) {
 			throw new ElasticsearchException("Elasticsearch client is not set.");
 		}
 
@@ -242,24 +242,24 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		}
 
 		//The requested number of results...
-		if(limitParam > 0) {
+		if (limitParam > 0) {
 			searchRequestBuilder = searchRequestBuilder.setSize(limitParam);
 		}
 
-		if(offsetParam > -1) {
+		if (offsetParam > -1) {
 			searchRequestBuilder = searchRequestBuilder.setFrom(offsetParam);
 		}
 
-		if(formTypesParam == null) {
+		if (formTypesParam == null) {
 			formTypesParam = new Long[]{};
 		}
 
 		//If Types is set...
-		if(formTypesParam != null && formTypesParam.length > 0) {
+		if (formTypesParam != null && formTypesParam.length > 0) {
 			String[] formTypesAsString = new String[formTypesParam.length];
-			for(int index = 0;index < formTypesParam.length;index++) {
+			for (int index = 0;index < formTypesParam.length;index++) {
 				Long formTypeId = formTypesParam[index];
-				if(formTypeId == null) {
+				if (formTypeId == null) {
 					continue;
 				}
 
@@ -326,11 +326,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			int offsetParam,
 			int limitParam
 	) {
-		if(formIdsParam == null || formIdsParam.isEmpty()) {
+		if (formIdsParam == null || formIdsParam.isEmpty()) {
 			return null;
 		}
 
-		if(indexParam == null || indexParam.trim().isEmpty()) {
+		if (indexParam == null || indexParam.trim().isEmpty()) {
 			throw new FluidElasticSearchException(
 					"Index is mandatory for lookup.");
 		}
@@ -338,7 +338,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		//Query using the descendantId directly...
 		StringBuffer byIdQuery = new StringBuffer();
 
-		for(Long formId : formIdsParam) {
+		for (Long formId : formIdsParam) {
 			byIdQuery.append(ABaseFluidJSONObject.JSONMapping.ID);
 			byIdQuery.append(":\"");
 			byIdQuery.append(formId);
@@ -349,7 +349,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		queryByIdsToString = queryByIdsToString.substring(0, queryByIdsToString.length() - 1);
 
 		List<Form> returnVal = null;
-		if(includeFieldDataParam) {
+		if (includeFieldDataParam) {
 			returnVal = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(queryByIdsToString),
 					indexParam,
@@ -365,7 +365,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 					new Long[]{});
 		}
 
-		if(returnVal == null || returnVal.isEmpty()) {
+		if (returnVal == null || returnVal.isEmpty()) {
 			return null;
 		}
 
@@ -415,12 +415,12 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			long iterationMax = totalHits;
-			if(limitParam > 0 && totalHits > limitParam) {
+			if (limitParam > 0 && totalHits > limitParam) {
 				iterationMax = limitParam;
 			}
 
 			//Iterate...
-			for(int index = 0;index < iterationMax;index++) {
+			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 
 				String source;
@@ -435,8 +435,8 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				JSONObject jsonObject = new JSONObject(source);
 				List<Field> fieldsForForm = null;
 				//Is Form Type available...
-				if(jsonObject.has(Form.JSONMapping.FORM_TYPE_ID)) {
-					if(this.fieldUtil == null) {
+				if (jsonObject.has(Form.JSONMapping.FORM_TYPE_ID)) {
+					if (this.fieldUtil == null) {
 						throw new FluidElasticSearchException(
 								"Field Util is not set. Use a different constructor.");
 					}
@@ -500,12 +500,12 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			long iterationMax = totalHits;
-			if(limitParam > 0 && totalHits > limitParam) {
+			if (limitParam > 0 && totalHits > limitParam) {
 				iterationMax = limitParam;
 			}
 
 			//Iterate...
-			for(int index = 0;index < iterationMax;index++) {
+			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 
 				String source;
@@ -574,12 +574,12 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			long iterationMax = totalHits;
-			if(limitParam > 0 && totalHits > limitParam) {
+			if (limitParam > 0 && totalHits > limitParam) {
 				iterationMax = limitParam;
 			}
 
 			//Iterate...
-			for(int index = 0;index < iterationMax;index++) {
+			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 
 				String source;
@@ -616,7 +616,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			boolean includeFieldDataParam,
 			List<Field> formFieldsParam
 	) {
-		if(formFieldsParam == null || formFieldsParam.isEmpty()) {
+		if (formFieldsParam == null || formFieldsParam.isEmpty()) {
 			return null;
 		}
 
@@ -624,22 +624,22 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				new ArrayList() : null;
 
 		//Populate each of the Table Fields...
-		for(Field descendantField : formFieldsParam) {
+		for (Field descendantField : formFieldsParam) {
 			//Skip if not Table Field...
-			if(!(descendantField.getFieldValue() instanceof TableField)) {
+			if (!(descendantField.getFieldValue() instanceof TableField)) {
 				continue;
 			}
 
 			TableField tableField = (TableField)descendantField.getFieldValue();
 
 			List<Form> tableRecordWithIdOnly = tableField.getTableRecords();
-			if(tableRecordWithIdOnly == null || tableRecordWithIdOnly.isEmpty()) {
+			if (tableRecordWithIdOnly == null || tableRecordWithIdOnly.isEmpty()) {
 				continue;
 			}
 
 			//Populate the ids for lookup...
 			List<Long> formIdsOnly = new ArrayList();
-			for(Form tableRecord : tableRecordWithIdOnly) {
+			for (Form tableRecord : tableRecordWithIdOnly) {
 				formIdsOnly.add(tableRecord.getId());
 			}
 
@@ -649,7 +649,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 					includeFieldDataParam,
 					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS);
 
-			if(addAllTableRecordsForReturnParam && populatedTableRecords != null) {
+			if (addAllTableRecordsForReturnParam && populatedTableRecords != null) {
 				allTableRecordsFromAllFields.addAll(populatedTableRecords);
 			}
 
@@ -667,11 +667,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * @return {@code true} if ElasticSearch index {@code indexToCheckParam} exists, otherwise {@code false}.
 	 */
 	public boolean doesIndexExist(String indexToCheckParam) {
-		if(indexToCheckParam == null || indexToCheckParam.trim().isEmpty()) {
+		if (indexToCheckParam == null || indexToCheckParam.trim().isEmpty()) {
 			return false;
 		}
 
-		if(this.client == null) {
+		if (this.client == null) {
 			throw new FluidElasticSearchException(
 					"ElasticSearch client is not initialized.");
 		}
@@ -703,7 +703,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	public void closeConnectionNonThreaded() {
 		super.closeConnection();
 
-		if(this.client != null) {
+		if (this.client != null) {
 			this.client.close();
 		}
 
@@ -731,7 +731,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 */
 		@Override
 		public void run() {
-			if(this.baseESUtil == null) {
+			if (this.baseESUtil == null) {
 				return;
 			}
 

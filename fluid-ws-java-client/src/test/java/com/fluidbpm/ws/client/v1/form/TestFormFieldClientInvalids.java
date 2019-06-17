@@ -71,7 +71,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_NoFieldName()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -89,7 +89,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextMasked(toCreate, "");
 
             TestCase.fail("Should not be allowed to create a Field with no Name.");
@@ -108,7 +108,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_NoFieldDescription()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -126,7 +126,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
         toCreate.setFieldDescription("");
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextMasked(toCreate, "");
 
             TestCase.fail("Should not be allowed to create a Field with no Description.");
@@ -145,7 +145,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_TextMasked()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -163,7 +163,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextMasked(toCreate, "");
 
             TestCase.fail("Should not be allowed to create a Text Masked field with no value.");
@@ -182,7 +182,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_TextBarcode()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -200,7 +200,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextBarcode(toCreate, "zool");
 
             TestCase.fail("Should not be allowed to create a Text Barcode field with 'zool' value.");
@@ -219,7 +219,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_MultiChoicePlain()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -237,7 +237,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldMultiChoicePlain(toCreate, new ArrayList<String>());
 
             TestCase.fail("Should not be allowed to create a Multi Choice with no selections.");

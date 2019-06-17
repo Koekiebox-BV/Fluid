@@ -74,7 +74,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -145,7 +145,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_GetNextValidSyntax()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -188,9 +188,9 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
                 4,nextValidSyntaxWords.size());
 
         boolean isScope = false;
-        for(String iter : nextValidSyntaxWords)
+        for (String iter : nextValidSyntaxWords)
         {
-            if(iter.equals("FORM."))
+            if (iter.equals("FORM."))
             {
                 isScope = true;
             }
@@ -205,9 +205,9 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         Assert.assertTrue("Expected at least 5 fields.",
                 nextValidSyntaxWords.size() > 5);
 
-        for(String iter : nextValidSyntaxWords)
+        for (String iter : nextValidSyntaxWords)
         {
-            if(!iter.startsWith("FORM."))
+            if (!iter.startsWith("FORM."))
             {
                 Assert.fail("Did not start with FORM. "+iter);
             }
@@ -269,7 +269,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileSucceed()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -301,9 +301,9 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
         };
 
         //THE COMPILE RULES THAT PASSES...
-        for(String passRule : compileListPass)
+        for (String passRule : compileListPass)
         {
-            try{
+            try {
                 flowStepRuleClient.compileFlowStepEntryRule(passRule);
             }
             //
@@ -327,7 +327,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileFail()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -360,9 +360,9 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
                 "SET ROUTE.JUnit Test Entry Rule TO",
                 "SET ROUTE.JUnit Test Entry TO 'Cool'",};
 
-        for(String passRule : compListFail)
+        for (String passRule : compListFail)
         {
-            try{
+            try {
                 flowStepRuleClient.compileFlowStepEntryRule(passRule);
 
                 Assert.fail("Expected rule: \n\n"+passRule+"\n to fail.");
@@ -372,7 +372,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
             //
             catch(FluidClientException cle)
             {
-                if(FluidClientException.ErrorCode.STATEMENT_SYNTAX_ERROR == cle.getErrorCode())
+                if (FluidClientException.ErrorCode.STATEMENT_SYNTAX_ERROR == cle.getErrorCode())
                 {
                     System.out.println(cle.getErrorCode() + ":"+ cle.getMessage());
                     continue;
@@ -397,7 +397,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -468,7 +468,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepEntryRule_CompileAndRunSucceed_AnotherFieldValue()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

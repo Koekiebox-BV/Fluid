@@ -114,7 +114,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_TextPlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -174,7 +174,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_TrueFalse_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -234,7 +234,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_ParagraphTextPlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -294,7 +294,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_ParagraphTextHTML_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -355,7 +355,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @SuppressWarnings("unchecked")
     public void testRouteField_MultiChoicePlain_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -383,7 +383,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 RouteFieldClient.FieldMetaData.MultiChoice.PLAIN, createdField.getTypeMetaData());
 
-        if(!(createdField.getFieldValue() instanceof MultiChoice))
+        if (!(createdField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -408,7 +408,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 RouteFieldClient.FieldMetaData.MultiChoice.PLAIN, updatedField.getTypeMetaData());
 
-        if(!(updatedField.getFieldValue() instanceof MultiChoice))
+        if (!(updatedField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -431,7 +431,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 RouteFieldClient.FieldMetaData.MultiChoice.PLAIN, byIdField.getTypeMetaData());
 
-        if(!(byIdField.getFieldValue() instanceof MultiChoice))
+        if (!(byIdField.getFieldValue() instanceof MultiChoice))
         {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
@@ -456,7 +456,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @SuppressWarnings("unchecked")
     public void testRouteField_MultiChoiceSelectMany_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -484,7 +484,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         }
         catch (FluidClientException fce)
         {
-            if(FluidClientException.ErrorCode.FIELD_VALIDATE != fce.getErrorCode())
+            if (FluidClientException.ErrorCode.FIELD_VALIDATE != fce.getErrorCode())
             {
                 TestCase.fail("Expected field validate error code.");
             }
@@ -497,7 +497,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_DateTimeDate_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -557,7 +557,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
     @Test
     public void testRouteField_DateTimeDateAndTime_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -616,7 +616,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
      */
     @Test
     public void testRouteField_DecimalPlain_CRUD() {
-        if(!this.isConnectionValid()) {
+        if (!this.isConnectionValid()) {
             return;
         }
 

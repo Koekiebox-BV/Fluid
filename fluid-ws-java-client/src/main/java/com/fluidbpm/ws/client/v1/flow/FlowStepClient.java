@@ -70,7 +70,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public FlowStep createFlowStep(FlowStep flowStepParam)
     {
-        if(flowStepParam != null && this.serviceTicket != null)
+        if (flowStepParam != null && this.serviceTicket != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -87,7 +87,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public FlowStep updateFlowStep(FlowStep flowStepParam)
     {
-        if(flowStepParam != null && this.serviceTicket != null)
+        if (flowStepParam != null && this.serviceTicket != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -111,7 +111,7 @@ public class FlowStepClient extends ABaseClientWS {
         FlowStep flowStep = new FlowStep(flowStepIdParam);
         flowStep.setFlowStepType(flowStepTypeParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStep.setServiceTicket(this.serviceTicket);
         }
@@ -133,7 +133,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public FlowStep getFlowStepByStep(FlowStep flowStepParam)
     {
-        if(this.serviceTicket != null && flowStepParam != null)
+        if (this.serviceTicket != null && flowStepParam != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -194,7 +194,7 @@ public class FlowStepClient extends ABaseClientWS {
             String flowStepNameParam,
             String flowViewNameParam)
     {
-        if(flowNameParam == null ||
+        if (flowNameParam == null ||
                 flowNameParam.trim().isEmpty())
         {
             throw new FluidClientException(
@@ -202,7 +202,7 @@ public class FlowStepClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(flowStepNameParam == null ||
+        if (flowStepNameParam == null ||
                 flowStepNameParam.trim().isEmpty())
         {
             throw new FluidClientException(
@@ -210,7 +210,7 @@ public class FlowStepClient extends ABaseClientWS {
                     FluidClientException.ErrorCode.FIELD_VALIDATE);
         }
 
-        if(flowViewNameParam == null ||
+        if (flowViewNameParam == null ||
                 flowViewNameParam.trim().isEmpty())
         {
             throw new FluidClientException(
@@ -223,11 +223,11 @@ public class FlowStepClient extends ABaseClientWS {
 
         JobView returnVal = null;
 
-        if(jobViewListing.getListingCount().intValue() > 1)
+        if (jobViewListing.getListingCount().intValue() > 1)
         {
-            for(JobView jobView : jobViewListing.getListing())
+            for (JobView jobView : jobViewListing.getListing())
             {
-                if(ViewType.STANDARD.equals(jobView.getViewType()) &&
+                if (ViewType.STANDARD.equals(jobView.getViewType()) &&
                         jobView.getViewName().equalsIgnoreCase(flowViewNameParam))
                 {
                     returnVal = jobView;
@@ -236,7 +236,7 @@ public class FlowStepClient extends ABaseClientWS {
             }
         }
 
-        if(returnVal == null)
+        if (returnVal == null)
         {
             throw new FluidClientException(
                     "No View found for Flow '"+
@@ -260,7 +260,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public JobViewListing getJobViewsByStep(FlowStep flowStepParam)
     {
-        if(this.serviceTicket != null && flowStepParam != null)
+        if (this.serviceTicket != null && flowStepParam != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -279,7 +279,7 @@ public class FlowStepClient extends ABaseClientWS {
     {
         FlowStep flowStep = new FlowStep();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStep.setServiceTicket(this.serviceTicket);
         }
@@ -298,7 +298,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public JobViewListing getJobViewsByUser(User userParam)
     {
-        if(this.serviceTicket != null && userParam != null)
+        if (this.serviceTicket != null && userParam != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -317,7 +317,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public JobViewListing getJobViewsByFlow(Flow flowParam)
     {
-        if(this.serviceTicket != null && flowParam != null)
+        if (this.serviceTicket != null && flowParam != null)
         {
             flowParam.setServiceTicket(this.serviceTicket);
         }
@@ -337,7 +337,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public FlowStepListing getStepsByFlow(Flow flowParam)
     {
-        if(this.serviceTicket != null && flowParam != null)
+        if (this.serviceTicket != null && flowParam != null)
         {
             flowParam.setServiceTicket(this.serviceTicket);
         }
@@ -354,7 +354,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public FlowStep deleteFlowStep(FlowStep flowStepParam)
     {
-        if(flowStepParam != null && this.serviceTicket != null)
+        if (flowStepParam != null && this.serviceTicket != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -373,7 +373,7 @@ public class FlowStepClient extends ABaseClientWS {
      */
     public FlowStep forceDeleteFlowStep(FlowStep flowStepParam)
     {
-        if(flowStepParam != null && this.serviceTicket != null)
+        if (flowStepParam != null && this.serviceTicket != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }

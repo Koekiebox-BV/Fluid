@@ -79,11 +79,11 @@ public class UtilGlobal {
 	 * @return The converted value.
 	 */
 	public String toCamelUpperCase(String inputParam) {
-		if(inputParam == null) {
+		if (inputParam == null) {
 			return null;
 		}
 
-		if(inputParam.isEmpty()) {
+		if (inputParam.isEmpty()) {
 			return EMPTY;
 		}
 
@@ -93,7 +93,7 @@ public class UtilGlobal {
 						Character.toLowerCase(original[0])));
 
 		boolean nextTitleCase = false;
-		for(int index = 1;index < original.length;index++) {
+		for (int index = 1;index < original.length;index++) {
 			char c = original[index];
 
 			if (Character.isSpaceChar(c)) {
@@ -119,20 +119,20 @@ public class UtilGlobal {
 	 */
 	public String getLatitudeFromFluidText(String textToCheckParam) {
 
-		if(textToCheckParam == null || textToCheckParam.isEmpty()) {
+		if (textToCheckParam == null || textToCheckParam.isEmpty()) {
 			return EMPTY;
 		}
 
 		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
 			latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
 		}
 
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
 			return ZERO;
 		}
 
-		if(latitudeAndLongitude.length > 1)
+		if (latitudeAndLongitude.length > 1)
 		{
 			return toGoeSafe(latitudeAndLongitude[0]);
 		}
@@ -148,21 +148,21 @@ public class UtilGlobal {
 	 * @return Geo Longitude from {@code textToCheckParam}.
 	 */
 	public String getLongitudeFromFluidText(String textToCheckParam) {
-		if(textToCheckParam == null || textToCheckParam.trim().isEmpty())
+		if (textToCheckParam == null || textToCheckParam.trim().isEmpty())
 		{
 			return EMPTY;
 		}
 
 		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
 			latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
 		}
 
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
 			return ZERO;
 		}
 
-		if(latitudeAndLongitude.length > 1) {
+		if (latitudeAndLongitude.length > 1) {
 			return this.toGoeSafe(latitudeAndLongitude[1]);
 		}
 
@@ -178,20 +178,20 @@ public class UtilGlobal {
 	 */
 	public double getLatitudeFromElasticSearchText(String textToCheckParam)
 	{
-		if(textToCheckParam == null || textToCheckParam.isEmpty()) {
+		if (textToCheckParam == null || textToCheckParam.isEmpty()) {
 			return 0.0;
 		}
 
 		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
 			latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
 		}
 
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
 			return 0.0;
 		}
 
-		if(latitudeAndLongitude.length > 1) {
+		if (latitudeAndLongitude.length > 1) {
 			return toDoubleSafe(latitudeAndLongitude[0]);
 		}
 
@@ -207,20 +207,20 @@ public class UtilGlobal {
 	 */
 	public double getLongitudeFromElasticSearchText(String textToCheckParam)
 	{
-		if(textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
+		if (textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
 			return 0.0;
 		}
 
 		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
 			latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
 		}
 
-		if(latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
+		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
 			return 0.0;
 		}
 
-		if(latitudeAndLongitude.length > 1) {
+		if (latitudeAndLongitude.length > 1) {
 			return this.toDoubleSafe(latitudeAndLongitude[1]);
 		}
 
@@ -257,14 +257,14 @@ public class UtilGlobal {
 			return ZERO;
 		}
 		try {
-			for(char charToCheck : toParseParam.toCharArray()){
+			for (char charToCheck : toParseParam.toCharArray()){
 
-				if(!Character.isDigit(charToCheck) && '.' != charToCheck){
+				if (!Character.isDigit(charToCheck) && '.' != charToCheck){
 					return ZERO;
 				}
 			}
 
-			if(toParseParam.length() > 12){
+			if (toParseParam.length() > 12){
 				return toParseParam.substring(0,12);
 			}
 
@@ -281,11 +281,11 @@ public class UtilGlobal {
 	 * @return byte[].
 	 */
 	public static byte[] decodeBase64(String base64StringParam) {
-		if(base64StringParam == null) {
+		if (base64StringParam == null) {
 			return null;
 		}
 
-		if(base64StringParam.isEmpty()) {
+		if (base64StringParam.isEmpty()) {
 			return new byte[]{};
 		}
 
@@ -299,12 +299,12 @@ public class UtilGlobal {
 	 * @return Hex String in upper case.
 	 */
 	public static String encodeBase16(byte[] bytesParam) {
-		if(bytesParam == null)
+		if (bytesParam == null)
 		{
 			return null;
 		}
 
-		if(bytesParam.length == 0)
+		if (bytesParam.length == 0)
 		{
 			return UtilGlobal.EMPTY;
 		}
@@ -320,11 +320,11 @@ public class UtilGlobal {
 	 */
 	public static byte[] decodeBase16(String stringParam) {
 
-		if(stringParam == null) {
+		if (stringParam == null) {
 			return null;
 		}
 
-		if(stringParam.trim().isEmpty())
+		if (stringParam.trim().isEmpty())
 		{
 			return new byte[]{};
 		}
@@ -346,11 +346,11 @@ public class UtilGlobal {
 	 * @return Base64 String.
 	 */
 	public static String encodeBase64(byte[] bytesParam) {
-		if(bytesParam == null) {
+		if (bytesParam == null) {
 			return null;
 		}
 
-		if(bytesParam.length == 0) {
+		if (bytesParam.length == 0) {
 			return UtilGlobal.EMPTY;
 		}
 
@@ -424,13 +424,13 @@ public class UtilGlobal {
 			Field fieldToExtractFromParam,
 			JSONObject objectToSetFieldOnParam)
 	{
-		if(fieldToExtractFromParam == null)
+		if (fieldToExtractFromParam == null)
 		{
 			return;
 		}
 
 		String fieldName = fieldToExtractFromParam.getFieldNameAsUpperCamel();
-		if(fieldName == null || fieldName.trim().isEmpty())
+		if (fieldName == null || fieldName.trim().isEmpty())
 		{
 			return;
 		}
@@ -443,24 +443,24 @@ public class UtilGlobal {
 
 		Object fieldValue = fieldToExtractFromParam.getFieldValue();
 
-		if(fieldValue == null)
+		if (fieldValue == null)
 		{
 			objectToSetFieldOnParam.put(
 					completeFieldName,
 					JSONObject.NULL);
 		}
 		//Table field...
-		else if(fieldValue instanceof TableField)
+		else if (fieldValue instanceof TableField)
 		{
 			return;
 		}
 		//Multiple Choice...
-		else if(fieldValue instanceof MultiChoice) {
+		else if (fieldValue instanceof MultiChoice) {
 
 			MultiChoice multiChoice = (MultiChoice) fieldValue;
 
 			//Nothing provided...
-			if(multiChoice.getSelectedMultiChoices() == null ||
+			if (multiChoice.getSelectedMultiChoices() == null ||
 					multiChoice.getSelectedMultiChoices().isEmpty())
 			{
 
@@ -478,7 +478,7 @@ public class UtilGlobal {
 			});
 
 			String selectVal = builder.toString();
-			if(selectVal != null && !selectVal.trim().isEmpty())
+			if (selectVal != null && !selectVal.trim().isEmpty())
 			{
 				selectVal = selectVal.substring(0, selectVal.length() - 2);
 			}
@@ -504,7 +504,7 @@ public class UtilGlobal {
 			objectToSetFieldOnParam.put(completeFieldName, fieldValue);
 		}
 		//Date...
-		else if(fieldValue instanceof Date)
+		else if (fieldValue instanceof Date)
 		{
 			objectToSetFieldOnParam.put(completeFieldName, ((Date)fieldValue).getTime());
 		}

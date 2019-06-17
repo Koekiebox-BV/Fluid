@@ -56,7 +56,7 @@ public class SyntaxFactory {
 	 * @return single instance of {@code this}.
 	 */
 	public static SyntaxFactory getInstance() {
-		if(SyntaxFactory.syntaxFactory == null) {
+		if (SyntaxFactory.syntaxFactory == null) {
 			SyntaxFactory.syntaxFactory = new SyntaxFactory();
 		}
 
@@ -78,7 +78,7 @@ public class SyntaxFactory {
 			ABaseSQLUtil.SQLServerType sqlTypeParam,
 			String aliasParam) {
 
-		if(ISyntax.ProcedureMapping.isStoredProcedureMapping(aliasParam)) {
+		if (ISyntax.ProcedureMapping.isStoredProcedureMapping(aliasParam)) {
 			return new StoredProcedureSyntax(
 					aliasParam,
 					ISyntax.ProcedureMapping.getParamCountForAlias(aliasParam));
@@ -104,7 +104,7 @@ public class SyntaxFactory {
 			SQLFormFieldUtil.FormFieldMapping formFieldMappingParam
 	) {
 		Long dataType = formFieldMappingParam.dataType;
-		if(dataType == null) {
+		if (dataType == null) {
 			return null;
 		}
 
@@ -119,12 +119,12 @@ public class SyntaxFactory {
 				return this.getSyntaxFor(
 						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
 			case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
-				if(this.isPlain(formFieldMappingParam.metaData))
+				if (this.isPlain(formFieldMappingParam.metaData))
 				{
 					return this.getSyntaxFor(
 							sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_4_MultiChoice);
 				}
-				else if(this.isSelectMany(formFieldMappingParam.metaData))
+				else if (this.isSelectMany(formFieldMappingParam.metaData))
 				{
 					return this.getSyntaxFor(
 							sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldMultipleValue_4_MultiChoice);
@@ -167,7 +167,7 @@ public class SyntaxFactory {
 	 * @return Whether the {@code textToCheckParam} is of type Plain.
 	 */
 	private boolean isPlain(String textToCheckParam) {
-		if(textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
+		if (textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
 			return false;
 		}
 
@@ -184,7 +184,7 @@ public class SyntaxFactory {
 	 * @return Whether the {@code textToCheckParam} is of type Select Many.
 	 */
 	private boolean isSelectMany(String textToCheckParam) {
-		if(textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
+		if (textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
 			return false;
 		}
 

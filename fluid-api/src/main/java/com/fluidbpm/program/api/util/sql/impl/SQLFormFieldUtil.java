@@ -138,7 +138,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	{
 		List<FormFieldMapping> returnVal = new ArrayList();
 
-		if(electronicFormIdParam == null)
+		if (electronicFormIdParam == null)
 		{
 			return returnVal;
 		}
@@ -150,7 +150,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 
 			//Local Mapping...
 			//When we have the key by definition, we can just return.
-			if(this.localDefinitionToFieldsMapping.containsKey(formDefinitionId))
+			if (this.localDefinitionToFieldsMapping.containsKey(formDefinitionId))
 			{
 				return this.localDefinitionToFieldsMapping.get(formDefinitionId);
 			}
@@ -195,17 +195,17 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	) {
 		List<FormFieldMapping> returnVal = new ArrayList();
 
-		if(formDefinitionIdParam == null || formDefinitionIdParam.longValue() < 1)
+		if (formDefinitionIdParam == null || formDefinitionIdParam.longValue() < 1)
 		{
 			return returnVal;
 		}
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		try{
+		try {
 			//Local Mapping...
 			//When we have the key by definition, we can just return.
-			if(this.localDefinitionToFieldsMapping.containsKey(formDefinitionIdParam))
+			if (this.localDefinitionToFieldsMapping.containsKey(formDefinitionIdParam))
 			{
 				return this.localDefinitionToFieldsMapping.get(formDefinitionIdParam);
 			}
@@ -250,7 +250,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	 */
 	public Long getFormDefinitionId(Long electronicFormIdParam)
 	{
-		if(electronicFormIdParam == null)
+		if (electronicFormIdParam == null)
 		{
 			return null;
 		}
@@ -300,21 +300,21 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	) {
 		List<Field> returnVal = new ArrayList();
 
-		if(electronicFormIdParam == null) {
+		if (electronicFormIdParam == null) {
 			return returnVal;
 		}
 
 		List<FormFieldMapping> fieldMappings =
 				this.getFormFieldMappingForForm(electronicFormIdParam);
 
-		if(fieldMappings == null || fieldMappings.isEmpty()) {
+		if (fieldMappings == null || fieldMappings.isEmpty()) {
 			return returnVal;
 		}
 
 		//Get the values for each of the fields...
-		for(FormFieldMapping fieldMapping : fieldMappings) {
+		for (FormFieldMapping fieldMapping : fieldMappings) {
 			//Skip if ignore Table Fields...
-			if(!includeTableFieldsParam &&
+			if (!includeTableFieldsParam &&
 					fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD){//Table Field...
 				continue;
 			}
@@ -324,16 +324,16 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 					electronicFormIdParam,
 					includeTableFieldFormRecordInfoParam);
 
-			if(fieldToAdd == null) {
+			if (fieldToAdd == null) {
 				continue;
 			}
 
 			//When table field...
-			if(includeTableFieldsParam && (fieldToAdd.getFieldValue() instanceof TableField)) {
+			if (includeTableFieldsParam && (fieldToAdd.getFieldValue() instanceof TableField)) {
 				TableField tableField = (TableField)fieldToAdd.getFieldValue();
 
-				if(tableField.getTableRecords() != null && !tableField.getTableRecords().isEmpty()) {
-					for(Form tableRecordForm : tableField.getTableRecords()) {
+				if (tableField.getTableRecords() != null && !tableField.getTableRecords().isEmpty()) {
+					for (Form tableRecordForm : tableField.getTableRecords()) {
 						tableRecordForm.setFormFields(
 								this.getFormFields(
 										tableRecordForm.getId(),
@@ -363,22 +363,22 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 			Long formContainerIdParam,
 			boolean includeTableFieldFormRecordInfoParam
 	) {
-		if(formFieldMappingParam == null) {
+		if (formFieldMappingParam == null) {
 			return null;
 		}
 
 		//First attempt to fetch from the cache...
-		if(this.getCacheUtil() != null) {
+		if (this.getCacheUtil() != null) {
 			CacheUtil.CachedFieldValue cachedFieldValue =
 					this.getCacheUtil().getCachedFieldValueFrom(
 						formFieldMappingParam.formDefinitionId,
 						formContainerIdParam,
 						formFieldMappingParam.formFieldId);
 
-			if(cachedFieldValue != null)
+			if (cachedFieldValue != null)
 			{
 				Field field = cachedFieldValue.getCachedFieldValueAsField();
-				if(field != null)
+				if (field != null)
 				{
 					field.setFieldName(formFieldMappingParam.name);
 					return field;
@@ -395,7 +395,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 					this.getSQLTypeFromConnection(),
 					formFieldMappingParam);
 
-			if(syntax != null) {
+			if (syntax != null) {
 				preparedStatement = this.getConnection().prepareStatement(
 						syntax.getPreparedStatement());
 
@@ -409,7 +409,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 			switch (formFieldMappingParam.dataType.intValue()) {
 				//Text...
 				case UtilGlobal.FieldTypeId._1_TEXT:
-				if(resultSet.next()) {
+				if (resultSet.next()) {
 					returnVal = new Field(
 							formFieldMappingParam.name,
 							resultSet.getString(1),
@@ -418,7 +418,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				break;
 				//True False...
 				case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
-				if(resultSet.next()) {
+				if (resultSet.next()) {
 					returnVal = new Field(
 							formFieldMappingParam.name,
 							resultSet.getBoolean(1),
@@ -427,7 +427,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				break;
 				//Paragraph Text...
 				case UtilGlobal.FieldTypeId._3_PARAGRAPH_TEXT:
-				if(resultSet.next()) {
+				if (resultSet.next()) {
 					returnVal = new Field(
 							formFieldMappingParam.name,
 							resultSet.getString(1),
@@ -444,7 +444,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 					}
 
 					multiChoice.setSelectedMultiChoices(selectedValues);
-					if(!selectedValues.isEmpty()) {
+					if (!selectedValues.isEmpty()) {
 						returnVal = new Field(
 								formFieldMappingParam.name,
 								multiChoice);
@@ -452,7 +452,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				break;
 				//Date Time...
 				case UtilGlobal.FieldTypeId._5_DATE_TIME:
-					if(resultSet.next()) {
+					if (resultSet.next()) {
 						returnVal = new Field(
 								formFieldMappingParam.name,
 								resultSet.getDate(1),
@@ -461,7 +461,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				break;
 				//Decimal...
 				case UtilGlobal.FieldTypeId._6_DECIMAL:
-					if(resultSet.next()) {
+					if (resultSet.next()) {
 						returnVal = new Field(
 								formFieldMappingParam.name,
 								resultSet.getDouble(1),
@@ -476,7 +476,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 					}
 
 					//Break if empty...
-					if(formContainerIds.isEmpty()) {
+					if (formContainerIds.isEmpty()) {
 						break;
 					}
 
@@ -490,7 +490,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 					});
 
 					//Retrieve the info for the table record...
-					if(includeTableFieldFormRecordInfoParam) {
+					if (includeTableFieldFormRecordInfoParam) {
 
 						ISyntax syntaxForFormContInfo = SyntaxFactory.getInstance().getSyntaxFor(
 								this.getSQLTypeFromConnection(),
@@ -499,13 +499,13 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 						preparedStatementForTblInfo = this.getConnection().prepareStatement(
 								syntaxForFormContInfo.getPreparedStatement());
 
-						for(Form formRecordToSetInfoOn : formRecords) {
+						for (Form formRecordToSetInfoOn : formRecords) {
 
 							preparedStatementForTblInfo.setLong(
 									1, formRecordToSetInfoOn.getId());
 
 							resultSetForTblInfo = preparedStatementForTblInfo.executeQuery();
-							if(resultSetForTblInfo.next()) {
+							if (resultSetForTblInfo.next()) {
 
 								Long formTypeId = resultSetForTblInfo.getLong(
 										SQLFormUtil.SQLColumnIndex._02_FORM_TYPE);
@@ -523,13 +523,13 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 								Date lastUpdated = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
 
 								//Created...
-								if(created != null)
+								if (created != null)
 								{
 									formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
 								}
 
 								//Last Updated...
-								if(lastUpdated != null)
+								if (lastUpdated != null)
 								{
 									formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
 								}

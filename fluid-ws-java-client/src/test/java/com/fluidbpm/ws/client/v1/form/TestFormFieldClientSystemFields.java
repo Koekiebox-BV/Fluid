@@ -89,7 +89,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_DateCreated()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -107,7 +107,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -126,7 +126,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_DateLastUpdated()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -144,7 +144,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -163,7 +163,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_FormType()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -181,7 +181,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -200,7 +200,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_FormFlowState()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -218,7 +218,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -237,7 +237,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_Title()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -255,7 +255,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -274,7 +274,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailFromAddress()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -292,7 +292,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -311,7 +311,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailToAddress()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -329,7 +329,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -348,7 +348,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailSubject()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -366,7 +366,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -385,7 +385,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailSentDate()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -403,7 +403,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -422,7 +422,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailReceivedDate()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -440,7 +440,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");
@@ -459,7 +459,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailUniqueIdentifierDate()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -477,7 +477,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Should not be allowed to create a system field.");

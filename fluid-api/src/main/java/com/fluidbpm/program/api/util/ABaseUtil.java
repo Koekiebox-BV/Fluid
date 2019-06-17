@@ -72,7 +72,7 @@ public abstract class ABaseUtil implements Serializable {
 			Properties propertiesParam,
 			String propertyKeyParam
 	) {
-		if(propertiesParam == null || propertiesParam.isEmpty()) {
+		if (propertiesParam == null || propertiesParam.isEmpty()) {
 			return null;
 		}
 
@@ -93,7 +93,7 @@ public abstract class ABaseUtil implements Serializable {
 		String strProp = getStringPropertyFromProperties(
 				propertiesParam, propertyKeyParam);
 
-		if(strProp == null || strProp.trim().isEmpty()) {
+		if (strProp == null || strProp.trim().isEmpty()) {
 			return -1;
 		}
 

@@ -94,7 +94,7 @@ public class Flow extends ABaseFluidJSONObject {
     public Flow(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -121,7 +121,7 @@ public class Flow extends ABaseFluidJSONObject {
             JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.FLOW_STEPS);
 
             List<FlowStep> listOfFlowSteps = new ArrayList();
-            for(int index = 0;index < entryRules.length();index++)
+            for (int index = 0;index < entryRules.length();index++)
             {
                 listOfFlowSteps.add(new FlowStep(entryRules.getJSONObject(index)));
             }
@@ -234,23 +234,23 @@ public class Flow extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if(this.getName() != null)
+        if (this.getName() != null)
         {
             returnVal.put(JSONMapping.NAME,this.getName());
         }
 
         //Description...
-        if(this.getDescription() != null)
+        if (this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
         }
 
         //Flow Steps...
-        if(this.getFlowSteps() != null && !this.getFlowSteps().isEmpty())
+        if (this.getFlowSteps() != null && !this.getFlowSteps().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(FlowStep rule : this.getFlowSteps())
+            for (FlowStep rule : this.getFlowSteps())
             {
                 jsonArray.put(rule.toJsonObject());
             }
@@ -259,14 +259,14 @@ public class Flow extends ABaseFluidJSONObject {
         }
 
         //Date Created...
-        if(this.getDateCreated() != null)
+        if (this.getDateCreated() != null)
         {
             returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(
                     this.getDateCreated()));
         }
 
         //Date Last Updated...
-        if(this.getDateLastUpdated() != null)
+        if (this.getDateLastUpdated() != null)
         {
             returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(
                     this.getDateLastUpdated()));

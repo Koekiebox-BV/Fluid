@@ -92,12 +92,12 @@ public class WebSocketSendToFlowClient extends
 			Form formToSendToFlowParam,
 			String destinationFlowParam) {
 
-		if(formToSendToFlowParam == null)
+		if (formToSendToFlowParam == null)
 		{
 			return null;
 		}
 
-		if(destinationFlowParam == null ||
+		if (destinationFlowParam == null ||
 				destinationFlowParam.trim().isEmpty())
 		{
 			throw new FluidClientException(
@@ -123,14 +123,14 @@ public class WebSocketSendToFlowClient extends
 					this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"WebSocket-SendToFlow: " +
 								"The connection was closed by the server prior to the response received.",
 						FluidClientException.ErrorCode.IO_ERROR);
 			}
 
-			if(returnValue == null || returnValue.isEmpty())
+			if (returnValue == null || returnValue.isEmpty())
 			{
 				return null;
 			}
@@ -148,7 +148,7 @@ public class WebSocketSendToFlowClient extends
 			Throwable cause = executeProblem.getCause();
 
 			//Fluid client exception...
-			if(cause instanceof FluidClientException)
+			if (cause instanceof FluidClientException)
 			{
 				throw (FluidClientException)cause;
 			}

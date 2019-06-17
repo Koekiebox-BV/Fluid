@@ -88,7 +88,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
     public FlowStepRule(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -126,7 +126,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 
             List<String> validWordsString = new ArrayList<String>();
 
-            for(int index = 0;index < listOfValidWordsArray.length();index++)
+            for (int index = 0;index < listOfValidWordsArray.length();index++)
             {
                 validWordsString.add(listOfValidWordsArray.getString(index));
             }
@@ -149,42 +149,42 @@ public class FlowStepRule extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Order...
-        if(this.getOrder() != null)
+        if (this.getOrder() != null)
         {
             returnVal.put(JSONMapping.ORDER, this.getOrder());
         }
 
         //Rule...
-        if(this.getRule() != null)
+        if (this.getRule() != null)
         {
             returnVal.put(JSONMapping.RULE, this.getRule());
         }
 
         //Current Typed Syntax...
-        if(this.getCurrentTypedSyntax() != null)
+        if (this.getCurrentTypedSyntax() != null)
         {
             returnVal.put(JSONMapping.CURRENT_TYPED_SYNTAX,
                     this.getCurrentTypedSyntax());
         }
 
         //Flow...
-        if(this.getFlow() != null)
+        if (this.getFlow() != null)
         {
             returnVal.put(JSONMapping.FLOW, this.getFlow().toJsonObject());
         }
 
         //Flow Step...
-        if(this.getFlowStep() != null)
+        if (this.getFlowStep() != null)
         {
             returnVal.put(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
         }
 
         //Next Valid Syntax Words...
-        if(this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty())
+        if (this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty())
         {
             JSONArray jsonArrayOfValidWords = new JSONArray();
 
-            for(String validWord : this.getNextValidSyntaxWords())
+            for (String validWord : this.getNextValidSyntaxWords())
             {
                 jsonArrayOfValidWords.put(validWord);
             }

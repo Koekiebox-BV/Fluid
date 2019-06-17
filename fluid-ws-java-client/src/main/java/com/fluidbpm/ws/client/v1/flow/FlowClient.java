@@ -61,7 +61,7 @@ public class FlowClient extends ABaseClientWS {
      */
     public Flow createFlow(Flow flowParam)
     {
-        if(flowParam != null && this.serviceTicket != null)
+        if (flowParam != null && this.serviceTicket != null)
         {
             flowParam.setServiceTicket(this.serviceTicket);
         }
@@ -80,7 +80,7 @@ public class FlowClient extends ABaseClientWS {
      */
     public Flow updateFlow(Flow flowParam)
     {
-        if(flowParam != null && this.serviceTicket != null)
+        if (flowParam != null && this.serviceTicket != null)
         {
             flowParam.setServiceTicket(this.serviceTicket);
         }
@@ -99,7 +99,7 @@ public class FlowClient extends ABaseClientWS {
     {
         Flow flow = new Flow(flowIdParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flow.setServiceTicket(this.serviceTicket);
         }
@@ -119,7 +119,7 @@ public class FlowClient extends ABaseClientWS {
         Flow flow = new Flow();
         flow.setName(flowNameParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flow.setServiceTicket(this.serviceTicket);
         }
@@ -136,7 +136,7 @@ public class FlowClient extends ABaseClientWS {
      */
     public Flow deleteFlow(Flow flowParam)
     {
-        if(flowParam != null && this.serviceTicket != null)
+        if (flowParam != null && this.serviceTicket != null)
         {
             flowParam.setServiceTicket(this.serviceTicket);
         }
@@ -154,7 +154,7 @@ public class FlowClient extends ABaseClientWS {
      */
     public Flow forceDeleteFlow(Flow flowParam)
     {
-        if(flowParam != null && this.serviceTicket != null)
+        if (flowParam != null && this.serviceTicket != null)
         {
             flowParam.setServiceTicket(this.serviceTicket);
         }

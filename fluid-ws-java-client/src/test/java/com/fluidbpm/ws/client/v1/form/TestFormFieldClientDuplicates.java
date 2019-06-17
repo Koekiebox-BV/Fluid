@@ -73,7 +73,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
     @Test
     public void testFormField_TextPlain_Duplicate()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -96,7 +96,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
         TestCase.assertNotNull("The 'Id' needs to be set.", createdField.getId());
         TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
 
-        try{
+        try {
             formFieldClient.createFieldTextPlain(toCreate);
 
             TestCase.fail("Expected an error due to Name being empty.");

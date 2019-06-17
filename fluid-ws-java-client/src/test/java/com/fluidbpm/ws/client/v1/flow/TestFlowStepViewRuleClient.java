@@ -64,7 +64,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepViewRule_CRUD()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -80,14 +80,14 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
         FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
         String[] compileListPass = {
-                "VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)",
+                "VIEW 'JUnit Zool' if (FORM.Email Subject IS_EMPTY)",
 
         };
 
         //THE COMPILE RULES THAT PASSES...
-        for(String passRule : compileListPass)
+        for (String passRule : compileListPass)
         {
-            try{
+            try {
                 flowStepRuleClient.compileFlowStepViewRule(passRule);
             }
             //
@@ -119,7 +119,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
         //. The Rule...
         FlowStepRule viewRule = new FlowStepRule();
         viewRule.setFlowStep(createdFlowStep);
-        viewRule.setRule("VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)");
+        viewRule.setRule("VIEW 'JUnit Zool' if (FORM.Email Subject IS_EMPTY)");
 
         FlowStepRule createdViewRule = flowStepRuleClient.createFlowStepViewRule(viewRule);
         TestCase.assertNotNull("The 'Id' needs to be set for Entry rule.", createdViewRule.getId());
@@ -143,7 +143,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepViewRule_CompileSucceed()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -161,38 +161,38 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
                 "VIEW 'JUnit Zool'",
 
                 //IS_EMPTY...
-                "VIEW 'JUnit Zool' IF(FORM.Email Subject IS_EMPTY)",
+                "VIEW 'JUnit Zool' if (FORM.Email Subject IS_EMPTY)",
 
                 //EQUAL...
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'I am a Title')",
-                "VIEW 'JUnit Zool' IF(FORM.Email Subject EQUAL 'This is cool')",
-                "VIEW 'JUnit Zool' IF(FORM.Email From Address EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL 'I am a Title')",
+                "VIEW 'JUnit Zool' if (FORM.Email Subject EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' if (FORM.Email From Address EQUAL 'This is cool')",
 
                 //EQUAL with AND ...
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'I am a Title' AND FORM.Email Subject EQUAL 'This is cool')",
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'Hello' AND FORM.Email Subject EQUAL 'Bye')",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL 'I am a Title' AND FORM.Email Subject EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL 'Hello' AND FORM.Email Subject EQUAL 'Bye')",
 
                 //EQUAL against Field...
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Title)",
-                "VIEW 'JUnit Zool' IF(FORM.Email Subject EQUAL FORM.Title)",
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Email Subject)",
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL FORM.Email From Address)",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL FORM.Title)",
+                "VIEW 'JUnit Zool' if (FORM.Email Subject EQUAL FORM.Title)",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL FORM.Email Subject)",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL FORM.Email From Address)",
 
                 //EQUAL with AND against Field MIXED...
-                "VIEW 'JUnit Zool' IF(FORM.Title EQUAL 'I am a Title' AND FORM.Email Subject EQUAL FORM.Title)",
+                "VIEW 'JUnit Zool' if (FORM.Title EQUAL 'I am a Title' AND FORM.Email Subject EQUAL FORM.Title)",
 
                 //NOT_EQUAL...
-                "VIEW 'JUnit Zool' IF(FORM.Title NOT_EQUAL 'I am a Title')",
-                "VIEW 'JUnit Zool' IF(FORM.Email Subject NOT_EQUAL 'This is cool')",
-                "VIEW 'JUnit Zool' IF(FORM.Email From Address NOT_EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' if (FORM.Title NOT_EQUAL 'I am a Title')",
+                "VIEW 'JUnit Zool' if (FORM.Email Subject NOT_EQUAL 'This is cool')",
+                "VIEW 'JUnit Zool' if (FORM.Email From Address NOT_EQUAL 'This is cool')",
 
         };
 
         //THE COMPILE RULES THAT PASSES...
         System.out.println("*** START ***");
-        for(String passRule : compileListPass)
+        for (String passRule : compileListPass)
         {
-            try{
+            try {
                 flowStepRuleClient.compileFlowStepViewRule(passRule);
 
                 System.out.println("PASS ["+passRule+"]");

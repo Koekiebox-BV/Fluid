@@ -117,11 +117,11 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 	public List<FormListing> getTableFormsSynchronized(
 			Form ... formsToGetTableFormsForParam) {
 
-		if(formsToGetTableFormsForParam == null) {
+		if (formsToGetTableFormsForParam == null) {
 			return null;
 		}
 
-		if(formsToGetTableFormsForParam.length == 0) {
+		if (formsToGetTableFormsForParam.length == 0) {
 			return null;
 		}
 
@@ -130,7 +130,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 
 		//Send all the messages...
 		int numberOfSentForms = 0;
-		for(Form formToSend : formsToGetTableFormsForParam) {
+		for (Form formToSend : formsToGetTableFormsForParam) {
 			this.setEchoIfNotSet(formToSend);
 
 			//Send the actual message...
@@ -144,7 +144,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"SQLUtil-WebSocket-GetTableRecordForms: " +
 								"The connection was closed by the server prior to the response received.",
@@ -165,7 +165,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 			Throwable cause = executeProblem.getCause();
 
 			//Fluid client exception...
-			if(cause instanceof FluidClientException) {
+			if (cause instanceof FluidClientException) {
 				throw (FluidClientException)cause;
 			} else {
 				throw new FluidClientException(

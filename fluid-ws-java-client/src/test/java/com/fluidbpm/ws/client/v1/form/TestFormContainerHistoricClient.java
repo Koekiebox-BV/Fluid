@@ -66,7 +66,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveFormFlowHistoricData()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -84,7 +84,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
         //Confirm the historic data is set...
         TestCase.assertNotNull(flowHistoricData);
 
-        for(FormFlowHistoricData data : flowHistoricData)
+        for (FormFlowHistoricData data : flowHistoricData)
         {
             TestCase.assertNotNull(data);
             TestCase.assertNotNull("Id not set",data.getId());
@@ -104,7 +104,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveFormFieldHistoricData()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }
@@ -123,7 +123,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
         //Confirm the historic data is set...
         TestCase.assertNotNull(formHistoricData);
 
-        for(FormHistoricData data : formHistoricData)
+        for (FormHistoricData data : formHistoricData)
         {
             TestCase.assertNotNull(data);
             TestCase.assertNotNull("Id not set",data.getId());
@@ -143,7 +143,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveMostRecentFormFieldHistoricData()
     {
-        if(!this.isConnectionValid())
+        if (!this.isConnectionValid())
         {
             return;
         }

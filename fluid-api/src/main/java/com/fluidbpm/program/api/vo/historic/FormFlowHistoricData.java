@@ -83,7 +83,7 @@ public class FormFlowHistoricData extends ABaseFluidJSONObject {
     public FormFlowHistoricData(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -154,63 +154,63 @@ public class FormFlowHistoricData extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Date Created...
-        if(this.getDateCreated() != null)
+        if (this.getDateCreated() != null)
         {
             returnVal.put(JSONMapping.DATE_CREATED,
                     this.getDateAsLongFromJson(this.getDateCreated()));
         }
 
         //Rule Executed...
-        if(this.getRuleExecuted() != null)
+        if (this.getRuleExecuted() != null)
         {
             returnVal.put(JSONMapping.RULE_EXECUTED,
                     this.getRuleExecuted());
         }
 
         //Rule Executed Result...
-        if(this.getRuleExecutedResult() != null)
+        if (this.getRuleExecutedResult() != null)
         {
             returnVal.put(JSONMapping.RULE_EXECUTED_RESULT,
                     this.getRuleExecutedResult());
         }
 
         //Rule Order...
-        if(this.getFlowRuleOrder() != null)
+        if (this.getFlowRuleOrder() != null)
         {
             returnVal.put(JSONMapping.FLOW_RULE_ORDER,
                     this.getFlowRuleOrder());
         }
 
         //Log Entry Type...
-        if(this.getLogEntryType() != null)
+        if (this.getLogEntryType() != null)
         {
             returnVal.put(JSONMapping.LOG_ENTRY_TYPE,
                     this.getLogEntryType());
         }
 
         //User...
-        if(this.getUser() != null)
+        if (this.getUser() != null)
         {
             returnVal.put(JSONMapping.USER,
                     this.getUser().toJsonObject());
         }
 
         //Flow Step...
-        if(this.getFlowStep() != null)
+        if (this.getFlowStep() != null)
         {
             returnVal.put(JSONMapping.FLOW_STEP,
                     this.getFlowStep().toJsonObject());
         }
 
         //Form...
-        if(this.getForm() != null)
+        if (this.getForm() != null)
         {
             returnVal.put(JSONMapping.FORM,
                     this.getForm().toJsonObject());
         }
 
         //Job View...
-        if(this.getJobView() != null)
+        if (this.getJobView() != null)
         {
             returnVal.put(JSONMapping.JOB_VIEW,
                     this.getJobView());

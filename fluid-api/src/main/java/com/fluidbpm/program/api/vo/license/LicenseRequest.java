@@ -70,7 +70,7 @@ public class LicenseRequest extends ABaseFluidJSONObject {
     public LicenseRequest(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -128,42 +128,42 @@ public class LicenseRequest extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Machine Name...
-        if(this.getMachineName() != null)
+        if (this.getMachineName() != null)
         {
             returnVal.put(JSONMapping.MACHINE_NAME,
                     this.getMachineName());
         }
 
         //Cipher Text...
-        if(this.getLicenseCipherText() != null)
+        if (this.getLicenseCipherText() != null)
         {
             returnVal.put(JSONMapping.LICENSE_CIPHER_TEXT,
                     this.getLicenseCipherText());
         }
 
         //License Type...
-        if(this.getLicenseType() != null)
+        if (this.getLicenseType() != null)
         {
             returnVal.put(JSONMapping.LICENSE_TYPE,
                     this.getLicenseType());
         }
 
         //User Count...
-        if(this.getUserCount() != null)
+        if (this.getUserCount() != null)
         {
             returnVal.put(JSONMapping.USER_COUNT,
                     this.getUserCount());
         }
 
         //Date Valid From...
-        if(this.getDateValidFrom() != null)
+        if (this.getDateValidFrom() != null)
         {
             returnVal.put(JSONMapping.DATE_VALID_FROM,
                     this.getDateAsLongFromJson(this.getDateValidFrom()));
         }
 
         //Date Valid To...
-        if(this.getDateValidTo() != null)
+        if (this.getDateValidTo() != null)
         {
             returnVal.put(JSONMapping.DATE_VALID_TO,
                     this.getDateAsLongFromJson(this.getDateValidTo()));

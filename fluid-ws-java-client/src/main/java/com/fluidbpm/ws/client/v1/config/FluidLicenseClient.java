@@ -61,7 +61,7 @@ public class FluidLicenseClient extends ABaseFieldClient {
      */
     public String requestLicense(LicenseRequest licenseRequestParam) {
 
-        if(licenseRequestParam != null &&
+        if (licenseRequestParam != null &&
                 this.serviceTicket != null)
         {
             licenseRequestParam.setServiceTicket(this.serviceTicket);
@@ -88,7 +88,7 @@ public class FluidLicenseClient extends ABaseFieldClient {
         LicenseRequest liceReq = new LicenseRequest();
         liceReq.setLicenseCipherText(licenseToApplyParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             liceReq.setServiceTicket(this.serviceTicket);
         }

@@ -63,7 +63,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
     {
         User loggedInUser = new User();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             loggedInUser.setServiceTicket(this.serviceTicket);
         }
@@ -89,7 +89,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
      */
     public Form removeFromPersonalInventory(Form formToRemoveParam)
     {
-        if(formToRemoveParam != null &&
+        if (formToRemoveParam != null &&
                 this.serviceTicket != null)
         {
             formToRemoveParam.setServiceTicket(this.serviceTicket);
@@ -116,7 +116,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
     {
         User loggedInUser = new User();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             loggedInUser.setServiceTicket(this.serviceTicket);
         }

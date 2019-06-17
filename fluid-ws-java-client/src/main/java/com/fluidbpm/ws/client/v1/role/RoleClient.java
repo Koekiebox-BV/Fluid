@@ -63,7 +63,7 @@ public class RoleClient extends ABaseClientWS {
      */
     public Role createRole(Role roleParam)
     {
-        if(roleParam != null && this.serviceTicket != null)
+        if (roleParam != null && this.serviceTicket != null)
         {
             roleParam.setServiceTicket(this.serviceTicket);
         }
@@ -85,7 +85,7 @@ public class RoleClient extends ABaseClientWS {
      */
     public Role updateRole(Role roleParam)
     {
-        if(roleParam != null && this.serviceTicket != null)
+        if (roleParam != null && this.serviceTicket != null)
         {
             roleParam.setServiceTicket(this.serviceTicket);
         }
@@ -104,7 +104,7 @@ public class RoleClient extends ABaseClientWS {
     public Role deleteRole(
             Role roleToDeleteParam)
     {
-        if(roleToDeleteParam != null && this.serviceTicket != null)
+        if (roleToDeleteParam != null && this.serviceTicket != null)
         {
             roleToDeleteParam.setServiceTicket(this.serviceTicket);
         }
@@ -125,7 +125,7 @@ public class RoleClient extends ABaseClientWS {
             Role roleToDeleteParam,
             boolean forcefullyDeleteParam)
     {
-        if(roleToDeleteParam != null && this.serviceTicket != null)
+        if (roleToDeleteParam != null && this.serviceTicket != null)
         {
             roleToDeleteParam.setServiceTicket(this.serviceTicket);
         }
@@ -147,7 +147,7 @@ public class RoleClient extends ABaseClientWS {
         Role roleToGetInfoFor = new Role();
         roleToGetInfoFor.setId(roleIdParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             roleToGetInfoFor.setServiceTicket(this.serviceTicket);
         }
@@ -174,7 +174,7 @@ public class RoleClient extends ABaseClientWS {
     {
         RoleListing roleToGetInfoFor = new RoleListing();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             roleToGetInfoFor.setServiceTicket(this.serviceTicket);
         }

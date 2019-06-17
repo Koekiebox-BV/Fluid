@@ -106,7 +106,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	public FormHistoricData(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if(this.jsonObject == null) {
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -188,67 +188,67 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Date...
-		if(this.getDate() != null) {
+		if (this.getDate() != null) {
 			returnVal.put(JSONMapping.DATE,
 					this.getDateAsLongFromJson(this.getDate()));
 		}
 
 		//Date and Time Field Name...
-		if(this.getDateAndFieldName() != null) {
+		if (this.getDateAndFieldName() != null) {
 			returnVal.put(JSONMapping.DATE_AND_FIELD_NAME,
 					this.getDateAndFieldName());
 		}
 
 		//Form Container Field Values JSON...
-		if(this.getFormContainerFieldValuesJSON() != null) {
+		if (this.getFormContainerFieldValuesJSON() != null) {
 			returnVal.put(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON,
 					this.getFormContainerFieldValuesJSON());
 		}
 
 		//Log Entry Type...
-		if(this.getLogEntryType() != null) {
+		if (this.getLogEntryType() != null) {
 			returnVal.put(JSONMapping.LOG_ENTRY_TYPE,
 					this.getLogEntryType());
 		}
 
 		//Description...
-		if(this.getDescription() != null) {
+		if (this.getDescription() != null) {
 			returnVal.put(JSONMapping.DESCRIPTION,
 					this.getDescription());
 		}
 
 		//Historic Entry Type...
-		if(this.getHistoricEntryType() != null) {
+		if (this.getHistoricEntryType() != null) {
 			returnVal.put(JSONMapping.HISTORIC_ENTRY_TYPE,
 					this.getHistoricEntryType());
 		}
 
 		//User...
-		if(this.getUser() != null) {
+		if (this.getUser() != null) {
 			returnVal.put(JSONMapping.USER,
 					this.getUser().toJsonObject());
 		}
 
 		//Field...
-		if(this.getField() != null) {
+		if (this.getField() != null) {
 			returnVal.put(JSONMapping.FIELD,
 					this.getField().toJsonObject());
 		}
 
 		//Different from Previous...
-		if(this.getIsFieldDifferentFromPrevious() != null) {
+		if (this.getIsFieldDifferentFromPrevious() != null) {
 			returnVal.put(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS,
 					this.getIsFieldDifferentFromPrevious());
 		}
 
 		//Field type Signature...
-		if(this.getIsFieldTypeSignature() != null) {
+		if (this.getIsFieldTypeSignature() != null) {
 			returnVal.put(JSONMapping.IS_FIELD_TYPE_SIGNATURE,
 					this.getIsFieldTypeSignature());
 		}
 
 		//Escape Text...
-		if(this.getIsEscapeText() != null) {
+		if (this.getIsEscapeText() != null) {
 			returnVal.put(
 					JSONMapping.IS_ESCAPE_TEXT,
 					this.getIsEscapeText());

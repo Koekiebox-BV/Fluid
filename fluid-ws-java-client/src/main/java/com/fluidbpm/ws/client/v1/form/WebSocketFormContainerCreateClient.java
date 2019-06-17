@@ -80,13 +80,13 @@ public class WebSocketFormContainerCreateClient extends
 	public Form createFormContainerSynchronized(
 			Form formToCreateParam) {
 
-		if(formToCreateParam == null)
+		if (formToCreateParam == null)
 		{
 			return null;
 		}
 
 		//Send all the messages...
-		if(formToCreateParam.getEcho() == null || formToCreateParam.getEcho().trim().isEmpty())
+		if (formToCreateParam.getEcho() == null || formToCreateParam.getEcho().trim().isEmpty())
 		{
 			formToCreateParam.setEcho(UtilGlobal.randomUUID());
 		}
@@ -102,14 +102,14 @@ public class WebSocketFormContainerCreateClient extends
 					this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"WebSocket-CreateFormContainer: " +
 								"The connection was closed by the server prior to the response received.",
 						FluidClientException.ErrorCode.IO_ERROR);
 			}
 
-			if(returnValue == null || returnValue.isEmpty()) {
+			if (returnValue == null || returnValue.isEmpty()) {
 				return null;
 			}
 
@@ -128,7 +128,7 @@ public class WebSocketFormContainerCreateClient extends
 			Throwable cause = executeProblem.getCause();
 
 			//Fluid client exception...
-			if(cause instanceof FluidClientException)
+			if (cause instanceof FluidClientException)
 			{
 				throw (FluidClientException)cause;
 			}

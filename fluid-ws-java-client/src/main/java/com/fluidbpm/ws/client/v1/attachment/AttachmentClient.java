@@ -63,7 +63,7 @@ public class AttachmentClient extends ABaseClientWS {
      */
     public Attachment createAttachment(Attachment attachmentParam)
     {
-        if(attachmentParam != null && this.serviceTicket != null)
+        if (attachmentParam != null && this.serviceTicket != null)
         {
             attachmentParam.setServiceTicket(this.serviceTicket);
         }
@@ -86,7 +86,7 @@ public class AttachmentClient extends ABaseClientWS {
     {
         Attachment attachment = new Attachment(attachmentIdParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             attachment.setServiceTicket(this.serviceTicket);
         }
@@ -108,7 +108,7 @@ public class AttachmentClient extends ABaseClientWS {
             Form formParam,
             boolean includeAttachmentDataParam)
     {
-        if(formParam != null && this.serviceTicket != null)
+        if (formParam != null && this.serviceTicket != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
         }
@@ -134,7 +134,7 @@ public class AttachmentClient extends ABaseClientWS {
             Form formParam,
             boolean includeAttachmentDataParam)
     {
-        if(formParam != null && this.serviceTicket != null)
+        if (formParam != null && this.serviceTicket != null)
         {
             formParam.setServiceTicket(this.serviceTicket);
         }
@@ -156,7 +156,7 @@ public class AttachmentClient extends ABaseClientWS {
      */
     public Attachment deleteAttachment(Attachment attachmentParam)
     {
-        if(attachmentParam != null && this.serviceTicket != null)
+        if (attachmentParam != null && this.serviceTicket != null)
         {
             attachmentParam.setServiceTicket(this.serviceTicket);
         }
@@ -175,7 +175,7 @@ public class AttachmentClient extends ABaseClientWS {
      */
     public Attachment forceDeleteAttachment(Attachment attachmentParam)
     {
-        if(attachmentParam != null && this.serviceTicket != null)
+        if (attachmentParam != null && this.serviceTicket != null)
         {
             attachmentParam.setServiceTicket(this.serviceTicket);
         }

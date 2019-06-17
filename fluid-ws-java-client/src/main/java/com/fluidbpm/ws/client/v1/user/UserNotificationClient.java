@@ -67,7 +67,7 @@ public class UserNotificationClient extends ABaseClientWS {
 	 */
 	public UserNotification createUserNotification(UserNotification userNotificationParam)
 	{
-		if(userNotificationParam != null && this.serviceTicket != null)
+		if (userNotificationParam != null && this.serviceTicket != null)
 		{
 			userNotificationParam.setServiceTicket(this.serviceTicket);
 		}
@@ -90,7 +90,7 @@ public class UserNotificationClient extends ABaseClientWS {
 	public UserNotification updateUserNotification(
 			UserNotification userNotificationParam)
 	{
-		if(userNotificationParam != null && this.serviceTicket != null)
+		if (userNotificationParam != null && this.serviceTicket != null)
 		{
 			userNotificationParam.setServiceTicket(this.serviceTicket);
 		}
@@ -134,7 +134,7 @@ public class UserNotificationClient extends ABaseClientWS {
 			UserNotification userNotificationParam,
 			boolean asyncParam)
 	{
-		if(userNotificationParam != null && this.serviceTicket != null)
+		if (userNotificationParam != null && this.serviceTicket != null)
 		{
 			userNotificationParam.setServiceTicket(this.serviceTicket);
 		}
@@ -154,7 +154,7 @@ public class UserNotificationClient extends ABaseClientWS {
 	public UserNotification deleteUserNotification(
 			UserNotification userNotificationToDeleteParam)
 	{
-		if(userNotificationToDeleteParam != null && this.serviceTicket != null)
+		if (userNotificationToDeleteParam != null && this.serviceTicket != null)
 		{
 			userNotificationToDeleteParam.setServiceTicket(this.serviceTicket);
 		}
@@ -176,7 +176,7 @@ public class UserNotificationClient extends ABaseClientWS {
 		UserNotification userNoti = new UserNotification();
 		userNoti.setId(userNotificationPkParam);
 
-		if(this.serviceTicket != null)
+		if (this.serviceTicket != null)
 		{
 			userNoti.setServiceTicket(this.serviceTicket);
 		}
@@ -206,7 +206,7 @@ public class UserNotificationClient extends ABaseClientWS {
 	) {
 		User loggedInUser = new User();
 
-		if(this.serviceTicket != null)
+		if (this.serviceTicket != null)
 		{
 			loggedInUser.setServiceTicket(this.serviceTicket);
 		}
@@ -238,7 +238,7 @@ public class UserNotificationClient extends ABaseClientWS {
 	) {
 		User loggedInUser = new User();
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			loggedInUser.setServiceTicket(this.serviceTicket);
 		}
 
@@ -298,7 +298,7 @@ public class UserNotificationClient extends ABaseClientWS {
 			Date fromDateParam,
 			Date toDateParam
 	) {
-		if(this.serviceTicket != null && userParam != null) {
+		if (this.serviceTicket != null && userParam != null) {
 			userParam.setServiceTicket(this.serviceTicket);
 		}
 

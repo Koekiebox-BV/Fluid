@@ -204,7 +204,7 @@ public class SQLUtilWebSocketGetDescendantsClient extends
 
 			Throwable cause = executeProblem.getCause();
 			//Fluid client exception...
-			if(cause instanceof FluidClientException) {
+			if (cause instanceof FluidClientException) {
 				throw (FluidClientException)cause;
 			} else {
 				throw new FluidClientException(

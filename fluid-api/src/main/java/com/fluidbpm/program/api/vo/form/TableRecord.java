@@ -109,21 +109,21 @@ public class TableRecord extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Form Container...
-        if(this.getFormContainer() != null)
+        if (this.getFormContainer() != null)
         {
             returnVal.put(JSONMapping.FORM_CONTAINER,
                     this.getFormContainer().toJsonObject());
         }
 
         //Parent Form Container...
-        if(this.getParentFormContainer() != null)
+        if (this.getParentFormContainer() != null)
         {
             returnVal.put(JSONMapping.PARENT_FORM_CONTAINER,
                     this.getParentFormContainer().toJsonObject());
         }
 
         //Parent Form Field...
-        if(this.getParentFormField() != null)
+        if (this.getParentFormField() != null)
         {
             returnVal.put(JSONMapping.PARENT_FORM_FIELD,
                     this.getParentFormField().toJsonObject());

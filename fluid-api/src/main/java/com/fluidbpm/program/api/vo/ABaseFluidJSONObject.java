@@ -85,7 +85,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
 		this.jsonObject = jsonObjectParam;
 
-		if(this.jsonObject == null) {
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -93,10 +93,10 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 		if (!this.jsonObject.isNull(JSONMapping.ID)) {
 			Object idObject = this.jsonObject.get(JSONMapping.ID);
 
-			if(idObject instanceof Number) {
+			if (idObject instanceof Number) {
 				//Long Id...
 				this.setId(this.jsonObject.getLong(JSONMapping.ID));
-			} else if(idObject instanceof String) {
+			} else if (idObject instanceof String) {
 				//String Id...
 				String idStr = this.jsonObject.getString(JSONMapping.ID);
 
@@ -143,22 +143,22 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
-		if(this.getId() != null) {
+		if (this.getId() != null) {
 			returnVal.put(JSONMapping.ID,this.getId());
 		}
 
 		//Service Ticket...
-		if(this.getServiceTicket() != null) {
+		if (this.getServiceTicket() != null) {
 			returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
 		}
 
 		//Request UUID...
-		if(this.getRequestUuid() != null) {
+		if (this.getRequestUuid() != null) {
 			returnVal.put(JSONMapping.REQUEST_UUID, this.getRequestUuid());
 		}
 
 		//Echo...
-		if(this.getEcho() != null) {
+		if (this.getEcho() != null) {
 			returnVal.put(JSONMapping.ECHO, this.getEcho());
 		}
 
@@ -176,7 +176,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 */
 	@XmlTransient
 	private Date getLongAsDateFromJson(Long longValueParam) {
-		if(longValueParam == null) {
+		if (longValueParam == null) {
 			return null;
 		}
 
@@ -198,14 +198,14 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
 		Object objectAtIndex = this.jsonObject.get(fieldNameParam);
 
-		if(objectAtIndex instanceof Number) {
+		if (objectAtIndex instanceof Number) {
 			return this.getLongAsDateFromJson(((Number)objectAtIndex).longValue());
-		} else if(objectAtIndex instanceof String) {
+		} else if (objectAtIndex instanceof String) {
 			Date validDate = null;
-			for(SimpleDateFormat format : SUPPORTED_FORMATS) {
+			for (SimpleDateFormat format : SUPPORTED_FORMATS) {
 				try {
 					validDate = format.parse((String)objectAtIndex);
-					if(validDate != null) {
+					if (validDate != null) {
 						break;
 					}
 				} catch (ParseException parseExcept) {
@@ -229,7 +229,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 */
 	@XmlTransient
 	public Long getDateAsLongFromJson(Date dateValueParam) {
-		if(dateValueParam == null) {
+		if (dateValueParam == null) {
 			return null;
 		}
 		return dateValueParam.getTime();

@@ -114,7 +114,7 @@ public class Attachment extends ABaseFluidJSONObject {
         this.setPath(attachmentPath);
 
         File theFile = new File(attachmentPath);
-        if(theFile.exists() && theFile.isFile())
+        if (theFile.exists() && theFile.isFile())
         {
             this.setName(theFile.getName());
         }
@@ -128,7 +128,7 @@ public class Attachment extends ABaseFluidJSONObject {
     public Attachment(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }

@@ -60,12 +60,12 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 	public Map<Long,String> getFormDefinitionIdAndTitle()
 	{
 		//When already cached, use the cached value...
-		if(!LOCAL_MAPPING.isEmpty())
+		if (!LOCAL_MAPPING.isEmpty())
 		{
 			Map<Long,String> returnVal = new HashMap<>(LOCAL_MAPPING);
 
 			//The id's are outdated...
-			if(System.currentTimeMillis() > timeToUpdateAgain){
+			if (System.currentTimeMillis() > timeToUpdateAgain){
 
 				synchronized (LOCAL_MAPPING)
 				{
@@ -79,7 +79,7 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 		//Only allow one thread to set the local mapping...
 		synchronized (LOCAL_MAPPING)
 		{
-			if(!LOCAL_MAPPING.isEmpty())
+			if (!LOCAL_MAPPING.isEmpty())
 			{
 				return new HashMap<>(LOCAL_MAPPING);
 			}

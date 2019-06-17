@@ -126,7 +126,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.FORMS_AND_FIELDS);
 
             List<Form> listOfForms = new ArrayList();
-            for(int index = 0;index < formsAndFields.length();index++)
+            for (int index = 0;index < formsAndFields.length();index++)
             {
                 listOfForms.add(new Form(formsAndFields.getJSONObject(index)));
             }
@@ -141,7 +141,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.USER_QUERIES);
 
             List<UserQuery> listOfUserQueries = new ArrayList();
-            for(int index = 0;index < userQueries.length();index++)
+            for (int index = 0;index < userQueries.length();index++)
             {
                 listOfUserQueries.add(new UserQuery(userQueries.getJSONObject(index)));
             }
@@ -156,7 +156,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.FLOWS);
 
             List<Flow> listOfFlows = new ArrayList();
-            for(int index = 0;index < flows.length();index++)
+            for (int index = 0;index < flows.length();index++)
             {
                 listOfFlows.add(new Flow(flows.getJSONObject(index)));
             }
@@ -171,7 +171,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.THIRD_PARTY_LIBRARIES);
 
             List<ThirdPartyLibrary> listOfThirdPartyLibs = new ArrayList();
-            for(int index = 0;index < thirdPartyLibs.length();index++)
+            for (int index = 0;index < thirdPartyLibs.length();index++)
             {
                 listOfThirdPartyLibs.add(
                         new ThirdPartyLibrary(thirdPartyLibs.getJSONObject(index)));
@@ -187,7 +187,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.USER_FIELDS);
 
             List<Field> listOfFields = new ArrayList();
-            for(int index = 0;index < userFields.length();index++)
+            for (int index = 0;index < userFields.length();index++)
             {
                 listOfFields.add(new Field(userFields.getJSONObject(index)));
             }
@@ -201,7 +201,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.ROUTE_FIELDS);
 
             List<Field> listOfFields = new ArrayList();
-            for(int index = 0;index < routeFields.length();index++)
+            for (int index = 0;index < routeFields.length();index++)
             {
                 listOfFields.add(new Field(routeFields.getJSONObject(index)));
             }
@@ -215,7 +215,7 @@ public class FluidTemplate extends ABaseFluidJSONObject{
                     JSONMapping.GLOBAL_FIELDS);
 
             List<Field> listOfFields = new ArrayList();
-            for(int index = 0;index < globalFields.length();index++)
+            for (int index = 0;index < globalFields.length();index++)
             {
                 listOfFields.add(new Field(globalFields.getJSONObject(index)));
             }
@@ -235,32 +235,32 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         JSONObject returnVal = new JSONObject();
 
         //Template Name...
-        if(this.getTemplateName() != null)
+        if (this.getTemplateName() != null)
         {
             returnVal.put(JSONMapping.TEMPLATE_NAME,
                     this.getTemplateName());
         }
 
         //Template Description...
-        if(this.getTemplateDescription() != null)
+        if (this.getTemplateDescription() != null)
         {
             returnVal.put(JSONMapping.TEMPLATE_DESCRIPTION,
                     this.getTemplateDescription());
         }
 
         //Template Comment...
-        if(this.getTemplateComment() != null)
+        if (this.getTemplateComment() != null)
         {
             returnVal.put(JSONMapping.TEMPLATE_COMMENT,
                     this.getTemplateComment());
         }
 
         //Forms and Fields...
-        if(this.getFormsAndFields() != null && !this.getFormsAndFields().isEmpty())
+        if (this.getFormsAndFields() != null && !this.getFormsAndFields().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(Form form : this.getFormsAndFields())
+            for (Form form : this.getFormsAndFields())
             {
                 jsonArray.put(form.toJsonObject());
             }
@@ -269,11 +269,11 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         }
 
         //User Queries...
-        if(this.getUserQueries() != null && !this.getUserQueries().isEmpty())
+        if (this.getUserQueries() != null && !this.getUserQueries().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(UserQuery userQuery : this.getUserQueries())
+            for (UserQuery userQuery : this.getUserQueries())
             {
                 jsonArray.put(userQuery.toJsonObject());
             }
@@ -282,11 +282,11 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         }
 
         //Flows...
-        if(this.getFlows() != null && !this.getFlows().isEmpty())
+        if (this.getFlows() != null && !this.getFlows().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(Flow flow : this.getFlows())
+            for (Flow flow : this.getFlows())
             {
                 jsonArray.put(flow.toJsonObject());
             }
@@ -295,12 +295,12 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         }
 
         //Third Party Libraries...
-        if(this.getThirdPartyLibraries() != null &&
+        if (this.getThirdPartyLibraries() != null &&
                 !this.getThirdPartyLibraries().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(ThirdPartyLibrary thirdPartyLibrary : this.getThirdPartyLibraries())
+            for (ThirdPartyLibrary thirdPartyLibrary : this.getThirdPartyLibraries())
             {
                 jsonArray.put(thirdPartyLibrary.toJsonObject());
             }
@@ -309,11 +309,11 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         }
 
         //User Fields...
-        if(this.getUserFields() != null && !this.getUserFields().isEmpty())
+        if (this.getUserFields() != null && !this.getUserFields().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(Field field : this.getUserFields())
+            for (Field field : this.getUserFields())
             {
                 jsonArray.put(field.toJsonObject());
             }
@@ -322,10 +322,10 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         }
 
         //Route Fields...
-        if(this.getRouteFields() != null && !this.getRouteFields().isEmpty())
+        if (this.getRouteFields() != null && !this.getRouteFields().isEmpty())
         {
             JSONArray fieldsArr = new JSONArray();
-            for(Field toAdd :this.getRouteFields())
+            for (Field toAdd :this.getRouteFields())
             {
                 fieldsArr.put(toAdd.toJsonObject());
             }
@@ -334,10 +334,10 @@ public class FluidTemplate extends ABaseFluidJSONObject{
         }
 
         //Global Fields...
-        if(this.getGlobalFields() != null && !this.getGlobalFields().isEmpty())
+        if (this.getGlobalFields() != null && !this.getGlobalFields().isEmpty())
         {
             JSONArray fieldsArr = new JSONArray();
-            for(Field toAdd :this.getGlobalFields())
+            for (Field toAdd :this.getGlobalFields())
             {
                 fieldsArr.put(toAdd.toJsonObject());
             }

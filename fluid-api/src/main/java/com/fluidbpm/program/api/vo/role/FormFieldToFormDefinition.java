@@ -75,7 +75,7 @@ public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
     public FormFieldToFormDefinition(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -144,14 +144,14 @@ public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Can Create...
-        if(this.isCanCreate() != null)
+        if (this.isCanCreate() != null)
         {
             returnVal.put(JSONMapping.CAN_CREATE,
                     this.isCanCreate().booleanValue());
         }
 
         //Form Definition...
-        if(this.getFormDefinition() != null)
+        if (this.getFormDefinition() != null)
         {
             returnVal.put(JSONMapping.FORM_DEFINITION,
                     this.getFormDefinition().toJsonObject());

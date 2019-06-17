@@ -73,7 +73,7 @@ public class UserClient extends ABaseClientWS {
      */
     public User createUser(User userParam)
     {
-        if(userParam != null && this.serviceTicket != null)
+        if (userParam != null && this.serviceTicket != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -95,7 +95,7 @@ public class UserClient extends ABaseClientWS {
      */
     public User updateUser(User userParam)
     {
-        if(userParam != null && this.serviceTicket != null)
+        if (userParam != null && this.serviceTicket != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -117,7 +117,7 @@ public class UserClient extends ABaseClientWS {
      */
     public User activateUser(User userParam)
     {
-        if(userParam != null && this.serviceTicket != null)
+        if (userParam != null && this.serviceTicket != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -140,7 +140,7 @@ public class UserClient extends ABaseClientWS {
      */
     public User deActivateUser(User userParam)
     {
-        if(userParam != null && this.serviceTicket != null)
+        if (userParam != null && this.serviceTicket != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -160,7 +160,7 @@ public class UserClient extends ABaseClientWS {
      */
     public User incrementInvalidLoginForUser(User userParam)
     {
-        if(userParam != null && this.serviceTicket != null)
+        if (userParam != null && this.serviceTicket != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -184,7 +184,7 @@ public class UserClient extends ABaseClientWS {
             String newPasswordParam,
             String confirmNewPasswordParam) {
         User toChangePasswordFor = new User();
-        if(this.serviceTicket != null) {
+        if (this.serviceTicket != null) {
             toChangePasswordFor.setServiceTicket(this.serviceTicket);
         }
 
@@ -216,7 +216,7 @@ public class UserClient extends ABaseClientWS {
      */
     public User deleteUser(User userToDeleteParam)
     {
-        if(userToDeleteParam != null && this.serviceTicket != null)
+        if (userToDeleteParam != null && this.serviceTicket != null)
         {
             userToDeleteParam.setServiceTicket(this.serviceTicket);
         }
@@ -237,7 +237,7 @@ public class UserClient extends ABaseClientWS {
             User userToDeleteParam,
             boolean forcefullyDeleteParam)
     {
-        if(userToDeleteParam != null && this.serviceTicket != null)
+        if (userToDeleteParam != null && this.serviceTicket != null)
         {
             userToDeleteParam.setServiceTicket(this.serviceTicket);
         }
@@ -257,7 +257,7 @@ public class UserClient extends ABaseClientWS {
     {
         User userToGetInfoFor = new User();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             userToGetInfoFor.setServiceTicket(this.serviceTicket);
         }
@@ -287,7 +287,7 @@ public class UserClient extends ABaseClientWS {
         User userToGetInfoFor = new User();
         userToGetInfoFor.setUsername(usernameParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             userToGetInfoFor.setServiceTicket(this.serviceTicket);
         }
@@ -317,7 +317,7 @@ public class UserClient extends ABaseClientWS {
     {
         User userToGetInfoFor = new User();
 
-        if(emailAddressParam != null)
+        if (emailAddressParam != null)
         {
             List<String> emailAdd = new ArrayList();
             emailAdd.add(emailAddressParam);
@@ -325,7 +325,7 @@ public class UserClient extends ABaseClientWS {
             userToGetInfoFor.setEmailAddresses(emailAdd);
         }
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             userToGetInfoFor.setServiceTicket(this.serviceTicket);
         }
@@ -354,7 +354,7 @@ public class UserClient extends ABaseClientWS {
         User userToGetInfoFor = new User();
         userToGetInfoFor.setId(userIdParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             userToGetInfoFor.setServiceTicket(this.serviceTicket);
         }
@@ -381,7 +381,7 @@ public class UserClient extends ABaseClientWS {
     {
         UserListing userToGetInfoFor = new UserListing();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             userToGetInfoFor.setServiceTicket(this.serviceTicket);
         }
@@ -409,7 +409,7 @@ public class UserClient extends ABaseClientWS {
      * @see JobView
      */
     public UserListing getAllUsersByJobView(JobView jobViewParam) {
-        if(this.serviceTicket != null && jobViewParam != null) {
+        if (this.serviceTicket != null && jobViewParam != null) {
             jobViewParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -434,7 +434,7 @@ public class UserClient extends ABaseClientWS {
      * @see Role
      */
     public UserListing getAllUsersByRole(Role roleParam) {
-        if(this.serviceTicket != null && roleParam != null) {
+        if (this.serviceTicket != null && roleParam != null) {
             roleParam.setServiceTicket(this.serviceTicket);
         }
 
@@ -461,7 +461,7 @@ public class UserClient extends ABaseClientWS {
         User userToPost = new User();
         userToPost.setLoggedInDateTime(loggedInSinceParam);
 
-        if(this.serviceTicket != null) {
+        if (this.serviceTicket != null) {
             userToPost.setServiceTicket(this.serviceTicket);
         }
 
@@ -484,12 +484,12 @@ public class UserClient extends ABaseClientWS {
      */
     public UserFieldListing getAllUserFieldValuesByUser(User userParam)
     {
-        if(userParam == null)
+        if (userParam == null)
         {
             return null;
         }
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             userParam.setServiceTicket(this.serviceTicket);
         }
@@ -541,7 +541,7 @@ public class UserClient extends ABaseClientWS {
                                     emailAddressParam, sizeParam));
 
             String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
-            if(base64Text == null || base64Text.isEmpty())
+            if (base64Text == null || base64Text.isEmpty())
             {
                 return null;
             }
@@ -583,7 +583,7 @@ public class UserClient extends ABaseClientWS {
      */
     public byte[] getGravatarForUser(User userParam, int sizeParam)
     {
-        if(userParam == null)
+        if (userParam == null)
         {
             return null;
         }
@@ -594,7 +594,7 @@ public class UserClient extends ABaseClientWS {
                             WS.Path.User.Version1.getGravatarByUser(sizeParam));
 
             String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
-            if(base64Text == null || base64Text.isEmpty())
+            if (base64Text == null || base64Text.isEmpty())
             {
                 return null;
             }

@@ -96,7 +96,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
     public FlowItemExecuteResult(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -165,7 +165,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
             JSONArray fluidItemsArr = this.jsonObject.getJSONArray(JSONMapping.FLUID_ITEMS);
 
             List<FluidItem> listOfItems = new ArrayList();
-            for(int index = 0;index < fluidItemsArr.length();index++)
+            for (int index = 0;index < fluidItemsArr.length();index++)
             {
                 listOfItems.add(new FluidItem(fluidItemsArr.getJSONObject(index)));
             }
@@ -180,7 +180,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
                     this.jsonObject.getJSONArray(JSONMapping.EXECUTE_USERS);
 
             List<User> listOfItems = new ArrayList();
-            for(int index = 0;index < executeUsersArr.length();index++)
+            for (int index = 0;index < executeUsersArr.length();index++)
             {
                 listOfItems.add(new User(executeUsersArr.getJSONObject(index)));
             }
@@ -195,7 +195,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
                     this.jsonObject.getJSONArray(JSONMapping.MAIL_MESSAGES_TO_SEND);
 
             List<MailMessage> listOfItems = new ArrayList();
-            for(int index = 0;index < mailMessagesToSendArr.length();index++)
+            for (int index = 0;index < mailMessagesToSendArr.length();index++)
             {
                 listOfItems.add(new MailMessage(
                         mailMessagesToSendArr.getJSONObject(index)));
@@ -219,67 +219,67 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Fluid Item...
-        if(this.getFluidItem() != null)
+        if (this.getFluidItem() != null)
         {
             returnVal.put(JSONMapping.FLUID_ITEM,
                     this.getFluidItem().toJsonObject());
         }
 
         //Flow Step Rule...
-        if(this.getFlowStepRule() != null)
+        if (this.getFlowStepRule() != null)
         {
             returnVal.put(JSONMapping.FLOW_STEP_RULE,
                     this.getFlowStepRule().toJsonObject());
         }
 
         //Assignment Rule...
-        if(this.getAssignmentRuleValue() != null)
+        if (this.getAssignmentRuleValue() != null)
         {
             returnVal.put(JSONMapping.ASSIGNMENT_RULE_VALUE,
                     this.getAssignmentRuleValue());
         }
 
         //Statement Result as String...
-        if(this.getStatementResultAsString() != null)
+        if (this.getStatementResultAsString() != null)
         {
             returnVal.put(JSONMapping.STATEMENT_RESULT_AS_STRING,
                     this.getStatementResultAsString());
         }
 
         //Execute per Fluid Item Query...
-        if(this.getExecutePerFluidItemQuery() != null)
+        if (this.getExecutePerFluidItemQuery() != null)
         {
             returnVal.put(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY,
                     this.getExecutePerFluidItemQuery());
         }
 
         //Fluid Item Query...
-        if(this.getFluidItemQuery() != null)
+        if (this.getFluidItemQuery() != null)
         {
             returnVal.put(JSONMapping.FLUID_ITEM_QUERY,
                     this.getFluidItemQuery());
         }
 
         //Execution Result...
-        if(this.getExecutionResult() != null)
+        if (this.getExecutionResult() != null)
         {
             returnVal.put(JSONMapping.EXECUTION_RESULT,
                     this.getExecutionResult());
         }
 
         //Progress to next phase...
-        if(this.getProgressToNextPhase() != null)
+        if (this.getProgressToNextPhase() != null)
         {
             returnVal.put(JSONMapping.PROGRESS_TO_NEXT_PHASE,
                     this.getProgressToNextPhase());
         }
         
         //Fluid Items...
-        if(this.getFluidItems() != null && !this.getFluidItems().isEmpty())
+        if (this.getFluidItems() != null && !this.getFluidItems().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(FluidItem item : this.getFluidItems())
+            for (FluidItem item : this.getFluidItems())
             {
                 jsonArray.put(item.toJsonObject());
             }
@@ -288,11 +288,11 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         }
 
         //Execute Users...
-        if(this.getExecuteUsers() != null && !this.getExecuteUsers().isEmpty())
+        if (this.getExecuteUsers() != null && !this.getExecuteUsers().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(User item : this.getExecuteUsers())
+            for (User item : this.getExecuteUsers())
             {
                 jsonArray.put(item.toJsonObject());
             }
@@ -301,12 +301,12 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
         }
 
         //Mail Messages To Send...
-        if(this.getMailMessagesToSend() != null &&
+        if (this.getMailMessagesToSend() != null &&
                 !this.getMailMessagesToSend().isEmpty())
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(MailMessage item : this.getMailMessagesToSend())
+            for (MailMessage item : this.getMailMessagesToSend())
             {
                 jsonArray.put(item.toJsonObject());
             }

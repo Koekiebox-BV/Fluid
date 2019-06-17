@@ -73,7 +73,7 @@ public class Configuration extends ABaseFluidJSONObject {
     public Configuration(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -139,13 +139,13 @@ public class Configuration extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Key...
-        if(this.getKey() != null)
+        if (this.getKey() != null)
         {
             returnVal.put(JSONMapping.KEY,this.getKey());
         }
 
         //Value...
-        if(this.getValue() != null)
+        if (this.getValue() != null)
         {
             returnVal.put(JSONMapping.VALUE, this.getValue());
         }

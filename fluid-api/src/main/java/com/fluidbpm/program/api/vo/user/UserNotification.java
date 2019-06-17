@@ -98,7 +98,7 @@ public class UserNotification extends ABaseFluidJSONObject {
     public UserNotification(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -266,34 +266,34 @@ public class UserNotification extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //User...
-        if(this.getUser() != null)
+        if (this.getUser() != null)
         {
             returnVal.put(JSONMapping.USER,
                     this.getUser().toJsonObject());
         }
 
         //Date Created...
-        if(this.getDateCreated() != null)
+        if (this.getDateCreated() != null)
         {
             returnVal.put(JSONMapping.DATE_CREATED,
                     this.getDateAsLongFromJson(this.getDateCreated()));
         }
 
         //Date Read...
-        if(this.getDateRead() != null)
+        if (this.getDateRead() != null)
         {
             returnVal.put(JSONMapping.DATE_READ,
                     this.getDateAsLongFromJson(this.getDateRead()));
         }
 
         //Expiring Link...
-        if(this.getExpiringLink() != null)
+        if (this.getExpiringLink() != null)
         {
             returnVal.put(JSONMapping.EXPIRING_LINK, this.getExpiringLink());
         }
 
         //Message...
-        if(this.getMessage() != null)
+        if (this.getMessage() != null)
         {
             returnVal.put(JSONMapping.MESSAGE, this.getMessage());
         }

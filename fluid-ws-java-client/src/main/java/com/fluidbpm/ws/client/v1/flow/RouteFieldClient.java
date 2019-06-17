@@ -63,11 +63,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextPlain(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.Text);
 			routeFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
 		}
@@ -83,11 +83,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTrueFalse(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
 			routeFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
 		}
@@ -103,11 +103,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldParagraphTextPlain(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
 			routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
 		}
@@ -123,11 +123,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldParagraphTextHTML(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
 			routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
 		}
@@ -147,15 +147,15 @@ public class RouteFieldClient extends ABaseFieldClient {
 			Field routeFieldParam,
 			List<String> multiChoiceValuesParam
 	) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(multiChoiceValuesParam == null) {
+		if (multiChoiceValuesParam == null) {
 			multiChoiceValuesParam = new ArrayList();
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
 			routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
@@ -176,18 +176,18 @@ public class RouteFieldClient extends ABaseFieldClient {
 			Field routeFieldParam,
 			List<String> multiChoiceValuesParam
 	) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(multiChoiceValuesParam == null ||
+		if (multiChoiceValuesParam == null ||
 				multiChoiceValuesParam.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
 			routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
@@ -204,11 +204,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldDateTimeDate(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
 			routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
 		}
@@ -224,11 +224,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldDateTimeDateAndTime(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
 			routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
 		}
@@ -244,11 +244,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldDecimalPlain(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			routeFieldParam.setTypeMetaData(FieldMetaData.Decimal.PLAIN);
 		}
@@ -264,11 +264,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldTextPlain(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.Text);
 			routeFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
 		}
@@ -284,11 +284,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldTrueFalse(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
 			routeFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
 		}
@@ -304,11 +304,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldParagraphTextPlain(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
 			routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
 		}
@@ -324,11 +324,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldParagraphTextHTML(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
 			routeFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
 		}
@@ -348,18 +348,18 @@ public class RouteFieldClient extends ABaseFieldClient {
 			Field routeFieldParam,
 			List<String> multiChoiceValuesParam
 	) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(multiChoiceValuesParam == null ||
+		if (multiChoiceValuesParam == null ||
 				multiChoiceValuesParam.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
 			routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
@@ -380,18 +380,18 @@ public class RouteFieldClient extends ABaseFieldClient {
 			Field routeFieldParam,
 			List<String> multiChoiceValuesParam
 	) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(multiChoiceValuesParam == null ||
+		if (multiChoiceValuesParam == null ||
 				multiChoiceValuesParam.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			routeFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY);
 			routeFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
@@ -408,11 +408,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldDateTimeDate(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
 			routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE);
 		}
@@ -428,11 +428,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldDateTimeDateAndTime(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.DateTime);
 			routeFieldParam.setTypeMetaData(FieldMetaData.DateTime.DATE_AND_TIME);
 		}
@@ -448,11 +448,11 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldDecimalPlain(Field routeFieldParam) {
-		if(routeFieldParam != null && this.serviceTicket != null) {
+		if (routeFieldParam != null && this.serviceTicket != null) {
 			routeFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if(routeFieldParam != null) {
+		if (routeFieldParam != null) {
 			routeFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			routeFieldParam.setTypeMetaData(FieldMetaData.Decimal.PLAIN);
 		}
@@ -468,7 +468,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldValue(Field routeFieldValueParam) {
-		if(routeFieldValueParam != null && this.serviceTicket != null) {
+		if (routeFieldValueParam != null && this.serviceTicket != null) {
 			routeFieldValueParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -486,7 +486,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 	public Field createFieldValue(
 			Field routeFieldValueToCreateParam,
 			FluidItem fluidItemParam) {
-		if(routeFieldValueToCreateParam != null && this.serviceTicket != null) {
+		if (routeFieldValueToCreateParam != null && this.serviceTicket != null) {
 			routeFieldValueToCreateParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -509,7 +509,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
 
-		if(this.serviceTicket != null) {
+		if (this.serviceTicket != null) {
 			field.setServiceTicket(this.serviceTicket);
 		}
 
@@ -530,7 +530,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @see Field
 	 */
 	public List<Field> getRouteFieldValuesBy(FluidItem fluidItemParam) {
-		if(this.serviceTicket != null && fluidItemParam != null) {
+		if (this.serviceTicket != null && fluidItemParam != null) {
 			fluidItemParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -545,7 +545,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Deleted Field.
 	 */
 	public Field deleteField(Field fieldParam) {
-		if(fieldParam != null && this.serviceTicket != null) {
+		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -561,7 +561,7 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 * @return Deleted Field.
 	 */
 	public Field forceDeleteField(Field fieldParam) {
-		if(fieldParam != null && this.serviceTicket != null) {
+		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
 

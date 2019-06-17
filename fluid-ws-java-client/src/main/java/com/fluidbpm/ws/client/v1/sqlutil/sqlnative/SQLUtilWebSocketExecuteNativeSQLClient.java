@@ -119,15 +119,15 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 	public List<SQLResultSet> executeNativeSQLSynchronized(
 			NativeSQLQuery ... nativeSQLQueriesParam
 	) {
-		if(nativeSQLQueriesParam == null) {
+		if (nativeSQLQueriesParam == null) {
 			return null;
 		}
 
 		//Start a new request...
 		String uniqueReqId = this.initNewRequest();
 		//Send all the messages...
-		for(NativeSQLQuery queryToExec : nativeSQLQueriesParam) {
-			if(queryToExec.getDatasourceName() == null || queryToExec.getDatasourceName().isEmpty()) {
+		for (NativeSQLQuery queryToExec : nativeSQLQueriesParam) {
+			if (queryToExec.getDatasourceName() == null || queryToExec.getDatasourceName().isEmpty()) {
 				throw new FluidClientException(
 					"No data-source name provided. Not allowed.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE
@@ -146,7 +146,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
-			if(this.getHandler(uniqueReqId).isConnectionClosed()) {
+			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
 				throw new FluidClientException(
 						"SQLUtil-WebSocket-ExecuteNativeSQL: " +
 								"The connection was closed by the server prior to the response received.",
@@ -165,7 +165,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 			//Error on the web-socket...
 			Throwable cause = executeProblem.getCause();
 			//Fluid client exception...
-			if(cause instanceof FluidClientException) {
+			if (cause instanceof FluidClientException) {
 				throw (FluidClientException)cause;
 			} else {
 				throw new FluidClientException(

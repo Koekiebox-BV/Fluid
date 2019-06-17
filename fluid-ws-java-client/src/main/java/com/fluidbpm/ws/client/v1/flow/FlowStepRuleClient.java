@@ -65,7 +65,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule createFlowStepEntryRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -82,7 +82,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule createFlowStepExitRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -99,7 +99,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule createFlowStepViewRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -116,7 +116,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule updateFlowStepEntryRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -133,7 +133,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule updateFlowStepExitRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -150,7 +150,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule updateFlowStepViewRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -170,7 +170,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
         FlowStepRule flowStepRule = new FlowStepRule();
         flowStepRule.setRule(viewRuleSyntaxParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStepRule.setServiceTicket(this.serviceTicket);
         }
@@ -188,12 +188,12 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRuleListing getExitRulesByStep(FlowStep flowStepParam)
     {
-        if(flowStepParam == null)
+        if (flowStepParam == null)
         {
             return null;
         }
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -211,12 +211,12 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRuleListing getEntryRulesByStep(FlowStep flowStepParam)
     {
-        if(flowStepParam == null)
+        if (flowStepParam == null)
         {
             return null;
         }
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStepParam.setServiceTicket(this.serviceTicket);
         }
@@ -242,7 +242,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
         FlowItemExecutePacket toPost = new FlowItemExecutePacket();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             toPost.setServiceTicket(this.serviceTicket);
         }
@@ -265,7 +265,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
         FlowStepRule flowStepRule = new FlowStepRule();
         flowStepRule.setRule(entryRuleSyntaxParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStepRule.setServiceTicket(this.serviceTicket);
         }
@@ -291,7 +291,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
 
         FlowItemExecutePacket toPost = new FlowItemExecutePacket();
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             toPost.setServiceTicket(this.serviceTicket);
         }
@@ -311,7 +311,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule moveFlowStepEntryRuleUp(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -328,7 +328,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule moveFlowStepEntryRuleDown(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -345,7 +345,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStepRule deleteFlowStepEntryRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -362,7 +362,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStep deleteFlowStepExitRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -379,7 +379,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public FlowStep deleteFlowStepViewRule(FlowStepRule flowStepRuleParam)
     {
-        if(flowStepRuleParam != null && this.serviceTicket != null)
+        if (flowStepRuleParam != null && this.serviceTicket != null)
         {
             flowStepRuleParam.setServiceTicket(this.serviceTicket);
         }
@@ -396,7 +396,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public List<String> getNextValidSyntaxWordsEntryRule(String inputRuleParam)
     {
-        if(inputRuleParam == null)
+        if (inputRuleParam == null)
         {
             inputRuleParam = UtilGlobal.EMPTY;
         }
@@ -404,7 +404,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
         FlowStepRule flowStepRule = new FlowStepRule();
         flowStepRule.setRule(inputRuleParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStepRule.setServiceTicket(this.serviceTicket);
         }
@@ -423,7 +423,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
      */
     public List<String> getNextValidSyntaxWordsExitRule(String inputRuleParam)
     {
-        if(inputRuleParam == null)
+        if (inputRuleParam == null)
         {
             inputRuleParam = UtilGlobal.EMPTY;
         }
@@ -431,7 +431,7 @@ public class FlowStepRuleClient extends ABaseClientWS {
         FlowStepRule flowStepRule = new FlowStepRule();
         flowStepRule.setRule(inputRuleParam);
 
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             flowStepRule.setServiceTicket(this.serviceTicket);
         }

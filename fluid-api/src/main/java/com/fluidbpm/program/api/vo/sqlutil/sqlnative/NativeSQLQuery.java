@@ -88,7 +88,7 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 	public NativeSQLQuery(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 
-		if(this.jsonObject == null)
+		if (this.jsonObject == null)
 		{
 			return;
 		}
@@ -117,7 +117,7 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 					JSONMapping.SQL_INPUTS);
 
 			List<SQLColumn> inputs = new ArrayList();
-			for(int index = 0;index < rulesArr.length();index++)
+			for (int index = 0;index < rulesArr.length();index++)
 			{
 				inputs.add(new SQLColumn(rulesArr.getJSONObject(index)));
 			}
@@ -143,28 +143,28 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Datasource Name...
-		if(this.getDatasourceName() != null) {
+		if (this.getDatasourceName() != null) {
 			returnVal.put(JSONMapping.DATASOURCE_NAME,
 					this.getDatasourceName());
 		}
 
 		//Query...
-		if(this.getQuery() != null) {
+		if (this.getQuery() != null) {
 			returnVal.put(JSONMapping.QUERY, this.getQuery());
 		}
 
 		//Stored Procedure...
-		if(this.getStoredProcedure() != null) {
+		if (this.getStoredProcedure() != null) {
 			returnVal.put(
 					JSONMapping.STORED_PROCEDURE,
 					this.getStoredProcedure());
 		}
 
 		//Inputs...
-		if(this.getSqlInputs() != null) {
+		if (this.getSqlInputs() != null) {
 			JSONArray jsonArray = new JSONArray();
 
-			for(SQLColumn toAdd : this.getSqlInputs()) {
+			for (SQLColumn toAdd : this.getSqlInputs()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
 
@@ -261,11 +261,11 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 	 */
 	@XmlTransient
 	public void addSqlInput(SQLColumn sqlInputToAddParam){
-		if(this.sqlInputs == null){
+		if (this.sqlInputs == null){
 			this.sqlInputs = new ArrayList<>();
 		}
 
-		if(sqlInputToAddParam == null){
+		if (sqlInputToAddParam == null){
 			return;
 		}
 

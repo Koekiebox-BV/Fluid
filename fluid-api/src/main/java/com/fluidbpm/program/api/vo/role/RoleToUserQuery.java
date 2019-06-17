@@ -74,7 +74,7 @@ public class RoleToUserQuery extends ABaseFluidJSONObject {
     public RoleToUserQuery(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -142,14 +142,14 @@ public class RoleToUserQuery extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //User Query...
-        if(this.getUserQuery() != null)
+        if (this.getUserQuery() != null)
         {
             returnVal.put(JSONMapping.USER_QUERY,
                     this.getUserQuery().toJsonObject());
         }
 
         //Role...
-        if(this.getRole() != null)
+        if (this.getRole() != null)
         {
             returnVal.put(JSONMapping.ROLE,
                     this.getRole().toJsonObject());

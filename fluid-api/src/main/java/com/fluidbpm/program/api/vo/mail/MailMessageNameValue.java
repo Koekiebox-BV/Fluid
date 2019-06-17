@@ -114,13 +114,13 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if(this.getName() != null)
+        if (this.getName() != null)
         {
             returnVal.put(JSONMapping.NAME, this.getName());
         }
 
         //Value...
-        if(this.getValue() != null)
+        if (this.getValue() != null)
         {
             returnVal.put(JSONMapping.VALUE, this.getValue());
         }

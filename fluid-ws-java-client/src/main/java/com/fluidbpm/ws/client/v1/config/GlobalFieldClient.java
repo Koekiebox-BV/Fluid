@@ -60,7 +60,7 @@ public class GlobalFieldClient extends ABaseFieldClient {
      */
     public Field updateFieldValue(Field globalFieldValueParam)
     {
-        if(globalFieldValueParam != null && this.serviceTicket != null)
+        if (globalFieldValueParam != null && this.serviceTicket != null)
         {
             globalFieldValueParam.setServiceTicket(this.serviceTicket);
         }
@@ -103,12 +103,12 @@ public class GlobalFieldClient extends ABaseFieldClient {
      */
     private Field getFieldValueBy(Field fieldParam)
     {
-        if(fieldParam != null)
+        if (fieldParam != null)
         {
             //Set for Payara server...
             fieldParam.setFieldValue(new MultiChoice());
 
-            if(this.serviceTicket != null)
+            if (this.serviceTicket != null)
             {
                 fieldParam.setServiceTicket(this.serviceTicket);
             }
@@ -133,7 +133,7 @@ public class GlobalFieldClient extends ABaseFieldClient {
         //Set for Payara server...
         field.setFieldValue(new MultiChoice());
         
-        if(this.serviceTicket != null)
+        if (this.serviceTicket != null)
         {
             field.setServiceTicket(this.serviceTicket);
         }

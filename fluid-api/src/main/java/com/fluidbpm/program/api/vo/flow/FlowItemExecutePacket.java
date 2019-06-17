@@ -66,7 +66,7 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
     public FlowItemExecutePacket(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -100,14 +100,14 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Fluid Item...
-        if(this.getFluidItem() != null)
+        if (this.getFluidItem() != null)
         {
             returnVal.put(JSONMapping.FLUID_ITEM,
                     this.getFluidItem().toJsonObject());
         }
 
         //Flow Step Rule...
-        if(this.getFlowStepRule() != null)
+        if (this.getFlowStepRule() != null)
         {
             returnVal.put(JSONMapping.FLOW_STEP_RULE,
                     this.getFlowStepRule().toJsonObject());

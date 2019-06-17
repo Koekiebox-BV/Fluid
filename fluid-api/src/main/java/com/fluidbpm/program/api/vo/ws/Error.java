@@ -154,7 +154,7 @@ public class Error extends ABaseFluidJSONObject {
         returnVal.put(JSONMapping.ERROR_CODE_OTHER, this.getErrorCode());
 
         //Error Message...
-        if(this.getErrorMessage() != null)
+        if (this.getErrorMessage() != null)
         {
             returnVal.put(JSONMapping.ERROR_MESSAGE,this.getErrorMessage());
             returnVal.put(JSONMapping.ERROR_MESSAGE_OTHER,this.getErrorMessage());

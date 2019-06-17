@@ -92,7 +92,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     public UserQuery(JSONObject jsonObjectParam){
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -116,7 +116,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
                     JSONMapping.INPUTS);
 
             List<Field> assFields = new ArrayList();
-            for(int index = 0;index < fieldsArr.length();index++)
+            for (int index = 0;index < fieldsArr.length();index++)
             {
                 assFields.add(new Field(fieldsArr.getJSONObject(index)));
             }
@@ -131,7 +131,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
                     JSONMapping.RULES);
 
             List<String> rules = new ArrayList();
-            for(int index = 0;index < rulesArr.length();index++)
+            for (int index = 0;index < rulesArr.length();index++)
             {
                 rules.add(rulesArr.getString(index));
             }
@@ -278,23 +278,23 @@ public class UserQuery extends ABaseListing<FluidItem> {
         JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if(this.getName() != null)
+        if (this.getName() != null)
         {
             returnVal.put(JSONMapping.NAME,this.getName());
         }
 
         //Description...
-        if(this.getDescription() != null)
+        if (this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
         }
 
         //Inputs...
-        if(this.getInputs() != null)
+        if (this.getInputs() != null)
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(Field toAdd : this.getInputs())
+            for (Field toAdd : this.getInputs())
             {
                 jsonArray.put(toAdd.toJsonObject());
             }
@@ -303,11 +303,11 @@ public class UserQuery extends ABaseListing<FluidItem> {
         }
 
         //Rules...
-        if(this.getRules() != null)
+        if (this.getRules() != null)
         {
             JSONArray jsonArray = new JSONArray();
 
-            for(String toAdd : this.getRules())
+            for (String toAdd : this.getRules())
             {
                 jsonArray.put(toAdd);
             }
@@ -316,14 +316,14 @@ public class UserQuery extends ABaseListing<FluidItem> {
         }
 
         //Date Created...
-        if(this.getDateCreated() != null)
+        if (this.getDateCreated() != null)
         {
             returnVal.put(JSONMapping.DATE_CREATED,
                     this.getDateAsLongFromJson(this.getDateCreated()));
         }
 
         //Date Last Updated...
-        if(this.getDateLastUpdated() != null)
+        if (this.getDateLastUpdated() != null)
         {
             returnVal.put(JSONMapping.DATE_LAST_UPDATED,
                     this.getDateAsLongFromJson(this.getDateLastUpdated()));

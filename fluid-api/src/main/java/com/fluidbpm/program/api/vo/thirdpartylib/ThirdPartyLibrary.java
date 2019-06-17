@@ -262,45 +262,45 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Filename...
-        if(this.getFilename() != null)
+        if (this.getFilename() != null)
         {
             returnVal.put(JSONMapping.FILENAME, this.getFilename());
         }
 
         //Description...
-        if(this.getDescription() != null)
+        if (this.getDescription() != null)
         {
             returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
         }
 
         //Sha-256 SUM...
-        if(this.getSha256sum() != null)
+        if (this.getSha256sum() != null)
         {
             returnVal.put(JSONMapping.SHA_256_SUM, this.getSha256sum());
         }
 
         //Add Tools to Classpath...
-        if(this.isAddToolsToClassPath() != null)
+        if (this.isAddToolsToClassPath() != null)
         {
             returnVal.put(JSONMapping.ADD_TOOLS_TO_CLASS_PATH, this.isAddToolsToClassPath());
         }
 
         //Library Data in Base-64...
-        if(this.getLibraryDataBase64() != null)
+        if (this.getLibraryDataBase64() != null)
         {
             returnVal.put(JSONMapping.LIBRARY_DATA_BASE64,
                     this.getLibraryDataBase64());
         }
 
         //Date Created...
-        if(this.getDateCreated() != null)
+        if (this.getDateCreated() != null)
         {
             returnVal.put(JSONMapping.DATE_CREATED,
                     this.getDateAsLongFromJson(this.getDateCreated()));
         }
 
         //Date Last Updated...
-        if(this.getDateLastUpdated() != null)
+        if (this.getDateLastUpdated() != null)
         {
             returnVal.put(JSONMapping.DATE_LAST_UPDATED,
                     this.getDateAsLongFromJson(this.getDateLastUpdated()));

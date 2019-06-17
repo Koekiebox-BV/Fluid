@@ -68,7 +68,7 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
     public AccessTokenRequest(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if(this.jsonObject == null)
+        if (this.jsonObject == null)
         {
             return;
         }
@@ -203,31 +203,31 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
         JSONObject returnVal = super.toJsonObject();
 
         //Client ID...
-        if(this.getClientId() != null)
+        if (this.getClientId() != null)
         {
             returnVal.put(JSONMapping.CLIENT_ID,this.getClientId());
         }
 
         //Client Secret...
-        if(this.getClientSecret() != null)
+        if (this.getClientSecret() != null)
         {
             returnVal.put(JSONMapping.CLIENT_SECRET,this.getClientSecret());
         }
 
         //Code...
-        if(this.getCode() != null)
+        if (this.getCode() != null)
         {
             returnVal.put(JSONMapping.CODE,this.getCode());
         }
 
         //Grant Type...
-        if(this.getGrantType() != null)
+        if (this.getGrantType() != null)
         {
             returnVal.put(JSONMapping.GRANT_TYPE,this.getGrantType());
         }
 
         //Redirect URI...
-        if(this.getRedirectUri() != null)
+        if (this.getRedirectUri() != null)
         {
             returnVal.put(JSONMapping.REDIRECT_URI,this.getRedirectUri());
         }
