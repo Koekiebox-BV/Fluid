@@ -341,10 +341,8 @@ public class TestUserQueryClient extends ABaseTestCase {
 	 */
 	@Test
 	@Ignore
-	public void executeUserQueryWithSpecificNameNoInput()
-	{
-		if (!this.isConnectionValid())
-		{
+	public void executeUserQueryWithSpecificNameNoInput() {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
@@ -362,24 +360,30 @@ public class TestUserQueryClient extends ABaseTestCase {
 
 		FluidItemListing itemListing =
 				userQueryClient.executeUserQuery(userQueryToExec);
-
-		if (itemListing.getListingCount() > 0)
-		{
-			for (FluidItem returnVal :itemListing.getListing())
-			{
+		long took = (System.currentTimeMillis() - start);
+		System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+ "' records.");
+		
+		if (itemListing.getListingCount() > 0) {
+			for (FluidItem returnVal :itemListing.getListing()) {
 				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
 						returnVal.getForm().getTitle() + " ]]] ***");
 
-				for (Field formField : returnVal.getForm().getFormFields())
-				{
+				if (returnVal.getForm() == null) {
+					System.err.println("Item "+returnVal.getId()+" is null!");
+					continue;
+				}
+
+				if (returnVal.getForm().getFormFields() == null) {
+					System.err.println("Form "+returnVal.getForm().getId()+":"
+							+returnVal.getForm().getTitle()+" has no fields!");
+					continue;
+				}
+
+				for (Field formField : returnVal.getForm().getFormFields()) {
 					System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
 				}
 			}
 		}
-
-		long took = (System.currentTimeMillis() - start);
-		System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
-				"' records.");
 	}
 
 }

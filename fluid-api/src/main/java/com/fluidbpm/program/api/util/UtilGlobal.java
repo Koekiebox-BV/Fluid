@@ -15,7 +15,6 @@
 
 package com.fluidbpm.program.api.util;
 
-import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -26,6 +25,7 @@ import org.json.JSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
+import com.google.common.io.BaseEncoding;
 
 /**
  * Global utility class for the {@code com.fluidbpm.program.api.util} package.
@@ -289,7 +289,7 @@ public class UtilGlobal {
 			return new byte[]{};
 		}
 
-		return Base64.getMimeDecoder().decode(base64StringParam);
+		return BaseEncoding.base64().decode(base64StringParam);
 	}
 
 	/**
@@ -354,7 +354,7 @@ public class UtilGlobal {
 			return UtilGlobal.EMPTY;
 		}
 
-		return Base64.getMimeEncoder().encodeToString(bytesParam);
+		return BaseEncoding.base64().encode(bytesParam);
 	}
 
 	/**
@@ -443,27 +443,19 @@ public class UtilGlobal {
 
 		Object fieldValue = fieldToExtractFromParam.getFieldValue();
 
-		if (fieldValue == null)
-		{
+		if (fieldValue == null) {
 			objectToSetFieldOnParam.put(
 					completeFieldName,
 					JSONObject.NULL);
-		}
-		//Table field...
-		else if (fieldValue instanceof TableField)
-		{
+		} else if (fieldValue instanceof TableField) {
+			//Table field...
 			return;
-		}
-		//Multiple Choice...
-		else if (fieldValue instanceof MultiChoice) {
-
+		} else if (fieldValue instanceof MultiChoice) {
+			//Multiple Choice...
 			MultiChoice multiChoice = (MultiChoice) fieldValue;
-
 			//Nothing provided...
 			if (multiChoice.getSelectedMultiChoices() == null ||
-					multiChoice.getSelectedMultiChoices().isEmpty())
-			{
-
+					multiChoice.getSelectedMultiChoices().isEmpty()) {
 				objectToSetFieldOnParam.put(
 						completeFieldName,
 						JSONObject.NULL);
@@ -478,21 +470,17 @@ public class UtilGlobal {
 			});
 
 			String selectVal = builder.toString();
-			if (selectVal != null && !selectVal.trim().isEmpty())
-			{
+			if (selectVal != null && !selectVal.trim().isEmpty()) {
 				selectVal = selectVal.substring(0, selectVal.length() - 2);
 			}
 
 			objectToSetFieldOnParam.put(completeFieldName, selectVal);
-		}
-		//Other valid types...
-		else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
-				fieldValue instanceof String)
-		{
-			if((fieldValue instanceof String) &&
+		} else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+				fieldValue instanceof String) {
+			//Other valid types...
+			if ((fieldValue instanceof String) &&
 					Field.LATITUDE_AND_LONGITUDE.equals(
-							fieldToExtractFromParam.getTypeMetaData()))
-			{
+							fieldToExtractFromParam.getTypeMetaData())) {
 				String formFieldValueStr = fieldValue.toString();
 
 				String latitudeTxt = this.getLatitudeFromFluidText(formFieldValueStr);
@@ -502,10 +490,8 @@ public class UtilGlobal {
 			}
 
 			objectToSetFieldOnParam.put(completeFieldName, fieldValue);
-		}
-		//Date...
-		else if (fieldValue instanceof Date)
-		{
+		} else if (fieldValue instanceof Date) {
+			//Date...
 			objectToSetFieldOnParam.put(completeFieldName, ((Date)fieldValue).getTime());
 		}
 	}

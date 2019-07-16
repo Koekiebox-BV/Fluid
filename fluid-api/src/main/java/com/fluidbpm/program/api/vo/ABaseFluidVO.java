@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo;
 
 import java.io.Serializable;
-import java.util.Base64;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.user.User;
@@ -121,7 +120,7 @@ public class ABaseFluidVO implements Serializable {
 			return serviceTicket;
 		}
 
-		byte[] base64Bytes = Base64.getMimeDecoder().decode(serviceTicket);
+		byte[] base64Bytes = UtilGlobal.decodeBase64(serviceTicket);
 		return this.bytesToHex(base64Bytes);
 	}
 

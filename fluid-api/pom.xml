@@ -55,10 +55,18 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--Google-->
         <!--XMemcachedClient-->
         <dependency>
             <groupId>com.googlecode.xmemcached</groupId>
             <artifactId>xmemcached</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--Guava-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
             <scope>compile</scope>
         </dependency>
 

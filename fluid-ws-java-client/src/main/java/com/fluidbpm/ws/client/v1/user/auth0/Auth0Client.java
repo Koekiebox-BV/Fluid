@@ -39,109 +39,100 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class Auth0Client extends ABaseClientWS {
 
-    public static final String AUTHORIZATION_CODE = "authorization_code";
+	public static final String AUTHORIZATION_CODE = "authorization_code";
 
-    /**
-     * Constructs Auth0 Client to a provided endpoint.
-     *
-     * @param urlToAuth0EndpointParam The endpoint to connect to.
-     */
-    public Auth0Client(String urlToAuth0EndpointParam) {
-        super(urlToAuth0EndpointParam);
-    }
+	/**
+	 * Constructs Auth0 Client to a provided endpoint.
+	 *
+	 * @param urlToAuth0EndpointParam The endpoint to connect to.
+	 */
+	public Auth0Client(String urlToAuth0EndpointParam) {
+		super(urlToAuth0EndpointParam);
+	}
 
-    /**
-     * Gets a Access Token from Auth0.
-     *
-     * @param clientIdParam The client id.
-     * @param clientSecretParam The client secret.
-     * @param codeParam The code.
-     * @param redirectUrlParam The redirect URL after successful authentication.
-     *
-     * @return Access Token.
-     *
-     * @see AccessToken
-     */
-    public AccessToken getAccessToken(
-            String clientIdParam,
-            String clientSecretParam,
-            String codeParam,
-            String redirectUrlParam)
-    {
+	/**
+	 * Gets a Access Token from Auth0.
+	 *
+	 * @param clientIdParam The client id.
+	 * @param clientSecretParam The client secret.
+	 * @param codeParam The code.
+	 * @param redirectUrlParam The redirect URL after successful authentication.
+	 *
+	 * @return Access Token.
+	 *
+	 * @see AccessToken
+	 */
+	public AccessToken getAccessToken(
+			String clientIdParam,
+			String clientSecretParam,
+			String codeParam,
+			String redirectUrlParam
+	) {
+		if (clientIdParam == null || clientIdParam.trim().isEmpty()) {
+			throw new FluidClientException(
+					"Client Id must be provided.",
+					FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
+		
+		if (clientSecretParam == null || clientSecretParam.trim().isEmpty()) {
+			throw new FluidClientException(
+					"Client Secret must be provided.",
+					FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
 
-        if (clientIdParam == null || clientIdParam.trim().isEmpty())
-        {
-            throw new FluidClientException(
-                    "Client Id must be provided.",
-                    FluidClientException.ErrorCode.FIELD_VALIDATE);
-        }
+		if (codeParam == null || codeParam.trim().isEmpty()) {
+			throw new FluidClientException(
+					"Code must be provided.",
+					FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
 
+		AccessTokenRequest tokenRequest = new AccessTokenRequest();
 
-        if (clientSecretParam == null || clientSecretParam.trim().isEmpty())
-        {
-            throw new FluidClientException(
-                    "Client Secret must be provided.",
-                    FluidClientException.ErrorCode.FIELD_VALIDATE);
-        }
+		tokenRequest.setClientId(clientIdParam);
+		tokenRequest.setClientSecret(clientSecretParam);
+		tokenRequest.setGrantType(AUTHORIZATION_CODE);
+		tokenRequest.setCode(codeParam);
+		tokenRequest.setRedirectUri(redirectUrlParam);
 
-        if (codeParam == null || codeParam.trim().isEmpty())
-        {
-            throw new FluidClientException(
-                    "Code must be provided.",
-                    FluidClientException.ErrorCode.FIELD_VALIDATE);
-        }
+		return new AccessToken(this.postJson(
+				false,
+				tokenRequest, WS.Path.Auth0.Version1.userToken()));
+	}
 
-        AccessTokenRequest tokenRequest = new AccessTokenRequest();
+	/**
+	 * Gets Auth0 Normalized User Profile info.
+	 *
+	 * @param accessTokenParam The access token used to get
+	 *                         user profile info from.
+	 * @return User Profile.
+	 *
+	 * @see NormalizedUserProfile
+	 * @see AccessToken
+	 */
+	public NormalizedUserProfile getUserProfileInfo(AccessToken accessTokenParam) {
+		if (accessTokenParam == null || (accessTokenParam.getAccessToken() == null ||
+				accessTokenParam.getAccessToken().trim().isEmpty())) {
+			throw new FluidClientException(
+					"Code must be provided.",
+					FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
 
-        tokenRequest.setClientId(clientIdParam);
-        tokenRequest.setClientSecret(clientSecretParam);
-        tokenRequest.setGrantType(AUTHORIZATION_CODE);
-        tokenRequest.setCode(codeParam);
-        tokenRequest.setRedirectUri(redirectUrlParam);
+		try {
+			String accessToken = accessTokenParam.getAccessToken();
 
-        return new AccessToken(this.postJson(
-                false,
-                tokenRequest, WS.Path.Auth0.Version1.userToken()));
-    }
+			List<HeaderNameValue> headerListing = new ArrayList<HeaderNameValue>();
 
-    /**
-     * Gets Auth0 Normalized User Profile info.
-     *
-     * @param accessTokenParam The access token used to get
-     *                         user profile info from.
-     * @return User Profile.
-     *
-     * @see NormalizedUserProfile
-     * @see AccessToken
-     */
-    public NormalizedUserProfile getUserProfileInfo(AccessToken accessTokenParam)
-    {
-        if (accessTokenParam == null || (accessTokenParam.getAccessToken() == null ||
-                accessTokenParam.getAccessToken().trim().isEmpty()))
-        {
-            throw new FluidClientException(
-                    "Code must be provided.",
-                    FluidClientException.ErrorCode.FIELD_VALIDATE);
-        }
+			headerListing.add(new HeaderNameValue(
+					NormalizedUserProfile.HeaderMapping.AUTHORIZATION,
+					"Bearer "+accessToken));
 
-        try {
-            String accessToken = accessTokenParam.getAccessToken();
+			return new NormalizedUserProfile(
+					this.getJson(true, WS.Path.Auth0.Version1.userInfo(),headerListing));
+		} catch (UnsupportedEncodingException e) {
 
-            List<HeaderNameValue> headerListing = new ArrayList<HeaderNameValue>();
-
-            headerListing.add(new HeaderNameValue(
-                    NormalizedUserProfile.HeaderMapping.AUTHORIZATION,
-                    "Bearer "+accessToken));
-
-            return new NormalizedUserProfile(
-                    this.getJson(true, WS.Path.Auth0.Version1.userInfo(),headerListing));
-        }
-        //
-        catch (UnsupportedEncodingException e) {
-
-            throw new FluidClientException(
-                    "Unable to Encode (Not Supported). "+ e.getMessage(),
-                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
-        }
-    }
+			throw new FluidClientException(
+					"Unable to Encode (Not Supported). "+ e.getMessage(),
+					FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
+		}
+	}
 }
