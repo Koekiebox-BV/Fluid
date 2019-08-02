@@ -364,7 +364,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		//Connection is not valid...throw error...
 		if (checkConnectionValidParam && !this.isConnectionValid()) {
 			throw new FluidClientException(
-					"Unable to reach service at '"+
+					"CheckConnectionValid: Unable to reach service at '"+
 							this.endpointUrl.concat(postfixUrlParam)+"'.",
 					FluidClientException.ErrorCode.CONNECT_ERROR);
 		}
@@ -375,26 +375,18 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			HttpGet httpGet = new HttpGet(this.endpointUrl.concat(postfixUrlParam));
 
 			if (headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
-				for (HeaderNameValue headerNameVal : headerNameValuesParam) {
-					if (headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) {
-						continue;
-					}
-
-					if (headerNameVal.getValue() == null) {
-						continue;
-					}
-
-					httpGet.setHeader(headerNameVal.getName(), headerNameVal.getValue());
-				}
+				headerNameValuesParam.stream()
+						.filter(hdrItm -> hdrItm.getName() != null && !hdrItm.getName().trim().isEmpty())
+						.filter(hdrItm -> hdrItm.getValue() != null && !hdrItm.getValue().trim().isEmpty())
+						.forEach(hdrItm -> {
+							httpGet.setHeader(hdrItm.getName(), hdrItm.getValue());
+						});
 			}
 
 			// Create a custom response handler
-			ResponseHandler<String> responseHandler = this.getJsonResponseHandler(
-					this.endpointUrl.concat(postfixUrlParam));
-
-			String responseBody = this.executeHttp(
-					httpclient, httpGet, responseHandler, postfixUrlParam);
-
+			ResponseHandler<String> responseHandler =
+					this.getJsonResponseHandler(this.endpointUrl.concat(postfixUrlParam));
+			String responseBody = this.executeHttp(httpclient, httpGet, responseHandler, postfixUrlParam);
 			if (responseBody == null || responseBody.trim().isEmpty()) {
 				throw new FluidClientException(
 						"No response data from '"+
@@ -403,13 +395,11 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			}
 
 			JSONObject jsonOjb = new JSONObject(responseBody);
-
 			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) {
 				return jsonOjb;
 			}
 
 			int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
-
 			if (errorCode > 0) {
 				String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
 						? "Not set":

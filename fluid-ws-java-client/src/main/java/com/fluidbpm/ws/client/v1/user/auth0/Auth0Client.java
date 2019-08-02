@@ -127,7 +127,10 @@ public class Auth0Client extends ABaseClientWS {
 					"Bearer "+accessToken));
 
 			return new NormalizedUserProfile(
-					this.getJson(true, WS.Path.Auth0.Version1.userInfo(),headerListing));
+					this.getJson(
+							false,
+							WS.Path.Auth0.Version1.userInfo(),
+							headerListing));
 		} catch (UnsupportedEncodingException e) {
 
 			throw new FluidClientException(
