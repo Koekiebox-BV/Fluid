@@ -170,9 +170,26 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * Retrieves all Form Definitions where the logged in user can
 	 * create a new instance of the {@code Form}.
 	 *
+	 * Form Definitions used for table records will be excluded.
+	 *
 	 * @return List of Form Definitions.
 	 */
 	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf() {
+		return this.getAllByLoggedInUserWhereCanCreateInstanceOf(false);
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * create a new instance of the {@code Form}.
+	 *
+	 * @param includeTableRecordsParam Should Form Definitions that are part of table records also be
+	 *                                 included?
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf(
+			boolean includeTableRecordsParam
+	) {
 		Form form = new Form();
 
 		if (this.serviceTicket != null) {
@@ -184,7 +201,7 @@ public class FormDefinitionClient extends ABaseClientWS {
 		}
 
 		return new FormListing(this.postJson(
-				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf())).
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(includeTableRecordsParam))).
 				getListing();
 	}
 

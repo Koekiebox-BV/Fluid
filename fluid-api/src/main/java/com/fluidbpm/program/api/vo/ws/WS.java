@@ -1187,6 +1187,7 @@ public class WS {
 			 */
 			public static final class QueryParam {
 				public static final String FORM_DEFINITION = "form_definition";
+				public static final String INCLUDE_TABLE_RECORDS = "include_table_records";
 			}
 
 			/**
@@ -1213,6 +1214,8 @@ public class WS {
 				public static final String READ_ALL_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
 				public static final String READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS = ("/get_all_by_logged_in_user_incl_table_defs");
 				public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE = ("/get_all_by_logged_in_can_create");
+				public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE_INCL_TABLE_RECORDS =
+						("/get_all_by_logged_in_can_create?"+QueryParam.INCLUDE_TABLE_RECORDS+"=true");
 
 				/**
 				 * Root for Form Definition.
@@ -1307,10 +1310,20 @@ public class WS {
 				/**
 				 * URL Path for Form Definitions where logged in user can create instance of.
 				 *
+				 * @param includeTableRecordsParam Should Form Definitions that are part of table records also be
+				 *                                 included?
+				 *
 				 * @return {@code v1/form_definition/get_all_by_logged_in_can_create}
 				 */
-				public static final String getAllByLoggedInAndCanCreateInstanceOf() {
-					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE);
+				public static final String getAllByLoggedInAndCanCreateInstanceOf(
+					boolean includeTableRecordsParam
+				) {
+					if (includeTableRecordsParam) {
+						return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE_INCL_TABLE_RECORDS);
+					} else {
+						return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE);
+					}
+
 				}
 			}
 		}
