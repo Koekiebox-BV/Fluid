@@ -2233,6 +2233,8 @@ public class WS {
 				public static final String ISSUE_TOKEN = "/issue_token";
 				public static final String TOKEN_STATUS = "/token_status";
 				public static final String INFORMATION = "/info";
+				public static final String AUTH_BASIC = "/auth_basic";
+				public static final String AUTH0_USER_PROFILE = "/auth0_user_profile";
 
 				//Create...
 				public static final String CREATE = ("/");
@@ -2273,6 +2275,12 @@ public class WS {
 
 					public static final String EMAIL = "email";
 					public static final String SIZE = "size";
+
+					//Auth0 params...
+					public static final String CODE = "code";
+					public static final String REDIRECT_URL = "redirect_url";
+					public static final String HOST = "host";
+					public static final String USER_AGENT = "user_agent";
 				}
 
 				/**
@@ -2296,6 +2304,58 @@ public class WS {
 				 */
 				public static final String userInitSession() {
 					return Version.VERSION_1.concat(ROOT).concat(INIT_SESSION);
+				}
+
+				/**
+				 * Construct URL request for Auth0 user profile based on params.
+				 *
+				 * @param codeParam The code generated from Auth0 login.
+				 * @param redirectUrlParam The redirect URL post login.
+				 * @param hostParam Optional host information.
+				 * @param userAgentInfoParam Optional user-agent information.
+				 *
+				 * @return {@code /user/auth0_user_profile}
+				 * 
+				 * @see User
+				 */
+				public static final String getAuth0UserProfile(
+					String codeParam,
+					String redirectUrlParam,
+					String hostParam,
+					String userAgentInfoParam
+				) {
+					StringBuilder completeUrl =
+							new StringBuilder(Version.VERSION_1.concat(ROOT).concat(AUTH0_USER_PROFILE));
+					completeUrl.append("?");
+
+					if (codeParam != null) {
+						completeUrl.append(QueryParam.CODE);
+						completeUrl.append("=");
+						completeUrl.append(codeParam);
+					}
+
+					if (redirectUrlParam != null) {
+						completeUrl.append("&");
+						completeUrl.append(QueryParam.REDIRECT_URL);
+						completeUrl.append("=");
+						completeUrl.append(redirectUrlParam);
+					}
+
+					if (hostParam != null) {
+						completeUrl.append("&");
+						completeUrl.append(QueryParam.HOST);
+						completeUrl.append("=");
+						completeUrl.append(hostParam);
+					}
+
+					if (userAgentInfoParam != null) {
+						completeUrl.append("&");
+						completeUrl.append(QueryParam.USER_AGENT);
+						completeUrl.append("=");
+						completeUrl.append(userAgentInfoParam);
+					}
+					
+					return completeUrl.toString();
 				}
 
 				/**
