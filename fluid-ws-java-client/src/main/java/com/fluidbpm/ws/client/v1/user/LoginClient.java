@@ -14,6 +14,7 @@
  */
 package com.fluidbpm.ws.client.v1.user;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -369,14 +370,14 @@ public class LoginClient extends ABaseClientWS {
 	 *
 	 * @see WS.Path.User
 	 */
-	public User auth0GetUserProfile(
+	public User loginAuth0UserProfile(
 		String codeParam,
 		String redirectUrlParam,
 		String hostParam,
 		String userAgentInfoParam
 	) {
 		try {
-			return new User(this.getJson(WS.Path.User.Version1.getAuth0UserProfile(
+			return new User(this.getJson(WS.Path.User.Version1.loginAuth0UserProfile(
 					codeParam,
 					redirectUrlParam,
 					hostParam,
@@ -385,6 +386,10 @@ public class LoginClient extends ABaseClientWS {
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+		} catch (UnsupportedEncodingException unsEncExcept) {
+			//Encoding not supported...
+			throw new FluidClientException(unsEncExcept.getMessage(),
+					unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
 		}
 	}
 }

@@ -2315,15 +2315,17 @@ public class WS {
 				 * @param userAgentInfoParam Optional user-agent information.
 				 *
 				 * @return {@code /user/auth0_user_profile}
+				 *
+				 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
 				 * 
 				 * @see User
 				 */
-				public static final String getAuth0UserProfile(
+				public static final String loginAuth0UserProfile(
 					String codeParam,
 					String redirectUrlParam,
 					String hostParam,
 					String userAgentInfoParam
-				) {
+				) throws UnsupportedEncodingException {
 					StringBuilder completeUrl =
 							new StringBuilder(Version.VERSION_1.concat(ROOT).concat(AUTH0_USER_PROFILE));
 					completeUrl.append("?");
@@ -2338,6 +2340,7 @@ public class WS {
 						completeUrl.append("&");
 						completeUrl.append(QueryParam.REDIRECT_URL);
 						completeUrl.append("=");
+						redirectUrlParam = URLEncoder.encode(redirectUrlParam, ENCODING_UTF_8);
 						completeUrl.append(redirectUrlParam);
 					}
 
@@ -2345,6 +2348,7 @@ public class WS {
 						completeUrl.append("&");
 						completeUrl.append(QueryParam.HOST);
 						completeUrl.append("=");
+						hostParam = URLEncoder.encode(hostParam, ENCODING_UTF_8);
 						completeUrl.append(hostParam);
 					}
 
@@ -2352,6 +2356,7 @@ public class WS {
 						completeUrl.append("&");
 						completeUrl.append(QueryParam.USER_AGENT);
 						completeUrl.append("=");
+						userAgentInfoParam = URLEncoder.encode(userAgentInfoParam, ENCODING_UTF_8);
 						completeUrl.append(userAgentInfoParam);
 					}
 					

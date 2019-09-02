@@ -46,565 +46,563 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class UserClient extends ABaseClientWS {
 
-    private static final String JSON_TAG_DATA = "data";
+	private static final String JSON_TAG_DATA = "data";
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public UserClient(String endpointBaseUrlParam, String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public UserClient(String endpointBaseUrlParam, String serviceTicketParam) {
+		super(endpointBaseUrlParam);
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-    /**
-     * Creates a new {@code User} with the Email, Fields and
-     * Roles inside the {@code userParam}.
-     *
-     * @param userParam The {@code User} to create.
-     * @return The Created User.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see Field
-     * @see com.fluidbpm.program.api.vo.role.Role
-     */
-    public User createUser(User userParam)
-    {
-        if (userParam != null && this.serviceTicket != null)
-        {
-            userParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Creates a new {@code User} with the Email, Fields and
+	 * Roles inside the {@code userParam}.
+	 *
+	 * @param userParam The {@code User} to create.
+	 * @return The Created User.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see Field
+	 * @see com.fluidbpm.program.api.vo.role.Role
+	 */
+	public User createUser(User userParam)
+	{
+		if (userParam != null && this.serviceTicket != null)
+		{
+			userParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.putJson(
-                userParam, WS.Path.User.Version1.userCreate()));
-    }
+		return new User(this.putJson(
+				userParam, WS.Path.User.Version1.userCreate()));
+	}
 
-    /**
-     * Updates an existing {@code User} with the Email, Fields and
-     * Roles inside the {@code userParam}.
-     *
-     * @param userParam The User to update.
-     * @return The Updated User.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see Field
-     * @see com.fluidbpm.program.api.vo.role.Role
-     */
-    public User updateUser(User userParam)
-    {
-        if (userParam != null && this.serviceTicket != null)
-        {
-            userParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Updates an existing {@code User} with the Email, Fields and
+	 * Roles inside the {@code userParam}.
+	 *
+	 * @param userParam The User to update.
+	 * @return The Updated User.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see Field
+	 * @see com.fluidbpm.program.api.vo.role.Role
+	 */
+	public User updateUser(User userParam)
+	{
+		if (userParam != null && this.serviceTicket != null)
+		{
+			userParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.postJson(
-                userParam, WS.Path.User.Version1.userUpdate()));
-    }
+		return new User(this.postJson(
+				userParam, WS.Path.User.Version1.userUpdate()));
+	}
 
-    /**
-     * Activate an existing {@code User} that is currently
-     * Deactivated.
-     *
-     * @param userParam The User to activate.
-     * @return The Activated User.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see Field
-     * @see com.fluidbpm.program.api.vo.role.Role
-     */
-    public User activateUser(User userParam)
-    {
-        if (userParam != null && this.serviceTicket != null)
-        {
-            userParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Activate an existing {@code User} that is currently
+	 * Deactivated.
+	 *
+	 * @param userParam The User to activate.
+	 * @return The Activated User.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see Field
+	 * @see com.fluidbpm.program.api.vo.role.Role
+	 */
+	public User activateUser(User userParam)
+	{
+		if (userParam != null && this.serviceTicket != null)
+		{
+			userParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.postJson(
-                userParam,
-                WS.Path.User.Version1.userActivate()));
-    }
+		return new User(this.postJson(
+				userParam,
+				WS.Path.User.Version1.userActivate()));
+	}
 
-    /**
-     * Deactivate an existing {@code User} that is currently
-     * Active.
-     *
-     * @param userParam The User to De-Activate.
-     * @return The DeActivated User.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     * @see Field
-     * @see com.fluidbpm.program.api.vo.role.Role
-     */
-    public User deActivateUser(User userParam)
-    {
-        if (userParam != null && this.serviceTicket != null)
-        {
-            userParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Deactivate an existing {@code User} that is currently
+	 * Active.
+	 *
+	 * @param userParam The User to De-Activate.
+	 * @return The DeActivated User.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 * @see Field
+	 * @see com.fluidbpm.program.api.vo.role.Role
+	 */
+	public User deActivateUser(User userParam)
+	{
+		if (userParam != null && this.serviceTicket != null)
+		{
+			userParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.postJson(
-                userParam,
-                WS.Path.User.Version1.userDeActivate()));
-    }
+		return new User(this.postJson(
+				userParam,
+				WS.Path.User.Version1.userDeActivate()));
+	}
 
-    /**
-     * Increment the invalid login count for {@code userParam}.
-     *
-     * @param userParam The User to increment invalid count for.
-     * @return The User where invalid count performed.
-     *
-     * @see com.fluidbpm.program.api.vo.user.User
-     */
-    public User incrementInvalidLoginForUser(User userParam)
-    {
-        if (userParam != null && this.serviceTicket != null)
-        {
-            userParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Increment the invalid login count for {@code userParam}.
+	 *
+	 * @param userParam The User to increment invalid count for.
+	 * @return The User where invalid count performed.
+	 *
+	 * @see com.fluidbpm.program.api.vo.user.User
+	 */
+	public User incrementInvalidLoginForUser(User userParam)
+	{
+		if (userParam != null && this.serviceTicket != null)
+		{
+			userParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.postJson(
-                userParam,
-                WS.Path.User.Version1.incrementInvalidLogin()));
-    }
+		return new User(this.postJson(
+				userParam,
+				WS.Path.User.Version1.incrementInvalidLogin()));
+	}
 
-    /**
-     * Change the password for the currently logged in user.
-     *
-     * @param existingPasswordParam The current password.
-     * @param newPasswordParam The new password.
-     * @param confirmNewPasswordParam The new password again.
-     *
-     * @return {@code User} which password was changed.
-     */
-    public User changePasswordForLoggedInUser(
-            String existingPasswordParam,
-            String newPasswordParam,
-            String confirmNewPasswordParam) {
-        User toChangePasswordFor = new User();
-        if (this.serviceTicket != null) {
-            toChangePasswordFor.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Change the password for the currently logged in user.
+	 *
+	 * @param existingPasswordParam The current password.
+	 * @param newPasswordParam The new password.
+	 * @param confirmNewPasswordParam The new password again.
+	 *
+	 * @return {@code User} which password was changed.
+	 */
+	public User changePasswordForLoggedInUser(
+			String existingPasswordParam,
+			String newPasswordParam,
+			String confirmNewPasswordParam) {
+		User toChangePasswordFor = new User();
+		if (this.serviceTicket != null) {
+			toChangePasswordFor.setServiceTicket(this.serviceTicket);
+		}
 
-        String existingPassword =
-                existingPasswordParam == null ? UtilGlobal.EMPTY: existingPasswordParam;
-        String newPassword =
-                newPasswordParam == null ? UtilGlobal.EMPTY: newPasswordParam;
-        String confirmNewPassword =
-                confirmNewPasswordParam == null ? UtilGlobal.EMPTY: confirmNewPasswordParam;
+		String existingPassword =
+				existingPasswordParam == null ? UtilGlobal.EMPTY: existingPasswordParam;
+		String newPassword =
+				newPasswordParam == null ? UtilGlobal.EMPTY: newPasswordParam;
+		String confirmNewPassword =
+				confirmNewPasswordParam == null ? UtilGlobal.EMPTY: confirmNewPasswordParam;
 
-        JSONObject passwordClear = new JSONObject();
-        passwordClear.put("existing",existingPassword);
-        passwordClear.put("new",newPassword);
-        passwordClear.put("confirm_new",confirmNewPassword);
+		JSONObject passwordClear = new JSONObject();
+		passwordClear.put("existing",existingPassword);
+		passwordClear.put("new",newPassword);
+		passwordClear.put("confirm_new",confirmNewPassword);
 
-        toChangePasswordFor.setPasswordClear(passwordClear.toString());
+		toChangePasswordFor.setPasswordClear(passwordClear.toString());
 
-        return new User(this.postJson(
-                toChangePasswordFor,
-                WS.Path.User.Version1.changePassword()));
-    }
+		return new User(this.postJson(
+				toChangePasswordFor,
+				WS.Path.User.Version1.changePassword()));
+	}
 
-    /**
-     * Deletes the {@code User} provided.
-     * Id must be set on the {@code User}.
-     *
-     * @param userToDeleteParam The User to Delete.
-     * @return The deleted User.
-     */
-    public User deleteUser(User userToDeleteParam)
-    {
-        if (userToDeleteParam != null && this.serviceTicket != null)
-        {
-            userToDeleteParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Deletes the {@code User} provided.
+	 * Id must be set on the {@code User}.
+	 *
+	 * @param userToDeleteParam The User to Delete.
+	 * @return The deleted User.
+	 */
+	public User deleteUser(User userToDeleteParam)
+	{
+		if (userToDeleteParam != null && this.serviceTicket != null)
+		{
+			userToDeleteParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.postJson(userToDeleteParam,
-                WS.Path.User.Version1.userDelete()));
-    }
+		return new User(this.postJson(userToDeleteParam,
+				WS.Path.User.Version1.userDelete()));
+	}
 
-    /**
-     * Deletes the {@code User} provided.
-     * Id must be set on the {@code User}.
-     *
-     * @param userToDeleteParam The User to Delete.
-     * @param forcefullyDeleteParam Delete the User forcefully.
-     * @return The deleted User.
-     */
-    public User deleteUser(
-            User userToDeleteParam,
-            boolean forcefullyDeleteParam)
-    {
-        if (userToDeleteParam != null && this.serviceTicket != null)
-        {
-            userToDeleteParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Deletes the {@code User} provided.
+	 * Id must be set on the {@code User}.
+	 *
+	 * @param userToDeleteParam The User to Delete.
+	 * @param forcefullyDeleteParam Delete the User forcefully.
+	 * @return The deleted User.
+	 */
+	public User deleteUser(
+			User userToDeleteParam,
+			boolean forcefullyDeleteParam)
+	{
+		if (userToDeleteParam != null && this.serviceTicket != null)
+		{
+			userToDeleteParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new User(this.postJson(userToDeleteParam,
-                WS.Path.User.Version1.userDelete(forcefullyDeleteParam)));
-    }
+		return new User(this.postJson(userToDeleteParam,
+				WS.Path.User.Version1.userDelete(forcefullyDeleteParam)));
+	}
 
-    /**
-     * Retrieves user information for the logged in {@code User}.
-     *
-     * @return User information.
-     *
-     * @see User
-     */
-    public User getLoggedInUserInformation()
-    {
-        User userToGetInfoFor = new User();
+	/**
+	 * Retrieves user information for the logged in {@code User}.
+	 *
+	 * @return User information.
+	 *
+	 * @see User
+	 */
+	public User getLoggedInUserInformation()
+	{
+		User userToGetInfoFor = new User();
 
-        if (this.serviceTicket != null)
-        {
-            userToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null)
+		{
+			userToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor,
-                    WS.Path.User.Version1.userInformation()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new User(this.postJson(
+					userToGetInfoFor,
+					WS.Path.User.Version1.userInformation()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves user information for the provided {@code usernameParam}.
-     *
-     * @param usernameParam The username of the user to retrieve info for.
-     * @return User information.
-     *
-     * @see User
-     */
-    public User getUserWhereUsername(String usernameParam)
-    {
-        User userToGetInfoFor = new User();
-        userToGetInfoFor.setUsername(usernameParam);
+	/**
+	 * Retrieves user information for the provided {@code usernameParam}.
+	 *
+	 * @param usernameParam The username of the user to retrieve info for.
+	 * @return User information.
+	 *
+	 * @see User
+	 */
+	public User getUserWhereUsername(String usernameParam)
+	{
+		User userToGetInfoFor = new User();
+		userToGetInfoFor.setUsername(usernameParam);
 
-        if (this.serviceTicket != null)
-        {
-            userToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null)
+		{
+			userToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.getByUsername()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new User(this.postJson(
+					userToGetInfoFor, WS.Path.User.Version1.getByUsername()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves user information for the provided {@code emailAddressParam}.
-     *
-     * The email address must be confirmed.
-     *
-     * @param emailAddressParam The confirmed Email of the user to retrieve info for.
-     * @return User information.
-     *
-     * @see User
-     */
-    public User getUserWhereEmail(String emailAddressParam)
-    {
-        User userToGetInfoFor = new User();
+	/**
+	 * Retrieves user information for the provided {@code emailAddressParam}.
+	 *
+	 * The email address must be confirmed.
+	 *
+	 * @param emailAddressParam The confirmed Email of the user to retrieve info for.
+	 * @return User information.
+	 *
+	 * @see User
+	 */
+	public User getUserWhereEmail(String emailAddressParam)
+	{
+		User userToGetInfoFor = new User();
 
-        if (emailAddressParam != null)
-        {
-            List<String> emailAdd = new ArrayList();
-            emailAdd.add(emailAddressParam);
+		if (emailAddressParam != null)
+		{
+			List<String> emailAdd = new ArrayList();
+			emailAdd.add(emailAddressParam);
 
-            userToGetInfoFor.setEmailAddresses(emailAdd);
-        }
+			userToGetInfoFor.setEmailAddresses(emailAdd);
+		}
 
-        if (this.serviceTicket != null)
-        {
-            userToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null)
+		{
+			userToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.getByEmail()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new User(this.postJson(
+					userToGetInfoFor, WS.Path.User.Version1.getByEmail()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves user information for the provided {@code userIdParam}.
-     *
-     * @param userIdParam The ID of the {@code User} to retrieve info for.
-     * @return User information.
-     *
-     * @see User
-     */
-    public User getUserById(Long userIdParam)
-    {
-        User userToGetInfoFor = new User();
-        userToGetInfoFor.setId(userIdParam);
+	/**
+	 * Retrieves user information for the provided {@code userIdParam}.
+	 *
+	 * @param userIdParam The ID of the {@code User} to retrieve info for.
+	 * @return User information.
+	 *
+	 * @see User
+	 */
+	public User getUserById(Long userIdParam)
+	{
+		User userToGetInfoFor = new User();
+		userToGetInfoFor.setId(userIdParam);
 
-        if (this.serviceTicket != null)
-        {
-            userToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null)
+		{
+			userToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.getById()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new User(this.postJson(
+					userToGetInfoFor, WS.Path.User.Version1.getById()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all user information.
-     *
-     * @return User information.
-     *
-     * @see UserListing
-     */
-    public UserListing getAllUsers()
-    {
-        UserListing userToGetInfoFor = new UserListing();
+	/**
+	 * Retrieves all user information.
+	 *
+	 * @return User information.
+	 *
+	 * @see UserListing
+	 */
+	public UserListing getAllUsers()
+	{
+		UserListing userToGetInfoFor = new UserListing();
 
-        if (this.serviceTicket != null)
-        {
-            userToGetInfoFor.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null)
+		{
+			userToGetInfoFor.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserListing(this.postJson(
-                    userToGetInfoFor,
-                    WS.Path.User.Version1.getAllUsers()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserListing(this.postJson(
+					userToGetInfoFor,
+					WS.Path.User.Version1.getAllUsers()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all Users by {@code jobViewParam}.
-     *
-     * @return User information at {@code UserListing}
-     *
-     * @param jobViewParam The {@link JobView} to get users for.
-     *
-     * @see UserListing
-     * @see JobView
-     */
-    public UserListing getAllUsersByJobView(JobView jobViewParam) {
-        if (this.serviceTicket != null && jobViewParam != null) {
-            jobViewParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Retrieves all Users by {@code jobViewParam}.
+	 *
+	 * @return User information at {@code UserListing}
+	 *
+	 * @param jobViewParam The {@link JobView} to get users for.
+	 *
+	 * @see UserListing
+	 * @see JobView
+	 */
+	public UserListing getAllUsersByJobView(JobView jobViewParam) {
+		if (this.serviceTicket != null && jobViewParam != null) {
+			jobViewParam.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserListing(this.postJson(
-                    jobViewParam,
-                    WS.Path.User.Version1.getAllUsersByJobView()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserListing(this.postJson(
+					jobViewParam,
+					WS.Path.User.Version1.getAllUsersByJobView()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all Users by {@code roleParam}.
-     *
-     * @return User information at {@code UserListing}
-     *
-     * @param roleParam The {@link Role} to get users for.
-     *
-     * @see UserListing
-     * @see Role
-     */
-    public UserListing getAllUsersByRole(Role roleParam) {
-        if (this.serviceTicket != null && roleParam != null) {
-            roleParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Retrieves all Users by {@code roleParam}.
+	 *
+	 * @return User information at {@code UserListing}
+	 *
+	 * @param roleParam The {@link Role} to get users for.
+	 *
+	 * @see UserListing
+	 * @see Role
+	 */
+	public UserListing getAllUsersByRole(Role roleParam) {
+		if (this.serviceTicket != null && roleParam != null) {
+			roleParam.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserListing(this.postJson(
-                    roleParam, WS.Path.User.Version1.getAllUsersByRole()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserListing(this.postJson(
+					roleParam, WS.Path.User.Version1.getAllUsersByRole()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all Users by {@code roleParam}.
-     *
-     * @return User information at {@code UserListing}
-     *
-     * @param loggedInSinceParam The date for last logged in.
-     *
-     * @see UserListing
-     */
-    public UserListing getAllUsersWhereLoggedInSince(Date loggedInSinceParam) {
+	/**
+	 * Retrieves all Users by {@code roleParam}.
+	 *
+	 * @return User information at {@code UserListing}
+	 *
+	 * @param loggedInSinceParam The date for last logged in.
+	 *
+	 * @see UserListing
+	 */
+	public UserListing getAllUsersWhereLoggedInSince(Date loggedInSinceParam) {
 
-        User userToPost = new User();
-        userToPost.setLoggedInDateTime(loggedInSinceParam);
+		User userToPost = new User();
+		userToPost.setLoggedInDateTime(loggedInSinceParam);
 
-        if (this.serviceTicket != null) {
-            userToPost.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null) {
+			userToPost.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserListing(this.postJson(
-                    userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserListing(this.postJson(
+					userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieves all user field values information by the {@code userParam}.
-     *
-     * @param userParam The {@code User} to retrieve the field values for.
-     * @return User information.
-     *
-     * @see UserFieldListing
-     */
-    public UserFieldListing getAllUserFieldValuesByUser(User userParam)
-    {
-        if (userParam == null)
-        {
-            return null;
-        }
+	/**
+	 * Retrieves all user field values information by the {@code userParam}.
+	 *
+	 * @param userParam The {@code User} to retrieve the field values for.
+	 * @return User information.
+	 *
+	 * @see UserFieldListing
+	 */
+	public UserFieldListing getAllUserFieldValuesByUser(User userParam)
+	{
+		if (userParam == null)
+		{
+			return null;
+		}
 
-        if (this.serviceTicket != null)
-        {
-            userParam.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null)
+		{
+			userParam.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
-            return new UserFieldListing(this.postJson(
-                    userParam,
-                    WS.Path.User.Version1.getUserFieldValuesByUser()));
-        }
-        //
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new UserFieldListing(this.postJson(
+					userParam,
+					WS.Path.User.Version1.getUserFieldValuesByUser()));
+		}
+		//
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-    /**
-     * Retrieve the gravatar bytes by email.
-     * The size will be 50x50.
-     * 
-     * @param emailAddressParam The email to use for the gravatar.
-     *
-     * @return JPEG image bytes.
-     */
-    public byte[] getGravatarForEmail(
-            String emailAddressParam)
-    {
-        return this.getGravatarForEmail(
-                emailAddressParam,
-                50);
-    }
+	/**
+	 * Retrieve the gravatar bytes by email.
+	 * The size will be 50x50.
+	 *
+	 * @param emailAddressParam The email to use for the gravatar.
+	 *
+	 * @return JPEG image bytes.
+	 */
+	public byte[] getGravatarForEmail(
+			String emailAddressParam)
+	{
+		return this.getGravatarForEmail(
+				emailAddressParam,
+				50);
+	}
 
-    /**
-     * Retrieve the gravatar bytes by email.
-     *
-     * @param emailAddressParam The email to use for the gravatar.
-     * @param sizeParam The pixel dimension for the image.
-     *
-     * @return JPEG image bytes.
-     */
-    public byte[] getGravatarForEmail(
-            String emailAddressParam,
-            int sizeParam)
-    {
-        try {
-            JSONObject gravatarJSONObj =
-                    this.getJson(
-                            WS.Path.User.Version1.getGravatarByEmail(
-                                    emailAddressParam, sizeParam));
+	/**
+	 * Retrieve the gravatar bytes by email.
+	 *
+	 * @param emailAddressParam The email to use for the gravatar.
+	 * @param sizeParam The pixel dimension for the image.
+	 *
+	 * @return JPEG image bytes.
+	 */
+	public byte[] getGravatarForEmail(
+			String emailAddressParam,
+			int sizeParam)
+	{
+		try {
+			JSONObject gravatarJSONObj =
+					this.getJson(
+							WS.Path.User.Version1.getGravatarByEmail(
+									emailAddressParam, sizeParam));
 
-            String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
-            if (base64Text == null || base64Text.isEmpty())
-            {
-                return null;
-            }
-            
-            return UtilGlobal.decodeBase64(base64Text);
-        }
-        //JSON Parsing...
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
-        }
-        //Encoding not supported...
-        catch (UnsupportedEncodingException unsEncExcept) {
-            throw new FluidClientException(unsEncExcept.getMessage(),
-                    unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
-        }
-    }
+			String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
+			if (base64Text == null || base64Text.isEmpty())
+			{
+				return null;
+			}
 
-    /**
-     * Retrieve the gravatar bytes for Fluid user.
-     * The size will be 50x50.
-     *
-     * @param userParam The user to get the gravatar for.
-     *
-     * @return JPEG image bytes.
-     */
-    public byte[] getGravatarForUser(User userParam)
-    {
-        return this.getGravatarForUser(userParam, 50);
-    }
-    
-    /**
-     * Retrieve the gravatar bytes for Fluid user.
-     *
-     * @param userParam The user to get the gravatar for.
-     * @param sizeParam The pixel dimension for the image.
-     *
-     * @return JPEG image bytes.
-     */
-    public byte[] getGravatarForUser(User userParam, int sizeParam)
-    {
-        if (userParam == null)
-        {
-            return null;
-        }
+			return UtilGlobal.decodeBase64(base64Text);
+		} catch (JSONException jsonExcept) {
+			//JSON Parsing...
+			throw new FluidClientException(jsonExcept.getMessage(),
+					jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+		} catch (UnsupportedEncodingException unsEncExcept) {
+			//Encoding not supported...
+			throw new FluidClientException(unsEncExcept.getMessage(),
+					unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
+		}
+	}
 
-        try {
-            JSONObject gravatarJSONObj = this.postJson(
-                            userParam,
-                            WS.Path.User.Version1.getGravatarByUser(sizeParam));
+	/**
+	 * Retrieve the gravatar bytes for Fluid user.
+	 * The size will be 50x50.
+	 *
+	 * @param userParam The user to get the gravatar for.
+	 *
+	 * @return JPEG image bytes.
+	 */
+	public byte[] getGravatarForUser(User userParam)
+	{
+		return this.getGravatarForUser(userParam, 50);
+	}
 
-            String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
-            if (base64Text == null || base64Text.isEmpty())
-            {
-                return null;
-            }
+	/**
+	 * Retrieve the gravatar bytes for Fluid user.
+	 *
+	 * @param userParam The user to get the gravatar for.
+	 * @param sizeParam The pixel dimension for the image.
+	 *
+	 * @return JPEG image bytes.
+	 */
+	public byte[] getGravatarForUser(User userParam, int sizeParam)
+	{
+		if (userParam == null)
+		{
+			return null;
+		}
 
-            return UtilGlobal.decodeBase64(base64Text);
-        }
-        //JSON problem...
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			JSONObject gravatarJSONObj = this.postJson(
+							userParam,
+							WS.Path.User.Version1.getGravatarByUser(sizeParam));
+
+			String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
+			if (base64Text == null || base64Text.isEmpty())
+			{
+				return null;
+			}
+
+			return UtilGlobal.decodeBase64(base64Text);
+		}
+		//JSON problem...
+		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 }
