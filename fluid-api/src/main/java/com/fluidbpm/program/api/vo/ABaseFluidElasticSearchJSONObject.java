@@ -129,10 +129,8 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @return Converted {@code Field} from {@code SQLFormFieldUtil.FormFieldMapping}.
 	 */
 	@XmlTransient
-	public Field convertTo(SQLFormFieldUtil.FormFieldMapping formFieldMappingParam)
-	{
-		switch (formFieldMappingParam.dataType.intValue())
-		{
+	public Field convertTo(SQLFormFieldUtil.FormFieldMapping formFieldMappingParam) {
+		switch (formFieldMappingParam.dataType.intValue()) {
 			//Text...
 			case UtilGlobal.FieldTypeId._1_TEXT:
 				return new Field(
@@ -176,7 +174,6 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 						Field.Type.Decimal);
 			//Table Field...
 			case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
-
 				return new Field(
 						formFieldMappingParam.formFieldId,
 						formFieldMappingParam.name,
@@ -185,7 +182,6 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 			//TODO __8__ encrypted field...
 			//Label...
 			case UtilGlobal.FieldTypeId._9_LABEL:
-
 				return new Field(
 						formFieldMappingParam.formFieldId,
 						formFieldMappingParam.name,
@@ -193,7 +189,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 						Field.Type.Label);
 			default:
 				throw new IllegalStateException("Unable to map '"+
-						formFieldMappingParam.dataType.intValue() +"', to Form Field value.");
+						formFieldMappingParam.dataType.intValue() +"', to Form Field value for ES.");
 		}
 	}
 }

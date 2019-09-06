@@ -1035,9 +1035,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 			return;
 		}
 
+		List<Field> copyList = new ArrayList();
+		copyList.addAll(fieldToSelectFrom);
+		
 		String fieldNameLower = fieldNameParam.toLowerCase();
-		Field fieldWithName =
-				fieldToSelectFrom.stream()
+		Field fieldWithName = copyList.stream()
 						.filter(itm ->	itm.getFieldName() != null &&
 								fieldNameLower.equals(itm.getFieldName().toLowerCase()))
 						.findFirst()
@@ -1046,7 +1048,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 			fieldToSelectFrom.add(new Field(fieldNameParam, fieldValueParam, typeParam));
 		} else {
 			fieldWithName.setFieldValue(fieldValueParam);
-
 			if (typeParam != null) {
 				fieldWithName.setTypeAsEnum(typeParam);
 			}

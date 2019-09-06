@@ -406,7 +406,8 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				resultSet = preparedStatement.executeQuery();
 			}
 
-			switch (formFieldMappingParam.dataType.intValue()) {
+			final int dataTypeIntVal = formFieldMappingParam.dataType.intValue();
+			switch (dataTypeIntVal) {
 				//Text...
 				case UtilGlobal.FieldTypeId._1_TEXT:
 				if (resultSet.next()) {
@@ -491,7 +492,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 
 					//Retrieve the info for the table record...
 					if (includeTableFieldFormRecordInfoParam) {
-
 						ISyntax syntaxForFormContInfo = SyntaxFactory.getInstance().getSyntaxFor(
 								this.getSQLTypeFromConnection(),
 								ISyntax.ProcedureMapping.Form.GetFormContainerInfo);
@@ -500,13 +500,11 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 								syntaxForFormContInfo.getPreparedStatement());
 
 						for (Form formRecordToSetInfoOn : formRecords) {
-
 							preparedStatementForTblInfo.setLong(
 									1, formRecordToSetInfoOn.getId());
 
 							resultSetForTblInfo = preparedStatementForTblInfo.executeQuery();
 							if (resultSetForTblInfo.next()) {
-
 								Long formTypeId = resultSetForTblInfo.getLong(
 										SQLFormUtil.SQLColumnIndex._02_FORM_TYPE);
 
@@ -523,14 +521,12 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 								Date lastUpdated = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
 
 								//Created...
-								if (created != null)
-								{
+								if (created != null) {
 									formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
 								}
 
 								//Last Updated...
-								if (lastUpdated != null)
-								{
+								if (lastUpdated != null) {
 									formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
 								}
 							}
@@ -543,7 +539,13 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 							formFieldMappingParam.name,
 							tableField,
 							Field.Type.Table);
-					//TODO __8__ encrypted field...
+				break;
+				//Text Encrypted...
+				case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
+					returnVal = new Field(
+							formFieldMappingParam.name,
+							formFieldMappingParam.description,
+							Field.Type.TextEncrypted);
 				break;
 				//Label...
 				case UtilGlobal.FieldTypeId._9_LABEL:
@@ -551,12 +553,12 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 							formFieldMappingParam.name,
 							formFieldMappingParam.description,
 							Field.Type.Label);
-					break;
+				break;
 				default:
 					throw new SQLException("Unable to map '"+
-							formContainerIdParam.intValue() +"', to Form Field value.");
+							formContainerIdParam.intValue() +"' on data type '"+
+							dataTypeIntVal+"' to Form Field value for SQL.");
 			}
-
 			return returnVal;
 		} catch (SQLException sqlError) {
 			throw new FluidSQLException(sqlError);
