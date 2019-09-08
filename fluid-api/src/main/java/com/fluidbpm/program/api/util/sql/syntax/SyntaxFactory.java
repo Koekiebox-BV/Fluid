@@ -100,8 +100,8 @@ public class SyntaxFactory {
 	 * @see com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil.FormFieldMapping
 	 */
 	public ISyntax getFieldValueSyntaxFor(
-			ABaseSQLUtil.SQLServerType sqlTypeParam,
-			SQLFormFieldUtil.FormFieldMapping formFieldMappingParam
+		ABaseSQLUtil.SQLServerType sqlTypeParam,
+		SQLFormFieldUtil.FormFieldMapping formFieldMappingParam
 	) {
 		Long dataType = formFieldMappingParam.dataType;
 		if (dataType == null) {
@@ -119,18 +119,13 @@ public class SyntaxFactory {
 				return this.getSyntaxFor(
 						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
 			case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
-				if (this.isPlain(formFieldMappingParam.metaData))
-				{
+				if (this.isPlain(formFieldMappingParam.metaData)) {
 					return this.getSyntaxFor(
 							sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_4_MultiChoice);
-				}
-				else if (this.isSelectMany(formFieldMappingParam.metaData))
-				{
+				} else if (this.isSelectMany(formFieldMappingParam.metaData)) {
 					return this.getSyntaxFor(
 							sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldMultipleValue_4_MultiChoice);
-				}
-				else
-				{
+				} else {
 					throw new FluidSQLException(
 							new SQLException("Data Type '"+
 									dataType
@@ -148,6 +143,8 @@ public class SyntaxFactory {
 				return this.getSyntaxFor(
 						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
 			case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
+				return this.getSyntaxFor(
+						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_8_TextEncrypted);
 			case UtilGlobal.FieldTypeId._9_LABEL:
 				return null;
 			default:
@@ -172,7 +169,6 @@ public class SyntaxFactory {
 		}
 
 		String toCheckLower = textToCheckParam.toLowerCase();
-
 		return toCheckLower.startsWith(PLAIN.toLowerCase());
 	}
 

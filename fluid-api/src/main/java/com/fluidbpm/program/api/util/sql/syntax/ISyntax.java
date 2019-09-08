@@ -108,6 +108,9 @@ public interface ISyntax {
 
 			public static final String GetFormFieldValue_7_TableField =
 					"Fluid_GetFormFieldValueTableField";
+
+			public static final String GetFormFieldValue_8_TextEncrypted =
+					"Fluid_GetFormFieldValueTextEncrypted";
 		}
 
 		/**

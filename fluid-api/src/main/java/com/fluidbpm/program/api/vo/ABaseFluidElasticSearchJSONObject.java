@@ -38,7 +38,7 @@ import com.fluidbpm.program.api.vo.field.Field;
  * @see ABaseFluidVO
  * @see JSONObject
  */
-public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONObject{
+public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
 
@@ -104,17 +104,14 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @return The converted {@code Field}s.
 	 */
 	@XmlTransient
-	public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam)
-	{
-		if (formFieldMappingsParam == null)
-		{
+	public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam) {
+		if (formFieldMappingsParam == null) {
 			return null;
 		}
 
 		List<Field> returnVal = new ArrayList();
 
-		for (SQLFormFieldUtil.FormFieldMapping mappingToConvert : formFieldMappingsParam)
-		{
+		for (SQLFormFieldUtil.FormFieldMapping mappingToConvert : formFieldMappingsParam) {
 			returnVal.add(this.convertTo(mappingToConvert));
 		}
 
@@ -136,7 +133,8 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 				return new Field(
 						formFieldMappingParam.formFieldId,
 						formFieldMappingParam.name,
-						null, Field.Type.Text);
+						null,
+						Field.Type.Text);
 
 			//True False...
 			case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
@@ -179,7 +177,12 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 						formFieldMappingParam.name,
 						null,
 						Field.Type.Table);
-			//TODO __8__ encrypted field...
+			case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
+				return new Field(
+						formFieldMappingParam.formFieldId,
+						formFieldMappingParam.name,
+						null,
+						Field.Type.TextEncrypted);
 			//Label...
 			case UtilGlobal.FieldTypeId._9_LABEL:
 				return new Field(

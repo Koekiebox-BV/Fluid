@@ -84,7 +84,6 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 		this();
 
 		this.jsonObject = jsonObjectParam;
-
 		if (this.jsonObject == null) {
 			return;
 		}
@@ -255,7 +254,6 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	@Override
 	@XmlTransient
 	public String toString() {
-
 		JSONObject jsonObject = this.toJsonObject();
 		return (jsonObject == null) ? null : jsonObject.toString();
 	}

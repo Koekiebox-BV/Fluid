@@ -34,7 +34,6 @@ import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
  * @see java.sql.Statement
  */
 public abstract class ABaseSQLUtil extends ABaseUtil {
-
 	private Connection connection;
 	private DatabaseMetaData databaseMetaData;
 
@@ -188,8 +187,7 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 	 * @see PreparedStatement
 	 */
 	protected void closeStatement(PreparedStatement preparedStatementParam) {
-		if (preparedStatementParam == null)
-		{
+		if (preparedStatementParam == null) {
 			return;
 		}
 

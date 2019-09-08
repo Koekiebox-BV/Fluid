@@ -32,6 +32,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.common.io.BaseEncoding;
 
 /**
  * SQL Utility class used for {@code Field} related actions.
@@ -42,7 +43,7 @@ import com.fluidbpm.program.api.vo.form.Form;
  * @see ABaseSQLUtil
  * @see Field
  */
-public class SQLFormFieldUtil extends ABaseSQLUtil{
+public class SQLFormFieldUtil extends ABaseSQLUtil {
 
 	private Map<Long, List<FormFieldMapping>> localDefinitionToFieldsMapping;
 	private SQLFormDefinitionUtil sqlFormDefinitionUtil;
@@ -52,8 +53,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	 *
 	 * @see ABaseFluidVO
 	 */
-	public static class FormFieldMapping extends ABaseFluidVO{
-
+	public static class FormFieldMapping extends ABaseFluidVO {
 		public Long formDefinitionId;
 		public Long formFieldId;
 		public Long dataType;
@@ -74,12 +74,13 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 		 * @see Field.Type
 		 */
 		public FormFieldMapping(
-				Long formDefinitionIdParam,
-				Long formFieldIdParam,
-				Long dataTypeParam,
-				String metaDataParam,
-				String nameParam,
-				String descriptionParam) {
+			Long formDefinitionIdParam,
+			Long formFieldIdParam,
+			Long dataTypeParam,
+			String metaDataParam,
+			String nameParam,
+			String descriptionParam
+		) {
 			this.formDefinitionId = formDefinitionIdParam;
 			this.formFieldId = formFieldIdParam;
 			this.dataType = dataTypeParam;
@@ -106,7 +107,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	 */
 	public SQLFormFieldUtil(Connection connectionParam, CacheUtil cacheUtilParam) {
 		super(connectionParam, cacheUtilParam);
-
 		this.localDefinitionToFieldsMapping = new HashMap();
 	}
 
@@ -123,7 +123,6 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 			CacheUtil cacheUtilParam,
 			SQLFormDefinitionUtil sqlFormDefinitionUtilParam) {
 		this(connectionParam, cacheUtilParam);
-
 		this.sqlFormDefinitionUtil = sqlFormDefinitionUtilParam;
 	}
 
@@ -133,13 +132,10 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 	 * @param electronicFormIdParam The Electronic Form to get Form Field mappings for.
 	 * @return List of Form Field mappings.
 	 */
-	public List<FormFieldMapping> getFormFieldMappingForForm(
-			Long electronicFormIdParam)
-	{
+	public List<FormFieldMapping> getFormFieldMappingForForm(Long electronicFormIdParam) {
 		List<FormFieldMapping> returnVal = new ArrayList();
 
-		if (electronicFormIdParam == null)
-		{
+		if (electronicFormIdParam == null) {
 			return returnVal;
 		}
 
@@ -150,8 +146,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 
 			//Local Mapping...
 			//When we have the key by definition, we can just return.
-			if (this.localDefinitionToFieldsMapping.containsKey(formDefinitionId))
-			{
+			if (this.localDefinitionToFieldsMapping.containsKey(formDefinitionId)) {
 				return this.localDefinitionToFieldsMapping.get(formDefinitionId);
 			}
 
@@ -167,8 +162,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 			resultSet = preparedStatement.executeQuery();
 
 			//Iterate each of the form containers...
-			while (resultSet.next())
-			{
+			while (resultSet.next()) {
 				returnVal.add(this.mapFormFieldMapping(resultSet));
 			}
 
@@ -315,7 +309,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 		for (FormFieldMapping fieldMapping : fieldMappings) {
 			//Skip if ignore Table Fields...
 			if (!includeTableFieldsParam &&
-					fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD){//Table Field...
+					fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD) {//Table Field...
 				continue;
 			}
 
@@ -375,8 +369,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 						formContainerIdParam,
 						formFieldMappingParam.formFieldId);
 
-			if (cachedFieldValue != null)
-			{
+			if (cachedFieldValue != null) {
 				Field field = cachedFieldValue.getCachedFieldValueAsField();
 				if (field != null)
 				{
@@ -440,7 +433,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 					MultiChoice multiChoice = new MultiChoice();
 
 					List<String> selectedValues = new ArrayList();
-					while(resultSet.next()) {
+					while (resultSet.next()) {
 						selectedValues.add(resultSet.getString(1));
 					}
 
@@ -542,9 +535,15 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				break;
 				//Text Encrypted...
 				case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
+					String encryptedText = resultSet.getString(1);
+					if (ENCRYPTED_FIELD_KEY == null) {
+						throw new SQLException("Unable decrypt encrypted field if key is not set.");
+					}
+
+					byte[] decryptedBytes = this.decryptECB(BaseEncoding.base16().decode(encryptedText));
 					returnVal = new Field(
 							formFieldMappingParam.name,
-							formFieldMappingParam.description,
+							new String(decryptedBytes),
 							Field.Type.TextEncrypted);
 				break;
 				//Label...
@@ -588,5 +587,4 @@ public class SQLFormFieldUtil extends ABaseSQLUtil{
 				resultSetParam.getString(5),
 				resultSetParam.getString(6));
 	}
-
 }

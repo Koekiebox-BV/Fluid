@@ -101,7 +101,6 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			boolean includeFieldDataParam
 	) {
 		List<Form> returnVal = new ArrayList();
-
 		if (electronicFormIdParam == null) {
 			return returnVal;
 		}
@@ -124,18 +123,15 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			resultSet = preparedStatement.executeQuery();
 
 			//Iterate each of the form containers...
-			while (resultSet.next())
-			{
+			while (resultSet.next()) {
 				returnVal.add(this.mapFormContainerTo(
 						definitionAndTitle,
 						resultSet));
 			}
 
 			//When field data must also be included...
-			if (includeFieldDataParam)
-			{
-				for (Form form : returnVal)
-				{
+			if (includeFieldDataParam) {
+				for (Form form : returnVal) {
 					List<Field> formFields = this.fieldUtil.getFormFields(
 									form.getId(),
 									false,
