@@ -535,16 +535,18 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 				break;
 				//Text Encrypted...
 				case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
-					String encryptedText = resultSet.getString(1);
 					if (ENCRYPTED_FIELD_KEY == null) {
 						throw new SQLException("Unable decrypt encrypted field if key is not set.");
 					}
 
-					byte[] decryptedBytes = this.decryptECB(BaseEncoding.base16().decode(encryptedText));
-					returnVal = new Field(
-							formFieldMappingParam.name,
-							new String(decryptedBytes),
-							Field.Type.TextEncrypted);
+					if (resultSet.next()) {
+						String encryptedText = resultSet.getString(1);
+						byte[] decryptedBytes = this.decryptECB(BaseEncoding.base16().decode(encryptedText));
+						returnVal = new Field(
+								formFieldMappingParam.name,
+								new String(decryptedBytes),
+								Field.Type.TextEncrypted);
+					}
 				break;
 				//Label...
 				case UtilGlobal.FieldTypeId._9_LABEL:
