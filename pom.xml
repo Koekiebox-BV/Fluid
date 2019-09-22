@@ -243,7 +243,6 @@
 
     <!--Distribution Management-->
     <distributionManagement>
-
         <!--Snapshot-->
         <snapshotRepository>
             <id>fluid_open_source</id>

@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.flowitem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -38,176 +39,191 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class FlowItemClient extends ABaseClientWS {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public FlowItemClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public FlowItemClient(
+			String endpointBaseUrlParam,
+			String serviceTicketParam) {
+		super(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+	/**
+	 * Retrieves the Form Container by Primary key.
+	 *
+	 * @param formIdParam The Form primary key.
+	 * @return Form by Primary key.
+	 */
+	public FluidItem getFluidItemByFormId(Long formIdParam) {
+		Form form = new Form(formIdParam);
+		if (this.serviceTicket != null) {
+			form.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Retrieves the Form Container by Primary key.
-     *
-     * @param formIdParam The Form primary key.
-     * @return Form by Primary key.
-     */
-    public FluidItem getFluidItemByFormId(Long formIdParam) {
-        Form form = new Form(formIdParam);
+		return new FluidItem(this.postJson(
+				form, WS.Path.FlowItem.Version1.getByForm()));
+	}
 
-        if (this.serviceTicket != null) {
-            form.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Creates a new Fluid Item that will be sent to the {@code flowJobItemParam}
+	 * Flow.
+	 *
+	 * @param flowJobItemParam The Fluid Item to create and send to Workflow.
+	 * @param flowNameParam The name of the Flow where the Item must be sent.
+	 * @return The created Fluid item.
+	 */
+	public FluidItem createFlowItem(
+		FluidItem flowJobItemParam,
+		String flowNameParam
+	) {
+		if (flowJobItemParam != null && this.serviceTicket != null) {
+			flowJobItemParam.setServiceTicket(this.serviceTicket);
+		}
 
-        return new FluidItem(this.postJson(
-                form, WS.Path.FlowItem.Version1.getByForm()));
-    }
+		//Flow Job Item Step etc...
+		if (flowJobItemParam != null) {
+			flowJobItemParam.setFlow(flowNameParam);
+		}
 
-    /**
-     * Creates a new Fluid Item that will be sent to the {@code flowJobItemParam}
-     * Flow.
-     *
-     * @param flowJobItemParam The Fluid Item to create and send to Workflow.
-     * @param flowNameParam The name of the Flow where the Item must be sent.
-     * @return The created Fluid item.
-     */
-    public FluidItem createFlowItem(
-            FluidItem flowJobItemParam,
-            String flowNameParam) {
+		try {
 
-        if (flowJobItemParam != null && this.serviceTicket != null) {
-            flowJobItemParam.setServiceTicket(this.serviceTicket);
-        }
+			return new FluidItem(this.putJson(
+					flowJobItemParam, WS.Path.FlowItem.Version1.flowItemCreate()));
+		} catch (JSONException e) {
+			throw new FluidClientException(e.getMessage(), e,
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        //Flow Job Item Step etc...
-        if (flowJobItemParam != null)
-        {
-            flowJobItemParam.setFlow(flowNameParam);
-        }
+	/**
+	 * Retrieves items for the provided JobView.
+	 *
+	 * @param jobViewParam The {@link JobView} to retrieve items from.
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The offset.
+	 * @param sortFieldParam The sort field.
+	 * @param sortOrderParam The sort order.
+	 * @return The Fluid items for the {@code jobViewParam}.
+	 */
+	public FluidItemListing getFluidItemsForView(
+		JobView jobViewParam,
+		int queryLimitParam,
+		int offsetParam,
+		String sortFieldParam,
+		String sortOrderParam
+	) {
+		if (this.serviceTicket != null && jobViewParam != null) {
+			jobViewParam.setServiceTicket(this.serviceTicket);
+		}
 
-        try {
+		try {
+			return new FluidItemListing(this.postJson(
+					jobViewParam,
+					WS.Path.FlowItem.Version1.getByJobView(
+							queryLimitParam,
+							offsetParam,
+							sortFieldParam,
+							sortOrderParam
+					)));
+		} catch (JSONException jsonExcept) {
+			//rethrow as a Fluid Client exception.
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-            return new FluidItem(this.putJson(
-                    flowJobItemParam, WS.Path.FlowItem.Version1.flowItemCreate()));
-        }
-        //
-        catch (JSONException e) {
-            throw new FluidClientException(e.getMessage(), e,
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+	/**
+	 * Retrieves items for the provided JobView.
+	 * No sorting or ordering for this method.
+	 *
+	 * @param jobViewParam The {@link JobView} to retrieve items from.
+	 * @param queryLimitParam The query limit.
+	 * @param offsetParam The offset.
+	 * @return The Fluid items for the {@code jobViewParam}.
+	 */
+	public FluidItemListing getFluidItemsForView(
+		JobView jobViewParam,
+		int queryLimitParam,
+		int offsetParam
+	) {
+		return this.getFluidItemsForView(
+				jobViewParam,
+				queryLimitParam,
+				offsetParam,
+				UtilGlobal.EMPTY,
+				UtilGlobal.EMPTY);
+	}
 
-    /**
-     * Retrieves items for the provided JobView.
-     *
-     * @param jobViewParam The {@link JobView} to retrieve items from.
-     * @param queryLimitParam The query limit.
-     * @param offsetParam The offset.
-     * @param sortFieldParam The sort field.
-     * @param sortOrderParam The sort order.
-     * @return The Fluid items for the {@code jobViewParam}.
-     */
-    public FluidItemListing getFluidItemsForView(
-            JobView jobViewParam,
-            int queryLimitParam,
-            int offsetParam,
-            String sortFieldParam,
-            String sortOrderParam)
-    {
-        if (this.serviceTicket != null && jobViewParam != null)
-        {
-            jobViewParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Send a workflow item currently in an {@code Assignment} step to.
+	 * Collaborator user send on is not allowed.
+	 *
+	 * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
+	 *
+	 * @return The Fluid item that was sent on.
+	 */
+	public FluidItem sendFlowItemOn(FluidItem flowJobItemParam) {
+		return this.sendFlowItemOn(flowJobItemParam, false);
+	}
 
-        try {
-            return new FluidItemListing(this.postJson(
-                    jobViewParam,
-                    WS.Path.FlowItem.Version1.getByJobView(
-                            queryLimitParam,
-                            offsetParam,
-                            sortFieldParam,
-                            sortOrderParam
-                    )));
-        }
-        //rethrow as a Fluid Client exception.
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+	/**
+	 * Send a workflow item currently in an {@code Assignment} step to
+	 *
+	 * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
+	 * @param allowCollaboratorToSendOnParam All a collaborator user to also send on.
+	 *
+	 * @return The Fluid item that was sent on.
+	 */
+	public FluidItem sendFlowItemOn(
+			FluidItem flowJobItemParam,
+			boolean allowCollaboratorToSendOnParam
+	) {
 
-    /**
-     * Send a workflow item currently in an {@code Assignment} step to.
-     * Collaborator user send on is not allowed.
-     *
-     * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
-     *
-     * @return The Fluid item that was sent on.
-     */
-    public FluidItem sendFlowItemOn(FluidItem flowJobItemParam) {
-        return this.sendFlowItemOn(flowJobItemParam, false);
-    }
+		if (flowJobItemParam != null && this.serviceTicket != null) {
+			flowJobItemParam.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Send a workflow item currently in an {@code Assignment} step to   
-     *
-     * @param flowJobItemParam The Fluid Item to {@code "Send On"} in the workflow process.
-     * @param allowCollaboratorToSendOnParam All a collaborator user to also send on.
-     *
-     * @return The Fluid item that was sent on.
-     */
-    public FluidItem sendFlowItemOn(
-            FluidItem flowJobItemParam,
-            boolean allowCollaboratorToSendOnParam
-    ) {
+		try {
+			return new FluidItem(this.postJson(
+					flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn(
+							allowCollaboratorToSendOnParam)));
+		} catch (JSONException e) {
+			throw new FluidClientException(e.getMessage(), e,
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        if (flowJobItemParam != null && this.serviceTicket != null) {
-            flowJobItemParam.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Send a form item to be part of a workflow.
+	 *
+	 * @param formToSendToFlowParam The Form to {@code "Send To Flow (introduction)"} in the workflow process.
+	 * @param flowParam The Flow the {@code formToSendToFlowParam} must be sent to.
+	 *
+	 * @return The Fluid item that was initiated in a workflow process.
+	 */
+	public FluidItem sendFormToFlow(
+			Form formToSendToFlowParam,
+			String flowParam) {
 
-        try {
-            return new FluidItem(this.postJson(
-                    flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn(
-                            allowCollaboratorToSendOnParam)));
-        } catch (JSONException e) {
-            throw new FluidClientException(e.getMessage(), e,
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		FluidItem itemToSend = new FluidItem();
+		itemToSend.setForm(formToSendToFlowParam);
+		itemToSend.setFlow(flowParam);
 
-    /**
-     * Send a form item to be part of a workflow.
-     *
-     * @param formToSendToFlowParam The Form to {@code "Send To Flow (introduction)"} in the workflow process.
-     * @param flowParam The Flow the {@code formToSendToFlowParam} must be sent to.
-     *
-     * @return The Fluid item that was initiated in a workflow process.
-     */
-    public FluidItem sendFormToFlow(
-            Form formToSendToFlowParam,
-            String flowParam) {
+		if (this.serviceTicket != null) {
+			itemToSend.setServiceTicket(this.serviceTicket);
+		}
 
-        FluidItem itemToSend = new FluidItem();
-        itemToSend.setForm(formToSendToFlowParam);
-        itemToSend.setFlow(flowParam);
+		try {
 
-        if (this.serviceTicket != null) {
-            itemToSend.setServiceTicket(this.serviceTicket);
-        }
-
-        try {
-
-            return new FluidItem(this.postJson(
-                    itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
-        } catch (JSONException e) {
-            throw new FluidClientException(e.getMessage(), e,
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+			return new FluidItem(this.postJson(
+					itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
+		} catch (JSONException e) {
+			throw new FluidClientException(e.getMessage(), e,
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 }
