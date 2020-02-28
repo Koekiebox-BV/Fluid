@@ -713,6 +713,24 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
+	 * Remove the {@code Form} field where the name is {@code fieldNameParam}.
+	 * 
+	 * @param fieldNameParam The name of the field to remove.
+	 */
+	public void removeField(String fieldNameParam) {
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
+			return;
+		}
+
+		if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
+			return;
+		}
+		String fieldNameLower = fieldNameParam.toLowerCase();
+		this.getFormFields().removeIf(fieldItm -> fieldItm.getFieldName() != null &&
+				fieldNameLower.equals(fieldItm.getFieldName().toLowerCase()));
+	}
+
+	/**
 	 * <p>
 	 *     Sets the value of the {@code fieldNameParam} requested.
 	 *
