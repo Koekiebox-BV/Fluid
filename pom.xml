@@ -1,279 +1,290 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.fluidbpm</groupId>
-    <artifactId>fluid-root</artifactId>
-    <packaging>pom</packaging>
-    <version>1.10</version>
-    <name>Fluid Root</name>
-    <description>Parent pom providing default setups for all application and admin servers modules.</description>
-    <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.fluidbpm</groupId>
+	<artifactId>fluid-root</artifactId>
+	<packaging>pom</packaging>
+	<version>1.10</version>
+	<name>Fluid Root</name>
+	<description>Parent pom providing default setups for all application and admin servers modules.</description>
+	<url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
 
-    <licenses>
-        <license>
-            <name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
-            <url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
+			<url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <developers>
-        <developer>
-            <name>Jason Bruwer</name>
-            <email>jason@koekiebox.com</email>
-            <organization>Koekiebox (PTY) LTD</organization>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<name>Jason Bruwer</name>
+			<email>jason@koekiebox.com</email>
+			<organization>Koekiebox (PTY) LTD</organization>
+		</developer>
+	</developers>
 
-    <scm>
-        <connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
-        <developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
-        <url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
-    </scm>
+	<scm>
+		<connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
+		<developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
+		<url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
+	</scm>
 
-    <properties>
-        <!-- Maven-compiler-plugin -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jdk.compile>1.8</version.jdk.compile>
+	<properties>
+		<!-- Maven-compiler-plugin -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.jdk.compile>1.8</version.jdk.compile>
 
-        <!--Maven Dependency Versions-->
-        <version.junit>4.12</version.junit>
-        <version.slf4j>1.7.22</version.slf4j>
+		<!--Maven Dependency Versions-->
+		<version.junit>4.12</version.junit>
+		<version.slf4j>1.7.22</version.slf4j>
 
-        <version.javax.websocket>1.1</version.javax.websocket>
+		<version.javax.websocket>1.1</version.javax.websocket>
 
-        <!--Org.JSON-->
-        <version.org.json>20180813</version.org.json>
+		<!--Org.JSON-->
+		<version.org.json>20180813</version.org.json>
 
-        <!--JBoss Resteasy-->
-        <version.jboss.resteasy.jackson>3.1.3.Final</version.jboss.resteasy.jackson>
+		<!--JBoss Resteasy-->
+		<version.jboss.resteasy.jackson>3.1.3.Final</version.jboss.resteasy.jackson>
 
-        <!--Google-->
-        <version.google.xmemcached>2.3.1</version.google.xmemcached>
-        <version.google.guava>23.0</version.google.guava>
+		<!--Google-->
+		<version.google.xmemcached>2.3.1</version.google.xmemcached>
+		<version.google.guava>23.0</version.google.guava>
 
-        <!--Apache-->
-        <version.apache.httpcomponents.httpcore>4.4.6</version.apache.httpcomponents.httpcore>
-        <version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
+		<!--Apache-->
+		<version.apache.httpcomponents.httpcore>4.4.6</version.apache.httpcomponents.httpcore>
+		<version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
 
-        <!--Elasticsearch-->
-        <version.elasticsearch>6.7.1</version.elasticsearch>
+		<!--Elasticsearch-->
+		<version.elasticsearch>6.7.1</version.elasticsearch>
 
-        <!--GlassFish Tyrus-->
-        <version.glassfish.tyrus.core>1.13.1</version.glassfish.tyrus.core>
-        <version.glassfish.tyrus.client>1.13.1</version.glassfish.tyrus.client>
-        <version.glassfish.tyrus.container.client>1.13.1</version.glassfish.tyrus.container.client>
-        <version.glassfish.tyrus.spi>1.13.1</version.glassfish.tyrus.spi>
+		<!--GlassFish Tyrus-->
+		<version.glassfish.tyrus.core>1.13.1</version.glassfish.tyrus.core>
+		<version.glassfish.tyrus.client>1.13.1</version.glassfish.tyrus.client>
+		<version.glassfish.tyrus.container.client>1.13.1</version.glassfish.tyrus.container.client>
+		<version.glassfish.tyrus.spi>1.13.1</version.glassfish.tyrus.spi>
 
-        <!--GlassFish Grizzly-->
-        <version.glassfish.grizzly.framework>2.3.31</version.glassfish.grizzly.framework>
-        <version.glassfish.grizzly.http>2.3.31</version.glassfish.grizzly.http>
+		<!--GlassFish Grizzly-->
+		<version.glassfish.grizzly.framework>2.3.31</version.glassfish.grizzly.framework>
+		<version.glassfish.grizzly.http>2.3.31</version.glassfish.grizzly.http>
 
-        <!--Plugins-->
-        <version.plugin.compiler>3.6.0</version.plugin.compiler>
-        <version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
-        <version.plugin.java.source>3.0.1</version.plugin.java.source>
-        <version.plugin.java.doc>2.10.4</version.plugin.java.doc>
-        <version.plugin.gpg>1.6</version.plugin.gpg>
-        <version.plugin.dependency>3.0.1</version.plugin.dependency>
-    </properties>
+		<!--Plugins-->
+		<version.plugin.compiler>3.6.0</version.plugin.compiler>
+		<version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
+		<version.plugin.java.source>3.0.1</version.plugin.java.source>
+		<version.plugin.java.doc>2.10.4</version.plugin.java.doc>
+		<version.plugin.gpg>1.6</version.plugin.gpg>
+		<version.plugin.dependency>3.0.1</version.plugin.dependency>
 
-    <!--Repos-->
-    <repositories>
-        <!--repository>
-            <id>Local Repo</id>
-            <name>Local Maven Repository</name>
-            <url>file:${user.home}/.m2/repository</url>
-        </repository-->
-    </repositories>
+		<!--Redis-->
+		<version.jedis>3.2.0</version.jedis>
+	</properties>
 
-    <!--Plugin Repos-->
-    <pluginRepositories>
-        <!--pluginRepository>
-            <id>Local Repo</id>
-            <name>Local Maven Repository</name>
-            <url>file:${user.home}/.m2/repository</url>
-        </pluginRepository-->
-    </pluginRepositories>
+	<!--Repos-->
+	<repositories>
+		<!--repository>
+			<id>Local Repo</id>
+			<name>Local Maven Repository</name>
+			<url>file:${user.home}/.m2/repository</url>
+		</repository-->
+	</repositories>
 
-    <!--Modules-->
-    <modules>
-        <module>fluid-api</module>
-        <module>fluid-ws-java-client</module>
-    </modules>
+	<!--Plugin Repos-->
+	<pluginRepositories>
+		<!--pluginRepository>
+			<id>Local Repo</id>
+			<name>Local Maven Repository</name>
+			<url>file:${user.home}/.m2/repository</url>
+		</pluginRepository-->
+	</pluginRepositories>
 
-    <!--Dependencies-->
-    <dependencyManagement>
-        <dependencies>
-            <!--Fluid-->
-            <dependency>
-                <groupId>com.fluidbpm</groupId>
-                <artifactId>fluid-api</artifactId>
-                <scope>provided</scope>
-                <version>${project.version}</version>
-            </dependency>
+	<!--Modules-->
+	<modules>
+		<module>fluid-api</module>
+		<module>fluid-ws-java-client</module>
+	</modules>
 
-            <!--JSON Library API-->
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>${version.org.json}</version>
-                <scope>provided</scope>
-            </dependency>
+	<!--Dependencies-->
+	<dependencyManagement>
+		<dependencies>
+			<!--Fluid-->
+			<dependency>
+				<groupId>com.fluidbpm</groupId>
+				<artifactId>fluid-api</artifactId>
+				<scope>provided</scope>
+				<version>${project.version}</version>
+			</dependency>
 
-            <!--Google-->
-            <!--XMemcachedClient-->
-            <dependency>
-                <groupId>com.googlecode.xmemcached</groupId>
-                <artifactId>xmemcached</artifactId>
-                <scope>provided</scope>
-                <version>${version.google.xmemcached}</version>
-            </dependency>
+			<!--JSON Library API-->
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>${version.org.json}</version>
+				<scope>provided</scope>
+			</dependency>
 
-            <!--Google Guava - https://mvnrepository.com/artifact/com.google.guava/guava -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${version.google.guava}</version>
-                <scope>provided</scope>
-            </dependency>
+			<!-- Redis - https://mvnrepository.com/artifact/redis.clients/jedis -->
+			<dependency>
+				<groupId>redis.clients</groupId>
+				<artifactId>jedis</artifactId>
+				<scope>provided</scope>
+				<version>${version.jedis}</version>
+			</dependency>
 
-            <!--ElasticSearch-->
-            <dependency>
-                <groupId>org.elasticsearch.client</groupId>
-                <artifactId>transport</artifactId>
-                <scope>provided</scope>
-                <version>${version.elasticsearch}</version>
-            </dependency>
+			<!--Google-->
+			<!--XMemcachedClient-->
+			<dependency>
+				<groupId>com.googlecode.xmemcached</groupId>
+				<artifactId>xmemcached</artifactId>
+				<scope>provided</scope>
+				<version>${version.google.xmemcached}</version>
+			</dependency>
 
-            <!--HTTP Components-->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <scope>provided</scope>
-                <version>${version.apache.httpcomponents.httpclient}</version>
-            </dependency>
+			<!--Google Guava - https://mvnrepository.com/artifact/com.google.guava/guava -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${version.google.guava}</version>
+				<scope>provided</scope>
+			</dependency>
 
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <scope>provided</scope>
-                <version>${version.apache.httpcomponents.httpcore}</version>
-            </dependency>
+			<!--ElasticSearch-->
+			<dependency>
+				<groupId>org.elasticsearch.client</groupId>
+				<artifactId>transport</artifactId>
+				<scope>provided</scope>
+				<version>${version.elasticsearch}</version>
+			</dependency>
 
-            <!--WebSocket-->
-            <dependency>
-                <groupId>javax.websocket</groupId>
-                <artifactId>javax.websocket-client-api</artifactId>
-                <scope>provided</scope>
-                <version>${version.javax.websocket}</version>
-            </dependency>
+			<!--HTTP Components-->
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<scope>provided</scope>
+				<version>${version.apache.httpcomponents.httpclient}</version>
+			</dependency>
 
-            <!--GlassFish Tyrus-->
-            <dependency>
-                <groupId>org.glassfish.tyrus</groupId>
-                <artifactId>tyrus-container-grizzly-client</artifactId>
-                <scope>provided</scope>
-                <version>${version.glassfish.tyrus.container.client}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<scope>provided</scope>
+				<version>${version.apache.httpcomponents.httpcore}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.tyrus</groupId>
-                <artifactId>tyrus-client</artifactId>
-                <scope>provided</scope>
-                <version>${version.glassfish.tyrus.client}</version>
-            </dependency>
+			<!--WebSocket-->
+			<dependency>
+				<groupId>javax.websocket</groupId>
+				<artifactId>javax.websocket-client-api</artifactId>
+				<scope>provided</scope>
+				<version>${version.javax.websocket}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.tyrus</groupId>
-                <artifactId>tyrus-core</artifactId>
-                <scope>provided</scope>
-                <version>${version.glassfish.tyrus.core}</version>
-            </dependency>
+			<!--GlassFish Tyrus-->
+			<dependency>
+				<groupId>org.glassfish.tyrus</groupId>
+				<artifactId>tyrus-container-grizzly-client</artifactId>
+				<scope>provided</scope>
+				<version>${version.glassfish.tyrus.container.client}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.tyrus</groupId>
-                <artifactId>tyrus-spi</artifactId>
-                <scope>provided</scope>
-                <version>${version.glassfish.tyrus.spi}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.glassfish.tyrus</groupId>
+				<artifactId>tyrus-client</artifactId>
+				<scope>provided</scope>
+				<version>${version.glassfish.tyrus.client}</version>
+			</dependency>
 
-            <!--GlassFish Grizzly-->
-            <dependency>
-                <groupId>org.glassfish.grizzly</groupId>
-                <artifactId>grizzly-framework</artifactId>
-                <scope>provided</scope>
-                <version>${version.glassfish.grizzly.framework}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.glassfish.tyrus</groupId>
+				<artifactId>tyrus-core</artifactId>
+				<scope>provided</scope>
+				<version>${version.glassfish.tyrus.core}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.glassfish.grizzly</groupId>
-                <artifactId>grizzly-http</artifactId>
-                <scope>provided</scope>
-                <version>${version.glassfish.grizzly.http}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.glassfish.tyrus</groupId>
+				<artifactId>tyrus-spi</artifactId>
+				<scope>provided</scope>
+				<version>${version.glassfish.tyrus.spi}</version>
+			</dependency>
 
-            <!--Jackson Provider-->
-            <!--dependency>
-                <groupId>org.jboss.resteasy</groupId>
-                <artifactId>resteasy-jackson-provider</artifactId>
-                <version>${version.jboss.resteasy.jackson}</version>
-                <scope>provided</scope>
-            </dependency-->
+			<!--GlassFish Grizzly-->
+			<dependency>
+				<groupId>org.glassfish.grizzly</groupId>
+				<artifactId>grizzly-framework</artifactId>
+				<scope>provided</scope>
+				<version>${version.glassfish.grizzly.framework}</version>
+			</dependency>
 
-            <!--Maven GPG Plugin-->
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${version.plugin.gpg}</version>
-                <scope>provided</scope>
-            </dependency>
+			<dependency>
+				<groupId>org.glassfish.grizzly</groupId>
+				<artifactId>grizzly-http</artifactId>
+				<scope>provided</scope>
+				<version>${version.glassfish.grizzly.http}</version>
+			</dependency>
 
-            <!--JUnit-->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+			<!--Jackson Provider-->
+			<!--dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jackson-provider</artifactId>
+				<version>${version.jboss.resteasy.jackson}</version>
+				<scope>provided</scope>
+			</dependency-->
 
-    <!--Distribution Management-->
-    <distributionManagement>
-        <!--Snapshot-->
-        <snapshotRepository>
-            <id>fluid_open_source</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
+			<!--Maven GPG Plugin-->
+			<dependency>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${version.plugin.gpg}</version>
+				<scope>provided</scope>
+			</dependency>
 
-        <!--Release-->
-        <repository>
-            <id>fluid_open_source</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
+			<!--JUnit-->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${version.junit}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <!--Plugins-->
-    <build>
-        <plugins>
-            <!--Maven GPG Sign Plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${version.plugin.gpg}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+	<!--Distribution Management-->
+	<distributionManagement>
+		<!--Snapshot-->
+		<snapshotRepository>
+			<id>fluid_open_source</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+
+		<!--Release-->
+		<repository>
+			<id>fluid_open_source</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+	</distributionManagement>
+
+	<!--Plugins-->
+	<build>
+		<plugins>
+			<!--Maven GPG Sign Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${version.plugin.gpg}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -86,8 +86,8 @@ public abstract class ABaseUtil implements Serializable {
 	 * @return The property value.
 	 */
 	protected static String getStringPropertyFromProperties(
-			Properties propertiesParam,
-			String propertyKeyParam
+		Properties propertiesParam,
+		String propertyKeyParam
 	) {
 		if (propertiesParam == null || propertiesParam.isEmpty()) {
 			return null;

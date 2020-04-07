@@ -388,11 +388,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			return null;
 		}
 
-		String fieldNameLower = fieldNameParam.toLowerCase();
+		String fieldNameLower = fieldNameParam.toLowerCase().trim();
 		Field fieldWithName =
 				this.getFormFields().stream()
 						.filter(itm -> itm.getFieldName() != null &&
-								fieldNameLower.equals(itm.getFieldName().toLowerCase()))
+								fieldNameLower.equals(itm.getFieldName().toLowerCase().trim()))
 						.findFirst()
 						.orElse(null);
 		return fieldWithName;

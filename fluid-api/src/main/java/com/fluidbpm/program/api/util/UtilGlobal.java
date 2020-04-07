@@ -59,8 +59,7 @@ public class UtilGlobal {
 	/**
 	 * The field type id mappings.
 	 */
-	public static class FieldTypeId
-	{
+	public static class FieldTypeId {
 		public static final int _1_TEXT = 1;
 		public static final int _2_TRUE_FALSE = 2;
 		public static final int _3_PARAGRAPH_TEXT = 3;

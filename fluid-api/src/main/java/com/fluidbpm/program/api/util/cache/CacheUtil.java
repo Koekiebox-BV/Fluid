@@ -16,22 +16,31 @@
 package com.fluidbpm.program.api.util.cache;
 
 
+import static com.fluidbpm.program.api.util.UtilGlobal.FieldTypeId.*;
+
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.cache.exception.FluidCacheException;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.form.Form;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * Cache Utility class used for {@code Field} value retrieval actions.
@@ -42,31 +51,74 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
  * @see ABaseUtil
  */
 public class CacheUtil extends ABaseUtil {
-
 	private static final String NULL = "null";
-	private static final String DASH = "-";
+	public static final String FORWARD_SLASH = "/";
 
 	private transient MemcachedClient memcachedClient;
+	private transient JedisCluster jedisCluster;
 
 	private String cacheHost = null;
+	private CacheType type = CacheType.MEMCACHED;
 	private int cachePort = -1;
+
+	public static final String MEMCACHE_PREFIX_VAL = "FORM_FIELD_VAL_";
 
 	/**
 	 * Aliases for properties used by the {@code CacheUtil}.
 	 */
-	private static class PropName
-	{
+	private static class PropName {
 		public static final String MEMORY_CACHE_TYPE = "MemoryCacheType";
 		public static final String MEMORY_CACHE_HOSTNAME = "MemoryCacheHostname";
 		public static final String MEMORY_CACHE_PORT_NUMBER = "MemoryCachePortNumber";
 	}
 
 	/**
+	 * Extract the cache type from the property.
+	 * @param propValue The value of the property.
+	 * @return CacheType
+	 * @see CacheType
+	 */
+	private static CacheType getCacheTypeFromProp(String propValue) {
+		return "redis".equals(propValue == null ? null : propValue.toLowerCase().trim()) ?
+				CacheType.REDIS : CacheType.MEMCACHED;
+	}
+
+	/**
+	 * The JSON structure of the cached field value.
+	 */
+	private static final class JSONStruct {
+		public static final String DATA_TYPE_ID = "dataTypeId";
+		public static final String WORD = "word";
+
+		//Field Value Specific Tags...
+		public static final String DATE_VALUE = "dateValue";
+		public static final String DECIMAL_VALUE = "decimalValue";
+		public static final String LABEL = "label";
+
+		//Multi Choice...
+		public static final String VALUE = "value";
+		public static final String VALUE_IN_STRING_FORM = "valueInStringForm";
+		public static final String FOREIGN_ID = "foreignId";
+		public static final String FOREIGN_IDS = "foreignIds";
+		public static final String AVAILABLE_CHOICES = "availableChoices";
+		public static final String SELECTED_CHOICES = "selectedChoices";
+
+		public static final String TEXT_VALUE = "textValue";
+
+		public static final String VALUE_WITHOUT_QUOTES = "valueWithoutQuotes";
+
+		//Table Field...
+		public static final String FORM_CONTAINERS = "formContainers";
+
+		//Yes/No...
+		public static final String BOOLEAN_VALUE = "boolValue";
+	}
+
+	/**
 	 * The FlowJob data type description mappings.
 	 * See Fluid configuration.
 	 */
-	private static class FlowJobType
-	{
+	private static class FlowJobType {
 		public static final String DATE_TIME = "Date Time";
 		public static final String DECIMAL = "Decimal";
 		public static final String MULTIPLE_CHOICE = "Multiple Choice";
@@ -79,10 +131,17 @@ public class CacheUtil extends ABaseUtil {
 	}
 
 	/**
+	 * Enum for the type of cache.
+	 */
+	public enum CacheType {
+		REDIS,
+		MEMCACHED
+	}
+
+	/**
 	 * Enum for mapping the Fluid data types to Flow-Job.
 	 */
-	private enum FlowJobTypeMapping
-	{
+	private enum FlowJobTypeMapping {
 		DateTime(FlowJobType.DATE_TIME, Field.Type.DateTime),
 		Decimal(FlowJobType.DECIMAL, Field.Type.Decimal),
 		MultiChoice(FlowJobType.MULTIPLE_CHOICE, Field.Type.MultipleChoice),
@@ -104,9 +163,9 @@ public class CacheUtil extends ABaseUtil {
 		 * @param fluidTypeParam The Fluid enum type.
 		 */
 		FlowJobTypeMapping(
-				String flowJobDataTypeDescParam,
-				Field.Type fluidTypeParam)
-		{
+			String flowJobDataTypeDescParam,
+			Field.Type fluidTypeParam
+		) {
 			this.flowJobDataTypeDesc = flowJobDataTypeDescParam;
 			this.fluidType = fluidTypeParam;
 		}
@@ -118,18 +177,13 @@ public class CacheUtil extends ABaseUtil {
 		 * @param flowJobTypeParam The Flow-Job type.
 		 * @return Fluid Field Type from Flow-Job type.
 		 */
-		public static Field.Type getFluidTypeFromFlowJobType(
-				String flowJobTypeParam)
-		{
-			if (flowJobTypeParam == null || flowJobTypeParam.trim().isEmpty())
-			{
+		public static Field.Type getFluidTypeFromFlowJobType(String flowJobTypeParam) {
+			if (flowJobTypeParam == null || flowJobTypeParam.trim().isEmpty()) {
 				return null;
 			}
 
-			for (FlowJobTypeMapping mapping : values())
-			{
-				if (flowJobTypeParam.equals(mapping.flowJobDataTypeDesc))
-				{
+			for (FlowJobTypeMapping mapping : values()) {
+				if (flowJobTypeParam.equals(mapping.flowJobDataTypeDesc)) {
 					return mapping.fluidType;
 				}
 			}
@@ -141,8 +195,7 @@ public class CacheUtil extends ABaseUtil {
 	/**
 	 * Fluid API cached field value.
 	 */
-	public static class CachedFieldValue implements Serializable
-	{
+	public static class CachedFieldValue implements Serializable {
 		private Object cachedFieldValue;
 		private String dataType;
 
@@ -153,23 +206,17 @@ public class CacheUtil extends ABaseUtil {
 		 *
 		 * @see Field
 		 */
-		public Field getCachedFieldValueAsField()
-		{
+		public Field getCachedFieldValueAsField() {
 			Field returnVal = new Field();
-
 			//No table field...
-			if (FlowJobType.TABLE_FIELD.equals(this.dataType))
-			{
+			if (FlowJobType.TABLE_FIELD.equals(this.dataType)) {
 				return null;
-			}
-			else
-			{
+			} else {
 				returnVal.setFieldValue(this.cachedFieldValue);
 			}
 
 			//Set the Type as Enum...
-			returnVal.setTypeAsEnum(
-					FlowJobTypeMapping.getFluidTypeFromFlowJobType(dataType));
+			returnVal.setTypeAsEnum(FlowJobTypeMapping.getFluidTypeFromFlowJobType(this.dataType));
 
 			return returnVal;
 		}
@@ -183,10 +230,13 @@ public class CacheUtil extends ABaseUtil {
 	 */
 	public CacheUtil(Properties propertiesParam) {
 		this(
-				getStringPropertyFromProperties(
-						propertiesParam, PropName.MEMORY_CACHE_HOSTNAME),
-				getIntPropertyFromProperties(
-						propertiesParam, PropName.MEMORY_CACHE_PORT_NUMBER));
+			getCacheTypeFromProp(getStringPropertyFromProperties(
+					propertiesParam, PropName.MEMORY_CACHE_TYPE)),
+			getStringPropertyFromProperties(
+					propertiesParam, PropName.MEMORY_CACHE_HOSTNAME),
+			getIntPropertyFromProperties(
+					propertiesParam, PropName.MEMORY_CACHE_PORT_NUMBER)
+		);
 	}
 
 	/**
@@ -196,25 +246,53 @@ public class CacheUtil extends ABaseUtil {
 	 *
 	 * @param cacheHostParam The MemCache Host IP or hostname.
 	 * @param cachePortParam The MemCache Port.
+	 *
+	 * @see CacheType
 	 */
 	public CacheUtil(
-			String cacheHostParam,
-			int cachePortParam) {
+		String cacheHostParam,
+		int cachePortParam
+	) {
+		this(CacheType.MEMCACHED, cacheHostParam, cachePortParam);
+	}
 
+	/**
+	 * New instance of cache util using the
+	 * provided Host {@code cacheHostParam} and
+	 * Port {@code cachePortParam}.
+	 *
+	 * @param typeParam The type of caching server.
+	 * @param cacheHostParam The MemCache/Redis Host IP or hostname.
+	 * @param cachePortParam The MemCache/Redis Port.
+	 *
+	 * @see CacheType
+	 */
+	public CacheUtil(
+		CacheType typeParam,
+		String cacheHostParam,
+		int cachePortParam
+	) {
+		this.type = typeParam;
 		this.cacheHost = cacheHostParam;
 		this.cachePort = cachePortParam;
 
-		if (this.cacheHost == null || this.cacheHost.trim().isEmpty())
-		{
+		if (this.cacheHost == null || this.cacheHost.trim().isEmpty()) {
 			throw new FluidCacheException("Cache Host cannot be empty.");
 		}
 
-		if (this.cachePort < 1 || this.cachePort > 65535)
-		{
-			throw new FluidCacheException("Cache Port number '"+this.cachePort+"' is invalid.");
+		if (this.cachePort < 1 || this.cachePort > 65535) {
+			throw new FluidCacheException(String.format(
+					"Cache Port number '%d' is invalid.", this.cachePort));
 		}
 
-		this.initXMemcachedClient();
+		switch (this.type) {
+			case MEMCACHED:
+				this.initXMemcachedClient();
+			break;
+			case REDIS:
+				this.initRedisClient();
+			break;
+		}
 	}
 
 	/**
@@ -228,38 +306,36 @@ public class CacheUtil extends ABaseUtil {
 	 * @return Storage Key
 	 */
 	public CachedFieldValue getCachedFieldValueFrom(
-			Long formDefIdParam,
-			Long formContIdParam,
-			Long formFieldIdParam)
-	{
-		if((formDefIdParam == null || formContIdParam == null) ||
-				formFieldIdParam == null)
-		{
+		Long formDefIdParam,
+		Long formContIdParam,
+		Long formFieldIdParam
+	) {
+		if ((formDefIdParam == null || formContIdParam == null) ||
+				formFieldIdParam == null) {
 			return null;
 		}
 
-		String storageKey = this.getStorageKeyFrom(
-				formDefIdParam,
-				formContIdParam,
-				formFieldIdParam);
-
-		Object objWithKey;
-		try {
-			objWithKey = this.memcachedClient.get(storageKey);
-		}
-		//Changed for Java 1.6 compatibility...
-		catch (MemcachedException e) {
-
-			throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
-					"Contact administrator. "+e.getMessage(),e);
-		} catch (TimeoutException e) {
-
-			throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
-					"Contact administrator. "+e.getMessage(),e);
-		} catch (InterruptedException e) {
-
-			throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
-					"Contact administrator. "+e.getMessage(),e);
+		String storageKey = this.getStorageKeyFrom(formDefIdParam, formContIdParam, formFieldIdParam);
+		String objWithKey = null;
+		switch (this.type) {
+			case MEMCACHED:
+				try {
+					objWithKey = this.memcachedClient.get(storageKey);
+				} catch (MemcachedException e) {
+					//Changed for Java 1.6 compatibility...
+					throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
+							"Contact administrator. "+e.getMessage(),e);
+				} catch (TimeoutException e) {
+					throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
+							"Contact administrator. "+e.getMessage(),e);
+				} catch (InterruptedException e) {
+					throw new FluidCacheException("Unable to get Field value for '"+storageKey+"'." +
+							"Contact administrator. "+e.getMessage(),e);
+				}
+			break;
+			case REDIS:
+				objWithKey = this.jedisCluster.get(storageKey);
+			break;
 		}
 
 		return this.getCacheFieldValueFromObject(objWithKey);
@@ -273,15 +349,23 @@ public class CacheUtil extends ABaseUtil {
 	 *
 	 * @see MemcachedClient#getServersDescription()
 	 */
-	public List<String> getMemcacheServersDescription()
-	{
-		if (this.memcachedClient == null)
-		{
-			throw new FluidCacheException(
-					"MemCached client is not set.");
+	public List<String> getMemcacheServersDescription() {
+		switch (this.type) {
+			case REDIS:
+				if (this.jedisCluster == null) {
+					throw new FluidCacheException(
+							"Redis client is not set.");
+				}
+				return this.jedisCluster.getClusterNodes().keySet().
+						stream().collect(Collectors.toList());
+			case MEMCACHED:
+				if (this.memcachedClient == null) {
+					throw new FluidCacheException(
+							"MemCached client is not set.");
+				}
+				return this.memcachedClient.getServersDescription();
 		}
-
-		return this.memcachedClient.getServersDescription();
+		return null;
 	}
 
 	/**
@@ -291,151 +375,73 @@ public class CacheUtil extends ABaseUtil {
 	 *
 	 * @return CachedFieldValue from {@code objWithKeyParam}.
 	 */
-	@SuppressWarnings("unchecked")
-	private CachedFieldValue getCacheFieldValueFromObject(Object objWithKeyParam)
-	{
-		if (objWithKeyParam == null)
-		{
+	private CachedFieldValue getCacheFieldValueFromObject(String objWithKeyParam) {
+		if (objWithKeyParam == null) {
 			return null;
 		}
 
-		//Get Word...
-		Method methodGetWord = CacheUtil.getMethod(
-				objWithKeyParam.getClass(),
-				CustomCode.IWord.METHOD_getWord);
-
-		//Get Value...
-		Method methodGetValue = CacheUtil.getMethod(
-				objWithKeyParam.getClass(),
-				CustomCode.ADataType.METHOD_getValue);
-
-		//Word...
-		Object getWordObj = CacheUtil.invoke(methodGetWord, objWithKeyParam);
-		String getWordVal = null;
-		if (getWordObj instanceof String)
-		{
-			getWordVal = (String)getWordObj;
-		}
-
-		//Value...
-		Object getValueObj;
-		if (FlowJobType.MULTIPLE_CHOICE.equals(getWordVal))
-		{
-			MultiChoice multiChoice = new MultiChoice();
-
-			//Available Choices...
-			Method methodAvailableChoices = getMethod(
-					objWithKeyParam.getClass(),
-					CustomCode.MultipleChoice.METHOD_getAvailableChoices);
-
-			Object availChoicesObj =
-					CacheUtil.invoke(methodAvailableChoices, objWithKeyParam);
-
-			if (availChoicesObj instanceof List)
-			{
-				multiChoice.setAvailableMultiChoices((List)availChoicesObj);
-			}
-
-			//Selected...
-			Method methodSelectedChoices = getMethod(
-					objWithKeyParam.getClass(),
-					CustomCode.MultipleChoice.METHOD_getSelectedChoices);
-
-			Object selectedChoicesObj =
-					invoke(methodSelectedChoices, objWithKeyParam);
-
-			if (selectedChoicesObj instanceof List)
-			{
-				multiChoice.setSelectedMultiChoices((List)selectedChoicesObj);
-			}
-
-			getValueObj = multiChoice;
-		}
-		else
-		{
-			getValueObj = CacheUtil.invoke(methodGetValue, objWithKeyParam);
-		}
-
-		if (getValueObj == null)
-		{
-			return null;
-		}
-
-		if (getWordVal == null)
-		{
-			throw new FluidCacheException(
-					"Get Word value is 'null'. Not allowed.");
-		}
+		JSONObject jsonObjFromSrc = new JSONObject(objWithKeyParam);
+		int dataTypeId = jsonObjFromSrc.optInt(JSONStruct.DATA_TYPE_ID);
 
 		CachedFieldValue returnVal = new CachedFieldValue();
+		returnVal.dataType = jsonObjFromSrc.optString(JSONStruct.WORD);
 
-		returnVal.dataType = getWordVal;
-		returnVal.cachedFieldValue = getValueObj;
+		switch (dataTypeId) {
+			case _1_TEXT:
+			case _3_PARAGRAPH_TEXT:
+			case _8_TEXT_ENCRYPTED:
+				returnVal.cachedFieldValue = jsonObjFromSrc.optString(JSONStruct.TEXT_VALUE);
+			break;
+			case _2_TRUE_FALSE:
+				returnVal.cachedFieldValue = jsonObjFromSrc.optBoolean(JSONStruct.BOOLEAN_VALUE);
+			break;
+			case _4_MULTI_CHOICE:
+				MultiChoice multiChoice = new MultiChoice();
+				List<String> availChoices = new ArrayList<>(), selectedChoices = new ArrayList<>();
+				JSONArray jsonAvailChoices = jsonObjFromSrc.optJSONArray(JSONStruct.AVAILABLE_CHOICES);
+				if (jsonAvailChoices != null) {
+					for (int index = 0; index < jsonAvailChoices.length(); index++) {
+						availChoices.add(jsonAvailChoices.getString(index));
+					}
+				}
+				JSONArray jsonSelectedChoices = jsonObjFromSrc.optJSONArray(JSONStruct.SELECTED_CHOICES);
+				if (jsonSelectedChoices != null) {
+					for (int index = 0; index < jsonSelectedChoices.length(); index++) {
+						selectedChoices.add(jsonSelectedChoices.getString(index));
+					}
+				}
+
+				multiChoice.setAvailableMultiChoices(availChoices);
+				multiChoice.setSelectedMultiChoices(selectedChoices);
+				returnVal.cachedFieldValue = multiChoice;
+			break;
+			case _5_DATE_TIME:
+				returnVal.cachedFieldValue =
+						new Date(jsonObjFromSrc.optLong(JSONStruct.DATE_VALUE));
+			break;
+			case _6_DECIMAL:
+				returnVal.cachedFieldValue = jsonObjFromSrc.optDouble(JSONStruct.DECIMAL_VALUE);
+			break;
+			case _7_TABLE_FIELD:
+				List<Form> listOfForms = new ArrayList<>();
+				JSONArray jsonFormIds = jsonObjFromSrc.optJSONArray(JSONStruct.FORM_CONTAINERS);
+				if (jsonFormIds != null) {
+					for (int index = 0; index < jsonFormIds.length(); index++) {
+						listOfForms.add(new Form(jsonFormIds.getLong(index)));
+					}
+				}
+				returnVal.cachedFieldValue = listOfForms;
+			break;
+			case _9_LABEL:
+				returnVal.cachedFieldValue = jsonObjFromSrc.optString(JSONStruct.LABEL);
+			break;
+		}
+
+		if (returnVal.cachedFieldValue == null) {
+			return null;
+		}
 
 		return returnVal;
-	}
-
-	/**
-	 * Retrieves the java method from class {@code clazzParam}.
-	 *
-	 * @param clazzParam The class.
-	 * @param nameParam The class name.
-	 *
-	 * @return Method from {@code clazzParam} and {@code nameParam}.
-	 */
-	@SuppressWarnings("unchecked")
-	private static Method getMethod(Class clazzParam, String nameParam)
-	{
-		try {
-			if (clazzParam == null || nameParam == null)
-			{
-				return null;
-			}
-
-			Method returnVal = clazzParam.getDeclaredMethod(nameParam);
-			returnVal.setAccessible(true);
-
-			return returnVal;
-		}
-		//
-		catch (NoSuchMethodException e) {
-
-			throw new FluidCacheException(
-					"Unable to get method '"+
-							nameParam +"'. "+e.getMessage(),e);
-		}
-	}
-
-	/**
-	 * Invokes the {@code methodParam} method on {@code objParam}.
-	 *
-	 * @param methodParam The method to invoke.
-	 * @param objParam The object to invoke the method on.
-	 *
-	 * @return The result of the invoked object.
-	 */
-	private static Object invoke(Method methodParam, Object objParam)
-	{
-		try {
-			return methodParam.invoke(objParam);
-		}
-		//Changed for Java 1.6 compatibility...
-		catch (InvocationTargetException e) {
-
-			throw new FluidCacheException(
-					"Unable to invoke method '"+
-							methodParam.getName() +"'. "+e.getMessage(),e);
-		} catch (IllegalAccessException e) {
-
-			throw new FluidCacheException(
-					"Unable to invoke method '"+
-							methodParam.getName() +"'. "+e.getMessage(),e);
-		} catch (IllegalArgumentException e) {
-
-			throw new FluidCacheException(
-					"Unable to invoke method '"+
-							methodParam.getName() +"'. "+e.getMessage(),e);
-		}
 	}
 
 	/**
@@ -448,92 +454,95 @@ public class CacheUtil extends ABaseUtil {
 	 * @return Storage Key
 	 */
 	private String getStorageKeyFrom(
-			Long formDefIdParam,
-			Long formContIdParam,
-			Long formFieldIdParam)
-	{
-		StringBuilder stringBuff = new StringBuilder();
+		Long formDefIdParam,
+		Long formContIdParam,
+		Long formFieldIdParam
+	) {
+		StringBuilder stringBuff = new StringBuilder(MEMCACHE_PREFIX_VAL);
+		stringBuff.append(FORWARD_SLASH);
 
 		//Form Definition...
-		if (formDefIdParam == null)
-		{
+		if (formDefIdParam == null) {
 			stringBuff.append(NULL);
-		}
-		else
-		{
+		} else {
 			stringBuff.append(formDefIdParam.toString());
 		}
 
-		stringBuff.append(DASH);
+		stringBuff.append(FORWARD_SLASH);
 
 		//Form Container...
-		if (formContIdParam == null)
-		{
+		if (formContIdParam == null) {
 			stringBuff.append(NULL);
-		}
-		else
-		{
+		} else {
 			stringBuff.append(formContIdParam.toString());
 		}
 
-		stringBuff.append(DASH);
+		stringBuff.append(FORWARD_SLASH);
 
 		//Form Field...
-		if (formFieldIdParam == null)
-		{
+		if (formFieldIdParam == null) {
 			stringBuff.append(NULL);
-		}
-		else {
+		} else {
 			stringBuff.append(formFieldIdParam.toString());
 		}
 
 		return stringBuff.toString();
 	}
 
+	/**
+	 * Creates an instance of JedisCluster.
+	 *
+	 * @return MemcachedClient
+	 */
+	private JedisCluster initRedisClient() {
+		if (this.jedisCluster != null) {
+			return this.jedisCluster;
+		}
+		this.jedisCluster = new JedisCluster(new HostAndPort(this.cacheHost, this.cachePort));
+		return this.jedisCluster;
+	}
 
 	/**
 	 * Creates an instance of MemcachedClient.
 	 *
 	 * @return MemcachedClient
 	 */
-	private MemcachedClient initXMemcachedClient()
-	{
-		if (this.memcachedClient != null && !this.memcachedClient.isShutdown())
-		{
+	private MemcachedClient initXMemcachedClient() {
+		if (this.memcachedClient != null && !this.memcachedClient.isShutdown()) {
 			return this.memcachedClient;
 		}
 
 		try {
-			this.memcachedClient = new XMemcachedClient(
-					this.cacheHost,this.cachePort);
-
+			this.memcachedClient = new XMemcachedClient(this.cacheHost,this.cachePort);
 			return this.memcachedClient;
-		}
-		//Unable to create client with connection.
-		catch (IOException e) {
-
+		} catch (IOException e) {
+			//Unable to create client with connection.
 			throw new FluidCacheException(
 					"Unable to create MemCache client. "+e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * Closes the Memcached client connection.
+	 * Closes the Memcached/Redis client connection.
 	 */
-	public void shutdown()
-	{
-		if (this.memcachedClient != null &&
-				!this.memcachedClient.isShutdown())
-		{
-			try {
-				this.memcachedClient.shutdown();
-			}
-			//
-			catch (IOException eParam) {
-
-				throw new FluidCacheException(
-						"Unable to create shutdown MemCache client. "+eParam.getMessage(), eParam);
-			}
+	public void shutdown() {
+		switch (this.type) {
+			case REDIS:
+				if (this.jedisCluster != null) {
+					this.jedisCluster.close();
+				}
+			break;
+			case MEMCACHED:
+				if (this.memcachedClient != null &&
+						!this.memcachedClient.isShutdown()) {
+					try {
+						this.memcachedClient.shutdown();
+					} catch (IOException eParam) {
+						throw new FluidCacheException(
+								"Unable to create shutdown MemCache client. "+eParam.getMessage(), eParam);
+					}
+				}
+			break;
 		}
 	}
 }

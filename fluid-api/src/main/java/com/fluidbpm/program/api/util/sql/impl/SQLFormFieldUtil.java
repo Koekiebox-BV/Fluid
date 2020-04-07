@@ -353,9 +353,9 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 	 * @return Populated {@code Field} value.
 	 */
 	public Field getFormFieldValueFor(
-			FormFieldMapping formFieldMappingParam,
-			Long formContainerIdParam,
-			boolean includeTableFieldFormRecordInfoParam
+		FormFieldMapping formFieldMappingParam,
+		Long formContainerIdParam,
+		boolean includeTableFieldFormRecordInfoParam
 	) {
 		if (formFieldMappingParam == null) {
 			return null;
@@ -367,12 +367,12 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 					this.getCacheUtil().getCachedFieldValueFrom(
 						formFieldMappingParam.formDefinitionId,
 						formContainerIdParam,
-						formFieldMappingParam.formFieldId);
+						formFieldMappingParam.formFieldId
+					);
 
 			if (cachedFieldValue != null) {
 				Field field = cachedFieldValue.getCachedFieldValueAsField();
-				if (field != null)
-				{
+				if (field != null) {
 					field.setFieldName(formFieldMappingParam.name);
 					return field;
 				}
@@ -465,7 +465,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 				//Table Field...
 				case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
 					List<Long> formContainerIds = new ArrayList();
-					while(resultSet.next()) {
+					while (resultSet.next()) {
 						formContainerIds.add(resultSet.getLong(1));
 					}
 

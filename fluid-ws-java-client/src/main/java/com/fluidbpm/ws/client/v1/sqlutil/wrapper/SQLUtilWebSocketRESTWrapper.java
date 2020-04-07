@@ -436,25 +436,10 @@ public class SQLUtilWebSocketRESTWrapper {
 	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
 	 */
 	public List<SQLResultSet> executeNativeSQL(NativeSQLQuery ... nativeSQLQueriesParam) {
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
-
 		//NATIVE SQL QUERIES...
 		try {
 			//When mode is null or [WebSocketActive]...
-			if (this.sqlUtilWebSocketExecNativeClient == null && Mode.RESTfulActive != this.mode) {
-				this.sqlUtilWebSocketExecNativeClient = new SQLUtilWebSocketExecuteNativeSQLClient(
-						this.baseURL,
-						null,
-						this.loggedInUser.getServiceTicketAsHexUpper(),
-						this.timeoutMillis,
-						COMPRESS_RSP,
-						COMPRESS_RSP_CHARSET
-				);
-
-				this.mode = Mode.WebSocketActive;
-			}
+			this.initGetNativeSQLClient();
 		} catch (FluidClientException clientExcept) {
 			if (clientExcept.getErrorCode() !=
 					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
@@ -479,6 +464,31 @@ public class SQLUtilWebSocketRESTWrapper {
 
 			return returnVal;
 		}
+	}
+
+	/**
+	 * Init and retrieve {@code SQLUtilWebSocketExecuteNativeSQLClient}.
+	 * @return local instance of {@code SQLUtilWebSocketExecuteNativeSQLClient}
+	 * @see SQLUtilWebSocketExecuteNativeSQLClient
+	 */
+	public SQLUtilWebSocketExecuteNativeSQLClient initGetNativeSQLClient() {
+		if (DISABLE_WS) {
+			this.mode = Mode.RESTfulActive;
+		}
+
+		if (this.sqlUtilWebSocketExecNativeClient == null && Mode.RESTfulActive != this.mode) {
+			this.sqlUtilWebSocketExecNativeClient = new SQLUtilWebSocketExecuteNativeSQLClient(
+					this.baseURL,
+					null,
+					this.loggedInUser.getServiceTicketAsHexUpper(),
+					this.timeoutMillis,
+					COMPRESS_RSP,
+					COMPRESS_RSP_CHARSET
+			);
+			this.mode = Mode.WebSocketActive;
+		}
+
+		return this.sqlUtilWebSocketExecNativeClient;
 	}
 
 	/**
