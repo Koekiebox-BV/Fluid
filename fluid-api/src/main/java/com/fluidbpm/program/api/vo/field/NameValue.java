@@ -24,78 +24,75 @@ import java.io.Serializable;
  * @since 1.8
  * @version 1.8
  */
-public class NameValue implements Serializable{
-    
-    private String name;
-    private Object value;
+public class NameValue implements Serializable {
+	private String name;
+	private Object value;
 
-    /**
-     * Default constructor.
-     */
-    public NameValue() {
-        this(null,null);
-    }
+	/**
+	 * Default constructor.
+	 */
+	public NameValue() {
+		this(null,null);
+	}
 
-    /**
-     * Constructor to init name and value.
-     *
-     * @param nameParam The key name.
-     * @param valueParam The key value.
-     */
-    public NameValue(String nameParam, Object valueParam) {
-        this.name = nameParam;
-        this.value = valueParam;
-    }
+	/**
+	 * Constructor to init name and value.
+	 *
+	 * @param nameParam The key name.
+	 * @param valueParam The key value.
+	 */
+	public NameValue(String nameParam, Object valueParam) {
+		this.name = nameParam;
+		this.value = valueParam;
+	}
 
-    /**
-     * Get the name.
-     *
-     * @return Name
-     */
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * Get the name.
+	 *
+	 * @return Name
+	 */
+	public String getName() {
+		return this.name;
+	}
 
-    /**
-     * Set the name.
-     *
-     * @param nameParam The name to set.
-     */
-    public void setName(String nameParam) {
-        this.name = nameParam;
-    }
+	/**
+	 * Set the name.
+	 *
+	 * @param nameParam The name to set.
+	 */
+	public void setName(String nameParam) {
+		this.name = nameParam;
+	}
 
-    /**
-     * Get the value.
-     *
-     * @return Value as an {@code Object}
-     */
-    public Object getValue() {
-        return this.value;
-    }
+	/**
+	 * Get the value.
+	 *
+	 * @return Value as an {@code Object}
+	 */
+	public Object getValue() {
+		return this.value;
+	}
 
-    /**
-     * Set the value.
-     *
-     * @param valueParam The value to set to.
-     */
-    public void setValue(Object valueParam) {
-        this.value = valueParam;
-    }
+	/**
+	 * Set the value.
+	 *
+	 * @param valueParam The value to set to.
+	 */
+	public void setValue(Object valueParam) {
+		this.value = valueParam;
+	}
 
-    /**
-     * If the value is {@code null}, {@code null} will be returned.
-     * Otherwise {@code this.value.toString()} is called.
-     *
-     * @return {@code String} value of {@code this.value}.
-     */
-    public String toString()
-    {
-        if (this.value == null)
-        {
-            return null;
-        }
+	/**
+	 * If the value is {@code null}, {@code null} will be returned.
+	 * Otherwise {@code this.value.toString()} is called.
+	 *
+	 * @return {@code String} value of {@code this.value}.
+	 */
+	public String toString() {
+		if (this.value == null) {
+			return null;
+		}
 
-        return this.value.toString();
-    }
+		return this.value.toString();
+	}
 }

@@ -33,205 +33,205 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  */
 public class AccessTokenRequest extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    private String clientId;
-    private String clientSecret;
-    private String redirectUri;
-    private String grantType;
-    private String code;
+	private String clientId;
+	private String clientSecret;
+	private String redirectUri;
+	private String grantType;
+	private String code;
 
-    /**
-     * The JSON mapping for the {@code AccessTokenRequest} object.
-     */
-    public static class JSONMapping
-    {
-        public static final String CLIENT_ID = "client_id";
-        public static final String CLIENT_SECRET = "client_secret";
-        public static final String REDIRECT_URI = "redirect_uri";
-        public static final String GRANT_TYPE = "grant_type";
-        public static final String CODE = "code";
-    }
+	/**
+	 * The JSON mapping for the {@code AccessTokenRequest} object.
+	 */
+	public static class JSONMapping
+	{
+		public static final String CLIENT_ID = "client_id";
+		public static final String CLIENT_SECRET = "client_secret";
+		public static final String REDIRECT_URI = "redirect_uri";
+		public static final String GRANT_TYPE = "grant_type";
+		public static final String CODE = "code";
+	}
 
-    /**
-     * Default constructor.
-     */
-    public AccessTokenRequest() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public AccessTokenRequest() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public AccessTokenRequest(JSONObject jsonObjectParam) {
-        super(jsonObjectParam);
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public AccessTokenRequest(JSONObject jsonObjectParam) {
+		super(jsonObjectParam);
 
-        if (this.jsonObject == null)
-        {
-            return;
-        }
+		if (this.jsonObject == null)
+		{
+			return;
+		}
 
-        //Client Id...
-        if (!this.jsonObject.isNull(JSONMapping.CLIENT_ID)) {
-            this.setClientId(this.jsonObject.getString(JSONMapping.CLIENT_ID));
-        }
+		//Client Id...
+		if (!this.jsonObject.isNull(JSONMapping.CLIENT_ID)) {
+			this.setClientId(this.jsonObject.getString(JSONMapping.CLIENT_ID));
+		}
 
-        //Client Secret...
-        if (!this.jsonObject.isNull(JSONMapping.CLIENT_SECRET)) {
-            this.setClientSecret(this.jsonObject.getString(JSONMapping.CLIENT_SECRET));
-        }
+		//Client Secret...
+		if (!this.jsonObject.isNull(JSONMapping.CLIENT_SECRET)) {
+			this.setClientSecret(this.jsonObject.getString(JSONMapping.CLIENT_SECRET));
+		}
 
-        //Code...
-        if (!this.jsonObject.isNull(JSONMapping.CODE)) {
-            this.setCode(this.jsonObject.getString(JSONMapping.CODE));
-        }
+		//Code...
+		if (!this.jsonObject.isNull(JSONMapping.CODE)) {
+			this.setCode(this.jsonObject.getString(JSONMapping.CODE));
+		}
 
-        //Grant Type...
-        if (!this.jsonObject.isNull(JSONMapping.GRANT_TYPE)) {
-            this.setGrantType(this.jsonObject.getString(JSONMapping.GRANT_TYPE));
-        }
+		//Grant Type...
+		if (!this.jsonObject.isNull(JSONMapping.GRANT_TYPE)) {
+			this.setGrantType(this.jsonObject.getString(JSONMapping.GRANT_TYPE));
+		}
 
-        //Redirect URI...
-        if (!this.jsonObject.isNull(JSONMapping.REDIRECT_URI)) {
-            this.setRedirectUri(this.jsonObject.getString(JSONMapping.REDIRECT_URI));
-        }
-    }
+		//Redirect URI...
+		if (!this.jsonObject.isNull(JSONMapping.REDIRECT_URI)) {
+			this.setRedirectUri(this.jsonObject.getString(JSONMapping.REDIRECT_URI));
+		}
+	}
 
-    /**
-     * Gets the Client Id.
-     *
-     * @return Client Id.
-     */
-    public String getClientId() {
-        return this.clientId;
-    }
+	/**
+	 * Gets the Client Id.
+	 *
+	 * @return Client Id.
+	 */
+	public String getClientId() {
+		return this.clientId;
+	}
 
-    /**
-     * Sets the Client Id.
-     * 
-     * @param clientIdParam Client Id.
-     */
-    public void setClientId(String clientIdParam) {
-        this.clientId = clientIdParam;
-    }
+	/**
+	 * Sets the Client Id.
+	 *
+	 * @param clientIdParam Client Id.
+	 */
+	public void setClientId(String clientIdParam) {
+		this.clientId = clientIdParam;
+	}
 
-    /**
-     * Gets the Client Secret.
-     *
-     * @return Client Secret.
-     */
-    public String getClientSecret() {
-        return this.clientSecret;
-    }
+	/**
+	 * Gets the Client Secret.
+	 *
+	 * @return Client Secret.
+	 */
+	public String getClientSecret() {
+		return this.clientSecret;
+	}
 
-    /**
-     * Sets the Client Secret.
-     *
-     * @param clientSecretParam Client Secret.
-     */
-    public void setClientSecret(String clientSecretParam) {
-        this.clientSecret = clientSecretParam;
-    }
+	/**
+	 * Sets the Client Secret.
+	 *
+	 * @param clientSecretParam Client Secret.
+	 */
+	public void setClientSecret(String clientSecretParam) {
+		this.clientSecret = clientSecretParam;
+	}
 
-    /**
-     * Gets the redirect URI.
-     *
-     * @return Redirect URI.
-     */
-    public String getRedirectUri() {
-        return this.redirectUri;
-    }
+	/**
+	 * Gets the redirect URI.
+	 *
+	 * @return Redirect URI.
+	 */
+	public String getRedirectUri() {
+		return this.redirectUri;
+	}
 
-    /**
-     * Sets the redirect URI.
-     *
-     * @param redirectUriParam Redirect URI.
-     */
-    public void setRedirectUri(String redirectUriParam) {
-        this.redirectUri = redirectUriParam;
-    }
+	/**
+	 * Sets the redirect URI.
+	 *
+	 * @param redirectUriParam Redirect URI.
+	 */
+	public void setRedirectUri(String redirectUriParam) {
+		this.redirectUri = redirectUriParam;
+	}
 
-    /**
-     * Gets the Grant Type.
-     *
-     * @return Grant Type.
-     */
-    public String getGrantType() {
-        return this.grantType;
-    }
+	/**
+	 * Gets the Grant Type.
+	 *
+	 * @return Grant Type.
+	 */
+	public String getGrantType() {
+		return this.grantType;
+	}
 
-    /**
-     * Sets the Grant Type.
-     *
-     * @param grantTypeParam Grant Type.
-     */
-    public void setGrantType(String grantTypeParam) {
-        this.grantType = grantTypeParam;
-    }
+	/**
+	 * Sets the Grant Type.
+	 *
+	 * @param grantTypeParam Grant Type.
+	 */
+	public void setGrantType(String grantTypeParam) {
+		this.grantType = grantTypeParam;
+	}
 
-    /**
-     * Gets the Code.
-     *
-     * @return Code.
-     */
-    public String getCode() {
-        return this.code;
-    }
+	/**
+	 * Gets the Code.
+	 *
+	 * @return Code.
+	 */
+	public String getCode() {
+		return this.code;
+	}
 
-    /**
-     * Sets the Code.
-     *
-     * @param codeParam Code.
-     */
-    public void setCode(String codeParam) {
-        this.code = codeParam;
-    }
+	/**
+	 * Sets the Code.
+	 *
+	 * @param codeParam Code.
+	 */
+	public void setCode(String codeParam) {
+		this.code = codeParam;
+	}
 
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code AccessTokenRequest}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException {
+	/**
+	 * Conversion to {@code JSONObject} from Java Object.
+	 *
+	 * @return {@code JSONObject} representation of {@code AccessTokenRequest}
+	 * @throws JSONException If there is a problem with the JSON Body.
+	 *
+	 * @see ABaseFluidJSONObject#toJsonObject()
+	 */
+	@Override
+	public JSONObject toJsonObject() throws JSONException {
 
-        JSONObject returnVal = super.toJsonObject();
+		JSONObject returnVal = super.toJsonObject();
 
-        //Client ID...
-        if (this.getClientId() != null)
-        {
-            returnVal.put(JSONMapping.CLIENT_ID,this.getClientId());
-        }
+		//Client ID...
+		if (this.getClientId() != null)
+		{
+			returnVal.put(JSONMapping.CLIENT_ID,this.getClientId());
+		}
 
-        //Client Secret...
-        if (this.getClientSecret() != null)
-        {
-            returnVal.put(JSONMapping.CLIENT_SECRET,this.getClientSecret());
-        }
+		//Client Secret...
+		if (this.getClientSecret() != null)
+		{
+			returnVal.put(JSONMapping.CLIENT_SECRET,this.getClientSecret());
+		}
 
-        //Code...
-        if (this.getCode() != null)
-        {
-            returnVal.put(JSONMapping.CODE,this.getCode());
-        }
+		//Code...
+		if (this.getCode() != null)
+		{
+			returnVal.put(JSONMapping.CODE,this.getCode());
+		}
 
-        //Grant Type...
-        if (this.getGrantType() != null)
-        {
-            returnVal.put(JSONMapping.GRANT_TYPE,this.getGrantType());
-        }
+		//Grant Type...
+		if (this.getGrantType() != null)
+		{
+			returnVal.put(JSONMapping.GRANT_TYPE,this.getGrantType());
+		}
 
-        //Redirect URI...
-        if (this.getRedirectUri() != null)
-        {
-            returnVal.put(JSONMapping.REDIRECT_URI,this.getRedirectUri());
-        }
+		//Redirect URI...
+		if (this.getRedirectUri() != null)
+		{
+			returnVal.put(JSONMapping.REDIRECT_URI,this.getRedirectUri());
+		}
 
-        return returnVal;
-    }
+		return returnVal;
+	}
 }

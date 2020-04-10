@@ -34,33 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  */
 public class AttachmentListing extends ABaseListing<Attachment> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public AttachmentListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public AttachmentListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public AttachmentListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public AttachmentListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code Attachment} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code Attachment}.
-     * @return New {@code Attachment} instance.
-     */
-    @Override
-    @XmlTransient
-    public Attachment getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Attachment(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code Attachment} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code Attachment}.
+	 * @return New {@code Attachment} instance.
+	 */
+	@Override
+	@XmlTransient
+	public Attachment getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new Attachment(jsonObjectParam);
+	}
 }

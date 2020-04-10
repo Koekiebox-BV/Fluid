@@ -36,33 +36,33 @@ import com.fluidbpm.program.api.vo.field.Field;
  */
 public class RouteFieldListing extends ABaseListing<Field> {
 
-    public static final long serialVersionUID = 1L;
-    
-    /**
-     * Default constructor.
-     */
-    public RouteFieldListing() {
-        super();
-    }
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public RouteFieldListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Default constructor.
+	 */
+	public RouteFieldListing() {
+		super();
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code Field} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code Field}.
-     * @return New {@code Field} instance.
-     */
-    @Override
-    @XmlTransient
-    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Field(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public RouteFieldListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
+
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code Field} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code Field}.
+	 * @return New {@code Field} instance.
+	 */
+	@Override
+	@XmlTransient
+	public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new Field(jsonObjectParam);
+	}
 }

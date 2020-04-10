@@ -42,375 +42,375 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
  */
 public class Attachment extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    private String version;
-    private String name;
-    private String path;
-    private String contentType;
+	private String version;
+	private String name;
+	private String path;
+	private String contentType;
 
-    private Date dateLastUpdated;
-    private Date dateCreated;
+	private Date dateLastUpdated;
+	private Date dateCreated;
 
-    private String attachmentDataBase64;
+	private String attachmentDataBase64;
 
-    private Long formId;
+	private Long formId;
 
-    /**
-     * The JSON mapping for the {@code Attachment} object.
-     */
-    public static class JSONMapping {
-        public static final String NAME = "name";
-        public static final String PATH = "path";
+	/**
+	 * The JSON mapping for the {@code Attachment} object.
+	 */
+	public static class JSONMapping {
+		public static final String NAME = "name";
+		public static final String PATH = "path";
 
-        public static final String VERSION = "version";
-        public static final String CONTENT_TYPE = "contentType";
+		public static final String VERSION = "version";
+		public static final String CONTENT_TYPE = "contentType";
 
-        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
-        public static final String DATE_CREATED = "dateCreated";
+		public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+		public static final String DATE_CREATED = "dateCreated";
 
-        public static final String FORM_ID = "formId";
-        
-        public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
-    }
+		public static final String FORM_ID = "formId";
 
-    /**
-     * Default constructor.
-     */
-    public Attachment() {
-        super();
-    }
+		public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
+	}
 
-    /**
-     * Sets the Id associated with the Attachment.
-     *
-     * @param attachmentIdParam Attachment Id.
-     */
-    public Attachment(Long attachmentIdParam) {
-        super();
+	/**
+	 * Default constructor.
+	 */
+	public Attachment() {
+		super();
+	}
 
-        this.setId(attachmentIdParam);
-    }
+	/**
+	 * Sets the Id associated with the Attachment.
+	 *
+	 * @param attachmentIdParam Attachment Id.
+	 */
+	public Attachment(Long attachmentIdParam) {
+		super();
 
-    /**
-     * Sets the Path and Name of {@code this} {@code Attachment}.
-     *
-     * @param attachmentPath Sets the {@code Attachment} path.
-     * @param attachmentNameParam Sets the {@code Attachment} name.
-     */
-    public Attachment(String attachmentPath, String attachmentNameParam) {
-        super();
-        this.setPath(attachmentPath);
-        this.setName(attachmentNameParam);
-    }
+		this.setId(attachmentIdParam);
+	}
 
-    /**
-     * Sets the Path {@code this} {@code Attachment}.
-     *
-     * @param attachmentPath The path to the {@code Attachment}.
-     */
-    public Attachment(String attachmentPath) {
-        super();
-        this.setPath(attachmentPath);
+	/**
+	 * Sets the Path and Name of {@code this} {@code Attachment}.
+	 *
+	 * @param attachmentPath Sets the {@code Attachment} path.
+	 * @param attachmentNameParam Sets the {@code Attachment} name.
+	 */
+	public Attachment(String attachmentPath, String attachmentNameParam) {
+		super();
+		this.setPath(attachmentPath);
+		this.setName(attachmentNameParam);
+	}
 
-        File theFile = new File(attachmentPath);
-        if (theFile.exists() && theFile.isFile())
-        {
-            this.setName(theFile.getName());
-        }
-    }
+	/**
+	 * Sets the Path {@code this} {@code Attachment}.
+	 *
+	 * @param attachmentPath The path to the {@code Attachment}.
+	 */
+	public Attachment(String attachmentPath) {
+		super();
+		this.setPath(attachmentPath);
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public Attachment(JSONObject jsonObjectParam) {
-        super(jsonObjectParam);
+		File theFile = new File(attachmentPath);
+		if (theFile.exists() && theFile.isFile())
+		{
+			this.setName(theFile.getName());
+		}
+	}
 
-        if (this.jsonObject == null)
-        {
-            return;
-        }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public Attachment(JSONObject jsonObjectParam) {
+		super(jsonObjectParam);
 
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
-        }
+		if (this.jsonObject == null)
+		{
+			return;
+		}
 
-        //Path...
-        if (!this.jsonObject.isNull(JSONMapping.PATH)) {
-            this.setPath(this.jsonObject.getString(JSONMapping.PATH));
-        }
+		//Name...
+		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
+			this.setName(this.jsonObject.getString(JSONMapping.NAME));
+		}
 
-        //Version...
-        if (!this.jsonObject.isNull(JSONMapping.VERSION)) {
-            this.setVersion(this.jsonObject.getString(JSONMapping.VERSION));
-        }
+		//Path...
+		if (!this.jsonObject.isNull(JSONMapping.PATH)) {
+			this.setPath(this.jsonObject.getString(JSONMapping.PATH));
+		}
 
-        //Content Type...
-        if (!this.jsonObject.isNull(JSONMapping.CONTENT_TYPE)) {
-            this.setContentType(this.jsonObject.getString(JSONMapping.CONTENT_TYPE));
-        }
+		//Version...
+		if (!this.jsonObject.isNull(JSONMapping.VERSION)) {
+			this.setVersion(this.jsonObject.getString(JSONMapping.VERSION));
+		}
 
-        //Form Id...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_ID)) {
-            this.setFormId(this.jsonObject.getLong(JSONMapping.FORM_ID));
-        }
+		//Content Type...
+		if (!this.jsonObject.isNull(JSONMapping.CONTENT_TYPE)) {
+			this.setContentType(this.jsonObject.getString(JSONMapping.CONTENT_TYPE));
+		}
 
-        //Date Created...
-        if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
-            this.setDateCreated(new Date(
-                    this.jsonObject.getLong(JSONMapping.DATE_CREATED)));
-        }
+		//Form Id...
+		if (!this.jsonObject.isNull(JSONMapping.FORM_ID)) {
+			this.setFormId(this.jsonObject.getLong(JSONMapping.FORM_ID));
+		}
 
-        //Date Last Updated...
-        if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
-            this.setDateLastUpdated(new Date(
-                    this.jsonObject.getLong(JSONMapping.DATE_LAST_UPDATED)));
-        }
+		//Date Created...
+		if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
+			this.setDateCreated(new Date(
+					this.jsonObject.getLong(JSONMapping.DATE_CREATED)));
+		}
 
-        //Attachment Data...
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DATA_BASE64)) {
-            this.setAttachmentDataBase64(this.jsonObject.getString(
-                    JSONMapping.ATTACHMENT_DATA_BASE64));
-        }
-    }
+		//Date Last Updated...
+		if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
+			this.setDateLastUpdated(new Date(
+					this.jsonObject.getLong(JSONMapping.DATE_LAST_UPDATED)));
+		}
 
-    /**
-     * Gets the version of {@code this} {@code Attachment}.
-     *
-     * @return Attachment version.
-     */
-    public String getVersion() {
-        return this.version;
-    }
+		//Attachment Data...
+		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DATA_BASE64)) {
+			this.setAttachmentDataBase64(this.jsonObject.getString(
+					JSONMapping.ATTACHMENT_DATA_BASE64));
+		}
+	}
 
-    /**
-     * Sets the version of {@code this} {@code Attachment}.
-     *
-     * @param versionParam Attachment version.
-     */
-    public void setVersion(String versionParam) {
-        this.version = versionParam;
-    }
+	/**
+	 * Gets the version of {@code this} {@code Attachment}.
+	 *
+	 * @return Attachment version.
+	 */
+	public String getVersion() {
+		return this.version;
+	}
 
-    /**
-     * Gets the name of {@code this} {@code Attachment}.
-     *
-     * @return Attachment name.
-     */
-    public String getName() {
-        return this.name;
-    }
+	/**
+	 * Sets the version of {@code this} {@code Attachment}.
+	 *
+	 * @param versionParam Attachment version.
+	 */
+	public void setVersion(String versionParam) {
+		this.version = versionParam;
+	}
 
-    /**
-     * Sets the name of {@code this} {@code Attachment}.
-     *
-     * @param nameParam Attachment name.
-     */
-    public void setName(String nameParam) {
-        this.name = nameParam;
-    }
+	/**
+	 * Gets the name of {@code this} {@code Attachment}.
+	 *
+	 * @return Attachment name.
+	 */
+	public String getName() {
+		return this.name;
+	}
 
-    /**
-     * Gets the path of {@code this} {@code Attachment}.
-     *
-     * @return Attachment path.
-     */
-    public String getPath() {
-        return this.path;
-    }
+	/**
+	 * Sets the name of {@code this} {@code Attachment}.
+	 *
+	 * @param nameParam Attachment name.
+	 */
+	public void setName(String nameParam) {
+		this.name = nameParam;
+	}
 
-    /**
-     * Sets the path of {@code this} {@code Attachment}.
-     *
-     * @param pathParam Attachment path.
-     */
-    public void setPath(String pathParam) {
-        this.path = pathParam;
-    }
+	/**
+	 * Gets the path of {@code this} {@code Attachment}.
+	 *
+	 * @return Attachment path.
+	 */
+	public String getPath() {
+		return this.path;
+	}
 
-    /**
-     * Gets the id of {@code this} {@code Attachment} form parent.
-     *
-     * @return Attachment associated Form Id.
-     */
-    public Long getFormId() {
-        return this.formId;
-    }
+	/**
+	 * Sets the path of {@code this} {@code Attachment}.
+	 *
+	 * @param pathParam Attachment path.
+	 */
+	public void setPath(String pathParam) {
+		this.path = pathParam;
+	}
 
-    /**
-     * Sets the id of {@code this} {@code Attachment} form parent.
-     *
-     * @param formIdParam Attachment associated Form Id.
-     */
-    public void setFormId(Long formIdParam) {
-        this.formId = formIdParam;
-    }
+	/**
+	 * Gets the id of {@code this} {@code Attachment} form parent.
+	 *
+	 * @return Attachment associated Form Id.
+	 */
+	public Long getFormId() {
+		return this.formId;
+	}
 
-    /**
-     * Gets the content-type of {@code this} {@code Attachment}.
-     *
-     * @return Attachment Content / Mime Type.
-     */
-    public String getContentType() {
-        return this.contentType;
-    }
+	/**
+	 * Sets the id of {@code this} {@code Attachment} form parent.
+	 *
+	 * @param formIdParam Attachment associated Form Id.
+	 */
+	public void setFormId(Long formIdParam) {
+		this.formId = formIdParam;
+	}
 
-    /**
-     * Sets the content-type of {@code this} {@code Attachment}.
-     *
-     * @param contentTypeParam Attachment Content / Mime Type.
-     */
-    public void setContentType(String contentTypeParam) {
-        this.contentType = contentTypeParam;
-    }
+	/**
+	 * Gets the content-type of {@code this} {@code Attachment}.
+	 *
+	 * @return Attachment Content / Mime Type.
+	 */
+	public String getContentType() {
+		return this.contentType;
+	}
 
-    /**
-     * Gets the {@code Date} when {@code this} {@code Attachment} was last updated.
-     *
-     * @return Attachment Last Updated Date.
-     */
-    public Date getDateLastUpdated() {
-        return this.dateLastUpdated;
-    }
+	/**
+	 * Sets the content-type of {@code this} {@code Attachment}.
+	 *
+	 * @param contentTypeParam Attachment Content / Mime Type.
+	 */
+	public void setContentType(String contentTypeParam) {
+		this.contentType = contentTypeParam;
+	}
 
-    /**
-     * Sets the {@code Date} when {@code this} {@code Attachment} was last updated.
-     *
-     * @param dateLastUpdatedParam Attachment Last Updated Date.
-     */
-    public void setDateLastUpdated(Date dateLastUpdatedParam) {
-        this.dateLastUpdated = dateLastUpdatedParam;
-    }
+	/**
+	 * Gets the {@code Date} when {@code this} {@code Attachment} was last updated.
+	 *
+	 * @return Attachment Last Updated Date.
+	 */
+	public Date getDateLastUpdated() {
+		return this.dateLastUpdated;
+	}
 
-    /**
-     * Gets the {@code Date} when {@code this} {@code Attachment} was created.
-     *
-     * @return Attachment Created Date.
-     */
-    public Date getDateCreated() {
-        return this.dateCreated;
-    }
+	/**
+	 * Sets the {@code Date} when {@code this} {@code Attachment} was last updated.
+	 *
+	 * @param dateLastUpdatedParam Attachment Last Updated Date.
+	 */
+	public void setDateLastUpdated(Date dateLastUpdatedParam) {
+		this.dateLastUpdated = dateLastUpdatedParam;
+	}
 
-    /**
-     * Sets the {@code Date} when {@code this} {@code Attachment} was created.
-     *
-     * @param dateCreatedParam Attachment Created Date.
-     */
-    public void setDateCreated(Date dateCreatedParam) {
-        this.dateCreated = dateCreatedParam;
-    }
+	/**
+	 * Gets the {@code Date} when {@code this} {@code Attachment} was created.
+	 *
+	 * @return Attachment Created Date.
+	 */
+	public Date getDateCreated() {
+		return this.dateCreated;
+	}
 
-    /**
-     * <p>
-     * The data for {@code this} {@code Attachment} in Base-64 encoding.
-     *
-     * <p>
-     * Find out more at;
-     * https://en.wikipedia.org/wiki/Base64
-     *
-     * @return Attachment Data in Base-64 encoding.
-     */
-    public String getAttachmentDataBase64() {
-        return this.attachmentDataBase64;
-    }
+	/**
+	 * Sets the {@code Date} when {@code this} {@code Attachment} was created.
+	 *
+	 * @param dateCreatedParam Attachment Created Date.
+	 */
+	public void setDateCreated(Date dateCreatedParam) {
+		this.dateCreated = dateCreatedParam;
+	}
 
-    /**
-     * <p>
-     * The data for {@code this} {@code Attachment} in Base-64 encoding.
-     *
-     * <p>
-     * Find out more at;
-     * https://en.wikipedia.org/wiki/Base64
-     *
-     * @param attachmentDataBase64Param Attachment Data in Base-64 encoding.
-     */
-    public void setAttachmentDataBase64(String attachmentDataBase64Param) {
-        this.attachmentDataBase64 = attachmentDataBase64Param;
-    }
+	/**
+	 * <p>
+	 * The data for {@code this} {@code Attachment} in Base-64 encoding.
+	 *
+	 * <p>
+	 * Find out more at;
+	 * https://en.wikipedia.org/wiki/Base64
+	 *
+	 * @return Attachment Data in Base-64 encoding.
+	 */
+	public String getAttachmentDataBase64() {
+		return this.attachmentDataBase64;
+	}
 
-    /**
-     * Checks to see whether {@code this} {@code Attachment} name contains
-     * the value {@code containingTextParam}.
-     *
-     * @param containingTextParam The text to check for <b>(not case sensitive)</b>.
-     * @return Whether the {@code Attachment} name contains {@code containingTextParam}.
-     */
-    @XmlTransient
-    public boolean doesNameContain(String containingTextParam) {
-        if (this.getName() == null || this.getName().trim().isEmpty()) {
-            return false;
-        }
+	/**
+	 * <p>
+	 * The data for {@code this} {@code Attachment} in Base-64 encoding.
+	 *
+	 * <p>
+	 * Find out more at;
+	 * https://en.wikipedia.org/wiki/Base64
+	 *
+	 * @param attachmentDataBase64Param Attachment Data in Base-64 encoding.
+	 */
+	public void setAttachmentDataBase64(String attachmentDataBase64Param) {
+		this.attachmentDataBase64 = attachmentDataBase64Param;
+	}
 
-        if (containingTextParam == null || containingTextParam.trim().isEmpty()) {
-            return false;
-        }
+	/**
+	 * Checks to see whether {@code this} {@code Attachment} name contains
+	 * the value {@code containingTextParam}.
+	 *
+	 * @param containingTextParam The text to check for <b>(not case sensitive)</b>.
+	 * @return Whether the {@code Attachment} name contains {@code containingTextParam}.
+	 */
+	@XmlTransient
+	public boolean doesNameContain(String containingTextParam) {
+		if (this.getName() == null || this.getName().trim().isEmpty()) {
+			return false;
+		}
 
-        String paramLower = containingTextParam.toLowerCase();
+		if (containingTextParam == null || containingTextParam.trim().isEmpty()) {
+			return false;
+		}
 
-        String nameLower = this.getName().toLowerCase();
+		String paramLower = containingTextParam.toLowerCase();
 
-        return nameLower.contains(paramLower);
-    }
+		String nameLower = this.getName().toLowerCase();
 
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code Attachment}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException {
+		return nameLower.contains(paramLower);
+	}
 
-        JSONObject returnVal = super.toJsonObject();
+	/**
+	 * Conversion to {@code JSONObject} from Java Object.
+	 *
+	 * @return {@code JSONObject} representation of {@code Attachment}
+	 * @throws JSONException If there is a problem with the JSON Body.
+	 *
+	 * @see ABaseFluidJSONObject#toJsonObject()
+	 */
+	@Override
+	public JSONObject toJsonObject() throws JSONException {
 
-        //Attachment Data...
-        if (this.getAttachmentDataBase64() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
-                    this.getAttachmentDataBase64());
-        }
+		JSONObject returnVal = super.toJsonObject();
 
-        //Content Type...
-        if (this.getContentType() != null) {
-            returnVal.put(JSONMapping.CONTENT_TYPE, this.getContentType());
-        }
+		//Attachment Data...
+		if (this.getAttachmentDataBase64() != null) {
+			returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
+					this.getAttachmentDataBase64());
+		}
 
-        //Form Id...
-        if (this.getFormId() != null) {
-            returnVal.put(JSONMapping.FORM_ID, this.getFormId());
-        }
+		//Content Type...
+		if (this.getContentType() != null) {
+			returnVal.put(JSONMapping.CONTENT_TYPE, this.getContentType());
+		}
 
-        //Name...
-        if (this.getName() != null) {
-            returnVal.put(JSONMapping.NAME, this.getName());
-        }
+		//Form Id...
+		if (this.getFormId() != null) {
+			returnVal.put(JSONMapping.FORM_ID, this.getFormId());
+		}
 
-        //Path...
-        if (this.getPath() != null) {
-            returnVal.put(JSONMapping.PATH, this.getPath());
-        }
+		//Name...
+		if (this.getName() != null) {
+			returnVal.put(JSONMapping.NAME, this.getName());
+		}
 
-        //Version...
-        if (this.getVersion() != null) {
-            returnVal.put(JSONMapping.VERSION, this.getVersion());
-        }
+		//Path...
+		if (this.getPath() != null) {
+			returnVal.put(JSONMapping.PATH, this.getPath());
+		}
 
-        //Date Created...
-        if (this.getDateCreated() != null) {
-            returnVal.put(JSONMapping.DATE_CREATED,
-                    this.getDateCreated().getTime());
-        }
+		//Version...
+		if (this.getVersion() != null) {
+			returnVal.put(JSONMapping.VERSION, this.getVersion());
+		}
 
-        //Date Last Updated...
-        if (this.getDateLastUpdated() != null) {
-            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateLastUpdated().getTime());
-        }
+		//Date Created...
+		if (this.getDateCreated() != null) {
+			returnVal.put(JSONMapping.DATE_CREATED,
+					this.getDateCreated().getTime());
+		}
 
-        return returnVal;
-    }
+		//Date Last Updated...
+		if (this.getDateLastUpdated() != null) {
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
+					this.getDateLastUpdated().getTime());
+		}
+
+		return returnVal;
+	}
 }

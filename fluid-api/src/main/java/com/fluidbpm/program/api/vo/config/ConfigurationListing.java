@@ -34,33 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  */
 public class ConfigurationListing extends ABaseListing<Configuration> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public ConfigurationListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public ConfigurationListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public ConfigurationListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public ConfigurationListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code Configuration} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code Configuration}.
-     * @return New {@code Configuration} instance.
-     */
-    @Override
-    @XmlTransient
-    public Configuration getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Configuration(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code Configuration} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code Configuration}.
+	 * @return New {@code Configuration} instance.
+	 */
+	@Override
+	@XmlTransient
+	public Configuration getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new Configuration(jsonObjectParam);
+	}
 }

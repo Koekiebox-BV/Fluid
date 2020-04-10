@@ -20,10 +20,7 @@ import static com.fluidbpm.program.api.util.UtilGlobal.FieldTypeId.*;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -40,7 +37,9 @@ import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
 import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 /**
  * Cache Utility class used for {@code Field} value retrieval actions.
@@ -51,11 +50,14 @@ import redis.clients.jedis.JedisCluster;
  * @see ABaseUtil
  */
 public class CacheUtil extends ABaseUtil {
+	public static final String CLUSTER_DISABLED = "ERR This instance has cluster support disabled";
+
 	private static final String NULL = "null";
 	public static final String FORWARD_SLASH = "/";
 
 	private transient MemcachedClient memcachedClient;
 	private transient JedisCluster jedisCluster;
+	private transient Jedis jedis;
 
 	private String cacheHost = null;
 	private CacheType type = CacheType.MEMCACHED;
@@ -334,7 +336,13 @@ public class CacheUtil extends ABaseUtil {
 				}
 			break;
 			case REDIS:
-				objWithKey = this.jedisCluster.get(storageKey);
+				if (this.jedisCluster != null) {
+					objWithKey = this.jedisCluster.get(storageKey);
+				}
+
+				if (this.jedis != null) {
+					objWithKey = this.jedis.get(storageKey);
+				}
 			break;
 		}
 
@@ -342,22 +350,37 @@ public class CacheUtil extends ABaseUtil {
 	}
 
 	/**
-	 * Retrieves the MemCached server descriptions from the MemCached client.
+	 * Retrieves the MemCached/Redis server descriptions from the cache client.
 	 * Performs a connection test.
 	 *
-	 * @return Servers descriptions from MemCached client.
+	 * @return Servers descriptions from cache client.
 	 *
 	 * @see MemcachedClient#getServersDescription()
+	 * @see JedisCluster#getClusterNodes()
 	 */
-	public List<String> getMemcacheServersDescription() {
+	public List<String> getCacheServersDescription() {
 		switch (this.type) {
 			case REDIS:
-				if (this.jedisCluster == null) {
-					throw new FluidCacheException(
-							"Redis client is not set.");
+				if (this.jedisCluster == null && this.jedis == null) {
+					throw new FluidCacheException("Redis client/cluster is not set.");
 				}
-				return this.jedisCluster.getClusterNodes().keySet().
-						stream().collect(Collectors.toList());
+				String uuid = UUID.randomUUID().toString();
+				String response = null;
+				List<String> returnVal = new ArrayList<>();
+				if (this.jedisCluster != null) {
+					response = this.jedisCluster.echo(uuid);
+					returnVal.addAll(this.jedisCluster.getClusterNodes().keySet().stream().collect(Collectors.toList()));
+				}
+				if (this.jedis != null) {
+					response = this.jedis.echo(uuid);
+					returnVal.add(this.jedis.clientGetname());
+					returnVal.add(this.jedis.ping());
+					returnVal.add(this.jedis.clusterFailover());
+				}
+
+				returnVal.add(String.format("Echo-Request-[%s]", uuid));
+				returnVal.add(String.format("Echo-Response-[%s]", response));
+				return returnVal;
 			case MEMCACHED:
 				if (this.memcachedClient == null) {
 					throw new FluidCacheException(
@@ -494,12 +517,25 @@ public class CacheUtil extends ABaseUtil {
 	 *
 	 * @return MemcachedClient
 	 */
-	private JedisCluster initRedisClient() {
+	private Object initRedisClient() {
 		if (this.jedisCluster != null) {
 			return this.jedisCluster;
 		}
-		this.jedisCluster = new JedisCluster(new HostAndPort(this.cacheHost, this.cachePort));
-		return this.jedisCluster;
+
+		if (this.jedis != null) {
+			return this.jedis;
+		}
+		
+		try {
+			this.jedisCluster = new JedisCluster(new HostAndPort(this.cacheHost, this.cachePort));
+			return this.jedisCluster;
+		} catch (JedisDataException jde) {
+			if (jde.getMessage().startsWith(CLUSTER_DISABLED)) {
+				this.jedis = new Jedis(new HostAndPort(this.cacheHost, this.cachePort));
+				return this.jedis;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -530,6 +566,9 @@ public class CacheUtil extends ABaseUtil {
 			case REDIS:
 				if (this.jedisCluster != null) {
 					this.jedisCluster.close();
+				}
+				if (this.jedis != null) {
+					this.jedis.close();
 				}
 			break;
 			case MEMCACHED:

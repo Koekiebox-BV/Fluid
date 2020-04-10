@@ -35,33 +35,33 @@ import com.fluidbpm.program.api.vo.field.Field;
  */
 public class GlobalFieldListing extends ABaseListing<Field> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public GlobalFieldListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public GlobalFieldListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public GlobalFieldListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public GlobalFieldListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code Field} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code Field}.
-     * @return New {@code Field} instance.
-     */
-    @Override
-    @XmlTransient
-    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Field(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code Field} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code Field}.
+	 * @return New {@code Field} instance.
+	 */
+	@Override
+	@XmlTransient
+	public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new Field(jsonObjectParam);
+	}
 }

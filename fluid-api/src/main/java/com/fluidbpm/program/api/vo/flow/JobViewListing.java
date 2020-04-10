@@ -34,33 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  */
 public class JobViewListing extends ABaseListing<JobView> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public JobViewListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public JobViewListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public JobViewListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public JobViewListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code JobView} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code JobView}.
-     * @return New {@code JobView} instance.
-     */
-    @Override
-    @XmlTransient
-    public JobView getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new JobView(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code JobView} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code JobView}.
+	 * @return New {@code JobView} instance.
+	 */
+	@Override
+	@XmlTransient
+	public JobView getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new JobView(jsonObjectParam);
+	}
 }

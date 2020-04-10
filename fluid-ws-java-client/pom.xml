@@ -1,229 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <!--Parent-->
-    <parent>
-        <groupId>com.fluidbpm</groupId>
-        <artifactId>fluid-root</artifactId>
-        <version>1.10</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+	<!--Parent-->
+	<parent>
+		<groupId>com.fluidbpm</groupId>
+		<artifactId>fluid-root</artifactId>
+		<version>1.10</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-    <!--Fluid Web Service Java Client-->
-    <artifactId>fluid-ws-java-client</artifactId>
-    <packaging>jar</packaging>
-    <name>Fluid RESTful Web Service Client</name>
-    <description>The Fluid Restful Web Service Java Client.</description>
-    <url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
+	<!--Fluid Web Service Java Client-->
+	<artifactId>fluid-ws-java-client</artifactId>
+	<packaging>jar</packaging>
+	<name>Fluid RESTful Web Service Client</name>
+	<description>The Fluid Restful Web Service Java Client.</description>
+	<url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
 
-    <licenses>
-        <license>
-            <name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
-            <url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
+			<url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <developers>
-        <developer>
-            <name>Jason Bruwer</name>
-            <email>jason@koekiebox.com</email>
-            <organization>Koekiebox</organization>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<name>Jason Bruwer</name>
+			<email>jason@koekiebox.com</email>
+			<organization>Koekiebox</organization>
+		</developer>
+	</developers>
 
-    <scm>
-        <connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
-        <developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
-        <url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
-    </scm>
+	<scm>
+		<connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
+		<developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
+		<url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
+	</scm>
 
-    <dependencies>
-        <!--Fluid-->
-        <dependency>
-            <groupId>com.fluidbpm</groupId>
-            <artifactId>fluid-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
+	<dependencies>
+		<!--Fluid-->
+		<dependency>
+			<groupId>com.fluidbpm</groupId>
+			<artifactId>fluid-api</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-        <!--HTTP Components-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<!--HTTP Components-->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<scope>compile</scope>
+		</dependency>
 
-        <!--WEB SOCKET USING TYRUS-->
-        <!--Tyrus Grizzly Client-->
-        <dependency>
-            <groupId>javax.websocket</groupId>
-            <artifactId>javax.websocket-client-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<!--WEB SOCKET USING TYRUS-->
+		<!--Tyrus Grizzly Client-->
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-client-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.glassfish.tyrus</groupId>
-            <artifactId>tyrus-container-grizzly-client</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-container-grizzly-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.glassfish.grizzly</groupId>
-            <artifactId>grizzly-framework</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.glassfish.grizzly</groupId>
+			<artifactId>grizzly-framework</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.glassfish.grizzly</groupId>
-            <artifactId>grizzly-http</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.glassfish.grizzly</groupId>
+			<artifactId>grizzly-http</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.glassfish.tyrus</groupId>
-            <artifactId>tyrus-client</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.glassfish.tyrus</groupId>
-            <artifactId>tyrus-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>org.glassfish.tyrus</groupId>
-            <artifactId>tyrus-spi</artifactId>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.glassfish.tyrus</groupId>
+			<artifactId>tyrus-spi</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-        <!--JUnit Testing-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<!--JUnit Testing-->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
-        <!--TODO Need to investigate this.-->
-        <!--dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.20</version>
-        </dependency-->
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
+		<!--TODO Need to investigate this.-->
+		<!--dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-report-plugin</artifactId>
+			<version>2.20</version>
+		</dependency-->
 
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20</version>
-            </plugin>
-        </plugins>
-    </reporting>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
-    <!--Maven Build Information-->
-    <build>
-        <plugins>
-            <!--Maven GPG Sign Plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <!--Compiler Plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${version.plugin.compiler}</version>
-                <configuration>
-                    <source>${version.jdk.compile}</source>
-                    <target>${version.jdk.compile}</target>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.20</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
-                    <!--compilerArgs>
-                        <arg>add-modules</arg>
-                        <arg>java.xml.bind</arg>
-                    </compilerArgs-->
-                </configuration>
-            </plugin>
+	<!--Maven Build Information-->
+	<build>
+		<plugins>
+			<!--Maven GPG Sign Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
-            <!--Maven Source Plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${version.plugin.java.source}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+			<!--Compiler Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.plugin.compiler}</version>
+				<configuration>
+					<source>${version.jdk.compile}</source>
+					<target>${version.jdk.compile}</target>
 
-            <!--Maven Javadoc Plugin-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${version.plugin.java.doc}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+					<!--compilerArgs>
+						<arg>add-modules</arg>
+						<arg>java.xml.bind</arg>
+					</compilerArgs-->
+				</configuration>
+			</plugin>
 
-            <!--Dependency Plugin to create lib with all libraries-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${version.plugin.dependency}</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/lib
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
-        </plugins>
-    </build>
+			<!--Maven Source Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${version.plugin.java.source}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--Maven Javadoc Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${version.plugin.java.doc}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--Dependency Plugin to create lib with all libraries-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${version.plugin.dependency}</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/lib
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>

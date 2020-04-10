@@ -34,34 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  */
 public class FormHistoricDataListing extends ABaseListing<FormHistoricData> {
-
     public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public FormHistoricDataListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public FormHistoricDataListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public FormHistoricDataListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public FormHistoricDataListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code FormHistoricData}.
-     * @return New {@code FormHistoricData} instance.
-     */
-    @Override
-    @XmlTransient
-    public FormHistoricData getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new FormHistoricData(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code FormHistoricData}.
+	 * @return New {@code FormHistoricData} instance.
+	 */
+	@Override
+	@XmlTransient
+	public FormHistoricData getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new FormHistoricData(jsonObjectParam);
+	}
 }

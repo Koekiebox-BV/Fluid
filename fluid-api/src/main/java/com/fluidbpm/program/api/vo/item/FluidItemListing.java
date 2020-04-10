@@ -34,33 +34,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  */
 public class FluidItemListing extends ABaseListing<FluidItem> {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public FluidItemListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public FluidItemListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public FluidItemListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public FluidItemListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code FluidItem}.
-     * @return New {@code FluidItem} instance.
-     */
-    @Override
-    @XmlTransient
-    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new FluidItem(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code FluidItem}.
+	 * @return New {@code FluidItem} instance.
+	 */
+	@Override
+	@XmlTransient
+	public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new FluidItem(jsonObjectParam);
+	}
 }
