@@ -375,7 +375,6 @@ public class CacheUtil extends ABaseUtil {
 					response = this.jedis.echo(uuid);
 					returnVal.add(this.jedis.clientGetname());
 					returnVal.add(this.jedis.ping());
-					returnVal.add(this.jedis.clusterFailover());
 				}
 
 				returnVal.add(String.format("Echo-Request-[%s]", uuid));
