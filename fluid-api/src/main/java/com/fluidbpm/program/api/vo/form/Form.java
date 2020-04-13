@@ -15,17 +15,6 @@
 
 package com.fluidbpm.program.api.vo.form;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
@@ -34,6 +23,15 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.user.User;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p>
@@ -662,7 +660,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public void setFieldValue(String fieldNameParam, Object fieldValueParam) {
-
 		if (this.getFormFields() == null) {
 			this.setFormFields(new ArrayList());
 		}

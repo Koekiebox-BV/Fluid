@@ -15,16 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
@@ -36,8 +26,16 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -88,10 +86,8 @@ public class TestFormContainerClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testCRUDFormContainerBasic()
-	{
-		if (!this.isConnectionValid())
-		{
+	public void testCRUDFormContainerBasic() {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
@@ -109,7 +105,9 @@ public class TestFormContainerClient extends ABaseTestCase {
 		List<Field> fields = new ArrayList();
 		fields.add(new Field(TestStatics.FieldName.EMAIL_FROM_ADDRESS, "zapper@zool.com"));
 		fields.add(new Field(TestStatics.FieldName.EMAIL_TO_ADDRESS, "pateldream@correct.com"));
-		fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject... \uD83D\uDE00"));
+		String unicodeData = "\uD83D\uDE00";//Test individual entries with the below...
+
+		fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject..."));
 
 		toCreate.setFormFields(fields);
 
@@ -305,10 +303,8 @@ public class TestFormContainerClient extends ABaseTestCase {
 		try {
 			createdFormDef = formDefinitionClient.getFormDefinitionByName(
 					TestFormDefinitionClient.TestStatics.FORM_TYPE);
-		}
-		catch(FluidClientException fce) {
-			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
-			{
+		} catch(FluidClientException fce) {
+			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) {
 				TestCase.fail(fce.getMessage());
 			}
 
@@ -318,7 +314,6 @@ public class TestFormContainerClient extends ABaseTestCase {
 		//Create the Form Container...
 		Form formContainerToCreate = new Form(createdFormDef.getFormType());
 		formContainerToCreate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
-
 		formContainerToCreate.setFieldValue(
 				TestFormFieldClient.TestStatics.FIELD_NAME, new MultiChoice(
 						TestFormFieldClient.TestStatics.MultiChoice.OPTION_1));
@@ -337,8 +332,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 		MultiChoice multiChoiceFromCreatedForm = createdForm.getFieldValueAsMultiChoice(
 				TestFormFieldClient.TestStatics.FIELD_NAME);
 
-		TestCase.assertNotNull("The 'Multi Choice' needs to be set.",
-				multiChoiceFromCreatedForm);
+		TestCase.assertNotNull("The 'Multi Choice' needs to be set.", multiChoiceFromCreatedForm);
 		TestCase.assertNotNull("The 'Multi Choice - SelectedMultiChoices' needs to be set.",
 				multiChoiceFromCreatedForm.getSelectedMultiChoices());
 
@@ -347,13 +341,16 @@ public class TestFormContainerClient extends ABaseTestCase {
 				multiChoiceFromCreatedForm.getSelectedMultiChoices().get(0));
 
 		//GET FORM CONTAINER TO CONFIRM...
+		//sleepForSeconds(5);
 		createdForm = formContainerClient.getFormContainerById(createdForm.getId());
 
 		multiChoiceFromCreatedForm = createdForm.getFieldValueAsMultiChoice(
 				TestFormFieldClient.TestStatics.FIELD_NAME);
 		TestCase.assertNotNull("FETCH: The 'Multi Choice' needs to be set.",
 				multiChoiceFromCreatedForm);
-		TestCase.assertEquals("The 'Multi Choice' needs to be set.",
+		TestCase.assertNotNull("FETCH: The 'Multi Choice' selected choices needs to be set.",
+				multiChoiceFromCreatedForm.getSelectedMultiChoices());
+		TestCase.assertEquals("The 'Multi Choice' option 1 needs to be set.",
 				TestFormFieldClient.TestStatics.MultiChoice.OPTION_1,
 				multiChoiceFromCreatedForm.getSelectedMultiChoices().get(0));
 
@@ -563,27 +560,22 @@ public class TestFormContainerClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testCreateDeleteTableRecordWebSocket()
-	{
-		if (!this.isConnectionValid())
-		{
+	public void testCreateDeleteTableRecordWebSocket() {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
 
-
 		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
+		if (serviceTicket != null && !serviceTicket.isEmpty()) {
 			serviceTicketHex = UtilGlobal.encodeBase16(
 					UtilGlobal.decodeBase64(serviceTicket));
 		}
 
-		WebSocketTableRecordCreateClient webSocketTableRecordClient
-				= new WebSocketTableRecordCreateClient(BASE_URL,
+		WebSocketTableRecordCreateClient webSocketTableRecordClient = new WebSocketTableRecordCreateClient(BASE_URL,
 				null, serviceTicketHex, TimeUnit.MINUTES.toMillis(2));
 
 		FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
