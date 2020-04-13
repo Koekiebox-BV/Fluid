@@ -30,89 +30,86 @@ import com.fluidbpm.ws.client.v1.user.LoginClient;
  */
 public class ABaseTestCase {
 
-    public static String BASE_URL = getTestBASE_URL();
-    public static String USERNAME = getTestUsername();
-    public static String PASSWORD = getTestPassword();
+	public static String BASE_URL = getTestBASE_URL();
+	public static String USERNAME = getTestUsername();
+	public static String PASSWORD = getTestPassword();
 
-    /**
-     * 
-     * @return
-     */
-    private static String getTestBASE_URL()
-    {
-        return System.getProperty(
-                "FLUID_WS_URL",
-                "http://localhost:8080/fluid-ws/");
-    }
+	/**
+	 *
+	 * @return
+	 */
+	private static String getTestBASE_URL()
+	{
+		return System.getProperty(
+				"FLUID_WS_URL",
+				"http://localhost:8080/fluid-ws/");
+	}
 
-    /**
-     *
-     * @return
-     */
-    private static String getTestUsername()
-    {
-        return System.getProperty(
-                "FLUID_WS_USERNAME",
-                "admin");
-    }
+	/**
+	 *
+	 * @return
+	 */
+	private static String getTestUsername()
+	{
+		return System.getProperty(
+				"FLUID_WS_USERNAME",
+				"admin");
+	}
 
-    /**
-     *
-     * @return
-     */
-    private static String getTestPassword()
-    {
-        return System.getProperty(
-                "FLUID_WS_PASSWORD",
-                "12345");
-    }
+	/**
+	 *
+	 * @return
+	 */
+	private static String getTestPassword()
+	{
+		return System.getProperty(
+				"FLUID_WS_PASSWORD",
+				"12345");
+	}
 
-    /**
-     *
-     * @param secondsToMillisParam
-     */
-    public void sleepForSeconds(int secondsToMillisParam)
-    {
-        try {
-            Thread.sleep(TimeUnit.SECONDS.toMillis(secondsToMillisParam));
-        }
-        //
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+	/**
+	 *
+	 * @param secondsToMillisParam
+	 */
+	public void sleepForSeconds(int secondsToMillisParam) {
+		try {
+			Thread.sleep(TimeUnit.SECONDS.toMillis(secondsToMillisParam));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     *
-     */
-    public void sleepForASecond()
-    {
-        this.sleepForSeconds(1);
-    }
+	/**
+	 *
+	 */
+	public void sleepForASecond()
+	{
+		this.sleepForSeconds(1);
+	}
 
 
-    /**
-     * Check whether the {@code BASE_URL} is valid.
-     * 
-     * @return {@code true} if the connection is valid, otherwise {@code false}.
-     */
-    protected boolean isConnectionValid() {
+	/**
+	 * Check whether the {@code BASE_URL} is valid.
+	 *
+	 * @return {@code true} if the connection is valid, otherwise {@code false}.
+	 */
+	protected boolean isConnectionValid() {
 
-        LoginClient loginClient = new LoginClient(BASE_URL);
+		LoginClient loginClient = new LoginClient(BASE_URL);
 
-        try {
-            boolean isConValid = loginClient.isConnectionValid();
+		try {
+			boolean isConValid = loginClient.isConnectionValid();
 
-            if (!isConValid)
-            {
-                System.err.println("Connection to '"
-                        +BASE_URL+"' is not valid!");
-            }
+			if (!isConValid)
+			{
+				System.err.println("Connection to '"
+						+BASE_URL+"' is not valid!");
+			}
 
-            return isConValid;
-        }
-        finally {
-            loginClient.closeAndClean();
-        }
-    }
+			return isConValid;
+		}
+		finally {
+			loginClient.closeAndClean();
+		}
+	}
 }
