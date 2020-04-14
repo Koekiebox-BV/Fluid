@@ -685,8 +685,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 		long now = System.currentTimeMillis();
 		int totalCount = 40;
-		for (int counter = 0;counter < totalCount;counter++)
-		{
+		for (int counter = 0;counter < totalCount;counter++) {
 			TableRecord toAdd = new TableRecord();
 
 			toAdd.setParentFormContainer(createdInvoice);
@@ -694,34 +693,28 @@ public class TestFormContainerClient extends ABaseTestCase {
 			toAdd.setFormContainer(formContainerLineItem);
 
 			toAdd = webSocketTableRecordClient.createTableRecordSynchronized(toAdd);
-
 			additionalForSpeed.add(toAdd);
 		}
 
 		long takenInMillis = (System.currentTimeMillis() - now);
 
 		System.out.println("Took '"+takenInMillis+"' millis to create '"+
-				takenInMillis+"' records. Average of '"+(takenInMillis / totalCount)+"' millis per item.");
+				totalCount+"' records. Average of '"+(takenInMillis / totalCount)+"' millis per item.");
 
 		TestCase.assertNotNull("Table Record Not Set.", tableRecordLineItemToCreateOne);
 
 		List<Field> formFields = tableRecordLineItemToCreateOne.getFormContainer().getFormFields();
 
-		TestCase.assertEquals("Expected 3 Table Fields.",
-				3,formFields.size());
-
-		for (Field formField : formFields)
-		{
+		TestCase.assertEquals("Expected 3 Table Fields.", 3, formFields.size());
+		for (Field formField : formFields) {
 			TestCase.assertNotNull("Form Field Id is not set. " +
 							"Expected value to be set.",
 					formField.getId());
 		}
 
 		//DELETE THE ITEMS...
-		if (!additionalForSpeed.isEmpty())
-		{
-			for (TableRecord toDel : additionalForSpeed)
-			{
+		if (!additionalForSpeed.isEmpty()) {
+			for (TableRecord toDel : additionalForSpeed) {
 				formContainerClient.deleteFormContainer(toDel.getFormContainer());
 			}
 		}

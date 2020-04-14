@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.role.Role;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.user.UserFieldListing;
@@ -32,447 +24,453 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.role.RoleClient;
 import com.fluidbpm.ws.client.v1.role.TestRoleClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 14/12/22.
  */
 public class TestUserClient extends ABaseTestCase {
 
-    private LoginClient loginClient;
-
-    /**
-     *
-     */
-    public static final class TestStatics
-    {
-        public static final class Create
-        {
-            public static final String USERNAME = "junitTestingUser";
-            public static final String PASSWORD = "password";
-
-            public static final String EMAIL = "patel@kapper.com";
-        }
-
-        public static final class Update
-        {
-            public static final String USERNAME = "junitTestingUserUpdated";
-        }
-    }
-
-    /**
-     *
-     */
-    @Before
-    public void init() {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
-        //this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
-        this.loginClient = new LoginClient(BASE_URL);
-    }
-
-    /**
-     *
-     */
-    @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
-    }
+	private LoginClient loginClient;
+
+	/**
+	 *
+	 */
+	public static final class TestStatics
+	{
+		public static final class Create
+		{
+			public static final String USERNAME = "junitTestingUser";
+			public static final String PASSWORD = "password";
+
+			public static final String EMAIL = "patel@kapper.com";
+		}
+
+		public static final class Update
+		{
+			public static final String USERNAME = "junitTestingUserUpdated";
+		}
+	}
+
+	/**
+	 *
+	 */
+	@Before
+	public void init() {
+		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
+		//this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
+		this.loginClient = new LoginClient(BASE_URL);
+	}
+
+	/**
+	 *
+	 */
+	@After
+	public void destroy()
+	{
+		this.loginClient.closeAndClean();
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testCreateUser() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
-
-        User userToCreate = new User();
-        userToCreate.setUsername(TestStatics.Create.USERNAME);
-        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+	/**
+	 *
+	 */
+	@Test
+	public void testCreateUser() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+		User userToCreate = new User();
+		userToCreate.setUsername(TestStatics.Create.USERNAME);
+		userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
-        userToCreate = userClient.createUser(userToCreate);
+		userToCreate = userClient.createUser(userToCreate);
 
-        TestCase.assertNotNull(
-                "No user created or not returned.",
-                userToCreate);
+		TestCase.assertNotNull(
+				"No user created or not returned.",
+				userToCreate);
 
-        userClient.deleteUser(userToCreate);
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void testCreateAndUpdateUser() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+		userClient.deleteUser(userToCreate);
+	}
+
+	/**
+	 *
+	 */
+	@Test
+	public void testCreateAndUpdateUser() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User userToCreate = new User();
-        userToCreate.setUsername(TestStatics.Create.USERNAME);
-        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+		User userToCreate = new User();
+		userToCreate.setUsername(TestStatics.Create.USERNAME);
+		userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
-        User userToUpdate = userClient.createUser(userToCreate);
+		User userToUpdate = userClient.createUser(userToCreate);
 
-        TestCase.assertNotNull(userToUpdate);
+		TestCase.assertNotNull(userToUpdate);
 
-        userToUpdate.setUsername(TestStatics.Update.USERNAME);
+		userToUpdate.setUsername(TestStatics.Update.USERNAME);
 
-        try
-        {
-            userToUpdate = userClient.updateUser(userToUpdate);
-        }
-        finally {
-            userClient.deleteUser(userToUpdate, true);
-        }
-    }
+		try
+		{
+			userToUpdate = userClient.updateUser(userToUpdate);
+		}
+		finally {
+			userClient.deleteUser(userToUpdate, true);
+		}
+	}
 
 
-    /**
-     *
-     */
-    @Test
-    public void testActivateAndDeactivateUser() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testActivateAndDeactivateUser() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User userToCreate = new User();
-        userToCreate.setUsername(TestStatics.Create.USERNAME);
-        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+		User userToCreate = new User();
+		userToCreate.setUsername(TestStatics.Create.USERNAME);
+		userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
-        User userToUpdate = userClient.createUser(userToCreate);
+		User userToUpdate = userClient.createUser(userToCreate);
 
-        TestCase.assertNotNull(userToUpdate);
-        TestCase.assertTrue("User should be active after creation.",userToUpdate.isActive());
+		TestCase.assertNotNull(userToUpdate);
+		TestCase.assertTrue("User should be active after creation.",userToUpdate.isActive());
 
-        //User should now be de-activated...
-        userToUpdate = userClient.deActivateUser(userToUpdate);
+		//User should now be de-activated...
+		userToUpdate = userClient.deActivateUser(userToUpdate);
 
-        TestCase.assertNotNull(userToUpdate);
-        TestCase.assertFalse("User should NOT be active after creation.",userToUpdate.isActive());
+		TestCase.assertNotNull(userToUpdate);
+		TestCase.assertFalse("User should NOT be active after creation.",userToUpdate.isActive());
 
-        //Activate user...
-        userToUpdate = userClient.activateUser(userToUpdate);
+		//Activate user...
+		userToUpdate = userClient.activateUser(userToUpdate);
 
-        TestCase.assertNotNull(userToUpdate);
-        TestCase.assertTrue("User should be active after activation.",userToUpdate.isActive());
+		TestCase.assertNotNull(userToUpdate);
+		TestCase.assertTrue("User should be active after activation.",userToUpdate.isActive());
 
-        userClient.deleteUser(userToUpdate, true);
-    }
+		userClient.deleteUser(userToUpdate, true);
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testCreateUserWithRole() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testCreateUserWithRole() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        //Create the role...
-        RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
+		//Create the role...
+		RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
 
-        Role roleToAssociate = new Role();
-        roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
-        roleToAssociate.setDescription(TestRoleClient.TestStatics.Create.ROLE_DESCRIPTION);
-        roleToAssociate.setAdminPermissions(TestRoleClient.TestStatics.Create.PERMISSIONS);
+		Role roleToAssociate = new Role();
+		roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
+		roleToAssociate.setDescription(TestRoleClient.TestStatics.Create.ROLE_DESCRIPTION);
+		roleToAssociate.setAdminPermissions(TestRoleClient.TestStatics.Create.PERMISSIONS);
 
-        roleToAssociate = roleClient.createRole(roleToAssociate);
-        roleToAssociate.setId(null);
+		roleToAssociate = roleClient.createRole(roleToAssociate);
+		roleToAssociate.setId(null);
 
-        //Created... Test...
-        TestCase.assertNotNull(roleToAssociate);
+		//Created... Test...
+		TestCase.assertNotNull(roleToAssociate);
 
-        User userToCreate = new User();
-        userToCreate.setUsername(TestStatics.Create.USERNAME);
-        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+		User userToCreate = new User();
+		userToCreate.setUsername(TestStatics.Create.USERNAME);
+		userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
-        List<Role> roleList = new ArrayList();
-        roleList.add(roleToAssociate);
-        userToCreate.setRoles(roleList);
+		List<Role> roleList = new ArrayList();
+		roleList.add(roleToAssociate);
+		userToCreate.setRoles(roleList);
 
-        userClient.createUser(userToCreate);
+		userClient.createUser(userToCreate);
 
-        //Fetch the user and check role...
-        User createdUser = userClient.getUserWhereUsername(userToCreate.getUsername());
+		//Fetch the user and check role...
+		User createdUser = userClient.getUserWhereUsername(userToCreate.getUsername());
 
-        TestCase.assertNotNull(createdUser);
-        TestCase.assertFalse("Role listing must be greater than '0'.",
-                createdUser.getRoles().isEmpty());
+		TestCase.assertNotNull(createdUser);
+		TestCase.assertFalse("Role listing must be greater than '0'.",
+				createdUser.getRoles().isEmpty());
 
-        //Delete...
-        userClient.deleteUser(createdUser, true);
-        roleClient.deleteRole(roleToAssociate, true);
-    }
+		//Delete...
+		userClient.deleteUser(createdUser, true);
+		roleClient.deleteRole(roleToAssociate, true);
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testUpdateUserRole() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testUpdateUserRole() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        //Create the role...
-        RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
+		//Create the role...
+		RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
 
-        Role roleToAssociate = new Role();
-        roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
-        roleToAssociate.setDescription(TestRoleClient.TestStatics.Create.ROLE_DESCRIPTION);
-        roleToAssociate.setAdminPermissions(TestRoleClient.TestStatics.Create.PERMISSIONS);
+		Role roleToAssociate = new Role();
+		roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
+		roleToAssociate.setDescription(TestRoleClient.TestStatics.Create.ROLE_DESCRIPTION);
+		roleToAssociate.setAdminPermissions(TestRoleClient.TestStatics.Create.PERMISSIONS);
 
-        roleToAssociate = roleClient.createRole(roleToAssociate);
+		roleToAssociate = roleClient.createRole(roleToAssociate);
 
-        //Created... Test...
-        TestCase.assertNotNull(roleToAssociate);
+		//Created... Test...
+		TestCase.assertNotNull(roleToAssociate);
 
-        User userToCreate = new User();
-        userToCreate.setUsername(TestStatics.Create.USERNAME);
-        userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
+		User userToCreate = new User();
+		userToCreate.setUsername(TestStatics.Create.USERNAME);
+		userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
 
-        User userToUpdate = userClient.createUser(userToCreate);
-        TestCase.assertNotNull(userToUpdate);
+		User userToUpdate = userClient.createUser(userToCreate);
+		TestCase.assertNotNull(userToUpdate);
 
-        List<Role> roleList = new ArrayList();
+		List<Role> roleList = new ArrayList();
 
-        Role roleToAdd = new Role();
-        roleToAdd.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
+		Role roleToAdd = new Role();
+		roleToAdd.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
 
-        roleList.add(roleToAdd);
-        userToUpdate.setRoles(roleList);
+		roleList.add(roleToAdd);
+		userToUpdate.setRoles(roleList);
 
-        userToUpdate = userClient.updateUser(userToUpdate);
+		userToUpdate = userClient.updateUser(userToUpdate);
 
-        TestCase.assertNotNull(userToUpdate);
-        TestCase.assertFalse("Role listing must be greater than '0'.",
-                userToUpdate.getRoles().isEmpty());
+		TestCase.assertNotNull(userToUpdate);
+		TestCase.assertFalse("Role listing must be greater than '0'.",
+				userToUpdate.getRoles().isEmpty());
 
-        //Delete...
-        userClient.deleteUser(userToUpdate, true);
-        roleClient.deleteRole(roleToAssociate, true);
-    }
+		//Delete...
+		userClient.deleteUser(userToUpdate, true);
+		roleClient.deleteRole(roleToAssociate, true);
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testGetLoggedUserInfo() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testGetLoggedUserInfo() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User loggedInUser = userClient.getLoggedInUserInformation();
-        TestCase.assertNotNull(loggedInUser);
-    }
+		User loggedInUser = userClient.getLoggedInUserInformation();
+		TestCase.assertNotNull(loggedInUser);
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testGetAllUserInfo() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testGetAllUserInfo() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        UserListing userListing = userClient.getAllUsers();
+		UserListing userListing = userClient.getAllUsers();
 
-        TestCase.assertNotNull(userListing);
-        TestCase.assertTrue("User listing must be greater than '0'.",
-                userListing.getListingCount() > 0);
-        TestCase.assertNotNull("User Listing must be set.",userListing.getListing());
-        TestCase.assertNotNull("User must be set.",userListing.getListing().get(0));
-    }
+		TestCase.assertNotNull(userListing);
+		TestCase.assertTrue("User listing must be greater than '0'.",
+				userListing.getListingCount() > 0);
+		TestCase.assertNotNull("User Listing must be set.",userListing.getListing());
+		TestCase.assertNotNull("User must be set.",userListing.getListing().get(0));
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testIncrementInvalidLogin() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testIncrementInvalidLogin() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User invalidLogin = new User();
-        invalidLogin.setUsername(USERNAME);
+		User invalidLogin = new User();
+		invalidLogin.setUsername(USERNAME);
 
-        User user = userClient.incrementInvalidLoginForUser(
-                invalidLogin);
+		User user = userClient.incrementInvalidLoginForUser(
+				invalidLogin);
 
-        TestCase.assertNotNull(user);
-    }
+		TestCase.assertNotNull(user);
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testGetAllUserFieldValues() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testGetAllUserFieldValues() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User loggedIn = userClient.getLoggedInUserInformation();
-        
-        UserFieldListing userFieldListing = userClient.getAllUserFieldValuesByUser(loggedIn);
+		User loggedIn = userClient.getLoggedInUserInformation();
 
-        TestCase.assertNotNull(userFieldListing);
-        TestCase.assertTrue("User Field Value listing must be greater than '0'.",
-                userFieldListing.getListingCount() > 0);
-        TestCase.assertNotNull("User Field Value Listing must be set.",userFieldListing.getListing());
-        TestCase.assertNotNull("User Field Value must be set.",userFieldListing.getListing().get(0));
-    }
+		UserFieldListing userFieldListing = userClient.getAllUserFieldValuesByUser(loggedIn);
 
-    /**
-     *
-     */
-    @Test
-    public void testGetUserInfoByUsername() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+		TestCase.assertNotNull(userFieldListing);
+		TestCase.assertTrue("User Field Value listing must be greater than '0'.",
+				userFieldListing.getListingCount() > 0);
+		TestCase.assertNotNull("User Field Value Listing must be set.",userFieldListing.getListing());
+		TestCase.assertNotNull("User Field Value must be set.",userFieldListing.getListing().get(0));
+	}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+	/**
+	 *
+	 */
+	@Test
+	public void testGetUserInfoByUsername() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
-        TestCase.assertNotNull(user);
-    }
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-    /**
-     *
-     */
-    @Test
-    public void testGetUserInfoById() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+		User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
+		TestCase.assertNotNull(user);
+	}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+	/**
+	 *
+	 */
+	@Test
+	public void testGetUserInfoById() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
-        TestCase.assertNotNull(user);
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-        User userById = userClient.getUserById(user.getId());
-        TestCase.assertNotNull(userById);
-    }
+		User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
+		TestCase.assertNotNull(user);
 
-    /**
-     *
-     */
-    @Test
-    public void testGetUserGravatar() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+		User userById = userClient.getUserById(user.getId());
+		TestCase.assertNotNull(userById);
+	}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+	/**
+	 *
+	 */
+	@Test
+	public void testGetUserGravatar() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        byte[] ralfGrav = userClient.getGravatarForEmail("info@ralfebert.de");
-        TestCase.assertNotNull(ralfGrav);
-        TestCase.assertTrue("Expected some bytes.",ralfGrav.length > 0);
-    }
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
 
-    /**
-     *
-     */
-    @Test
-    @Ignore
-    public void testGetUserGravatarByUser() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+		byte[] ralfGrav = userClient.getGravatarForEmail("info@ralfebert.de");
+		TestCase.assertNotNull(ralfGrav);
+		TestCase.assertTrue("Expected some bytes.",ralfGrav.length > 0);
+	}
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+	/**
+	 *
+	 */
+	@Test
+	@Ignore
+	public void testGetUserGravatarByUser() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
 
-        UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+		String serviceTicket = appRequestToken.getServiceTicket();
 
-        byte[] ralfGrav = userClient.getGravatarForUser(new User("admin"));
-        TestCase.assertNotNull(ralfGrav);
-        TestCase.assertTrue("Expected some bytes.",ralfGrav.length > 0);
-    }
+		UserClient userClient = new UserClient(BASE_URL, serviceTicket);
+
+		byte[] ralfGrav = userClient.getGravatarForUser(new User("admin"));
+		TestCase.assertNotNull(ralfGrav);
+		TestCase.assertTrue("Expected some bytes.",ralfGrav.length > 0);
+	}
 }

@@ -393,10 +393,8 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue()
-	{
-		if (!this.isConnectionValid())
-		{
+	public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue() {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
@@ -437,7 +435,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 		itemToSend = flowItmClient.createFlowItem(itemToSend, createdFlow.getName());
 
 		//Wait for 1 seconds...
-		this.sleepForSeconds(1);
+		this.sleepForSeconds(3);
 
 		//Item Created... Add the field...
 		List<Field> routeFields = new ArrayList();
