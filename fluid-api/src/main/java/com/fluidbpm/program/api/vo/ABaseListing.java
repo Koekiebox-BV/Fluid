@@ -36,7 +36,6 @@ import org.json.JSONObject;
  *
  */
 public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABaseFluidJSONObject{
-
 	public static final long serialVersionUID = 1L;
 
 	private List<T> listing;
@@ -48,8 +47,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	/**
 	 * The JSON mapping for the {@code ABaseListing} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String LISTING = "listing";
 
 		public static final String LISTING_COUNT = "listingCount";
@@ -71,7 +69,6 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	 */
 	public ABaseListing(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
-
 		if (this.jsonObject == null) {
 			return;
 		}
@@ -79,7 +76,6 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 		//Listing...
 		int listingArrCount = 0;
 		if (!this.jsonObject.isNull(JSONMapping.LISTING)) {
-
 			JSONArray listingArray = this.jsonObject.getJSONArray(
 					JSONMapping.LISTING);
 			listingArrCount = listingArray.length();
@@ -99,21 +95,17 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 		if (this.jsonObject.isNull(JSONMapping.LISTING_COUNT)) {
 
 			this.setListingCount(listingArrCount);
-		}
-		else
-		{
+		} else {
 			this.setListingCount(this.jsonObject.getInt(JSONMapping.LISTING_COUNT));
 		}
 
 		//Listing Index...
 		if (!this.jsonObject.isNull(JSONMapping.LISTING_INDEX)) {
-
 			this.setListingIndex(this.jsonObject.getInt(JSONMapping.LISTING_INDEX));
 		}
 
 		//Listing Page...
 		if (!this.jsonObject.isNull(JSONMapping.LISTING_PAGE)) {
-
 			this.setListingPage(this.jsonObject.getInt(JSONMapping.LISTING_PAGE));
 		}
 	}
@@ -206,12 +198,10 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 
 		//Listing...
 		int listingCountFromListing = 0;
-		if (this.getListing() != null && !this.getListing().isEmpty())
-		{
+		if (this.getListing() != null && !this.getListing().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
 			listingCountFromListing = this.getListing().size();
-			for (T toAdd :this.getListing())
-			{
+			for (T toAdd :this.getListing()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
 
@@ -219,24 +209,19 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 		}
 
 		//Listing count...
-		if (this.getListingCount() == null)
-		{
+		if (this.getListingCount() == null) {
 			returnVal.put(JSONMapping.LISTING_COUNT, new Integer(listingCountFromListing));
-		}
-		else
-		{
+		} else {
 			returnVal.put(JSONMapping.LISTING_COUNT, this.getListingCount());
 		}
 
 		//Listing index...
-		if (this.getListingIndex() != null)
-		{
+		if (this.getListingIndex() != null) {
 			returnVal.put(JSONMapping.LISTING_INDEX, this.getListingIndex());
 		}
 
 		//Listing page...
-		if (this.getListingIndex() != null)
-		{
+		if (this.getListingIndex() != null) {
 			returnVal.put(JSONMapping.LISTING_PAGE, this.getListingPage());
 		}
 

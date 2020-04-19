@@ -43,8 +43,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code RoleToJobView} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String JOB_VIEW = "jobView";
 		public static final String ROLE = "role";
 	}
@@ -63,7 +62,6 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 	 */
 	public RoleToJobView(Long roleToJobViewIdParam) {
 		super();
-
 		this.setId(roleToJobViewIdParam);
 	}
 
@@ -75,8 +73,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 	public RoleToJobView(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -143,15 +140,13 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Job View...
-		if (this.getJobView() != null)
-		{
+		if (this.getJobView() != null) {
 			returnVal.put(JSONMapping.JOB_VIEW,
 					this.getJobView().toJsonObject());
 		}
 
 		//Role...
-		if (this.getRole() != null)
-		{
+		if (this.getRole() != null) {
 			returnVal.put(JSONMapping.ROLE,
 					this.getRole().toJsonObject());
 		}
