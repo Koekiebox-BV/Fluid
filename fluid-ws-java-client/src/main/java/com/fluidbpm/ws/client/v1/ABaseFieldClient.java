@@ -83,6 +83,14 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 		}
 
 		/**
+		 * Meta-Data types for Encrypted Text fields specifically.
+		 */
+		public static final class EncryptedText {
+			public static final String PLAIN = "Plain";
+			public static final String MASKED = "Masked";
+		}
+
+		/**
 		 * Meta-Data types for True False fields specifically.
 		 */
 		public static final class TrueFalse {
@@ -140,9 +148,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 		 * Meta-Data types for Table Field fields specifically.
 		 */
 		public static final class TableField {
-
 			public static final String SUM_DECIMALS = "SumDecimals";
-
 			public static final String UNDERSCORE = "_";
 			public static final String SQ_OPEN = "[";
 			public static final String SQ_CLOSE = "]";
@@ -158,14 +164,15 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 	 * @param maxParam The max allowed value.
 	 * @param stepFactorParam The allowed step increments.
 	 * @param prefixParam The prefix for the decimal, like $ for currency.
+	 *
 	 * @return Correctly formatted Decimal type.
 	 */
 	protected String getMetaDataForDecimalAs(
-			String metaDataPrefixParam,
-			double minParam,
-			double maxParam,
-			double stepFactorParam,
-			String prefixParam
+		String metaDataPrefixParam,
+		double minParam,
+		double maxParam,
+		double stepFactorParam,
+		String prefixParam
 	) {
 		StringBuffer returnBuffer = new StringBuffer();
 

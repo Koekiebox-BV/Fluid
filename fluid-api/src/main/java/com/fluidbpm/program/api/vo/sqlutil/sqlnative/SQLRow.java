@@ -39,101 +39,101 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  */
 public class SQLRow extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 
-    private List<SQLColumn> sqlColumns;
+	private List<SQLColumn> sqlColumns;
 
-    /**
-     * The JSON mapping for the {@code SQLRow} object.
-     */
-    public static class JSONMapping {
-        
-        public static final String SQL_COLUMNS = "sqlColumns";
-    }
+	/**
+	 * The JSON mapping for the {@code SQLRow} object.
+	 */
+	public static class JSONMapping {
 
-    /**
-     * Default constructor.
-     */
-    public SQLRow() {
-        super();
-    }
+		public static final String SQL_COLUMNS = "sqlColumns";
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public SQLRow(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
+	/**
+	 * Default constructor.
+	 */
+	public SQLRow() {
+		super();
+	}
 
-        if (this.jsonObject == null)
-        {
-            return;
-        }
-        
-        //SQL Columns...
-        if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public SQLRow(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
 
-            JSONArray rulesArr = this.jsonObject.getJSONArray(
-                    JSONMapping.SQL_COLUMNS);
+		if (this.jsonObject == null)
+		{
+			return;
+		}
 
-            List<SQLColumn> sqlColumns = new ArrayList();
-            for (int index = 0;index < rulesArr.length();index++)
-            {
-                sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
-            }
+		//SQL Columns...
+		if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
 
-            this.setSqlColumns(sqlColumns);
-        }
-        else{
-            this.setSqlColumns(null);
-        }
-    }
+			JSONArray rulesArr = this.jsonObject.getJSONArray(
+					JSONMapping.SQL_COLUMNS);
 
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code UserQuery}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException {
+			List<SQLColumn> sqlColumns = new ArrayList();
+			for (int index = 0;index < rulesArr.length();index++)
+			{
+				sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
+			}
 
-        JSONObject returnVal = super.toJsonObject();
+			this.setSqlColumns(sqlColumns);
+		}
+		else{
+			this.setSqlColumns(null);
+		}
+	}
 
-        //SQL Columns...
-        if (this.getSqlColumns() != null)
-        {
-            JSONArray jsonArray = new JSONArray();
+	/**
+	 * Conversion to {@code JSONObject} from Java Object.
+	 *
+	 * @return {@code JSONObject} representation of {@code UserQuery}
+	 * @throws JSONException If there is a problem with the JSON Body.
+	 *
+	 * @see ABaseFluidJSONObject#toJsonObject()
+	 */
+	@Override
+	public JSONObject toJsonObject() throws JSONException {
 
-            for (SQLColumn toAdd : this.getSqlColumns())
-            {
-                jsonArray.put(toAdd.toJsonObject());
-            }
+		JSONObject returnVal = super.toJsonObject();
 
-            returnVal.put(JSONMapping.SQL_COLUMNS, jsonArray);
-        }
-        
-        return returnVal;
-    }
-    
-    /**
-     * Get the SQL columns.
-     *
-     * @return The SQL columns.
-     */
-    public List<SQLColumn> getSqlColumns() {
-        return this.sqlColumns;
-    }
+		//SQL Columns...
+		if (this.getSqlColumns() != null)
+		{
+			JSONArray jsonArray = new JSONArray();
 
-    /**
-     * Set the SQL columns.
-     *
-     * @param sqlInputsParam The SQL columns.
-     */
-    public void setSqlColumns(List<SQLColumn> sqlInputsParam) {
-        this.sqlColumns = sqlInputsParam;
-    }
+			for (SQLColumn toAdd : this.getSqlColumns())
+			{
+				jsonArray.put(toAdd.toJsonObject());
+			}
+
+			returnVal.put(JSONMapping.SQL_COLUMNS, jsonArray);
+		}
+
+		return returnVal;
+	}
+
+	/**
+	 * Get the SQL columns.
+	 *
+	 * @return The SQL columns.
+	 */
+	public List<SQLColumn> getSqlColumns() {
+		return this.sqlColumns;
+	}
+
+	/**
+	 * Set the SQL columns.
+	 *
+	 * @param sqlInputsParam The SQL columns.
+	 */
+	public void setSqlColumns(List<SQLColumn> sqlInputsParam) {
+		this.sqlColumns = sqlInputsParam;
+	}
 }

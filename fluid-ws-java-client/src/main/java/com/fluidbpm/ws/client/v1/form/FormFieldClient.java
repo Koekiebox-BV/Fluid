@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -69,6 +70,121 @@ public class FormFieldClient extends ABaseFieldClient {
 	}
 
 	/**
+	 * Create the field based on the {@code Field#getTypeAsEnum} and {@code Field#getTypeMetaData}.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @param additionalInfo The meta-data additional info used for creation.
+	 * @return Created Field.
+	 *
+	 * @throws FluidClientException If there are validation failures.
+	 * @see FluidClientException.ErrorCode#FIELD_VALIDATE
+	 */
+	public Field createField(Field formFieldParam, Object ... additionalInfo) {
+		if (formFieldParam.getTypeAsEnum() == null ||
+				formFieldParam.getTypeMetaData() == null) {
+			throw new FluidClientException(
+					"Field type and meta-data is mandatory.",
+					FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
+
+		String metaData = formFieldParam.getTypeMetaData();
+		String metaDataLower = metaData.toLowerCase();
+		switch (formFieldParam.getTypeAsEnum()) {
+			case Text:
+				if (FieldMetaData.Text.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldTextPlain(formFieldParam);
+				} else if (metaDataLower.contains(FieldMetaData.Text.MASKED.toLowerCase())) {
+					return this.createFieldTextMasked(formFieldParam, additionalInfo[0].toString());
+				} else if (metaDataLower.contains(FieldMetaData.Text.BARCODE.toLowerCase())) {
+					return this.createFieldTextBarcode(formFieldParam, additionalInfo[0].toString());
+				} else if (metaDataLower.contains(FieldMetaData.Text.LATITUDE_AND_LONGITUDE.toLowerCase())) {
+					return this.createFieldTextLatitudeAndLongitude(formFieldParam);
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.",
+								formFieldParam.getTypeAsEnum(),
+								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+			case TextEncrypted:
+				if (FieldMetaData.EncryptedText.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldTextEncryptedPlain(formFieldParam);
+				} else if (metaDataLower.contains(FieldMetaData.EncryptedText.MASKED.toLowerCase())) {
+					return this.createFieldTextEncryptedMasked(formFieldParam, additionalInfo[0].toString());
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.",
+								formFieldParam.getTypeAsEnum(),
+								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+			case TrueFalse:
+				return this.createFieldTrueFalse(formFieldParam);
+			case DateTime:
+				if (FieldMetaData.DateTime.DATE.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldDateTimeDate(formFieldParam);
+				} else if (FieldMetaData.DateTime.DATE_AND_TIME.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldDateTimeDateAndTime(formFieldParam);
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.",
+								formFieldParam.getTypeAsEnum(),
+								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+			case Decimal:
+				if (FieldMetaData.Decimal.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldDecimalPlain(formFieldParam);
+				} else if (metaDataLower.contains(FieldMetaData.Decimal.RATING.toLowerCase())) {
+					return this.createFieldDecimalRating(
+							formFieldParam, (Double)additionalInfo[0], (Double)additionalInfo[1]);
+				} else if (metaDataLower.contains(FieldMetaData.Decimal.SLIDER.toLowerCase())) {
+					return this.createFieldDecimalSlider(
+							formFieldParam,
+							(Double)additionalInfo[0],
+							(Double)additionalInfo[1],
+							(Double)additionalInfo[2]);
+				} else if (metaDataLower.contains(FieldMetaData.Decimal.SPINNER.toLowerCase())) {
+					return this.createFieldDecimalSpinner(
+							formFieldParam,
+							(Double)additionalInfo[0],
+							(Double)additionalInfo[1],
+							(Double)additionalInfo[2],
+							additionalInfo[3].toString());
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.",
+								formFieldParam.getTypeAsEnum(),
+								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+			case MultipleChoice:
+				if (FieldMetaData.MultiChoice.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldMultiChoicePlain(formFieldParam, (List)additionalInfo[0]);
+				} else if (FieldMetaData.MultiChoice.PLAIN_SEARCH.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldMultiChoicePlainWithSearch(formFieldParam, (List)additionalInfo[0]);
+				} else if (FieldMetaData.MultiChoice.SELECT_MANY.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldMultiChoiceSelectMany(formFieldParam, (List)additionalInfo[0]);
+				} else if (FieldMetaData.MultiChoice.SELECT_MANY_SEARCH.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldMultiChoiceSelectManyWithSearch(formFieldParam, (List)additionalInfo[0]);
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.",
+								formFieldParam.getTypeAsEnum(),
+								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+			case ParagraphText:
+				if (FieldMetaData.ParagraphText.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldParagraphTextPlain(formFieldParam);
+				} else if (FieldMetaData.ParagraphText.HTML.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldParagraphTextHTML(formFieldParam);
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.",
+								formFieldParam.getTypeAsEnum(),
+								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+			case Table:
+				return this.createFieldTable(formFieldParam, (Form)additionalInfo[0], (Boolean)additionalInfo[1]);
+			default:
+				throw new FluidClientException(
+						String.format("Unable to determine type for '%s'.", formFieldParam.getTypeAsEnum()),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
+
+	}
+
+	/**
 	 * Create a new Plain Text field.
 	 *
 	 * @param formFieldParam Field to Create.
@@ -86,6 +202,44 @@ public class FormFieldClient extends ABaseFieldClient {
 
 		return new Field(this.putJson(
 				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
+
+	/**
+	 * Create a new Plain Encrypted Text field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @return Created Field.
+	 */
+	public Field createFieldTextEncryptedPlain(Field formFieldParam) {
+		if (formFieldParam != null && this.serviceTicket != null) {
+			formFieldParam.setServiceTicket(this.serviceTicket);
+		}
+
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.TextEncrypted);
+			formFieldParam.setTypeMetaData(FieldMetaData.EncryptedText.PLAIN);
+		}
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
+
+	/**
+	 * Create a new Masked Encrypted Text field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @param maskedValue The mask value for the encrypted field.
+	 * @return Created Field.
+	 */
+	public Field createFieldTextEncryptedMasked(Field formFieldParam, String maskedValue) {
+		if (formFieldParam != null && this.serviceTicket != null) {
+			formFieldParam.setServiceTicket(this.serviceTicket);
+		}
+
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.TextEncrypted);
+			formFieldParam.setTypeMetaData(FieldMetaData.EncryptedText.MASKED.concat(
+					maskedValue == null ? UtilGlobal.EMPTY : maskedValue));
+		}
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -485,9 +639,9 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldDecimalRating(
-			Field formFieldParam,
-			double minParam,
-			double maxParam
+		Field formFieldParam,
+		double minParam,
+		double maxParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -497,8 +651,8 @@ public class FormFieldClient extends ABaseFieldClient {
 			formFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForDecimalAs(
-							FieldMetaData.Decimal.SLIDER,
-							minParam,maxParam, 0.0, null));
+							FieldMetaData.Decimal.RATING,
+							minParam, maxParam, 0.0, null));
 		}
 
 		return new Field(this.putJson(
@@ -514,9 +668,9 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Table Field.
 	 */
 	public Field createFieldTable(
-			Field formFieldParam,
-			Form formDefinitionParam,
-			boolean sumDecimalsParam
+		Field formFieldParam,
+		Form formDefinitionParam,
+		boolean sumDecimalsParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);

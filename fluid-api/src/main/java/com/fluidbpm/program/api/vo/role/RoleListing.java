@@ -33,34 +33,33 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  */
 public class RoleListing extends ABaseListing<Role> {
-
     public static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor.
-     */
-    public RoleListing() {
-        super();
-    }
+	/**
+	 * Default constructor.
+	 */
+	public RoleListing() {
+		super();
+	}
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public RoleListing(JSONObject jsonObjectParam){
-        super(jsonObjectParam);
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public RoleListing(JSONObject jsonObjectParam){
+		super(jsonObjectParam);
+	}
 
-    /**
-     * Converts the {@code jsonObjectParam} to a {@code Role} object.
-     *
-     * @param jsonObjectParam The JSON object to convert to {@code Role}.
-     * @return New {@code Role} instance.
-     */
-    @Override
-    @XmlTransient
-    public Role getObjectFromJSONObject(JSONObject jsonObjectParam) {
-        return new Role(jsonObjectParam);
-    }
+	/**
+	 * Converts the {@code jsonObjectParam} to a {@code Role} object.
+	 *
+	 * @param jsonObjectParam The JSON object to convert to {@code Role}.
+	 * @return New {@code Role} instance.
+	 */
+	@Override
+	@XmlTransient
+	public Role getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new Role(jsonObjectParam);
+	}
 }
