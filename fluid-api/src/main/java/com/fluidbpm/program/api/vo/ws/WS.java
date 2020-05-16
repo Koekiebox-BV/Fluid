@@ -2304,6 +2304,19 @@ public class WS {
 				}
 
 				/**
+				 * Authenticate using BASIC auth.
+				 *
+				 * @return {@code /user/auth_basic}
+				 *
+				 * @see com.fluidbpm.program.api.vo.auth0.AccessToken
+				 * @see com.fluidbpm.program.api.vo.auth0.AccessTokenRequest
+				 * @see com.fluidbpm.program.api.vo.user.User
+				 */
+				public static final String userBasicAuth() {
+					return Version.VERSION_1.concat(ROOT).concat(AUTH_BASIC);
+				}
+
+				/**
 				 * Root for User initialise session.
 				 *
 				 * @return {@code /user/init}

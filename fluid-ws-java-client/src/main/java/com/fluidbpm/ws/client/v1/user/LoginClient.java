@@ -15,7 +15,9 @@
 package com.fluidbpm.ws.client.v1.user;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;
@@ -30,6 +32,7 @@ import com.fluidbpm.program.api.vo.ws.auth.AuthRequest;
 import com.fluidbpm.program.api.vo.ws.auth.AuthResponse;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.google.common.io.BaseEncoding;
 
 /**
  * Java Web Service Client for User Login related actions.
@@ -169,6 +172,8 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  * @see com.fluidbpm.program.api.vo.user.User
  */
 public class LoginClient extends ABaseClientWS {
+	public static final String AUTHORIZATION = "Authorization";
+	public static final String BASIC = "BASIC";
 
 	/**
 	 * Constructor which sets the login URL.
@@ -177,6 +182,43 @@ public class LoginClient extends ABaseClientWS {
 	 */
 	public LoginClient(String urlParam) {
 		super(urlParam);
+	}
+
+	/**
+	 * Login user using BASIC authentication.
+	 * Not recommended when using non secure connections.
+	 *
+	 * See; https://en.wikipedia.org/wiki/Basic_access_authentication
+	 *
+	 * @param usernameParam The username.
+	 * @param passwordParam The user password.
+	 *
+	 * @return Logged in user.
+	 *
+	 * @see User
+	 */
+	public User loginBasic(String usernameParam, String passwordParam) {
+		if (usernameParam == null || passwordParam == null) {
+			return null;
+		}
+
+		try {
+			List<HeaderNameValue> headNameVal = new ArrayList<>();
+			String value = usernameParam.concat(":").concat(passwordParam);
+			value = BaseEncoding.base64().encode(value.getBytes());
+			HeaderNameValue basicHeader = new HeaderNameValue(AUTHORIZATION,
+					BASIC.concat(" ").concat(value));
+			headNameVal.add(basicHeader);
+
+			return new User(this.getJson(
+					false,
+					WS.Path.User.Version1.userBasicAuth(),
+					headNameVal));
+		} catch (JSONException jsonException) {
+			throw new FluidClientException(
+					jsonException.getMessage(), jsonException,
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
 	}
 
 	/**
@@ -190,8 +232,7 @@ public class LoginClient extends ABaseClientWS {
 	 *
 	 * @see AppRequestToken
 	 */
-	public AppRequestToken login(
-			String usernameParam, String passwordParam) {
+	public AppRequestToken login(String usernameParam, String passwordParam) {
 
 		//Default login is for 9 hours.
 		return this.login(usernameParam, passwordParam, TimeUnit.HOURS.toSeconds(9));
@@ -240,8 +281,7 @@ public class LoginClient extends ABaseClientWS {
 					jsonException.getMessage(),jsonException,FluidClientException.ErrorCode.JSON_PARSING);
 		}
 
-		AuthEncryptedData authEncData =
-				this.initializeSession(passwordParam, authResponse);
+		AuthEncryptedData authEncData = this.initializeSession(passwordParam, authResponse);
 
 		//Issue the token...
 		AppRequestToken appReqToken = this.issueAppRequestToken(
