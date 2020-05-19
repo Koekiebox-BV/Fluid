@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
@@ -30,64 +31,82 @@ import junit.framework.TestCase;
  */
 public class TestLoginClient extends ABaseTestCase {
 
-    private LoginClient loginClient;
+	private LoginClient loginClient;
 
-    /**
-     *
-     */
-    @Before
-    public void init() {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+	/**
+	 *
+	 */
+	@Before
+	public void init() {
+		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
-        this.loginClient = new LoginClient(BASE_URL);
-    }
+		this.loginClient = new LoginClient(BASE_URL);
+	}
 
-    /**
-     *
-     */
-    @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
-    }
+	/**
+	 *
+	 */
+	@After
+	public void destroy()
+	{
+		this.loginClient.closeAndClean();
+	}
 
-    /**
-     *
-     */
-    @Test
-    public void testLogin() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+	/**
+	 *
+	 */
+	@Test
+	public void testLogin() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
 
-        //First...
-        AppRequestToken firstAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(firstAppRequestToken);
+		//First...
+		AppRequestToken firstAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(firstAppRequestToken);
 
-        String firstServiceTicket = firstAppRequestToken.getServiceTicket();
-        TestCase.assertNotNull(firstServiceTicket);
-        System.out.println("1st Token: "+firstServiceTicket);
+		String firstServiceTicket = firstAppRequestToken.getServiceTicket();
+		TestCase.assertNotNull(firstServiceTicket);
+		System.out.println("1st Token: "+firstServiceTicket);
 
-        //Second...
-        AppRequestToken secondAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(secondAppRequestToken);
+		//Second...
+		AppRequestToken secondAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(secondAppRequestToken);
 
-        String secondServiceTicket = secondAppRequestToken.getServiceTicket();
-        TestCase.assertNotNull(secondServiceTicket);
-        System.out.println("2nd Token: "+secondServiceTicket);
+		String secondServiceTicket = secondAppRequestToken.getServiceTicket();
+		TestCase.assertNotNull(secondServiceTicket);
+		System.out.println("2nd Token: "+secondServiceTicket);
 
-        TestCase.assertNotSame("(1 and 2) Service Tickets not allowed to match."
-                ,firstServiceTicket,secondServiceTicket);
+		TestCase.assertNotSame("(1 and 2) Service Tickets not allowed to match."
+				,firstServiceTicket,secondServiceTicket);
 
-        //Third...
-        AppRequestToken thirdAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(thirdAppRequestToken);
+		//Third...
+		AppRequestToken thirdAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(thirdAppRequestToken);
 
-        String thirdServiceTicket = thirdAppRequestToken.getServiceTicket();
-        TestCase.assertNotNull(thirdServiceTicket);
-        System.out.println("3rd Token: "+thirdServiceTicket);
+		String thirdServiceTicket = thirdAppRequestToken.getServiceTicket();
+		TestCase.assertNotNull(thirdServiceTicket);
+		System.out.println("3rd Token: "+thirdServiceTicket);
 
-        TestCase.assertNotSame("(2 and 3) Service Tickets not allowed to match."
-                ,secondServiceTicket,thirdServiceTicket);
-    }
+		TestCase.assertNotSame("(2 and 3) Service Tickets not allowed to match."
+				,secondServiceTicket,thirdServiceTicket);
+	}
+
+	/**
+	 *
+	 */
+	@Test
+	public void testLoginBASIC() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
+
+		//First...
+		User loggedInUser = this.loginClient.loginBasic(USERNAME, PASSWORD);
+		TestCase.assertNotNull(loggedInUser);
+
+		String firstServiceTicket = loggedInUser.getServiceTicket();
+		TestCase.assertNotNull(firstServiceTicket);
+		System.out.println("1st Token: "+firstServiceTicket);
+	}
 }
