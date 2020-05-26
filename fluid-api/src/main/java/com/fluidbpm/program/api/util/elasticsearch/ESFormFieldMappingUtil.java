@@ -60,26 +60,20 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * Creates / Updates the index {@code indexParam} with mappings
 	 * provided in {@code fluidFormMappingToUpdateParam}.
 	 *
-	 * @param indexParam The ElasticSearch index effected.
 	 * @param fluidFormMappingToUpdateParam The Fluid {@code Form} to be
 	 *                                      update.
 	 *
 	 * @see Form
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
-	public void mergeMappingForIndex(
-			String indexParam,
-			Form fluidFormMappingToUpdateParam) {
-		this.mergeMappingForIndex(
-				indexParam, null, fluidFormMappingToUpdateParam);
+	public void mergeMappingForIndex(Form fluidFormMappingToUpdateParam) {
+		this.mergeMappingForIndex(null, fluidFormMappingToUpdateParam);
 	}
 
 	/**
 	 * Creates / Updates the index {@code indexParam} with mappings
 	 * provided in {@code fluidFormMappingToUpdateParam}.
 	 *
-	 *
-	 * @param indexParam The ElasticSearch index effected.
 	 * @param parentTypeParam The {@code _parent} type to be set.
 	 * @param fluidFormMappingToUpdateParam The Fluid {@code Form} to be
 	 *                                      update.
@@ -88,15 +82,9 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
 	public void mergeMappingForIndex(
-		String indexParam,
 		String parentTypeParam,
 		Form fluidFormMappingToUpdateParam
 	) {
-		if (indexParam == null) {
-			throw new FluidElasticSearchException(
-					"Index name '"+indexParam+"' is invalid.");
-		}
-
 		//The Form mapping to update...
 		if (fluidFormMappingToUpdateParam == null) {
 			throw new FluidElasticSearchException(
@@ -117,7 +105,6 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 				fluidFormMappingToUpdateParam.toJsonMappingForElasticSearch();
 
 		this.mergeMappingForIndex(
-				indexParam,
 				parentTypeParam,
 				formTypeString,
 				newContentMappingBuilderFromParam);
@@ -127,7 +114,6 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * Creates / Updates the index {@code indexParam} with mappings
 	 * provided in {@code fluidFormMappingToUpdateParam}.
 	 *
-	 * @param indexParam The ElasticSearch index effected.
 	 * @param parentTypeParam The {@code _parent} type to be set.
 	 * @param formTypeString The {@code _type} type to be set.
 	 * @param newContentMappingBuilderFromParam The new JSON mapping properties.
@@ -136,16 +122,10 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
 	public void mergeMappingForIndex(
-			String indexParam,
-			String parentTypeParam,
-			String formTypeString,
-			JSONObject newContentMappingBuilderFromParam
+		String parentTypeParam,
+		String formTypeString,
+		JSONObject newContentMappingBuilderFromParam
 	) {
-		if (indexParam == null) {
-			throw new FluidElasticSearchException(
-					"Index name '"+indexParam+"' is invalid.");
-		}
-
 		//The Form mapping to update...
 		if (newContentMappingBuilderFromParam == null) {
 			throw new FluidElasticSearchException(
@@ -153,12 +133,12 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		}
 
 		//Retrieve and update...
-		GetIndexResponse getExistingIndex = this.getOrCreateIndex(indexParam);
+		GetIndexResponse getExistingIndex = this.getOrCreateIndex(formTypeString);
 		JSONObject existingPropsToUpdate = null;
 
 		for (ObjectCursor mappingKey : getExistingIndex.getMappings().keys()) {
 			//Found index...
-			if (!mappingKey.value.toString().equals(indexParam)) {
+			if (!mappingKey.value.toString().equals(formTypeString)) {
 				continue;
 			}
 
@@ -188,7 +168,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 			this.setAdditionalProps(existingPropsToUpdate, parentTypeParam);
 
 			PutMappingRequestBuilder putMappingRequestBuilder =
-					this.adminClient.indices().preparePutMapping(indexParam);
+					this.adminClient.indices().preparePutMapping(formTypeString);
 
 			putMappingRequestBuilder = putMappingRequestBuilder.setType(formTypeString);
 			putMappingRequestBuilder = putMappingRequestBuilder.setSource(
@@ -198,7 +178,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 			if (!acknowledgedResponse.isAcknowledged()) {
 				throw new FluidElasticSearchException(
 						"Index Update for Creating '"+
-								indexParam+"' and type '"+
+								formTypeString+"' and type '"+
 								formTypeString+"' not acknowledged by ElasticSearch.");
 			}
 
@@ -242,7 +222,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 
 		//Push the change...
 		PutMappingRequestBuilder putMappingRequestBuilder =
-				this.adminClient.indices().preparePutMapping(indexParam);
+				this.adminClient.indices().preparePutMapping(formTypeString);
 
 		putMappingRequestBuilder = putMappingRequestBuilder.setType(formTypeString);
 		putMappingRequestBuilder = putMappingRequestBuilder.setSource(
@@ -252,7 +232,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		if (!acknowledgedResponse.isAcknowledged()) {
 			throw new FluidElasticSearchException(
 					"Index Update for '"+
-							indexParam+"' and type '"+
+							formTypeString+"' and type '"+
 							formTypeString+"' not acknowledged by ElasticSearch.");
 		}
 	}
@@ -264,8 +244,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * @param parentTypeParam The {@code _parent} type to set.
 	 */
 	private void setAdditionalProps(
-			JSONObject existingPropsToUpdateParam,
-			String parentTypeParam
+		JSONObject existingPropsToUpdateParam,
+		String parentTypeParam
 	) {
 		if (parentTypeParam == null || parentTypeParam.trim().length() == 0) {
 			return;
