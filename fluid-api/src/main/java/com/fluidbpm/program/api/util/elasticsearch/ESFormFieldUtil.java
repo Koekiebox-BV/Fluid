@@ -18,7 +18,7 @@ package com.fluidbpm.program.api.util.elasticsearch;
 import java.sql.Connection;
 import java.util.List;
 
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
@@ -35,7 +35,7 @@ import com.fluidbpm.program.api.vo.form.Form;
  * @see ABaseUtil
  * @see ABaseESUtil
  */
-public class ESFormFieldUtil extends ABaseESUtil{
+public class ESFormFieldUtil extends ABaseESUtil {
 
 	/**
 	 * Initialise with the ElasticSearch client.
@@ -44,7 +44,7 @@ public class ESFormFieldUtil extends ABaseESUtil{
 	 * @param esClientParam The ES Client.
 	 * @param cacheUtilParam The Cache Util for better performance.
 	 */
-	public ESFormFieldUtil(Connection connectionParam, Client esClientParam, CacheUtil cacheUtilParam) {
+	public ESFormFieldUtil(Connection connectionParam, RestHighLevelClient esClientParam, CacheUtil cacheUtilParam) {
 		super(connectionParam, esClientParam, cacheUtilParam);
 	}
 
@@ -53,7 +53,7 @@ public class ESFormFieldUtil extends ABaseESUtil{
 	 *
 	 * @param esClientParam The ES Client.
 	 */
-	public ESFormFieldUtil(Client esClientParam) {
+	public ESFormFieldUtil(RestHighLevelClient esClientParam) {
 		super(esClientParam);
 	}
 
@@ -67,7 +67,6 @@ public class ESFormFieldUtil extends ABaseESUtil{
 	 *         {@code electronicFormIdParam}.
 	 */
 	public Form getFormFields(Long electronicFormIdParam, boolean includeTableFieldsParam) {
-
 		if (electronicFormIdParam == null) {
 			return null;
 		}
@@ -81,9 +80,8 @@ public class ESFormFieldUtil extends ABaseESUtil{
 		//Search for the primary...
 		List<Form> formsWithId = this.searchAndConvertHitsToFormWithAllFields(
 				QueryBuilders.queryStringQuery(primaryQuery.toString()),
-				Index.DOCUMENT,
-				DEFAULT_OFFSET, 1,
-				new Long[]{});
+				DEFAULT_OFFSET,
+				1);
 
 		Form returnVal = null;
 		if (formsWithId != null && !formsWithId.isEmpty()) {

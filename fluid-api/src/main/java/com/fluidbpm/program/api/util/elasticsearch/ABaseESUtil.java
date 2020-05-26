@@ -15,19 +15,25 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
@@ -50,7 +56,7 @@ import com.fluidbpm.program.api.vo.form.Form;
  */
 public abstract class ABaseESUtil extends ABaseSQLUtil {
 
-	protected Client client;
+	protected RestHighLevelClient client;
 	protected SQLFormFieldUtil fieldUtil = null;
 
 	protected static final int DEFAULT_OFFSET = 0;
@@ -58,12 +64,17 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 
 	//public static final String[] NO_FIELDS_MAPPER = {"_none_"};
 	public static final String[] NO_FIELDS_MAPPER = {"_id","_type"};
+	public static final List<String> NO_FIELDS_MAPPER_LIST = new ArrayList<>();
+	static {
+		for (String field : NO_FIELDS_MAPPER) {
+			NO_FIELDS_MAPPER_LIST.add(field);
+		}
+	}
 
 	/**
 	 * The index type.
 	 */
 	public static final class Index {
-
 		public static final String DOCUMENT = "document";
 		public static final String FOLDER = "folder";
 		public static final String TABLE_RECORD = "table_record";
@@ -119,9 +130,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * @param cacheUtilParam The Cache Util for better performance.
 	 */
 	public ABaseESUtil(
-			Connection connectionParam,
-			Client esClientParam,
-			CacheUtil cacheUtilParam
+		Connection connectionParam,
+		RestHighLevelClient esClientParam,
+		CacheUtil cacheUtilParam
 	) {
 		super(connectionParam, cacheUtilParam);
 		this.client = esClientParam;
@@ -133,7 +144,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 *
 	 * @param esClientParam The ES Client.
 	 */
-	public ABaseESUtil(Client esClientParam) {
+	public ABaseESUtil(RestHighLevelClient esClientParam) {
 		super(null);
 		this.client = esClientParam;
 	}
@@ -143,39 +154,33 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * Performs a search against the Elasticsearch instance with the {@code qbParam}.
 	 *
 	 * @param qbParam The @{code QueryBuilder} to search with.
-	 * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The number of results to return.
-	 * @param formTypesParam The Id's for the Form Definitions to be returned.
+	 * @param indicesParam The indexes to search. Optional.
 	 * @return The {@code ElasticTypeAndId} {@code List}.
 	 *
 	 * @see Index
 	 * @see ElasticTypeAndId
 	 */
 	public final List<ElasticTypeAndId> searchAndConvertHitsToIdsOnly(
-			QueryBuilder qbParam,
-			String indexParam,
-			int offsetParam,
-			int limitParam,
-			Long ... formTypesParam
+		QueryBuilder qbParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
-				indexParam,
 				true,
 				offsetParam,
 				limitParam,
-				formTypesParam);
+				indicesParam);
 
 		List<ElasticTypeAndId> returnVal = null;
 
 		long totalHits;
-		if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
-
+		if (searchHits != null && (totalHits = searchHits.getTotalHits().value) > 0) {
 			returnVal = new ArrayList();
-
-			if((searchHits.getHits().length != totalHits) &&
-					(searchHits.getHits().length != limitParam)) {
+			if ((searchHits.getHits().length != totalHits) && (searchHits.getHits().length != limitParam)) {
 				throw new FluidElasticSearchException(
 						"The Hits and fetch count has mismatch. Total hits is '"+totalHits
 								+"' while hits is '"+
@@ -191,7 +196,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 				String idAsString;
-				if((idAsString = searchHit.getId()) == null) {
+				if ((idAsString = searchHit.getId()) == null) {
 					continue;
 				}
 
@@ -207,69 +212,61 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	/**
 	 * Performs a search against the Elasticsearch instance with the {@code qbParam}.
 	 *
-	 * @param qbParam The @{code QueryBuilder} to search with.
-	 * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
+	 * @param queryBuilder The @{code QueryBuilder} to search with.
 	 * @param withNoFieldsParam Should fields be IGNORED returned.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The max number of results to return.
-	 * @param formTypesParam The Id's for the Form Definitions to be returned.
+	 * @param indicesParam The indexes to search. Optional.
 	 *
 	 * @return The Elasticsearch {@code SearchHits}.
 	 */
 	public final SearchHits searchWithHits(
-			QueryBuilder qbParam,
-			String indexParam,
-			boolean withNoFieldsParam,
-			int offsetParam,
-			int limitParam,
-			Long ... formTypesParam
+		QueryBuilder queryBuilder,
+		boolean withNoFieldsParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		if (this.client == null) {
 			throw new ElasticsearchException("Elasticsearch client is not set.");
 		}
 
-		SearchRequestBuilder searchRequestBuilder = this.client.prepareSearch(
-				//Indexes...
-				indexParam)
-				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-				.setQuery(qbParam)
-				.setFrom(0)
-				.setExplain(false);
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.query(queryBuilder);
+		searchSourceBuilder.timeout(new TimeValue(30L, TimeUnit.SECONDS));
+		searchSourceBuilder.from(0);
+		searchSourceBuilder.explain(Boolean.FALSE);
 
 		//No Fields...
 		if (withNoFieldsParam) {
-			searchRequestBuilder = searchRequestBuilder.storedFields(NO_FIELDS_MAPPER);
+			searchSourceBuilder.storedFields(NO_FIELDS_MAPPER_LIST);
 		}
 
 		//The requested number of results...
 		if (limitParam > 0) {
-			searchRequestBuilder = searchRequestBuilder.setSize(limitParam);
+			searchSourceBuilder.size(limitParam);
 		}
 
 		if (offsetParam > -1) {
-			searchRequestBuilder = searchRequestBuilder.setFrom(offsetParam);
+			searchSourceBuilder.from(offsetParam);
 		}
 
-		if (formTypesParam == null) {
-			formTypesParam = new Long[]{};
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.source(searchSourceBuilder);
+		searchRequest.searchType(SearchType.DFS_QUERY_THEN_FETCH);
+
+		if (indicesParam != null && indicesParam.length > 0) {
+			searchRequest.indices(indicesParam);
 		}
 
-		//If Types is set...
-		if (formTypesParam != null && formTypesParam.length > 0) {
-			String[] formTypesAsString = new String[formTypesParam.length];
-			for (int index = 0;index < formTypesParam.length;index++) {
-				Long formTypeId = formTypesParam[index];
-				if (formTypeId == null) {
-					continue;
-				}
-
-				formTypesAsString[index] = formTypeId.toString();
-			}
-			searchRequestBuilder = searchRequestBuilder.setTypes(formTypesAsString);
+		SearchResponse searchResponse = null;
+		try {
+			searchResponse = this.client.search(searchRequest, RequestOptions.DEFAULT);
+		} catch (IOException ioErr) {
+			throw new FluidElasticSearchException(
+					String.format("Unable to search. %s", ioErr.getMessage()), ioErr);
 		}
 
-		//Perform the actual search...
-		SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
 		if (searchResponse == null) {
 			return null;
 		}
@@ -281,58 +278,50 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * Performs a search against the Elasticsearch instance with the {@code qbParam}.
 	 *
 	 * @param qbParam The @{code QueryBuilder} to search with.
-	 * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
 	 * @param withNoFieldsParam Should fields be IGNORED returned.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The number of results to return.
-	 * @param formTypesParam The Id's for the Form Definitions to be returned.
+	 * @param indicesParam The indexes to search. Optional.
 	 *
 	 * @return {@code true} if there were any {@code SearchHits} from the lookup.
 	 */
 	public final boolean searchContainHits(
-			QueryBuilder qbParam,
-			String indexParam,
-			boolean withNoFieldsParam,
-			int offsetParam,
-			int limitParam,
-			Long ... formTypesParam
+		QueryBuilder qbParam,
+		boolean withNoFieldsParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
-				indexParam,
 				withNoFieldsParam,
 				offsetParam,
 				limitParam,
-				formTypesParam);
+				indicesParam);
 
-		return (searchHits != null && searchHits.getTotalHits() > 0);
+		return (searchHits != null && searchHits.getTotalHits().value > 0);
 	}
 
 	/**
 	 * Retrieves the {@code Form}'s via the provided {@code formIdsParam}.
 	 *
-	 * @param indexParam The ElasticSearch index to be used for lookup.
 	 * @param formIdsParam {@code List} of Identifiers for the Forms to return.
 	 * @param includeFieldDataParam Whether to populate the return {@code Form} table fields.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The max number of results to return.
+	 * @param indicesParam The indexes to search. Optional.
 	 *
 	 * @return {@code List<Form>} List of Forms.
 	 */
 	public final List<Form> getFormsByIds(
-			String indexParam,
-			List<Long> formIdsParam,
-			boolean includeFieldDataParam,
-			int offsetParam,
-			int limitParam
+		List<Long> formIdsParam,
+		boolean includeFieldDataParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		if (formIdsParam == null || formIdsParam.isEmpty()) {
 			return null;
-		}
-
-		if (indexParam == null || indexParam.trim().isEmpty()) {
-			throw new FluidElasticSearchException(
-					"Index is mandatory for lookup.");
 		}
 
 		//Query using the descendantId directly...
@@ -352,17 +341,15 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		if (includeFieldDataParam) {
 			returnVal = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(queryByIdsToString),
-					indexParam,
 					offsetParam,
 					limitParam,
-					new Long[]{});
+					indicesParam);
 		} else {
 			returnVal = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(queryByIdsToString),
-					indexParam,
 					offsetParam,
 					limitParam,
-					new Long[]{});
+					indicesParam);
 		}
 
 		if (returnVal == null || returnVal.isEmpty()) {
@@ -376,10 +363,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * Performs a search against the Elasticsearch instance with the {@code qbParam}.
 	 *
 	 * @param qbParam The @{code QueryBuilder} to search with.
-	 * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The max number of results to return.
-	 * @param formTypesParam The Id's for the Form Definitions to be returned.
+	 * @param indicesParam The indexes to search. Optional.
 	 *
 	 * @return The {@code SearchHits} as Fluid {@code Form}.
 	 *
@@ -387,24 +373,22 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * @see SearchHits
 	 */
 	public final List<Form> searchAndConvertHitsToFormWithAllFields(
-			QueryBuilder qbParam,
-			String indexParam,
-			int offsetParam,
-			int limitParam,
-			Long ... formTypesParam
+		QueryBuilder qbParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
-				indexParam,
 				false,
 				offsetParam,
 				limitParam,
-				formTypesParam);
+				indicesParam);
 
 		List<Form> returnVal = null;
 
 		long totalHits;
-		if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
+		if (searchHits != null && (totalHits = searchHits.getTotalHits().value) > 0) {
 			returnVal = new ArrayList();
 
 			if((searchHits.getHits().length != totalHits) &&
@@ -460,10 +444,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * Performs a search against the Elasticsearch instance with the {@code qbParam}.
 	 *
 	 * @param qbParam The @{code QueryBuilder} to search with.
-	 * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The max number of results to return.
-	 * @param formTypesParam The Id's for the Form Definitions to be returned.
+	 * @param indicesParam The indexes to search. Optional.
 	 *
 	 * @return The {@code SearchHits} as Fluid {@code Form}.
 	 *
@@ -471,24 +454,22 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * @see SearchHits
 	 */
 	public final List<Form> searchAndConvertHitsToFormWithNoFields(
-			QueryBuilder qbParam,
-			String indexParam,
-			int offsetParam,
-			int limitParam,
-			Long ... formTypesParam
+		QueryBuilder qbParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
-				indexParam,
 				false,
 				offsetParam,
 				limitParam,
-				formTypesParam);
+				indicesParam);
 
 		List<Form> returnVal = null;
 
 		long totalHits;
-		if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
+		if (searchHits != null && (totalHits = searchHits.getTotalHits().value) > 0) {
 			returnVal = new ArrayList();
 
 			if((searchHits.getHits().length != totalHits) &&
@@ -509,7 +490,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				SearchHit searchHit = searchHits.getAt(index);
 
 				String source;
-				if((source = searchHit.getSourceAsString()) == null) {
+				if ((source = searchHit.getSourceAsString()) == null) {
 					continue;
 				}
 
@@ -520,7 +501,6 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				formFromSource.populateFromElasticSearchJson(
 						new JSONObject(source),
 						null);
-
 				returnVal.add(formFromSource);
 			}
 		}
@@ -532,11 +512,10 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * Performs a search against the Elasticsearch instance with the {@code qbParam}.
 	 *
 	 * @param qbParam The @{code QueryBuilder} to search with.
-	 * @param indexParam The Elasticsearch Index to use {@code (document, folder or table_field)}.
 	 * @param fieldsParam The Fluid {@code Field}'s to return after lookup.
 	 * @param offsetParam The offset for the results to return.
 	 * @param limitParam The max number of results to return.
-	 * @param formTypesParam The Id's for the Form Definitions to be returned.
+	 * @param indicesParam The indexes to search. Optional.
 	 *
 	 * @return The {@code SearchHits} as Fluid {@code Form}.
 	 *
@@ -544,25 +523,23 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * @see SearchHits
 	 */
 	public List<Form> searchAndConvertHitsToForm(
-			QueryBuilder qbParam,
-			String indexParam,
-			List<Field> fieldsParam,
-			int offsetParam,
-			int limitParam,
-			Long ... formTypesParam
+		QueryBuilder qbParam,
+		List<Field> fieldsParam,
+		int offsetParam,
+		int limitParam,
+		String ... indicesParam
 	) {
 		SearchHits searchHits = this.searchWithHits(
 				qbParam,
-				indexParam,
 				false,
 				offsetParam,
 				limitParam,
-				formTypesParam);
+				indicesParam);
 
 		List<Form> returnVal = null;
 
 		long totalHits;
-		if (searchHits != null && (totalHits = searchHits.getTotalHits()) > 0) {
+		if (searchHits != null && (totalHits = searchHits.getTotalHits().value) > 0) {
 			returnVal = new ArrayList();
 
 			if((searchHits.getHits().length != totalHits) &&
@@ -612,9 +589,9 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * @return {@code List<Form>} of populated Table Field records.
 	 */
 	protected final List<Form> populateTableFields(
-			boolean addAllTableRecordsForReturnParam,
-			boolean includeFieldDataParam,
-			List<Field> formFieldsParam
+		boolean addAllTableRecordsForReturnParam,
+		boolean includeFieldDataParam,
+		List<Field> formFieldsParam
 	) {
 		if (formFieldsParam == null || formFieldsParam.isEmpty()) {
 			return null;
@@ -644,10 +621,10 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			List<Form> populatedTableRecords = this.getFormsByIds(
-					Index.TABLE_RECORD,
 					formIdsOnly,
 					includeFieldDataParam,
-					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS);
+					DEFAULT_OFFSET,
+					MAX_NUMBER_OF_TABLE_RECORDS);
 
 			if (addAllTableRecordsForReturnParam && populatedTableRecords != null) {
 				allTableRecordsFromAllFields.addAll(populatedTableRecords);
@@ -661,25 +638,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	}
 
 	/**
-	 * Confirms whether index with the name {@code indexToCheckParam} exists.
-	 *
-	 * @param indexToCheckParam ElasticSearch index to check for existance.
-	 * @return {@code true} if ElasticSearch index {@code indexToCheckParam} exists, otherwise {@code false}.
+	 * @see Closeable#close() 
 	 */
-	public boolean doesIndexExist(String indexToCheckParam) {
-		if (indexToCheckParam == null || indexToCheckParam.trim().isEmpty()) {
-			return false;
-		}
-
-		if (this.client == null) {
-			throw new FluidElasticSearchException(
-					"ElasticSearch client is not initialized.");
-		}
-
-		return this.client.admin().cluster()
-				.prepareState().execute()
-				.actionGet().getState()
-				.getMetaData().hasIndex(indexToCheckParam);
+	@Override
+	public void close() {
+		this.closeConnection();
 	}
 
 	/**
@@ -687,7 +650,6 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 */
 	@Override
 	public void closeConnection() {
-
 		CloseConnectionRunnable closeConnectionRunnable =
 				new CloseConnectionRunnable(this);
 
@@ -704,7 +666,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		super.closeConnection();
 
 		if (this.client != null) {
-			this.client.close();
+			try {
+				this.client.close();
+			} catch (IOException err) {
+				throw new FluidElasticSearchException(err.getMessage(), err);
+			}
 		}
 
 		this.client = null;
@@ -714,7 +680,6 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 	 * Utility class to close the connection in a thread.
 	 */
 	private static class CloseConnectionRunnable implements Runnable {
-
 		private ABaseESUtil baseESUtil;
 
 		/**

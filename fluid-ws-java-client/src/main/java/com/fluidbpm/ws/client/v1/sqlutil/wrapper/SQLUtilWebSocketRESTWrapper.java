@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNative
  * @author jasonbruwer on 3/20/18.
  * @since 1.8
  */
-public class SQLUtilWebSocketRESTWrapper {
+public class SQLUtilWebSocketRESTWrapper implements Closeable {
 
 	//Instance...
 	private String baseURL;
@@ -646,5 +647,13 @@ public class SQLUtilWebSocketRESTWrapper {
 		if (this.sqlUtilWebSocketExecNativeClient != null) {
 			this.sqlUtilWebSocketExecNativeClient.closeAndClean();
 		}
+	}
+
+	/**
+	 * @see Closeable#close() 
+	 */
+	@Override
+	public void close() {
+		this.closeAndClean();
 	}
 }

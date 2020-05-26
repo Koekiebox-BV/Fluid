@@ -3478,6 +3478,7 @@ public class WS {
 				 * Mapping for frequently used HTTP parameters.
 				 */
 				public static final class QueryParam {
+					public static final String FETCH_INPUTS = "fetch_inputs";
 					public static final String POPULATE_ANCESTOR_ID = "populate_ancestor_id";
 					public static final String FORCE_USE_DATABASE = "force_use_database";
 
@@ -3555,7 +3556,8 @@ public class WS {
 						boolean populateAncestorIdParam,
 						boolean forceUseDatabaseParam,
 						int queryLimitParam,
-						int offsetParam) {
+						int offsetParam
+				) {
 					String base = Version.VERSION_1.concat(ROOT).concat(EXECUTE);
 					String additionString = "?";
 

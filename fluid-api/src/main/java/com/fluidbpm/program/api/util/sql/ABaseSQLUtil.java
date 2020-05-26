@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.util.sql;
 
+import java.io.Closeable;
 import java.sql.*;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
@@ -33,7 +34,7 @@ import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
  * @see PreparedStatement
  * @see java.sql.Statement
  */
-public abstract class ABaseSQLUtil extends ABaseUtil {
+public abstract class ABaseSQLUtil extends ABaseUtil implements Closeable {
 	private Connection connection;
 	private DatabaseMetaData databaseMetaData;
 
@@ -100,6 +101,14 @@ public abstract class ABaseSQLUtil extends ABaseUtil {
 			Connection connectionParam, CacheUtil cacheUtilParam) {
 		super(cacheUtilParam);
 		this.connection = connectionParam;
+	}
+
+	/**
+	 * @see Closeable#close() 
+	 */
+	@Override
+	public void close() {
+		this.closeConnection();
 	}
 
 	/**

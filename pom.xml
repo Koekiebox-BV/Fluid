@@ -59,7 +59,7 @@
 		<version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
 
 		<!--Elasticsearch-->
-		<version.elasticsearch>6.7.1</version.elasticsearch>
+		<version.elasticsearch>7.7.0</version.elasticsearch>
 
 		<!--GlassFish Tyrus-->
 		<version.glassfish.tyrus.core>1.13.1</version.glassfish.tyrus.core>
@@ -152,11 +152,12 @@
 			</dependency>
 
 			<!--ElasticSearch-->
+			<!-- https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-high-level-client -->
 			<dependency>
 				<groupId>org.elasticsearch.client</groupId>
-				<artifactId>transport</artifactId>
-				<scope>provided</scope>
+				<artifactId>elasticsearch-rest-high-level-client</artifactId>
 				<version>${version.elasticsearch}</version>
+				<scope>provided</scope>
 			</dependency>
 
 			<!--HTTP Components-->

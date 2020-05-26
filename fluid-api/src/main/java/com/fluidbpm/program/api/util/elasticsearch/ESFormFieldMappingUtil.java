@@ -20,7 +20,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.get.GetIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -43,15 +43,17 @@ import com.fluidbpm.program.api.vo.form.Form;
  * @see Field.ElasticSearchType
  *
  */
-public class ESFormFieldMappingUtil extends ABaseESUtil{
+public class ESFormFieldMappingUtil extends ABaseESUtil {
+	private AdminClient adminClient;
 
 	/**
 	 * Initialise with the ElasticSearch client.
 	 *
 	 * @param esClientParam The ES Client.
 	 */
-	public ESFormFieldMappingUtil(Client esClientParam) {
-		super(esClientParam);
+	public ESFormFieldMappingUtil(AdminClient esClientParam) {
+		super(null);
+		this.adminClient = esClientParam;
 	}
 
 	/**
@@ -86,9 +88,9 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
 	public void mergeMappingForIndex(
-			String indexParam,
-			String parentTypeParam,
-			Form fluidFormMappingToUpdateParam
+		String indexParam,
+		String parentTypeParam,
+		Form fluidFormMappingToUpdateParam
 	) {
 		if (indexParam == null) {
 			throw new FluidElasticSearchException(
@@ -186,7 +188,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 			this.setAdditionalProps(existingPropsToUpdate, parentTypeParam);
 
 			PutMappingRequestBuilder putMappingRequestBuilder =
-					this.client.admin().indices().preparePutMapping(indexParam);
+					this.adminClient.indices().preparePutMapping(indexParam);
 
 			putMappingRequestBuilder = putMappingRequestBuilder.setType(formTypeString);
 			putMappingRequestBuilder = putMappingRequestBuilder.setSource(
@@ -240,7 +242,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 
 		//Push the change...
 		PutMappingRequestBuilder putMappingRequestBuilder =
-				this.client.admin().indices().preparePutMapping(indexParam);
+				this.adminClient.indices().preparePutMapping(indexParam);
 
 		putMappingRequestBuilder = putMappingRequestBuilder.setType(formTypeString);
 		putMappingRequestBuilder = putMappingRequestBuilder.setSource(
@@ -277,6 +279,32 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 	}
 
 	/**
+	 * Confirms whether index with the name {@code indexToCheckParam} exists.
+	 *
+	 * @param indexToCheckParam ElasticSearch index to check for existance.
+	 * @return {@code true} if ElasticSearch index {@code indexToCheckParam} exists, otherwise {@code false}.
+	 */
+	public boolean doesIndexExist(String indexToCheckParam) {
+		if (indexToCheckParam == null || indexToCheckParam.trim().isEmpty()) {
+			return false;
+		}
+
+		if (this.adminClient == null) {
+			throw new FluidElasticSearchException(
+					"ElasticSearch AdminClient is not initialized.");
+		}
+
+		return this.adminClient
+				.cluster()
+				.prepareState()
+				.execute()
+				.actionGet()
+				.getState()
+				.getMetaData()
+				.hasIndex(indexToCheckParam);
+	}
+
+	/**
 	 * Creates a new index or fetches existing index.
 	 *
 	 * @param indexParam The name of the index to create in lower-case.
@@ -286,10 +314,10 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 	 */
 	public GetIndexResponse getOrCreateIndex(String indexParam) {
 		if (this.doesIndexExist(indexParam)) {
-			return this.client.admin().indices().prepareGetIndex().get();
+			return this.adminClient.indices().prepareGetIndex().get();
 		} else {
 			CreateIndexRequestBuilder createIndexRequestBuilder =
-					this.client.admin().indices().prepareCreate(indexParam);
+					this.adminClient.indices().prepareCreate(indexParam);
 
 			CreateIndexResponse mappingCreateResponse =
 					createIndexRequestBuilder.execute().actionGet();
@@ -300,7 +328,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil{
 								indexParam+"' not acknowledged by ElasticSearch.");
 			}
 
-			return this.client.admin().indices().prepareGetIndex().get();
+			return this.adminClient.indices().prepareGetIndex().get();
 		}
 	}
 }

@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.fluidbpm.program.api.util.ABaseUtil;
@@ -48,10 +48,10 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 	 * @param cacheUtilParam The Cache Util for better performance.
 	 */
 	public ESFormUtil(
-			Connection connectionParam,
-			Client esClientParam,
-			CacheUtil cacheUtilParam) {
-
+		Connection connectionParam,
+		RestHighLevelClient esClientParam,
+		CacheUtil cacheUtilParam
+	) {
 		super(connectionParam,
 				esClientParam,
 				cacheUtilParam);
@@ -62,7 +62,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 	 *
 	 * @param esClientParam The ES Client.
 	 */
-	public ESFormUtil(Client esClientParam) {
+	public ESFormUtil(RestHighLevelClient esClientParam) {
 		super(esClientParam);
 	}
 
@@ -98,17 +98,13 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 		if (includeFieldDataParam) {
 			ancestorForms = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(ancestorQuery.toString()),
-					Index.DOCUMENT,
 					DEFAULT_OFFSET,
-					1,
-					new Long[]{});
+					1);
 		} else {
 			ancestorForms = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(ancestorQuery.toString()),
-					Index.DOCUMENT,
 					DEFAULT_OFFSET,
-					1,
-					new Long[]{});
+					1);
 		}
 
 		Form returnVal = null;
@@ -217,15 +213,11 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 		if (includeFieldDataParam) {
 			returnVal = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(fullQueryToExec),
-					Index.DOCUMENT,
-					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS,
-					new Long[]{});
+					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS);
 		} else {
 			returnVal = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(fullQueryToExec),
-					Index.DOCUMENT,
-					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS,
-					new Long[]{});
+					DEFAULT_OFFSET, MAX_NUMBER_OF_TABLE_RECORDS);
 		}
 
 		//Whether table field data should be included...
@@ -277,17 +269,13 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 		if (includeFieldDataParam) {
 			formsWithId = this.searchAndConvertHitsToFormWithAllFields(
 					QueryBuilders.queryStringQuery(primaryQuery.toString()),
-					Index.DOCUMENT,
 					DEFAULT_OFFSET,
-					1,
-					new Long[]{});
+					1);
 		} else {
 			formsWithId = this.searchAndConvertHitsToFormWithNoFields(
 					QueryBuilders.queryStringQuery(primaryQuery.toString()),
-					Index.DOCUMENT,
 					DEFAULT_OFFSET,
-					1,
-					new Long[]{});
+					1);
 		}
 
 		Form returnVal = null;
