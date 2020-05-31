@@ -55,7 +55,7 @@
 		<version.google.guava>23.0</version.google.guava>
 
 		<!--Apache-->
-		<version.apache.httpcomponents.httpcore>4.4.6</version.apache.httpcomponents.httpcore>
+		<version.apache.httpcomponents.httpcore>4.4.12</version.apache.httpcomponents.httpcore>
 		<version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
 
 		<!--Elasticsearch-->

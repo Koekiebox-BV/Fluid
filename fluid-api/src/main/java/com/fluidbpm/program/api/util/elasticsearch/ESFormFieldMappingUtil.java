@@ -15,18 +15,17 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.get.GetIndexResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
+import java.io.IOException;
+
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.client.AdminClient;
+import org.elasticsearch.client.IndicesClient;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.indices.*;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.json.JSONObject;
 
-import com.carrotsearch.hppc.cursors.ObjectCursor;
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
@@ -44,68 +43,68 @@ import com.fluidbpm.program.api.vo.form.Form;
  *
  */
 public class ESFormFieldMappingUtil extends ABaseESUtil {
-	private AdminClient adminClient;
+	private IndicesClient indicesClient;
 
 	/**
 	 * Initialise with the ElasticSearch client.
 	 *
-	 * @param esClientParam The ES Client.
+	 * @param indicesClient The ES Client.
 	 */
-	public ESFormFieldMappingUtil(AdminClient esClientParam) {
+	public ESFormFieldMappingUtil(IndicesClient indicesClient) {
 		super(null);
-		this.adminClient = esClientParam;
+		this.indicesClient = indicesClient;
 	}
 
 	/**
 	 * Creates / Updates the index {@code indexParam} with mappings
 	 * provided in {@code fluidFormMappingToUpdateParam}.
 	 *
-	 * @param fluidFormMappingToUpdateParam The Fluid {@code Form} to be
+	 * @param fluidFormMappingToUpdate The Fluid {@code Form} to be
 	 *                                      update.
 	 *
 	 * @see Form
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
-	public void mergeMappingForIndex(Form fluidFormMappingToUpdateParam) {
-		this.mergeMappingForIndex(null, fluidFormMappingToUpdateParam);
+	public void mergeMappingForIndex(Form fluidFormMappingToUpdate) {
+		this.mergeMappingForIndex(null, fluidFormMappingToUpdate);
 	}
 
 	/**
 	 * Creates / Updates the index {@code indexParam} with mappings
 	 * provided in {@code fluidFormMappingToUpdateParam}.
 	 *
-	 * @param parentTypeParam The {@code _parent} type to be set.
-	 * @param fluidFormMappingToUpdateParam The Fluid {@code Form} to be
+	 * @param parentType The {@code _parent} type to be set.
+	 * @param fluidFormMappingToUpdate The Fluid {@code Form} to be
 	 *                                      update.
 	 *
 	 * @see Form
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
 	public void mergeMappingForIndex(
-		String parentTypeParam,
-		Form fluidFormMappingToUpdateParam
+		String parentType,
+		Form fluidFormMappingToUpdate
 	) {
 		//The Form mapping to update...
-		if (fluidFormMappingToUpdateParam == null) {
+		if (fluidFormMappingToUpdate == null) {
 			throw new FluidElasticSearchException(
 					"Form for mapping not set.");
 		}
 
 		//Form Type Id...
-		if (fluidFormMappingToUpdateParam.getFormTypeId() == null ||
-				fluidFormMappingToUpdateParam.getFormTypeId().longValue() < 1) {
+		if (fluidFormMappingToUpdate.getFormTypeId() == null ||
+				fluidFormMappingToUpdate.getFormTypeId().longValue() < 1) {
 			throw new FluidElasticSearchException(
 					"Form 'FormType' not set for mapping.");
 		}
 
 		String formTypeString =
-				fluidFormMappingToUpdateParam.getFormTypeId().toString();
+				fluidFormMappingToUpdate.getFormTypeId().toString();
 
 		JSONObject newContentMappingBuilderFromParam =
-				fluidFormMappingToUpdateParam.toJsonMappingForElasticSearch();
+				fluidFormMappingToUpdate.toJsonMappingForElasticSearch();
 
 		this.mergeMappingForIndex(
-				parentTypeParam,
+				parentType,
 				formTypeString,
 				newContentMappingBuilderFromParam);
 	}
@@ -114,20 +113,20 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * Creates / Updates the index {@code indexParam} with mappings
 	 * provided in {@code fluidFormMappingToUpdateParam}.
 	 *
-	 * @param parentTypeParam The {@code _parent} type to be set.
+	 * @param parentType The {@code _parent} type to be set.
 	 * @param formTypeString The {@code _type} type to be set.
-	 * @param newContentMappingBuilderFromParam The new JSON mapping properties.
+	 * @param newContentMappingBuilderFrom The new JSON mapping properties.
 	 *
 	 * @see Form
 	 * @throws FluidElasticSearchException If validation or acknowledgement problems occur.
 	 */
 	public void mergeMappingForIndex(
-		String parentTypeParam,
+		String parentType,
 		String formTypeString,
-		JSONObject newContentMappingBuilderFromParam
+		JSONObject newContentMappingBuilderFrom
 	) {
 		//The Form mapping to update...
-		if (newContentMappingBuilderFromParam == null) {
+		if (newContentMappingBuilderFrom == null) {
 			throw new FluidElasticSearchException(
 					"'JSON Object' for mapping not set.");
 		}
@@ -136,14 +135,14 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		GetIndexResponse getExistingIndex = this.getOrCreateIndex(formTypeString);
 		JSONObject existingPropsToUpdate = null;
 
-		for (ObjectCursor mappingKey : getExistingIndex.getMappings().keys()) {
+		for (String mappingKey : getExistingIndex.getMappings().keySet()) {
 			//Found index...
-			if (!mappingKey.value.toString().equals(formTypeString)) {
+			if (!mappingKey.equals(formTypeString)) {
 				continue;
 			}
 
 			//Found a match...
-			Object obj = getExistingIndex.getMappings().get(mappingKey.value.toString());
+			Object obj = getExistingIndex.getMappings().get(mappingKey);
 			if (obj instanceof ImmutableOpenMap) {
 				ImmutableOpenMap casted = (ImmutableOpenMap)obj;
 
@@ -162,26 +161,29 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 
 			existingPropsToUpdate.put(
 					ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
-					newContentMappingBuilderFromParam);
+					newContentMappingBuilderFrom);
 
 			//Set the additional properties...
-			this.setAdditionalProps(existingPropsToUpdate, parentTypeParam);
+			this.setAdditionalProps(existingPropsToUpdate, parentType);
 
-			PutMappingRequestBuilder putMappingRequestBuilder =
-					this.adminClient.indices().preparePutMapping(formTypeString);
+			PutMappingRequest putMappingRequest = new PutMappingRequest(formTypeString);
+			putMappingRequest.source(existingPropsToUpdate.toString(), XContentType.JSON);
 
-			putMappingRequestBuilder = putMappingRequestBuilder.setType(formTypeString);
-			putMappingRequestBuilder = putMappingRequestBuilder.setSource(
-					existingPropsToUpdate.toString(), XContentType.JSON);
-
-			AcknowledgedResponse acknowledgedResponse = putMappingRequestBuilder.get();
-			if (!acknowledgedResponse.isAcknowledged()) {
+			try {
+				AcknowledgedResponse acknowledgedResponse = this.indicesClient.putMapping(
+						putMappingRequest, RequestOptions.DEFAULT);
+				if (!acknowledgedResponse.isAcknowledged()) {
+					throw new FluidElasticSearchException(
+							"Index Update for Creating '"+
+									formTypeString+"' and type '"+
+									formTypeString+"' not acknowledged by ElasticSearch.");
+				}
+			} catch (IOException ioErr) {
 				throw new FluidElasticSearchException(
-						"Index Update for Creating '"+
-								formTypeString+"' and type '"+
-								formTypeString+"' not acknowledged by ElasticSearch.");
+						String.format("Unable to create mapping for index '%s'. %s",
+								formTypeString,
+								ioErr.getMessage()), ioErr);
 			}
-
 			//Creation done.
 			return;
 		}
@@ -193,13 +195,13 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 
 		//Merge existing with new...
 		for (String existingKey : existingPropertiesUpdated.keySet()) {
-			newContentMappingBuilderFromParam.put(existingKey,
+			newContentMappingBuilderFrom.put(existingKey,
 					existingPropertiesUpdated.get(existingKey));
 		}
 
 		//Check to see whether there are any new fields added...
 		boolean noChanges = true;
-		for (String possibleExistingKey : newContentMappingBuilderFromParam.keySet()) {
+		for (String possibleExistingKey : newContentMappingBuilderFrom.keySet()) {
 			if (!existingPropertiesUpdated.has(possibleExistingKey)) {
 				noChanges = false;
 				break;
@@ -213,102 +215,117 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		//Update the properties to new values...
 		existingPropsToUpdate.put(
 				ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
-				newContentMappingBuilderFromParam);
+				newContentMappingBuilderFrom);
 
 		//Set the additional properties...
 		this.setAdditionalProps(
 				existingPropsToUpdate,
-				parentTypeParam);
+				parentType);
 
 		//Push the change...
-		PutMappingRequestBuilder putMappingRequestBuilder =
-				this.adminClient.indices().preparePutMapping(formTypeString);
+		PutMappingRequest putMappingRequest = new PutMappingRequest(formTypeString);
+		putMappingRequest.source(existingPropsToUpdate.toString(), XContentType.JSON);
 
-		putMappingRequestBuilder = putMappingRequestBuilder.setType(formTypeString);
-		putMappingRequestBuilder = putMappingRequestBuilder.setSource(
-				existingPropsToUpdate.toString(), XContentType.JSON);
-
-		AcknowledgedResponse acknowledgedResponse = putMappingRequestBuilder.get();
-		if (!acknowledgedResponse.isAcknowledged()) {
+		try {
+			AcknowledgedResponse acknowledgedResponse = this.indicesClient.putMapping(
+					putMappingRequest, RequestOptions.DEFAULT);
+			if (!acknowledgedResponse.isAcknowledged()) {
+				throw new FluidElasticSearchException(
+						"Index Update for '"+
+								formTypeString+"' and type '"+
+								formTypeString+"' not acknowledged by ElasticSearch.");
+			}
+		} catch (IOException ioErr) {
 			throw new FluidElasticSearchException(
-					"Index Update for '"+
-							formTypeString+"' and type '"+
-							formTypeString+"' not acknowledged by ElasticSearch.");
+					String.format("Unable to merge mapping for index '%s'. %s",
+							formTypeString,
+							ioErr.getMessage()), ioErr);
 		}
 	}
 
 	/**
 	 * Set the additional properties on the {@code existingPropsToUpdateParam} json object.
 	 *
-	 * @param existingPropsToUpdateParam The existing properties to update.
-	 * @param parentTypeParam The {@code _parent} type to set.
+	 * @param existingPropsToUpdate The existing properties to update.
+	 * @param parentType The {@code _parent} type to set.
 	 */
 	private void setAdditionalProps(
-		JSONObject existingPropsToUpdateParam,
-		String parentTypeParam
+		JSONObject existingPropsToUpdate,
+		String parentType
 	) {
-		if (parentTypeParam == null || parentTypeParam.trim().length() == 0) {
+		if (parentType == null || parentType.trim().length() == 0) {
 			return;
 		}
 
 		JSONObject typeJson = new JSONObject();
-		typeJson.put(Field.JSONMapping.FIELD_TYPE, parentTypeParam);
+		typeJson.put(Field.JSONMapping.FIELD_TYPE, parentType);
 
-		existingPropsToUpdateParam.put(
+		existingPropsToUpdate.put(
 				Form.JSONMapping._PARENT, typeJson);
 	}
 
 	/**
 	 * Confirms whether index with the name {@code indexToCheckParam} exists.
 	 *
-	 * @param indexToCheckParam ElasticSearch index to check for existance.
+	 * @param indexToCheck ElasticSearch index to check for existance.
 	 * @return {@code true} if ElasticSearch index {@code indexToCheckParam} exists, otherwise {@code false}.
 	 */
-	public boolean doesIndexExist(String indexToCheckParam) {
-		if (indexToCheckParam == null || indexToCheckParam.trim().isEmpty()) {
+	public boolean doesIndexExist(String indexToCheck) {
+		if (indexToCheck == null || indexToCheck.trim().isEmpty()) {
 			return false;
 		}
 
-		if (this.adminClient == null) {
+		if (this.indicesClient == null) {
 			throw new FluidElasticSearchException(
-					"ElasticSearch AdminClient is not initialized.");
+					"ElasticSearch IndicesClient is not initialized.");
 		}
 
-		return this.adminClient
-				.cluster()
-				.prepareState()
-				.execute()
-				.actionGet()
-				.getState()
-				.getMetaData()
-				.hasIndex(indexToCheckParam);
+		GetIndexRequest getIndexReq = new GetIndexRequest(indexToCheck);
+
+		try {
+			return this.indicesClient.exists(getIndexReq, RequestOptions.DEFAULT);
+		} catch (IOException ioErr) {
+			throw new FluidElasticSearchException(
+					String.format("Unable to check if index '%s' exists. %s",
+							indexToCheck,
+							ioErr.getMessage()), ioErr);
+		}
 	}
 
 	/**
 	 * Creates a new index or fetches existing index.
 	 *
-	 * @param indexParam The name of the index to create in lower-case.
+	 * @param index The name of the index to create in lower-case.
 	 * @return Newly created or existing index.
 	 *
 	 * @see GetIndexResponse
 	 */
-	public GetIndexResponse getOrCreateIndex(String indexParam) {
-		if (this.doesIndexExist(indexParam)) {
-			return this.adminClient.indices().prepareGetIndex().get();
-		} else {
-			CreateIndexRequestBuilder createIndexRequestBuilder =
-					this.adminClient.indices().prepareCreate(indexParam);
-
-			CreateIndexResponse mappingCreateResponse =
-					createIndexRequestBuilder.execute().actionGet();
-
-			if (!mappingCreateResponse.isAcknowledged()) {
+	public GetIndexResponse getOrCreateIndex(String index) {
+		if (this.doesIndexExist(index)) {
+			GetIndexRequest getIndexRequest = new GetIndexRequest(index);
+			try {
+				return this.indicesClient.get(getIndexRequest, RequestOptions.DEFAULT);
+			} catch (IOException ioErr) {
 				throw new FluidElasticSearchException(
-						"Index Creation for '"+
-								indexParam+"' not acknowledged by ElasticSearch.");
+						String.format("Unable to get index '%s' exists. %s",
+								index, ioErr.getMessage()), ioErr);
 			}
+		} else {
+			CreateIndexRequest createIndexRequest = new CreateIndexRequest(index);
+			try {
+				CreateIndexResponse createIndexResponse =
+						this.indicesClient.create(createIndexRequest, RequestOptions.DEFAULT);
+				if (!createIndexResponse.isAcknowledged()) {
+					throw new FluidElasticSearchException(
+							"Index Creation for '"+ index+"' not acknowledged by ElasticSearch.");
+				}
 
-			return this.adminClient.indices().prepareGetIndex().get();
+				return this.indicesClient.get(new GetIndexRequest(index), RequestOptions.DEFAULT);
+			} catch (IOException ioErr) {
+				throw new FluidElasticSearchException(
+						String.format("Unable to create index '%s'. %s",
+								index, ioErr.getMessage()), ioErr);
+			}
 		}
 	}
 }
