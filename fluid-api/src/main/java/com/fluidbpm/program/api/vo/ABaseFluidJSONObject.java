@@ -65,6 +65,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 		 */
 		public static final class Elastic {
 			public static final String PROPERTIES = "properties";
+			public static final String FORM_INDEX_PREFIX = "form_";
 		}
 	}
 

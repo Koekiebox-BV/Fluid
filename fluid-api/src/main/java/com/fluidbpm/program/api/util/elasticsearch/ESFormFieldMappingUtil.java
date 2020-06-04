@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
+import static com.fluidbpm.program.api.vo.ABaseFluidJSONObject.JSONMapping.Elastic.FORM_INDEX_PREFIX;
+
 import java.io.IOException;
 
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
@@ -97,8 +99,8 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 					"Form 'FormType' not set for mapping.");
 		}
 
-		String formTypeString =
-				fluidFormMappingToUpdate.getFormTypeId().toString();
+		String formTypeString = fluidFormMappingToUpdate.getFormTypeId().toString();
+		formTypeString = FORM_INDEX_PREFIX.concat(formTypeString);
 
 		JSONObject newContentMappingBuilderFromParam =
 				fluidFormMappingToUpdate.toJsonMappingForElasticSearch();
@@ -156,7 +158,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		}
 
 		//No mapping for the type create a new one...
-		if (existingPropsToUpdate == null) {
+		if (existingPropsToUpdate == null || existingPropsToUpdate.isEmpty()) {
 			existingPropsToUpdate = new JSONObject();
 
 			existingPropsToUpdate.put(
@@ -188,21 +190,16 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 			return;
 		}
 
-		//Update the existing index...
-		JSONObject existingPropertiesUpdated =
-				existingPropsToUpdate.getJSONObject(formTypeString).getJSONObject(
-						ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES);
-
 		//Merge existing with new...
-		for (String existingKey : existingPropertiesUpdated.keySet()) {
+		for (String existingKey : existingPropsToUpdate.keySet()) {
 			newContentMappingBuilderFrom.put(existingKey,
-					existingPropertiesUpdated.get(existingKey));
+					existingPropsToUpdate.get(existingKey));
 		}
 
 		//Check to see whether there are any new fields added...
 		boolean noChanges = true;
 		for (String possibleExistingKey : newContentMappingBuilderFrom.keySet()) {
-			if (!existingPropertiesUpdated.has(possibleExistingKey)) {
+			if (!existingPropsToUpdate.has(possibleExistingKey)) {
 				noChanges = false;
 				break;
 			}
