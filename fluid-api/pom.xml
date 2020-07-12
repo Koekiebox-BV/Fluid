@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<!--Google-->
@@ -67,7 +67,7 @@
 		<dependency>
 			<groupId>com.googlecode.xmemcached</groupId>
 			<artifactId>xmemcached</artifactId>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<!--Guava-->

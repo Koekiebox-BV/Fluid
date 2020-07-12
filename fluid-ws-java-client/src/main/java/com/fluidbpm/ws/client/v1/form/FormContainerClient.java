@@ -53,28 +53,46 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @param serviceTicketParam The Server issued Service Ticket.
 	 */
 	public FormContainerClient(
-			String endpointBaseUrlParam,
-			String serviceTicketParam) {
+		String endpointBaseUrlParam, String serviceTicketParam
+	) {
 		super(endpointBaseUrlParam);
-
 		this.setServiceTicket(serviceTicketParam);
 	}
 
 	/**
 	 * Create a new Form Container / Electronic Forms.
 	 *
-	 * @param formParam The Form to create.
+	 * @param form The Form to create.
+	 * @param addToPersonalInventory Should the form be added to the users P/I after creation.
+	 *
 	 * @return Created Form Container / Electronic Form.
 	 *
 	 * @see Field
 	 */
-	public Form createFormContainer(Form formParam) {
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
+	public Form createFormContainer(
+		Form form,
+		boolean addToPersonalInventory
+	) {
+		if (form != null && this.serviceTicket != null) {
+			form.setServiceTicket(this.serviceTicket);
 		}
 
 		return new Form(this.putJson(
-				formParam, WS.Path.FormContainer.Version1.formContainerCreate()));
+				form,
+				WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory)));
+	}
+
+	/**
+	 * Create a new Form Container / Electronic Forms.
+	 * The Form will not be added to the P/I.
+	 *
+	 * @param form The Form to create.
+	 * @return Created Form Container / Electronic Form.
+	 *
+	 * @see Field
+	 */
+	public Form createFormContainer(Form form) {
+		return this.createFormContainer(form, false);
 	}
 
 	/**
