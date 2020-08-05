@@ -74,8 +74,8 @@
 		<!--Plugins-->
 		<version.plugin.compiler>3.6.0</version.plugin.compiler>
 		<version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
-		<version.plugin.java.source>3.0.1</version.plugin.java.source>
-		<version.plugin.java.doc>2.10.4</version.plugin.java.doc>
+		<version.plugin.java.source>3.2.1</version.plugin.java.source>
+		<version.plugin.java.doc>3.2.0</version.plugin.java.doc>
 		<version.plugin.gpg>1.6</version.plugin.gpg>
 		<version.plugin.dependency>3.0.1</version.plugin.dependency>
 

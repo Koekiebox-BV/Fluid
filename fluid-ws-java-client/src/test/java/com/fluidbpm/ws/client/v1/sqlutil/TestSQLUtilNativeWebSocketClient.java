@@ -15,6 +15,15 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
@@ -25,15 +34,8 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import junit.framework.TestCase;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -75,8 +77,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
+		if (serviceTicket != null && !serviceTicket.isEmpty()) {
 			serviceTicketHex =
 					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
 		}

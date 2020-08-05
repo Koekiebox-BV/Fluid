@@ -63,8 +63,8 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 			long timeoutInMillisParam,
 			boolean includeFieldDataParam,
 			boolean compressResponseParam,
-			String compressResponseCharsetParam) {
-
+			String compressResponseCharsetParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -72,12 +72,78 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 						includeFieldDataParam,
 						serviceTicketAsHexParam,
 						compressResponseParam,
-						compressResponseCharsetParam),
+						compressResponseCharsetParam,
+						null),
 				compressResponseParam);
 
 		this.setServiceTicket(serviceTicketAsHexParam);
 	}
 
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param includeFieldDataParam Should Form Field data be included.
+	 * @param formDefIdFilter The filter for form definitions.
+	 * @param compressResponseParam Compress the Form Field Result in Base-64.
+	 * @param compressResponseCharsetParam Compress response using provided charset.
+	 */
+	public SQLUtilWebSocketGetTableFormsClient(
+		String endpointBaseUrlParam,
+		IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+		String serviceTicketAsHexParam,
+		long timeoutInMillisParam,
+		boolean includeFieldDataParam,
+		Long formDefIdFilter,
+		boolean compressResponseParam,
+		String compressResponseCharsetParam
+	) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
+						includeFieldDataParam,
+						serviceTicketAsHexParam,
+						compressResponseParam,
+						compressResponseCharsetParam,
+						formDefIdFilter),
+				compressResponseParam);
+
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
+
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param messageReceivedCallbackParam Callback for when a message is received.
+	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
+	 * @param timeoutInMillisParam The timeout of the request in millis.
+	 * @param includeFieldDataParam Should Form Field data be included.
+	 * @param formDefIdFilter The filter for form definitions.
+	 */
+	public SQLUtilWebSocketGetTableFormsClient(
+		String endpointBaseUrlParam,
+		IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+		String serviceTicketAsHexParam,
+		long timeoutInMillisParam,
+		boolean includeFieldDataParam,
+		Long formDefIdFilter
+	) {
+		super(endpointBaseUrlParam,
+				messageReceivedCallbackParam,
+				timeoutInMillisParam,
+				WS.Path.SQLUtil.Version1.getTableFormsWebSocket(
+						includeFieldDataParam,
+						serviceTicketAsHexParam,
+						false,
+						UtilGlobal.EMPTY,
+						formDefIdFilter));
+		this.setServiceTicket(serviceTicketAsHexParam);
+	}
 
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
@@ -89,12 +155,12 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 	 * @param includeFieldDataParam Should Form Field data be included.
 	 */
 	public SQLUtilWebSocketGetTableFormsClient(
-			String endpointBaseUrlParam,
-			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-			String serviceTicketAsHexParam,
-			long timeoutInMillisParam,
-			boolean includeFieldDataParam) {
-
+		String endpointBaseUrlParam,
+		IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
+		String serviceTicketAsHexParam,
+		long timeoutInMillisParam,
+		boolean includeFieldDataParam
+	) {
 		super(endpointBaseUrlParam,
 				messageReceivedCallbackParam,
 				timeoutInMillisParam,
@@ -102,8 +168,8 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 						includeFieldDataParam,
 						serviceTicketAsHexParam,
 						false,
-						UtilGlobal.EMPTY));
-
+						UtilGlobal.EMPTY,
+						null));
 		this.setServiceTicket(serviceTicketAsHexParam);
 	}
 
@@ -114,9 +180,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 	 *
 	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
 	 */
-	public List<FormListing> getTableFormsSynchronized(
-			Form ... formsToGetTableFormsForParam) {
-
+	public List<FormListing> getTableFormsSynchronized(Form ... formsToGetTableFormsForParam) {
 		if (formsToGetTableFormsForParam == null) {
 			return null;
 		}

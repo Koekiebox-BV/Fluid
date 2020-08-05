@@ -290,8 +290,25 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 	 * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
 	 */
 	public List<FormListing> getTableForms(
-			boolean includeFieldDataParam,
-			Form ... formsToGetTableFormsForParam
+		boolean includeFieldDataParam,
+		Form ... formsToGetTableFormsForParam
+	) {
+		return this.getTableForms(includeFieldDataParam, null, formsToGetTableFormsForParam);
+	}
+
+	/**
+	 * Retrieves all the Table (Forms) for the {@code formsToGetDescForParam}.
+	 *
+	 * @param includeFieldDataParam Should Field data be included?
+	 * @param formDefFilter The filter for form definitions.
+	 * @param formsToGetTableFormsForParam The Fluid Form to get Descendants for.
+	 *
+	 * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
+	 */
+	public List<FormListing> getTableForms(
+		boolean includeFieldDataParam,
+		Long formDefFilter,
+		Form ... formsToGetTableFormsForParam
 	) {
 		if (DISABLE_WS) {
 			this.mode = Mode.RESTfulActive;
@@ -300,14 +317,14 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 		//DESCENDANTS...
 		try {
 			//When mode is null or [WebSocketActive]...
-			if (this.getTableFormsClient == null &&
-					Mode.RESTfulActive != this.mode) {
+			if (this.getTableFormsClient == null && Mode.RESTfulActive != this.mode) {
 				this.getTableFormsClient = new SQLUtilWebSocketGetTableFormsClient(
 						this.baseURL,
 						null,
 						this.loggedInUser.getServiceTicketAsHexUpper(),
 						this.timeoutMillis,
 						includeFieldDataParam,
+						formDefFilter,
 						COMPRESS_RSP,
 						COMPRESS_RSP_CHARSET);
 
@@ -318,7 +335,6 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
-
 			this.mode = Mode.RESTfulActive;
 		}
 
@@ -338,10 +354,11 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			List<FormListing> returnVal = new ArrayList<>();
 
 			for (Form formToFetchFor : formsToFetchFor) {
-				List<Form> listOfForms =
-						this.sqlUtilClient.getTableForms(
-								formToFetchFor,
-								includeFieldDataParam);
+				List<Form> listOfForms = this.sqlUtilClient.getTableForms(
+					formToFetchFor,
+					includeFieldDataParam,
+					formDefFilter
+				);
 
 				FormListing toAdd = new FormListing();
 				toAdd.setListing(listOfForms);

@@ -40,395 +40,389 @@ import junit.framework.TestCase;
  */
 public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
-    private LoginClient loginClient;
-
-    /**
-     *
-     */
-    @Before
-    public void init()
-    {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
-        this.loginClient = new LoginClient(BASE_URL);
-    }
-
-    /**
-     *
-     */
-    @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
-    }
-
-    /**
-     *
-     */
-    @Test
-    @Ignore
-    public void testGetTableFormsWithSpecificId()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-        String serviceTicketHex = null;
-        if (serviceTicket != null && !serviceTicket.isEmpty())
-        {
-            serviceTicketHex =
-                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-        }
-
-        SQLUtilWebSocketGetTableFormsClient webSocketClient =
-                new SQLUtilWebSocketGetTableFormsClient(
-                        BASE_URL,
-                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true);
-
-        long start = System.currentTimeMillis();
-        int numberOfRecords = 1;
-
-        List<FormListing> formListing = webSocketClient.getTableFormsSynchronized(
-                generateLotsOfFormsFor(numberOfRecords, 2192L));
-
-        long took = (System.currentTimeMillis() - start);
-
-        webSocketClient.closeAndClean();
-
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-
-        if (formListing != null)
-        {
-            System.out.println("Listing is '"+formListing.size()+"' -> \n\n\n");
-
-            for (FormListing listing : formListing)
-            {
-                //System.out.println("Response For ::: "+listing.getEcho());
-
-                List<Form> tableForms = listing.getListing();
-
-                if (tableForms == null){
-                    continue;
-                }
-
-                for (Form form : tableForms)
-                {
-                    System.out.println("\n-> "+form.getFormType() + " - " + form.getTitle());
-
-                    if (form.getFormFields() == null)
-                    {
-                        continue;
-                    }
-
-                    for (Field field : form.getFormFields())
-                    {
-                        System.out.println("|"+field.getFieldName()+"|"+
-                                field.getFieldType()
-                                +"| ->" +field.getFieldValue());
-                    }
-                }
-            }
-        }
-        else
-        {
-            System.out.println("Nothing...");
-        }
-
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-    }
-
-    /**
-     *
-     */
-    @Test
-    @Ignore
-    public void testGetAncestorFormWithSpecificId()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-        String serviceTicketHex = null;
-        if (serviceTicket != null && !serviceTicket.isEmpty())
-        {
-            serviceTicketHex =
-                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-        }
-
-        SQLUtilWebSocketGetAncestorClient webSocketClient =
-                new SQLUtilWebSocketGetAncestorClient(
-                        BASE_URL,
-                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
-
-        long start = System.currentTimeMillis();
-
-        Form toGetParentFor = new Form(4071L);
-        toGetParentFor.setEcho("event-patoel");
-
-        Form ancestorForm = webSocketClient.getAncestorSynchronized(toGetParentFor);
-
-        TestCase.assertNotNull("Ancestor Form not set.", ancestorForm);
-
-        long took = (System.currentTimeMillis() - start);
-
-        webSocketClient.closeAndClean();
-
-        System.out.println("Took '"+took+"' millis for lookup.");
-
-        System.out.println(ancestorForm.getFormType() +
-                " - " + ancestorForm.getTitle());
-
-        if (ancestorForm.getFormFields() != null)
-        {
-            for (Field field : ancestorForm.getFormFields())
-            {
-                System.out.println("["+field.getFieldName()+"] = '"+
-                        field.getFieldValue()+"'");
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    @Test
-    @Ignore
-    public void testGetDescendantFormsWithSpecificId()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-        String serviceTicketHex = null;
-        if (serviceTicket != null && !serviceTicket.isEmpty())
-        {
-            serviceTicketHex =
-                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-        }
-
-        SQLUtilWebSocketGetDescendantsClient webSocketClient =
-                new SQLUtilWebSocketGetDescendantsClient(
-                        BASE_URL,
-                        null,
-                        serviceTicketHex,
-                        TimeUnit.SECONDS.toMillis(60),
-                        true,
-                        true,
-                        true,
-                        false);
-
-        long start = System.currentTimeMillis();
-
-        int numberOfRecords = 1;
-
-        List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
-                generateLotsOfFormsFor(numberOfRecords,
-                        2575));
-
-        long took = (System.currentTimeMillis() - start);
-
-        webSocketClient.closeAndClean();
-
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-
-        if (formListing != null)
-        {
-            for (FormListing listing : formListing)
-            {
-                //System.out.println("Response For ::: "+listing.getEcho());
-
-                List<Form> descendantsForms = listing.getListing();
-
-                if (descendantsForms == null)
-                {
-                    continue;
-                }
-
-                for (Form form : descendantsForms)
-                {
-                    System.out.println("\n--> "+form.getFormType() +
-                            " - " +
-                            form.getTitle());
-
-                    System.out.println("--> Current User: "+
-                            ((form.getCurrentUser() == null) ? "[Not Set]" :
-                                    form.getCurrentUser().getId()));
-
-                    if (form.getFormFields() != null)
-                    {
-                        for (Field field : form.getFormFields())
-                        {
-                            System.out.println("["+field.getFieldName()+"] = '"+
-                                    field.getFieldValue()+"'");
-
-                            if (field.getTypeAsEnum() == Field.Type.Table)
-                            {
-                                TableField tableField =
-                                        form.getFieldValueAsTableField(field.getFieldName());
-
-                                if (tableField == null ||
-                                        (tableField.getTableRecords() == null ||
-                                                tableField.getTableRecords().isEmpty()))
-                                {
-                                    continue;
-                                }
-
-                                for (Form tableRecord : tableField.getTableRecords())
-                                {
-                                    if (tableRecord.getFormFields() == null)
-                                    {
-                                        continue;
-                                    }
-
-                                    for (Field tableRecordField : tableRecord.getFormFields())
-                                    {
-                                        System.out.println("["+field.getFieldName()+":"+
-                                                tableRecordField.getFieldName()+"] = '"+
-                                                tableRecordField.getFieldValue()+"'");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            System.out.println("Nothing...");
-        }
-
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-    }
-
-    /**
-     * Make use of a WebSocket to test the SQL execution function.
-     *
-     */
-    @Test
-    @Ignore
-    public void testExecuteSQLWhereIdGreaterThan()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-        String serviceTicketHex = null;
-        if (serviceTicket != null && !serviceTicket.isEmpty())
-        {
-            serviceTicketHex =
-                    UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-        }
-
-        SQLUtilWebSocketExecuteSQLClient webSocketClient =
-                new SQLUtilWebSocketExecuteSQLClient(
-                        BASE_URL,
-                        null, serviceTicketHex, TimeUnit.SECONDS.toMillis(10));
-
-        long start = System.currentTimeMillis();
-
-        int numberOfRecords = 1;
-
-        Form formToUse = new Form();
-        formToUse.setEcho("zool");
-
-        //Set the SQL Query as a Field...
-        formToUse.setFieldValue(
-                "SQL Query",
-                "SELECT * FROM form_container " +
-                "WHERE id > ?" +
-                " LIMIT 0,1000;");
-
-        formToUse.getFormFields().add(new Field(
-                1L,"Zool",new Long(6000L), Field.Type.Decimal));
-
-        List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
-
-        long took = (System.currentTimeMillis() - start);
-
-        webSocketClient.closeAndClean();
-
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-
-        if (formListing != null)
-        {
-            for (FormListing listing : formListing)
-            {
-                List<Form> resultForms = listing.getListing();
-
-                if (resultForms == null)
-                {
-                    continue;
-                }
-
-                for (Form form : resultForms)
-                {
-                    System.out.println(form.getFormTypeId() +
-                            " - " +
-                            form.getTitle());
-
-                    if (form.getFormFields() != null)
-                    {
-                        for (Field field : form.getFormFields())
-                        {
-                            System.out.println("["+field.getFieldName()+"] = '"+
-                                    field.getFieldValue()+"'");
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            System.out.println("Nothing...");
-        }
-
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-    }
-    
-    /**
-     *
-     * @param numberOfFormsParam
-     * @param idsToPicFrom
-     * @return
-     */
-    public static Form[] generateLotsOfFormsFor(
-            int numberOfFormsParam,long ... idsToPicFrom)
-    {
-        Form[] returnVal = new Form[numberOfFormsParam];
-        for (int index = 0;index < numberOfFormsParam; index++)
-        {
-            //Pic a random form...
-            long randomId = idsToPicFrom[0];
-
-            String uuidForm1 = UtilGlobal.randomUUID();
-            Form form1 = new Form(randomId);
-            form1.setEcho(uuidForm1);
-            //System.out.println("ExpectResponse: "+uuidForm1);
-
-            returnVal[index] = form1;
-        }
-
-        return returnVal;
-    }
+	private LoginClient loginClient;
+
+	/**
+	 *
+	 */
+	@Before
+	public void init()
+	{
+		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+
+		this.loginClient = new LoginClient(BASE_URL);
+	}
+
+	/**
+	 *
+	 */
+	@After
+	public void destroy()
+	{
+		this.loginClient.closeAndClean();
+	}
+
+	/**
+	 *
+	 */
+	@Test
+	@Ignore
+	public void testGetTableFormsWithSpecificId() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicketHex = null;
+		if (serviceTicket != null && !serviceTicket.isEmpty()) {
+			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		}
+
+		SQLUtilWebSocketGetTableFormsClient webSocketClient =
+				new SQLUtilWebSocketGetTableFormsClient(
+						BASE_URL,
+						null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true);
+
+		long start = System.currentTimeMillis();
+		int numberOfRecords = 1;
+
+		List<FormListing> formListing = webSocketClient.getTableFormsSynchronized(
+				generateLotsOfFormsFor(numberOfRecords, 2192L));
+
+		long took = (System.currentTimeMillis() - start);
+		webSocketClient.closeAndClean();
+
+		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+
+		if (formListing != null) {
+			System.out.println("Listing is '"+formListing.size()+"' -> \n\n\n");
+
+			for (FormListing listing : formListing)
+			{
+				//System.out.println("Response For ::: "+listing.getEcho());
+
+				List<Form> tableForms = listing.getListing();
+
+				if (tableForms == null){
+					continue;
+				}
+
+				for (Form form : tableForms)
+				{
+					System.out.println("\n-> "+form.getFormType() + " - " + form.getTitle());
+
+					if (form.getFormFields() == null)
+					{
+						continue;
+					}
+
+					for (Field field : form.getFormFields())
+					{
+						System.out.println("|"+field.getFieldName()+"|"+
+								field.getFieldType()
+								+"| ->" +field.getFieldValue());
+					}
+				}
+			}
+		}
+		else
+		{
+			System.out.println("Nothing...");
+		}
+
+		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+	}
+
+	/**
+	 *
+	 */
+	@Test
+	@Ignore
+	public void testGetAncestorFormWithSpecificId()
+	{
+		if (!this.isConnectionValid())
+		{
+			return;
+		}
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicketHex = null;
+		if (serviceTicket != null && !serviceTicket.isEmpty())
+		{
+			serviceTicketHex =
+					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		}
+
+		SQLUtilWebSocketGetAncestorClient webSocketClient =
+				new SQLUtilWebSocketGetAncestorClient(
+						BASE_URL,
+						null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
+
+		long start = System.currentTimeMillis();
+
+		Form toGetParentFor = new Form(4071L);
+		toGetParentFor.setEcho("event-patoel");
+
+		Form ancestorForm = webSocketClient.getAncestorSynchronized(toGetParentFor);
+
+		TestCase.assertNotNull("Ancestor Form not set.", ancestorForm);
+
+		long took = (System.currentTimeMillis() - start);
+
+		webSocketClient.closeAndClean();
+
+		System.out.println("Took '"+took+"' millis for lookup.");
+
+		System.out.println(ancestorForm.getFormType() +
+				" - " + ancestorForm.getTitle());
+
+		if (ancestorForm.getFormFields() != null)
+		{
+			for (Field field : ancestorForm.getFormFields())
+			{
+				System.out.println("["+field.getFieldName()+"] = '"+
+						field.getFieldValue()+"'");
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	@Test
+	@Ignore
+	public void testGetDescendantFormsWithSpecificId()
+	{
+		if (!this.isConnectionValid())
+		{
+			return;
+		}
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicketHex = null;
+		if (serviceTicket != null && !serviceTicket.isEmpty())
+		{
+			serviceTicketHex =
+					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		}
+
+		SQLUtilWebSocketGetDescendantsClient webSocketClient =
+				new SQLUtilWebSocketGetDescendantsClient(
+						BASE_URL,
+						null,
+						serviceTicketHex,
+						TimeUnit.SECONDS.toMillis(60),
+						true,
+						true,
+						true,
+						false);
+
+		long start = System.currentTimeMillis();
+
+		int numberOfRecords = 1;
+
+		List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
+				generateLotsOfFormsFor(numberOfRecords,
+						2575));
+
+		long took = (System.currentTimeMillis() - start);
+
+		webSocketClient.closeAndClean();
+
+		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+
+		if (formListing != null)
+		{
+			for (FormListing listing : formListing)
+			{
+				//System.out.println("Response For ::: "+listing.getEcho());
+
+				List<Form> descendantsForms = listing.getListing();
+
+				if (descendantsForms == null)
+				{
+					continue;
+				}
+
+				for (Form form : descendantsForms)
+				{
+					System.out.println("\n--> "+form.getFormType() +
+							" - " +
+							form.getTitle());
+
+					System.out.println("--> Current User: "+
+							((form.getCurrentUser() == null) ? "[Not Set]" :
+									form.getCurrentUser().getId()));
+
+					if (form.getFormFields() != null)
+					{
+						for (Field field : form.getFormFields())
+						{
+							System.out.println("["+field.getFieldName()+"] = '"+
+									field.getFieldValue()+"'");
+
+							if (field.getTypeAsEnum() == Field.Type.Table)
+							{
+								TableField tableField =
+										form.getFieldValueAsTableField(field.getFieldName());
+
+								if (tableField == null ||
+										(tableField.getTableRecords() == null ||
+												tableField.getTableRecords().isEmpty()))
+								{
+									continue;
+								}
+
+								for (Form tableRecord : tableField.getTableRecords())
+								{
+									if (tableRecord.getFormFields() == null)
+									{
+										continue;
+									}
+
+									for (Field tableRecordField : tableRecord.getFormFields())
+									{
+										System.out.println("["+field.getFieldName()+":"+
+												tableRecordField.getFieldName()+"] = '"+
+												tableRecordField.getFieldValue()+"'");
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			System.out.println("Nothing...");
+		}
+
+		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+	}
+
+	/**
+	 * Make use of a WebSocket to test the SQL execution function.
+	 *
+	 */
+	@Test
+	@Ignore
+	public void testExecuteSQLWhereIdGreaterThan()
+	{
+		if (!this.isConnectionValid())
+		{
+			return;
+		}
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+		String serviceTicketHex = null;
+		if (serviceTicket != null && !serviceTicket.isEmpty())
+		{
+			serviceTicketHex =
+					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		}
+
+		SQLUtilWebSocketExecuteSQLClient webSocketClient =
+				new SQLUtilWebSocketExecuteSQLClient(
+						BASE_URL,
+						null, serviceTicketHex, TimeUnit.SECONDS.toMillis(10));
+
+		long start = System.currentTimeMillis();
+
+		int numberOfRecords = 1;
+
+		Form formToUse = new Form();
+		formToUse.setEcho("zool");
+
+		//Set the SQL Query as a Field...
+		formToUse.setFieldValue(
+				"SQL Query",
+				"SELECT * FROM form_container " +
+				"WHERE id > ?" +
+				" LIMIT 0,1000;");
+
+		formToUse.getFormFields().add(new Field(
+				1L,"Zool",new Long(6000L), Field.Type.Decimal));
+
+		List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
+
+		long took = (System.currentTimeMillis() - start);
+
+		webSocketClient.closeAndClean();
+
+		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+
+		if (formListing != null)
+		{
+			for (FormListing listing : formListing)
+			{
+				List<Form> resultForms = listing.getListing();
+
+				if (resultForms == null)
+				{
+					continue;
+				}
+
+				for (Form form : resultForms)
+				{
+					System.out.println(form.getFormTypeId() +
+							" - " +
+							form.getTitle());
+
+					if (form.getFormFields() != null)
+					{
+						for (Field field : form.getFormFields())
+						{
+							System.out.println("["+field.getFieldName()+"] = '"+
+									field.getFieldValue()+"'");
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			System.out.println("Nothing...");
+		}
+
+		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+	}
+
+	/**
+	 *
+	 * @param numberOfFormsParam
+	 * @param idsToPicFrom
+	 * @return
+	 */
+	public static Form[] generateLotsOfFormsFor(
+			int numberOfFormsParam,long ... idsToPicFrom)
+	{
+		Form[] returnVal = new Form[numberOfFormsParam];
+		for (int index = 0;index < numberOfFormsParam; index++)
+		{
+			//Pic a random form...
+			long randomId = idsToPicFrom[0];
+
+			String uuidForm1 = UtilGlobal.randomUUID();
+			Form form1 = new Form(randomId);
+			form1.setEcho(uuidForm1);
+			//System.out.println("ExpectResponse: "+uuidForm1);
+
+			returnVal[index] = form1;
+		}
+
+		return returnVal;
+	}
 }

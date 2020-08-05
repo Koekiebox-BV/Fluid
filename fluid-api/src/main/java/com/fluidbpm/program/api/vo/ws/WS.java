@@ -209,6 +209,8 @@ public class WS {
 				/**
 				 * URL Path for Electronic Form create.
 				 *
+				 * @param addToPersonalInventory Should the item be added to the Personal Inventory after created?
+				 *
 				 * @return {@code v1/form_container/}
 				 */
 				public static final String formContainerCreate(boolean addToPersonalInventory) {
@@ -3234,6 +3236,7 @@ public class WS {
 				 */
 				public static final class QueryParam {
 					public static final String INCLUDE_FIELD_DATA = "include_field_data";
+					public static final String FORM_DEFINITION = "form_definition";
 					public static final String INCLUDE_TABLE_FIELDS = "include_table_fields";
 					public static final String INCLUDE_TABLE_FIELD_FORM_RECORD_INFO = "include_table_field_form_record_info";
 					public static final String MASS_FETCH = "mass_fetch";
@@ -3266,11 +3269,22 @@ public class WS {
 				 * {@code electronicFormIdParam}.
 				 *
 				 * @param includeFieldDataParam Does field data need to be included.
+				 * @param formDefinitionId Optional Form Definition Id filter.
 				 *
 				 * @return {@code v1/sql_util/form/get_table_forms_by_electronic_form_id}
 				 */
-				public static final String getTableForms(boolean includeFieldDataParam) {
-					return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_GET_TABLE_FORMS).concat("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam);
+				public static final String getTableForms(
+					boolean includeFieldDataParam,
+					Long formDefinitionId
+				) {
+					String returnVal = Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_GET_TABLE_FORMS)
+							.concat("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam);
+
+					if (formDefinitionId != null && formDefinitionId.longValue() > 0) {
+						returnVal += ("&"+QueryParam.FORM_DEFINITION + "=" + formDefinitionId);
+					}
+
+					return returnVal;
 				}
 
 				/**
@@ -3281,17 +3295,26 @@ public class WS {
 				 * @param serviceTicketParam The service ticket in hex-decimal text format.
 				 * @param compressResponseParam Compress the Descendant result in Base-64.
 				 * @param compressResponseCharsetParam Compress response using provided charset.
+				 * @param formDefinitionId Optional Form Definition Id filter.
 				 *
 				 * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
 				 */
 				public static final String getTableFormsWebSocket(
-						boolean includeFieldDataParam,
-						String serviceTicketParam,
-						boolean compressResponseParam,
-						String compressResponseCharsetParam) {
-					String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_GET_TABLE_FORMS).concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_FIELD_DATA + "="
-							+ includeFieldDataParam + "&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam +
-							"&"+QueryParam.COMPRESS_RESPONSE_CHARSET + "=" + compressResponseCharsetParam);
+					boolean includeFieldDataParam,
+					String serviceTicketParam,
+					boolean compressResponseParam,
+					String compressResponseCharsetParam,
+					Long formDefinitionId
+				) {
+					String returnVal = ROOT_WEB_SOCKET
+							.concat(SQL_UTIL_FORM_GET_TABLE_FORMS)
+							.concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam)
+							.concat("&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam)
+							.concat("&"+QueryParam.COMPRESS_RESPONSE_CHARSET + "=" + compressResponseCharsetParam);
+
+					if (formDefinitionId != null && formDefinitionId.longValue() > 0) {
+						returnVal += ("&"+QueryParam.FORM_DEFINITION + "=" + formDefinitionId);
+					}
 
 					return returnVal;
 				}

@@ -63,8 +63,25 @@ public class SQLUtilClient extends ABaseClientWS {
 	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
 	 */
 	public List<Form> getTableForms(
+			Form formToGetTableFormsForParam,
+			boolean includeFieldDataParam
+	) {
+		return this.getTableForms(formToGetTableFormsForParam, includeFieldDataParam, null);
+	}
+
+	/**
+	 * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
+	 *
+	 * @param formToGetTableFormsForParam The Fluid Form to get Table Fields for.
+	 * @param includeFieldDataParam Should Table Record (Form) Field data be included?
+	 * @param formDefinitionId Optional Form Definition Id filter.
+	 *
+	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+	 */
+	public List<Form> getTableForms(
 		Form formToGetTableFormsForParam,
-		boolean includeFieldDataParam
+		boolean includeFieldDataParam,
+		Long formDefinitionId
 	) {
 		if (formToGetTableFormsForParam != null && this.serviceTicket != null) {
 			formToGetTableFormsForParam.setServiceTicket(this.serviceTicket);
@@ -74,7 +91,7 @@ public class SQLUtilClient extends ABaseClientWS {
 			FormListing formListing = new FormListing(
 					this.postJson(formToGetTableFormsForParam,
 							WS.Path.SQLUtil.Version1.getTableForms(
-									includeFieldDataParam)));
+									includeFieldDataParam, formDefinitionId)));
 
 			return formListing.getListing();
 		} catch (JSONException e) {
