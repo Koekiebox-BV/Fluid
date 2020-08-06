@@ -139,7 +139,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 							"_Min["+MIN_VALUE_UPDATE+"]_Max["+MAX_VALUE_UPDATE+"]_StepFactor["+STEP_FACTOR_UPDATE+"]_Prefix[]";
 
 			public static final String RATING_STATIC_LINE_UPDATE =
-					FormFieldClient.FieldMetaData.Decimal.SLIDER +
+					FormFieldClient.FieldMetaData.Decimal.RATING +
 							"_Min["+MIN_VALUE_UPDATE+"]_Max["+MAX_VALUE_UPDATE+"]_StepFactor[0.0]_Prefix[]";
 		}
 
@@ -1355,10 +1355,8 @@ public class TestFormFieldClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testFormField_DecimalRating_CRUD()
-	{
-		if (!this.isConnectionValid())
-		{
+	public void testFormField_DecimalRating_CRUD() {
+		if (!this.isConnectionValid()) {
 			return;
 		}
 
