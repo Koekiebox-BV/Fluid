@@ -124,7 +124,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 							"_Min["+MIN_VALUE+"]_Max["+MAX_VALUE+"]_StepFactor["+STEP_FACTOR+"]_Prefix[]";
 
 			public static final String RATING_STATIC_LINE =
-					FormFieldClient.FieldMetaData.Decimal.SLIDER +
+					FormFieldClient.FieldMetaData.Decimal.RATING +
 							"_Min["+MIN_VALUE+"]_Max["+MAX_VALUE+"]_StepFactor[0.0]_Prefix[]";
 
 			private static final String CREATE_META_AFTER_UPDATE =
@@ -1382,8 +1382,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 		TestCase.assertEquals("'Name' mismatch.", TestStatics.FIELD_NAME, createdField.getFieldName());
 		TestCase.assertEquals("'Description' mismatch.", TestStatics.FIELD_DESCRIPTION, createdField.getFieldDescription());
 		TestCase.assertEquals("'Type' mismatch.", Field.Type.Decimal.toString(), createdField.getFieldType());
-		TestCase.assertEquals("'Type Meta-Data' mismatch.",
-				TestStatics.Decimal.RATING_STATIC_LINE, createdField.getTypeMetaData());
+		TestCase.assertEquals("'Type Meta-Data' mismatch.", TestStatics.Decimal.RATING_STATIC_LINE, createdField.getTypeMetaData());
 
 		//3. Update...
 		createdField.setFieldName(TestStatics.FIELD_NAME_UPDATE);
