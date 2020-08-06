@@ -80,8 +80,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @see FluidClientException.ErrorCode#FIELD_VALIDATE
 	 */
 	public Field createField(Field formFieldParam, Object ... additionalInfo) {
-		if (formFieldParam.getTypeAsEnum() == null ||
-				formFieldParam.getTypeMetaData() == null) {
+		if (formFieldParam.getTypeAsEnum() == null || formFieldParam.getTypeMetaData() == null) {
 			throw new FluidClientException(
 					"Field type and meta-data is mandatory.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
@@ -250,7 +249,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextMasked(
-			Field formFieldParam, String maskValueParam
+		Field formFieldParam,
+		String maskValueParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -279,7 +279,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @see com.fluidbpm.ws.client.v1.ABaseFieldClient.FieldMetaData.Text
 	 */
 	public Field createFieldTextBarcode(
-			Field formFieldParam, String barcodeTypeParam
+		Field formFieldParam,
+		String barcodeTypeParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -306,9 +307,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @param formFieldParam Field to Create.
 	 * @return Created Field.
 	 */
-	public Field createFieldTextLatitudeAndLongitude(
-			Field formFieldParam
-	) {
+	public Field createFieldTextLatitudeAndLongitude(Field formFieldParam) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
@@ -333,8 +332,7 @@ public class FormFieldClient extends ABaseFieldClient {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (formFieldParam != null)
-		{
+		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
 			formFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
 		}
@@ -391,7 +389,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldMultiChoicePlain(
-			Field formFieldParam, List<String> multiChoiceValuesParam
+		Field formFieldParam, List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -419,14 +417,13 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldMultiChoicePlainWithSearch(
-			Field formFieldParam, List<String> multiChoiceValuesParam
+		Field formFieldParam, List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (multiChoiceValuesParam == null ||
-				multiChoiceValuesParam.isEmpty()) {
+		if (multiChoiceValuesParam == null || multiChoiceValuesParam.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
@@ -450,7 +447,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldMultiChoiceSelectMany(
-			Field formFieldParam, List<String> multiChoiceValuesParam
+		Field formFieldParam, List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -481,7 +478,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldMultiChoiceSelectManyWithSearch(
-			Field formFieldParam, List<String> multiChoiceValuesParam
+		Field formFieldParam, List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -494,8 +491,7 @@ public class FormFieldClient extends ABaseFieldClient {
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
-		if (formFieldParam != null)
-		{
+		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.SELECT_MANY_SEARCH);
 			formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
@@ -576,11 +572,11 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldDecimalSpinner(
-			Field formFieldParam,
-			double minParam,
-			double maxParam,
-			double stepFactorParam,
-			String prefixParam
+		Field formFieldParam,
+		double minParam,
+		double maxParam,
+		double stepFactorParam,
+		String prefixParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -608,10 +604,10 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldDecimalSlider(
-			Field formFieldParam,
-			double minParam,
-			double maxParam,
-			double stepFactorParam
+		Field formFieldParam,
+		double minParam,
+		double maxParam,
+		double stepFactorParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -849,8 +845,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldMultiChoicePlain(
-			Field formFieldParam,
-			List<String> multiChoiceValuesParam
+		Field formFieldParam,
+		List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -868,7 +864,7 @@ public class FormFieldClient extends ABaseFieldClient {
 			formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
 
-			if (formFieldParam.getFieldValue() instanceof MultiChoice){
+			if (formFieldParam.getFieldValue() instanceof MultiChoice) {
 				MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
 				beforeAvail = casted.getAvailableMultiChoices();
 				beforeSelected = casted.getSelectedMultiChoices();
@@ -894,8 +890,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldMultiChoicePlainWithSearch(
-			Field formFieldParam,
-			List<String> multiChoiceValuesParam
+		Field formFieldParam,
+		List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
@@ -939,16 +935,14 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldMultiChoiceSelectMany(
-			Field formFieldParam,
-			List<String> multiChoiceValuesParam
+		Field formFieldParam,
+		List<String> multiChoiceValuesParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (multiChoiceValuesParam == null ||
-				multiChoiceValuesParam.isEmpty())
-		{
+		if (multiChoiceValuesParam == null || multiChoiceValuesParam.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
@@ -1094,18 +1088,17 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Decimal Spinner.
 	 */
 	public Field updateFieldDecimalSpinner(
-			Field formFieldParam,
-			double minParam,
-			double maxParam,
-			double stepFactorParam,
-			String prefixParam
+		Field formFieldParam,
+		double minParam,
+		double maxParam,
+		double stepFactorParam,
+		String prefixParam
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (formFieldParam != null)
-		{
+		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForDecimalAs(
@@ -1128,18 +1121,16 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Decimal Slider.
 	 */
 	public Field updateFieldDecimalSlider(
-			Field formFieldParam,
-			double minParam,
-			double maxParam,
-			double stepFactorParam
+		Field formFieldParam,
+		double minParam,
+		double maxParam,
+		double stepFactorParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null)
-		{
+		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (formFieldParam != null)
-		{
+		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForDecimalAs(
@@ -1161,21 +1152,19 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Decimal Rating.
 	 */
 	public Field updateFieldDecimalRating(
-			Field formFieldParam,
-			double minParam,
-			double maxParam
+		Field formFieldParam,
+		double minParam,
+		double maxParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null)
-		{
+		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (formFieldParam != null)
-		{
+		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForDecimalAs(
-							FieldMetaData.Decimal.SLIDER,
+							FieldMetaData.Decimal.RATING,
 							minParam,maxParam, 0.0, null));
 		}
 
@@ -1193,17 +1182,15 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Updated Field.
 	 */
 	public Field updateFieldTable(
-			Field formFieldParam,
-			Form formDefinitionParam,
-			boolean sumDecimalsParam
+		Field formFieldParam,
+		Form formDefinitionParam,
+		boolean sumDecimalsParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null)
-		{
+		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (formFieldParam != null)
-		{
+		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Table);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForTableField(
@@ -1248,8 +1235,7 @@ public class FormFieldClient extends ABaseFieldClient {
 		Field field = new Field();
 		field.setFieldName(fieldNameParam);
 
-		if (this.serviceTicket != null)
-		{
+		if (this.serviceTicket != null) {
 			field.setServiceTicket(this.serviceTicket);
 		}
 
@@ -1266,8 +1252,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Form Fields for {@code formNameParam}
 	 */
 	public FormFieldListing getFieldsByFormNameAndLoggedInUser(
-			String formNameParam,
-			boolean editOnlyFieldsParam
+		String formNameParam,
+		boolean editOnlyFieldsParam
 	) {
 		Form form = new Form();
 		form.setFormType(formNameParam);
@@ -1294,14 +1280,13 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Form Fields for {@code formIdParam}
 	 */
 	public FormFieldListing getFieldsByFormTypeIdAndLoggedInUser(
-			Long formTypeIdParam,
-			boolean editOnlyFieldsParam
+		Long formTypeIdParam,
+		boolean editOnlyFieldsParam
 	) {
 		Form form = new Form();
 		form.setFormTypeId(formTypeIdParam);
 
-		if (this.serviceTicket != null)
-		{
+		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
 
@@ -1318,10 +1303,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @param fieldParam The Field to delete.
 	 * @return The deleted Field.
 	 */
-	public Field deleteField(Field fieldParam)
-	{
-		if (fieldParam != null && this.serviceTicket != null)
-		{
+	public Field deleteField(Field fieldParam) {
+		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -1338,10 +1321,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @param fieldParam The Field to delete.
 	 * @return The deleted Field.
 	 */
-	public Field forceDeleteField(Field fieldParam)
-	{
-		if (fieldParam != null && this.serviceTicket != null)
-		{
+	public Field forceDeleteField(Field fieldParam) {
+		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
 
@@ -1357,9 +1338,9 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Meta Data for the Table Field.
 	 */
 	private String getMetaDataForTableField(
-			Form formDefinitionParam,
-			boolean sumDecimalsParam)
-	{
+		Form formDefinitionParam,
+		boolean sumDecimalsParam
+	) {
 		StringBuilder returnBuffer = new StringBuilder();
 
 		Long definitionId =
@@ -1376,5 +1357,4 @@ public class FormFieldClient extends ABaseFieldClient {
 
 		return returnBuffer.toString();
 	}
-
 }
