@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
-mvn clean && mvn clean install -U
+mvn clean && mvn clean install -U -Dgpg.skip
+
+#PROPERTIES
+export WORKSPACE_HOME='/home/jbruwer/GoogleDrive/Workspace'
+export WF_HOME='/home/jbruwer/Applications/wildfly-20.0.1.Final'
 
 echo '[INFO] Updating jar in FlowJob'
-rm -rf /Users/jasonbruwer/Google\ Drive/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar
-cp fluid-api/target/fluid-api-*.jar /Users/jasonbruwer/Google\ Drive/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
-cp fluid-ws-java-client/target/fluid-ws-java-client-*.jar /Users/jasonbruwer/Google\ Drive/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
+rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar
+cp fluid-api/target/fluid-api-*.jar $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
+cp fluid-ws-java-client/target/fluid-ws-java-client-*.jar $WORKSPACE_HOME/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
 
-rm -rf /Users/jasonbruwer/Google\ Drive/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*-sources.jar
-rm -rf /Users/jasonbruwer/Google\ Drive/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*-javadoc.jar
+rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*-sources.jar
+rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*-javadoc.jar
 
-echo '[INFO] Updating WildFly-17'
-cp -f /Users/jasonbruwer/Google\ Drive/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar /Users/jasonbruwer/Applications/wildfly-17.0.0.Final/modules/com/fluidbpm/main/
+echo '[INFO] Updating $WF_HOME'
+echo $WF_HOME
+cp -f $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar $WF_HOME/modules/com/fluidbpm/main/
 
 echo '[INFO] *** *** *** ***'
 echo '[INFO] * DONE. Date: '$(date)

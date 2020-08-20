@@ -15,17 +15,15 @@
 
 package com.fluidbpm.program.api.vo.attachment;
 
-import java.io.File;
-import java.util.Date;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.io.File;
+import java.util.Date;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -70,7 +68,6 @@ public class Attachment extends ABaseFluidJSONObject {
 		public static final String DATE_CREATED = "dateCreated";
 
 		public static final String FORM_ID = "formId";
-
 		public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
 	}
 

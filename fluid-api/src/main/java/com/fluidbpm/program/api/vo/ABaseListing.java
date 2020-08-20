@@ -15,14 +15,13 @@
 
 package com.fluidbpm.program.api.vo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlTransient;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -35,7 +34,7 @@ import org.json.JSONObject;
  * @see JSONObject
  *
  */
-public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABaseFluidJSONObject{
+public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABaseFluidJSONObject {
 	public static final long serialVersionUID = 1L;
 
 	private List<T> listing;
@@ -93,7 +92,6 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 
 		//Listing Count...
 		if (this.jsonObject.isNull(JSONMapping.LISTING_COUNT)) {
-
 			this.setListingCount(listingArrCount);
 		} else {
 			this.setListingCount(this.jsonObject.getInt(JSONMapping.LISTING_COUNT));
@@ -204,7 +202,6 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 			for (T toAdd :this.getListing()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.LISTING, jsonArray);
 		}
 

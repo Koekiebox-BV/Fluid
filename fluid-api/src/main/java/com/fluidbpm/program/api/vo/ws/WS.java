@@ -15,22 +15,21 @@
 
 package com.fluidbpm.program.api.vo.ws;
 
-import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
-import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
-import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
-import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
-import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
 
 /**
  * <p> The Mapping class used for all Fluid Representational State Transfer
@@ -3722,6 +3721,54 @@ public class WS {
 				 */
 				public static final String getAllUserQueriesByLoggedInUser() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER);
+				}
+			}
+		}
+
+		/**
+		 * Reporting Web Service mappings.
+		 *
+		 * @see Form
+		 */
+		public static final class Report {
+			/**
+			 * Report mappings.
+			 */
+			public static final class Version1 {
+				public static final String ROOT = ("/report");
+
+				//Read...
+				public static final String ROOT_USER_STATS = "/report/user_stats";
+				public static final String ROOT_SYSTEM = "/report/system";
+				public static final String READ_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
+				public static final String READ_ALL = ("/get_all_uptime");
+
+				/**
+				 * Root for Report.
+				 *
+				 * @return {@code /report}
+				 */
+				@Override
+				public String toString() {
+					return ROOT;
+				}
+
+				/**
+				 * URL Path for User statistics by logged in user.
+				 *
+				 * @return {@code v1/report/user_stats/get_all_by_logged_in_user}
+				 */
+				public static final String getUserStatsAllByLoggedInUser() {
+					return Version.VERSION_1.concat(ROOT_USER_STATS).concat(READ_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for system uptime entries.
+				 *
+				 * @return {@code v1/report/system/get_all_uptime}
+				 */
+				public static final String getAllSystemUptime() {
+					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL);
 				}
 			}
 		}

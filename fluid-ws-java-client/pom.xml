@@ -62,6 +62,13 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!--Guava-->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!--WEB SOCKET USING TYRUS-->
 		<!--Tyrus Grizzly Client-->
 		<dependency>
