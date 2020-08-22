@@ -37,6 +37,11 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
 
 	private int hour;
 	private int minute;
+	private State state = State.Unknown;
+
+	public static enum State {
+		Unknown, Up, Down
+	}
 
 	/**
 	 * The JSON mapping for the {@code SystemUpHourMin} object.
@@ -44,6 +49,7 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
 	public static class JSONMapping {
 		public static final String HOUR = "hour";
 		public static final String MINUTE = "minute";
+		public static final String STATE = "state";
 	}
 
 	/**
@@ -75,6 +81,12 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
 		} else {
 			this.setMinute(this.jsonObject.getInt(JSONMapping.MINUTE));
 		}
+
+		if (this.jsonObject.isNull(JSONMapping.STATE)) {
+			this.setState(State.Unknown);
+		} else {
+			this.setState(State.valueOf(this.jsonObject.getString(JSONMapping.STATE)));
+		}
 	}
 
 	/**
@@ -91,7 +103,19 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
 
 		returnVal.put(JSONMapping.HOUR, this.getHour());
 		returnVal.put(JSONMapping.MINUTE, this.getMinute());
+		if (this.getState() != null) {
+			returnVal.put(JSONMapping.STATE, this.getState());
+		}
 
 		return returnVal;
+	}
+
+	/**
+	 * Comparing the hour and minute.
+	 *
+	 * @return {@code ((this.getHour() * 100) + this.getMinute())}
+	 */
+	public long comparingHourMinute() {
+		return ((this.getHour() * 100) + this.getMinute());
 	}
 }

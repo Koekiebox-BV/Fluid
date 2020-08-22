@@ -38,7 +38,6 @@ import java.util.List;
 @Setter
 public class SystemUpYearDay extends ABaseFluidJSONReportObject {
 	public static final long serialVersionUID = 1L;
-
 	private int year;
 	private int day;
 	private List<SystemUpHourMin> systemUpHourMins;
@@ -116,5 +115,14 @@ public class SystemUpYearDay extends ABaseFluidJSONReportObject {
 		}
 
 		return returnVal;
+	}
+
+	/**
+	 * Comparing the year and day.
+	 *
+	 * @return {@code ((this.getYear() * 1000) + this.getDay())}
+	 */
+	public long comparingYearDay() {
+		return ((this.getYear() * 1000) + this.getDay());
 	}
 }

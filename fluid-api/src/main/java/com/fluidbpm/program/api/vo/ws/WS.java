@@ -3741,7 +3741,9 @@ public class WS {
 				public static final String ROOT_USER_STATS = "/report/user_stats";
 				public static final String ROOT_SYSTEM = "/report/system";
 				public static final String READ_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
-				public static final String READ_ALL = ("/get_all_uptime");
+				public static final String READ_ALL_UP = ("/get_all_uptime");
+				public static final String READ_ALL_DOWN = ("/get_all_downtime");
+				public static final String READ_ALL = ("/get_all");
 
 				/**
 				 * Root for Report.
@@ -3768,6 +3770,24 @@ public class WS {
 				 * @return {@code v1/report/system/get_all_uptime}
 				 */
 				public static final String getAllSystemUptime() {
+					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL_UP);
+				}
+
+				/**
+				 * URL Path for system downtime entries.
+				 *
+				 * @return {@code v1/report/system/get_all_downtime}
+				 */
+				public static final String getAllSystemDowntime() {
+					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL_DOWN);
+				}
+
+				/**
+				 * URL Path for system downtime/uptime entries.
+				 *
+				 * @return {@code v1/report/system/get_all}
+				 */
+				public static final String getAll() {
 					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL);
 				}
 			}
