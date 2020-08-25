@@ -552,9 +552,7 @@ public class WS {
 				public static final class QueryParam {
 					public static final String FORM_CONTAINER_ID = "form_container";
 					public static final String ATTACHMENT_INDEX = "attachment_index";
-
 					public static final String IMAGES_ONLY = "images_only";
-
 					public static final String INCLUDE_ATTACHMENT_DATA = "include_attachment_data";
 				}
 
@@ -3731,10 +3729,19 @@ public class WS {
 		 * @see Form
 		 */
 		public static final class Report {
+
 			/**
 			 * Report mappings.
 			 */
 			public static final class Version1 {
+				/**
+				 * Mapping for frequently used HTTP parameters.
+				 */
+				public static final class QueryParam {
+					public static final String TIMESTAMP_FROM = "timestamp_from";
+					public static final String TIMESTAMP_TO = "timestamp_to";
+				}
+
 				public static final String ROOT = ("/report");
 
 				//Read...
@@ -3790,6 +3797,42 @@ public class WS {
 				public static final String getAll() {
 					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL);
 				}
+
+				/**
+				 * URL Path for executing the user statistics report.
+				 *
+				 * @param from - The timestamp to run the query from.
+				 * @param to The timestamp to run the query until.
+				 *
+				 * @return {@code v1/user_query/execute}
+				 */
+				public static final String getUserStatsReportForLoggedInUser(
+					long from,
+					long to
+				) {
+					String base = Version.VERSION_1.concat(ROOT_USER_STATS).concat(READ_BY_LOGGED_IN_USER);
+					String additionString = "?";
+
+					if (from > 0) {
+						additionString += QueryParam.TIMESTAMP_FROM;
+						additionString += "=";
+						additionString += from;
+						additionString += "&";
+					}
+
+					if (to > 0) {
+						additionString += QueryParam.TIMESTAMP_TO;
+						additionString += "=";
+						additionString += to;
+						additionString += "&";
+					}
+
+					//Cut of the end bit...
+					additionString = additionString.substring(0, additionString.length() - 1);
+
+					return base.concat(additionString);
+				}
+
 			}
 		}
 
