@@ -7,9 +7,13 @@ export WF_HOME='/home/jbruwer/Applications/wildfly-20.0.1.Final'
 
 echo '[INFO] Updating jar in FlowJob'
 rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar
-cp fluid-api/target/fluid-api-*.jar $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
-cp fluid-ws-java-client/target/fluid-ws-java-client-*.jar $WORKSPACE_HOME/Workspace/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
 
+echo '[INFO] Copying Fluid-API'
+cp fluid-api/target/fluid-api-*.jar $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
+echo '[INFO] Copying Fluid-WS Client'
+cp fluid-ws-java-client/target/fluid-ws-java-client-*.jar $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm
+
+echo '[INFO] Cleanup'
 rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*-sources.jar
 rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*-javadoc.jar
 

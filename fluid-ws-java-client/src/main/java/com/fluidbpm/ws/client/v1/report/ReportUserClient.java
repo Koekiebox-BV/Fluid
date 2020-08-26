@@ -63,8 +63,10 @@ public class ReportUserClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Retrieve a system report of all up/down entries for the last 31 days.
+	 * Retrieve a system report of all up/down entries from {@code fromDate} until {@code toDate}.
 	 *
+	 * @param fromDate The from date.
+	 * @param toDate The to date.
 	 * @return UserStatsReport information.
 	 *
 	 * @see UserStatsReport
@@ -74,7 +76,6 @@ public class ReportUserClient extends ABaseClientWS {
 		Date toDate
 	) {
 		User userGetInfoFor = new User();
-
 		if (this.serviceTicket != null) {
 			userGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
@@ -82,8 +83,8 @@ public class ReportUserClient extends ABaseClientWS {
 		try {
 			return new UserStatsReport(this.postJson(
 					userGetInfoFor, WS.Path.Report.Version1.getUserStatsReportForLoggedInUser(
-							fromDate == null ? null : fromDate.getTime(),
-							toDate == null ? null : toDate.getTime())));
+							fromDate == null ? -1 : fromDate.getTime(),
+							toDate == null ? -1 : toDate.getTime())));
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);

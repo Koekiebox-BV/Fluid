@@ -15,17 +15,17 @@
 
 package com.fluidbpm.program.api.util;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.xml.bind.DatatypeConverter;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.google.common.io.BaseEncoding;
+import org.json.JSONObject;
+
+import javax.xml.bind.DatatypeConverter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Global utility class for the {@code com.fluidbpm.program.api.util} package.
@@ -503,5 +503,44 @@ public class UtilGlobal {
 	 */
 	public static String randomUUID() {
 		return UUID.randomUUID().toString();
+	}
+
+	/**
+	 * Performs a check whether the objects inside {@code toCheckForNullParam} is null.
+	 *
+	 * @param toCheckForNull Objects to check for {@code null}
+	 * @return {@code true} if all objects in {@code toCheckForNullParam} is {@code null}
+	 */
+	public static final boolean isAllNull(Object ... toCheckForNull) {
+		if (toCheckForNull == null || toCheckForNull.length == 0) {
+			return true;
+		}
+		for (Object toCheck : toCheckForNull) {
+			if (toCheck != null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Convert String date {@code dateInStringParam} to {@code Date} applying format {@code formatParam}.
+	 *
+	 * @param dateInString The date in String format to parse.
+	 * @param format The format to apply.
+	 * @return {@code Date} object from {@code dateInString}
+	 *
+	 * @see Date
+	 */
+	public static Date fromStringToDateSafe(String dateInString, String format) {
+		if (dateInString == null || format == null) {
+			return null;
+		}
+
+		try {
+			return new SimpleDateFormat(format).parse(dateInString);
+		} catch (ParseException nfe) {
+			return null;
+		}
 	}
 }

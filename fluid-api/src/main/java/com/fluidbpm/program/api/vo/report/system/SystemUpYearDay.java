@@ -125,4 +125,13 @@ public class SystemUpYearDay extends ABaseFluidJSONReportObject {
 	public long comparingYearDay() {
 		return ((this.getYear() * 1000) + this.getDay());
 	}
+
+	/**
+	 * Returns the year and day as {@code String}.
+	 *
+	 * @return {@code year-day}
+	 */
+	public String getYearDayKey() {
+		return (""+this.getYear()+"-"+this.getDay());
+	}
 }

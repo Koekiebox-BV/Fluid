@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
 import lombok.Getter;
@@ -23,9 +24,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
- * User statistics.
+ * User statistic punch card entry.
  *
  * @author jasonbruwer on 2020-08-20
  * @since v1.11
@@ -131,5 +133,31 @@ public class PunchCardEntry extends ABaseFluidJSONReportObject {
 		}
 
 		return returnVal;
+	}
+
+	/**
+	 * Checks if all logins for the day is {@code null} / not set.
+	 *
+	 * @return {@code true} if FirstLoginForDay,SecondLastLogout,SecondLastLogin and LastLogout is all {@code null}.
+	 */
+	public boolean isLogInsForDayEmpty() {
+		return UtilGlobal.isAllNull(
+				this.getFirstLoginForDay(),
+				this.getSecondLastLogout(),
+				this.getSecondLastLogin(),
+				this.getLastLogout());
+	}
+
+	/**
+	 * Calculate the number of minutes a user was logged in for.
+	 *
+	 * @return int - Number of minutes from first login to logout.
+	 */
+	public int getNumberOfMinutesLoggedInForDay() {
+		int returnVal = 0;
+		if (this.firstLoginForDay == null || this.lastLogout == null) {
+			return returnVal;
+		}
+		return (int) TimeUnit.MILLISECONDS.toMinutes(this.lastLogout.getTime() - this.firstLoginForDay.getTime());
 	}
 }

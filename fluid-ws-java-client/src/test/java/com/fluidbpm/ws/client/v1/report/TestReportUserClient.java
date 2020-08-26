@@ -25,6 +25,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 public class TestReportUserClient extends ABaseTestCase {
 
 	private LoginClient loginClient;
@@ -42,7 +45,29 @@ public class TestReportUserClient extends ABaseTestCase {
 	}
 
 	@Test(timeout = 5000)
-	public void testReport_UpReport() {
+	public void testReport_OneWeek() {
+		if (!this.isConnectionValid()) {
+			return;
+		}
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+		ReportUserClient reportUserClient = new ReportUserClient(BASE_URL, serviceTicket);
+
+		long now = System.currentTimeMillis();
+		long twoMonths = now - TimeUnit.DAYS.toMillis(61);
+		UserStatsReport report = reportUserClient.getLoggedInUserStats(new Date(twoMonths), new Date(now));
+		long took = (System.currentTimeMillis() - now);
+		TestCase.assertNotNull("SystemReport needs to be set.", report);
+		TestCase.assertNotNull("SystemReport entries need to be set.", report.getPunchCardEntries());
+		TestCase.assertFalse("SystemReport entries need to be set.", report.getPunchCardEntries().isEmpty());
+		TestCase.assertTrue("SystemReport timed out.", took < 1000);
+	}
+
+	@Test(timeout = 5000)
+	public void testReport_Default() {
 		if (!this.isConnectionValid()) {
 			return;
 		}
@@ -57,8 +82,15 @@ public class TestReportUserClient extends ABaseTestCase {
 		UserStatsReport report = reportUserClient.getLoggedInUserStats();
 		long took = (System.currentTimeMillis() - now);
 		TestCase.assertNotNull("SystemReport needs to be set.", report);
-		TestCase.assertNotNull("SystemReport entries need to be set.", report.getPunchCardEntries());
-		TestCase.assertFalse("SystemReport entries need to be set.", report.getPunchCardEntries().isEmpty());
+		//PunchCard...
+		TestCase.assertNotNull("PunchCard entries need to be set.", report.getPunchCardEntries());
+		TestCase.assertFalse("PunchCard entries need to be set.", report.getPunchCardEntries().isEmpty());
+		//CreateUpdateLockUnlock...
+		//TestCase.assertNotNull("CreateUpdateLockUnlock entries need to be set.", report.getCreateUpdateLockUnlockEntries());
+		//TestCase.assertFalse("CreateUpdateLockUnlock entries need to be set.", report.getCreateUpdateLockUnlockEntries().isEmpty());
+		//CreateUpdateLockUnlock...
+		//TestCase.assertNotNull("View entries need to be set.", report.getViewOpenedAndSentOnEntries());
+		//TestCase.assertFalse("View entries need to be set.", report.getViewOpenedAndSentOnEntries().isEmpty());
 		TestCase.assertTrue("SystemReport timed out.", took < 1000);
 	}
 }
