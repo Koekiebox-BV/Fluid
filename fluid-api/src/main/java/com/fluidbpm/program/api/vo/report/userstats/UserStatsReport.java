@@ -46,6 +46,11 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 	private List<ViewOpenedAndSentOnEntry> viewOpenedAndSentOnEntries;
 	private List<CreateUpdateLockUnlockEntry> createUpdateLockUnlockEntries;
 
+	private int numberOfLogins;
+	private int numberOfLoginsPrevCycle;
+	private int piCount;
+	private int piLockedCount;
+
 	/**
 	 * The JSON mapping for the {@code UserStatsReport} object.
 	 */
@@ -53,6 +58,12 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		public static final String PUNCH_CARD_ENTRIES = "punchCardEntries";
 		public static final String VIEW_OPENED_AND_SENT_ON_ENTRIES = "viewOpenedAndSentOnEntries";
 		public static final String CREATE_UPDATE_LOCK_UNLOCK_ENTRIES = "createUpdateLockUnlockEntries";
+
+
+		public static final String NUMBER_OF_LOGINS = "numberOfLogins";
+		public static final String NUMBER_OF_LOGINS_PREV_CYCLE = "numberOfLoginsPrevCycle";
+		public static final String PI_COUNT = "piCount";
+		public static final String PI_LOCKED_COUNT = "piLockedCount";
 	}
 
 	/**
@@ -72,6 +83,30 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 
 		if (this.jsonObject == null) {
 			return;
+		}
+
+		if (this.jsonObject.isNull(JSONMapping.NUMBER_OF_LOGINS)) {
+			this.setNumberOfLogins(0);
+		} else {
+			this.setNumberOfLogins(this.jsonObject.getInt(JSONMapping.NUMBER_OF_LOGINS));
+		}
+
+		if (this.jsonObject.isNull(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE)) {
+			this.setNumberOfLoginsPrevCycle(0);
+		} else {
+			this.setNumberOfLoginsPrevCycle(this.jsonObject.getInt(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE));
+		}
+
+		if (this.jsonObject.isNull(JSONMapping.PI_COUNT)) {
+			this.setPiCount(0);
+		} else {
+			this.setPiCount(this.jsonObject.getInt(JSONMapping.PI_COUNT));
+		}
+
+		if (this.jsonObject.isNull(JSONMapping.PI_LOCKED_COUNT)) {
+			this.setPiLockedCount(0);
+		} else {
+			this.setPiLockedCount(this.jsonObject.getInt(JSONMapping.PI_LOCKED_COUNT));
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.PUNCH_CARD_ENTRIES)) {
@@ -113,6 +148,11 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
+
+		returnVal.put(JSONMapping.NUMBER_OF_LOGINS, this.getNumberOfLogins());
+		returnVal.put(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE, this.getNumberOfLoginsPrevCycle());
+		returnVal.put(JSONMapping.PI_COUNT, this.getPiCount());
+		returnVal.put(JSONMapping.PI_LOCKED_COUNT, this.getPiLockedCount());
 
 		if (this.getPunchCardEntries() != null && !this.getPunchCardEntries().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();

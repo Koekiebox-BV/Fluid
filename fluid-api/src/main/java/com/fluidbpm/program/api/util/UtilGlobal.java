@@ -543,4 +543,21 @@ public class UtilGlobal {
 			return null;
 		}
 	}
+
+	/**
+	 * Returns -1 if there is a problem with conversion.
+	 *
+	 * @param toParseParam The {@code String} value to parse to {@code int}.
+	 * @return int for {@code toParseParam}.
+	 */
+	public static final int toIntSafe(String toParseParam) {
+		if (toParseParam == null || toParseParam.isEmpty()) {
+			return -1;
+		}
+		try {
+			return Double.valueOf(toParseParam).intValue();
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
 }

@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
 import lombok.Getter;
@@ -91,6 +92,27 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
 		} else {
 			this.setSentOn(this.jsonObject.getInt(JSONMapping.SENT_ON));
 		}
+	}
+
+
+	/**
+	 * @return percentage of completeness as {@code int}.
+	 */
+	public int getPercentageOfComplete() {
+		if (this.sentOn < 1 || this.openedFromViewCounts < 1) {
+			return 0;
+		}
+
+		float decimal = ((float)this.sentOn / (float)this.openedFromViewCounts);
+		if (decimal == 1) {
+			return 100;
+		}
+
+		String stringVal = Float.toString(decimal).substring(2);
+		if (stringVal.length() > 1) {
+			return UtilGlobal.toIntSafe(stringVal.substring(0,2));
+		}
+		return UtilGlobal.toIntSafe(stringVal.substring(0,1).concat(UtilGlobal.ZERO));
 	}
 
 	/**
