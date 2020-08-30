@@ -15,12 +15,11 @@
 
 package com.fluidbpm.program.api.vo.config;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Fluid configurations.
@@ -32,7 +31,6 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  */
 @XmlRootElement
 public class Configuration extends ABaseFluidJSONObject {
-
 	public static final long serialVersionUID = 1L;
 
 	private String key;
@@ -41,8 +39,7 @@ public class Configuration extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code Configuration} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String KEY = "key";
 		public static final String VALUE = "value";
 	}
@@ -73,8 +70,7 @@ public class Configuration extends ABaseFluidJSONObject {
 	public Configuration(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -134,19 +130,16 @@ public class Configuration extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException
-	{
+	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Key...
-		if (this.getKey() != null)
-		{
+		if (this.getKey() != null) {
 			returnVal.put(JSONMapping.KEY,this.getKey());
 		}
 
 		//Value...
-		if (this.getValue() != null)
-		{
+		if (this.getValue() != null) {
 			returnVal.put(JSONMapping.VALUE, this.getValue());
 		}
 

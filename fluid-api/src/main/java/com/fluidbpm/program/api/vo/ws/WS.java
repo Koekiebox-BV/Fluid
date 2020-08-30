@@ -2263,6 +2263,7 @@ public class WS {
 				public static final String DE_ACTIVATE = ("/de_activate");
 				public static final String ACTIVATE = ("/activate");
 				public static final String INCREMENT_INVALID_LOGIN = ("/increment_invalid_login");
+				public static final String REQUEST_PASSWORD_RESET = ("/request_password_reset");
 				public static final String CHANGE_PASSWORD = ("/change_password");
 
 				//Delete...
@@ -2499,6 +2500,15 @@ public class WS {
 				 */
 				public static final String incrementInvalidLogin() {
 					return Version.VERSION_1.concat(ROOT).concat(INCREMENT_INVALID_LOGIN);
+				}
+
+				/**
+				 * URL Path for requesting password reset for a User.
+				 *
+				 * @return {@code v1/user/request_password_reset}
+				 */
+				public static final String requestPasswordReset() {
+					return Version.VERSION_1.concat(ROOT).concat(REQUEST_PASSWORD_RESET);
 				}
 
 				/**
@@ -3019,6 +3029,7 @@ public class WS {
 				//Read...
 				public static final String READ = ("/get_by_key");
 				public static final String READ_ALL = ("/get_all_configurations");
+				public static final String READ_SYSTEM_MAIL_TRANSFER = ("/get_system_mail_transfer");
 
 				/**
 				 * Root for Configuration.
@@ -3046,6 +3057,15 @@ public class WS {
 				 */
 				public static final String getAllConfigurations() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+				}
+
+				/**
+				 * URL Path for retireving the system email transfers.
+				 *
+				 * @return {@code v1/configuration/get_system_mail_transfer}
+				 */
+				public static final String getSystemMailTransfer() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_SYSTEM_MAIL_TRANSFER);
 				}
 			}
 		}
