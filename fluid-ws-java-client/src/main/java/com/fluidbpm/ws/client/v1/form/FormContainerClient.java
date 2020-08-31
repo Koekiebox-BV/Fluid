@@ -15,15 +15,10 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricDataListing;
@@ -33,6 +28,11 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * Java Web Service Client for Electronic Form related actions.
@@ -291,6 +291,29 @@ public class FormContainerClient extends ABaseClientWS {
 
 		return new Form(this.postJson(
 				form, WS.Path.FormContainer.Version1.getById()));
+	}
+
+	/**
+	 * Performs a lookup on Title only.
+	 *
+	 * @param limit The max number of results.
+	 * @param offset The starting offset.
+	 *
+	 * @return FormListing where title contains {@code titleLookupText}
+	 *
+	 * @see FormListing
+	 */
+	public FormListing getFormContainersByTitleContains(
+		String titleLookupText, int limit, int offset
+	) {
+		Form form = new Form();
+		form.setTitle(titleLookupText);
+		if (this.serviceTicket != null) {
+			form.setServiceTicket(this.serviceTicket);
+		}
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormContainer.Version1.getByTitleContains(limit, offset)));
 	}
 
 	/**

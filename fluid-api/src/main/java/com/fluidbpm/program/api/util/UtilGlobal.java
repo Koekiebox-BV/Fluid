@@ -47,6 +47,7 @@ public class UtilGlobal {
 	public static final String COMMA = ",";
 	public static final String COMMA_SPACE = ", ";
 	public static final String FORWARD_SLASH = "/";
+	public static final String NONE = "[None]";
 
 	//RegEx...
 	public static final String REG_EX_COMMA = "\\,";
@@ -558,6 +559,23 @@ public class UtilGlobal {
 			return Double.valueOf(toParseParam).intValue();
 		} catch (NumberFormatException e) {
 			return -1;
+		}
+	}
+
+	/**
+	 * Returns -1 if there is a problem with conversion.
+	 *
+	 * @param toParseParam The {@code String} value to parse to {@code long}.
+	 * @return long for {@code toParseParam}.
+	 */
+	public static final long toLongSafe(String toParseParam) {
+		if (toParseParam == null || toParseParam.isEmpty()) {
+			return -1;
+		}
+		try {
+			return Double.valueOf(toParseParam).longValue();
+		} catch (NumberFormatException e) {
+			return -1L;
 		}
 	}
 }

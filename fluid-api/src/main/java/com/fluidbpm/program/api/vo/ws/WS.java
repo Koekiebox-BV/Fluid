@@ -162,6 +162,9 @@ public class WS {
 				//Execute Web Action...
 				public static final String EXECUTE_CUSTOM_WEB_ACTION = ("/execute_custom_web_action");
 
+				//Lookup by title...
+				public static final String READ_BY_TITLE_CONTAINS = "/get_by_title_contains";
+
 				/**
 				 * Mapping for frequently used HTTP parameters.
 				 */
@@ -184,6 +187,9 @@ public class WS {
 					public static final String CUSTOM_WEB_ACTION = "custom_web_action";
 					public static final String IS_TABLE_RECORD = "is_table_record";
 					public static final String FORM_TABLE_RECORD_BELONGS_TO = "form_table_record_belongs_to";
+
+					public static final String QUERY_LIMIT = "query_limit";
+					public static final String OFFSET = "offset";
 				}
 
 				/**
@@ -203,6 +209,34 @@ public class WS {
 				 */
 				public static final String getById() {
 					return Version.VERSION_1.concat(ROOT).concat(READ);
+				}
+
+				/**
+				 * URL Path for Form Container get by title containing.
+				 *
+				 * @param limit The max number of results.
+				 * @param offset The starting offset.
+				 *
+				 * @return {@code v1/form_container/get_by_title_contains}
+				 */
+				public static final String getByTitleContains(int limit, int offset) {
+					String base = Version.VERSION_1.concat(ROOT).concat(READ_BY_TITLE_CONTAINS);
+					String additionString = "?";
+
+					if (limit > 0) {
+						additionString += FlowItem.Version1.QueryParam.QUERY_LIMIT;
+						additionString += "=";
+						additionString += limit;
+						additionString += "&";
+					}
+
+					if (offset > -1) {
+						additionString += FlowItem.Version1.QueryParam.OFFSET;
+						additionString += "=";
+						additionString += offset;
+						additionString += "&";
+					}
+					return base.concat(additionString);
 				}
 
 				/**
@@ -260,7 +294,6 @@ public class WS {
 					returnVal += isTableRecordParam;
 
 					if (formContainerTableRecordBelongsToParam != null && formContainerTableRecordBelongsToParam.longValue() > 0) {
-
 						returnVal += "&";
 						returnVal += QueryParam.FORM_TABLE_RECORD_BELONGS_TO;
 						returnVal += "=";
@@ -320,7 +353,6 @@ public class WS {
 
 					//Cut of the end bit...
 					additionString = additionString.substring(0, additionString.length() - 1);
-
 					return base.concat(additionString);
 				}
 
