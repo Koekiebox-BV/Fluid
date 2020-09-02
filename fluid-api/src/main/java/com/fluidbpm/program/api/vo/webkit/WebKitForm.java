@@ -51,8 +51,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	}
 
 	@Override
-	public JSONObject getJSONObject() {
-		return super.getJSONObject();
+	public JSONObject toJsonObject() {
+		return super.toJsonObject();
 	}
 
 	@Override

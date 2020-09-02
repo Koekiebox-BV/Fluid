@@ -124,7 +124,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject getJSONObject() {
+	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
 
 		if (this.getLayoutMode() != null) {
