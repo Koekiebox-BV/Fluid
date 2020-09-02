@@ -1,7 +1,7 @@
 /*
  * Koekiebox CONFIDENTIAL
  *
- * [2012] - [2017] Koekiebox (Pty) Ltd
+ * [2012] - [2020] Koekiebox (Pty) Ltd
  * All Rights Reserved.
  *
  * NOTICE: All information contained herein is, and remains the property
@@ -16,8 +16,17 @@
 package com.fluidbpm.program.api.vo.webkit;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
 
+/**
+ * WebKit associated with {@code Form} definitions.
+ *
+ * @see com.fluidbpm.program.api.vo.form.Form
+ */
+@Getter
+@Setter
 public class WebKitForm extends ABaseFluidJSONObject {
 	private String inputLayout;
 	private Boolean displayDescription;

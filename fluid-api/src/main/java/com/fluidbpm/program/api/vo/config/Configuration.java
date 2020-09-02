@@ -52,13 +52,23 @@ public class Configuration extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Sets the key and value.
+	 * @param configKey The config key.
+	 * @param configValue The value of the config.
+	 */
+	public Configuration(String configKey, String configValue) {
+		super();
+		this.setKey(configKey);
+		this.setValue(configValue);
+	}
+
+	/**
 	 * The unique Flow identifier.
 	 *
 	 * @param flowIdParam The Flow primary key.
 	 */
 	public Configuration(Long flowIdParam) {
 		super();
-
 		this.setId(flowIdParam);
 	}
 

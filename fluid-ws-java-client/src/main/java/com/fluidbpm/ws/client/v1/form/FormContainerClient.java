@@ -296,6 +296,7 @@ public class FormContainerClient extends ABaseClientWS {
 	/**
 	 * Performs a lookup on Title only.
 	 *
+	 * @param titleLookupText The lookup value. Matches will be found where title contains lookup text.
 	 * @param limit The max number of results.
 	 * @param offset The starting offset.
 	 *

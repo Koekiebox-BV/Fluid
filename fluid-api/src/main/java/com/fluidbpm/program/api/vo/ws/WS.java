@@ -3055,13 +3055,13 @@ public class WS {
 			public static final class Version1 {
 				public static final String ROOT = ("/configuration");
 
-				//Update...
-				//public static final String UPDATE = ("/update");
-
 				//Read...
 				public static final String READ = ("/get_by_key");
 				public static final String READ_ALL = ("/get_all_configurations");
 				public static final String READ_SYSTEM_MAIL_TRANSFER = ("/get_system_mail_transfer");
+
+				//Update/Insert...
+				public static final String UPSERT = ("/upsert");
 
 				/**
 				 * Root for Configuration.
@@ -3099,6 +3099,16 @@ public class WS {
 				public static final String getSystemMailTransfer() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_SYSTEM_MAIL_TRANSFER);
 				}
+
+				/**
+				 * URL Path for Config create.
+				 *
+				 * @return {@code /v1/configuration/upsert}
+				 */
+				public static final String configUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT);
+				}
+
 			}
 		}
 

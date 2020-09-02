@@ -85,6 +85,24 @@ public class ConfigurationClient extends ABaseClientWS {
 	}
 
 	/**
+	 * Inserts a configuration if it doesn't exists, update a configuration if it exists based on {@code configName}.
+	 *
+	 * @param configName The name of the config to update.
+	 * @param configValue The new configuration value.
+	 * @return Updated configuration.
+	 * @see Configuration
+	 */
+	public Configuration upsertConfiguration(
+		String configName,
+		String configValue
+	) {
+		Configuration configuration = new Configuration(configName, configValue);
+		configuration.setServiceTicket(this.serviceTicket);
+		return new Configuration(this.postJson(
+				configuration, WS.Path.Configuration.Version1.configUpsert()));
+	}
+
+	/**
 	 * Retrieve the description of the SMTP config for system related SMTP's.
 	 * @return SMTP Description of System mails.
 	 */
