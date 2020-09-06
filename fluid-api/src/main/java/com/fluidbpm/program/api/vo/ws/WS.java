@@ -3802,6 +3802,9 @@ public class WS {
 				public static final class QueryParam {
 					public static final String TIMESTAMP_FROM = "timestamp_from";
 					public static final String TIMESTAMP_TO = "timestamp_to";
+
+					public static final String COMPRESS_RESPONSE = "compress_response";
+					public static final String COMPRESS_RESPONSE_CHARSET = "compress_response_charset";
 				}
 
 				public static final String ROOT = ("/report");
@@ -3854,10 +3857,31 @@ public class WS {
 				/**
 				 * URL Path for system downtime/uptime entries.
 				 *
+				 * @param compressResponseParam Compress the Descendant result in Base-64.
+				 * @param compressResponseCharsetParam Compress response using provided charset.
+				 *
 				 * @return {@code v1/report/system/get_all}
 				 */
-				public static final String getAll() {
-					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL);
+				public static final String getAll(
+					boolean compressResponseParam,
+					String compressResponseCharsetParam
+				) {
+					if (compressResponseCharsetParam == null) {
+						compressResponseCharsetParam = EMPTY;
+					}
+
+					String returnVal = Version.VERSION_1
+							.concat(ROOT_SYSTEM)
+							.concat(READ_ALL)
+							.concat("?")
+							.concat(QueryParam.COMPRESS_RESPONSE)
+							.concat("=")
+							.concat(Boolean.toString(compressResponseParam))
+							.concat("&")
+							.concat(QueryParam.COMPRESS_RESPONSE_CHARSET)
+							.concat("=")
+							.concat(compressResponseCharsetParam);
+					return returnVal;
 				}
 
 				/**

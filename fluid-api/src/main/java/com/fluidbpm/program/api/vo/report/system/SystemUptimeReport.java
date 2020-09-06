@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.report.system;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.compress.CompressedResponse;
 import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,12 +42,14 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
 
 	//yyyy-DDD-kk-mm
 	private List<SystemUpYearDay> uptimeEntries;
+	private CompressedResponse compressedResponse;
 
 	/**
 	 * The JSON mapping for the {@code SystemUptimeReport} object.
 	 */
 	public static class JSONMapping {
 		public static final String UPTIME_ENTRIES = "uptimeEntries";
+		public static final String COMPRESSED_RESPONSE = "compressedResponse";
 	}
 
 	/**
@@ -76,6 +79,11 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
 			}
 			this.setUptimeEntries(listing);
 		}
+
+		if (!this.jsonObject.isNull(JSONMapping.COMPRESSED_RESPONSE)) {
+			this.setCompressedResponse(new CompressedResponse(
+					this.jsonObject.getJSONObject(JSONMapping.COMPRESSED_RESPONSE)));
+		}
 	}
 
 	/**
@@ -97,6 +105,11 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
 			}
 			returnVal.put(JSONMapping.UPTIME_ENTRIES, jsonArray);
 		}
+
+		if (this.getCompressedResponse() != null) {
+			returnVal.put(JSONMapping.COMPRESSED_RESPONSE, this.getCompressedResponse().toJsonObject());
+		}
+
 		return returnVal;
 	}
 }

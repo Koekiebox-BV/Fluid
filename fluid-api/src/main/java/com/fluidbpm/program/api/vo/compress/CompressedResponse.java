@@ -15,10 +15,9 @@
 
 package com.fluidbpm.program.api.vo.compress;
 
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * Fluid wrapper object for compressed {@code JSON} in {@code Base-64} format.
@@ -72,11 +71,8 @@ public class CompressedResponse extends ABaseFluidJSONObject {
 		}
 
 		//Data-64...
-		if (!this.jsonObject.isNull(
-				JSONMapping.DATA_BASE_64)) {
-
-			this.setDataBase64(this.jsonObject.getString(
-					JSONMapping.DATA_BASE_64));
+		if (!this.jsonObject.isNull(JSONMapping.DATA_BASE_64)) {
+			this.setDataBase64(this.jsonObject.getString(JSONMapping.DATA_BASE_64));
 		}
 	}
 

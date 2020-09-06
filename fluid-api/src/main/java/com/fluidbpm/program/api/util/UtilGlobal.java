@@ -22,10 +22,16 @@ import com.google.common.io.BaseEncoding;
 import org.json.JSONObject;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Global utility class for the {@code com.fluidbpm.program.api.util} package.
@@ -577,5 +583,50 @@ public class UtilGlobal {
 		} catch (NumberFormatException e) {
 			return -1L;
 		}
+	}
+
+	/**
+	 * Uncompress the raw {@code compressedBytesParam}.
+	 *
+	 * @param compressedBytes The compressed bytes to uncompress.
+	 * @param charset The character set yo use.
+	 *
+	 * @return Uncompressed bytes.
+	 *
+	 * @throws IOException - If there is an issue during the un-compression.
+	 */
+	public static byte[] uncompress(
+		byte[] compressedBytes,
+		Charset charset
+	) throws IOException {
+		byte[] buffer = new byte[1024];
+		byte[] returnVal = null;
+		ZipInputStream zis = null;
+		if (charset == null) {
+			zis = new ZipInputStream(new ByteArrayInputStream(compressedBytes));
+		} else {
+			zis = new ZipInputStream(new ByteArrayInputStream(compressedBytes), charset);
+		}
+
+		//get the zip file content
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+		//get the zipped file list entry
+		ZipEntry ze = zis.getNextEntry();
+		if (ze == null){
+			return returnVal;
+		}
+		int len;
+		while ((len = zis.read(buffer)) > 0) {
+			bos.write(buffer, 0, len);
+		}
+
+		zis.closeEntry();
+		zis.close();
+
+		bos.flush();
+		bos.close();
+		returnVal = bos.toByteArray();
+		return returnVal;
 	}
 }

@@ -15,13 +15,17 @@
 
 package com.fluidbpm.ws.client.v1.report;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.report.system.SystemUptimeReport;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.google.common.io.BaseEncoding;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * Java Web Service Client for {@code SystemUptimeReport} related actions.
@@ -42,8 +46,9 @@ public class ReportSystemClient extends ABaseClientWS {
 	 * @param serviceTicketParam The Server issued Service Ticket.
 	 */
 	public ReportSystemClient(
-			String endpointBaseUrlParam,
-			String serviceTicketParam) {
+		String endpointBaseUrlParam,
+		String serviceTicketParam
+	) {
 		super(endpointBaseUrlParam);
 		this.setServiceTicket(serviceTicketParam);
 	}
@@ -56,15 +61,46 @@ public class ReportSystemClient extends ABaseClientWS {
 	 * @see SystemUptimeReport
 	 */
 	public SystemUptimeReport getSystemReport() {
-		User userGetInfoFor = new User();
+		return this.getSystemReport(false, null);
+	}
 
+	/**
+	 * Retrieve a system report of all up/down entries for the last 31 days.
+	 *
+	 * @param compressResponseParam Compress the Form Field Result in Base-64.
+	 * @param compressResponseCharsetParam Compress response using provided charset.
+	 *
+	 * @return SystemUptimeReport information.
+	 *
+	 * @see SystemUptimeReport
+	 */
+	public SystemUptimeReport getSystemReport(
+		boolean compressResponseParam,
+		String compressResponseCharsetParam
+	) {
+		User userGetInfoFor = new User();
 		if (this.serviceTicket != null) {
 			userGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
-
 		try {
-			return new SystemUptimeReport(this.postJson(
-					userGetInfoFor, WS.Path.Report.Version1.getAll()));
+			SystemUptimeReport wsReturnVal = new SystemUptimeReport(this.postJson(
+					userGetInfoFor, WS.Path.Report.Version1.getAll(
+							compressResponseParam,
+							compressResponseCharsetParam)));
+			if (compressResponseParam) {
+				String base64Data = (wsReturnVal.getCompressedResponse() == null) ? null :
+						wsReturnVal.getCompressedResponse().getDataBase64();
+				try {
+					byte[] uncompressed = UtilGlobal.uncompress(BaseEncoding.base64().decode(base64Data), null);
+					return new SystemUptimeReport(new JSONObject(new String(uncompressed)));
+				} catch (IOException ioErr) {
+					throw new FluidClientException(String.format(
+							"Unable to unzip compressed data. %s",
+							ioErr.getMessage()), ioErr, FluidClientException.ErrorCode.IO_ERROR);
+				}
+			}
+
+			return wsReturnVal;
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -80,11 +116,9 @@ public class ReportSystemClient extends ABaseClientWS {
 	 */
 	public SystemUptimeReport getUptimeSystemReport() {
 		User userGetInfoFor = new User();
-
 		if (this.serviceTicket != null) {
 			userGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
-
 		try {
 			return new SystemUptimeReport(this.postJson(
 					userGetInfoFor, WS.Path.Report.Version1.getAllSystemUptime()));
@@ -103,11 +137,9 @@ public class ReportSystemClient extends ABaseClientWS {
 	 */
 	public SystemUptimeReport getDowntimeSystemReport() {
 		User userGetInfoFor = new User();
-
 		if (this.serviceTicket != null) {
 			userGetInfoFor.setServiceTicket(this.serviceTicket);
 		}
-
 		try {
 			return new SystemUptimeReport(this.postJson(
 					userGetInfoFor, WS.Path.Report.Version1.getAllSystemDowntime()));

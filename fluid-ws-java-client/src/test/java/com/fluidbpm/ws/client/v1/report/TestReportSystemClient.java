@@ -54,7 +54,7 @@ public class TestReportSystemClient extends ABaseTestCase {
 		ReportSystemClient reportSystemClient = new ReportSystemClient(BASE_URL, serviceTicket);
 
 		long now = System.currentTimeMillis();
-		SystemUptimeReport report = reportSystemClient.getSystemReport();
+		SystemUptimeReport report = reportSystemClient.getSystemReport(true, null);
 		long took = (System.currentTimeMillis() - now);
 		TestCase.assertNotNull("SystemReport needs to be set.", report);
 		TestCase.assertNotNull("SystemReport entries need to be set.", report.getUptimeEntries());
