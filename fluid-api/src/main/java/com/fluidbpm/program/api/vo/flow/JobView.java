@@ -15,10 +15,9 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * <p>
@@ -73,8 +72,17 @@ public class JobView extends ABaseFluidJSONObject {
 	 */
 	public JobView(Long jobViewIdParam) {
 		super();
-
 		this.setId(jobViewIdParam);
+	}
+
+	/**
+	 * Sets the Name associated with a 'Job View'.
+	 *
+	 * @param jobViewName Job View name.
+	 */
+	public JobView(String jobViewName) {
+		super();
+		this.setViewName(jobViewName);
 	}
 
 	/**
@@ -85,8 +93,7 @@ public class JobView extends ABaseFluidJSONObject {
 	public JobView(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -272,44 +279,37 @@ public class JobView extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Rule...
-		if (this.getRule() != null)
-		{
+		if (this.getRule() != null) {
 			returnVal.put(JSONMapping.RULE, this.getRule());
 		}
 
 		//View Name...
-		if (this.getViewName() != null)
-		{
+		if (this.getViewName() != null) {
 			returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
 		}
 
 		//View Group Name...
-		if (this.getViewGroupName() != null)
-		{
+		if (this.getViewGroupName() != null) {
 			returnVal.put(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
 		}
 
 		//View Flow Name...
-		if (this.getViewGroupName() != null)
-		{
+		if (this.getViewGroupName() != null) {
 			returnVal.put(JSONMapping.VIEW_FLOW_NAME, this.getViewFlowName());
 		}
 
 		//View Step Name...
-		if (this.getViewGroupName() != null)
-		{
+		if (this.getViewGroupName() != null) {
 			returnVal.put(JSONMapping.VIEW_STEP_NAME, this.getViewStepName());
 		}
 
 		//View Priority...
-		if (this.getViewPriority() != null)
-		{
+		if (this.getViewPriority() != null) {
 			returnVal.put(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
 		}
 
 		//View Type...
-		if (this.getViewType() != null)
-		{
+		if (this.getViewType() != null) {
 			returnVal.put(JSONMapping.VIEW_TYPE, this.getViewType());
 		}
 

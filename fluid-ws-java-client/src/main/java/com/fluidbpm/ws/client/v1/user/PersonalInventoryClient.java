@@ -15,11 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
@@ -27,6 +22,10 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Java Web Service Client for Personal inventory related actions.
@@ -40,96 +39,83 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class PersonalInventoryClient extends ABaseClientWS {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public PersonalInventoryClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public PersonalInventoryClient(
+		String endpointBaseUrlParam,
+		String serviceTicketParam
+	) {
+		super(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+	/**
+	 * Retrieves all Personal Inventory items for the logged in user.
+	 *
+	 * @return The Personal Inventory items for the logged in {@code User}.
+	 */
+	public List<FluidItem> getPersonalInventoryItems() {
+		User loggedInUser = new User();
 
-    /**
-     * Retrieves all Personal Inventory items for the logged in user.
-     *
-     * @return The Personal Inventory items for the logged in {@code User}.
-     */
-    public List<FluidItem> getPersonalInventoryItems()
-    {
-        User loggedInUser = new User();
+		if (this.serviceTicket != null) {
+			loggedInUser.setServiceTicket(this.serviceTicket);
+		}
 
-        if (this.serviceTicket != null)
-        {
-            loggedInUser.setServiceTicket(this.serviceTicket);
-        }
+		try {
+			return new FluidItemListing(this.postJson(
+					loggedInUser,
+					WS.Path.PersonalInventory.Version1.getAllByLoggedInUser())).getListing();
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        try {
-            return new FluidItemListing(this.postJson(
-                    loggedInUser,
-                    WS.Path.PersonalInventory.Version1.getAllByLoggedInUser())).getListing();
-        }
-        //rethrow as a Fluid Client exception.
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+	/**
+	 * Remove the item {@code formToRemoveParam} from the personal inventory.
+	 *
+	 * @param formToRemoveParam The {@code Form} to remove from personal inventory.
+	 *
+	 * @return The Personal Inventory items removed for {@code User}.
+	 */
+	public Form removeFromPersonalInventory(Form formToRemoveParam) {
+		if (formToRemoveParam != null && this.serviceTicket != null) {
+			formToRemoveParam.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Remove the item {@code formToRemoveParam} from the personal inventory.
-     *
-     * @param formToRemoveParam The {@code Form} to remove from personal inventory.
-     *
-     * @return The Personal Inventory items removed for {@code User}.
-     */
-    public Form removeFromPersonalInventory(Form formToRemoveParam)
-    {
-        if (formToRemoveParam != null &&
-                this.serviceTicket != null)
-        {
-            formToRemoveParam.setServiceTicket(this.serviceTicket);
-        }
+		try {
+			return new Form(this.postJson(
+					formToRemoveParam,
+					WS.Path.PersonalInventory.Version1.removeFromPersonalInventory()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 
-        try {
-            return new Form(this.postJson(
-                    formToRemoveParam,
-                    WS.Path.PersonalInventory.Version1.removeFromPersonalInventory()));
-        }
-        //rethrow as a Fluid Client exception.
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+	/**
+	 * Clears all Personal Inventory items for the logged in user.
+	 *
+	 * @return The cleared Personal Inventory items for the logged in {@code User}.
+	 */
+	public List<FluidItem> clearPersonalInventoryItems() {
+		User loggedInUser = new User();
 
-    /**
-     * Clears all Personal Inventory items for the logged in user.
-     *
-     * @return The cleared Personal Inventory items for the logged in {@code User}.
-     */
-    public List<FluidItem> clearPersonalInventoryItems()
-    {
-        User loggedInUser = new User();
+		if (this.serviceTicket != null) {
+			loggedInUser.setServiceTicket(this.serviceTicket);
+		}
 
-        if (this.serviceTicket != null)
-        {
-            loggedInUser.setServiceTicket(this.serviceTicket);
-        }
-
-        try {
-            return new FluidItemListing(this.postJson(
-                    loggedInUser,
-                    WS.Path.PersonalInventory.Version1.clearPersonalInventory())).getListing();
-        }
-        //rethrow as a Fluid Client exception.
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
-    }
+		try {
+			return new FluidItemListing(this.postJson(
+					loggedInUser,
+					WS.Path.PersonalInventory.Version1.clearPersonalInventory())).getListing();
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
 }
