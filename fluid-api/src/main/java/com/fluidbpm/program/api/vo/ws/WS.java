@@ -1255,6 +1255,9 @@ public class WS {
 				public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE_INCL_TABLE_RECORDS =
 						("/get_all_by_logged_in_can_create?"+QueryParam.INCLUDE_TABLE_RECORDS+"=true");
 
+				public static final String READ_ATTACHMENT_CAN_VIEW_BY_LOGGED_IN_USER = ("/get_all_attachment_can_view_by_logged_in_user");
+				public static final String READ_ATTACHMENT_CAN_EDIT_BY_LOGGED_IN_USER = ("/get_all_attachment_can_edit_by_logged_in_user");
+
 				/**
 				 * Root for Form Definition.
 				 *
@@ -1361,7 +1364,24 @@ public class WS {
 					} else {
 						return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE);
 					}
+				}
 
+				/**
+				 * URL Path for Form Definitions where logged in user can view attachments for.
+				 *
+				 * @return {@code v1/form_definition/get_all_attachment_can_view_by_logged_in_user}
+				 */
+				public static final String getAllByLoggedInAndAttachmentsCanView() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ATTACHMENT_CAN_VIEW_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for Form Definitions where logged in user can edit attachments for.
+				 *
+				 * @return {@code v1/form_definition/get_all_attachment_can_edit_by_logged_in_user}
+				 */
+				public static final String getAllByLoggedInAndAttachmentsCanEdit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ATTACHMENT_CAN_EDIT_BY_LOGGED_IN_USER);
 				}
 			}
 		}

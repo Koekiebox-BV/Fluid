@@ -15,20 +15,25 @@
 
 package com.fluidbpm.program.api.util;
 
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.google.common.io.BaseEncoding;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -628,5 +633,43 @@ public class UtilGlobal {
 		bos.close();
 		returnVal = bos.toByteArray();
 		return returnVal;
+	}
+
+	/**
+	 * Encode {@code toEncodeParam} for URL using UTF-8 character set.
+	 *
+	 * @param toEncodeParam The text to encode.
+	 * @return encoded {@code toEncodeParam} value in UTF-8 encoding
+	 */
+	public static String encodeURL(String toEncodeParam) {
+		if (toEncodeParam == null || toEncodeParam.trim().isEmpty()) {
+			return UtilGlobal.EMPTY;
+		}
+		try {
+			return URLEncoder.encode(toEncodeParam, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return toEncodeParam;
+		}
+	}
+
+	/**
+	 * Convert the {@code list} to {@code JSONArray}
+	 *
+	 * @param list The list to convert to JSON Array.
+	 * @param <T> The type of {@code ABaseFluidJSONObject}
+	 * @return JSONArray from {@code list}
+	 * @see ABaseFluidJSONObject
+	 * @see JSONArray
+	 */
+	public static <T extends ABaseFluidJSONObject> JSONArray toJSONArray(List<T> list) {
+		if (list == null) {
+			return null;
+		}
+		JSONArray jsonArray = new JSONArray();
+		for (T toAdd :list) {
+			jsonArray.put(toAdd.toJsonObject());
+		}
+		return jsonArray;
 	}
 }

@@ -85,7 +85,6 @@ public class Attachment extends ABaseFluidJSONObject {
 	 */
 	public Attachment(Long attachmentIdParam) {
 		super();
-
 		this.setId(attachmentIdParam);
 	}
 
@@ -115,6 +114,30 @@ public class Attachment extends ABaseFluidJSONObject {
 		{
 			this.setName(theFile.getName());
 		}
+	}
+
+	/**
+	 * Create a clone from {@code toClone}
+	 * @param toClone
+	 */
+	private Attachment(Attachment toClone) {
+		if (toClone == null) {
+			return;
+		}
+		this.setAttachmentDataBase64(toClone.getAttachmentDataBase64());
+		this.setContentType(toClone.getContentType());
+		this.setDateCreated(toClone.getDateCreated() == null ?
+				null : new Date(toClone.getDateCreated().getTime()));
+		this.setDateLastUpdated(toClone.getDateLastUpdated() == null ?
+				null : new Date(toClone.getDateLastUpdated().getTime()));
+		this.setFormId(toClone.getFormId());
+		this.setName(toClone.getName());
+		this.setPath(toClone.getPath());
+		this.setVersion(toClone.getVersion());
+		this.setId(toClone.getId());
+		this.setEcho(toClone.getEcho());
+		this.setServiceTicket(toClone.getServiceTicket());
+		this.setRequestUuid(toClone.getRequestUuid());
 	}
 
 	/**
@@ -409,5 +432,27 @@ public class Attachment extends ABaseFluidJSONObject {
 		}
 
 		return returnVal;
+	}
+
+	/**
+	 * Clone {@code this} object.
+	 *
+	 * @return cloned instance of {@code Attachment}.
+	 */
+	@Override
+	public Attachment clone() {
+		return new Attachment(this);
+	}
+
+	/**
+	 * Checks whether attachment file type is image.
+	 * @return {@code true} if content type is image.
+	 */
+	public boolean isFileTypeImage() {
+		if (this.getContentType() == null || this.getContentType().trim().isEmpty()) {
+			return false;
+		}
+
+		return (this.getContentType().trim().toLowerCase().startsWith("image"));
 	}
 }

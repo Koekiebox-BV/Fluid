@@ -48,6 +48,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	private Boolean menuTypeDefault;
 	private String componentColors;
 	private String profileModeDefault;
+	private String inputStyleAddition;
 
 	/**
 	 * The JSON mapping for the {@code WebKitForm} object.
@@ -62,6 +63,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		public static final String MENU_TYPE_DEFAULT = "menuTypeDefault";
 		public static final String COMPONENT_COLORS = "componentColors";
 		public static final String PROFILE_MODE_DEFAULT = "profileModeDefault";
+		public static final String INPUT_STYLE_ADDITION = "inputStyleAddition";
 	}
 
 	/**
@@ -77,6 +79,10 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.LAYOUT_MODE)) {
 			this.setLayoutMode(this.jsonObject.getString(JSONMapping.LAYOUT_MODE));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.INPUT_STYLE_ADDITION)) {
+			this.setInputStyleAddition(this.jsonObject.getString(JSONMapping.INPUT_STYLE_ADDITION));
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.FORM_TYPE)) {
@@ -129,6 +135,10 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 
 		if (this.getLayoutMode() != null) {
 			returnVal.put(JSONMapping.LAYOUT_MODE,this.getLayoutMode());
+		}
+
+		if (this.getInputStyleAddition() != null) {
+			returnVal.put(JSONMapping.INPUT_STYLE_ADDITION, this.getInputStyleAddition());
 		}
 
 		if (this.getFormType() != null) {

@@ -32,8 +32,20 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private Boolean displayDescription;
 
 	/**
-	 * The type of InputLayout.
+	 * Populates local variables with {@code jsonObjectParam}.
 	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public WebKitForm(JSONObject jsonObjectParam) {
+		super(jsonObjectParam);
+		if (this.jsonObject == null) {
+			return;
+		}
+
+	}
+
+	/**
+	 * The type of InputLayout.
 	 */
 	public static final class InputLayout {
 		public static final String VERTICAL = "vertical";

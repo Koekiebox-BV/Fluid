@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo.webkit;
+package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseListing;
 import org.json.JSONObject;
@@ -22,22 +22,22 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code WebKitForm}s.
+ *     Represents a {@code List} of {@code WebKitViewGroup}s.
  * </p>
  *
  * @author jasonbruwer
  * @since v1.1
  *
- * @see WebKitForm
+ * @see WebKitViewGroup
  * @see ABaseListing
  */
-public class WebKitFormListing extends ABaseListing<WebKitForm> {
+public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
 	public static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor.
 	 */
-	public WebKitFormListing() {
+	public WebKitViewGroupListing() {
 		super();
 	}
 
@@ -46,19 +46,19 @@ public class WebKitFormListing extends ABaseListing<WebKitForm> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitFormListing(JSONObject jsonObjectParam){
+	public WebKitViewGroupListing(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
 	/**
-	 * Converts the {@code jsonObjectParam} to a {@code WebKitForm} object.
+	 * Converts the {@code jsonObjectParam} to a {@code WebKitViewGroup} object.
 	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code WebKitForm}.
-	 * @return New {@code WebKitForm} instance.
+	 * @param jsonObjectParam The JSON object to convert to {@code WebKitViewGroup}.
+	 * @return New {@code WebKitViewGroup} instance.
 	 */
 	@Override
 	@XmlTransient
-	public WebKitForm getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new WebKitForm(jsonObjectParam);
+	public WebKitViewGroup getObjectFromJSONObject(JSONObject jsonObjectParam) {
+		return new WebKitViewGroup(jsonObjectParam);
 	}
 }

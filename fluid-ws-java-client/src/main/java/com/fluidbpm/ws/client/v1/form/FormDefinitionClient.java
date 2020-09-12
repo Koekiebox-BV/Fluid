@@ -15,15 +15,14 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Java Web Service Client for Form Definition related actions.
@@ -188,20 +187,46 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @return List of Form Definitions.
 	 */
 	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf(
-			boolean includeTableRecordsParam
+		boolean includeTableRecordsParam
 	) {
 		Form form = new Form();
-
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-
-		if (this.requestUuid != null) {
-			form.setRequestUuid(this.requestUuid);
-		}
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
 
 		return new FormListing(this.postJson(
 				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(includeTableRecordsParam))).
+				getListing();
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * view attachments for those form definitions.
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanViewAttachments() {
+		Form form = new Form();
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndAttachmentsCanView())).
+				getListing();
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * edit attachments for those form definitions.
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanEditAttachments() {
+		Form form = new Form();
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndAttachmentsCanEdit())).
 				getListing();
 	}
 
