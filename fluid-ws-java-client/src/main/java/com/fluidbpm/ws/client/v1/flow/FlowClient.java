@@ -15,14 +15,14 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowListing;
+import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroupListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Used to change any of the Flow's / Workflows.
@@ -113,8 +113,34 @@ public class FlowClient extends ABaseClientWS {
 		if (this.serviceTicket != null) {
 			flow.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.getByName()));
+	}
+
+	/**
+	 * Retrieve the Flow View Group configuration.
+	 *
+	 * @return The complete view group config.
+	 * @see WebKitViewGroupListing
+	 */
+	public WebKitViewGroupListing getViewGroupWebKit() {
+		Flow flow = new Flow();
+		flow.setServiceTicket(this.serviceTicket);
+		return new WebKitViewGroupListing(this.postJson(flow, WS.Path.Flow.Version1.getJobViewGroupWebKit()));
+	}
+
+	/**
+	 * Retrieve the Flow View Group configuration.
+	 *
+	 * @param listing The ViewGroupWebKit listing to upsert.
+	 * @return The complete view group config.
+	 * @see WebKitViewGroupListing
+	 */
+	public WebKitViewGroupListing upsertViewGroupWebKit(WebKitViewGroupListing listing) {
+		if (listing == null) {
+			return null;
+		}
+		listing.setServiceTicket(this.serviceTicket);
+		return new WebKitViewGroupListing(this.postJson(listing, WS.Path.Flow.Version1.flowViewGroupUpsert()));
 	}
 
 	/**

@@ -999,6 +999,7 @@ public class WS {
 				//Read...
 				public static final String READ = ("/get_by_id");
 				public static final String READ_VALUES_BY = ("/get_values_by");
+				public static final String READ_BY_VIEW_GROUP = ("/get_by_view_group");
 
 				/**
 				 * Mapping for frequently used HTTP parameters.
@@ -1092,6 +1093,15 @@ public class WS {
 				 */
 				public static final String getById() {
 					return Version.VERSION_1.concat(ROOT).concat(READ);
+				}
+
+				/**
+				 * URL Path for Route Field get by View Group.
+				 *
+				 * @return {@code v1/route_field/get_by_view_group}
+				 */
+				public static final String getByViewGroup() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_VIEW_GROUP);
 				}
 
 				/**
@@ -1407,9 +1417,11 @@ public class WS {
 
 				//Update...
 				public static final String UPDATE = ("/update");
+				public static final String UPSERT_VIEW_GROUPS_WEB_KIT = ("/upsert_view_groups_web_kit");
 
 				//Read...
 				public static final String READ = ("/get_by_id");
+				public static final String READ_VIEW_GROUP_WEB_KIT = ("/get_view_group_web_kit");
 				public static final String READ_BY_NAME = ("/get_by_name");
 				public static final String READ_ALL = ("/get_all_flows");
 
@@ -1467,6 +1479,15 @@ public class WS {
 				}
 
 				/**
+				 * URL Path for upserting the Group View web kit.
+				 *
+				 * @return {@code v1/flow/upsert_view_groups_web_kit}
+				 */
+				public static final String flowViewGroupUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_VIEW_GROUPS_WEB_KIT);
+				}
+
+				/**
 				 * URL Path for Flow get by id.
 				 *
 				 * @return {@code v1/flow/get_by_id}
@@ -1482,6 +1503,15 @@ public class WS {
 				 */
 				public static final String getByName() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
+				}
+
+				/**
+				 * URL Path for Flow get by name.
+				 *
+				 * @return {@code v1/flow/get_view_group_web_kit}
+				 */
+				public static final String getJobViewGroupWebKit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_VIEW_GROUP_WEB_KIT);
 				}
 
 				/**

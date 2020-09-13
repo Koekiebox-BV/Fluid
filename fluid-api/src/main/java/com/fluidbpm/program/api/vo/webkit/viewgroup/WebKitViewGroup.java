@@ -32,9 +32,11 @@ import java.util.List;
 @Setter
 public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private Long jobViewGroupId;
+	private String jobViewGroupName;
+	private String jobViewGroupIcon;
+	private int groupOrder;
 
-	private boolean enableGroupSubs;//is the left click a root (false-> primary renders it)
-	private boolean generateMenuPerSub;//Should a menu per sub be generated
+	private boolean enableGroupSubsInMenu;//is the left click a root (false-> primary renders it)
 
 	private boolean showColumnFormType;
 	private boolean showColumnTitle;
@@ -76,8 +78,10 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	 */
 	public static class JSONMapping {
 		public static final String JOB_VIEW_GROUP_ID = "jobViewGroupId";
-		public static final String ENABLE_GROUP_SUBS = "enableGroupSubs";
-		public static final String GENERATE_MENU_PER_SUB = "generateMenuPerSub";
+		public static final String JOB_VIEW_GROUP_NAME = "jobViewGroupName";
+		public static final String jobViewGroupIcon = "jobViewGroupIcon";
+		public static final String groupOrder = "groupOrder";
+		public static final String ENABLE_GROUP_SUBS_IN_MENU = "enableGroupSubsInMenu";
 		public static final String SHOW_COLUMN_FORM_TYPE = "showColumnFormType";
 		public static final String SHOW_COLUMN_TITLE = "showColumnTitle";
 		public static final String SHOW_COLUMN_STEP_ENTRY_TIME = "showColumnStepEntryTime";
@@ -101,6 +105,10 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String WEB_KIT_VIEW_SUBS = "webKitViewSubs";
 	}
 
+	public WebKitViewGroup() {
+		this(new JSONObject());
+	}
+
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
@@ -116,14 +124,24 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			this.setJobViewGroupId(this.jsonObject.getLong(JSONMapping.JOB_VIEW_GROUP_ID));
 		}
 
-		if (!this.jsonObject.isNull(JSONMapping.ENABLE_GROUP_SUBS)) {
-			this.setEnableGroupSubs(this.jsonObject.getBoolean(JSONMapping.ENABLE_GROUP_SUBS));
+		if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW_GROUP_NAME)) {
+			this.setJobViewGroupName(this.jsonObject.getString(JSONMapping.JOB_VIEW_GROUP_NAME));
 		}
 
-		if (!this.jsonObject.isNull(JSONMapping.GENERATE_MENU_PER_SUB)) {
-			this.setGenerateMenuPerSub(this.jsonObject.getBoolean(JSONMapping.GENERATE_MENU_PER_SUB));
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU)) {
+			this.setEnableGroupSubsInMenu(this.jsonObject.getBoolean(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU));
 		}
 
+	}
+
+	/**
+	 * Populates only group name.
+	 *
+	 * @param groupName The View Group name.
+	 */
+	public WebKitViewGroup(String groupName) {
+		this();
+		this.setJobViewGroupName(groupName);
 	}
 
 	/**
@@ -136,15 +154,13 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	@XmlTransient
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
-
-		returnVal.put(JSONMapping.ENABLE_GROUP_SUBS, this.isEnableGroupSubs());
-		returnVal.put(JSONMapping.GENERATE_MENU_PER_SUB, this.isGenerateMenuPerSub());
-		if (!this.isEnableGroupSubs()) {
-			this.setGenerateMenuPerSub(false);
-		}
+		returnVal.put(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU, this.isEnableGroupSubsInMenu());
 
 		if (this.getJobViewGroupId() != null) {
 			returnVal.put(JSONMapping.JOB_VIEW_GROUP_ID, this.getJobViewGroupId());
+		}
+		if (this.getJobViewGroupName() != null) {
+			returnVal.put(JSONMapping.JOB_VIEW_GROUP_NAME, this.getJobViewGroupName());
 		}
 
 		return returnVal;

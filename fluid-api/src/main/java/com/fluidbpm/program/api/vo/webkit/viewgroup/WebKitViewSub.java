@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,12 +41,15 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	 */
 	private String listingMode;
 	private String label;
+	private String icon;
+
 	private List<JobView> jobViews;
-	private List<Field> routeFields;
+	private List<WebKitWorkspaceRouteField> routeFields;
 
 	private boolean tableExpansionDisplayAncestor;
 	private boolean tableExpansionDisplayDescendant;
 	private boolean tableExpansionDisplayRecords;
+	private boolean tableExpansionDisplayRecordsInlineEdit;
 	private boolean tableExpansionDisplayAttachments;
 	private boolean tableExpansionDisplayFlowHistory;
 
@@ -60,6 +62,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		public static final String TABLE_EXPANSION_DISPLAY_ANCESTOR = "tableExpansionDisplayAncestor";
 		public static final String TABLE_EXPANSION_DISPLAY_DESCENDANT = "tableExpansionDisplayDescendant";
 		public static final String TABLE_EXPANSION_DISPLAY_RECORDS = "tableExpansionDisplayRecords";
+		public static final String TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT = "tableExpansionDisplayRecordsInlineEdit";
 		public static final String TABLE_EXPANSION_DISPLAY_ATTACHMENTS = "tableExpansionDisplayAttachments";
 		public static final String TABLE_EXPANSION_DISPLAY_FLOW_HISTORY = "tableExpansionDisplayFlowHistory";
 		public static final String JOB_VIEWS = "jobViews";
@@ -97,6 +100,10 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 			this.setTableExpansionDisplayRecords(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT)) {
+			this.setTableExpansionDisplayRecordsInlineEdit(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT));
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS)) {
 			this.setTableExpansionDisplayAttachments(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS));
 		}
@@ -116,9 +123,9 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELDS)) {
 			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.ROUTE_FIELDS);
-			List<Field> objs = new ArrayList();
+			List<WebKitWorkspaceRouteField> objs = new ArrayList();
 			for (int index = 0;index < jsonArray.length();index++) {
-				objs.add(new Field(jsonArray.getJSONObject(index)));
+				objs.add(new WebKitWorkspaceRouteField(jsonArray.getJSONObject(index)));
 			}
 			this.setRouteFields(objs);
 		}
@@ -146,14 +153,15 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		if (this.getJobViews() != null && !this.getJobViews().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
 			for (JobView toAdd :this.getJobViews()) {
-				jsonArray.put(toAdd.toJsonObject());
+				JobView reducedJobView = new JobView(toAdd.getId());
+				jsonArray.put(reducedJobView.toJsonObject());
 			}
 			returnVal.put(JSONMapping.JOB_VIEWS, jsonArray);
 		}
 
 		if (this.getRouteFields() != null && !this.getRouteFields().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-			for (Field toAdd :this.getRouteFields()) {
+			for (WebKitWorkspaceRouteField toAdd : this.getRouteFields()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
 			returnVal.put(JSONMapping.ROUTE_FIELDS, jsonArray);
@@ -164,6 +172,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_DESCENDANT, this.isTableExpansionDisplayDescendant());
 		returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_FLOW_HISTORY, this.isTableExpansionDisplayFlowHistory());
 		returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS, this.isTableExpansionDisplayRecords());
+		returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT, this.isTableExpansionDisplayRecordsInlineEdit());
 
 		return returnVal;
 	}
