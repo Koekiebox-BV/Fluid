@@ -41,7 +41,6 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (this.jsonObject == null) {
 			return;
 		}
-
 	}
 
 	/**

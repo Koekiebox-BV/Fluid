@@ -33,10 +33,30 @@ import java.util.List;
 public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private Long jobViewGroupId;
 	private String jobViewGroupName;
+
 	private String jobViewGroupIcon;
-	private int groupOrder;
+	/*
+	 * combined (Single Table for all)
+	 * combined_no_duplicates (Single Table for all)
+	 * table_per_sub
+	 * table_per_sub_no_duplicates
+	 * table_per_view
+	 * table_per_view_no_duplicates
+	 */
+	private String tableGenerateMode = "combined";
+	private String attachmentColumnLabel = "Image";
+	private int attachmentThumbnailSize = 100;
+	private int attachmentPreviewSize = 800;
+	private int attachmentColumnMaxImageCount = 1;
+
+	//vertical/horizontal
+	private String attachmentColumnLayout;
 
 	private boolean enableGroupSubsInMenu;//is the left click a root (false-> primary renders it)
+
+	private int groupOrder = 1;
+	//null for no limit...
+	private Integer tableMaxCountPerPage;
 
 	private boolean showColumnFormType;
 	private boolean showColumnTitle;
@@ -48,7 +68,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 
 	private boolean showColumnProgressPercentage;
 	private boolean showColumnAttachment;
-	private String attachmentColumnLabel = "Image";
 
 	//Bulk item for same form type...
 	private boolean showButtonBulkUpdate;
@@ -57,19 +76,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private boolean showButtonDelete;
 	private boolean showButtonLock;
 	private boolean showButtonAddToPI;
-
-	/*
-	 * combined (Single Table for all)
-	 * combined_no_duplicates (Single Table for all)
-	 * table_per_sub
-	 * table_per_sub_no_duplicates
-	 * table_per_view
-	 * table_per_view_no_duplicates
-	 */
-	private String tableGenerateMode;
-
-	//null for no limit...
-	private Integer tableMaxCountPerPage;
 
 	private List<WebKitViewSub> webKitViewSubs;
 
@@ -164,6 +170,14 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		}
 
 		return returnVal;
+	}
+
+	/**
+	 * @return number of objects inside {@code webKitViewSubs}.
+	 */
+	public int getWebKitViewSubsCount() {
+		return this.getWebKitViewSubs() == null ? 0 :
+				this.getWebKitViewSubs().size();
 	}
 
 	/**

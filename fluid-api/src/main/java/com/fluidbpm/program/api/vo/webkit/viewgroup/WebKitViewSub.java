@@ -43,6 +43,8 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	private String label;
 	private String icon;
 
+	private int subOrder = 1;
+
 	private List<JobView> jobViews;
 	private List<WebKitWorkspaceRouteField> routeFields;
 
@@ -59,6 +61,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	public static class JSONMapping {
 		public static final String LISTING_MODE = "listingMode";
 		public static final String LABEL = "label";
+		public static final String SUB_ORDER = "subOrder";
 		public static final String TABLE_EXPANSION_DISPLAY_ANCESTOR = "tableExpansionDisplayAncestor";
 		public static final String TABLE_EXPANSION_DISPLAY_DESCENDANT = "tableExpansionDisplayDescendant";
 		public static final String TABLE_EXPANSION_DISPLAY_RECORDS = "tableExpansionDisplayRecords";
@@ -67,6 +70,10 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		public static final String TABLE_EXPANSION_DISPLAY_FLOW_HISTORY = "tableExpansionDisplayFlowHistory";
 		public static final String JOB_VIEWS = "jobViews";
 		public static final String ROUTE_FIELDS = "routeFields";
+	}
+
+	public WebKitViewSub() {
+		this(new JSONObject());
 	}
 
 	/**
@@ -86,6 +93,10 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.LABEL)) {
 			this.setLabel(this.jsonObject.getString(JSONMapping.LABEL));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.SUB_ORDER)) {
+			this.setSubOrder(this.jsonObject.getInt(JSONMapping.SUB_ORDER));
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR)) {
@@ -145,6 +156,8 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		if (this.getLabel() != null) {
 			returnVal.put(JSONMapping.LABEL,this.getLabel());
 		}
+
+		returnVal.put(JSONMapping.SUB_ORDER,this.getSubOrder());
 
 		if (this.getListingMode() != null) {
 			returnVal.put(JSONMapping.LISTING_MODE, this.getListingMode());

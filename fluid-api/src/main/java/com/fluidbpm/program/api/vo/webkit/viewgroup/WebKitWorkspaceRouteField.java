@@ -46,6 +46,10 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 		public static final String FIELD_ORDER = "fieldOrder";
 	}
 
+	public WebKitWorkspaceRouteField() {
+		this(new JSONObject());
+	}
+
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
@@ -64,7 +68,15 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.FIELD_ORDER)) {
 			this.setFieldOrder(this.jsonObject.getInt(JSONMapping.FIELD_ORDER));
 		}
+	}
 
+	/**
+	 * @param routeField The route field associated.
+	 * @see Field
+	 */
+	public WebKitWorkspaceRouteField(Field routeField) {
+		this();
+		this.setRouteField(routeField);
 	}
 
 	/**
