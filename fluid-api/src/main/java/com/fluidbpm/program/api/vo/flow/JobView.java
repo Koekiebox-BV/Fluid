@@ -41,6 +41,7 @@ public class JobView extends ABaseFluidJSONObject {
 	private String viewFlowName;
 
 	private Integer viewPriority;
+	private Long viewOrder;
 	private String viewType;
 
 	/**
@@ -55,6 +56,7 @@ public class JobView extends ABaseFluidJSONObject {
 		public static final String VIEW_FLOW_NAME = "viewFlowName";
 
 		public static final String VIEW_PRIORITY = "viewPriority";
+		public static final String VIEW_ORDER = "viewOrder";
 		public static final String VIEW_TYPE = "viewType";
 	}
 
@@ -128,6 +130,12 @@ public class JobView extends ABaseFluidJSONObject {
 
 		//View Priority...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_PRIORITY)) {
+			this.setViewPriority(this.jsonObject.getInt(
+					JSONMapping.VIEW_PRIORITY));
+		}
+
+		//View Order...
+		if (!this.jsonObject.isNull(JSONMapping.VIEW_ORDER)) {
 			this.setViewPriority(this.jsonObject.getInt(
 					JSONMapping.VIEW_PRIORITY));
 		}
@@ -265,6 +273,25 @@ public class JobView extends ABaseFluidJSONObject {
 		this.viewPriority = viewPriorityParam;
 	}
 
+
+	/**
+	 * Gets the priority in the Group for the View.
+	 *
+	 * @return View Order.
+	 */
+	public Long getViewOrder() {
+		return this.viewOrder;
+	}
+
+	/**
+	 * Sets the priority in the Group for the View.
+	 *
+	 * @param viewPriorityParam View Priority.
+	 */
+	public void setViewOrder(Long viewPriorityParam) {
+		this.viewOrder = viewPriorityParam;
+	}
+
 	/**
 	 * Conversion to {@code JSONObject} from Java Object.
 	 *
@@ -306,6 +333,11 @@ public class JobView extends ABaseFluidJSONObject {
 		//View Priority...
 		if (this.getViewPriority() != null) {
 			returnVal.put(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
+		}
+
+		//View Order...
+		if (this.getViewOrder() != null) {
+			returnVal.put(JSONMapping.VIEW_ORDER, this.getViewOrder());
 		}
 
 		//View Type...

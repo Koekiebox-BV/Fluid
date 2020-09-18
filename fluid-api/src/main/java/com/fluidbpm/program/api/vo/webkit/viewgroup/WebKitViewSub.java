@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.flow.JobView;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -45,7 +44,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 	private int subOrder = 1;
 
-	private List<JobView> jobViews;
+	private List<WebKitWorkspaceJobView> jobViews;
 	private List<WebKitWorkspaceRouteField> routeFields;
 
 	private boolean tableExpansionDisplayAncestor;
@@ -125,9 +124,9 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.JOB_VIEWS)) {
 			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.JOB_VIEWS);
-			List<JobView> objs = new ArrayList();
+			List<WebKitWorkspaceJobView> objs = new ArrayList();
 			for (int index = 0;index < jsonArray.length();index++) {
-				objs.add(new JobView(jsonArray.getJSONObject(index)));
+				objs.add(new WebKitWorkspaceJobView(jsonArray.getJSONObject(index)));
 			}
 			this.setJobViews(objs);
 		}
@@ -165,9 +164,8 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 		if (this.getJobViews() != null && !this.getJobViews().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-			for (JobView toAdd :this.getJobViews()) {
-				JobView reducedJobView = new JobView(toAdd.getId());
-				jsonArray.put(reducedJobView.toJsonObject());
+			for (WebKitWorkspaceJobView toAdd :this.getJobViews()) {
+				jsonArray.put(toAdd.toJsonObject());
 			}
 			returnVal.put(JSONMapping.JOB_VIEWS, jsonArray);
 		}
