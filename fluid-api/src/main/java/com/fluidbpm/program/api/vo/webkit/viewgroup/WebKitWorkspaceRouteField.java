@@ -34,9 +34,10 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	private Field routeField;
 
 	private int fieldOrder;
-	private String additionalFormatting;
-	private boolean displayLabelAsBanner;
-	private int fontWeight;
+	private String additionalFormatting;//FIXME [displayLabelAsBanner|fontWeight]
+
+	@XmlTransient
+	private boolean selected;
 
 	/**
 	 * The JSON mapping for the {@code WebKitForm} object.
@@ -91,12 +92,8 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		if (this.getRouteField() != null) {
-			Field reducedField = new Field(
-				this.getRouteField().getFieldName(),
-				null,
-				this.getRouteField().getTypeAsEnum());
-			reducedField.setTypeMetaData(this.getRouteField().getTypeMetaData());
-			returnVal.put(JSONMapping.ROUTE_FIELD, reducedField);
+			Field reducedField = new Field(this.getRouteField().getId());
+			returnVal.put(JSONMapping.ROUTE_FIELD, reducedField.toJsonObject());
 		}
 
 		returnVal.put(JSONMapping.FIELD_ORDER, this.getFieldOrder());
@@ -113,5 +110,15 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	@XmlTransient
 	public String toString() {
 		return super.toString();
+	}
+
+	/**
+	 * Id for WebKit Field.
+	 * @return Primary Key of {@code routeField}.
+	 */
+	@Override
+	public Long getId() {
+		return (this.routeField == null) ? null :
+				this.routeField.getId();
 	}
 }

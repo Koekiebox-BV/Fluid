@@ -47,8 +47,7 @@ public class JobView extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code RoleToJobView} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String RULE = "rule";
 		public static final String VIEW_NAME = "viewName";
 		public static final String VIEW_GROUP_NAME = "viewGroupName";
@@ -106,44 +105,37 @@ public class JobView extends ABaseFluidJSONObject {
 
 		//View Name...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
-			this.setViewName(this.jsonObject.getString(
-					JSONMapping.VIEW_NAME));
+			this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
 		}
 
 		//View Group...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_GROUP_NAME)) {
-			this.setViewGroupName(this.jsonObject.getString(
-					JSONMapping.VIEW_GROUP_NAME));
+			this.setViewGroupName(this.jsonObject.getString(JSONMapping.VIEW_GROUP_NAME));
 		}
 
 		//View Flow...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_FLOW_NAME)) {
-			this.setViewFlowName(this.jsonObject.getString(
-					JSONMapping.VIEW_FLOW_NAME));
+			this.setViewFlowName(this.jsonObject.getString(JSONMapping.VIEW_FLOW_NAME));
 		}
 
 		//View Step...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_STEP_NAME)) {
-			this.setViewStepName(this.jsonObject.getString(
-					JSONMapping.VIEW_STEP_NAME));
+			this.setViewStepName(this.jsonObject.getString(JSONMapping.VIEW_STEP_NAME));
 		}
 
 		//View Priority...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_PRIORITY)) {
-			this.setViewPriority(this.jsonObject.getInt(
-					JSONMapping.VIEW_PRIORITY));
+			this.setViewPriority(this.jsonObject.getInt(JSONMapping.VIEW_PRIORITY));
 		}
 
 		//View Order...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_ORDER)) {
-			this.setViewPriority(this.jsonObject.getInt(
-					JSONMapping.VIEW_PRIORITY));
+			this.setViewOrder(this.jsonObject.getLong(JSONMapping.VIEW_ORDER));
 		}
 
 		//View Type...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_TYPE)) {
-			this.setViewType(this.jsonObject.getString(
-					JSONMapping.VIEW_TYPE));
+			this.setViewType(this.jsonObject.getString(JSONMapping.VIEW_TYPE));
 		}
 	}
 

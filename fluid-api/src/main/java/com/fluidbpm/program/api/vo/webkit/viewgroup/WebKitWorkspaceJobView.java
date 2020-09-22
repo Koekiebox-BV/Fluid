@@ -84,7 +84,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 		if (this.getJobView() != null) {
 			JobView reducedView = new JobView(this.getJobView().getId());
-			returnVal.put(JSONMapping.JOB_VIEW, reducedView);
+			returnVal.put(JSONMapping.JOB_VIEW, reducedView.toJsonObject());
 		}
 		return returnVal;
 	}
@@ -106,7 +106,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 */
 	@XmlTransient
 	public String getViewStepName() {
-		return (this.getJobView() == null) ? null : this.getJobView().getViewName();
+		return (this.getJobView() == null) ? null : this.getJobView().getViewStepName();
 	}
 
 	/**
@@ -134,5 +134,27 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	@XmlTransient
 	public Long getViewOrder() {
 		return (this.getJobView() == null) ? null : this.getJobView().getViewOrder();
+	}
+
+	/**
+	 * Extract the flow, step and view order.
+	 * @return "%s_%s_%010d" FlowName StepName and ViewOrder with 10 places 0 filled.
+	 */
+	public String getViewFlowStepViewOrder() {
+		String returnVal = String.format("%s_%s_%010d",
+				this.getViewFlowName(),
+				this.getViewStepName(),
+				this.getViewOrder());
+		return returnVal;
+	}
+
+	/**
+	 * Id for WebKit Job view.
+	 * @return Primary Key of {@code jobView}.
+	 */
+	@Override
+	public Long getId() {
+		return (this.jobView == null) ? null :
+				this.jobView.getId();
 	}
 }
