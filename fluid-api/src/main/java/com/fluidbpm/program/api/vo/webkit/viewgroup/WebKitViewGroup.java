@@ -37,14 +37,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private String jobViewGroupName;
 	private String jobViewGroupIcon;
 
-	/*
-	 * combined (Single Table for all)
-	 * combined_no_duplicates (Single Table for all)
-	 * table_per_sub
-	 * table_per_sub_no_duplicates
-	 * table_per_view
-	 * table_per_view_no_duplicates
-	 */
 	private String tableGenerateMode = "combined";
 
 	private String attachmentColumnLabel = "Image";
@@ -80,6 +72,17 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private boolean showButtonAddToPI;
 
 	private List<WebKitViewSub> webKitViewSubs;
+	/**
+	 * The types of table generation modes for the View Group.
+	 */
+	public static class TableGenerateMode {
+		public static final String COMBINED = "combined";//(Single Table for all)
+		public static final String COMBINED_NO_DUPLICATES = "combined_no_duplicates";
+		public static final String TABLE_PER_SUB = "table_per_sub";
+		public static final String TABLE_PER_SUB_NO_DUPLICATES = "table_per_sub_no_duplicates";
+		public static final String TABLE_PER_VIEW = "table_per_view";
+		public static final String TABLE_PER_VIEW_NO_DUPLICATES = "table_per_view_no_duplicates";
+	}
 
 	/**
 	 * The JSON mapping for the {@code WebKitForm} object.
