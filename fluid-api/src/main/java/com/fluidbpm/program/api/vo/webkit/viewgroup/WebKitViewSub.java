@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class WebKitViewSub extends ABaseFluidJSONObject {
 	/*
 	 * data_table - Table

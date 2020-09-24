@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -30,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	private Field routeField;
 

@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -30,8 +31,10 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	private JobView jobView;
+	private Integer fetchLimit;
 
 	@XmlTransient
 	private boolean selected;
@@ -41,6 +44,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 */
 	public static class JSONMapping {
 		public static final String JOB_VIEW = "jobView";
+		public static final String FETCH_LIMIT = "fetchLimit";
 	}
 
 	public WebKitWorkspaceJobView() {
@@ -60,6 +64,10 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW)) {
 			this.setJobView(new JobView(this.jsonObject.getJSONObject(JSONMapping.JOB_VIEW)));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.FETCH_LIMIT)) {
+			this.setFetchLimit(this.jsonObject.getInt(JSONMapping.FETCH_LIMIT));
 		}
 	}
 
@@ -86,6 +94,11 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 			JobView reducedView = new JobView(this.getJobView().getId());
 			returnVal.put(JSONMapping.JOB_VIEW, reducedView.toJsonObject());
 		}
+
+		if (this.getFetchLimit() != null) {
+			returnVal.put(JSONMapping.FETCH_LIMIT, this.getFetchLimit());
+		}
+
 		return returnVal;
 	}
 

@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private Long jobViewGroupId;
 	private String jobViewGroupName;
@@ -47,6 +49,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private String attachmentColumnLayout;
 
 	private boolean enableGroupSubsInMenu;//is the left click a root (false-> primary renders it)
+	private boolean enableRenderEmptyTable;
 
 	private int groupOrder = 1;
 	//null for no limit...
@@ -100,6 +103,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 
 		public static final String GROUP_ORDER = "groupOrder";
 		public static final String ENABLE_GROUP_SUBS_IN_MENU = "enableGroupSubsInMenu";
+		public static final String ENABLE_RENDER_EMPTY_TABLE = "enableRenderEmptyTable";
+
 		public static final String SHOW_COLUMN_FORM_TYPE = "showColumnFormType";
 		public static final String SHOW_COLUMN_TITLE = "showColumnTitle";
 		public static final String SHOW_COLUMN_STEP_ENTRY_TIME = "showColumnStepEntryTime";
@@ -175,6 +180,10 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU)) {
 			this.setEnableGroupSubsInMenu(this.jsonObject.getBoolean(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_RENDER_EMPTY_TABLE)) {
+			this.setEnableRenderEmptyTable(this.jsonObject.getBoolean(JSONMapping.ENABLE_RENDER_EMPTY_TABLE));
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.GROUP_ORDER)) {
@@ -272,6 +281,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
 		returnVal.put(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU, this.isEnableGroupSubsInMenu());
+		returnVal.put(JSONMapping.ENABLE_RENDER_EMPTY_TABLE, this.isEnableRenderEmptyTable());
 		returnVal.put(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.getAttachmentThumbnailSize());
 		returnVal.put(JSONMapping.ATTACHMENT_PREVIEW_SIZE, this.getAttachmentPreviewSize());
 		returnVal.put(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, this.getAttachmentColumnMaxImageCount());
@@ -329,9 +339,93 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	/**
 	 * @return number of objects inside {@code webKitViewSubs}.
 	 */
+	@XmlTransient
 	public int getWebKitViewSubsCount() {
 		return this.getWebKitViewSubs() == null ? 0 :
 				this.getWebKitViewSubs().size();
+	}
+
+	/**
+	 * Verify if TGM is of type combined.
+	 * @return {code true} if Table Generate Mode is any combined.
+	 */
+	@XmlTransient
+	public boolean isTGMCombined() {
+		final String tgm = this.getTableGenerateMode();
+		if (tgm == null) return false;
+		switch (tgm) {
+			case TableGenerateMode.COMBINED:
+			case TableGenerateMode.COMBINED_NO_DUPLICATES:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Verify if TGM is of type table per sub.
+	 * @return {code true} if Table Generate Mode is any table per sub.
+	 */
+	@XmlTransient
+	public boolean isTGMTablePerSub() {
+		final String tgm = this.getTableGenerateMode();
+		if (tgm == null) return false;
+		switch (tgm) {
+			case TableGenerateMode.TABLE_PER_SUB:
+			case TableGenerateMode.TABLE_PER_SUB_NO_DUPLICATES:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Verify if TGM is of type table per view.
+	 * @return {code true} if Table Generate Mode is any table per view.
+	 */
+	@XmlTransient
+	public boolean isTGMTablePerView() {
+		final String tgm = this.getTableGenerateMode();
+		if (tgm == null) return false;
+		switch (tgm) {
+			case TableGenerateMode.TABLE_PER_VIEW:
+			case TableGenerateMode.TABLE_PER_VIEW_NO_DUPLICATES:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Is the group configured for no duplicates.
+	 * @return {code true} if Table Generate Mode is any 'no duplicates'.
+	 */
+	@XmlTransient
+	public boolean isTGMNoDuplicates() {
+		final String tgm = this.getTableGenerateMode();
+		if (tgm == null) return false;
+		switch (tgm) {
+			case TableGenerateMode.COMBINED_NO_DUPLICATES:
+			case TableGenerateMode.TABLE_PER_SUB_NO_DUPLICATES:
+			case TableGenerateMode.TABLE_PER_VIEW_NO_DUPLICATES:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Retrieve a view sub with name {@code viewSubName}.
+	 * Case sensitive method.
+	 * @return {code WebKitViewSub} with name {@code viewSubName}.
+	 */
+	@XmlTransient
+	public WebKitViewSub getViewSubWithName(String viewSubName) {
+		if (this.getWebKitViewSubsCount() < 1) return null;
+		return this.getWebKitViewSubs().stream()
+				.filter(itm -> viewSubName.equals(itm.getLabel()))
+				.findFirst()
+				.orElse(null);
 	}
 
 	/**
