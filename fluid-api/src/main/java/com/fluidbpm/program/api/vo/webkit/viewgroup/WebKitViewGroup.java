@@ -39,7 +39,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private String jobViewGroupName;
 	private String jobViewGroupIcon;
 
-	private String tableGenerateMode = "combined";
+	private String tableGenerateMode = TableGenerateMode.COMBINED;
 
 	private String attachmentColumnLabel = "Image";
 	private int attachmentThumbnailSize = 100;
@@ -48,8 +48,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	//vertical/horizontal
 	private String attachmentColumnLayout;
 
-	private boolean enableGroupSubsInMenu;//is the left click a root (false-> primary renders it)
 	private boolean enableRenderEmptyTable;
+	private boolean enableBulkEdit;
 
 	private int groupOrder = 1;
 	//null for no limit...
@@ -102,8 +102,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String ATTACHMENT_COLUMN_LAYOUT = "attachmentColumnLayout";
 
 		public static final String GROUP_ORDER = "groupOrder";
-		public static final String ENABLE_GROUP_SUBS_IN_MENU = "enableGroupSubsInMenu";
 		public static final String ENABLE_RENDER_EMPTY_TABLE = "enableRenderEmptyTable";
+		public static final String ENABLE_BULK_EDIT = "enableBulkEdit";
 
 		public static final String SHOW_COLUMN_FORM_TYPE = "showColumnFormType";
 		public static final String SHOW_COLUMN_TITLE = "showColumnTitle";
@@ -178,12 +178,12 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			this.setAttachmentColumnLayout(this.jsonObject.getString(JSONMapping.ATTACHMENT_COLUMN_LAYOUT));
 		}
 
-		if (!this.jsonObject.isNull(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU)) {
-			this.setEnableGroupSubsInMenu(this.jsonObject.getBoolean(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU));
-		}
-
 		if (!this.jsonObject.isNull(JSONMapping.ENABLE_RENDER_EMPTY_TABLE)) {
 			this.setEnableRenderEmptyTable(this.jsonObject.getBoolean(JSONMapping.ENABLE_RENDER_EMPTY_TABLE));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_BULK_EDIT)) {
+			this.setEnableBulkEdit(this.jsonObject.getBoolean(JSONMapping.ENABLE_BULK_EDIT));
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.GROUP_ORDER)) {
@@ -280,8 +280,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	@XmlTransient
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
-		returnVal.put(JSONMapping.ENABLE_GROUP_SUBS_IN_MENU, this.isEnableGroupSubsInMenu());
 		returnVal.put(JSONMapping.ENABLE_RENDER_EMPTY_TABLE, this.isEnableRenderEmptyTable());
+		returnVal.put(JSONMapping.ENABLE_BULK_EDIT, this.isEnableBulkEdit());
 		returnVal.put(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.getAttachmentThumbnailSize());
 		returnVal.put(JSONMapping.ATTACHMENT_PREVIEW_SIZE, this.getAttachmentPreviewSize());
 		returnVal.put(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, this.getAttachmentColumnMaxImageCount());
@@ -421,7 +421,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	 */
 	@XmlTransient
 	public WebKitViewSub getViewSubWithName(String viewSubName) {
-		if (this.getWebKitViewSubsCount() < 1) return null;
+		if (this.getWebKitViewSubsCount() < 1 || viewSubName == null) return null;
 		return this.getWebKitViewSubs().stream()
 				.filter(itm -> viewSubName.equals(itm.getLabel()))
 				.findFirst()
