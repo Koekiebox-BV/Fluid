@@ -15,15 +15,15 @@
 
 package com.fluidbpm.ws.client.v1.userquery;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.userquery.UserQueryListing;
+import com.fluidbpm.program.api.vo.webkit.userquery.WebKitUserQueryListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Java Web Service Client for {@code UserQuery} related actions.
@@ -170,12 +170,22 @@ public class UserQueryClient extends ABaseClientWS {
 		try {
 			return new UserQueryListing(this.postJson(
 					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueries()));
-		}
-		//
-		catch (JSONException jsonExcept) {
+		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
+	}
+
+	/**
+	 * Retrieve the User Query WebKit configuration.
+	 *
+	 * @return The complete user query config.
+	 * @see WebKitUserQueryListing
+	 */
+	public WebKitUserQueryListing getViewGroupWebKit() {
+		UserQuery userQuery = new UserQuery();
+		userQuery.setServiceTicket(this.serviceTicket);
+		return new WebKitUserQueryListing(this.postJson(userQuery, WS.Path.UserQuery.Version1.getAllUserQueriesWebKit()));
 	}
 
 	/**

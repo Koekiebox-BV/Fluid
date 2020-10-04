@@ -3641,6 +3641,7 @@ public class WS {
 				//Read...
 				public static final String READ = ("/get_by_id");
 				public static final String READ_ALL = ("/get_all_user_queries");
+				public static final String READ_ALL_WEB_KIT = ("/get_all_user_queries_web_kit");
 
 				public static final String READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER = ("/get_all_user_queries_by_logged_in_user");
 
@@ -3802,7 +3803,6 @@ public class WS {
 					if (forceDeleteParam) {
 						return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
 					}
-
 					return Version.VERSION_1.concat(ROOT).concat(DELETE);
 				}
 
@@ -3822,6 +3822,15 @@ public class WS {
 				 */
 				public static final String getAllUserQueries() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+				}
+
+				/**
+				 * URL Path for UserQuery get all with WebKit properties.
+				 *
+				 * @return {@code v1/user_query/get_all_user_queries_web_kit}
+				 */
+				public static final String getAllUserQueriesWebKit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_WEB_KIT);
 				}
 
 				/**

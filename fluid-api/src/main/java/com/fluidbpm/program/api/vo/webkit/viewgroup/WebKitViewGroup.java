@@ -417,6 +417,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	/**
 	 * Retrieve a view sub with name {@code viewSubName}.
 	 * Case sensitive method.
+	 * @param viewSubName View Name.
+	 * @see com.fluidbpm.program.api.vo.flow.JobView
 	 * @return {code WebKitViewSub} with name {@code viewSubName}.
 	 */
 	@XmlTransient

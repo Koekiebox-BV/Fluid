@@ -16,11 +16,15 @@
 package com.fluidbpm.program.api.vo.webkit;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.webkit.userquery.WebKitMenuItem;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * WebKit associated with global look and feels.
@@ -49,6 +53,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	private String componentColors;
 	private String profileModeDefault;
 	private String inputStyleAddition;
+	private List<WebKitMenuItem> webKitMenuItems;
 
 	/**
 	 * The JSON mapping for the {@code WebKitForm} object.
@@ -64,6 +69,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		public static final String COMPONENT_COLORS = "componentColors";
 		public static final String PROFILE_MODE_DEFAULT = "profileModeDefault";
 		public static final String INPUT_STYLE_ADDITION = "inputStyleAddition";
+		public static final String WEB_KIT_MENU_ITEMS = "webKitMenuItems";
 	}
 
 	/**
@@ -120,6 +126,15 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.PROFILE_MODE_DEFAULT)) {
 			this.setProfileModeDefault(this.jsonObject.getString(JSONMapping.PROFILE_MODE_DEFAULT));
 		}
+
+		if (!this.jsonObject.isNull(JSONMapping.WEB_KIT_MENU_ITEMS)) {
+			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_MENU_ITEMS);
+			List<WebKitMenuItem> objs = new ArrayList();
+			for (int index = 0;index < jsonArray.length();index++) {
+				objs.add(new WebKitMenuItem(jsonArray.getJSONObject(index)));
+			}
+			this.setWebKitMenuItems(objs);
+		}
 	}
 
 	/**
@@ -171,6 +186,14 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 
 		if (this.getProfileModeDefault() != null) {
 			returnVal.put(JSONMapping.PROFILE_MODE_DEFAULT,this.getProfileModeDefault());
+		}
+
+		if (this.getWebKitMenuItems() != null && !this.getWebKitMenuItems().isEmpty()) {
+			JSONArray jsonArray = new JSONArray();
+			for (WebKitMenuItem toAdd : this.getWebKitMenuItems()) {
+				jsonArray.put(toAdd.toJsonObject());
+			}
+			returnVal.put(JSONMapping.WEB_KIT_MENU_ITEMS, jsonArray);
 		}
 
 		return returnVal;
