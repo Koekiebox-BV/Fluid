@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -181,7 +182,7 @@ public class JobView extends ABaseFluidJSONObject {
 	 * @return View Name.
 	 */
 	public String getViewGroupName() {
-		return this.viewGroupName;
+		return (this.viewGroupName == null) ? UtilGlobal.EMPTY : this.viewGroupName;
 	}
 
 	/**
@@ -253,7 +254,7 @@ public class JobView extends ABaseFluidJSONObject {
 	 * @return View Priority.
 	 */
 	public Integer getViewPriority() {
-		return this.viewPriority;
+		return (this.viewPriority == null) ? 0 : this.viewPriority;
 	}
 
 	/**
