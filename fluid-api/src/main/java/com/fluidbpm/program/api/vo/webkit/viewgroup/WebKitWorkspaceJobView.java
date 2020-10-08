@@ -146,7 +146,8 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 */
 	@XmlTransient
 	public Long getViewOrder() {
-		return (this.getJobView() == null) ? null : this.getJobView().getViewOrder();
+		Long viewOrder = (this.getJobView() == null) ? null : this.getJobView().getViewOrder();
+		return (viewOrder == null) ? 0L : viewOrder;
 	}
 
 	/**

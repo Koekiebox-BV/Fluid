@@ -182,7 +182,7 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @return The complete user query config.
 	 * @see WebKitUserQueryListing
 	 */
-	public WebKitUserQueryListing getViewGroupWebKit() {
+	public WebKitUserQueryListing getUserQueryWebKit() {
 		UserQuery userQuery = new UserQuery();
 		userQuery.setServiceTicket(this.serviceTicket);
 		return new WebKitUserQueryListing(this.postJson(userQuery, WS.Path.UserQuery.Version1.getAllUserQueriesWebKit()));

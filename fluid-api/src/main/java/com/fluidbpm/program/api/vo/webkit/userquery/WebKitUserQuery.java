@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.webkit.userquery;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,9 +25,9 @@ import org.json.JSONObject;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * WebKit associated with job view group look and feels.
+ * WebKit associated with user query look and feels.
  *
- * @see JobView
+ * @see UserQuery
  */
 @Getter
 @Setter
@@ -37,8 +36,10 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	private UserQuery userQuery;
 	private WebKitMenuItem menuItem;
 
-	@XmlTransient
-	private boolean selected;
+	private boolean enableForTopBar;
+	private boolean enableForSideMenu;
+
+	private String queryInputLayoutStyle;//Vertical|Horizontal|Vertical Grid|Help Text|
 
 	/**
 	 * The JSON mapping for the {@code WebKitWorkspaceJobView} object.
