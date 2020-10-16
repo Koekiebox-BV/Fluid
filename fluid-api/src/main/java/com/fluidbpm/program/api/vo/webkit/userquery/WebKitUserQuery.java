@@ -37,8 +37,6 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	private WebKitMenuItem menuItem;
 
 	private boolean enableForTopBar;
-	private boolean enableForSideMenu;
-
 	private String queryInputLayoutStyle;//Vertical|Horizontal|Vertical Grid|Help Text|
 
 	/**
@@ -47,6 +45,8 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	public static class JSONMapping {
 		public static final String USER_QUERY = "userQuery";
 		public static final String MENU_ITEM = "menuItem";
+		public static final String ENABLE_FOR_TOP_BAR = "enableForTopBar";
+		public static final String QUERY_INPUT_LAYOUT_STYLE = "queryInputLayoutStyle";
 	}
 
 	public WebKitUserQuery() {
@@ -71,6 +71,14 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.MENU_ITEM)) {
 			this.setMenuItem(new WebKitMenuItem(this.jsonObject.getJSONObject(JSONMapping.MENU_ITEM)));
 		}
+
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_FOR_TOP_BAR)) {
+			this.setEnableForTopBar(this.jsonObject.getBoolean(JSONMapping.ENABLE_FOR_TOP_BAR));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.QUERY_INPUT_LAYOUT_STYLE)) {
+			this.setQueryInputLayoutStyle(this.jsonObject.getString(JSONMapping.QUERY_INPUT_LAYOUT_STYLE));
+		}
 	}
 
 	/**
@@ -92,6 +100,9 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	@XmlTransient
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
+		returnVal.put(JSONMapping.ENABLE_FOR_TOP_BAR, this.isEnableForTopBar());
+		returnVal.put(JSONMapping.QUERY_INPUT_LAYOUT_STYLE, this.getQueryInputLayoutStyle());
+
 		if (this.getUserQuery() != null) {
 			UserQuery reduced = new UserQuery(this.getUserQuery().getId());
 			returnVal.put(JSONMapping.USER_QUERY, reduced.toJsonObject());

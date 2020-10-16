@@ -55,6 +55,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	//null for no limit...
 	private Integer tableMaxCountPerPage;
 
+	private boolean showColumnID;
 	private boolean showColumnFormType;
 	private boolean showColumnTitle;
 	private boolean showColumnStepEntryTime;
@@ -105,6 +106,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String ENABLE_RENDER_EMPTY_TABLE = "enableRenderEmptyTable";
 		public static final String ENABLE_BULK_EDIT = "enableBulkEdit";
 
+		public static final String SHOW_COLUMN_ID = "showColumnID";
 		public static final String SHOW_COLUMN_FORM_TYPE = "showColumnFormType";
 		public static final String SHOW_COLUMN_TITLE = "showColumnTitle";
 		public static final String SHOW_COLUMN_STEP_ENTRY_TIME = "showColumnStepEntryTime";
@@ -198,6 +200,10 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			this.setShowColumnFormType(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_FORM_TYPE));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ID)) {
+			this.setShowColumnID(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ID));
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_TITLE)) {
 			this.setShowColumnTitle(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_TITLE));
 		}
@@ -287,6 +293,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, this.getAttachmentColumnMaxImageCount());
 		returnVal.put(JSONMapping.GROUP_ORDER, this.getGroupOrder());
 
+		returnVal.put(JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
 		returnVal.put(JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
 		returnVal.put(JSONMapping.SHOW_COLUMN_TITLE, this.isShowColumnTitle());
 		returnVal.put(JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME, this.isShowColumnStepEntryTime());
