@@ -15,19 +15,19 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
+import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Java Web Service Client for Form Field related actions.
@@ -1209,18 +1209,14 @@ public class FormFieldClient extends ABaseFieldClient {
 	 */
 	public Field getFieldById(Long fieldIdParam) {
 		Field field = new Field(fieldIdParam);
-
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
-
 		if (this.serviceTicket != null) {
 			field.setServiceTicket(this.serviceTicket);
 		}
-
 		if (this.requestUuid != null) {
 			field.setRequestUuid(this.requestUuid);
 		}
-
 		return new Field(this.postJson(
 				field, WS.Path.FormField.Version1.getById()));
 	}
@@ -1234,11 +1230,9 @@ public class FormFieldClient extends ABaseFieldClient {
 	public Field getFieldByName(String fieldNameParam) {
 		Field field = new Field();
 		field.setFieldName(fieldNameParam);
-
 		if (this.serviceTicket != null) {
 			field.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Field(this.postJson(
 				field, WS.Path.FormField.Version1.getByName()));
 	}
@@ -1257,18 +1251,32 @@ public class FormFieldClient extends ABaseFieldClient {
 	) {
 		Form form = new Form();
 		form.setFormType(formNameParam);
-
 		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
-
 		if (this.requestUuid != null) {
 			form.setRequestUuid(this.requestUuid);
 		}
-
 		return new FormFieldListing(this.postJson(
 				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
 						editOnlyFieldsParam)));
+	}
+
+	/**
+	 * Retrieve the Form Fields via User Query.
+	 *
+	 * @param userQuery The user query.
+	 *
+	 * @return Form Fields for {@code userQuery}
+	 */
+	public List<Field> getFormFieldsByUserQuery(
+		UserQuery userQuery
+	) {
+		if (userQuery != null) {
+			userQuery.setServiceTicket(this.serviceTicket);
+		}
+		return new FormFieldListing(this.postJson(
+				userQuery, WS.Path.FormField.Version1.getByUserQuery())).getListing();
 	}
 
 	/**
@@ -1285,11 +1293,9 @@ public class FormFieldClient extends ABaseFieldClient {
 	) {
 		Form form = new Form();
 		form.setFormTypeId(formTypeIdParam);
-
 		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
-
 		return new FormFieldListing(this.postJson(
 				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
 						editOnlyFieldsParam)));
@@ -1307,7 +1313,6 @@ public class FormFieldClient extends ABaseFieldClient {
 		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Field(this.postJson(fieldParam, WS.Path.FormField.Version1.formFieldDelete()));
 	}
 
@@ -1325,7 +1330,6 @@ public class FormFieldClient extends ABaseFieldClient {
 		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Field(this.postJson(
 				fieldParam, WS.Path.FormField.Version1.formFieldDelete(true)));
 	}
@@ -1342,7 +1346,6 @@ public class FormFieldClient extends ABaseFieldClient {
 		boolean sumDecimalsParam
 	) {
 		StringBuilder returnBuffer = new StringBuilder();
-
 		Long definitionId =
 				(formDefinitionParam == null) ? -1L:
 						formDefinitionParam.getId();

@@ -15,18 +15,16 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -44,7 +42,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
         /**
          *
          */
-        public static final class SystemField{
+        public static final class SystemField {
             public static final String DATE_CREATED = "Date Created";
             public static final String DATE_LAST_UPDATED = "Date Last Updated";
             public static final String FORM_TYPE = "Form Type";

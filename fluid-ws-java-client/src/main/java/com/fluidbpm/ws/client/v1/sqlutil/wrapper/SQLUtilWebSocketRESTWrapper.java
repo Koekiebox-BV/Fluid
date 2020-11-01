@@ -15,10 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 
-import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -30,6 +26,10 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.sqlutil.*;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
+
+import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wrapper class used for when WebSockets is not a
@@ -474,7 +474,6 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			return this.sqlUtilWebSocketExecNativeClient.executeNativeSQLSynchronized(nativeSQLQueriesParam);
 		} else {
 			List<SQLResultSet> returnVal = new ArrayList<>();
-
 			for (NativeSQLQuery sqlToExec : nativeSQLQueriesParam) {
 				SQLResultSet resultSet = this.sqlUtilClient.executeSQL(sqlToExec);
 				returnVal.add(resultSet);

@@ -15,9 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.flowitem;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -26,6 +23,8 @@ import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Java Web Service Client for Fluid / Flow Item related actions.
@@ -205,22 +204,38 @@ public class FlowItemClient extends ABaseClientWS {
 	 *
 	 * @return The Fluid item that was initiated in a workflow process.
 	 */
-	public FluidItem sendFormToFlow(
-			Form formToSendToFlowParam,
-			String flowParam) {
-
+	public FluidItem sendFormToFlow(Form formToSendToFlowParam, String flowParam) {
 		FluidItem itemToSend = new FluidItem();
 		itemToSend.setForm(formToSendToFlowParam);
 		itemToSend.setFlow(flowParam);
+		itemToSend.setServiceTicket(this.serviceTicket);
 
-		if (this.serviceTicket != null) {
-			itemToSend.setServiceTicket(this.serviceTicket);
+		try {
+			return new FluidItem(this.postJson(
+					itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
+		} catch (JSONException e) {
+			throw new FluidClientException(e.getMessage(), e,
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
+
+	/**
+	 * Remove a {@code FluidItem} from the workflow.
+	 *
+	 * @param fluidItem The Form to {@code "Send To Flow (introduction)"} in the workflow process.
+	 *
+	 * @return The Fluid item that was removed from the workflow process.
+	 *
+	 * @see FluidItem
+	 */
+	public FluidItem removeFromFlow(FluidItem fluidItem) {
+		if (fluidItem != null) {
+			fluidItem.setServiceTicket(this.serviceTicket);
 		}
 
 		try {
-
 			return new FluidItem(this.postJson(
-					itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
+					fluidItem, WS.Path.FlowItem.Version1.removeFluidItemFromFlow()));
 		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);

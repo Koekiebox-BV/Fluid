@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.Date;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -33,8 +25,14 @@ import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.TestFlowClient;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -97,8 +95,7 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         long start = System.currentTimeMillis();
 
-        for (Form forToSend :testForms)
-        {
+        for (Form forToSend :testForms) {
             List<Form> tableForms = sqlUtilClient.getTableForms(
                     forToSend,true);
 

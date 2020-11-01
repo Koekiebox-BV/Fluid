@@ -823,6 +823,7 @@ public class WS {
 				public static final String READ = ("/get_by_id");
 				public static final String BY_NAME = ("/get_by_name");
 				public static final String READ_BY_FORM_DEF_AND_LOGGED_IN_USER = ("/get_by_form_definition_and_logged_in_user");
+				public static final String READ_BY_USER_QUERY = ("/get_by_user_query");
 
 				/**
 				 * Root for Form Field.
@@ -909,6 +910,15 @@ public class WS {
 					returnVal += ("?" + QueryParam.EDIT_ONLY + "=" + editOnlyFieldsParam);
 
 					return returnVal;
+				}
+
+				/**
+				 * URL Path for Form Fields get by User Query.
+				 *
+				 * @return {@code v1/form_field/get_by_user_query}
+				 */
+				public static final String getByUserQuery() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_USER_QUERY);
 				}
 			}
 		}
@@ -2024,6 +2034,7 @@ public class WS {
 
 				//Send to Flow...
 				public static final String SEND_TO_FLOW = ("/send_to_flow");
+				public static final String REMOVE_FROM_FLOW = ("/remove_from_flow");
 				public static final String SEND_TO_FLOW_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT + SEND_TO_FLOW);
 
 				//Create...
@@ -2092,6 +2103,15 @@ public class WS {
 				 */
 				public static final String sendFlowItemToFlow() {
 					return Version.VERSION_1.concat(ROOT).concat(SEND_TO_FLOW);
+				}
+
+				/**
+				 * URL Path for removing a FluidItem from a Flow.
+				 *
+				 * @return {@code /v1/flow_item/remove_from_flow/}
+				 */
+				public static final String removeFluidItemFromFlow() {
+					return Version.VERSION_1.concat(ROOT).concat(REMOVE_FROM_FLOW);
 				}
 
 				/**
