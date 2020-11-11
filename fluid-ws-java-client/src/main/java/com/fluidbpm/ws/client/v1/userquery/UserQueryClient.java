@@ -189,6 +189,19 @@ public class UserQueryClient extends ABaseClientWS {
 	}
 
 	/**
+	 * Update and insert the Flow View Group configuration.
+	 *
+	 * @param listing The ViewGroupWebKit listing to upsert.
+	 * @return The complete view group config.
+	 * @see WebKitUserQueryListing
+	 */
+	public WebKitUserQueryListing upsertUserQueryWebKit(WebKitUserQueryListing listing) {
+		if (listing == null) return null;
+		listing.setServiceTicket(this.serviceTicket);
+		return new WebKitUserQueryListing(this.postJson(listing, WS.Path.UserQuery.Version1.userQueryWebKitUpsert()));
+	}
+
+	/**
 	 * Retrieves all user queries for logged in {@code User}.
 	 *
 	 * @return UserQuery information.

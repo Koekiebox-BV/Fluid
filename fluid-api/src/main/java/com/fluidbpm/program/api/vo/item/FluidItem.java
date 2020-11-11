@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -62,13 +63,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 	private FlowState flowState;
 
-	@Getter
-	@Setter
 	private String flow;
-
-	@Getter
-	@Setter
 	private String step;
+
+	private Date stepEnteredTime;
 
 	private Boolean inCaseOfCreateLinkToParent;
 
@@ -84,6 +82,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 		public static final String USER_FIELDS = "userFields";
 		public static final String ROUTE_FIELDS = "routeFields";
 		public static final String GLOBAL_FIELDS = "globalFields";
+
+		public static final String STEP_ENTERED_TIME = "stepEnteredTime";
 
 		public static final String FORM = "form";
 
@@ -120,13 +120,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 */
 	@NoArgsConstructor
 	@AllArgsConstructor
+	@Getter
+	@Setter
 	public static class FluidItemProperty extends ABaseFluidJSONObject {
-		@Getter
-		@Setter
 		private String name;
-
-		@Getter
-		@Setter
 		private String value;
 
 		/**
@@ -144,11 +141,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 */
 		public FluidItemProperty(JSONObject jsonObjectParam) {
 			super(jsonObjectParam);
-
-			if (this.jsonObject == null)
-			{
-				return;
-			}
+			if (this.jsonObject == null) return;
 
 			//Name...
 			if (!this.jsonObject.isNull(JSONMapping.NAME)) {
@@ -322,16 +315,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		//User Fields...
 		if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
-
-			JSONArray fieldsArr = this.jsonObject.getJSONArray(
-					JSONMapping.USER_FIELDS);
-
+			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
 			List<Field> assUserFields = new ArrayList();
-			for (int index = 0;index < fieldsArr.length();index++)
-			{
+			for (int index = 0;index < fieldsArr.length();index++) {
 				assUserFields.add(new Field(fieldsArr.getJSONObject(index)));
 			}
-
 			this.setUserFields(assUserFields);
 		}
 
@@ -392,6 +380,9 @@ public class FluidItem extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.FLOW_STATE)) {
 			this.setFlowStateString(this.jsonObject.getString(JSONMapping.FLOW_STATE));
 		}
+
+		//Step Entered Time...
+		this.setStepEnteredTime(this.getDateFieldValueFromFieldWithName(JSONMapping.STEP_ENTERED_TIME));
 	}
 
 	/**
@@ -464,6 +455,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 		//Flow State...
 		if (this.getFlowState() != null) {
 			returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState().toString());
+		}
+
+		//Step Entered Time...
+		if (this.getStepEnteredTime() != null) {
+			returnVal.put(JSONMapping.STEP_ENTERED_TIME, this.getDateAsLongFromJson(this.getStepEnteredTime()));
 		}
 
 		return returnVal;

@@ -58,7 +58,10 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private boolean showColumnID;
 	private boolean showColumnFormType;
 	private boolean showColumnTitle;
+
 	private boolean showColumnStepEntryTime;
+	private boolean showColumnDateCreated;
+	private boolean showColumnDateLastUpdated;
 
 	private boolean showColumnCurrentFlow;
 	private boolean showColumnCurrentStep;
@@ -109,12 +112,15 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String SHOW_COLUMN_ID = "showColumnID";
 		public static final String SHOW_COLUMN_FORM_TYPE = "showColumnFormType";
 		public static final String SHOW_COLUMN_TITLE = "showColumnTitle";
-		public static final String SHOW_COLUMN_STEP_ENTRY_TIME = "showColumnStepEntryTime";
 		public static final String SHOW_COLUMN_CURRENT_FLOW = "showColumnCurrentFlow";
 		public static final String SHOW_COLUMN_CURRENT_STEP = "showColumnCurrentStep";
 		public static final String SHOW_COLUMN_CURRENT_VIEW = "showColumnCurrentView";
 		public static final String SHOW_COLUMN_PROGRESS_PERCENTAGE = "showColumnProgressPercentage";
 		public static final String SHOW_COLUMN_ATTACHMENT = "showColumnAttachment";
+
+		public static final String SHOW_COLUMN_STEP_ENTRY_TIME = "showColumnStepEntryTime";
+		public static final String SHOW_COLUMN_DATE_CREATED = "showColumnDateCreated";
+		public static final String SHOW_COLUMN_DATE_LAST_UPDATED = "showColumnDateLastUpdated";
 
 		public static final String SHOW_BUTTON_BULK_UPDATE = "showButtonBulkUpdate";
 		public static final String SHOW_BUTTON_EXPORT = "showButtonExport";
@@ -212,6 +218,14 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			this.setShowColumnStepEntryTime(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_CREATED)) {
+			this.setShowColumnDateCreated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_CREATED));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED)) {
+			this.setShowColumnDateLastUpdated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_CURRENT_FLOW)) {
 			this.setShowColumnCurrentFlow(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_CURRENT_FLOW));
 		}
@@ -296,7 +310,11 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
 		returnVal.put(JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
 		returnVal.put(JSONMapping.SHOW_COLUMN_TITLE, this.isShowColumnTitle());
+
 		returnVal.put(JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME, this.isShowColumnStepEntryTime());
+		returnVal.put(JSONMapping.SHOW_COLUMN_DATE_CREATED, this.isShowColumnDateCreated());
+		returnVal.put(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, this.isShowColumnDateLastUpdated());
+
 		returnVal.put(JSONMapping.SHOW_COLUMN_CURRENT_FLOW, this.isShowColumnCurrentFlow());
 		returnVal.put(JSONMapping.SHOW_COLUMN_CURRENT_STEP, this.isShowColumnCurrentStep());
 		returnVal.put(JSONMapping.SHOW_COLUMN_CURRENT_VIEW, this.isShowColumnCurrentView());

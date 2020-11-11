@@ -3653,6 +3653,7 @@ public class WS {
 
 				//Update...
 				public static final String UPDATE = ("/update");
+				public static final String UPSERT_WEB_KIT = ("/upsert_web_kit");
 
 				//Delete...
 				public static final String DELETE = ("/delete");
@@ -3713,10 +3714,10 @@ public class WS {
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(
-						boolean populateAncestorIdParam,
-						boolean forceUseDatabaseParam,
-						int queryLimitParam,
-						int offsetParam
+					boolean populateAncestorIdParam,
+					boolean forceUseDatabaseParam,
+					int queryLimitParam,
+					int offsetParam
 				) {
 					String base = Version.VERSION_1.concat(ROOT).concat(EXECUTE);
 					String additionString = "?";
@@ -3761,9 +3762,9 @@ public class WS {
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(
-						int queryLimitParam,
-						int offsetParam,
-						boolean forceUseDatabaseParam
+					int queryLimitParam,
+					int offsetParam,
+					boolean forceUseDatabaseParam
 				) {
 					return executeUserQuery(
 							true,
@@ -3860,6 +3861,15 @@ public class WS {
 				 */
 				public static final String getAllUserQueriesByLoggedInUser() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for upserting the User Query web kit.
+				 *
+				 * @return {@code v1/user_query/upsert_web_kit}
+				 */
+				public static final String userQueryWebKitUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_WEB_KIT);
 				}
 			}
 		}
