@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.vo.webkit.userquery;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.webkit.RowExpansion;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,7 @@ import java.util.List;
 public class WebKitUserQuery extends ABaseFluidJSONObject {
 	private UserQuery userQuery;
 	private WebKitMenuItem menuItem;
+	private RowExpansion rowExpansion;
 
 	private boolean enableForTopBar;
 	private String queryInputLayoutStyle;//Vertical|Horizontal|Vertical Grid|Help Text|
@@ -53,6 +55,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 	private String attachmentHeader = "Attachments";
 	private int attachmentThumbnailSize = 100;
+	private int paginatorRows = 15;
 
 	public enum VisibleColumnItems {
 		showColumnID,
@@ -124,6 +127,10 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 		public static final String ATTACHMENT_HEADER = "attachmentHeader";
 		public static final String ATTACHMENT_THUMBNAIL_SIZE = "attachmentThumbnailSize";
+
+		public static final String PAGINATOR_ROWS = "paginatorRows";
+
+		public static final String ROW_EXPANSION = "rowExpansion";
 	}
 
 	public WebKitUserQuery() {
@@ -141,65 +148,56 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 			return;
 		}
 
-		if (!this.jsonObject.isNull(JSONMapping.USER_QUERY)) {
+		if (this.jsonObject.isNull(JSONMapping.ROW_EXPANSION)) this.setRowExpansion(new RowExpansion(new JSONObject()));
+		else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
+
+		if (!this.jsonObject.isNull(JSONMapping.USER_QUERY))
 			this.setUserQuery(new UserQuery(this.jsonObject.getJSONObject(JSONMapping.USER_QUERY)));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.MENU_ITEM)) {
+		if (!this.jsonObject.isNull(JSONMapping.MENU_ITEM))
 			this.setMenuItem(new WebKitMenuItem(this.jsonObject.getJSONObject(JSONMapping.MENU_ITEM)));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.ENABLE_FOR_TOP_BAR)) {
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_FOR_TOP_BAR))
 			this.setEnableForTopBar(this.jsonObject.getBoolean(JSONMapping.ENABLE_FOR_TOP_BAR));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.QUERY_INPUT_LAYOUT_STYLE)) {
+		if (!this.jsonObject.isNull(JSONMapping.QUERY_INPUT_LAYOUT_STYLE))
 			this.setQueryInputLayoutStyle(this.jsonObject.getString(JSONMapping.QUERY_INPUT_LAYOUT_STYLE));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FORM_TYPE)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FORM_TYPE))
 			this.setShowColumnFormType(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_FORM_TYPE));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ID)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ID))
 			this.setShowColumnID(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ID));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_TITLE)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_TITLE))
 			this.setShowColumnTitle(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_TITLE));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ATTACHMENT)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ATTACHMENT))
 			this.setShowColumnAttachment(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ATTACHMENT));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_CREATED)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_CREATED))
 			this.setShowColumnDateCreated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_CREATED));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED))
 			this.setShowColumnDateLastUpdated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_USER)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_USER))
 			this.setShowColumnUser(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_USER));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_STATE)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_STATE))
 			this.setShowColumnState(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_STATE));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FLOW_STATE)) {
+		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FLOW_STATE))
 			this.setShowColumnFlowState(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_FLOW_STATE));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_HEADER)) {
+		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_HEADER))
 			this.setAttachmentHeader(this.jsonObject.getString(JSONMapping.ATTACHMENT_HEADER));
-		}
 
-		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE)) {
+		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE))
 			this.setAttachmentThumbnailSize(this.jsonObject.getInt(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
-		}
+
+		if (!this.jsonObject.isNull(JSONMapping.PAGINATOR_ROWS))
+			this.setPaginatorRows(this.jsonObject.getInt(JSONMapping.PAGINATOR_ROWS));
 	}
 
 	/**
@@ -238,6 +236,8 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.SHOW_COLUMN_STATE, this.isShowColumnState());
 		returnVal.put(JSONMapping.SHOW_COLUMN_FLOW_STATE, this.isShowColumnFlowState());
 
+		returnVal.put(JSONMapping.PAGINATOR_ROWS, this.getPaginatorRows());
+
 		if (this.getUserQuery() != null) {
 			UserQuery reduced = new UserQuery(this.getUserQuery().getId());
 			returnVal.put(JSONMapping.USER_QUERY, reduced.toJsonObject());
@@ -247,6 +247,9 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 			WebKitMenuItem reduced = new WebKitMenuItem(this.getMenuItem().getMenuId());
 			returnVal.put(JSONMapping.MENU_ITEM, reduced.toJsonObject());
 		}
+
+		if (this.getRowExpansion() != null) returnVal.put(
+				JSONMapping.ROW_EXPANSION, this.getRowExpansion().toJsonObject());
 
 		return returnVal;
 	}
@@ -264,9 +267,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	 * @param listing The list
 	 */
 	public void setVisibleColumnsAsList(List<String> listing) {
-		if (listing == null) {
-			return;
-		}
+		if (listing == null) return;
 
 		if (listing.contains(VisibleColumnItems.showColumnID.name())) {
 			this.setShowColumnID(true);
