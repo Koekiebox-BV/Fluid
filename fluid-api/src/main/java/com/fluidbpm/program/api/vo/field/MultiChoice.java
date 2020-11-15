@@ -15,17 +15,15 @@
 
 package com.fluidbpm.program.api.vo.field;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -92,8 +90,9 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @param availableMultiChoicesParam List of Available {@code MultiChoices}s.
 	 */
 	public MultiChoice(
-			List<String> selectedMultiChoicesParam,
-			List<String> availableMultiChoicesParam) {
+		List<String> selectedMultiChoicesParam,
+		List<String> availableMultiChoicesParam
+	) {
 		this.selectedMultiChoices = selectedMultiChoicesParam;
 		this.availableMultiChoices = availableMultiChoicesParam;
 	}
@@ -105,9 +104,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	public MultiChoice(String selectedMultiChoiceValueParam) {
 		this.selectedMultiChoices = new ArrayList();
-		if (selectedMultiChoiceValueParam != null) {
-			this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
-		}
+		if (selectedMultiChoiceValueParam != null) this.selectedMultiChoices.add(selectedMultiChoiceValueParam);
 	}
 
 	/**
@@ -117,11 +114,8 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	public MultiChoice(String ... selectedMultiChoiceValuesParam) {
 		this.selectedMultiChoices = new ArrayList();
-		if (selectedMultiChoiceValuesParam != null) {
-			for (String str : selectedMultiChoiceValuesParam) {
-				this.selectedMultiChoices.add(str);
-			}
-		}
+		if (selectedMultiChoiceValuesParam != null)
+			for (String str : selectedMultiChoiceValuesParam) this.selectedMultiChoices.add(str);
 	}
 
 	/**
@@ -131,106 +125,72 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	public MultiChoice(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Available Multiple Choices...
 		if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_MULTI_CHOICES)) {
-
 			JSONArray arrayOfString =
 					this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_MULTI_CHOICES);
 
 			this.availableMultiChoices = new ArrayList();
-
-			for (int index = 0;index < arrayOfString.length();index++)
-			{
+			for (int index = 0;index < arrayOfString.length();index++) {
 				this.availableMultiChoices.add(arrayOfString.getString(index));
 			}
 		} else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES)) {
-
 			JSONArray arrayOfString =
 					this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_CHOICES);
-
 			this.availableMultiChoices = new ArrayList();
-
-			for (int index = 0;index < arrayOfString.length();index++)
-			{
+			for (int index = 0;index < arrayOfString.length();index++) {
 				this.availableMultiChoices.add(arrayOfString.getString(index));
 			}
 		} else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
-
 			String combinedAvailChoices =
 					this.jsonObject.getString(JSONMapping.AVAILABLE_CHOICES_COMBINED);
-
 			if (combinedAvailChoices != null && !combinedAvailChoices.isEmpty()) {
 				this.availableMultiChoices = new ArrayList();
 
 				String[] pipeSplit = combinedAvailChoices.split(UtilGlobal.REG_EX_PIPE);
-
-				if (pipeSplit != null && pipeSplit.length > 0) {
-					for (int index = 0;index < pipeSplit.length;index++) {
-						this.availableMultiChoices.add(pipeSplit[index]);
-					}
-				}
+				if (pipeSplit != null && pipeSplit.length > 0)
+					for (int index = 0;index < pipeSplit.length;index++) this.availableMultiChoices.add(pipeSplit[index]);
 			}
 		}
 
 		//Avail - Populate combined...
 		if (this.availableMultiChoices != null) {
 			this.availableMultiChoicesCombined =
-					this.combineStringArrayWith(
-							this.availableMultiChoices,
-							UtilGlobal.PIPE);
+					this.combineStringArrayWith(this.availableMultiChoices, UtilGlobal.PIPE);
 		}
 
 		//Selected Multiple Choices...
 		if (!this.jsonObject.isNull(JSONMapping.SELECTED_MULTI_CHOICES)) {
-
 			JSONArray arrayOfString =
 					this.jsonObject.getJSONArray(JSONMapping.SELECTED_MULTI_CHOICES);
-
 			this.selectedMultiChoices = new ArrayList();
 
 			for (int index = 0;index < arrayOfString.length();index++)
-			{
 				this.selectedMultiChoices.add(arrayOfString.getString(index));
-			}
-		} else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES)) {
 
+		} else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES)) {
 			JSONArray arrayOfString =
 					this.jsonObject.getJSONArray(JSONMapping.SELECTED_CHOICES);
 
 			this.selectedMultiChoices = new ArrayList();
-
-			for (int index = 0;index < arrayOfString.length();index++) {
+			for (int index = 0;index < arrayOfString.length();index++)
 				this.selectedMultiChoices.add(arrayOfString.getString(index));
-			}
 		} else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES_COMBINED)) {
-
 			String combinedSelectedChoices =
 					this.jsonObject.getString(JSONMapping.SELECTED_CHOICES_COMBINED);
-
 			if (combinedSelectedChoices != null && !combinedSelectedChoices.isEmpty()) {
 				this.selectedMultiChoices = new ArrayList();
-
 				String[] pipeSplit = combinedSelectedChoices.split(UtilGlobal.REG_EX_PIPE);
-
-				if (pipeSplit != null && pipeSplit.length > 0) {
-					for (int index = 0;index < pipeSplit.length;index++) {
-						this.selectedMultiChoices.add(pipeSplit[index]);
-					}
-				}
+				if (pipeSplit != null && pipeSplit.length > 0)
+					for (int index = 0;index < pipeSplit.length;index++) this.selectedMultiChoices.add(pipeSplit[index]);
 			}
 		}
 
 		//Selected - Populate combined...
 		if (this.selectedMultiChoices != null) {
-			this.selectedMultiChoicesCombined =
-					this.combineStringArrayWith(
-							this.selectedMultiChoices,
-							UtilGlobal.PIPE);
+			this.selectedMultiChoicesCombined = this.combineStringArrayWith(this.selectedMultiChoices, UtilGlobal.PIPE);
 		}
 	}
 
@@ -249,7 +209,6 @@ public class MultiChoice extends ABaseFluidJSONObject {
 		//Available...
 		if (this.getAvailableMultiChoices() != null) {
 			List<String> availChoices = this.getAvailableMultiChoices();
-
 			returnVal.put(JSONMapping.AVAILABLE_MULTI_CHOICES,
 					new JSONArray(availChoices.toArray()));
 
@@ -292,7 +251,6 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public String toString() {
-
 		return this.combineStringArrayWith(
 				this.getSelectedMultiChoices(),
 				UtilGlobal.COMMA_SPACE);
@@ -332,6 +290,32 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	public void setSelectedMultiChoices(List<String> selectedMultiChoices) {
 		this.selectedMultiChoices = selectedMultiChoices;
+	}
+
+	/**
+	 * Gets Selected MultiChoice.
+	 *
+	 * @return {@code String} Single value of selected multi choice.
+	 */
+	public String getSelectedMultiChoice() {
+		if (this.selectedMultiChoices == null || this.selectedMultiChoices.isEmpty()) return null;
+		return this.selectedMultiChoices.get(0);
+	}
+
+	/**
+	 * Sets Selected MultiChoice.
+	 *
+	 * @param selectedMultiChoice Singe value for selected multi choices.
+	 */
+	public void setSelectedMultiChoice(String selectedMultiChoice) {
+		if (this.selectedMultiChoices == null) this.selectedMultiChoices = new ArrayList<>();
+		if (selectedMultiChoice == null) return;
+		if (this.selectedMultiChoices.isEmpty()) {
+			this.selectedMultiChoices.add(selectedMultiChoice);
+			return;
+		} else {
+			this.selectedMultiChoices.set(0, selectedMultiChoice);
+		}
 	}
 
 	/**

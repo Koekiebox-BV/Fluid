@@ -1277,6 +1277,8 @@ public class WS {
 
 				public static final String READ_ATTACHMENT_CAN_VIEW_BY_LOGGED_IN_USER = ("/get_all_attachment_can_view_by_logged_in_user");
 				public static final String READ_ATTACHMENT_CAN_EDIT_BY_LOGGED_IN_USER = ("/get_all_attachment_can_edit_by_logged_in_user");
+				public static final String UPSERT_FORM_DEFS_WEB_KIT = ("/upsert_forms_web_kit");
+				public static final String READ_ALL_WEB_KIT = ("/get_all_forms_web_kit");
 
 				/**
 				 * Root for Form Definition.
@@ -1402,6 +1404,24 @@ public class WS {
 				 */
 				public static final String getAllByLoggedInAndAttachmentsCanEdit() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ATTACHMENT_CAN_EDIT_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for Form Definition Web Kits.
+				 *
+				 * @return {@code v1/form_definition/get_all_forms_web_kit}
+				 */
+				public static final String getAllFormDefinitionWebKits() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_WEB_KIT);
+				}
+
+				/**
+				 * URL Path for upserting the Form Definition web kit.
+				 *
+				 * @return {@code v1/form_definition/upsert_forms_web_kit}
+				 */
+				public static final String formDefinitionWebKitUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_FORM_DEFS_WEB_KIT);
 				}
 			}
 		}

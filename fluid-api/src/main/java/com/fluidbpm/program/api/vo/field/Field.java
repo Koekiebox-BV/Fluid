@@ -15,22 +15,20 @@
 
 package com.fluidbpm.program.api.vo.field;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -71,8 +69,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		 * The JSON mapping for Elastic Search data types.
 		 * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}.
 		 */
-		public static final class Elastic
-		{
+		public static final class Elastic {
 			public static final String FIELD_TYPE = "fieldType";
 
 			//Used only for mapping types in ES...

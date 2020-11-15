@@ -144,14 +144,12 @@ public class FluidItem extends ABaseFluidJSONObject {
 			if (this.jsonObject == null) return;
 
 			//Name...
-			if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-				this.setName(this.jsonObject.getString(JSONMapping.NAME));
-			}
+			if (!this.jsonObject.isNull(JSONMapping.NAME)) this.setName(this.jsonObject.getString(JSONMapping.NAME));
+
 
 			//Value...
-			if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
-				this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
-			}
+			if (!this.jsonObject.isNull(JSONMapping.VALUE)) this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
+
 		}
 
 		/**
@@ -167,14 +165,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 			JSONObject returnVal = super.toJsonObject();
 
 			//Name...
-			if (this.getName() != null) {
-				returnVal.put(JSONMapping.NAME, this.getName());
-			}
+			if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
 
 			//Value...
-			if (this.getValue() != null) {
-				returnVal.put(JSONMapping.VALUE, this.getValue());
-			}
+			if (this.getValue() != null) returnVal.put(JSONMapping.VALUE, this.getValue());
 
 			return returnVal;
 		}
@@ -237,16 +231,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 * is not found, {@code null} will be returned.
 		 */
 		public static FlowState valueOfSafe(String flowStateStringParam) {
-			if (flowStateStringParam == null || flowStateStringParam.trim().isEmpty()) {
-				return null;
-			}
+			if (flowStateStringParam == null || flowStateStringParam.trim().isEmpty()) return null;
 
 			String paramLower = flowStateStringParam.trim().toLowerCase();
-			for (FlowState flowState : FlowState.values()) {
-				if (paramLower.equals(flowState.name().toLowerCase())) {
-					return flowState;
-				}
-			}
+			for (FlowState flowState : FlowState.values())
+				if (paramLower.equals(flowState.name().toLowerCase())) return flowState;
 
 			return null;
 		}
@@ -258,9 +247,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 * @return Whether {@code flowStateParam} is work-in-progress.
 		 */
 		public static boolean isFlowStateWIP(FlowState flowStateParam) {
-			if (flowStateParam == null) {
-				return false;
-			}
+			if (flowStateParam == null) return false;
 
 			switch (flowStateParam) {
 				case WorkInProgress:

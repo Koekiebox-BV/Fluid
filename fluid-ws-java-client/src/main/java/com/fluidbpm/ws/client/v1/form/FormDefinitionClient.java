@@ -18,6 +18,8 @@ package com.fluidbpm.ws.client.v1.form;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.webkit.WebKitForm;
+import com.fluidbpm.program.api.vo.webkit.WebKitFormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONObject;
@@ -248,6 +250,37 @@ public class FormDefinitionClient extends ABaseClientWS {
 
 		return new Form(this.postJson(formDefinitionParam,
 				WS.Path.FormDefinition.Version1.formDefinitionDelete()));
+	}
+
+	/**
+	 * Retrieve all the WebKits for all the form definitions.
+	 *
+	 * @return All the Form Definition web kits.
+	 * @see WebKitForm
+	 * @see WebKitFormListing
+	 */
+	public List<WebKitForm> getAllFormWebKits() {
+		WebKitFormListing webKitFormListing = new WebKitFormListing();
+		webKitFormListing.setServiceTicket(this.serviceTicket);
+
+		return new WebKitFormListing(this.postJson(
+				webKitFormListing,
+				WS.Path.FormDefinition.Version1.getAllFormDefinitionWebKits())).getListing();
+	}
+
+	/**
+	 * Update and insert the Form Definition configuration.
+	 *
+	 * @param listing The WebKitFormListing listing to upsert.
+	 * @return The complete form definition config.
+	 * @see WebKitFormListing
+	 */
+	public WebKitFormListing upsertViewGroupWebKit(WebKitFormListing listing) {
+		if (listing == null) return null;
+
+		listing.setServiceTicket(this.serviceTicket);
+		return new WebKitFormListing(this.postJson(listing,
+				WS.Path.FormDefinition.Version1.formDefinitionWebKitUpsert()));
 	}
 
 }
