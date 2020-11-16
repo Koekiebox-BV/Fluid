@@ -37,11 +37,21 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private Boolean displayFormDescription = false;
 	private Boolean displayFieldDescription = false;
 	private Boolean displayAttachments = true;
-	private int attachmentSize = 300;
 
+	private int attachmentSize = 300;
 	private int displayWidth = 450;
+	private Integer displayHeight;
 
 	private List<String> visibleSections;
+
+	private List<String> additionalSectionOptions;
+	private List<String> tableFieldsToInclude;
+
+	//Workflow related props...
+	private Boolean lockFormOnOpen = false;//Lock as the form is being opened...
+	private Boolean unlockFormOnSave = false;//Unlock as the form is saved...
+	private Boolean sendOnAfterSave = false;//Send on after save if in workflow...
+	private Boolean sendToWorkflowAfterCreate = false;//Send to first workflow (if only 1)
 
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
