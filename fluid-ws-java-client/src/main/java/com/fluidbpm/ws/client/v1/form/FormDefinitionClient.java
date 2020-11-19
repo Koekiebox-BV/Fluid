@@ -275,7 +275,7 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @return The complete form definition config.
 	 * @see WebKitFormListing
 	 */
-	public WebKitFormListing upsertViewGroupWebKit(WebKitFormListing listing) {
+	public WebKitFormListing upsertFormWebKit(WebKitFormListing listing) {
 		if (listing == null) return null;
 
 		listing.setServiceTicket(this.serviceTicket);

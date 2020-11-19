@@ -66,6 +66,13 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Default.
+	 */
+	public WebKitForm() {
+		this(new JSONObject());
+	}
+
+	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
 	 * @param jsonObjectParam The JSON Object.
@@ -180,7 +187,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		if (this.getForm() != null) {
 			Form reducedForm = new Form(this.getForm().getId());
-			reducedForm.setTitle(this.getForm().getTitle());
+			reducedForm.setFormType(this.getForm().getFormType());
+			reducedForm.setFormTypeId(this.getForm().getFormTypeId());
 			returnVal.put(JSONMapping.FORM, reducedForm.toJsonObject());
 		}
 
