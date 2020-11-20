@@ -223,6 +223,14 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		return returnVal;
 	}
 
+	/**
+	 * Verify if any table forms are included.
+	 * @return {@code true} if table forms are included.
+	 */
+	public boolean isAnyTableFormsEnabled() {
+		return this.tableFieldsToInclude != null && !this.tableFieldsToInclude.isEmpty();
+	}
+
 	@Override
 	public String toString() {
 		return super.toString();
