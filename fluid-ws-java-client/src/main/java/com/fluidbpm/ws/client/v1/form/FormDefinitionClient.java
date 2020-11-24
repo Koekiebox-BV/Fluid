@@ -189,15 +189,38 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @return List of Form Definitions.
 	 */
 	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf(
-		boolean includeTableRecordsParam
+			boolean includeTableRecordsParam
 	) {
 		Form form = new Form();
 		form.setServiceTicket(this.serviceTicket);
 		form.setRequestUuid(this.requestUuid);
 
 		return new FormListing(this.postJson(
-				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(includeTableRecordsParam))).
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(
+						includeTableRecordsParam, false))).
 				getListing();
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * create a new instance of the {@code Form}.
+	 *
+	 * @param includeTableRecordsParam Should Form Definitions that are part of table records also be included?
+	 * @param includeWorkflowsParam Should list of associated workflows be included in the response?
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf(
+		boolean includeTableRecordsParam,
+		boolean includeWorkflowsParam
+	) {
+		Form form = new Form();
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(
+						includeTableRecordsParam, includeWorkflowsParam))).getListing();
 	}
 
 	/**
