@@ -554,8 +554,8 @@ public class UtilGlobal {
 	 */
 	public static final boolean isNotBlank(String ... stringsToCheck) {
 		if (stringsToCheck == null || stringsToCheck.length == 0) return false;
-		for (String toCheck : stringsToCheck) if (toCheck != null && !toCheck.trim().isEmpty()) return true;
-		return false;
+		for (String toCheck : stringsToCheck) if (toCheck == null || toCheck.trim().isEmpty()) return false;
+		return true;
 	}
 
 	/**

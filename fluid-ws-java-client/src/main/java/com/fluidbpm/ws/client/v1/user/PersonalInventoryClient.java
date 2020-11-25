@@ -60,10 +60,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
 	 */
 	public List<FluidItem> getPersonalInventoryItems() {
 		User loggedInUser = new User();
-
-		if (this.serviceTicket != null) {
-			loggedInUser.setServiceTicket(this.serviceTicket);
-		}
+		loggedInUser.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new FluidItemListing(this.postJson(
@@ -83,9 +80,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
 	 * @return The Personal Inventory items removed for {@code User}.
 	 */
 	public Form removeFromPersonalInventory(Form formToRemoveParam) {
-		if (formToRemoveParam != null && this.serviceTicket != null) {
-			formToRemoveParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formToRemoveParam != null) formToRemoveParam.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new Form(this.postJson(
@@ -104,11 +99,7 @@ public class PersonalInventoryClient extends ABaseClientWS {
 	 */
 	public List<FluidItem> clearPersonalInventoryItems() {
 		User loggedInUser = new User();
-
-		if (this.serviceTicket != null) {
-			loggedInUser.setServiceTicket(this.serviceTicket);
-		}
-
+		loggedInUser.setServiceTicket(this.serviceTicket);
 		try {
 			return new FluidItemListing(this.postJson(
 					loggedInUser,
