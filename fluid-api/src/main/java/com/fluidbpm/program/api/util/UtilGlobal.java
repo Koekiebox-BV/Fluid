@@ -524,15 +524,38 @@ public class UtilGlobal {
 	 * @return {@code true} if all objects in {@code toCheckForNullParam} is {@code null}
 	 */
 	public static final boolean isAllNull(Object ... toCheckForNull) {
-		if (toCheckForNull == null || toCheckForNull.length == 0) {
-			return true;
-		}
-		for (Object toCheck : toCheckForNull) {
-			if (toCheck != null) {
-				return false;
-			}
-		}
+		if (toCheckForNull == null || toCheckForNull.length == 0) return true;
+
+		for (Object toCheck : toCheckForNull)
+			if (toCheck != null) return false;
+
 		return true;
+	}
+
+	/**
+	 * Verify if one of the Strings in {@code stringsToCheck} is empty.
+	 * If the array itself is {@code null} or empty, a {@code true} value will be returned.
+	 *
+	 * @param stringsToCheck The list of Strings to verify of being empty.
+	 * @return {@code true} if any of the String's in {@code stringsToCheck} is {@code null} or empty.
+	 */
+	public static final boolean isBlank(String ... stringsToCheck) {
+		if (stringsToCheck == null || stringsToCheck.length == 0) return true;
+		for (String toCheck : stringsToCheck) if (toCheck == null || toCheck.trim().isEmpty()) return true;
+		return false;
+	}
+
+	/**
+	 * Verify if one of the Strings in {@code stringsToCheck} is NOT empty.
+	 * If the array itself is {@code null} or empty, a {@code false} value will be returned.
+	 *
+	 * @param stringsToCheck The list of Strings to verify of NOT being empty.
+	 * @return {@code true} if any of the String's in {@code stringsToCheck} is NOT {@code null} or empty.
+	 */
+	public static final boolean isNotBlank(String ... stringsToCheck) {
+		if (stringsToCheck == null || stringsToCheck.length == 0) return false;
+		for (String toCheck : stringsToCheck) if (toCheck != null && !toCheck.trim().isEmpty()) return true;
+		return false;
 	}
 
 	/**
