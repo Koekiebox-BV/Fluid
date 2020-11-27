@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.webkit;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.util.exception.UtilException;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import lombok.Getter;
@@ -58,6 +60,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private boolean unlockFormOnSave;//Unlock as the form is saved...
 	private boolean sendOnAfterSave;//Send on after save if in workflow...
 	private boolean sendToWorkflowAfterCreate;//Send to first workflow (if only 1)
+
+	private String newFormTitleFormula;// string format|Name,Surname
 
 	public static final String EMAIL_FORM_TYPE = "Email";
 	public static WebKitForm emailWebKitForm() {
@@ -131,8 +135,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			this.setSendOnAfterSave(this.jsonObject.getBoolean(JSONMapping.SEND_ON_AFTER_SAVE));
 
 		if (!this.jsonObject.isNull(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE))
-			this.setSendToWorkflowAfterCreate(
-					this.jsonObject.getBoolean(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE));
+			this.setSendToWorkflowAfterCreate(this.jsonObject.getBoolean(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE));
+
+		if (!this.jsonObject.isNull(JSONMapping.NEW_FORM_TITLE_FORMULA))
+			this.setNewFormTitleFormula(this.jsonObject.getString(JSONMapping.NEW_FORM_TITLE_FORMULA));
+
 	}
 
 	/**
@@ -168,6 +175,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String UNLOCK_FORM_ON_SAVE = "unlockFormOnSave";
 		public static final String SEND_ON_AFTER_SAVE = "sendOnAfterSave";
 		public static final String SEND_TO_WORKFLOW_AFTER_CREATE = "sendToWorkflowAfterCreate";
+		public static final String NEW_FORM_TITLE_FORMULA = "newFormTitleFormula";
 	}
 
 	/**
@@ -203,6 +211,9 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (this.getDisplayHeight() == null || this.getDisplayHeight() == 0) returnVal.put(JSONMapping.DISPLAY_HEIGHT, JSONObject.NULL);
 		else returnVal.put(JSONMapping.DISPLAY_HEIGHT, this.getDisplayHeight());
 
+		if (this.getNewFormTitleFormula() == null || this.getNewFormTitleFormula().isEmpty()) returnVal.put(JSONMapping.NEW_FORM_TITLE_FORMULA, JSONObject.NULL);
+		else returnVal.put(JSONMapping.NEW_FORM_TITLE_FORMULA, this.getNewFormTitleFormula());
+
 		if (this.getVisibleSections() != null) {
 			JSONArray visSections = new JSONArray();
 			this.getVisibleSections().forEach(section -> visSections.put(section));
@@ -229,6 +240,19 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 */
 	public boolean isAnyTableFormsEnabled() {
 		return this.tableFieldsToInclude != null && !this.tableFieldsToInclude.isEmpty();
+	}
+
+	/**
+	 * Validate whether the {@code newFormTitleFormula} is correctly formatted.
+	 * @throws UtilException if format invalid.
+	 */
+	public void validateAndFormatNewFormFormula() {
+		if (UtilGlobal.isBlank(this.newFormTitleFormula)) return;
+
+		int indexOfPipe = this.newFormTitleFormula.lastIndexOf("|");
+		if (indexOfPipe < 0) throw new UtilException(
+				"No [|] pipe for style and field separation detected.", UtilException.ErrorCode.GENERAL);
+		this.newFormTitleFormula = this.newFormTitleFormula.trim();
 	}
 
 	@Override
