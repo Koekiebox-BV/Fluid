@@ -38,7 +38,6 @@ import java.util.List;
  * @see Field#setFieldValue(Object)
  */
 public class MultiChoice extends ABaseFluidJSONObject {
-
 	public static final long serialVersionUID = 1L;
 
 	private List<String> availableMultiChoices;
@@ -298,7 +297,8 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return {@code String} Single value of selected multi choice.
 	 */
 	public String getSelectedMultiChoice() {
-		if (this.selectedMultiChoices == null || this.selectedMultiChoices.isEmpty()) return null;
+		if (this.selectedMultiChoices == null) this.selectedMultiChoices = new ArrayList<>();
+		if (this.selectedMultiChoices.isEmpty()) return null;
 		return this.selectedMultiChoices.get(0);
 	}
 

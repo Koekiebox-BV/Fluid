@@ -15,6 +15,9 @@
 
 package com.fluidbpm.program.api.vo.field;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -24,6 +27,8 @@ import java.io.Serializable;
  * @since 1.8
  * @version 1.8
  */
+@Getter
+@Setter
 public class NameValue implements Serializable {
 	private String name;
 	private Object value;
@@ -47,52 +52,13 @@ public class NameValue implements Serializable {
 	}
 
 	/**
-	 * Get the name.
-	 *
-	 * @return Name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Set the name.
-	 *
-	 * @param nameParam The name to set.
-	 */
-	public void setName(String nameParam) {
-		this.name = nameParam;
-	}
-
-	/**
-	 * Get the value.
-	 *
-	 * @return Value as an {@code Object}
-	 */
-	public Object getValue() {
-		return this.value;
-	}
-
-	/**
-	 * Set the value.
-	 *
-	 * @param valueParam The value to set to.
-	 */
-	public void setValue(Object valueParam) {
-		this.value = valueParam;
-	}
-
-	/**
 	 * If the value is {@code null}, {@code null} will be returned.
 	 * Otherwise {@code this.value.toString()} is called.
 	 *
 	 * @return {@code String} value of {@code this.value}.
 	 */
 	public String toString() {
-		if (this.value == null) {
-			return null;
-		}
-
+		if (this.value == null) return null;
 		return this.value.toString();
 	}
 }
