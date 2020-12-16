@@ -78,6 +78,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	private MultiChoice(MultiChoice toClone) {
 		this();
 		if (toClone == null) return;
+		this.setId(toClone.getId());
 		this.setAvailableMultiChoices(
 				toClone.getAvailableMultiChoices() == null ? null :
 						new ArrayList<>(toClone.getAvailableMultiChoices()));

@@ -306,7 +306,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 					this.setFieldValue(castedLong);
 				}
 			} else if (objFromKey instanceof Number) {
-				this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
+				this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
 			} else if (objFromKey instanceof Boolean) {
 				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
 			} else {
