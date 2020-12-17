@@ -255,6 +255,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		this.newFormTitleFormula = this.newFormTitleFormula.trim();
 	}
 
+	public boolean includeTableField(String tableFieldName) {
+		if (this.getTableFieldsToInclude() == null) return false;
+		return this.getTableFieldsToInclude().contains(tableFieldName);
+	}
+
 	@Override
 	public String toString() {
 		return super.toString();
