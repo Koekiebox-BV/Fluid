@@ -71,36 +71,17 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 		public static List<String> asListFrom(WebKitUserQuery userQuery) {
 			List<String> returnVal = new ArrayList<>();
-			if (userQuery == null) {
-				return returnVal;
-			}
-			if (userQuery.isShowColumnID()) {
-				returnVal.add(VisibleColumnItems.showColumnID.name());
-			}
-			if (userQuery.isShowColumnFormType()) {
-				returnVal.add(VisibleColumnItems.showColumnFormType.name());
-			}
-			if (userQuery.isShowColumnTitle()) {
-				returnVal.add(VisibleColumnItems.showColumnTitle.name());
-			}
-			if (userQuery.isShowColumnAttachment()) {
-				returnVal.add(VisibleColumnItems.showColumnAttachment.name());
-			}
-			if (userQuery.isShowColumnDateCreated()) {
-				returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
-			}
-			if (userQuery.isShowColumnDateLastUpdated()) {
-				returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
-			}
-			if (userQuery.isShowColumnUser()) {
-				returnVal.add(VisibleColumnItems.showColumnUser.name());
-			}
-			if (userQuery.isShowColumnState()) {
-				returnVal.add(VisibleColumnItems.showColumnState.name());
-			}
-			if (userQuery.isShowColumnFlowState()) {
-				returnVal.add(VisibleColumnItems.showColumnFlowState.name());
-			}
+			if (userQuery == null) return returnVal;
+
+			if (userQuery.isShowColumnID()) returnVal.add(VisibleColumnItems.showColumnID.name());
+			if (userQuery.isShowColumnFormType()) returnVal.add(VisibleColumnItems.showColumnFormType.name());
+			if (userQuery.isShowColumnTitle()) returnVal.add(VisibleColumnItems.showColumnTitle.name());
+			if (userQuery.isShowColumnAttachment()) returnVal.add(VisibleColumnItems.showColumnAttachment.name());
+			if (userQuery.isShowColumnDateCreated()) returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
+			if (userQuery.isShowColumnDateLastUpdated()) returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
+			if (userQuery.isShowColumnUser()) returnVal.add(VisibleColumnItems.showColumnUser.name());
+			if (userQuery.isShowColumnState()) returnVal.add(VisibleColumnItems.showColumnState.name());
+			if (userQuery.isShowColumnFlowState()) returnVal.add(VisibleColumnItems.showColumnFlowState.name());
 			return returnVal;
 		}
 	}
@@ -144,9 +125,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	 */
 	public WebKitUserQuery(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		if (this.jsonObject.isNull(JSONMapping.ROW_EXPANSION)) this.setRowExpansion(new RowExpansion(new JSONObject()));
 		else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
