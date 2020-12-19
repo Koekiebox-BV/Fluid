@@ -899,30 +899,23 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	public Field populateFromElasticSearchJson(
 		JSONObject jsonObjectParam
 	) throws JSONException {
-		if (this.getFieldNameAsUpperCamel() == null) {
-			return null;
-		}
+		if (this.getFieldNameAsUpperCamel() == null) return null;
 
 		String fieldIdAsString = this.getFieldNameAsUpperCamel();
-		if (jsonObjectParam.isNull(fieldIdAsString)) {
-			return null;
-		}
+		if (jsonObjectParam.isNull(fieldIdAsString)) return null;
 
 		Field.Type type;
-		if((type = this.getTypeAsEnum()) == null) {
-			return null;
-		}
+		if ((type = this.getTypeAsEnum()) == null) return null;
 
 		Object formFieldValue = jsonObjectParam.get(fieldIdAsString);
 		Field fieldToAdd = null;
-
 		switch (type) {
 			case DateTime:
-				if (formFieldValue instanceof Long) {
+				if (formFieldValue instanceof Number) {
 					fieldToAdd = new Field(
 							this.getId(),
 							this.getFieldName(),
-							new Date(((Long)formFieldValue).longValue()),
+							new Date(((Number)formFieldValue).longValue()),
 							type);
 				}
 				break;
@@ -943,17 +936,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 						selectedChoices.add(casted.get(index).toString());
 					}
 
-					if (selectedChoices.isEmpty()) {
-						return null;
-					}
+					if (selectedChoices.isEmpty()) return null;
 
 					MultiChoice multiChoiceToSet = new MultiChoice(selectedChoices);
 
-					fieldToAdd = new Field(
-							this.getId(),
-							this.getFieldName(),
-							multiChoiceToSet,
-							type);
+					fieldToAdd = new Field(this.getId(), this.getFieldName(), multiChoiceToSet, type);
 				}
 				break;
 			case Table:
@@ -964,10 +951,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 					JSONArray casted = (JSONArray)formFieldValue;
 					for (int index = 0;index < casted.length();index++) {
 						Object obAtIndex = casted.get(index);
-
-						if (obAtIndex instanceof Number) {
-							tableRecords.add(new Form(((Number)obAtIndex).longValue()));
-						}
+						if (obAtIndex instanceof Number) tableRecords.add(new Form(((Number)obAtIndex).longValue()));
 					}
 				}
 				//When there is only a single number stored...
@@ -975,17 +959,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 					tableRecords.add(new Form(((Number)formFieldValue).longValue()));
 				}
 
-				if (tableRecords.isEmpty()) {
-					return null;
-				}
+				if (tableRecords.isEmpty()) return null;
 
-				fieldToAdd = new Field(
-						this.getId(),
-						this.getFieldName(),
-						new TableField(tableRecords),
-						type);
+				fieldToAdd = new Field(this.getId(), this.getFieldName(), new TableField(tableRecords), type);
 				break;
 			case Text:
+			case TextEncrypted:
 			case ParagraphText:
 				if (formFieldValue instanceof String) {
 					//Latitude and Longitude storage...
@@ -998,30 +977,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 						String newFieldVal =
 								(latitude + UtilGlobal.PIPE + longitude + UtilGlobal.PIPE);
-
-						fieldToAdd = new Field(
-								this.getId(),
-								this.getFieldName(),
-								newFieldVal,
-								type);
+						fieldToAdd = new Field(this.getId(), this.getFieldName(), newFieldVal, type);
 					} else {
 						//Other...
-						fieldToAdd = new Field(
-								this.getId(),
-								this.getFieldName(),
-								formFieldValue.toString(),
-								type);
+						fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue.toString(), type);
 					}
 				}
 				break;
 			case TrueFalse:
-				if (formFieldValue instanceof Boolean) {
-					fieldToAdd = new Field(
-							this.getId(),
-							this.getFieldName(),
-							formFieldValue,
-							type);
-				}
+				if (formFieldValue instanceof Boolean)
+					fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue, type);
 				break;
 		}
 
