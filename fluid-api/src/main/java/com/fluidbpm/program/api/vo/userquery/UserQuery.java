@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.userquery;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.program.api.vo.field.Field;
@@ -23,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +51,10 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
 	private Date dateCreated;
 	private Date dateLastUpdated;
+
+	private static final String LEFT_SQ_BRACKET = "[";
+	private static final String RIGHT_SQ_BRACKET = "]";
+	private static final String INPUT_VALUE = "INPUT_VALUE";
 
 	/**
 	 * The JSON mapping for the {@code UserQuery} object.
@@ -115,10 +121,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
 	 */
 	public UserQuery(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
-
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Name...
 		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
@@ -293,45 +296,34 @@ public class UserQuery extends ABaseListing<FluidItem> {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Name...
-		if (this.getName() != null) {
-			returnVal.put(JSONMapping.NAME,this.getName());
-		}
+		if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
 
 		//Description...
-		if (this.getDescription() != null) {
-			returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
-		}
+		if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
 
 		//Inputs...
 		if (this.getInputs() != null) {
 			JSONArray jsonArray = new JSONArray();
-			for (Field toAdd : this.getInputs()) {
-				jsonArray.put(toAdd.toJsonObject());
-			}
+			for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.INPUTS, jsonArray);
 		}
 
 		//Rules...
 		if (this.getRules() != null) {
 			JSONArray jsonArray = new JSONArray();
-			for (String toAdd : this.getRules()) {
-				jsonArray.put(toAdd);
-			}
-
+			for (String toAdd : this.getRules()) jsonArray.put(toAdd);
 			returnVal.put(JSONMapping.RULES, jsonArray);
 		}
 
 		//Date Created...
-		if (this.getDateCreated() != null) {
+		if (this.getDateCreated() != null)
 			returnVal.put(JSONMapping.DATE_CREATED,
 					this.getDateAsLongFromJson(this.getDateCreated()));
-		}
 
 		//Date Last Updated...
-		if (this.getDateLastUpdated() != null) {
+		if (this.getDateLastUpdated() != null)
 			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
 					this.getDateAsLongFromJson(this.getDateLastUpdated()));
-		}
 
 		return returnVal;
 	}
@@ -345,5 +337,29 @@ public class UserQuery extends ABaseListing<FluidItem> {
 	@Override
 	public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
 		return new FluidItem(jsonObjectParam);
+	}
+
+	/**
+	 * Extract the field names where the value of the rule is of type {@code INPUT_VALUE}.
+	 * @return List of {@code FormField} names.
+	 */
+	@XmlTransient
+	public List<String> getRuleFieldNamesWhereTypeInput() {
+		if (this.getRules() == null || this.getRules().isEmpty()) return new ArrayList<>();
+
+		List<String> formFieldNamesWhereValueTypeInput = new ArrayList<>();
+
+		for (String rule : this.getRules()) {
+			int firstIndexOfBracket = rule.indexOf(LEFT_SQ_BRACKET);
+			int lastIndexOfBracket =rule.indexOf(RIGHT_SQ_BRACKET);
+
+			String formFieldName = rule.substring(firstIndexOfBracket,lastIndexOfBracket+1);
+			String[] wordsInRule = rule.split(UtilGlobal.REG_EX_SPACE);
+			if (wordsInRule == null || wordsInRule.length == 0) continue;
+
+			String lastVal = wordsInRule[wordsInRule.length - 1].toUpperCase().trim();
+			if (INPUT_VALUE.equals(lastVal)) formFieldNamesWhereValueTypeInput.add(formFieldName);
+		}
+		return formFieldNamesWhereValueTypeInput;
 	}
 }

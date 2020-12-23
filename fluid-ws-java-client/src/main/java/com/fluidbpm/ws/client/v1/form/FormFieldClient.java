@@ -1186,10 +1186,7 @@ public class FormFieldClient extends ABaseFieldClient {
 		Form formDefinitionParam,
 		boolean sumDecimalsParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
-
+		formFieldParam.setServiceTicket(this.serviceTicket);
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Table);
 			formFieldParam.setTypeMetaData(
@@ -1211,12 +1208,10 @@ public class FormFieldClient extends ABaseFieldClient {
 		Field field = new Field(fieldIdParam);
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
-		if (this.serviceTicket != null) {
-			field.setServiceTicket(this.serviceTicket);
-		}
-		if (this.requestUuid != null) {
-			field.setRequestUuid(this.requestUuid);
-		}
+		field.setServiceTicket(this.serviceTicket);
+
+		if (this.requestUuid != null) field.setRequestUuid(this.requestUuid);
+
 		return new Field(this.postJson(
 				field, WS.Path.FormField.Version1.getById()));
 	}

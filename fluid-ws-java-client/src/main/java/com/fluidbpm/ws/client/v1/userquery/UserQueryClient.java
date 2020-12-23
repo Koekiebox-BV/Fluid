@@ -139,10 +139,30 @@ public class UserQueryClient extends ABaseClientWS {
 	public UserQuery getUserQueryById(Long userQueryIdParam) {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 		userQueryToGetInfoFor.setId(userQueryIdParam);
+		userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 
-		if (this.serviceTicket != null) {
-			userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
+		try {
+			return new UserQuery(this.postJson(
+					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getById()));
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
 		}
+	}
+
+	/**
+	 * Retrieves User Query information for the provided {@code userQueryNameParam}.
+	 *
+	 * @param userQueryNameParam The Name of the {@code UserQuery} to retrieve info for.
+	 *
+	 * @return UserQuery information.
+	 *
+	 * @see UserQuery
+	 */
+	public UserQuery getUserQueryByName(String userQueryNameParam) {
+		UserQuery userQueryToGetInfoFor = new UserQuery();
+		userQueryToGetInfoFor.setName(userQueryNameParam);
+		userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new UserQuery(this.postJson(

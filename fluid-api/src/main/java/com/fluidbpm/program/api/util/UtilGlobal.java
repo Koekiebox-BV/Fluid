@@ -61,6 +61,7 @@ public class UtilGlobal {
 	public static final String NONE = "[None]";
 
 	//RegEx...
+	public static final String REG_EX_SPACE = "\\ ";
 	public static final String REG_EX_COMMA = "\\,";
 	public static final String REG_EX_PIPE = "\\|";
 
@@ -665,9 +666,8 @@ public class UtilGlobal {
 	 * @return encoded {@code toEncodeParam} value in UTF-8 encoding
 	 */
 	public static String encodeURL(String toEncodeParam) {
-		if (toEncodeParam == null || toEncodeParam.trim().isEmpty()) {
-			return UtilGlobal.EMPTY;
-		}
+		if (toEncodeParam == null || toEncodeParam.trim().isEmpty()) return UtilGlobal.EMPTY;
+
 		try {
 			return URLEncoder.encode(toEncodeParam, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -686,13 +686,10 @@ public class UtilGlobal {
 	 * @see JSONArray
 	 */
 	public static <T extends ABaseFluidJSONObject> JSONArray toJSONArray(List<T> list) {
-		if (list == null) {
-			return null;
-		}
+		if (list == null) return null;
+
 		JSONArray jsonArray = new JSONArray();
-		for (T toAdd :list) {
-			jsonArray.put(toAdd.toJsonObject());
-		}
+		for (T toAdd :list) jsonArray.put(toAdd.toJsonObject());
 		return jsonArray;
 	}
 }
