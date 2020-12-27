@@ -15,23 +15,12 @@
 
 package com.fluidbpm.ws.client.v1;
 
-import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.List;
-
-import javax.net.ssl.SSLContext;
-
+import com.fluidbpm.GitDescribe;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ws.Error;
+import com.fluidbpm.program.api.vo.ws.WS;
+import com.fluidbpm.ws.client.FluidClientException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -48,12 +37,21 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.GitDescribe;
-import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ws.Error;
-import com.fluidbpm.program.api.vo.ws.WS;
-import com.fluidbpm.ws.client.FluidClientException;
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.List;
+
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
 
 /**
  * Base class for all REST related calls.
@@ -616,10 +614,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			String postfixUrlParam
 	) {
 		//Validate that something is set.
-		if (baseDomainParam == null) {
-			throw new FluidClientException("No JSON body to post.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
-		}
+		if (baseDomainParam == null)
+			throw new FluidClientException("No JSON body to post.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
 		String bodyJsonString = baseDomainParam.toJsonObject().toString();
 
@@ -723,39 +719,30 @@ public abstract class ABaseClientWS implements AutoCloseable{
 				contentTypeParam,
 				postfixUrlParam);
 
-		if (responseBody == null || responseBody.trim().isEmpty()) {
+		if (responseBody == null || responseBody.trim().isEmpty())
 			throw new FluidClientException(
-					"No response data from '"+
-							this.endpointUrl.concat(postfixUrlParam)+"'.",
+					"No response data from '"+ this.endpointUrl.concat(postfixUrlParam)+"'.",
 					FluidClientException.ErrorCode.IO_ERROR);
-		}
 
 		try {
 			JSONObject jsonOjb = new JSONObject(responseBody);
-			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE))
-			{
-				return jsonOjb;
-			}
+			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) return jsonOjb;
 
 			int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
-			if (errorCode > 0)
-			{
+			if (errorCode > 0) {
 				String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
 						? "Not set":
 						jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
-
 				throw new FluidClientException(errorMessage, errorCode);
 			}
 
 			return jsonOjb;
 		} catch (JSONException jsonExcept) {
 			//Invalid JSON Body...
-			if (responseBody != null && !responseBody.trim().isEmpty()) {
-				throw new FluidClientException(
+			if (responseBody != null && !responseBody.trim().isEmpty()) throw new FluidClientException(
 						jsonExcept.getMessage() + "\n Response Body is: \n\n" +
 								responseBody,
 						jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
-			}
 
 			throw new FluidClientException(
 					jsonExcept.getMessage(),
@@ -788,26 +775,21 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			ContentType contentTypeParam,
 			String postfixUrlParam
 	) {
-		if (stringParam == null || stringParam.isEmpty()) {
-			throw new FluidClientException("No JSON body to post.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
-		}
+		if (stringParam == null || stringParam.isEmpty()) throw new FluidClientException(
+				"No JSON body to post.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
 		//Check connection...
-		if (checkConnectionValidParam && !this.isConnectionValid()) {
+		if (checkConnectionValidParam && !this.isConnectionValid())
 			throw new FluidClientException(
-					"Unable to reach service at '"+
-							this.endpointUrl.concat(postfixUrlParam)+"'.",
+					"Unable to reach service at '"+ this.endpointUrl.concat(postfixUrlParam)+"'.",
 					FluidClientException.ErrorCode.CONNECT_ERROR);
-		}
+
 
 		CloseableHttpClient httpclient = this.getClient();
 
 		String responseBody = null;
-
 		try {
 			HttpUriRequest uriRequest = null;
-
 			//POST...
 			if (httpMethodParam == HttpMethod.POST) {
 				//When its html Form Data...
@@ -850,15 +832,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
 			//Set additional headers...
 			if (headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
-
 				for (HeaderNameValue headerNameVal : headerNameValuesParam) {
-					if (headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) {
-						continue;
-					}
+					if (headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) continue;
 
-					if (headerNameVal.getValue() == null) {
-						continue;
-					}
+					if (headerNameVal.getValue() == null) continue;
 
 					uriRequest.setHeader(headerNameVal.getName(), headerNameVal.getValue());
 				}
@@ -1123,25 +1100,20 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @since v1.1
 	 */
 	private CloseableHttpClient getClient() {
-		if (this.closeableHttpClient != null) {
-			return this.closeableHttpClient;
-		}
+		if (this.closeableHttpClient != null) return this.closeableHttpClient;
 
 		//Only accept self signed certificate if in Junit test case.
 		String pathToFluidTrustStore = this.getPathToFluidSpecificTrustStore();
 		//Test mode...
 		if (IS_IN_JUNIT_TEST_MODE || pathToFluidTrustStore != null) {
 			SSLContextBuilder builder = new SSLContextBuilder();
-
 			try {
 				//builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
 				if (pathToFluidTrustStore == null) {
 					builder.loadTrustMaterial(new SSLTrustAll());
 				} else {
 					String password = this.getFluidSpecificTrustStorePassword();
-					if (password == null) {
-						password = UtilGlobal.EMPTY;
-					}
+					if (password == null) password = UtilGlobal.EMPTY;
 
 					if (IS_IN_JUNIT_TEST_MODE) {
 						builder.loadTrustMaterial(
@@ -1156,9 +1128,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 				}
 
 				SSLContext sslContext = builder.build();
-
-				this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(
-						new SSLConnectionSocketFactory(sslContext)).build();
+				this.closeableHttpClient = HttpClients.custom()
+						.setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext))
+						.setConnectionManagerShared(true)
+						.build();
 			} catch (NoSuchAlgorithmException e) {
 				//Changed for Java 1.6 compatibility...
 				throw new FluidClientException(
@@ -1183,7 +1156,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			}
 		} else {
 			//Default HTTP Client...
-			this.closeableHttpClient = HttpClients.createDefault();
+			//this.closeableHttpClient = HttpClients.createDefault();
+			this.closeableHttpClient = HttpClients.custom().setConnectionManagerShared(true).build();
 		}
 
 		return this.closeableHttpClient;
