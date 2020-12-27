@@ -236,6 +236,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	/**
 	 * @return Visible columns as {@code List<String>}.
 	 */
+	@XmlTransient
 	public List<String> getVisibleColumnsAsList() {
 		return VisibleColumnItems.asListFrom(this);
 	}
@@ -245,6 +246,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	 *
 	 * @param listing The list
 	 */
+	@XmlTransient
 	public void setVisibleColumnsAsList(List<String> listing) {
 		if (listing == null) return;
 

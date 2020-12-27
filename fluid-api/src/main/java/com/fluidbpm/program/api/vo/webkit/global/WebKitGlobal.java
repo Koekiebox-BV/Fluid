@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo.webkit;
+package com.fluidbpm.program.api.vo.webkit.global;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.webkit.userquery.WebKitMenuItem;
@@ -56,7 +56,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	private List<WebKitMenuItem> webKitMenuItems;
 
 	/**
-	 * The JSON mapping for the {@code WebKitForm} object.
+	 * The JSON mapping for the {@code WebKitGlobal} object.
 	 */
 	public static class JSONMapping {
 		public static final String LAYOUT_MODE = "layoutMode";
@@ -79,9 +79,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	 */
 	public WebKitGlobal(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		if (!this.jsonObject.isNull(JSONMapping.LAYOUT_MODE)) {
 			this.setLayoutMode(this.jsonObject.getString(JSONMapping.LAYOUT_MODE));
@@ -190,9 +188,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 
 		if (this.getWebKitMenuItems() != null && !this.getWebKitMenuItems().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-			for (WebKitMenuItem toAdd : this.getWebKitMenuItems()) {
-				jsonArray.put(toAdd.toJsonObject());
-			}
+			for (WebKitMenuItem toAdd : this.getWebKitMenuItems()) jsonArray.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.WEB_KIT_MENU_ITEMS, jsonArray);
 		}
 

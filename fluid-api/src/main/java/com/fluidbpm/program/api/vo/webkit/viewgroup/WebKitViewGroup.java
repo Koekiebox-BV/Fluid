@@ -135,6 +135,62 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String WEB_KIT_VIEW_SUBS = "webKitViewSubs";
 	}
 
+	public enum VisibleColumnItems {
+		showColumnID,
+		showColumnFormType,
+		showColumnTitle,
+		showColumnStepEntryTime,
+		showColumnDateCreated,
+		showColumnDateLastUpdated,
+		showColumnCurrentFlow,
+		showColumnCurrentStep,
+		showColumnCurrentView,
+		showColumnProgressPercentage,
+		showColumnAttachment;
+
+		public static List<String> asListFrom(WebKitViewGroup group) {
+			List<String> returnVal = new ArrayList<>();
+			if (group == null) return returnVal;
+
+			if (group.isShowColumnID()) returnVal.add(VisibleColumnItems.showColumnID.name());
+			if (group.isShowColumnFormType()) returnVal.add(VisibleColumnItems.showColumnFormType.name());
+			if (group.isShowColumnTitle()) returnVal.add(VisibleColumnItems.showColumnTitle.name());
+			if (group.isShowColumnStepEntryTime()) returnVal.add(VisibleColumnItems.showColumnStepEntryTime.name());
+			if (group.isShowColumnCurrentFlow()) returnVal.add(VisibleColumnItems.showColumnCurrentFlow.name());
+			if (group.isShowColumnCurrentStep()) returnVal.add(VisibleColumnItems.showColumnCurrentStep.name());
+			if (group.isShowColumnCurrentView()) returnVal.add(VisibleColumnItems.showColumnCurrentView.name());
+			if (group.isShowColumnProgressPercentage()) returnVal.add(VisibleColumnItems.showColumnProgressPercentage.name());
+			if (group.isShowColumnDateCreated()) returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
+			if (group.isShowColumnDateLastUpdated()) returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
+
+			return returnVal;
+		}
+	}
+
+	public enum VisibleButtonItems {
+		showButtonBulkUpdate,
+		showButtonExport,
+		showButtonSendOn,
+		showButtonDelete,
+		showButtonLock,
+		showButtonAddToPI,
+		;
+
+		public static List<String> asListFrom(WebKitViewGroup group) {
+			List<String> returnVal = new ArrayList<>();
+			if (group == null) return returnVal;
+
+			if (group.isShowButtonBulkUpdate()) returnVal.add(VisibleButtonItems.showButtonBulkUpdate.name());
+			if (group.isShowButtonExport()) returnVal.add(VisibleButtonItems.showButtonExport.name());
+			if (group.isShowButtonSendOn()) returnVal.add(VisibleButtonItems.showButtonSendOn.name());
+			if (group.isShowButtonDelete()) returnVal.add(VisibleButtonItems.showButtonDelete.name());
+			if (group.isShowButtonLock()) returnVal.add(VisibleButtonItems.showButtonLock.name());
+			if (group.isShowButtonAddToPI()) returnVal.add(VisibleButtonItems.showButtonAddToPI.name());
+
+			return returnVal;
+		}
+	}
+
 	public WebKitViewGroup() {
 		this(new JSONObject());
 	}

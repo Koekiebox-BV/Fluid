@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.program.api.vo.webkit;
+package com.fluidbpm.program.api.vo.webkit.form;
 
 import com.fluidbpm.program.api.vo.ABaseListing;
 import org.json.JSONObject;
