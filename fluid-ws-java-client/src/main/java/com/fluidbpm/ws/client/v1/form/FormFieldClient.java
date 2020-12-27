@@ -1253,8 +1253,7 @@ public class FormFieldClient extends ABaseFieldClient {
 			form.setRequestUuid(this.requestUuid);
 		}
 		return new FormFieldListing(this.postJson(
-				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
-						editOnlyFieldsParam)));
+				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(editOnlyFieldsParam)));
 	}
 
 	/**
@@ -1292,8 +1291,7 @@ public class FormFieldClient extends ABaseFieldClient {
 			form.setServiceTicket(this.serviceTicket);
 		}
 		return new FormFieldListing(this.postJson(
-				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
-						editOnlyFieldsParam)));
+				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(editOnlyFieldsParam)));
 	}
 
 	/**

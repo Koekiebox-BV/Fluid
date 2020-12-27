@@ -66,7 +66,7 @@ public class Attachment extends ABaseFluidJSONObject {
 
 		public static final String DATE_LAST_UPDATED = "dateLastUpdated";
 		public static final String DATE_CREATED = "dateCreated";
-
+		
 		public static final String FORM_ID = "formId";
 		public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
 	}
@@ -445,14 +445,21 @@ public class Attachment extends ABaseFluidJSONObject {
 	}
 
 	/**
-	 * Checks whether attachment file type is image.
+	 * Verifies whether attachment file type is {@code image/*}.
 	 * @return {@code true} if content type is image.
 	 */
+	@XmlTransient
 	public boolean isFileTypeImage() {
-		if (this.getContentType() == null || this.getContentType().trim().isEmpty()) {
-			return false;
-		}
-
+		if (this.getContentType() == null || this.getContentType().trim().isEmpty()) return false;
 		return (this.getContentType().trim().toLowerCase().startsWith("image"));
+	}
+
+	/**
+	 * Verifies whether attachment type is {@code application/pdf}.
+	 * @return {@code true} if content type is PDF.
+	 */
+	@XmlTransient
+	public boolean isFileTypePDF() {
+		return "application/pdf".equals(this.getContentType().trim().toLowerCase());
 	}
 }
