@@ -466,6 +466,23 @@ public class Attachment extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Verifies whether attachment type is Microsoft MS Word.
+	 * @return {@code true} if content type is Microsoft Word Document.
+	 */
+	@XmlTransient
+	public boolean isFileTypeMSWord() {
+		String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
+		switch (contentTypeLower) {
+			case "application/msword" :
+			case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+			case "application/vnd.openxmlformats-officedocument.wordprocessingml.template" :
+				return true;
+			default:
+			return false;
+		}
+	}
+
+	/**
 	 * Convert the Base64 encoded attachment data to binary.
 	 * @return {@code byte[]}
 	 */
