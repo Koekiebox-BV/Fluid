@@ -15,9 +15,11 @@
 
 package com.fluidbpm.program.api.vo.attachment;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.google.common.io.BaseEncoding;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -461,5 +463,15 @@ public class Attachment extends ABaseFluidJSONObject {
 	@XmlTransient
 	public boolean isFileTypePDF() {
 		return "application/pdf".equals(this.getContentType().trim().toLowerCase());
+	}
+
+	/**
+	 * Convert the Base64 encoded attachment data to binary.
+	 * @return {@code byte[]}
+	 */
+	@XmlTransient
+	public byte[] getAttachmentDataRAW() {
+		if (UtilGlobal.isBlank(this.getAttachmentDataBase64())) return null;
+		return BaseEncoding.base64().decode(this.getAttachmentDataBase64());
 	}
 }
