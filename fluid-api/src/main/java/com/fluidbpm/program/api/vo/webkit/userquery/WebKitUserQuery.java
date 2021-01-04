@@ -55,6 +55,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 	private String attachmentHeader = "Attachments";
 	private int attachmentThumbnailSize = 100;
+	private int topBarDialogWidth = 1024;
 	private int paginatorRows = 15;
 
 	public enum VisibleColumnItems {
@@ -108,6 +109,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 		public static final String ATTACHMENT_HEADER = "attachmentHeader";
 		public static final String ATTACHMENT_THUMBNAIL_SIZE = "attachmentThumbnailSize";
+		public static final String TOP_BAR_DIALOG_WIDTH = "topBarDialogWidth";
 
 		public static final String PAGINATOR_ROWS = "paginatorRows";
 
@@ -175,6 +177,9 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE))
 			this.setAttachmentThumbnailSize(this.jsonObject.getInt(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
 
+		if (!this.jsonObject.isNull(JSONMapping.TOP_BAR_DIALOG_WIDTH))
+			this.setTopBarDialogWidth(this.jsonObject.getInt(JSONMapping.TOP_BAR_DIALOG_WIDTH));
+
 		if (!this.jsonObject.isNull(JSONMapping.PAGINATOR_ROWS))
 			this.setPaginatorRows(this.jsonObject.getInt(JSONMapping.PAGINATOR_ROWS));
 	}
@@ -203,6 +208,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 		returnVal.put(JSONMapping.ATTACHMENT_HEADER, this.getAttachmentHeader());
 		returnVal.put(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.getAttachmentThumbnailSize());
+		returnVal.put(JSONMapping.TOP_BAR_DIALOG_WIDTH, this.getTopBarDialogWidth());
 
 		returnVal.put(JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
 		returnVal.put(JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
