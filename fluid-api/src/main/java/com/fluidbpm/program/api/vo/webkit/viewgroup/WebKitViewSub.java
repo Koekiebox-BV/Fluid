@@ -43,7 +43,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	 */
 	private String listingMode;
 	private String label;
-	private String icon;
+	private String icon = "pi pi-table";
 
 	private RowExpansion rowExpansion;
 
@@ -59,6 +59,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	public static class JSONMapping {
 		public static final String LISTING_MODE = "listingMode";
 		public static final String LABEL = "label";
+		public static final String ICON = "icon";
 		public static final String SUB_ORDER = "subOrder";
 
 		public static final String ROW_EXPANSION = "rowExpansion";
@@ -78,12 +79,14 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	 */
 	public WebKitViewSub(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		if (!this.jsonObject.isNull(JSONMapping.LISTING_MODE)) {
 			this.setListingMode(this.jsonObject.getString(JSONMapping.LISTING_MODE));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.ICON)) {
+			this.setIcon(this.jsonObject.getString(JSONMapping.ICON));
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.LABEL)) {
@@ -128,8 +131,9 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		if (this.getLabel() != null) returnVal.put(JSONMapping.LABEL,this.getLabel());
+		if (this.getIcon() != null) returnVal.put(JSONMapping.ICON,this.getIcon());
 
-		returnVal.put(JSONMapping.SUB_ORDER,this.getSubOrder());
+		returnVal.put(JSONMapping.SUB_ORDER, this.getSubOrder());
 
 		if (this.getListingMode() != null) returnVal.put(JSONMapping.LISTING_MODE, this.getListingMode());
 

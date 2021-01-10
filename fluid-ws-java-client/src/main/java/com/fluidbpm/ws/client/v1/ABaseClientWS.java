@@ -1126,11 +1126,11 @@ public abstract class ABaseClientWS implements AutoCloseable{
 								password.toCharArray());
 					}
 				}
-
 				SSLContext sslContext = builder.build();
 				this.closeableHttpClient = HttpClients.custom()
 						.setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext))
 						.setConnectionManagerShared(true)
+						.setMaxConnPerRoute(200)
 						.build();
 			} catch (NoSuchAlgorithmException e) {
 				//Changed for Java 1.6 compatibility...
@@ -1157,7 +1157,9 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		} else {
 			//Default HTTP Client...
 			//this.closeableHttpClient = HttpClients.createDefault();
-			this.closeableHttpClient = HttpClients.custom().setConnectionManagerShared(true).build();
+			this.closeableHttpClient = HttpClients.custom()
+					.setMaxConnPerRoute(200)
+					.setConnectionManagerShared(true).build();
 		}
 
 		return this.closeableHttpClient;

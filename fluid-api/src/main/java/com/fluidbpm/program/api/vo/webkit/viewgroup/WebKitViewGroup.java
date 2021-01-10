@@ -156,12 +156,13 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			if (group.isShowColumnFormType()) returnVal.add(VisibleColumnItems.showColumnFormType.name());
 			if (group.isShowColumnTitle()) returnVal.add(VisibleColumnItems.showColumnTitle.name());
 			if (group.isShowColumnStepEntryTime()) returnVal.add(VisibleColumnItems.showColumnStepEntryTime.name());
+			if (group.isShowColumnDateCreated()) returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
+			if (group.isShowColumnDateLastUpdated()) returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
 			if (group.isShowColumnCurrentFlow()) returnVal.add(VisibleColumnItems.showColumnCurrentFlow.name());
 			if (group.isShowColumnCurrentStep()) returnVal.add(VisibleColumnItems.showColumnCurrentStep.name());
 			if (group.isShowColumnCurrentView()) returnVal.add(VisibleColumnItems.showColumnCurrentView.name());
 			if (group.isShowColumnProgressPercentage()) returnVal.add(VisibleColumnItems.showColumnProgressPercentage.name());
-			if (group.isShowColumnDateCreated()) returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
-			if (group.isShowColumnDateLastUpdated()) returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
+			if (group.isShowColumnAttachment()) returnVal.add(VisibleColumnItems.showColumnAttachment.name());
 
 			return returnVal;
 		}
@@ -202,9 +203,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	 */
 	public WebKitViewGroup(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW_GROUP_ID)) {
 			this.setJobViewGroupId(this.jsonObject.getLong(JSONMapping.JOB_VIEW_GROUP_ID));
