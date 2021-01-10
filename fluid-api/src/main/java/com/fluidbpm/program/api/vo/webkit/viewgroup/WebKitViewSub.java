@@ -47,11 +47,58 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 	private RowExpansion rowExpansion;
 
+	private boolean showColumnID;
+	private boolean showColumnFormType;
+	private boolean showColumnTitle;
+
+	private boolean showColumnStepEntryTime;
+	private boolean showColumnDateCreated;
+	private boolean showColumnDateLastUpdated;
+
+	private boolean showColumnCurrentFlow;
+	private boolean showColumnCurrentStep;
+	private boolean showColumnCurrentView;
+
+	private boolean showColumnProgressPercentage;
+	private boolean showColumnAttachment;
+
 	private int subOrder = 1;
 
 	private List<WebKitWorkspaceJobView> jobViews;
 	private List<WebKitWorkspaceRouteField> routeFields;
 
+	public enum VisibleColumnItems {
+		showColumnID,
+		showColumnFormType,
+		showColumnTitle,
+		showColumnStepEntryTime,
+		showColumnDateCreated,
+		showColumnDateLastUpdated,
+		showColumnCurrentFlow,
+		showColumnCurrentStep,
+		showColumnCurrentView,
+		showColumnProgressPercentage,
+		showColumnAttachment;
+
+		public static List<String> asListFrom(WebKitViewSub sub) {
+			List<String> returnVal = new ArrayList<>();
+			if (sub == null) return returnVal;
+
+			if (sub.isShowColumnID()) returnVal.add(VisibleColumnItems.showColumnID.name());
+			if (sub.isShowColumnFormType()) returnVal.add(VisibleColumnItems.showColumnFormType.name());
+			if (sub.isShowColumnTitle()) returnVal.add(VisibleColumnItems.showColumnTitle.name());
+			if (sub.isShowColumnStepEntryTime()) returnVal.add(VisibleColumnItems.showColumnStepEntryTime.name());
+			if (sub.isShowColumnDateCreated()) returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
+			if (sub.isShowColumnDateLastUpdated()) returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
+			if (sub.isShowColumnCurrentFlow()) returnVal.add(VisibleColumnItems.showColumnCurrentFlow.name());
+			if (sub.isShowColumnCurrentStep()) returnVal.add(VisibleColumnItems.showColumnCurrentStep.name());
+			if (sub.isShowColumnCurrentView()) returnVal.add(VisibleColumnItems.showColumnCurrentView.name());
+			if (sub.isShowColumnProgressPercentage()) returnVal.add(VisibleColumnItems.showColumnProgressPercentage.name());
+			if (sub.isShowColumnAttachment()) returnVal.add(VisibleColumnItems.showColumnAttachment.name());
+
+			return returnVal;
+		}
+	}
 
 	/**
 	 * The JSON mapping for the {@code WebKitForm} object.
@@ -97,6 +144,50 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 			this.setSubOrder(this.jsonObject.getInt(JSONMapping.SUB_ORDER));
 		}
 
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE)) {
+			this.setShowColumnFormType(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID)) {
+			this.setShowColumnID(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE)) {
+			this.setShowColumnTitle(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME)) {
+			this.setShowColumnStepEntryTime(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED)) {
+			this.setShowColumnDateCreated(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED)) {
+			this.setShowColumnDateLastUpdated(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW)) {
+			this.setShowColumnCurrentFlow(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP)) {
+			this.setShowColumnCurrentStep(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW)) {
+			this.setShowColumnCurrentView(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE)) {
+			this.setShowColumnProgressPercentage(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE));
+		}
+
+		if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT)) {
+			this.setShowColumnAttachment(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT));
+		}
+
 		if (this.jsonObject.isNull(JSONMapping.ROW_EXPANSION)) this.setRowExpansion(new RowExpansion(new JSONObject()));
 		else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
 
@@ -135,6 +226,20 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 
 		returnVal.put(JSONMapping.SUB_ORDER, this.getSubOrder());
 
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE, this.isShowColumnTitle());
+
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME, this.isShowColumnStepEntryTime());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED, this.isShowColumnDateCreated());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, this.isShowColumnDateLastUpdated());
+
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW, this.isShowColumnCurrentFlow());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP, this.isShowColumnCurrentStep());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW, this.isShowColumnCurrentView());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE, this.isShowColumnProgressPercentage());
+		returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT, this.isShowColumnAttachment());
+
 		if (this.getListingMode() != null) returnVal.put(JSONMapping.LISTING_MODE, this.getListingMode());
 
 		if (this.getJobViews() != null && !this.getJobViews().isEmpty()) {
@@ -152,6 +257,93 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		if (this.getRowExpansion() != null) returnVal.put(JSONMapping.ROW_EXPANSION, this.getRowExpansion().toJsonObject());
 
 		return returnVal;
+	}
+
+	/**
+	 * @return Visible columns as {@code List<String>}.
+	 */
+	@XmlTransient
+	public List<String> getVisibleColumnsAsList() {
+		return VisibleColumnItems.asListFrom(this);
+	}
+
+	/**
+	 * Set visible columns as {@code List<String>}.
+	 *
+	 * @param listing The list
+	 */
+	@XmlTransient
+	public void setVisibleColumnsAsList(List<String> listing) {
+		if (listing == null) return;
+
+		if (listing.contains(VisibleColumnItems.showColumnID.name())) {
+			this.setShowColumnID(true);
+		} else {
+			this.setShowColumnID(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnFormType.name())) {
+			this.setShowColumnFormType(true);
+		} else {
+			this.setShowColumnFormType(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnTitle.name())) {
+			this.setShowColumnTitle(true);
+		} else {
+			this.setShowColumnTitle(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnStepEntryTime.name())) {
+			this.setShowColumnStepEntryTime(true);
+		} else {
+			this.setShowColumnStepEntryTime(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnDateCreated.name())) {
+			this.setShowColumnDateCreated(true);
+		} else {
+			this.setShowColumnDateCreated(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnDateLastUpdated.name())) {
+			this.setShowColumnDateLastUpdated(true);
+		} else {
+			this.setShowColumnDateLastUpdated(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnCurrentFlow.name())) {
+			this.setShowColumnCurrentFlow(true);
+		} else {
+			this.setShowColumnCurrentFlow(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnCurrentStep.name())) {
+			this.setShowColumnCurrentStep(true);
+		} else {
+			this.setShowColumnCurrentStep(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnCurrentView.name())) {
+			this.setShowColumnCurrentView(true);
+		} else {
+			this.setShowColumnCurrentView(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnProgressPercentage.name())) {
+			this.setShowColumnProgressPercentage(true);
+		} else {
+			this.setShowColumnProgressPercentage(false);
+		}
+
+		if (listing.contains(VisibleColumnItems.showColumnAttachment.name())) {
+			this.setShowColumnAttachment(true);
+		} else {
+			this.setShowColumnAttachment(false);
+		}
+
+	
+		
 	}
 
 	/**

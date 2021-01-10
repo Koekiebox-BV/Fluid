@@ -55,21 +55,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	//null for no limit...
 	private Integer tableMaxCountPerPage;
 
-	private boolean showColumnID;
-	private boolean showColumnFormType;
-	private boolean showColumnTitle;
-
-	private boolean showColumnStepEntryTime;
-	private boolean showColumnDateCreated;
-	private boolean showColumnDateLastUpdated;
-
-	private boolean showColumnCurrentFlow;
-	private boolean showColumnCurrentStep;
-	private boolean showColumnCurrentView;
-
-	private boolean showColumnProgressPercentage;
-	private boolean showColumnAttachment;
-
 	//Bulk item for same form type...
 	private boolean showButtonBulkUpdate;
 	private boolean showButtonExport;
@@ -133,39 +118,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String TABLE_MAX_COUNT_PER_PAGE = "tableMaxCountPerPage";
 
 		public static final String WEB_KIT_VIEW_SUBS = "webKitViewSubs";
-	}
-
-	public enum VisibleColumnItems {
-		showColumnID,
-		showColumnFormType,
-		showColumnTitle,
-		showColumnStepEntryTime,
-		showColumnDateCreated,
-		showColumnDateLastUpdated,
-		showColumnCurrentFlow,
-		showColumnCurrentStep,
-		showColumnCurrentView,
-		showColumnProgressPercentage,
-		showColumnAttachment;
-
-		public static List<String> asListFrom(WebKitViewGroup group) {
-			List<String> returnVal = new ArrayList<>();
-			if (group == null) return returnVal;
-
-			if (group.isShowColumnID()) returnVal.add(VisibleColumnItems.showColumnID.name());
-			if (group.isShowColumnFormType()) returnVal.add(VisibleColumnItems.showColumnFormType.name());
-			if (group.isShowColumnTitle()) returnVal.add(VisibleColumnItems.showColumnTitle.name());
-			if (group.isShowColumnStepEntryTime()) returnVal.add(VisibleColumnItems.showColumnStepEntryTime.name());
-			if (group.isShowColumnDateCreated()) returnVal.add(VisibleColumnItems.showColumnDateCreated.name());
-			if (group.isShowColumnDateLastUpdated()) returnVal.add(VisibleColumnItems.showColumnDateLastUpdated.name());
-			if (group.isShowColumnCurrentFlow()) returnVal.add(VisibleColumnItems.showColumnCurrentFlow.name());
-			if (group.isShowColumnCurrentStep()) returnVal.add(VisibleColumnItems.showColumnCurrentStep.name());
-			if (group.isShowColumnCurrentView()) returnVal.add(VisibleColumnItems.showColumnCurrentView.name());
-			if (group.isShowColumnProgressPercentage()) returnVal.add(VisibleColumnItems.showColumnProgressPercentage.name());
-			if (group.isShowColumnAttachment()) returnVal.add(VisibleColumnItems.showColumnAttachment.name());
-
-			return returnVal;
-		}
 	}
 
 	public enum VisibleButtonItems {
@@ -257,50 +209,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			this.setTableMaxCountPerPage(this.jsonObject.getInt(JSONMapping.TABLE_MAX_COUNT_PER_PAGE));
 		}
 
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FORM_TYPE)) {
-			this.setShowColumnFormType(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_FORM_TYPE));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ID)) {
-			this.setShowColumnID(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ID));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_TITLE)) {
-			this.setShowColumnTitle(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_TITLE));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME)) {
-			this.setShowColumnStepEntryTime(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_CREATED)) {
-			this.setShowColumnDateCreated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_CREATED));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED)) {
-			this.setShowColumnDateLastUpdated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_CURRENT_FLOW)) {
-			this.setShowColumnCurrentFlow(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_CURRENT_FLOW));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_CURRENT_STEP)) {
-			this.setShowColumnCurrentStep(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_CURRENT_STEP));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_CURRENT_VIEW)) {
-			this.setShowColumnCurrentView(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_CURRENT_VIEW));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE)) {
-			this.setShowColumnProgressPercentage(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ATTACHMENT)) {
-			this.setShowColumnAttachment(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ATTACHMENT));
-		}
-
 		if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_BULK_UPDATE)) {
 			this.setShowButtonBulkUpdate(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_BULK_UPDATE));
 		}
@@ -361,20 +269,6 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.ATTACHMENT_PREVIEW_SIZE, this.getAttachmentPreviewSize());
 		returnVal.put(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, this.getAttachmentColumnMaxImageCount());
 		returnVal.put(JSONMapping.GROUP_ORDER, this.getGroupOrder());
-
-		returnVal.put(JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
-		returnVal.put(JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
-		returnVal.put(JSONMapping.SHOW_COLUMN_TITLE, this.isShowColumnTitle());
-
-		returnVal.put(JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME, this.isShowColumnStepEntryTime());
-		returnVal.put(JSONMapping.SHOW_COLUMN_DATE_CREATED, this.isShowColumnDateCreated());
-		returnVal.put(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, this.isShowColumnDateLastUpdated());
-
-		returnVal.put(JSONMapping.SHOW_COLUMN_CURRENT_FLOW, this.isShowColumnCurrentFlow());
-		returnVal.put(JSONMapping.SHOW_COLUMN_CURRENT_STEP, this.isShowColumnCurrentStep());
-		returnVal.put(JSONMapping.SHOW_COLUMN_CURRENT_VIEW, this.isShowColumnCurrentView());
-		returnVal.put(JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE, this.isShowColumnProgressPercentage());
-		returnVal.put(JSONMapping.SHOW_COLUMN_ATTACHMENT, this.isShowColumnAttachment());
 
 		returnVal.put(JSONMapping.SHOW_BUTTON_BULK_UPDATE, this.isShowButtonBulkUpdate());
 		returnVal.put(JSONMapping.SHOW_BUTTON_EXPORT, this.isShowButtonExport());
