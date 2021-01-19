@@ -50,7 +50,7 @@ public class TableField extends ABaseFluidJSONObject {
 	private Boolean sumDecimals;
 
 	/**
-	 * The JSON mapping for the {@code Form} object.
+	 * The JSON mapping for the {@code TableField} object.
 	 */
 	public static class JSONMapping {
 		public static final String TABLE_RECORDS = "tableRecords";

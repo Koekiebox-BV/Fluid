@@ -181,10 +181,7 @@ public class FlowItemClient extends ABaseClientWS {
 			FluidItem flowJobItemParam,
 			boolean allowCollaboratorToSendOnParam
 	) {
-
-		if (flowJobItemParam != null && this.serviceTicket != null) {
-			flowJobItemParam.setServiceTicket(this.serviceTicket);
-		}
+		if (flowJobItemParam != null) flowJobItemParam.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new FluidItem(this.postJson(

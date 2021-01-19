@@ -240,10 +240,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see ResponseHandler
 	 */
 	private String executeHttp(
-			HttpClient httpClientParam,
-			HttpUriRequest httpUriRequestParam,
-			ResponseHandler responseHandlerParam,
-			String postfixUrlParam
+		HttpClient httpClientParam,
+		HttpUriRequest httpUriRequestParam,
+		ResponseHandler responseHandlerParam,
+		String postfixUrlParam
 	) {
 		try {
 			Object returnedObj = httpClientParam.execute(httpUriRequestParam, responseHandlerParam);
@@ -251,7 +251,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			//String text came back...
 			if (returnedObj instanceof String) {
 				return (String)returnedObj;
-			} else if (returnedObj == null){
+			} else if (returnedObj == null) {
 				//[null] - came back...
 				throw new FluidClientException(
 						"No results, [null] response.",
@@ -276,7 +276,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 						except,
 						FluidClientException.ErrorCode.CONNECT_ERROR);
 			}
-
 			throw new FluidClientException(
 					except.getMessage(),
 					except,
@@ -294,7 +293,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see JSONObject
 	 */
 	public JSONObject getJson(String postfixUrlParam) {
-
 		return this.getJson(
 				false,
 				postfixUrlParam);

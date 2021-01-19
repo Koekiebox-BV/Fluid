@@ -24,6 +24,7 @@ import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricDataListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
+import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -31,7 +32,6 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -146,7 +146,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Form
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
-	public Form executeCustomWebAction(
+	public CustomWebAction executeCustomWebAction(
 			String customWebActionParam,
 			Form formParam) {
 		return this.executeCustomWebAction(
@@ -172,32 +172,23 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see TableRecord
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
-	public Form executeCustomWebAction(
-			String customWebActionParam,
-			boolean isTableRecordParam,
-			Long formContainerTableRecordBelowsToParam,
-			Form formParam) {
+	public CustomWebAction executeCustomWebAction(
+		String customWebActionParam,
+		boolean isTableRecordParam,
+		Long formContainerTableRecordBelowsToParam,
+		Form formParam
+	) {
+		if (customWebActionParam == null || customWebActionParam.trim().isEmpty()) throw new FluidClientException(
+				"Custom Web Action is mandatory.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		CustomWebAction action = new CustomWebAction();
+		action.setTaskIdentifier(customWebActionParam);
+		action.setServiceTicket(this.serviceTicket);
+		action.setForm(formParam);
+		action.setIsTableRecord(isTableRecordParam);
+		action.setFormTableRecordBelongsTo(formContainerTableRecordBelowsToParam);
 
-		if (customWebActionParam == null || customWebActionParam.trim().isEmpty()){
-			throw new FluidClientException(
-					"Custom Web Action is mandatory.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
-		}
-
-		try {
-			return new Form(this.postJson(
-					formParam, WS.Path.FormContainer.Version1.executeCustomWebAction(
-							customWebActionParam,
-							isTableRecordParam,
-							formContainerTableRecordBelowsToParam)));
-		} catch (UnsupportedEncodingException unsEncExcept) {
-			throw new FluidClientException(unsEncExcept.getMessage(),
-					unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
-		}
+		return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
 	}
 
 	/**

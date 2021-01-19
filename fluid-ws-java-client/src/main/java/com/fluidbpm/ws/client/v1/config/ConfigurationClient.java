@@ -17,9 +17,13 @@ package com.fluidbpm.ws.client.v1.config;
 
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.config.ConfigurationListing;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifierListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Used to change any of the Flow's / Workflows.
@@ -113,5 +117,17 @@ public class ConfigurationClient extends ABaseClientWS {
 		}
 		return new Configuration(this.postJson(
 				configuration, WS.Path.Configuration.Version1.getSystemMailTransfer())).getValue();
+	}
+
+	/**
+	 * Retrieve the description of the SMTP config for system related SMTP's.
+	 * @return SMTP Description of System mails.
+	 */
+	public List<ThirdPartyLibraryTaskIdentifier> getAllThirdPartyTaskIdentifiers() {
+		ThirdPartyLibraryTaskIdentifier third = new ThirdPartyLibraryTaskIdentifier();
+		third.setServiceTicket(this.serviceTicket);
+
+		return new ThirdPartyLibraryTaskIdentifierListing(this.postJson(
+				third, WS.Path.Configuration.Version1.getAllThirdPartyTaskIdentifiers())).getListing();
 	}
 }

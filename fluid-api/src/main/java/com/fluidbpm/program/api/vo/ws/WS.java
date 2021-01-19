@@ -269,38 +269,10 @@ public class WS {
 				/**
 				 * URL Path for executing Form Container custom web action.
 				 *
-				 * @param customWebActionParam The custom web action name. Action identifier.
-				 * @param isTableRecordParam Is the form a table record form.
-				 * @param formContainerTableRecordBelongsToParam The parent form container if
-				 *            table record.
-				 *
 				 * @return {@code v1/form_container/execute_custom_web_action}
-				 *
-				 * @throws UnsupportedEncodingException If Encoding {@code UTF-8} is not
-				 *             supported.
 				 */
-				public static final String executeCustomWebAction(String customWebActionParam, boolean isTableRecordParam, Long formContainerTableRecordBelongsToParam)
-						throws UnsupportedEncodingException {
-
-					String returnVal = Version.VERSION_1.concat(ROOT).concat(EXECUTE_CUSTOM_WEB_ACTION);
-
-					returnVal += "?";
-					returnVal += QueryParam.CUSTOM_WEB_ACTION;
-					returnVal += "=";
-					returnVal += URLEncoder.encode(customWebActionParam, ENCODING_UTF_8);
-					returnVal += "&";
-					returnVal += QueryParam.IS_TABLE_RECORD;
-					returnVal += "=";
-					returnVal += isTableRecordParam;
-
-					if (formContainerTableRecordBelongsToParam != null && formContainerTableRecordBelongsToParam.longValue() > 0) {
-						returnVal += "&";
-						returnVal += QueryParam.FORM_TABLE_RECORD_BELONGS_TO;
-						returnVal += "=";
-						returnVal += formContainerTableRecordBelongsToParam;
-					}
-
-					return returnVal;
+				public static final String executeCustomWebAction() {
+					return Version.VERSION_1.concat(ROOT).concat(EXECUTE_CUSTOM_WEB_ACTION);
 				}
 
 				/**
@@ -2116,7 +2088,9 @@ public class WS {
 				 * @return {@code /v1/flow_item/send_on}
 				 */
 				public static final String sendFlowItemOn(boolean allowCollaboratorToSendOnParam) {
-					return Version.VERSION_1.concat(ROOT).concat(SEND_ON).concat("?" + QueryParam.ALLOW_COLLABORATOR_SEND_ON + "=" + allowCollaboratorToSendOnParam);
+					return String.format("%s%s%s?%s=%s",
+							Version.VERSION_1, ROOT, SEND_ON,
+							QueryParam.ALLOW_COLLABORATOR_SEND_ON, allowCollaboratorToSendOnParam);
 				}
 
 				/**
@@ -3153,6 +3127,9 @@ public class WS {
 				public static final String READ_ALL = ("/get_all_configurations");
 				public static final String READ_SYSTEM_MAIL_TRANSFER = ("/get_system_mail_transfer");
 
+				public static final String READ_ALL_TASK_IDENTIFIERS = ("/get_all_third_party_task_identifiers");
+
+
 				//Update/Insert...
 				public static final String UPSERT = ("/upsert");
 
@@ -3185,12 +3162,21 @@ public class WS {
 				}
 
 				/**
-				 * URL Path for retireving the system email transfers.
+				 * URL Path for retrieving the system email transfers.
 				 *
 				 * @return {@code v1/configuration/get_system_mail_transfer}
 				 */
 				public static final String getSystemMailTransfer() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_SYSTEM_MAIL_TRANSFER);
+				}
+
+				/**
+				 * URL Path for retrieving all 3rd party programs task identifiers.
+				 *
+				 * @return {@code v1/configuration/get_all_third_party_task_identifiers}
+				 */
+				public static final String getAllThirdPartyTaskIdentifiers() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TASK_IDENTIFIERS);
 				}
 
 				/**
@@ -3201,7 +3187,6 @@ public class WS {
 				public static final String configUpsert() {
 					return Version.VERSION_1.concat(ROOT).concat(UPSERT);
 				}
-
 			}
 		}
 
