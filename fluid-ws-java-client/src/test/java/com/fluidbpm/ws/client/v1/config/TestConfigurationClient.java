@@ -17,11 +17,14 @@ package com.fluidbpm.ws.client.v1.config;
 
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.config.ConfigurationListing;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -101,16 +104,38 @@ public class TestConfigurationClient extends ABaseTestCase {
 		String serviceTicket = appRequestToken.getServiceTicket();
 
 		ConfigurationClient configurationClient = new ConfigurationClient(BASE_URL, serviceTicket);
+		FormContainerClient ccClient = new FormContainerClient(BASE_URL, serviceTicket);
 
 		//1. Fetch...
 		try {
+			long start = System.currentTimeMillis();
 			List<ThirdPartyLibraryTaskIdentifier> fetchedConfigs = configurationClient.getAllThirdPartyTaskIdentifiers();
+			long took = (System.currentTimeMillis() - start);
+			System.out.println("Tasks took a total of " + took);
+
 			TestCase.assertNotNull("The 'Third Party Libs' needs to be set.", fetchedConfigs);
 			TestCase.assertFalse("The listing needs to be more than 0.", fetchedConfigs.isEmpty());
 
 			fetchedConfigs.forEach(taskId -> {
 				System.out.println(taskId.toJsonObject());
 			});
+
+			fetchedConfigs.stream().filter(itm -> itm.getThirdPartyLibraryTaskType() == ThirdPartyLibraryTaskIdentifier.ThirdPartyLibraryTaskType.CustomWebAction)
+					.filter(itm -> itm.getFormDefinitions() != null)
+					.forEach(webActionForms -> {
+						String firstFormDef = webActionForms.getFormDefinitions().get(0).getFormType();
+
+						Form formToExecOn = new Form(firstFormDef);
+						//formToExecOn.setFieldValue("Manufacturer Name", "DaSpread");
+
+						try {
+							CustomWebAction executeResult = ccClient.executeCustomWebAction(webActionForms.getTaskIdentifier(), formToExecOn);
+							System.out.println("Execute Result: \n"+executeResult.toJsonObject().toString());
+						} catch (Exception err) {
+							err.printStackTrace();
+						}
+					});
+
 		} catch (FluidClientException fce) {
 			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
 		}

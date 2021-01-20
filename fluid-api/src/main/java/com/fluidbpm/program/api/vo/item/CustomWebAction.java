@@ -91,6 +91,15 @@ public class CustomWebAction extends ABaseFluidJSONObject {
 			this.setExecutionTimeMillis(this.jsonObject.getLong(JSONMapping.EXECUTION_TIME_MILLIS));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.IS_TABLE_RECORD)) {
+			this.setIsTableRecord(this.jsonObject.getBoolean(JSONMapping.IS_TABLE_RECORD));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO)) {
+			this.setFormTableRecordBelongsTo(this.jsonObject.getLong(
+					JSONMapping.FORM_TABLE_RECORD_BELONGS_TO));
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.FORM)) {
 			this.setForm(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM)));
 		}
@@ -112,6 +121,12 @@ public class CustomWebAction extends ABaseFluidJSONObject {
 		}
 		if (this.getExecutionTimeMillis() != null) {
 			returnVal.put(JSONMapping.EXECUTION_TIME_MILLIS, this.getExecutionTimeMillis());
+		}
+		if (this.getIsTableRecord() != null) {
+			returnVal.put(JSONMapping.IS_TABLE_RECORD, this.getIsTableRecord());
+		}
+		if (this.getFormTableRecordBelongsTo() != null) {
+			returnVal.put(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO, this.getFormTableRecordBelongsTo());
 		}
 		if (this.getForm() != null) {
 			returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
