@@ -162,7 +162,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @param customWebActionParam The custom web action name. Action identifier.
 	 * @param isTableRecordParam Is the form a table record form.
-	 * @param formContainerTableRecordBelowsToParam The parent form container if table record.
+	 * @param formContainerTableRecordBelongsToParam The parent form container if table record.
 	 * @param formParam The Form to send for 3rd Party execution.
 	 *
 	 * @return Result after the 3rd Party Custom Web Action completed.
@@ -175,7 +175,7 @@ public class FormContainerClient extends ABaseClientWS {
 	public CustomWebAction executeCustomWebAction(
 		String customWebActionParam,
 		boolean isTableRecordParam,
-		Long formContainerTableRecordBelowsToParam,
+		Long formContainerTableRecordBelongsToParam,
 		Form formParam
 	) {
 		if (customWebActionParam == null || customWebActionParam.trim().isEmpty()) throw new FluidClientException(
@@ -186,7 +186,7 @@ public class FormContainerClient extends ABaseClientWS {
 		action.setServiceTicket(this.serviceTicket);
 		action.setForm(formParam);
 		action.setIsTableRecord(isTableRecordParam);
-		action.setFormTableRecordBelongsTo(formContainerTableRecordBelowsToParam);
+		action.setFormTableRecordBelongsTo(formContainerTableRecordBelongsToParam);
 
 		return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
 	}

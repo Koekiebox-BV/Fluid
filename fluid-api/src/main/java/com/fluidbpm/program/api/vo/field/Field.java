@@ -299,14 +299,18 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				}
 			} else if (objFromKey instanceof Long) {
 				Long castedLong = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
-
 				if (this.getTypeAsEnum() != null && this.getTypeAsEnum() == Type.DateTime) {
 					this.setFieldValue(new Date(castedLong));
 				} else {
 					this.setFieldValue(castedLong);
 				}
 			} else if (objFromKey instanceof Number) {
-				this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
+				try {
+					this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
+				} catch (NoSuchMethodError nsm) {
+					//For older versions of org.json library...
+					this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
+				}
 			} else if (objFromKey instanceof Boolean) {
 				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
 			} else {

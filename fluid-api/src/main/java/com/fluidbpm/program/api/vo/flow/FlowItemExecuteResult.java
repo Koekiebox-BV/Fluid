@@ -15,17 +15,16 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.mail.MailMessage;
 import com.fluidbpm.program.api.vo.user.User;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -103,7 +102,6 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Fluid Item...
 		if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEM)) {
-
 			this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(
 					JSONMapping.FLUID_ITEM)));
 		}

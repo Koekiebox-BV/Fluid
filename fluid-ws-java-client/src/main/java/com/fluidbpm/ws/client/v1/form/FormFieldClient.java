@@ -93,8 +93,18 @@ public class FormFieldClient extends ABaseFieldClient {
 				if (FieldMetaData.Text.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldTextPlain(formFieldParam);
 				} else if (metaDataLower.contains(FieldMetaData.Text.MASKED.toLowerCase())) {
+					if (additionalInfo == null || additionalInfo.length < 1)
+						throw new FluidClientException(
+								String.format("No additional info for '%s' field '%s'.",
+										FieldMetaData.Text.MASKED, formFieldParam.getFieldName()),
+								FluidClientException.ErrorCode.FIELD_VALIDATE);
 					return this.createFieldTextMasked(formFieldParam, additionalInfo[0].toString());
 				} else if (metaDataLower.contains(FieldMetaData.Text.BARCODE.toLowerCase())) {
+					if (additionalInfo == null || additionalInfo.length < 1)
+						throw new FluidClientException(
+								String.format("No additional info for '%s' field '%s'.",
+										FieldMetaData.Text.BARCODE, formFieldParam.getFieldName()),
+								FluidClientException.ErrorCode.FIELD_VALIDATE);
 					return this.createFieldTextBarcode(formFieldParam, additionalInfo[0].toString());
 				} else if (metaDataLower.contains(FieldMetaData.Text.LATITUDE_AND_LONGITUDE.toLowerCase())) {
 					return this.createFieldTextLatitudeAndLongitude(formFieldParam);
