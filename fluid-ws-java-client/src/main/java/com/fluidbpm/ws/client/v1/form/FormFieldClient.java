@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
+import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Java Web Service Client for Form Field related actions.
@@ -1250,20 +1252,153 @@ public class FormFieldClient extends ABaseFieldClient {
 	 *
 	 * @return Form Fields for {@code formNameParam}
 	 */
+	public FormFieldListing getFieldsByFormNameAndLoggedInUser(String formNameParam, boolean editOnlyFieldsParam) {
+		return this.getFieldsByFormNameAndLoggedInUser(formNameParam, editOnlyFieldsParam, false);
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition name.
+	 *
+	 * @param formNameParam The form definition name.
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
 	public FormFieldListing getFieldsByFormNameAndLoggedInUser(
 		String formNameParam,
-		boolean editOnlyFieldsParam
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields
 	) {
 		Form form = new Form();
 		form.setFormType(formNameParam);
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-		if (this.requestUuid != null) {
-			form.setRequestUuid(this.requestUuid);
-		}
+
+		if (this.serviceTicket != null) form.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) form.setRequestUuid(this.requestUuid);
+
 		return new FormFieldListing(this.postJson(
-				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(editOnlyFieldsParam)));
+				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields)));
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formNamesParam The form definition names.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormNamesAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		List<String> formNamesParam
+	) {
+		if (formNamesParam == null || formNamesParam.isEmpty()) return new ArrayList<>();
+		FormListing formListing = new FormListing();
+		formListing.setListing(formNamesParam.stream().map(itm -> {
+					Form form = new Form();
+					form.setFormType(itm);
+					return form;
+				})
+				.collect(Collectors.toList()));
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formNamesParam The form definition names.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormNamesAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		String ... formNamesParam
+	) {
+		if (formNamesParam == null || formNamesParam.length == 0) return new ArrayList<>();
+		List<Form> formList = new ArrayList<>();
+		for (String formName : formNamesParam) {
+			Form form = new Form();
+			form.setFormType(formName);
+			formList.add(form);
+		}
+
+		FormListing formListing = new FormListing();
+		formListing.setListing(formList);
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formIdsParam The form definition names.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormIdsAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		List<Long> formIdsParam
+	) {
+		if (formIdsParam == null || formIdsParam.isEmpty()) return new ArrayList<>();
+		FormListing formListing = new FormListing();
+		formListing.setListing(formIdsParam.stream().map(itm -> new Form(itm)).collect(Collectors.toList()));
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formIdsParam The form definition ids.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormIdsAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		Long ... formIdsParam
+	) {
+		if (formIdsParam == null || formIdsParam.length == 0) return new ArrayList<>();
+		List<Form> formList = new ArrayList<>();
+		for (Long formId : formIdsParam) formList.add(new Form(formId));
+
+		FormListing formListing = new FormListing();
+		formListing.setListing(formList);
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
 	}
 
 	/**
@@ -1276,9 +1411,8 @@ public class FormFieldClient extends ABaseFieldClient {
 	public List<Field> getFormFieldsByUserQuery(
 		UserQuery userQuery
 	) {
-		if (userQuery != null) {
-			userQuery.setServiceTicket(this.serviceTicket);
-		}
+		if (userQuery != null) userQuery.setServiceTicket(this.serviceTicket);
+
 		return new FormFieldListing(this.postJson(
 				userQuery, WS.Path.FormField.Version1.getByUserQuery())).getListing();
 	}
@@ -1288,20 +1422,23 @@ public class FormFieldClient extends ABaseFieldClient {
 	 *
 	 * @param formTypeIdParam The form definition id.
 	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
 	 *
 	 * @return Form Fields for {@code formIdParam}
 	 */
 	public FormFieldListing getFieldsByFormTypeIdAndLoggedInUser(
 		Long formTypeIdParam,
-		boolean editOnlyFieldsParam
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields
 	) {
 		Form form = new Form();
 		form.setFormTypeId(formTypeIdParam);
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
+
+		if (this.serviceTicket != null) form.setServiceTicket(this.serviceTicket);
+
 		return new FormFieldListing(this.postJson(
-				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(editOnlyFieldsParam)));
+				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields)));
 	}
 
 	/**

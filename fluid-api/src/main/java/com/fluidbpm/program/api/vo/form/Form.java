@@ -69,7 +69,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	private String formType;
 	private Long formTypeId;
 
-
 	private String formDescription;
 
 	private String title;

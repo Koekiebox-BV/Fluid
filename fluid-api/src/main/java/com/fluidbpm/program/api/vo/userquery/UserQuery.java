@@ -158,12 +158,10 @@ public class UserQuery extends ABaseListing<FluidItem> {
 		}
 
 		//Date Created...
-		this.setDateCreated(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.DATE_CREATED));
+		this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
 
 		//Date Last Updated...
-		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.DATE_LAST_UPDATED));
+		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
 	}
 
 	/**

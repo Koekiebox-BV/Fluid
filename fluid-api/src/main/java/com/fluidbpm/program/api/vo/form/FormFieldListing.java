@@ -15,12 +15,13 @@
 
 package com.fluidbpm.program.api.vo.form;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.program.api.vo.field.Field;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -33,8 +34,9 @@ import com.fluidbpm.program.api.vo.field.Field;
  * @see Field
  * @see ABaseListing
  */
+@Getter
+@Setter
 public class FormFieldListing extends ABaseListing<Field> {
-
 	public static final long serialVersionUID = 1L;
 
 	/**
