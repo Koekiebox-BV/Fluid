@@ -798,6 +798,7 @@ public class WS {
 				public static final String READ_BY_FORM_DEF_AND_LOGGED_IN_USER = ("/get_by_form_definition_and_logged_in_user");
 				public static final String READ_BY_FORM_DEFS_AND_LOGGED_IN_USER = ("/get_by_form_definitions_and_logged_in_user");
 				public static final String READ_BY_USER_QUERY = ("/get_by_user_query");
+				public static final String READ_BY_USER_QUERIES = ("/get_by_user_queries");
 
 				/**
 				 * Root for Form Field.
@@ -913,6 +914,15 @@ public class WS {
 				 */
 				public static final String getByUserQuery() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_BY_USER_QUERY);
+				}
+
+				/**
+				 * URL Path for Form Fields get by User Query.
+				 *
+				 * @return {@code v1/form_field/get_by_user_queries}
+				 */
+				public static final String getByUserQueries() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_USER_QUERIES);
 				}
 			}
 		}

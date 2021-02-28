@@ -125,14 +125,12 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
 		//Name...
 		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-			this.setName(this.jsonObject.getString(
-					JSONMapping.NAME));
+			this.setName(this.jsonObject.getString(JSONMapping.NAME));
 		}
 
 		//Description...
 		if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-			this.setDescription(this.jsonObject.getString(
-					JSONMapping.DESCRIPTION));
+			this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
 		}
 
 		//Inputs...

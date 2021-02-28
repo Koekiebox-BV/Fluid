@@ -22,6 +22,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.userquery.UserQueryListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
@@ -1408,13 +1409,29 @@ public class FormFieldClient extends ABaseFieldClient {
 	 *
 	 * @return Form Fields for {@code userQuery}
 	 */
-	public List<Field> getFormFieldsByUserQuery(
-		UserQuery userQuery
-	) {
+	public List<Field> getFormFieldsByUserQuery(UserQuery userQuery) {
 		if (userQuery != null) userQuery.setServiceTicket(this.serviceTicket);
 
 		return new FormFieldListing(this.postJson(
 				userQuery, WS.Path.FormField.Version1.getByUserQuery())).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via User Query.
+	 *
+	 * @param userQueries The user queries to fetch fields for.
+	 *
+	 * @return Form Fields for {@code userQuery}
+	 */
+	public List<UserQuery> getFormFieldsByUserQueries(List<UserQuery> userQueries) {
+		if (userQueries == null || userQueries.isEmpty()) return new ArrayList<>();
+
+		UserQueryListing userQueryListing = new UserQueryListing();
+		userQueryListing.setListing(userQueries);
+		userQueryListing.setServiceTicket(this.serviceTicket);
+
+		return new UserQueryListing(this.postJson(
+				userQueryListing, WS.Path.FormField.Version1.getByUserQueries())).getListing();
 	}
 
 	/**
