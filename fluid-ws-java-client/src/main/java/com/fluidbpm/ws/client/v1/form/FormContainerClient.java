@@ -270,18 +270,26 @@ public class FormContainerClient extends ABaseClientWS {
 	/**
 	 * Retrieves the Form Container by Primary key.
 	 *
-	 * @param formContainerIdParam The Form Container primary key.
+	 * @param formContainerId The Form Container primary key.
 	 * @return Form by Primary key.
 	 */
-	public Form getFormContainerById(Long formContainerIdParam) {
-		Form form = new Form(formContainerIdParam);
+	public Form getFormContainerById(Long formContainerId) {
+		return this.getFormContainerById(formContainerId, false);
+	}
 
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
+	/**
+	 * Retrieves the Form Container by Primary key.
+	 *
+	 * @param formContainerId The Form Container primary key.
+	 * @param executeCalculatedLabels Should calculated labels be executed.
+	 * @return Form by Primary key.
+	 */
+	public Form getFormContainerById(Long formContainerId, boolean executeCalculatedLabels) {
+		Form form = new Form(formContainerId);
+		form.setServiceTicket(this.serviceTicket);
 
 		return new Form(this.postJson(
-				form, WS.Path.FormContainer.Version1.getById()));
+				form, WS.Path.FormContainer.Version1.getById(executeCalculatedLabels)));
 	}
 
 	/**

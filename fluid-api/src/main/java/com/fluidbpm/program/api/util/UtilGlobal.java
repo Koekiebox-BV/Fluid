@@ -24,12 +24,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -692,4 +690,37 @@ public class UtilGlobal {
 		for (T toAdd :list) jsonArray.put(toAdd.toJsonObject());
 		return jsonArray;
 	}
+
+	/**
+	 * Write the contents of {@code inputStream} to {@code outFile}.
+	 *
+	 * @param inputStream The input-stream of content to write.
+	 * @param outFile The file to write content to.
+	 * @throws IOException Any IO errors
+	 */
+	public static void writeStreamToFile(InputStream inputStream, File outFile) throws IOException {
+		try (OutputStream fos = new FileOutputStream(outFile,false)) {
+			int readByte = -1;
+			while ((readByte = inputStream.read()) != -1) {
+				fos.write(readByte);
+			}
+		} finally {
+			if (inputStream != null) inputStream.close();
+		}
+	}
+
+	/**
+	 * Read the content of a file.
+	 * 
+	 * @param fileToRead The file to read.
+	 * @return The {@code byte}s for the read file.
+	 * @throws IOException Any IO errors
+	 */
+	public static byte[] readFileBytes(File fileToRead) throws IOException {
+		if (fileToRead == null) return null;
+		return Files.readAllBytes(fileToRead.toPath());
+	}
+
+	
+
 }

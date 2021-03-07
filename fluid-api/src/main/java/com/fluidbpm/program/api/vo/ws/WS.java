@@ -190,6 +190,8 @@ public class WS {
 
 					public static final String QUERY_LIMIT = "query_limit";
 					public static final String OFFSET = "offset";
+
+					public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
 				}
 
 				/**
@@ -205,10 +207,15 @@ public class WS {
 				/**
 				 * URL Path for Form Container get by id.
 				 *
+				 * @param executeCalculatedLabels Should calculated labels be executed.
+				 *
 				 * @return {@code v1/form_container/get_by_id}
 				 */
-				public static final String getById() {
-					return Version.VERSION_1.concat(ROOT).concat(READ);
+				public static final String getById(boolean executeCalculatedLabels) {
+					return String.format("%s?%s=%s",
+							Version.VERSION_1.concat(ROOT).concat(READ),
+							QueryParam.EXECUTE_CALCULATED_LABELS,
+							executeCalculatedLabels);
 				}
 
 				/**

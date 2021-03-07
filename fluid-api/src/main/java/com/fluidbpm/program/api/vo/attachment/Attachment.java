@@ -387,13 +387,10 @@ public class Attachment extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
-
 		JSONObject returnVal = super.toJsonObject();
-
 		//Attachment Data...
 		if (this.getAttachmentDataBase64() != null) {
-			returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
-					this.getAttachmentDataBase64());
+			returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
 		}
 
 		//Content Type...
@@ -423,14 +420,12 @@ public class Attachment extends ABaseFluidJSONObject {
 
 		//Date Created...
 		if (this.getDateCreated() != null) {
-			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateCreated().getTime());
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateCreated().getTime());
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-					this.getDateLastUpdated().getTime());
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateLastUpdated().getTime());
 		}
 
 		return returnVal;
@@ -491,4 +486,16 @@ public class Attachment extends ABaseFluidJSONObject {
 		if (UtilGlobal.isBlank(this.getAttachmentDataBase64())) return null;
 		return BaseEncoding.base64().decode(this.getAttachmentDataBase64());
 	}
+
+	/**
+	 * @return Extension from filename.
+	 */
+	@XmlTransient
+	public String getExtensionFromFilename() {
+		if (this.getName() == null) return null;
+		int indexOf = this.getName().lastIndexOf(".");
+		if (indexOf > -1) return this.getName().substring(indexOf);
+		return null;
+	}
+
 }

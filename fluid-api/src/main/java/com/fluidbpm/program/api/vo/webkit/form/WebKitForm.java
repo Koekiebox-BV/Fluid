@@ -61,6 +61,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private boolean sendOnAfterSave;//Send on after save if in workflow...
 	private boolean sendToWorkflowAfterCreate;//Send to first workflow (if only 1)
 
+	private boolean enableCalculatedLabels;
+
 	private String newFormTitleFormula;// string format|Name,Surname
 
 	public static final String EMAIL_FORM_TYPE = "Email";
@@ -137,6 +139,9 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE))
 			this.setSendToWorkflowAfterCreate(this.jsonObject.getBoolean(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE));
 
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_CALCULATED_LABELS))
+			this.setEnableCalculatedLabels(this.jsonObject.getBoolean(JSONMapping.ENABLE_CALCULATED_LABELS));
+
 		if (!this.jsonObject.isNull(JSONMapping.NEW_FORM_TITLE_FORMULA))
 			this.setNewFormTitleFormula(this.jsonObject.getString(JSONMapping.NEW_FORM_TITLE_FORMULA));
 
@@ -176,6 +181,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String SEND_ON_AFTER_SAVE = "sendOnAfterSave";
 		public static final String SEND_TO_WORKFLOW_AFTER_CREATE = "sendToWorkflowAfterCreate";
 		public static final String NEW_FORM_TITLE_FORMULA = "newFormTitleFormula";
+
+		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
 	}
 
 	/**
@@ -230,6 +237,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.UNLOCK_FORM_ON_SAVE, this.isUnlockFormOnSave());
 		returnVal.put(JSONMapping.SEND_ON_AFTER_SAVE, this.isSendOnAfterSave());
 		returnVal.put(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE, this.isSendToWorkflowAfterCreate());
+
+		returnVal.put(JSONMapping.ENABLE_CALCULATED_LABELS, this.isEnableCalculatedLabels());
 
 		return returnVal;
 	}

@@ -76,10 +76,7 @@ public class ReportUserClient extends ABaseClientWS {
 		Date toDate
 	) {
 		User userGetInfoFor = new User();
-		if (this.serviceTicket != null) {
-			userGetInfoFor.setServiceTicket(this.serviceTicket);
-		}
-
+		userGetInfoFor.setServiceTicket(this.serviceTicket);
 		try {
 			return new UserStatsReport(this.postJson(
 					userGetInfoFor, WS.Path.Report.Version1.getUserStatsReportForLoggedInUser(
