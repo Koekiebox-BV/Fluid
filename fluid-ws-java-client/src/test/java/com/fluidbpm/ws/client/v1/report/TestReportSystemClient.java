@@ -43,9 +43,7 @@ public class TestReportSystemClient extends ABaseTestCase {
 
 	@Test
 	public void testReport_FullReport() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -75,9 +73,7 @@ public class TestReportSystemClient extends ABaseTestCase {
 
 	@Test
 	public void testReport_DownReport() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
