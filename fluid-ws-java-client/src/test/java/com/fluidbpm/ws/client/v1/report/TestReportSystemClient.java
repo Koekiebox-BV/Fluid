@@ -85,16 +85,16 @@ public class TestReportSystemClient extends ABaseTestCase {
 		SystemUptimeReport report = reportSystemClient.getDowntimeSystemReport();
 		long took = (System.currentTimeMillis() - now);
 		TestCase.assertNotNull("SystemReport needs to be set.", report);
-		TestCase.assertNotNull("SystemReport entries need to be set.", report.getUptimeEntries());
-		TestCase.assertFalse("SystemReport entries need to be set.", report.getUptimeEntries().isEmpty());
-		System.out.printf("Took %d millis for %d entries and %d for subs.", took, report.getUptimeEntries().size(), report.getUptimeEntries().get(0).getSystemUpHourMins().size());
+		if (report.getUptimeEntries() != null && !report.getUptimeEntries().isEmpty()) {
+			System.out.printf("Took %d millis for %d entries and %d for subs.", took, report.getUptimeEntries().size(), report.getUptimeEntries().get(0).getSystemUpHourMins().size());
+		} else {
+			System.out.println("No downtime.");
+		}
 	}
 
 	@Test(timeout = 5000)
 	public void testReport_UpReport() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
