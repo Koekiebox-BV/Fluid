@@ -406,15 +406,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Double getFieldValueAsDouble() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
-		if (obj instanceof Double) {
-			return (Double)obj;
-		}
-		if (obj instanceof Number) {
-			return ((Number)obj).doubleValue();
-		}
+		if (obj == null) return null;
+
+		if (obj instanceof Double) return (Double)obj;
+
+		if (obj instanceof Number) return ((Number)obj).doubleValue();
 
 		return null;
 	}
@@ -429,15 +425,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Long getFieldValueAsLong() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
-		if (obj instanceof Long) {
-			return (Long)obj;
-		}
-		if (obj instanceof Number) {
-			return ((Number)obj).longValue();
-		}
+		if (obj == null) return null;
+
+		if (obj instanceof Long) return (Long)obj;
+
+		if (obj instanceof Number) return ((Number)obj).longValue();
 
 		return null;
 	}
@@ -452,17 +444,21 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Integer getFieldValueAsInteger() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
-		if (obj instanceof Integer) {
-			return (Integer)obj;
-		}
-		if (obj instanceof Number) {
-			return ((Number)obj).intValue();
-		}
+		if (obj == null) return null;
+
+		if (obj instanceof Integer) return (Integer)obj;
+
+		if (obj instanceof Number) return ((Number)obj).intValue();
 
 		return null;
+	}
+
+	/**
+	 * Set the field value as integer.
+	 * @param intVal Set the field value to {@code intVal}.
+	 */
+	public void setFieldValueAsInteger(Integer intVal) {
+		this.setFieldValue(intVal);
 	}
 
 	/**
@@ -475,12 +471,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Number getFieldValueAsNumber() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
-		if (obj instanceof Number) {
-			return (Number)obj;
-		}
+		if (obj == null) return null;
+
+		if (obj instanceof Number) return (Number)obj;
 
 		return null;
 	}
@@ -495,12 +488,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Boolean getFieldValueAsBoolean() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
-		if (obj instanceof Boolean) {
-			return (Boolean)obj;
-		}
+		if (obj == null) return null;
+
+		if (obj instanceof Boolean) return (Boolean)obj;
 
 		return null;
 	}
@@ -515,9 +505,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Date getFieldValueAsDate() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
+		if (obj == null) return null;
 
 		//Real Date...
 		if (obj instanceof Date) {
@@ -529,7 +517,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				return new Date(longValue.longValue());
 			}
 		}
-
 		return null;
 	}
 
@@ -544,13 +531,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public MultiChoice getFieldValueAsMultiChoice() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
+		if (obj == null) return null;
 
-		if (obj instanceof MultiChoice) {
-			return (MultiChoice)obj;
-		}
+		if (obj instanceof MultiChoice) return (MultiChoice)obj;
 
 		return null;
 	}
@@ -566,13 +549,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public TableField getFieldValueAsTableField() {
 		Object obj = this.getFieldValue();
-		if (obj == null) {
-			return null;
-		}
+		if (obj == null) return null;
 
-		if (obj instanceof TableField) {
-			return (TableField)obj;
-		}
+		if (obj instanceof TableField) return (TableField)obj;
 
 		return null;
 	}
@@ -657,9 +636,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public Type getTypeAsEnum() {
-		if (this.getFieldType() == null || this.getFieldType().trim().isEmpty()) {
-			return null;
-		}
+		if (this.getFieldType() == null || this.getFieldType().trim().isEmpty()) return null;
+
 		return Type.valueOf(this.getFieldType());
 	}
 
@@ -781,14 +759,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public JSONObject toJsonMappingForElasticSearch() throws JSONException {
 		String fieldNameUpperCamel = this.getFieldNameAsUpperCamel();
-		if (fieldNameUpperCamel == null) {
-			return null;
-		}
+		if (fieldNameUpperCamel == null) return null;
 
 		String elasticType = this.getElasticSearchFieldType();
-		if (elasticType == null) {
-			return null;
-		}
+		if (elasticType == null) return null;
 
 		JSONObject returnVal = new JSONObject();
 		returnVal.put(JSONMapping.Elastic.MAPPING_ONLY_TYPE, elasticType);
@@ -806,9 +780,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	public JSONObject toJsonForElasticSearch() throws JSONException {
-		if (!this.doesFieldQualifyForElasticSearchInsert()) {
-			return null;
-		}
+		if (!this.doesFieldQualifyForElasticSearchInsert()) return null;
 
 		JSONObject returnVal = new JSONObject();
 		String fieldIdAsString = this.getFieldNameAsUpperCamel();
@@ -820,9 +792,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			if (tableField.getTableRecords() != null && !tableField.getTableRecords().isEmpty()) {
 				JSONArray array = new JSONArray();
 				for (Form record : tableField.getTableRecords()) {
-					if (record.getId() == null) {
-						continue;
-					}
+					if (record.getId() == null) continue;
 
 					array.put(record.getId());
 				}
@@ -839,7 +809,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 				for (String selectedChoice : multiChoice.getSelectedMultiChoices()) {
 					Long selectedChoiceAsLong = null;
-
 					try {
 						if (!selectedChoice.isEmpty() &&
 								Character.isDigit(selectedChoice.charAt(0))) {
@@ -859,7 +828,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 				returnVal.put(fieldIdAsString, array);
 			}
-		} else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
+		} else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
 				fieldValue instanceof String) {
 			//Other valid types...
 			if ((fieldValue instanceof String) &&
@@ -1014,7 +983,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		JSONObject jsonObjectParam,
 		List<Field> formFieldsParam
 	) throws JSONException {
-
 		throw new FluidElasticSearchException(
 				"Method not implemented. Make use of 'populateFromElasticSearchJson(JSONObject jsonObjectParam)' method.");
 	}
@@ -1029,9 +997,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public String getElasticSearchFieldType() {
 		Type fieldType = this.getTypeAsEnum();
-		if (fieldType == null) {
-			return null;
-		}
+		if (fieldType == null) return null;
 
 		//Get the fieldType by Fluid field fieldType...
 		switch (fieldType) {
@@ -1074,14 +1040,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	private boolean doesFieldQualifyForElasticSearchInsert() {
 		//Test Value...
 		Field.Type fieldType;
-		if (((this.getFieldValue()) == null) || ((fieldType = this.getTypeAsEnum()) == null)) {
-			return false;
-		}
+		if (((this.getFieldValue()) == null) || ((fieldType = this.getTypeAsEnum()) == null)) return false;
 
 		//Test the Name...
-		if (this.getFieldName() == null || this.getFieldName().trim().isEmpty()) {
-			return false;
-		}
+		if (this.getFieldName() == null || this.getFieldName().trim().isEmpty()) return false;
 
 		//Confirm the fieldType is supported...
 		switch (fieldType) {
