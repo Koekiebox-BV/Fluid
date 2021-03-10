@@ -45,6 +45,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	//Attachment...
 	private int attachmentSize = 300;
 	private String attachmentDisplayLocation;//tab / bottom / top / none
+	private String attachmentDisplayType;//galleria / list / grid
 
 	private int displayWidth = 450;
 	private Integer displayHeight;
@@ -104,6 +105,9 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DISPLAY_LOCATION))
 			this.setAttachmentDisplayLocation(this.jsonObject.getString(JSONMapping.ATTACHMENT_DISPLAY_LOCATION));
+
+		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DISPLAY_TYPE))
+			this.setAttachmentDisplayType(this.jsonObject.getString(JSONMapping.ATTACHMENT_DISPLAY_TYPE));
 
 		if (!this.jsonObject.isNull(JSONMapping.DISPLAY_WIDTH))
 			this.setDisplayWidth(this.jsonObject.getInt(JSONMapping.DISPLAY_WIDTH));
@@ -168,6 +172,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		public static final String ATTACHMENT_SIZE = "attachmentSize";
 		public static final String ATTACHMENT_DISPLAY_LOCATION = "attachmentDisplayLocation";
+		public static final String ATTACHMENT_DISPLAY_TYPE = "attachmentDisplayType";
 
 		public static final String DISPLAY_WIDTH = "displayWidth";
 		public static final String DISPLAY_HEIGHT = "displayHeight";
@@ -212,6 +217,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.DISPLAY_FIELD_DESCRIPTION, this.isDisplayFieldDescription());
 		returnVal.put(JSONMapping.ATTACHMENT_SIZE, this.getAttachmentSize());
 		returnVal.put(JSONMapping.ATTACHMENT_DISPLAY_LOCATION, this.getAttachmentDisplayLocation());
+		returnVal.put(JSONMapping.ATTACHMENT_DISPLAY_TYPE, this.getAttachmentDisplayType());
 		returnVal.put(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR, this.getVisibleSectionsDisplayBehaviour());
 		returnVal.put(JSONMapping.DISPLAY_WIDTH, this.getDisplayWidth());
 

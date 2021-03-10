@@ -478,6 +478,19 @@ public class Attachment extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Friendly name for content-type.
+	 * @return String - The user friendly name for the content type.
+	 */
+	@XmlTransient
+	public String getContentTypeFriendly() {
+		if (this.isFileTypeImage()) return "Image";
+		if (this.isFileTypePDF()) return "PDF";
+		if (this.isFileTypeMSWord()) return "Office Word";
+
+		return this.getContentType();
+	}
+
+	/**
 	 * Convert the Base64 encoded attachment data to binary.
 	 * @return {@code byte[]}
 	 */
