@@ -54,7 +54,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	private boolean showColumnFlowState;
 
 	private String attachmentHeader = "Attachments";
-	private int attachmentThumbnailSize = 100;
+	private int attachmentThumbnailSize = 75;
 	private int topBarDialogWidth = 1024;
 	private int paginatorRows = 15;
 

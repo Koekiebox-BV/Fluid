@@ -42,7 +42,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private String tableGenerateMode = TableGenerateMode.COMBINED;
 
 	private String attachmentColumnLabel = "Image";
-	private int attachmentThumbnailSize = 100;
+	private int attachmentThumbnailSize = 75;
 	private int attachmentPreviewSize = 800;
 	private int attachmentColumnMaxImageCount = 1;
 	//vertical/horizontal
