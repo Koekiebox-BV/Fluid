@@ -478,6 +478,15 @@ public class Attachment extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Verifies whether attachment type is {@code application/json}.
+	 * @return {@code true} if content type is JSON.
+	 */
+	@XmlTransient
+	public boolean isFileTypeJSON() {
+		return "application/json".equals(this.getContentType().trim().toLowerCase());
+	}
+
+	/**
 	 * Friendly name for content-type.
 	 * @return String - The user friendly name for the content type.
 	 */
@@ -486,6 +495,7 @@ public class Attachment extends ABaseFluidJSONObject {
 		if (this.isFileTypeImage()) return "Image";
 		if (this.isFileTypePDF()) return "PDF";
 		if (this.isFileTypeMSWord()) return "Office Word";
+		if (this.isFileTypeJSON()) return "JSON";
 
 		return this.getContentType();
 	}

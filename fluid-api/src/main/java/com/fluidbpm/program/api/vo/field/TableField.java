@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -72,6 +73,24 @@ public class TableField extends ABaseFluidJSONObject {
 	public TableField(List<Form> tableRecordsParam) {
 		super();
 		this.setTableRecords(tableRecordsParam);
+	}
+
+	/**
+	 * Constructor to create {@code TableField} with records.
+	 *
+	 * @param toClone The records to clone.
+	 */
+	public TableField(TableField toClone) {
+		this();
+		if (toClone == null) return;
+		this.setId(toClone.getId());
+		this.sumDecimals = toClone.sumDecimals;
+		if (toClone.getTableRecords() == null) this.tableRecords = null;
+		else {
+			this.setTableRecords(toClone.getTableRecords().stream()
+					.map(itm -> new Form(itm.getId()))
+					.collect(Collectors.toList()));
+		}
 	}
 
 	/**
@@ -124,14 +143,22 @@ public class TableField extends ABaseFluidJSONObject {
 		//Table Field Records...
 		if (this.getTableRecords() != null && !this.getTableRecords().isEmpty()) {
 			JSONArray assoFormsArr = new JSONArray();
-			for (Form toAdd :this.getTableRecords()) {
-				assoFormsArr.put(toAdd.toJsonObject());
-			}
+
+			for (Form toAdd : this.getTableRecords()) assoFormsArr.put(toAdd.toJsonObject());
 
 			returnVal.put(JSONMapping.TABLE_RECORDS, assoFormsArr);
 		}
-
 		return returnVal;
+	}
+
+
+	/**
+	 * @return Cloned object from {@code this}
+	 */
+	@XmlTransient
+	@Override
+	public TableField clone() {
+		return new TableField(this);
 	}
 
 	/**

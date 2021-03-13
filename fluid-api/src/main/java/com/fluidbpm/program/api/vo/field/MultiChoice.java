@@ -340,14 +340,10 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return The combined text value.
 	 */
 	@XmlTransient
-	public String combineStringArrayWith(
-			List<String> listToCombineParam,
-			String separatorCharsParam) {
+	public String combineStringArrayWith(List<String> listToCombineParam, String separatorCharsParam) {
 		String returnValue = UtilGlobal.EMPTY;
 
-		int lengthOfSepChars = (separatorCharsParam == null) ? 0 :
-				separatorCharsParam.length();
-
+		int lengthOfSepChars = (separatorCharsParam == null) ? 0 : separatorCharsParam.length();
 		if (listToCombineParam != null && !listToCombineParam.isEmpty()) {
 			StringBuffer concatBuffer = new StringBuffer();
 			for (String toAdd : listToCombineParam) {
@@ -367,6 +363,15 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	@XmlTransient
 	public MultiChoice cloneMultiChoice() {
+		return new MultiChoice(this);
+	}
+
+	/**
+	 * @return Cloned object from {@code this}
+	 */
+	@XmlTransient
+	@Override
+	public MultiChoice clone() {
 		return new MultiChoice(this);
 	}
 

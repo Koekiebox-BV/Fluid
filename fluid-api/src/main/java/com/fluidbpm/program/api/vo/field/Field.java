@@ -242,6 +242,34 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		this.setTypeAsEnum(Field.Type.MultipleChoice);
 		this.setFieldValue(multiChoiceParam);
 	}
+	
+	private Field(Field toClone) {
+		if (toClone == null) return;
+
+		this.setId(toClone.getId());
+		this.fieldName = toClone.fieldName;
+		this.fieldDescription = toClone.fieldDescription;
+		this.fieldType = toClone.fieldType;
+		this.typeMetaData = toClone.typeMetaData;
+
+		if (toClone.fieldValue instanceof String) {
+			this.fieldValue = toClone.fieldValue.toString();
+		} else if (toClone.fieldValue instanceof Boolean) {
+			this.fieldValue = Boolean.valueOf((Boolean)toClone.fieldValue);
+		} else if (toClone.fieldValue instanceof Date) {
+			this.fieldValue = new Date(((Date)toClone.fieldValue).getTime());
+		} else if (toClone.fieldValue instanceof Long) {
+			this.fieldValue = Long.valueOf(((Long)toClone.fieldValue).longValue());
+		} else if (toClone.fieldValue instanceof Number) {
+			this.fieldValue = Double.valueOf(((Number)toClone.fieldValue).doubleValue());
+		} else if (toClone.fieldValue instanceof MultiChoice) {
+			this.fieldValue = ((MultiChoice)toClone.fieldValue).clone();
+		} else if (toClone.fieldValue instanceof TableField) {
+			this.fieldValue = ((TableField)toClone.fieldValue).clone();
+		} else {
+			this.fieldValue = null;
+		}
+	}
 
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
@@ -345,16 +373,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
-	 * Converts the {@code getFieldName} to upper_camel_case.
-	 *
-	 * @return {@code getFieldName()} as upper_camel_case.
-	 */
-	@XmlTransient
-	public String getFieldNameAsUpperCamel() {
-		return new UtilGlobal().toCamelUpperCase(this.getFieldName());
-	}
-
-	/**
 	 * Gets the description of {@code this} {@code Field}.
 	 *
 	 * @return The Field Description.
@@ -394,6 +412,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	public String getFieldValueAsString() {
 		Object returnObj = this.getFieldValue();
 		return (returnObj == null) ? null : returnObj.toString();
+	}
+
+	/**
+	 * Converts the {@code getFieldName} to upper_camel_case.
+	 *
+	 * @return {@code getFieldName()} as upper_camel_case.
+	 */
+	@XmlTransient
+	public String getFieldNameAsUpperCamel() {
+		return new UtilGlobal().toCamelUpperCase(this.getFieldName());
 	}
 
 	/**
@@ -505,17 +533,14 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Date getFieldValueAsDate() {
 		Object obj = this.getFieldValue();
+
 		if (obj == null) return null;
 
-		//Real Date...
 		if (obj instanceof Date) {
 			return (Date)obj;
-		} else if (obj instanceof Long) {
-			//Long...
-			Long longValue = (Long)obj;
-			if (longValue.longValue() > 0) {
-				return new Date(longValue.longValue());
-			}
+		} else if (obj instanceof Number) {
+			Number longValue = (Number)obj;
+			if (longValue.longValue() > 0) return new Date(longValue.longValue());
 		}
 		return null;
 	}
@@ -1005,17 +1030,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				return ElasticSearchType.TEXT;
 			case Text:
 				String metaData = this.getTypeMetaData();
-				if (metaData == null || metaData.isEmpty()) {
-					return ElasticSearchType.TEXT;
-				}
+				if (metaData == null || metaData.isEmpty()) return ElasticSearchType.TEXT;
 
-				if (LATITUDE_AND_LONGITUDE.equals(metaData)) {
-					return ElasticSearchType.GEO_POINT;
-				}
-
-				if (PLAIN_KEYWORD.equals(metaData)) {
-					return ElasticSearchType.KEYWORD;
-				}
+				if (LATITUDE_AND_LONGITUDE.equals(metaData)) return ElasticSearchType.GEO_POINT;
+				
+				if (PLAIN_KEYWORD.equals(metaData)) return ElasticSearchType.KEYWORD;
 
 				return ElasticSearchType.TEXT;
 			case TrueFalse:
@@ -1027,8 +1046,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			case MultipleChoice:
 				return ElasticSearchType.KEYWORD;
 		}
-
 		return null;
+	}
+
+	/**
+	 * @return Copy of {@code this}.
+	 */
+	@Override
+	@XmlTransient
+	public Field clone() {
+		return new Field(this);
 	}
 
 	/**
