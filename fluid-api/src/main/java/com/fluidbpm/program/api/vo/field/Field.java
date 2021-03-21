@@ -424,6 +424,17 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		return new UtilGlobal().toCamelUpperCase(this.getFieldName());
 	}
 
+
+	/**
+	 * Sets the field as double.
+	 * @param val to set.
+	 * @see Boolean
+	 */
+	@XmlTransient
+	public void setFieldValueAsDouble(Double val) {
+		this.setFieldValue(val);
+	}
+	
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Double}.
 	 *
@@ -524,6 +535,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
+	 * Sets the field as boolean.
+	 * @param trueFalse to set.
+	 * @see Boolean
+	 */
+	@XmlTransient
+	public void setFieldValueAsBoolean(Boolean trueFalse) {
+		this.setFieldValue(trueFalse);
+	}
+
+	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Date}.
 	 *
 	 * @return The Field Value.
@@ -543,6 +564,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			if (longValue.longValue() > 0) return new Date(longValue.longValue());
 		}
 		return null;
+	}
+
+	/**
+	 * Sets the field as date.
+	 * @param date to set.
+	 * @see Date
+	 */
+	@XmlTransient
+	public void setFieldValueAsDate(Date date) {
+		this.setFieldValue(date);
 	}
 
 	/**
