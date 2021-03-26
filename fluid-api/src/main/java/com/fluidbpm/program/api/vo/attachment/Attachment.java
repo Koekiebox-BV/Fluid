@@ -478,6 +478,23 @@ public class Attachment extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Verifies whether attachment type is Microsoft MS Word.
+	 * @return {@code true} if content type is Microsoft Word Document.
+	 */
+	@XmlTransient
+	public boolean isFileTypeMSExcel() {
+		String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
+		switch (contentTypeLower) {
+			case "application/vnd.ms-excel" :
+			case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :
+			case "application/vnd.openxmlformats-officedocument.spreadsheetml.template" :
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
 	 * Verifies whether attachment type is {@code application/json}.
 	 * @return {@code true} if content type is JSON.
 	 */
@@ -496,6 +513,7 @@ public class Attachment extends ABaseFluidJSONObject {
 		if (this.isFileTypePDF()) return "PDF";
 		if (this.isFileTypeMSWord()) return "Office Word";
 		if (this.isFileTypeJSON()) return "JSON";
+		if (this.isFileTypeMSExcel()) return "Office Excel";
 
 		return this.getContentType();
 	}

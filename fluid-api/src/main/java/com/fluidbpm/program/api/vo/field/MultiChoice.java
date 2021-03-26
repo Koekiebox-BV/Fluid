@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -278,6 +279,20 @@ public class MultiChoice extends ABaseFluidJSONObject {
 		if (this.selectedMultiChoices.isEmpty()) return null;
 		return this.selectedMultiChoices.get(0);
 	}
+
+	/**
+	 * Gets Selected MultiChoice.
+	 *
+	 * @return {@code String} Single value of selected multi choice.
+	 */
+	@XmlTransient
+	public String getSelectedMultiChoicesTxt() {
+		if (this.selectedMultiChoices == null) this.selectedMultiChoices = new ArrayList<>();
+		if (this.selectedMultiChoices.isEmpty()) return null;
+
+		return this.selectedMultiChoices.stream().collect(Collectors.joining(", "));
+	}
+
 
 	/**
 	 * Sets Selected MultiChoice.
