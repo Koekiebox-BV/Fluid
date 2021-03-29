@@ -3691,6 +3691,7 @@ public class WS {
 					//List Job View content...
 					public static final String QUERY_LIMIT = "query_limit";
 					public static final String OFFSET = "offset";
+					public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
 				}
 
 				public static final String ROOT = ("/user_query");
@@ -3730,21 +3731,24 @@ public class WS {
 				/**
 				 * URL Path for executing a {@code UserQuery}.
 				 *
-				 * @param populateAncestorIdParam - Whether the ancestor id should be populated
-				 *            (when applicable).
+				 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+				 * @param executeCalculatedLabels Execute the calculate labels.
 				 * @param queryLimitParam The query limit.
 				 * @param offsetParam The query offset.
 				 *
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(
-						boolean populateAncestorIdParam,
-						int queryLimitParam,
-						int offsetParam) {
+					boolean populateAncestorIdParam,
+					boolean executeCalculatedLabels,
+					int queryLimitParam,
+					int offsetParam
+				) {
 
 					return executeUserQuery(
 							populateAncestorIdParam,
 							false,
+							executeCalculatedLabels,
 							queryLimitParam,
 							offsetParam);
 				}
@@ -3755,6 +3759,7 @@ public class WS {
 				 * @param populateAncestorIdParam - Whether the ancestor id should be populated
 				 *            (when applicable).
 				 * @param forceUseDatabaseParam Force to use underlying database.
+				 * @param executeCalculatedLabels Execute the calculate labels.
 				 * @param queryLimitParam The query limit.
 				 * @param offsetParam The query offset.
 				 *
@@ -3763,6 +3768,7 @@ public class WS {
 				public static final String executeUserQuery(
 					boolean populateAncestorIdParam,
 					boolean forceUseDatabaseParam,
+					boolean executeCalculatedLabels,
 					int queryLimitParam,
 					int offsetParam
 				) {
@@ -3777,6 +3783,11 @@ public class WS {
 					additionString += QueryParam.POPULATE_ANCESTOR_ID;
 					additionString += "=";
 					additionString += populateAncestorIdParam;
+					additionString += "&";
+
+					additionString += QueryParam.EXECUTE_CALCULATED_LABELS;
+					additionString += "=";
+					additionString += executeCalculatedLabels;
 					additionString += "&";
 
 					if (queryLimitParam > 0) {
@@ -3829,7 +3840,7 @@ public class WS {
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(int queryLimitParam, int offsetParam) {
-					return executeUserQuery(true, queryLimitParam, offsetParam);
+					return executeUserQuery(true, false, queryLimitParam ,offsetParam);
 				}
 
 				/**

@@ -41,6 +41,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	private RowExpansion rowExpansion;
 
 	private boolean enableForTopBar;
+	private boolean enableCalculatedLabels;
 	private String queryInputLayoutStyle;//Vertical|Horizontal|Vertical Grid|Help Text|
 
 	private boolean showColumnID;
@@ -94,6 +95,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 		public static final String USER_QUERY = "userQuery";
 		public static final String MENU_ITEM = "menuItem";
 		public static final String ENABLE_FOR_TOP_BAR = "enableForTopBar";
+		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
 		public static final String QUERY_INPUT_LAYOUT_STYLE = "queryInputLayoutStyle";
 
 		public static final String SHOW_COLUMN_ID = "showColumnID";
@@ -140,6 +142,9 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.ENABLE_FOR_TOP_BAR))
 			this.setEnableForTopBar(this.jsonObject.getBoolean(JSONMapping.ENABLE_FOR_TOP_BAR));
+
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_CALCULATED_LABELS))
+			this.setEnableCalculatedLabels(this.jsonObject.getBoolean(JSONMapping.ENABLE_CALCULATED_LABELS));
 
 		if (!this.jsonObject.isNull(JSONMapping.QUERY_INPUT_LAYOUT_STYLE))
 			this.setQueryInputLayoutStyle(this.jsonObject.getString(JSONMapping.QUERY_INPUT_LAYOUT_STYLE));
@@ -204,6 +209,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
 		returnVal.put(JSONMapping.ENABLE_FOR_TOP_BAR, this.isEnableForTopBar());
+		returnVal.put(JSONMapping.ENABLE_CALCULATED_LABELS, this.isEnableCalculatedLabels());
 		returnVal.put(JSONMapping.QUERY_INPUT_LAYOUT_STYLE, this.getQueryInputLayoutStyle());
 
 		returnVal.put(JSONMapping.ATTACHMENT_HEADER, this.getAttachmentHeader());
