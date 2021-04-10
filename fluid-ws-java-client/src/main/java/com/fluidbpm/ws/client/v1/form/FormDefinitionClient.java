@@ -263,12 +263,12 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @return The deleted Form Definition.
 	 */
 	public Form deleteFormDefinition(Form formDefinitionParam) {
-		if (formDefinitionParam != null && this.serviceTicket != null) {
-			formDefinitionParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formDefinitionParam != null && this.serviceTicket != null) formDefinitionParam.setServiceTicket(this.serviceTicket);
 
-		if (formDefinitionParam != null && this.requestUuid != null) {
-			formDefinitionParam.setRequestUuid(this.requestUuid);
+		if (formDefinitionParam != null && this.requestUuid != null) formDefinitionParam.setRequestUuid(this.requestUuid);
+
+		if (formDefinitionParam.getFormTypeId() == null || formDefinitionParam.getFormTypeId().longValue() < 1) {
+			formDefinitionParam.setFormTypeId(formDefinitionParam.getId());
 		}
 
 		return new Form(this.postJson(formDefinitionParam,

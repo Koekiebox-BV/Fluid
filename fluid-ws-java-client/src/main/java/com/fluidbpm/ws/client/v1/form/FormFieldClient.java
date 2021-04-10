@@ -159,9 +159,8 @@ public class FormFieldClient extends ABaseFieldClient {
 							additionalInfo[3].toString());
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
-								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case MultipleChoice:
 				if (FieldMetaData.MultiChoice.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldMultiChoicePlain(formFieldParam, (List)additionalInfo[0]);
@@ -173,9 +172,8 @@ public class FormFieldClient extends ABaseFieldClient {
 					return this.createFieldMultiChoiceSelectManyWithSearch(formFieldParam, (List)additionalInfo[0]);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
-								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case ParagraphText:
 				if (FieldMetaData.ParagraphText.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldParagraphTextPlain(formFieldParam);
@@ -183,11 +181,19 @@ public class FormFieldClient extends ABaseFieldClient {
 					return this.createFieldParagraphTextHTML(formFieldParam);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
-								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case Table:
 				return this.createFieldTable(formFieldParam, (Form)additionalInfo[0], (Boolean)additionalInfo[1]);
+			case Label:
+				if (FieldMetaData.Label.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldLabelPlain(formFieldParam);
+				} else if (FieldMetaData.Label.ANCHOR.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldLabelAnchor(formFieldParam, (String)additionalInfo[0]);
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			default:
 				throw new FluidClientException(
 						String.format("Unable to determine type for '%s'.", formFieldParam.getTypeAsEnum()),
@@ -203,17 +209,14 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextPlain(Field formFieldParam) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Text);
 			formFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
 		}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -223,9 +226,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextEncryptedPlain(Field formFieldParam) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.TextEncrypted);
@@ -295,14 +296,10 @@ public class FormFieldClient extends ABaseFieldClient {
 		Field formFieldParam,
 		String barcodeTypeParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (barcodeTypeParam == null || barcodeTypeParam.trim().isEmpty()) {
-			throw new FluidClientException(
-					"Barcode type cannot be empty.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
+			throw new FluidClientException("Barcode type cannot be empty.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
 		if (formFieldParam != null) {
@@ -310,8 +307,7 @@ public class FormFieldClient extends ABaseFieldClient {
 			formFieldParam.setTypeMetaData(FieldMetaData.Text.BARCODE.concat(barcodeTypeParam));
 		}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -321,17 +317,61 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextLatitudeAndLongitude(Field formFieldParam) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Text);
 			formFieldParam.setTypeMetaData(FieldMetaData.Text.LATITUDE_AND_LONGITUDE);
 		}
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	/**
+	 * Create a new Label Plain field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @return Created Field.
+	 *
+	 * @see com.fluidbpm.ws.client.v1.ABaseFieldClient.FieldMetaData.Label
+	 */
+	public Field createFieldLabelPlain(
+		Field formFieldParam
+	) {
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
+		
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.Label);
+			formFieldParam.setTypeMetaData(FieldMetaData.Label.PLAIN);
+		}
+
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
+
+	/**
+	 * Create a new Label Anchor field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @param anchorValue The anchor value.
+	 * @return Created Field.
+	 *
+	 * @see com.fluidbpm.ws.client.v1.ABaseFieldClient.FieldMetaData.Label
+	 */
+	public Field createFieldLabelAnchor(
+		Field formFieldParam,
+		String anchorValue
+	) {
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
+
+		if (anchorValue == null || anchorValue.trim().isEmpty()) {
+			throw new FluidClientException("Anchor cannot be empty.", FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
+
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.Label);
+			formFieldParam.setTypeMetaData(String.format("%s_%s", FieldMetaData.Label.ANCHOR, anchorValue));
+		}
+
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -591,16 +631,14 @@ public class FormFieldClient extends ABaseFieldClient {
 		double stepFactorParam,
 		String prefixParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForDecimalAs(
 							FieldMetaData.Decimal.SPINNER,
-							minParam,maxParam, stepFactorParam, prefixParam));
+							minParam, maxParam, stepFactorParam, prefixParam));
 		}
 
 		return new Field(this.putJson(
