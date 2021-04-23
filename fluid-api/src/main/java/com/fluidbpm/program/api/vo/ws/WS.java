@@ -387,8 +387,13 @@ public class WS {
 				 *
 				 * @return {@code v1/form_container/print_as_pdf}
 				 */
-				public static final String getPrintAsPDF(Long formContainerIdParam, boolean includeCompanyLogoParam, boolean includeAncestorParam, boolean includeDescendantsParam,
-						boolean includeFormPropertiesParam) {
+				public static final String getPrintAsPDF(
+					Long formContainerIdParam,
+					boolean includeCompanyLogoParam,
+					boolean includeAncestorParam,
+					boolean includeDescendantsParam,
+					boolean includeFormPropertiesParam
+				) {
 					String returnVal = Version.VERSION_1.concat(ROOT).concat(PRINT_AS_PDF);
 
 					returnVal += "?";
@@ -399,6 +404,52 @@ public class WS {
 					returnVal += formContainerIdParam;
 					returnVal += "&";
 
+					//Include Ancestor...
+					returnVal += QueryParam.INCLUDE_ANCESTOR;
+					returnVal += "=";
+					returnVal += includeAncestorParam;
+					returnVal += "&";
+
+					//Include Company Logo...
+					returnVal += QueryParam.INCLUDE_COMPANY_LOGO;
+					returnVal += "=";
+					returnVal += includeCompanyLogoParam;
+					returnVal += "&";
+
+					//Include Descendants...
+					returnVal += QueryParam.INCLUDE_DESCENDANTS;
+					returnVal += "=";
+					returnVal += includeDescendantsParam;
+					returnVal += "&";
+
+					//Form Properties...
+					returnVal += QueryParam.INCLUDE_FORM_PROPERTIES;
+					returnVal += "=";
+					returnVal += includeFormPropertiesParam;
+
+					return returnVal;
+				}
+
+				/**
+				 * URL Path for a PDF version of the {@code Form}.
+				 *
+				 * @param includeAncestorParam Include the ancestor electronic form.
+				 * @param includeCompanyLogoParam Include the company logo.
+				 * @param includeDescendantsParam Include descendant forms.
+				 * @param includeFormPropertiesParam Include form properties.
+				 *
+				 * @return {@code v1/form_container/print_as_pdf}
+				 */
+				public static final String printAsPDFAttachment(
+					boolean includeCompanyLogoParam,
+					boolean includeAncestorParam,
+					boolean includeDescendantsParam,
+					boolean includeFormPropertiesParam
+				) {
+					String returnVal = Version.VERSION_1.concat(ROOT).concat(PRINT_AS_PDF);
+
+					returnVal += "?";
+					
 					//Include Ancestor...
 					returnVal += QueryParam.INCLUDE_ANCESTOR;
 					returnVal += "=";

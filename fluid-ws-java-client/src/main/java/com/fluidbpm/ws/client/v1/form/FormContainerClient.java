@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
+import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -453,10 +454,11 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return The un-locked form.
 	 */
 	public Form unLockFormContainer(
-			Form formParam,
-			User userToUnLockAsParam,
-			boolean unlockAsyncParam,
-			boolean removeFromPersonalInventoryParam) {
+		Form formParam,
+		User userToUnLockAsParam,
+		boolean unlockAsyncParam,
+		boolean removeFromPersonalInventoryParam
+	) {
 		if (this.serviceTicket != null && formParam != null) {
 			formParam.setServiceTicket(this.serviceTicket);
 		}
@@ -474,6 +476,40 @@ public class FormContainerClient extends ABaseClientWS {
 		}
 		//rethrow as a Fluid Client exception.
 		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
+
+	/**
+	 * Create a PDF version of the attachment for form {@code formToPrint}
+	 * @param formToPrint The form to print.
+	 * @param includeCompanyLogo Should the company logo be included.
+	 * @param includeAncestor Should the ancestor form be included.
+	 * @param includeDescendants Should the descendant form/s be included.
+	 * @param includeFormProperties Should the form properties be included.
+	 *
+	 * @return Attachment with PDF content.
+	 *
+	 * @see Attachment
+	 */
+	public Attachment printForm(
+		Form formToPrint,
+		boolean includeCompanyLogo,
+		boolean includeAncestor,
+		boolean includeDescendants,
+		boolean includeFormProperties
+	) {
+		formToPrint.setServiceTicket(this.serviceTicket);
+		try {
+			return new Attachment(this.postJson(
+					formToPrint,
+					WS.Path.FormContainer.Version1.printAsPDFAttachment(
+							includeCompanyLogo,
+							includeAncestor,
+							includeDescendants,
+							includeFormProperties)));
+		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
