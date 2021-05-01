@@ -15,17 +15,26 @@
 
 package com.fluidbpm.program.api.util;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.xml.bind.DatatypeConverter;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.google.common.io.BaseEncoding;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Global utility class for the {@code com.fluidbpm.program.api.util} package.
@@ -47,8 +56,10 @@ public class UtilGlobal {
 	public static final String COMMA = ",";
 	public static final String COMMA_SPACE = ", ";
 	public static final String FORWARD_SLASH = "/";
+	public static final String NONE = "[None]";
 
 	//RegEx...
+	public static final String REG_EX_SPACE = "\\ ";
 	public static final String REG_EX_COMMA = "\\,";
 	public static final String REG_EX_PIPE = "\\|";
 
@@ -504,4 +515,212 @@ public class UtilGlobal {
 	public static String randomUUID() {
 		return UUID.randomUUID().toString();
 	}
+
+	/**
+	 * Performs a check whether the objects inside {@code toCheckForNullParam} is null.
+	 *
+	 * @param toCheckForNull Objects to check for {@code null}
+	 * @return {@code true} if all objects in {@code toCheckForNullParam} is {@code null}
+	 */
+	public static final boolean isAllNull(Object ... toCheckForNull) {
+		if (toCheckForNull == null || toCheckForNull.length == 0) return true;
+
+		for (Object toCheck : toCheckForNull)
+			if (toCheck != null) return false;
+
+		return true;
+	}
+
+	/**
+	 * Verify if one of the Strings in {@code stringsToCheck} is empty.
+	 * If the array itself is {@code null} or empty, a {@code true} value will be returned.
+	 *
+	 * @param stringsToCheck The list of Strings to verify of being empty.
+	 * @return {@code true} if any of the String's in {@code stringsToCheck} is {@code null} or empty.
+	 */
+	public static final boolean isBlank(String ... stringsToCheck) {
+		if (stringsToCheck == null || stringsToCheck.length == 0) return true;
+		for (String toCheck : stringsToCheck) if (toCheck == null || toCheck.trim().isEmpty()) return true;
+		return false;
+	}
+
+	/**
+	 * Verify if one of the Strings in {@code stringsToCheck} is NOT empty.
+	 * If the array itself is {@code null} or empty, a {@code false} value will be returned.
+	 *
+	 * @param stringsToCheck The list of Strings to verify of NOT being empty.
+	 * @return {@code true} if any of the String's in {@code stringsToCheck} is NOT {@code null} or empty.
+	 */
+	public static final boolean isNotBlank(String ... stringsToCheck) {
+		if (stringsToCheck == null || stringsToCheck.length == 0) return false;
+		for (String toCheck : stringsToCheck) if (toCheck == null || toCheck.trim().isEmpty()) return false;
+		return true;
+	}
+
+	/**
+	 * Convert String date {@code dateInStringParam} to {@code Date} applying format {@code formatParam}.
+	 *
+	 * @param dateInString The date in String format to parse.
+	 * @param format The format to apply.
+	 * @return {@code Date} object from {@code dateInString}
+	 *
+	 * @see Date
+	 */
+	public static Date fromStringToDateSafe(String dateInString, String format) {
+		if (dateInString == null || format == null) {
+			return null;
+		}
+
+		try {
+			return new SimpleDateFormat(format).parse(dateInString);
+		} catch (ParseException nfe) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns -1 if there is a problem with conversion.
+	 *
+	 * @param toParseParam The {@code String} value to parse to {@code int}.
+	 * @return int for {@code toParseParam}.
+	 */
+	public static final int toIntSafe(String toParseParam) {
+		if (toParseParam == null || toParseParam.isEmpty()) {
+			return -1;
+		}
+		try {
+			return Double.valueOf(toParseParam).intValue();
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+
+	/**
+	 * Returns -1 if there is a problem with conversion.
+	 *
+	 * @param toParseParam The {@code String} value to parse to {@code long}.
+	 * @return long for {@code toParseParam}.
+	 */
+	public static final long toLongSafe(String toParseParam) {
+		if (toParseParam == null || toParseParam.isEmpty()) {
+			return -1;
+		}
+		try {
+			return Double.valueOf(toParseParam).longValue();
+		} catch (NumberFormatException e) {
+			return -1L;
+		}
+	}
+
+	/**
+	 * Uncompress the raw {@code compressedBytesParam}.
+	 *
+	 * @param compressedBytes The compressed bytes to uncompress.
+	 * @param charset The character set yo use.
+	 *
+	 * @return Uncompressed bytes.
+	 *
+	 * @throws IOException - If there is an issue during the un-compression.
+	 */
+	public static byte[] uncompress(
+		byte[] compressedBytes,
+		Charset charset
+	) throws IOException {
+		byte[] buffer = new byte[1024];
+		byte[] returnVal = null;
+		ZipInputStream zis = null;
+		if (charset == null) {
+			zis = new ZipInputStream(new ByteArrayInputStream(compressedBytes));
+		} else {
+			zis = new ZipInputStream(new ByteArrayInputStream(compressedBytes), charset);
+		}
+
+		//get the zip file content
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+		//get the zipped file list entry
+		ZipEntry ze = zis.getNextEntry();
+		if (ze == null){
+			return returnVal;
+		}
+		int len;
+		while ((len = zis.read(buffer)) > 0) {
+			bos.write(buffer, 0, len);
+		}
+
+		zis.closeEntry();
+		zis.close();
+
+		bos.flush();
+		bos.close();
+		returnVal = bos.toByteArray();
+		return returnVal;
+	}
+
+	/**
+	 * Encode {@code toEncodeParam} for URL using UTF-8 character set.
+	 *
+	 * @param toEncodeParam The text to encode.
+	 * @return encoded {@code toEncodeParam} value in UTF-8 encoding
+	 */
+	public static String encodeURL(String toEncodeParam) {
+		if (toEncodeParam == null || toEncodeParam.trim().isEmpty()) return UtilGlobal.EMPTY;
+
+		try {
+			return URLEncoder.encode(toEncodeParam, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return toEncodeParam;
+		}
+	}
+
+	/**
+	 * Convert the {@code list} to {@code JSONArray}
+	 *
+	 * @param list The list to convert to JSON Array.
+	 * @param <T> The type of {@code ABaseFluidJSONObject}
+	 * @return JSONArray from {@code list}
+	 * @see ABaseFluidJSONObject
+	 * @see JSONArray
+	 */
+	public static <T extends ABaseFluidJSONObject> JSONArray toJSONArray(List<T> list) {
+		if (list == null) return null;
+
+		JSONArray jsonArray = new JSONArray();
+		for (T toAdd :list) jsonArray.put(toAdd.toJsonObject());
+		return jsonArray;
+	}
+
+	/**
+	 * Write the contents of {@code inputStream} to {@code outFile}.
+	 *
+	 * @param inputStream The input-stream of content to write.
+	 * @param outFile The file to write content to.
+	 * @throws IOException Any IO errors
+	 */
+	public static void writeStreamToFile(InputStream inputStream, File outFile) throws IOException {
+		try (OutputStream fos = new FileOutputStream(outFile,false)) {
+			int readByte = -1;
+			while ((readByte = inputStream.read()) != -1) {
+				fos.write(readByte);
+			}
+		} finally {
+			if (inputStream != null) inputStream.close();
+		}
+	}
+
+	/**
+	 * Read the content of a file.
+	 * 
+	 * @param fileToRead The file to read.
+	 * @return The {@code byte}s for the read file.
+	 * @throws IOException Any IO errors
+	 */
+	public static byte[] readFileBytes(File fileToRead) throws IOException {
+		if (fileToRead == null) return null;
+		return Files.readAllBytes(fileToRead.toPath());
+	}
+
+	
+
 }

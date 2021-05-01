@@ -15,13 +15,12 @@
 
 package com.fluidbpm.program.api.vo.license;
 
-import java.util.Date;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import java.util.Date;
 
 /**
  * License request for Fluid.
@@ -32,251 +31,237 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
  * @see ABaseFluidVO
  */
 public class LicenseRequest extends ABaseFluidJSONObject {
+	public static final long serialVersionUID = 1L;
 
-    public static final long serialVersionUID = 1L;
+	private String machineName;
+	private String licenseType;
+	private String licenseCipherText;
+	private Integer userCount;
+	private Date dateValidFrom;
+	private Date dateValidTo;
 
-    private String machineName;
-    private String licenseType;
-    private String licenseCipherText;
-    private Integer userCount;
-    private Date dateValidFrom;
-    private Date dateValidTo;
+	/**
+	 * The JSON mapping for the {@code LicenseRequest} object.
+	 */
+	public static class JSONMapping {
+		public static final String MACHINE_NAME = "machineName";
+		public static final String LICENSE_TYPE = "licenseType";
+		public static final String USER_COUNT = "userCount";
+		public static final String DATE_VALID_FROM = "dateValidFrom";
+		public static final String DATE_VALID_TO = "dateValidTo";
+		public static final String LICENSE_CIPHER_TEXT = "licenseCipherText";
+	}
 
-    /**
-     * The JSON mapping for the {@code LicenseRequest} object.
-     */
-    public static class JSONMapping
-    {
-        public static final String MACHINE_NAME = "machineName";
-        public static final String LICENSE_TYPE = "licenseType";
-        public static final String USER_COUNT = "userCount";
-        public static final String DATE_VALID_FROM = "dateValidFrom";
-        public static final String DATE_VALID_TO = "dateValidTo";
-        public static final String LICENSE_CIPHER_TEXT = "licenseCipherText";
-    }
+	/**
+	 * Default constructor.
+	 */
+	public LicenseRequest() {
+		super();
+	}
 
-    /**
-     * Default constructor.
-     */
-    public LicenseRequest() {
-        super();
-    }
+	/**
+	 * Populates local variables with {@code jsonObjectParam}.
+	 *
+	 * @param jsonObjectParam The JSON Object.
+	 */
+	public LicenseRequest(JSONObject jsonObjectParam) {
+		super(jsonObjectParam);
 
-    /**
-     * Populates local variables with {@code jsonObjectParam}.
-     *
-     * @param jsonObjectParam The JSON Object.
-     */
-    public LicenseRequest(JSONObject jsonObjectParam) {
-        super(jsonObjectParam);
+		if (this.jsonObject == null) {
+			return;
+		}
 
-        if (this.jsonObject == null)
-        {
-            return;
-        }
+		//Machine Name...
+		if (!this.jsonObject.isNull(JSONMapping.MACHINE_NAME)) {
+			this.setMachineName(this.jsonObject.getString(
+					JSONMapping.MACHINE_NAME));
+		}
 
-        //Machine Name...
-        if (!this.jsonObject.isNull(JSONMapping.MACHINE_NAME)) {
+		//License Type...
+		if (!this.jsonObject.isNull(JSONMapping.LICENSE_TYPE)) {
+			this.setLicenseType(this.jsonObject.getString(
+					JSONMapping.LICENSE_TYPE));
+		}
 
-            this.setMachineName(this.jsonObject.getString(
-                    JSONMapping.MACHINE_NAME));
-        }
+		//License Cipher Text...
+		if (!this.jsonObject.isNull(JSONMapping.LICENSE_CIPHER_TEXT)) {
+			this.setLicenseCipherText(this.jsonObject.getString(
+					JSONMapping.LICENSE_CIPHER_TEXT));
+		}
 
-        //License Type...
-        if (!this.jsonObject.isNull(JSONMapping.LICENSE_TYPE)) {
+		//User Count...
+		if (!this.jsonObject.isNull(JSONMapping.USER_COUNT)) {
+			this.setUserCount(this.jsonObject.getInt(
+					JSONMapping.USER_COUNT));
+		}
 
-            this.setLicenseType(this.jsonObject.getString(
-                    JSONMapping.LICENSE_TYPE));
-        }
+		//Date Valid From...
+		this.setDateValidFrom(
+				this.getDateFieldValueFromFieldWithName(
+						JSONMapping.DATE_VALID_FROM));
 
-        //License Cipher Text...
-        if (!this.jsonObject.isNull(JSONMapping.LICENSE_CIPHER_TEXT)) {
+		//Date Valid To...
+		this.setDateValidTo(
+				this.getDateFieldValueFromFieldWithName(
+						JSONMapping.DATE_VALID_TO));
+	}
 
-            this.setLicenseCipherText(this.jsonObject.getString(
-                    JSONMapping.LICENSE_CIPHER_TEXT));
-        }
+	/**
+	 * Conversion to {@code JSONObject} from Java Object.
+	 *
+	 * @return {@code JSONObject} representation of {@code LicenseRequest}
+	 * @throws JSONException If there is a problem with the JSON Body.
+	 *
+	 * @see ABaseFluidJSONObject#toJsonObject()
+	 */
+	@Override
+	public JSONObject toJsonObject() throws JSONException {
+		JSONObject returnVal = super.toJsonObject();
 
-        //User Count...
-        if (!this.jsonObject.isNull(JSONMapping.USER_COUNT)) {
+		//Machine Name...
+		if (this.getMachineName() != null) {
+			returnVal.put(JSONMapping.MACHINE_NAME,
+					this.getMachineName());
+		}
 
-            this.setUserCount(this.jsonObject.getInt(
-                    JSONMapping.USER_COUNT));
-        }
+		//Cipher Text...
+		if (this.getLicenseCipherText() != null) {
+			returnVal.put(JSONMapping.LICENSE_CIPHER_TEXT,
+					this.getLicenseCipherText());
+		}
 
-        //Date Valid From...
-        this.setDateValidFrom(
-                this.getDateFieldValueFromFieldWithName(
-                        JSONMapping.DATE_VALID_FROM));
+		//License Type...
+		if (this.getLicenseType() != null) {
+			returnVal.put(JSONMapping.LICENSE_TYPE,
+					this.getLicenseType());
+		}
 
-        //Date Valid To...
-        this.setDateValidTo(
-                this.getDateFieldValueFromFieldWithName(
-                        JSONMapping.DATE_VALID_TO));
-    }
+		//User Count...
+		if (this.getUserCount() != null) {
+			returnVal.put(JSONMapping.USER_COUNT,
+					this.getUserCount());
+		}
 
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code LicenseRequest}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
-     */
-    @Override
-    public JSONObject toJsonObject() throws JSONException
-    {
-        JSONObject returnVal = super.toJsonObject();
+		//Date Valid From...
+		if (this.getDateValidFrom() != null) {
+			returnVal.put(JSONMapping.DATE_VALID_FROM,
+					this.getDateAsLongFromJson(this.getDateValidFrom()));
+		}
 
-        //Machine Name...
-        if (this.getMachineName() != null)
-        {
-            returnVal.put(JSONMapping.MACHINE_NAME,
-                    this.getMachineName());
-        }
+		//Date Valid To...
+		if (this.getDateValidTo() != null) {
+			returnVal.put(JSONMapping.DATE_VALID_TO,
+					this.getDateAsLongFromJson(this.getDateValidTo()));
+		}
 
-        //Cipher Text...
-        if (this.getLicenseCipherText() != null)
-        {
-            returnVal.put(JSONMapping.LICENSE_CIPHER_TEXT,
-                    this.getLicenseCipherText());
-        }
+		return returnVal;
+	}
 
-        //License Type...
-        if (this.getLicenseType() != null)
-        {
-            returnVal.put(JSONMapping.LICENSE_TYPE,
-                    this.getLicenseType());
-        }
+	/**
+	 * Gets the Machine name.
+	 *
+	 * @return Machine name.
+	 */
+	public String getMachineName() {
+		return this.machineName;
+	}
 
-        //User Count...
-        if (this.getUserCount() != null)
-        {
-            returnVal.put(JSONMapping.USER_COUNT,
-                    this.getUserCount());
-        }
+	/**
+	 * Sets the Machine Name.
+	 *
+	 * @param machineNameParam The name of the machine.
+	 */
+	public void setMachineName(String machineNameParam) {
+		this.machineName = machineNameParam;
+	}
 
-        //Date Valid From...
-        if (this.getDateValidFrom() != null)
-        {
-            returnVal.put(JSONMapping.DATE_VALID_FROM,
-                    this.getDateAsLongFromJson(this.getDateValidFrom()));
-        }
+	/**
+	 * Gets the License type.
+	 *
+	 * @return License type.
+	 */
+	public String getLicenseType() {
+		return this.licenseType;
+	}
 
-        //Date Valid To...
-        if (this.getDateValidTo() != null)
-        {
-            returnVal.put(JSONMapping.DATE_VALID_TO,
-                    this.getDateAsLongFromJson(this.getDateValidTo()));
-        }
+	/**
+	 * Sets the license type.
+	 *
+	 * @param licenseTypeParam The type of license.
+	 */
+	public void setLicenseType(String licenseTypeParam) {
+		this.licenseType = licenseTypeParam;
+	}
 
-        return returnVal;
-    }
+	/**
+	 * Gets the user count.
+	 *
+	 * @return The number of users.
+	 */
+	public Integer getUserCount() {
+		return this.userCount;
+	}
 
-    /**
-     * Gets the Machine name.
-     *
-     * @return Machine name.
-     */
-    public String getMachineName() {
-        return this.machineName;
-    }
+	/**
+	 * Sets the user count.
+	 *
+	 * @param userCountParam The number of users.
+	 */
+	public void setUserCount(Integer userCountParam) {
+		this.userCount = userCountParam;
+	}
 
-    /**
-     * Sets the Machine Name.
-     *
-     * @param machineNameParam The name of the machine.
-     */
-    public void setMachineName(String machineNameParam) {
-        this.machineName = machineNameParam;
-    }
+	/**
+	 * Gets the Valid From date.
+	 *
+	 * @return The from date.
+	 */
+	public Date getDateValidFrom() {
+		return this.dateValidFrom;
+	}
 
-    /**
-     * Gets the License type.
-     *
-     * @return License type.
-     */
-    public String getLicenseType() {
-        return this.licenseType;
-    }
+	/**
+	 * Sets the Valid From date.
+	 *
+	 * @param dateValidFromParam The from date.
+	 */
+	public void setDateValidFrom(Date dateValidFromParam) {
+		this.dateValidFrom = dateValidFromParam;
+	}
 
-    /**
-     * Sets the license type.
-     *
-     * @param licenseTypeParam The type of license.
-     */
-    public void setLicenseType(String licenseTypeParam) {
-        this.licenseType = licenseTypeParam;
-    }
+	/**
+	 * Gets the Valid to date.
+	 *
+	 * @return The to date.
+	 */
+	public Date getDateValidTo() {
+		return this.dateValidTo;
+	}
 
-    /**
-     * Gets the user count.
-     *
-     * @return The number of users.
-     */
-    public Integer getUserCount() {
-        return this.userCount;
-    }
+	/**
+	 * Sets the Valid to date.
+	 *
+	 * @param dateValidToParam The to date.
+	 */
+	public void setDateValidTo(Date dateValidToParam) {
+		this.dateValidTo = dateValidToParam;
+	}
 
-    /**
-     * Sets the user count.
-     *
-     * @param userCountParam The number of users.
-     */
-    public void setUserCount(Integer userCountParam) {
-        this.userCount = userCountParam;
-    }
+	/**
+	 * Gets the license cipher text.
+	 *
+	 * @return The license cypher text.
+	 */
+	public String getLicenseCipherText() {
+		return this.licenseCipherText;
+	}
 
-    /**
-     * Gets the Valid From date.
-     *
-     * @return The from date.
-     */
-    public Date getDateValidFrom() {
-        return this.dateValidFrom;
-    }
-
-    /**
-     * Sets the Valid From date.
-     *
-     * @param dateValidFromParam The from date.
-     */
-    public void setDateValidFrom(Date dateValidFromParam) {
-        this.dateValidFrom = dateValidFromParam;
-    }
-
-    /**
-     * Gets the Valid to date.
-     *
-     * @return The to date.
-     */
-    public Date getDateValidTo() {
-        return this.dateValidTo;
-    }
-
-    /**
-     * Sets the Valid to date.
-     *
-     * @param dateValidToParam The to date.
-     */
-    public void setDateValidTo(Date dateValidToParam) {
-        this.dateValidTo = dateValidToParam;
-    }
-
-    /**
-     * Gets the license cipher text.
-     *
-     * @return The license cypher text.
-     */
-    public String getLicenseCipherText() {
-        return this.licenseCipherText;
-    }
-
-    /**
-     * Sets the license cipher text.
-     *
-     * @param licenseCipherTextParam The license cypher text.
-     */
-    public void setLicenseCipherText(String licenseCipherTextParam) {
-        this.licenseCipherText = licenseCipherTextParam;
-    }
+	/**
+	 * Sets the license cipher text.
+	 *
+	 * @param licenseCipherTextParam The license cypher text.
+	 */
+	public void setLicenseCipherText(String licenseCipherTextParam) {
+		this.licenseCipherText = licenseCipherTextParam;
+	}
 }

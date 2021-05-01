@@ -15,17 +15,17 @@
 
 package com.fluidbpm.program.api.vo.attachment;
 
-import java.io.File;
-import java.util.Date;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.google.common.io.BaseEncoding;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.io.File;
+import java.util.Date;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -68,9 +68,8 @@ public class Attachment extends ABaseFluidJSONObject {
 
 		public static final String DATE_LAST_UPDATED = "dateLastUpdated";
 		public static final String DATE_CREATED = "dateCreated";
-
+		
 		public static final String FORM_ID = "formId";
-
 		public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
 	}
 
@@ -88,7 +87,6 @@ public class Attachment extends ABaseFluidJSONObject {
 	 */
 	public Attachment(Long attachmentIdParam) {
 		super();
-
 		this.setId(attachmentIdParam);
 	}
 
@@ -118,6 +116,30 @@ public class Attachment extends ABaseFluidJSONObject {
 		{
 			this.setName(theFile.getName());
 		}
+	}
+
+	/**
+	 * Create a clone from {@code toClone}
+	 * @param toClone
+	 */
+	private Attachment(Attachment toClone) {
+		if (toClone == null) {
+			return;
+		}
+		this.setAttachmentDataBase64(toClone.getAttachmentDataBase64());
+		this.setContentType(toClone.getContentType());
+		this.setDateCreated(toClone.getDateCreated() == null ?
+				null : new Date(toClone.getDateCreated().getTime()));
+		this.setDateLastUpdated(toClone.getDateLastUpdated() == null ?
+				null : new Date(toClone.getDateLastUpdated().getTime()));
+		this.setFormId(toClone.getFormId());
+		this.setName(toClone.getName());
+		this.setPath(toClone.getPath());
+		this.setVersion(toClone.getVersion());
+		this.setId(toClone.getId());
+		this.setEcho(toClone.getEcho());
+		this.setServiceTicket(toClone.getServiceTicket());
+		this.setRequestUuid(toClone.getRequestUuid());
 	}
 
 	/**
@@ -365,13 +387,10 @@ public class Attachment extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
-
 		JSONObject returnVal = super.toJsonObject();
-
 		//Attachment Data...
 		if (this.getAttachmentDataBase64() != null) {
-			returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
-					this.getAttachmentDataBase64());
+			returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
 		}
 
 		//Content Type...
@@ -401,16 +420,123 @@ public class Attachment extends ABaseFluidJSONObject {
 
 		//Date Created...
 		if (this.getDateCreated() != null) {
-			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateCreated().getTime());
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateCreated().getTime());
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-					this.getDateLastUpdated().getTime());
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateLastUpdated().getTime());
 		}
 
 		return returnVal;
 	}
+
+	/**
+	 * Clone {@code this} object.
+	 *
+	 * @return cloned instance of {@code Attachment}.
+	 */
+	@Override
+	public Attachment clone() {
+		return new Attachment(this);
+	}
+
+	/**
+	 * Verifies whether attachment file type is {@code image/*}.
+	 * @return {@code true} if content type is image.
+	 */
+	@XmlTransient
+	public boolean isFileTypeImage() {
+		if (this.getContentType() == null || this.getContentType().trim().isEmpty()) return false;
+		return (this.getContentType().trim().toLowerCase().startsWith("image"));
+	}
+
+	/**
+	 * Verifies whether attachment type is {@code application/pdf}.
+	 * @return {@code true} if content type is PDF.
+	 */
+	@XmlTransient
+	public boolean isFileTypePDF() {
+		return "application/pdf".equals(this.getContentType().trim().toLowerCase());
+	}
+
+	/**
+	 * Verifies whether attachment type is Microsoft MS Word.
+	 * @return {@code true} if content type is Microsoft Word Document.
+	 */
+	@XmlTransient
+	public boolean isFileTypeMSWord() {
+		String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
+		switch (contentTypeLower) {
+			case "application/msword" :
+			case "application/vnd.openxmlformats-officedocument.wordprocessingml.document" :
+			case "application/vnd.openxmlformats-officedocument.wordprocessingml.template" :
+				return true;
+			default:
+			return false;
+		}
+	}
+
+	/**
+	 * Verifies whether attachment type is Microsoft MS Word.
+	 * @return {@code true} if content type is Microsoft Word Document.
+	 */
+	@XmlTransient
+	public boolean isFileTypeMSExcel() {
+		String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
+		switch (contentTypeLower) {
+			case "application/vnd.ms-excel" :
+			case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" :
+			case "application/vnd.openxmlformats-officedocument.spreadsheetml.template" :
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Verifies whether attachment type is {@code application/json}.
+	 * @return {@code true} if content type is JSON.
+	 */
+	@XmlTransient
+	public boolean isFileTypeJSON() {
+		return "application/json".equals(this.getContentType().trim().toLowerCase());
+	}
+
+	/**
+	 * Friendly name for content-type.
+	 * @return String - The user friendly name for the content type.
+	 */
+	@XmlTransient
+	public String getContentTypeFriendly() {
+		if (this.isFileTypeImage()) return "Image";
+		if (this.isFileTypePDF()) return "PDF";
+		if (this.isFileTypeMSWord()) return "Office Word";
+		if (this.isFileTypeJSON()) return "JSON";
+		if (this.isFileTypeMSExcel()) return "Office Excel";
+
+		return this.getContentType();
+	}
+
+	/**
+	 * Convert the Base64 encoded attachment data to binary.
+	 * @return {@code byte[]}
+	 */
+	@XmlTransient
+	public byte[] getAttachmentDataRAW() {
+		if (UtilGlobal.isBlank(this.getAttachmentDataBase64())) return null;
+		return BaseEncoding.base64().decode(this.getAttachmentDataBase64());
+	}
+
+	/**
+	 * @return Extension from filename.
+	 */
+	@XmlTransient
+	public String getExtensionFromFilename() {
+		if (this.getName() == null) return null;
+		int indexOf = this.getName().lastIndexOf(".");
+		if (indexOf > -1) return this.getName().substring(indexOf);
+		return null;
+	}
+
 }

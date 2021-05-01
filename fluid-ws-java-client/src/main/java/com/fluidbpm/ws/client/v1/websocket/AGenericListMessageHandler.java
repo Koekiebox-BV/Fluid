@@ -1,7 +1,13 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.compress.CompressedResponse;
+import com.fluidbpm.program.api.vo.ws.Error;
+import com.fluidbpm.ws.client.FluidClientException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -11,17 +17,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.compress.CompressedResponse;
-import com.fluidbpm.program.api.vo.ws.Error;
-import com.fluidbpm.ws.client.FluidClientException;
 
 /**
  * Base list message handler.
@@ -391,44 +386,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @throws IOException - If there is an issue during the un-compression.
 	 */
 	protected byte[] uncompress(
-			byte[] compressedBytesParam
+		byte[] compressedBytesParam
 	) throws IOException {
-
-		byte[] buffer = new byte[1024];
-
-		byte[] returnVal = null;
-		ZipInputStream zis = null;
-		if (CHARSET == null) {
-			zis = new ZipInputStream(
-					new ByteArrayInputStream(compressedBytesParam));
-		} else {
-			zis = new ZipInputStream(
-					new ByteArrayInputStream(compressedBytesParam),
-					CHARSET);
-		}
-
-		//get the zip file content
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-		//get the zipped file list entry
-		ZipEntry ze = zis.getNextEntry();
-		if (ze == null){
-			return returnVal;
-		}
-
-		int len;
-		while ((len = zis.read(buffer)) > 0) {
-			bos.write(buffer, 0, len);
-		}
-
-		zis.closeEntry();
-		zis.close();
-
-		bos.flush();
-		bos.close();
-
-		returnVal = bos.toByteArray();
-
-		return returnVal;
+		return UtilGlobal.uncompress(compressedBytesParam, CHARSET);
 	}
 }

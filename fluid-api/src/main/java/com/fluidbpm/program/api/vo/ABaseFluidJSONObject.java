@@ -15,14 +15,13 @@
 
 package com.fluidbpm.program.api.vo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * <p>
@@ -242,8 +241,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @return The local set {@code JSONObject} object.
 	 */
 	@XmlTransient
-	public JSONObject getJSONObject()
-	{
+	public JSONObject getJSONObject() {
 		return this.jsonObject;
 	}
 

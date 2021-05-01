@@ -23,15 +23,14 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.user.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -61,12 +60,15 @@ import java.util.List;
  * @see Field
  * @see Flow
  */
+@Getter
+@Setter
 public class Form extends ABaseFluidElasticSearchJSONObject {
 
 	public static final long serialVersionUID = 1L;
 
 	private String formType;
 	private Long formTypeId;
+
 	private String formDescription;
 
 	private String title;
@@ -84,12 +86,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	//Specifically for Elasticsearch...
 	private Long ancestorId;
 	private List<Long> descendantIds;
-
 	private Long tableFieldParentId;
-
 	private String ancestorLabel;
 	private String descendantsLabel;
-
 	private Boolean numberInputs;
 
 	private static final String EMPTY_TITLE_MARKER = "[No Title from Custom Program]";
@@ -660,9 +659,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public void setFieldValue(String fieldNameParam, Object fieldValueParam) {
-		if (this.getFormFields() == null) {
-			this.setFormFields(new ArrayList());
-		}
+		if (this.getFormFields() == null) this.setFormFields(new ArrayList());
 
 		this.setFieldValue(this.getFormFields(), fieldNameParam, fieldValueParam, null);
 	}
@@ -682,13 +679,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		Object fieldValueParam,
 		Field.Type typeParam
 	) {
-		if (fieldToSelectFrom == null) {
-			return;
-		}
+		if (fieldToSelectFrom == null) return;
 
-		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
-			return;
-		}
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return;
 
 		String fieldNameLower = fieldNameParam.toLowerCase();
 		List<Field> copyList = new ArrayList();
@@ -715,13 +708,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @param fieldNameParam The name of the field to remove.
 	 */
 	public void removeField(String fieldNameParam) {
-		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
-			return;
-		}
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return;
+		if (this.getFormFields() == null || this.getFormFields().isEmpty()) return;
 
-		if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
-			return;
-		}
 		String fieldNameLower = fieldNameParam.toLowerCase();
 		this.getFormFields().removeIf(fieldItm -> fieldItm.getFieldName() != null &&
 				fieldNameLower.equals(fieldItm.getFieldName().toLowerCase()));
@@ -756,13 +745,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	public void setFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
-		if (fieldNameParam == null) {
-			return;
-		}
-
-		if (this.getFormFields() == null) {
-			this.setFormFields(new ArrayList());
-		}
+		if (fieldNameParam == null) return;
+		if (this.getFormFields() == null) this.setFormFields(new ArrayList());
 		
 		this.setFieldValue(this.getFormFields(), fieldNameParam, fieldValueParam, typeParam);
 	}
@@ -782,9 +766,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public boolean isFormType(String formTypeParam) {
 		if ((formTypeParam == null || formTypeParam.trim().isEmpty()) ||
-				(this.getFormType() == null || this.getFormType().trim().isEmpty())) {
-			return false;
-		}
+				(this.getFormType() == null || this.getFormType().trim().isEmpty())) return false;
 
 		return formTypeParam.toLowerCase().equals(getFormType().toLowerCase());
 	}
@@ -803,118 +785,66 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Form Type...
-		if (this.getFormType() != null) {
-			returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
-		}
+		if (this.getFormType() != null) returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
 
 		//Form Type Id...
-		if (this.getFormTypeId() != null) {
-			returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
-		}
+		if (this.getFormTypeId() != null) returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
 
 		//Title...
-		if (this.getTitle() != null) {
-			returnVal.put(JSONMapping.TITLE, this.getTitle());
-		}
+		if (this.getTitle() != null) returnVal.put(JSONMapping.TITLE, this.getTitle());
 
 		//Form Description...
-		if (this.getFormDescription() != null) {
-			returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
-		}
+		if (this.getFormDescription() != null) returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
 
 		//Ancestor Label...
-		if (this.getAncestorLabel() != null) {
-			returnVal.put(JSONMapping.ANCESTOR_LABEL,
-					this.getAncestorLabel());
-		}
+		if (this.getAncestorLabel() != null) returnVal.put(JSONMapping.ANCESTOR_LABEL, this.getAncestorLabel());
 
 		//Descendant Label...
-		if (this.getDescendantsLabel() != null) {
-			returnVal.put(JSONMapping.DESCENDANTS_LABEL,
-					this.getDescendantsLabel());
-		}
+		if (this.getDescendantsLabel() != null) returnVal.put(JSONMapping.DESCENDANTS_LABEL, this.getDescendantsLabel());
 
 		//Number Inputs...
-		if (this.getNumberInputs() != null) {
-			returnVal.put(JSONMapping.NUMBER_INPUTS,
-					this.getNumberInputs());
-		}
+		if (this.getNumberInputs() != null) returnVal.put(JSONMapping.NUMBER_INPUTS, this.getNumberInputs());
 
 		//Date Created...
-		if (this.getDateCreated() != null) {
-			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateAsLongFromJson(this.getDateCreated()));
-		}
+		if (this.getDateCreated() != null) returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
 
 		//Date Last Updated...
-		if (this.getDateLastUpdated() != null) {
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-					this.getDateAsLongFromJson(this.getDateLastUpdated()));
-		}
+		if (this.getDateLastUpdated() != null) returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+
 
 		//Current User...
-		if (this.getCurrentUser() != null) {
-			returnVal.put(
-					JSONMapping.CURRENT_USER,
-					this.getCurrentUser().toJsonObject());
-		}
+		if (this.getCurrentUser() != null) returnVal.put(JSONMapping.CURRENT_USER, this.getCurrentUser().toJsonObject());
 
 		//State...
-		if (this.getState() != null) {
-			returnVal.put(
-					JSONMapping.STATE,
-					this.getState());
-		}
+		if (this.getState() != null) returnVal.put(JSONMapping.STATE, this.getState());
 
 		//Flow State...
-		if (this.getFlowState() != null) {
-			returnVal.put(
-					JSONMapping.FLOW_STATE,
-					this.getFlowState());
-		}
+		if (this.getFlowState() != null) returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState());
 
 		//Form Fields...
 		if (this.getFormFields() != null && !this.getFormFields().isEmpty()) {
 			JSONArray formFieldsArr = new JSONArray();
-			for (Field toAdd :this.getFormFields())
-			{
-				formFieldsArr.put(toAdd.toJsonObject());
-			}
-
+			for (Field toAdd :this.getFormFields()) formFieldsArr.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.FORM_FIELDS, formFieldsArr);
 		}
 
 		//Associated Flows...
 		if (this.getAssociatedFlows() != null && !this.getAssociatedFlows().isEmpty()) {
 			JSONArray assoJobsArr = new JSONArray();
-			for (Flow toAdd :this.getAssociatedFlows())
-			{
-				assoJobsArr.put(toAdd.toJsonObject());
-			}
-
+			for (Flow toAdd :this.getAssociatedFlows()) assoJobsArr.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.ASSOCIATED_FLOWS, assoJobsArr);
 		}
 
 		//Ancestor...
-		Long ancestorIdLcl = this.getAncestorId();
-		if (ancestorIdLcl != null) {
-			returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
-		}
+		if (this.getAncestorId() != null) returnVal.put(JSONMapping.ANCESTOR_ID, this.getAncestorId());
 
 		//Table Field Parent Id...
-		if (this.getTableFieldParentId() != null) {
-			returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID,
-					this.getTableFieldParentId());
-		}
+		if (this.getTableFieldParentId() != null) returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, this.getTableFieldParentId());
 
 		//Descendant Ids...
 		if (this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
 			JSONArray array = new JSONArray();
-
-			for (Long formId : this.getDescendantIds()) {
-				array.put(formId);
-			}
-
+			for (Long formId : this.getDescendantIds()) array.put(formId);
 			returnVal.put(JSONMapping.DESCENDANT_IDS, array);
 		}
 
@@ -1095,7 +1025,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	public JSONObject toJsonForElasticSearch() throws JSONException {
-
 		JSONObject returnVal = super.toJsonObject();
 
 		//Form Type...
@@ -1150,11 +1079,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			//Username...
 			if (this.getCurrentUser().getUsername() == null ||
 					this.getCurrentUser().getUsername().trim().isEmpty()) {
-				currentUserJsonObj.put(User.JSONMapping.USERNAME,
-						JSONObject.NULL);
+				currentUserJsonObj.put(User.JSONMapping.USERNAME, JSONObject.NULL);
 			} else {
-				currentUserJsonObj.put(User.JSONMapping.USERNAME,
-						this.getCurrentUser().getUsername());
+				currentUserJsonObj.put(User.JSONMapping.USERNAME, this.getCurrentUser().getUsername());
 			}
 		}
 		returnVal.put(JSONMapping.CURRENT_USER, currentUserJsonObj);
@@ -1269,8 +1196,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 						JSONObject.NULL: this.getDateLastUpdated().getTime());
 
 		//Form Fields...
-		if (this.getFormFields() == null || this.getFormFields().isEmpty())
-		{
+		if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
 			return returnVal;
 		}
 
@@ -1302,14 +1228,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public void populateFromElasticSearchJson(
-			JSONObject jsonObjectParam,
-			List<Field> formFieldsParam
-	) throws JSONException {
+	public void populateFromElasticSearchJson(JSONObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
 		this.jsonObject = jsonObjectParam;
-		if (jsonObjectParam == null) {
-			return;
-		}
+		if (jsonObjectParam == null) return;
 
 		//Id...
 		if (jsonObjectParam.isNull(ABaseFluidJSONObject.JSONMapping.ID)) {
@@ -1365,8 +1286,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (jsonObjectParam.isNull(JSONMapping.DATE_CREATED)) {
 			this.setDateCreated(null);
 		} else {
-			this.setDateCreated(new Date(
-					jsonObjectParam.getLong(JSONMapping.DATE_CREATED)));
+			this.setDateCreated(new Date(jsonObjectParam.getLong(JSONMapping.DATE_CREATED)));
 		}
 
 		//Date Last Updated...
@@ -1386,13 +1306,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 			User currentUser = new User();
 			if (!currUserJsonObj.isNull(User.JSONMapping.Elastic.USER_ID)) {
-				currentUser.setId(currUserJsonObj.getLong(
-						User.JSONMapping.Elastic.USER_ID));
+				currentUser.setId(currUserJsonObj.getLong(User.JSONMapping.Elastic.USER_ID));
 			}
 
 			if (!currUserJsonObj.isNull(User.JSONMapping.USERNAME)) {
-				currentUser.setUsername(currUserJsonObj.getString(
-						User.JSONMapping.USERNAME));
+				currentUser.setUsername(currUserJsonObj.getString(User.JSONMapping.USERNAME));
 			}
 
 			this.setCurrentUser(currentUser);
@@ -1485,10 +1403,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public String toString() {
 		JSONObject jsonObj = this.toJsonObject();
-		if (jsonObj == null) {
-			return null;
-		}
-
+		if (jsonObj == null) return null;
 		return jsonObj.toString();
 	}
 
@@ -1502,19 +1417,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	public boolean equals(Object objParam) {
-		if (objParam == null || this.getId() == null) {
-			return false;
-		}
-
+		if (objParam == null || this.getId() == null) return false;
 		if (objParam instanceof Form) {
 			Form paramCasted = (Form)objParam;
-			if (paramCasted.getId() == null) {
-				return false;
-			}
-
+			if (paramCasted.getId() == null) return false;
 			return (this.getId().equals(paramCasted.getId()));
 		}
-
 		return false;
 	}
 
@@ -1532,31 +1440,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (this.getId() == null) {
 			return hash;
 		}
-
 		hash += this.getId().hashCode();
 		return hash;
-	}
-
-	/**
-	 * Gets all the {@code Form} {@code Field}s.
-	 *
-	 * @return All the Form Fields.
-	 *
-	 * @see Field
-	 */
-	public List<Field> getFormFields() {
-		return this.formFields;
-	}
-
-	/**
-	 * Sets all the {@code Form}{@code Field}s.
-	 *
-	 * @param formFieldsParam The new {@code Form}{@code Field}s.
-	 *
-	 * @see Field
-	 */
-	public void setFormFields(List<Field> formFieldsParam) {
-		this.formFields = formFieldsParam;
 	}
 
 	/**
@@ -1596,15 +1481,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
-	 * Gets the Form Title as in Fluid.
-	 *
-	 * @return Form Title.
-	 */
-	public String getTitle() {
-		return this.title;
-	}
-
-	/**
 	 * <p>Sets the Form Title as in Fluid.
 	 *
 	 * <p>
@@ -1619,252 +1495,23 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			this.title = EMPTY_TITLE_MARKER;
 			return;
 		}
-
 		this.title = titleParam;
 	}
 
 	/**
-	 * Gets the Flow State as in Fluid.
-	 *
-	 * @return Flow State.
+	 * Create a {@code Map} from the Form fields.
+	 * @return {@code Map} with field name as key and {@code Field} as value.
 	 */
-	public String getFlowState() {
-		return this.flowState;
-	}
+	@XmlTransient
+	public Map<String, Field> getFormFieldsAsMap() {
+		List<Field> fields = this.getFormFields();
+		Map<String, Field> returnVal = new HashMap<>();
+		if (fields == null || fields.isEmpty()) return returnVal;
 
-	/**
-	 * <p>Sets the Flow State as in Fluid.
-	 *
-	 * @param flowStateParam Flow State.
-	 */
-	public void setFlowState(String flowStateParam) {
-		this.flowState = flowStateParam;
-	}
-
-	/**
-	 * Gets the State as in Fluid.
-	 *
-	 * @return Flow State.
-	 */
-	public String getState() {
-		return this.state;
-	}
-
-	/**
-	 * <p>Sets the State as in Fluid.
-	 *
-	 * @param stateParam State.
-	 */
-	public void setState(String stateParam) {
-		this.state = stateParam;
-	}
-
-	/**
-	 * Gets the Current User as in Fluid.
-	 *
-	 * @return Current User.
-	 */
-	public User getCurrentUser() {
-		return this.currentUser;
-	}
-
-	/**
-	 * <p>Sets the Current User as in Fluid.
-	 *
-	 * @param currentUserParam Current User.
-	 */
-	public void setCurrentUser(User currentUserParam) {
-		this.currentUser = currentUserParam;
-	}
-
-	/**
-	 * Gets The {@code Date} the Electronic Form / Form Definition
-	 * was created.
-	 *
-	 * @return Date Created.
-	 */
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	/**
-	 * Sets The {@code Date} the Electronic Form / Form Definition
-	 * was created.
-	 *
-	 * @param dateCreatedParam Date Created.
-	 */
-	public void setDateCreated(Date dateCreatedParam) {
-		this.dateCreated = dateCreatedParam;
-	}
-
-	/**
-	 * Gets The {@code Date} the Electronic Form / Form Definition
-	 * was last updated.
-	 *
-	 * @return Date Last Updated.
-	 */
-	public Date getDateLastUpdated() {
-		return this.dateLastUpdated;
-	}
-
-	/**
-	 * Sets The {@code Date} the Electronic Form / Form Definition
-	 * was last updated.
-	 *
-	 * @param dateLastUpdatedParam Date Last Updated.
-	 */
-	public void setDateLastUpdated(Date dateLastUpdatedParam) {
-		this.dateLastUpdated = dateLastUpdatedParam;
-	}
-
-	/**
-	 * Gets the Electronic Form description.
-	 *
-	 * @return Electronic Form description.
-	 */
-	public String getFormDescription() {
-		return this.formDescription;
-	}
-
-	/**
-	 * Sets the Electronic Form description.
-	 *
-	 * @param formDescriptionParam Electronic Form description.
-	 */
-	public void setFormDescription(String formDescriptionParam) {
-		this.formDescription = formDescriptionParam;
-	}
-
-	/**
-	 * Gets the Electronic Form Ancestor Label.
-	 *
-	 * @return Electronic Form ancestor label.
-	 */
-	public String getAncestorLabel() {
-		return this.ancestorLabel;
-	}
-
-	/**
-	 * Sets the Electronic Form ancestor label.
-	 *
-	 * @param ancestorLabelParam Electronic Form ancestor label.
-	 */
-	public void setAncestorLabel(String ancestorLabelParam) {
-		this.ancestorLabel = ancestorLabelParam;
-	}
-
-	/**
-	 * Gets the Electronic Form Descendants Label.
-	 *
-	 * @return Electronic Form descendants label.
-	 */
-	public String getDescendantsLabel() {
-		return this.descendantsLabel;
-	}
-
-	/**
-	 * Sets the Electronic Form descendants label.
-	 *
-	 * @param descendantsLabelParam Electronic Form descendants label.
-	 */
-	public void setDescendantsLabel(String descendantsLabelParam) {
-		this.descendantsLabel = descendantsLabelParam;
-	}
-
-	/**
-	 * Gets the flag to number inputs.
-	 *
-	 * @return Whether inputs should be numbered.
-	 */
-	public Boolean getNumberInputs() {
-		return this.numberInputs;
-	}
-
-	/**
-	 * Sets the flag to number inputs.
-	 *
-	 * @param numberInputsParam Whether inputs should be numbered.
-	 */
-	public void setNumberInputs(Boolean numberInputsParam) {
-		this.numberInputs = numberInputsParam;
-	}
-
-	/**
-	 * Gets the {@code List<Flow>} of Flows associated with {@code this}
-	 * Form Type.
-	 *
-	 * @return List of Associated Flows.
-	 *
-	 * @see Flow
-	 */
-	public List<Flow> getAssociatedFlows() {
-		return this.associatedFlows;
-	}
-
-	/**
-	 * Sets the {@code List<Flow>} of Flows associated with {@code this}
-	 * Form Type.
-	 *
-	 * @param associatedFlowsParam List of Associated Flows.
-	 *
-	 * @see Flow
-	 */
-	public void setAssociatedFlows(List<Flow> associatedFlowsParam) {
-		this.associatedFlows = associatedFlowsParam;
-	}
-
-	/**
-	 * Gets the Ancestor Id as a {@code Long} for {@code this} {@code Form}.
-	 *
-	 * @return Ancestor Id.
-	 */
-	public Long getAncestorId() {
-		return this.ancestorId;
-	}
-
-	/**
-	 * Sets the Ancestor Id as a {@code Long} for {@code this} {@code Form}.
-	 *
-	 * @param ancestorIdParam Ancestor Id.
-	 */
-	public void setAncestorId(Long ancestorIdParam) {
-		this.ancestorId = ancestorIdParam;
-	}
-
-	/**
-	 * Gets the Table Field Parent Id as a {@code Long} for {@code this} {@code Form}.
-	 *
-	 * @return Table Field Parent Id.
-	 */
-	public Long getTableFieldParentId() {
-		return this.tableFieldParentId;
-	}
-
-	/**
-	 * Sets the Table Field Parent Id as a {@code Long} for {@code this} {@code Form}.
-	 *
-	 * @param tableFieldParentIdParam Table Field Parent Id.
-	 */
-	public void setTableFieldParentId(Long tableFieldParentIdParam) {
-		this.tableFieldParentId = tableFieldParentIdParam;
-	}
-
-	/**
-	 * Gets the Descendant Ids as a {@code List<Long>} for {@code this} {@code Form}.
-	 *
-	 * @return List of Descendant Form Ids.
-	 */
-	public List<Long> getDescendantIds() {
-		return this.descendantIds;
-	}
-
-	/**
-	 * Sets the Descendant Ids as a {@code List<Long>} for {@code this} {@code Form}.
-	 *
-	 * @param descendantIdsParam List of Descendant Form Ids.
-	 */
-	public void setDescendantIds(List<Long> descendantIdsParam) {
-		this.descendantIds = descendantIdsParam;
+		fields.stream().forEach(field -> {
+			returnVal.put(field.getFieldName(), field);
+		});
+		return returnVal;
 	}
 
 	/**

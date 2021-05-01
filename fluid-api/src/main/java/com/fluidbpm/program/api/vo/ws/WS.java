@@ -15,22 +15,21 @@
 
 package com.fluidbpm.program.api.vo.ws;
 
-import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
-import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
-import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
-import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
-import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
 
 /**
  * <p> The Mapping class used for all Fluid Representational State Transfer
@@ -163,6 +162,9 @@ public class WS {
 				//Execute Web Action...
 				public static final String EXECUTE_CUSTOM_WEB_ACTION = ("/execute_custom_web_action");
 
+				//Lookup by title...
+				public static final String READ_BY_TITLE_CONTAINS = "/get_by_title_contains";
+
 				/**
 				 * Mapping for frequently used HTTP parameters.
 				 */
@@ -185,6 +187,11 @@ public class WS {
 					public static final String CUSTOM_WEB_ACTION = "custom_web_action";
 					public static final String IS_TABLE_RECORD = "is_table_record";
 					public static final String FORM_TABLE_RECORD_BELONGS_TO = "form_table_record_belongs_to";
+
+					public static final String QUERY_LIMIT = "query_limit";
+					public static final String OFFSET = "offset";
+
+					public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
 				}
 
 				/**
@@ -200,10 +207,43 @@ public class WS {
 				/**
 				 * URL Path for Form Container get by id.
 				 *
+				 * @param executeCalculatedLabels Should calculated labels be executed.
+				 *
 				 * @return {@code v1/form_container/get_by_id}
 				 */
-				public static final String getById() {
-					return Version.VERSION_1.concat(ROOT).concat(READ);
+				public static final String getById(boolean executeCalculatedLabels) {
+					return String.format("%s?%s=%s",
+							Version.VERSION_1.concat(ROOT).concat(READ),
+							QueryParam.EXECUTE_CALCULATED_LABELS,
+							executeCalculatedLabels);
+				}
+
+				/**
+				 * URL Path for Form Container get by title containing.
+				 *
+				 * @param limit The max number of results.
+				 * @param offset The starting offset.
+				 *
+				 * @return {@code v1/form_container/get_by_title_contains}
+				 */
+				public static final String getByTitleContains(int limit, int offset) {
+					String base = Version.VERSION_1.concat(ROOT).concat(READ_BY_TITLE_CONTAINS);
+					String additionString = "?";
+
+					if (limit > 0) {
+						additionString += FlowItem.Version1.QueryParam.QUERY_LIMIT;
+						additionString += "=";
+						additionString += limit;
+						additionString += "&";
+					}
+
+					if (offset > -1) {
+						additionString += FlowItem.Version1.QueryParam.OFFSET;
+						additionString += "=";
+						additionString += offset;
+						additionString += "&";
+					}
+					return base.concat(additionString);
 				}
 
 				/**
@@ -236,39 +276,10 @@ public class WS {
 				/**
 				 * URL Path for executing Form Container custom web action.
 				 *
-				 * @param customWebActionParam The custom web action name. Action identifier.
-				 * @param isTableRecordParam Is the form a table record form.
-				 * @param formContainerTableRecordBelongsToParam The parent form container if
-				 *            table record.
-				 *
 				 * @return {@code v1/form_container/execute_custom_web_action}
-				 *
-				 * @throws UnsupportedEncodingException If Encoding {@code UTF-8} is not
-				 *             supported.
 				 */
-				public static final String executeCustomWebAction(String customWebActionParam, boolean isTableRecordParam, Long formContainerTableRecordBelongsToParam)
-						throws UnsupportedEncodingException {
-
-					String returnVal = Version.VERSION_1.concat(ROOT).concat(EXECUTE_CUSTOM_WEB_ACTION);
-
-					returnVal += "?";
-					returnVal += QueryParam.CUSTOM_WEB_ACTION;
-					returnVal += "=";
-					returnVal += URLEncoder.encode(customWebActionParam, ENCODING_UTF_8);
-					returnVal += "&";
-					returnVal += QueryParam.IS_TABLE_RECORD;
-					returnVal += "=";
-					returnVal += isTableRecordParam;
-
-					if (formContainerTableRecordBelongsToParam != null && formContainerTableRecordBelongsToParam.longValue() > 0) {
-
-						returnVal += "&";
-						returnVal += QueryParam.FORM_TABLE_RECORD_BELONGS_TO;
-						returnVal += "=";
-						returnVal += formContainerTableRecordBelongsToParam;
-					}
-
-					return returnVal;
+				public static final String executeCustomWebAction() {
+					return Version.VERSION_1.concat(ROOT).concat(EXECUTE_CUSTOM_WEB_ACTION);
 				}
 
 				/**
@@ -321,7 +332,6 @@ public class WS {
 
 					//Cut of the end bit...
 					additionString = additionString.substring(0, additionString.length() - 1);
-
 					return base.concat(additionString);
 				}
 
@@ -377,8 +387,13 @@ public class WS {
 				 *
 				 * @return {@code v1/form_container/print_as_pdf}
 				 */
-				public static final String getPrintAsPDF(Long formContainerIdParam, boolean includeCompanyLogoParam, boolean includeAncestorParam, boolean includeDescendantsParam,
-						boolean includeFormPropertiesParam) {
+				public static final String getPrintAsPDF(
+					Long formContainerIdParam,
+					boolean includeCompanyLogoParam,
+					boolean includeAncestorParam,
+					boolean includeDescendantsParam,
+					boolean includeFormPropertiesParam
+				) {
 					String returnVal = Version.VERSION_1.concat(ROOT).concat(PRINT_AS_PDF);
 
 					returnVal += "?";
@@ -389,6 +404,52 @@ public class WS {
 					returnVal += formContainerIdParam;
 					returnVal += "&";
 
+					//Include Ancestor...
+					returnVal += QueryParam.INCLUDE_ANCESTOR;
+					returnVal += "=";
+					returnVal += includeAncestorParam;
+					returnVal += "&";
+
+					//Include Company Logo...
+					returnVal += QueryParam.INCLUDE_COMPANY_LOGO;
+					returnVal += "=";
+					returnVal += includeCompanyLogoParam;
+					returnVal += "&";
+
+					//Include Descendants...
+					returnVal += QueryParam.INCLUDE_DESCENDANTS;
+					returnVal += "=";
+					returnVal += includeDescendantsParam;
+					returnVal += "&";
+
+					//Form Properties...
+					returnVal += QueryParam.INCLUDE_FORM_PROPERTIES;
+					returnVal += "=";
+					returnVal += includeFormPropertiesParam;
+
+					return returnVal;
+				}
+
+				/**
+				 * URL Path for a PDF version of the {@code Form}.
+				 *
+				 * @param includeAncestorParam Include the ancestor electronic form.
+				 * @param includeCompanyLogoParam Include the company logo.
+				 * @param includeDescendantsParam Include descendant forms.
+				 * @param includeFormPropertiesParam Include form properties.
+				 *
+				 * @return {@code v1/form_container/print_as_pdf}
+				 */
+				public static final String printAsPDFAttachment(
+					boolean includeCompanyLogoParam,
+					boolean includeAncestorParam,
+					boolean includeDescendantsParam,
+					boolean includeFormPropertiesParam
+				) {
+					String returnVal = Version.VERSION_1.concat(ROOT).concat(PRINT_AS_PDF);
+
+					returnVal += "?";
+					
 					//Include Ancestor...
 					returnVal += QueryParam.INCLUDE_ANCESTOR;
 					returnVal += "=";
@@ -553,9 +614,7 @@ public class WS {
 				public static final class QueryParam {
 					public static final String FORM_CONTAINER_ID = "form_container";
 					public static final String ATTACHMENT_INDEX = "attachment_index";
-
 					public static final String IMAGES_ONLY = "images_only";
-
 					public static final String INCLUDE_ATTACHMENT_DATA = "include_attachment_data";
 				}
 
@@ -772,6 +831,7 @@ public class WS {
 			 */
 			public static final class QueryParam {
 				public static final String EDIT_ONLY = "edit_only";
+				public static final String POPULATE_MULTI_CHOICE_FIELDS = "populate_multi_choice_fields";
 			}
 
 			/**
@@ -794,6 +854,9 @@ public class WS {
 				public static final String READ = ("/get_by_id");
 				public static final String BY_NAME = ("/get_by_name");
 				public static final String READ_BY_FORM_DEF_AND_LOGGED_IN_USER = ("/get_by_form_definition_and_logged_in_user");
+				public static final String READ_BY_FORM_DEFS_AND_LOGGED_IN_USER = ("/get_by_form_definitions_and_logged_in_user");
+				public static final String READ_BY_USER_QUERY = ("/get_by_user_query");
+				public static final String READ_BY_USER_QUERIES = ("/get_by_user_queries");
 
 				/**
 				 * Root for Form Field.
@@ -870,16 +933,54 @@ public class WS {
 				 * URL Path for Form Fields get by Form Definition and Logged In User.
 				 *
 				 * @param editOnlyFieldsParam Only return the fields that are editable.
+				 * @param populateMultiChoiceFields Populate the multi-choice fields.
 				 *
 				 * @return {@code v1/form_field/get_by_form_definition_and_logged_in_user}
 				 */
-				public static final String getByFormDefinitionAndLoggedInUser(boolean editOnlyFieldsParam) {
-					///delete?force=true
+				public static final String getByFormDefinitionAndLoggedInUser(
+					boolean editOnlyFieldsParam,
+					boolean populateMultiChoiceFields
+				) {
 					String returnVal = Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM_DEF_AND_LOGGED_IN_USER);
-
 					returnVal += ("?" + QueryParam.EDIT_ONLY + "=" + editOnlyFieldsParam);
-
+					returnVal += ("&" + QueryParam.POPULATE_MULTI_CHOICE_FIELDS + "=" + populateMultiChoiceFields);
 					return returnVal;
+				}
+
+				/**
+				 * URL Path for Form Fields get by Form Definitions and Logged In User.
+				 *
+				 * @param editOnlyFieldsParam Only return the fields that are editable.
+				 * @param populateMultiChoiceFields Populate the multi-choice fields.
+				 *
+				 * @return {@code v1/form_field/get_by_form_definitions_and_logged_in_user}
+				 */
+				public static final String getByFormDefinitionsAndLoggedInUser(
+					boolean editOnlyFieldsParam,
+					boolean populateMultiChoiceFields
+				) {
+					String returnVal = Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM_DEFS_AND_LOGGED_IN_USER);
+					returnVal += ("?" + QueryParam.EDIT_ONLY + "=" + editOnlyFieldsParam);
+					returnVal += ("&" + QueryParam.POPULATE_MULTI_CHOICE_FIELDS + "=" + populateMultiChoiceFields);
+					return returnVal;
+				}
+
+				/**
+				 * URL Path for Form Fields get by User Query.
+				 *
+				 * @return {@code v1/form_field/get_by_user_query}
+				 */
+				public static final String getByUserQuery() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_USER_QUERY);
+				}
+
+				/**
+				 * URL Path for Form Fields get by User Query.
+				 *
+				 * @return {@code v1/form_field/get_by_user_queries}
+				 */
+				public static final String getByUserQueries() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_USER_QUERIES);
 				}
 			}
 		}
@@ -970,6 +1071,7 @@ public class WS {
 				//Read...
 				public static final String READ = ("/get_by_id");
 				public static final String READ_VALUES_BY = ("/get_values_by");
+				public static final String READ_BY_VIEW_GROUP = ("/get_by_view_group");
 
 				/**
 				 * Mapping for frequently used HTTP parameters.
@@ -1063,6 +1165,15 @@ public class WS {
 				 */
 				public static final String getById() {
 					return Version.VERSION_1.concat(ROOT).concat(READ);
+				}
+
+				/**
+				 * URL Path for Route Field get by View Group.
+				 *
+				 * @return {@code v1/route_field/get_by_view_group}
+				 */
+				public static final String getByViewGroup() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_VIEW_GROUP);
 				}
 
 				/**
@@ -1197,6 +1308,7 @@ public class WS {
 			public static final class QueryParam {
 				public static final String FORM_DEFINITION = "form_definition";
 				public static final String INCLUDE_TABLE_RECORDS = "include_table_records";
+				public static final String INCLUDE_WORKFLOWS = "include_workflows";
 			}
 
 			/**
@@ -1223,8 +1335,11 @@ public class WS {
 				public static final String READ_ALL_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
 				public static final String READ_ALL_BY_LOGGED_IN_USER_INCL_TABLE_DEFS = ("/get_all_by_logged_in_user_incl_table_defs");
 				public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE = ("/get_all_by_logged_in_can_create");
-				public static final String READ_ALL_BY_LOGGED_IN_CAN_CREATE_INCL_TABLE_RECORDS =
-						("/get_all_by_logged_in_can_create?"+QueryParam.INCLUDE_TABLE_RECORDS+"=true");
+
+				public static final String READ_ATTACHMENT_CAN_VIEW_BY_LOGGED_IN_USER = ("/get_all_attachment_can_view_by_logged_in_user");
+				public static final String READ_ATTACHMENT_CAN_EDIT_BY_LOGGED_IN_USER = ("/get_all_attachment_can_edit_by_logged_in_user");
+				public static final String UPSERT_FORM_DEFS_WEB_KIT = ("/upsert_forms_web_kit");
+				public static final String READ_ALL_WEB_KIT = ("/get_all_forms_web_kit");
 
 				/**
 				 * Root for Form Definition.
@@ -1319,20 +1434,59 @@ public class WS {
 				/**
 				 * URL Path for Form Definitions where logged in user can create instance of.
 				 *
-				 * @param includeTableRecordsParam Should Form Definitions that are part of table records also be
-				 *                                 included?
+				 * @param includeTableRecordsParam Should Form Definitions that are part of table records also be included?
+				 * @param includeWorkflowsParam Should include the associated workflows in the response?
 				 *
 				 * @return {@code v1/form_definition/get_all_by_logged_in_can_create}
 				 */
 				public static final String getAllByLoggedInAndCanCreateInstanceOf(
-					boolean includeTableRecordsParam
+					boolean includeTableRecordsParam,
+					boolean includeWorkflowsParam
 				) {
-					if (includeTableRecordsParam) {
-						return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE_INCL_TABLE_RECORDS);
-					} else {
-						return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BY_LOGGED_IN_CAN_CREATE);
-					}
+					return String.format("%s%s%s?%s=%s&%s=%s",
+							Version.VERSION_1,
+							ROOT,
+							READ_ALL_BY_LOGGED_IN_CAN_CREATE,
+							QueryParam.INCLUDE_TABLE_RECORDS,
+							includeTableRecordsParam,
+							QueryParam.INCLUDE_WORKFLOWS,
+							includeWorkflowsParam);
+				}
 
+				/**
+				 * URL Path for Form Definitions where logged in user can view attachments for.
+				 *
+				 * @return {@code v1/form_definition/get_all_attachment_can_view_by_logged_in_user}
+				 */
+				public static final String getAllByLoggedInAndAttachmentsCanView() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ATTACHMENT_CAN_VIEW_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for Form Definitions where logged in user can edit attachments for.
+				 *
+				 * @return {@code v1/form_definition/get_all_attachment_can_edit_by_logged_in_user}
+				 */
+				public static final String getAllByLoggedInAndAttachmentsCanEdit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ATTACHMENT_CAN_EDIT_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for Form Definition Web Kits.
+				 *
+				 * @return {@code v1/form_definition/get_all_forms_web_kit}
+				 */
+				public static final String getAllFormDefinitionWebKits() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_WEB_KIT);
+				}
+
+				/**
+				 * URL Path for upserting the Form Definition web kit.
+				 *
+				 * @return {@code v1/form_definition/upsert_forms_web_kit}
+				 */
+				public static final String formDefinitionWebKitUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_FORM_DEFS_WEB_KIT);
 				}
 			}
 		}
@@ -1358,9 +1512,11 @@ public class WS {
 
 				//Update...
 				public static final String UPDATE = ("/update");
+				public static final String UPSERT_VIEW_GROUPS_WEB_KIT = ("/upsert_view_groups_web_kit");
 
 				//Read...
 				public static final String READ = ("/get_by_id");
+				public static final String READ_VIEW_GROUP_WEB_KIT = ("/get_view_group_web_kit");
 				public static final String READ_BY_NAME = ("/get_by_name");
 				public static final String READ_ALL = ("/get_all_flows");
 
@@ -1418,6 +1574,15 @@ public class WS {
 				}
 
 				/**
+				 * URL Path for upserting the Group View web kit.
+				 *
+				 * @return {@code v1/flow/upsert_view_groups_web_kit}
+				 */
+				public static final String flowViewGroupUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_VIEW_GROUPS_WEB_KIT);
+				}
+
+				/**
 				 * URL Path for Flow get by id.
 				 *
 				 * @return {@code v1/flow/get_by_id}
@@ -1433,6 +1598,15 @@ public class WS {
 				 */
 				public static final String getByName() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
+				}
+
+				/**
+				 * URL Path for Flow get by name.
+				 *
+				 * @return {@code v1/flow/get_view_group_web_kit}
+				 */
+				public static final String getJobViewGroupWebKit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_VIEW_GROUP_WEB_KIT);
 				}
 
 				/**
@@ -1945,6 +2119,7 @@ public class WS {
 
 				//Send to Flow...
 				public static final String SEND_TO_FLOW = ("/send_to_flow");
+				public static final String REMOVE_FROM_FLOW = ("/remove_from_flow");
 				public static final String SEND_TO_FLOW_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT + SEND_TO_FLOW);
 
 				//Create...
@@ -2003,7 +2178,9 @@ public class WS {
 				 * @return {@code /v1/flow_item/send_on}
 				 */
 				public static final String sendFlowItemOn(boolean allowCollaboratorToSendOnParam) {
-					return Version.VERSION_1.concat(ROOT).concat(SEND_ON).concat("?" + QueryParam.ALLOW_COLLABORATOR_SEND_ON + "=" + allowCollaboratorToSendOnParam);
+					return String.format("%s%s%s?%s=%s",
+							Version.VERSION_1, ROOT, SEND_ON,
+							QueryParam.ALLOW_COLLABORATOR_SEND_ON, allowCollaboratorToSendOnParam);
 				}
 
 				/**
@@ -2013,6 +2190,15 @@ public class WS {
 				 */
 				public static final String sendFlowItemToFlow() {
 					return Version.VERSION_1.concat(ROOT).concat(SEND_TO_FLOW);
+				}
+
+				/**
+				 * URL Path for removing a FluidItem from a Flow.
+				 *
+				 * @return {@code /v1/flow_item/remove_from_flow/}
+				 */
+				public static final String removeFluidItemFromFlow() {
+					return Version.VERSION_1.concat(ROOT).concat(REMOVE_FROM_FLOW);
 				}
 
 				/**
@@ -2266,6 +2452,7 @@ public class WS {
 				public static final String DE_ACTIVATE = ("/de_activate");
 				public static final String ACTIVATE = ("/activate");
 				public static final String INCREMENT_INVALID_LOGIN = ("/increment_invalid_login");
+				public static final String REQUEST_PASSWORD_RESET = ("/request_password_reset");
 				public static final String CHANGE_PASSWORD = ("/change_password");
 
 				//Delete...
@@ -2502,6 +2689,15 @@ public class WS {
 				 */
 				public static final String incrementInvalidLogin() {
 					return Version.VERSION_1.concat(ROOT).concat(INCREMENT_INVALID_LOGIN);
+				}
+
+				/**
+				 * URL Path for requesting password reset for a User.
+				 *
+				 * @return {@code v1/user/request_password_reset}
+				 */
+				public static final String requestPasswordReset() {
+					return Version.VERSION_1.concat(ROOT).concat(REQUEST_PASSWORD_RESET);
 				}
 
 				/**
@@ -3016,12 +3212,16 @@ public class WS {
 			public static final class Version1 {
 				public static final String ROOT = ("/configuration");
 
-				//Update...
-				//public static final String UPDATE = ("/update");
-
 				//Read...
 				public static final String READ = ("/get_by_key");
 				public static final String READ_ALL = ("/get_all_configurations");
+				public static final String READ_SYSTEM_MAIL_TRANSFER = ("/get_system_mail_transfer");
+
+				public static final String READ_ALL_TASK_IDENTIFIERS = ("/get_all_third_party_task_identifiers");
+
+
+				//Update/Insert...
+				public static final String UPSERT = ("/upsert");
 
 				/**
 				 * Root for Configuration.
@@ -3049,6 +3249,33 @@ public class WS {
 				 */
 				public static final String getAllConfigurations() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+				}
+
+				/**
+				 * URL Path for retrieving the system email transfers.
+				 *
+				 * @return {@code v1/configuration/get_system_mail_transfer}
+				 */
+				public static final String getSystemMailTransfer() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_SYSTEM_MAIL_TRANSFER);
+				}
+
+				/**
+				 * URL Path for retrieving all 3rd party programs task identifiers.
+				 *
+				 * @return {@code v1/configuration/get_all_third_party_task_identifiers}
+				 */
+				public static final String getAllThirdPartyTaskIdentifiers() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TASK_IDENTIFIERS);
+				}
+
+				/**
+				 * URL Path for Config create.
+				 *
+				 * @return {@code /v1/configuration/upsert}
+				 */
+				public static final String configUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT);
 				}
 			}
 		}
@@ -3515,6 +3742,7 @@ public class WS {
 					//List Job View content...
 					public static final String QUERY_LIMIT = "query_limit";
 					public static final String OFFSET = "offset";
+					public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
 				}
 
 				public static final String ROOT = ("/user_query");
@@ -3524,6 +3752,7 @@ public class WS {
 
 				//Update...
 				public static final String UPDATE = ("/update");
+				public static final String UPSERT_WEB_KIT = ("/upsert_web_kit");
 
 				//Delete...
 				public static final String DELETE = ("/delete");
@@ -3532,6 +3761,7 @@ public class WS {
 				//Read...
 				public static final String READ = ("/get_by_id");
 				public static final String READ_ALL = ("/get_all_user_queries");
+				public static final String READ_ALL_WEB_KIT = ("/get_all_user_queries_web_kit");
 
 				public static final String READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER = ("/get_all_user_queries_by_logged_in_user");
 
@@ -3552,21 +3782,24 @@ public class WS {
 				/**
 				 * URL Path for executing a {@code UserQuery}.
 				 *
-				 * @param populateAncestorIdParam - Whether the ancestor id should be populated
-				 *            (when applicable).
+				 * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+				 * @param executeCalculatedLabels Execute the calculate labels.
 				 * @param queryLimitParam The query limit.
 				 * @param offsetParam The query offset.
 				 *
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(
-						boolean populateAncestorIdParam,
-						int queryLimitParam,
-						int offsetParam) {
+					boolean populateAncestorIdParam,
+					boolean executeCalculatedLabels,
+					int queryLimitParam,
+					int offsetParam
+				) {
 
 					return executeUserQuery(
 							populateAncestorIdParam,
 							false,
+							executeCalculatedLabels,
 							queryLimitParam,
 							offsetParam);
 				}
@@ -3577,16 +3810,18 @@ public class WS {
 				 * @param populateAncestorIdParam - Whether the ancestor id should be populated
 				 *            (when applicable).
 				 * @param forceUseDatabaseParam Force to use underlying database.
+				 * @param executeCalculatedLabels Execute the calculate labels.
 				 * @param queryLimitParam The query limit.
 				 * @param offsetParam The query offset.
 				 *
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(
-						boolean populateAncestorIdParam,
-						boolean forceUseDatabaseParam,
-						int queryLimitParam,
-						int offsetParam
+					boolean populateAncestorIdParam,
+					boolean forceUseDatabaseParam,
+					boolean executeCalculatedLabels,
+					int queryLimitParam,
+					int offsetParam
 				) {
 					String base = Version.VERSION_1.concat(ROOT).concat(EXECUTE);
 					String additionString = "?";
@@ -3599,6 +3834,11 @@ public class WS {
 					additionString += QueryParam.POPULATE_ANCESTOR_ID;
 					additionString += "=";
 					additionString += populateAncestorIdParam;
+					additionString += "&";
+
+					additionString += QueryParam.EXECUTE_CALCULATED_LABELS;
+					additionString += "=";
+					additionString += executeCalculatedLabels;
 					additionString += "&";
 
 					if (queryLimitParam > 0) {
@@ -3631,9 +3871,9 @@ public class WS {
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(
-						int queryLimitParam,
-						int offsetParam,
-						boolean forceUseDatabaseParam
+					int queryLimitParam,
+					int offsetParam,
+					boolean forceUseDatabaseParam
 				) {
 					return executeUserQuery(
 							true,
@@ -3651,7 +3891,7 @@ public class WS {
 				 * @return {@code v1/user_query/execute}
 				 */
 				public static final String executeUserQuery(int queryLimitParam, int offsetParam) {
-					return executeUserQuery(true, queryLimitParam, offsetParam);
+					return executeUserQuery(true, false, queryLimitParam ,offsetParam);
 				}
 
 				/**
@@ -3693,7 +3933,6 @@ public class WS {
 					if (forceDeleteParam) {
 						return Version.VERSION_1.concat(ROOT).concat(DELETE_FORCE);
 					}
-
 					return Version.VERSION_1.concat(ROOT).concat(DELETE);
 				}
 
@@ -3716,6 +3955,15 @@ public class WS {
 				}
 
 				/**
+				 * URL Path for UserQuery get all with WebKit properties.
+				 *
+				 * @return {@code v1/user_query/get_all_user_queries_web_kit}
+				 */
+				public static final String getAllUserQueriesWebKit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_WEB_KIT);
+				}
+
+				/**
 				 * URL Path for UserQuery get all by logged in {@code User}.
 				 *
 				 * @return {@code v1/user_query/get_all_user_queries_by_logged_in_user}
@@ -3723,6 +3971,152 @@ public class WS {
 				public static final String getAllUserQueriesByLoggedInUser() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER);
 				}
+
+				/**
+				 * URL Path for upserting the User Query web kit.
+				 *
+				 * @return {@code v1/user_query/upsert_web_kit}
+				 */
+				public static final String userQueryWebKitUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_WEB_KIT);
+				}
+			}
+		}
+
+		/**
+		 * Reporting Web Service mappings.
+		 *
+		 * @see Form
+		 */
+		public static final class Report {
+
+			/**
+			 * Report mappings.
+			 */
+			public static final class Version1 {
+				/**
+				 * Mapping for frequently used HTTP parameters.
+				 */
+				public static final class QueryParam {
+					public static final String TIMESTAMP_FROM = "timestamp_from";
+					public static final String TIMESTAMP_TO = "timestamp_to";
+
+					public static final String COMPRESS_RESPONSE = "compress_response";
+					public static final String COMPRESS_RESPONSE_CHARSET = "compress_response_charset";
+				}
+
+				public static final String ROOT = ("/report");
+
+				//Read...
+				public static final String ROOT_USER_STATS = "/report/user_stats";
+				public static final String ROOT_SYSTEM = "/report/system";
+				public static final String READ_BY_LOGGED_IN_USER = ("/get_all_by_logged_in_user");
+				public static final String READ_ALL_UP = ("/get_all_uptime");
+				public static final String READ_ALL_DOWN = ("/get_all_downtime");
+				public static final String READ_ALL = ("/get_all");
+
+				/**
+				 * Root for Report.
+				 *
+				 * @return {@code /report}
+				 */
+				@Override
+				public String toString() {
+					return ROOT;
+				}
+
+				/**
+				 * URL Path for User statistics by logged in user.
+				 *
+				 * @return {@code v1/report/user_stats/get_all_by_logged_in_user}
+				 */
+				public static final String getUserStatsAllByLoggedInUser() {
+					return Version.VERSION_1.concat(ROOT_USER_STATS).concat(READ_BY_LOGGED_IN_USER);
+				}
+
+				/**
+				 * URL Path for system uptime entries.
+				 *
+				 * @return {@code v1/report/system/get_all_uptime}
+				 */
+				public static final String getAllSystemUptime() {
+					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL_UP);
+				}
+
+				/**
+				 * URL Path for system downtime entries.
+				 *
+				 * @return {@code v1/report/system/get_all_downtime}
+				 */
+				public static final String getAllSystemDowntime() {
+					return Version.VERSION_1.concat(ROOT_SYSTEM).concat(READ_ALL_DOWN);
+				}
+
+				/**
+				 * URL Path for system downtime/uptime entries.
+				 *
+				 * @param compressResponseParam Compress the Descendant result in Base-64.
+				 * @param compressResponseCharsetParam Compress response using provided charset.
+				 *
+				 * @return {@code v1/report/system/get_all}
+				 */
+				public static final String getAll(
+					boolean compressResponseParam,
+					String compressResponseCharsetParam
+				) {
+					if (compressResponseCharsetParam == null) {
+						compressResponseCharsetParam = EMPTY;
+					}
+
+					String returnVal = Version.VERSION_1
+							.concat(ROOT_SYSTEM)
+							.concat(READ_ALL)
+							.concat("?")
+							.concat(QueryParam.COMPRESS_RESPONSE)
+							.concat("=")
+							.concat(Boolean.toString(compressResponseParam))
+							.concat("&")
+							.concat(QueryParam.COMPRESS_RESPONSE_CHARSET)
+							.concat("=")
+							.concat(compressResponseCharsetParam);
+					return returnVal;
+				}
+
+				/**
+				 * URL Path for executing the user statistics report.
+				 *
+				 * @param from - The timestamp to run the query from.
+				 * @param to The timestamp to run the query until.
+				 *
+				 * @return {@code v1/user_query/execute}
+				 */
+				public static final String getUserStatsReportForLoggedInUser(
+					long from,
+					long to
+				) {
+					String base = Version.VERSION_1.concat(ROOT_USER_STATS).concat(READ_BY_LOGGED_IN_USER);
+					String additionString = "?";
+
+					if (from > 0) {
+						additionString += QueryParam.TIMESTAMP_FROM;
+						additionString += "=";
+						additionString += from;
+						additionString += "&";
+					}
+
+					if (to > 0) {
+						additionString += QueryParam.TIMESTAMP_TO;
+						additionString += "=";
+						additionString += to;
+						additionString += "&";
+					}
+
+					//Cut of the end bit...
+					additionString = additionString.substring(0, additionString.length() - 1);
+
+					return base.concat(additionString);
+				}
+
 			}
 		}
 

@@ -15,12 +15,15 @@
 
 package com.fluidbpm.ws.client.v1.config;
 
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.config.ConfigurationListing;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifierListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Used to change any of the Flow's / Workflows.
@@ -38,56 +41,93 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  */
 public class ConfigurationClient extends ABaseClientWS {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public ConfigurationClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public ConfigurationClient(
+		String endpointBaseUrlParam,
+		String serviceTicketParam
+	) {
+		super(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+	/**
+	 * Retrieves a Configuration by Key.
+	 *
+	 * @param configurationKeyParam The Flow key.
+	 * @return The Configuration.
+	 */
+	public Configuration getConfigurationByKey(String configurationKeyParam) {
+		Configuration configuration = new Configuration();
+		configuration.setKey(configurationKeyParam);
+		if (this.serviceTicket != null) {
+			configuration.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Retrieves a Configuration by Key.
-     *
-     * @param configurationKeyParam The Flow key.
-     * @return The Configuration.
-     */
-    public Configuration getConfigurationByKey(String configurationKeyParam)
-    {
-        Configuration configuration = new Configuration();
+		return new Configuration(this.postJson(
+				configuration, WS.Path.Configuration.Version1.getByKey()));
+	}
 
-        configuration.setKey(configurationKeyParam);
+	/**
+	 * Retrieves all Configurations.
+	 *
+	 * @return All the Configurations.
+	 */
+	public ConfigurationListing getAllConfigurations() {
+		Configuration configuration = new Configuration();
 
-        if (this.serviceTicket != null)
-        {
-            configuration.setServiceTicket(this.serviceTicket);
-        }
+		if (this.serviceTicket != null) {
+			configuration.setServiceTicket(this.serviceTicket);
+		}
 
-        return new Configuration(this.postJson(
-                configuration, WS.Path.Configuration.Version1.getByKey()));
-    }
+		return new ConfigurationListing(this.postJson(
+				configuration, WS.Path.Configuration.Version1.getAllConfigurations()));
+	}
 
-    /**
-     * Retrieves all Configurations.
-     *
-     * @return All the Configurations.
-     */
-    public ConfigurationListing getAllConfigurations()
-    {
-        Configuration configuration = new Configuration();
+	/**
+	 * Inserts a configuration if it doesn't exists, update a configuration if it exists based on {@code configName}.
+	 *
+	 * @param configName The name of the config to update.
+	 * @param configValue The new configuration value.
+	 * @return Updated configuration.
+	 * @see Configuration
+	 */
+	public Configuration upsertConfiguration(
+		String configName,
+		String configValue
+	) {
+		Configuration configuration = new Configuration(configName, configValue);
+		configuration.setServiceTicket(this.serviceTicket);
+		return new Configuration(this.postJson(
+				configuration, WS.Path.Configuration.Version1.configUpsert()));
+	}
 
-        if (this.serviceTicket != null)
-        {
-            configuration.setServiceTicket(this.serviceTicket);
-        }
+	/**
+	 * Retrieve the description of the SMTP config for system related SMTP's.
+	 * @return SMTP Description of System mails.
+	 */
+	public String getSystemMailTransfer() {
+		Configuration configuration = new Configuration();
+		if (this.serviceTicket != null) {
+			configuration.setServiceTicket(this.serviceTicket);
+		}
+		return new Configuration(this.postJson(
+				configuration, WS.Path.Configuration.Version1.getSystemMailTransfer())).getValue();
+	}
 
-        return new ConfigurationListing(this.postJson(
-                configuration, WS.Path.Configuration.Version1.getAllConfigurations()));
-    }
+	/**
+	 * Retrieve the description of the SMTP config for system related SMTP's.
+	 * @return SMTP Description of System mails.
+	 */
+	public List<ThirdPartyLibraryTaskIdentifier> getAllThirdPartyTaskIdentifiers() {
+		ThirdPartyLibraryTaskIdentifier third = new ThirdPartyLibraryTaskIdentifier();
+		third.setServiceTicket(this.serviceTicket);
+
+		return new ThirdPartyLibraryTaskIdentifierListing(this.postJson(
+				third, WS.Path.Configuration.Version1.getAllThirdPartyTaskIdentifiers())).getListing();
+	}
 }

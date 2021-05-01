@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
@@ -33,6 +25,13 @@ import com.fluidbpm.program.api.vo.user.UserListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Java Web Service Client for User related actions.
@@ -158,16 +157,23 @@ public class UserClient extends ABaseClientWS {
 	 *
 	 * @see com.fluidbpm.program.api.vo.user.User
 	 */
-	public User incrementInvalidLoginForUser(User userParam)
-	{
-		if (userParam != null && this.serviceTicket != null)
-		{
+	public User incrementInvalidLoginForUser(User userParam) {
+		if (userParam != null && this.serviceTicket != null) {
 			userParam.setServiceTicket(this.serviceTicket);
 		}
 
 		return new User(this.postJson(
 				userParam,
 				WS.Path.User.Version1.incrementInvalidLogin()));
+	}
+
+	/**
+	 * Request a password reset based on email or username.
+	 *
+	 * @param usernameEmail The username or email address to request a password reset.
+	 */
+	public void sendPasswordResetRequest(String usernameEmail) {
+		this.postJson(new User(usernameEmail), WS.Path.User.Version1.requestPasswordReset());
 	}
 
 	/**

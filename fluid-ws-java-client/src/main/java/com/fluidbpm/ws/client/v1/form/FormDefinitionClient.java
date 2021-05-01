@@ -15,15 +15,16 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.webkit.form.WebKitForm;
+import com.fluidbpm.program.api.vo.webkit.form.WebKitFormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Java Web Service Client for Form Definition related actions.
@@ -191,17 +192,66 @@ public class FormDefinitionClient extends ABaseClientWS {
 			boolean includeTableRecordsParam
 	) {
 		Form form = new Form();
-
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-
-		if (this.requestUuid != null) {
-			form.setRequestUuid(this.requestUuid);
-		}
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
 
 		return new FormListing(this.postJson(
-				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(includeTableRecordsParam))).
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(
+						includeTableRecordsParam, false))).
+				getListing();
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * create a new instance of the {@code Form}.
+	 *
+	 * @param includeTableRecordsParam Should Form Definitions that are part of table records also be included?
+	 * @param includeWorkflowsParam Should list of associated workflows be included in the response?
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanCreateInstanceOf(
+		boolean includeTableRecordsParam,
+		boolean includeWorkflowsParam
+	) {
+		Form form = new Form();
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndCanCreateInstanceOf(
+						includeTableRecordsParam, includeWorkflowsParam))).getListing();
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * view attachments for those form definitions.
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanViewAttachments() {
+		Form form = new Form();
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndAttachmentsCanView())).
+				getListing();
+	}
+
+	/**
+	 * Retrieves all Form Definitions where the logged in user can
+	 * edit attachments for those form definitions.
+	 *
+	 * @return List of Form Definitions.
+	 */
+	public List<Form> getAllByLoggedInUserWhereCanEditAttachments() {
+		Form form = new Form();
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormDefinition.Version1.getAllByLoggedInAndAttachmentsCanEdit())).
 				getListing();
 	}
 
@@ -213,16 +263,47 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @return The deleted Form Definition.
 	 */
 	public Form deleteFormDefinition(Form formDefinitionParam) {
-		if (formDefinitionParam != null && this.serviceTicket != null) {
-			formDefinitionParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formDefinitionParam != null && this.serviceTicket != null) formDefinitionParam.setServiceTicket(this.serviceTicket);
 
-		if (formDefinitionParam != null && this.requestUuid != null) {
-			formDefinitionParam.setRequestUuid(this.requestUuid);
+		if (formDefinitionParam != null && this.requestUuid != null) formDefinitionParam.setRequestUuid(this.requestUuid);
+
+		if (formDefinitionParam.getFormTypeId() == null || formDefinitionParam.getFormTypeId().longValue() < 1) {
+			formDefinitionParam.setFormTypeId(formDefinitionParam.getId());
 		}
 
 		return new Form(this.postJson(formDefinitionParam,
 				WS.Path.FormDefinition.Version1.formDefinitionDelete()));
+	}
+
+	/**
+	 * Retrieve all the WebKits for all the form definitions.
+	 *
+	 * @return All the Form Definition web kits.
+	 * @see WebKitForm
+	 * @see WebKitFormListing
+	 */
+	public List<WebKitForm> getAllFormWebKits() {
+		WebKitFormListing webKitFormListing = new WebKitFormListing();
+		webKitFormListing.setServiceTicket(this.serviceTicket);
+
+		return new WebKitFormListing(this.postJson(
+				webKitFormListing,
+				WS.Path.FormDefinition.Version1.getAllFormDefinitionWebKits())).getListing();
+	}
+
+	/**
+	 * Update and insert the Form Definition configuration.
+	 *
+	 * @param listing The WebKitFormListing listing to upsert.
+	 * @return The complete form definition config.
+	 * @see WebKitFormListing
+	 */
+	public WebKitFormListing upsertFormWebKit(WebKitFormListing listing) {
+		if (listing == null) return null;
+
+		listing.setServiceTicket(this.serviceTicket);
+		return new WebKitFormListing(this.postJson(listing,
+				WS.Path.FormDefinition.Version1.formDefinitionWebKitUpsert()));
 	}
 
 }

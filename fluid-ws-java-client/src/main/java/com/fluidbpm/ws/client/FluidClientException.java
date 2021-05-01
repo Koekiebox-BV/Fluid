@@ -24,7 +24,6 @@ package com.fluidbpm.ws.client;
  * @see RuntimeException
  */
 public class FluidClientException extends RuntimeException {
-
 	private int errorCode;
 
 	/**

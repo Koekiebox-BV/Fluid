@@ -15,21 +15,19 @@
 
 package com.fluidbpm.program.api.vo.user;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.role.Role;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -78,6 +76,11 @@ public class User extends ABaseFluidJSONObject {
 	private String dateFormat;
 	private String timeFormat;
 	private String locale;
+
+	/**
+	 * Username of the administrator user.
+	 */
+	public static final String ADMIN_USERNAME = "admin";
 
 	/**
 	 * The JSON mapping for the {@code User} object.
@@ -323,32 +326,24 @@ public class User extends ABaseFluidJSONObject {
 	 * @see Role
 	 */
 	@XmlTransient
-	public boolean doesUserHaveAccessToRole(String roleNameParam)
-	{
-		if (roleNameParam == null || roleNameParam.trim().isEmpty())
-		{
+	public boolean doesUserHaveAccessToRole(String roleNameParam) {
+		if (roleNameParam == null || roleNameParam.trim().isEmpty()) {
 			return false;
 		}
 
-		if (this.getRoles() == null || this.getRoles().isEmpty())
-		{
+		if (this.getRoles() == null || this.getRoles().isEmpty()) {
 			return false;
 		}
 
 		String roleNameParamLower = roleNameParam.trim().toLowerCase();
 
-		for (Role roleAtIndex : this.getRoles())
-		{
-			if (roleAtIndex.getName() == null ||
-					roleAtIndex.getName().trim().isEmpty())
-			{
+		for (Role roleAtIndex : this.getRoles()) {
+			if (roleAtIndex.getName() == null || roleAtIndex.getName().trim().isEmpty()) {
 				continue;
 			}
 
 			String iterRoleNameLower = roleAtIndex.getName().trim().toLowerCase();
-
-			if (roleNameParamLower.equals(iterRoleNameLower))
-			{
+			if (roleNameParamLower.equals(iterRoleNameLower)) {
 				return true;
 			}
 		}
@@ -719,73 +714,62 @@ public class User extends ABaseFluidJSONObject {
 				this.getInvalidLoginCount());
 
 		//Username...
-		if (this.getUsername() != null)
-		{
+		if (this.getUsername() != null) {
 			returnVal.put(JSONMapping.USERNAME,this.getUsername());
 		}
 
 		//Password Sha 256...
-		if (this.getPasswordSha256() != null)
-		{
+		if (this.getPasswordSha256() != null) {
 			returnVal.put(JSONMapping.PASSWORD_SHA_256,this.getPasswordSha256());
 		}
 
 		//Password Clear...
-		if (this.getPasswordClear() != null)
-		{
+		if (this.getPasswordClear() != null) {
 			returnVal.put(JSONMapping.PASSWORD_CLEAR,this.getPasswordClear());
 		}
 
 		//Date Created...
-		if (this.getDateCreated() != null)
-		{
+		if (this.getDateCreated() != null) {
 			returnVal.put(User.JSONMapping.DATE_CREATED,
 					this.getDateAsLongFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
-		if (this.getDateLastUpdated() != null)
-		{
+		if (this.getDateLastUpdated() != null) {
 			returnVal.put(User.JSONMapping.DATE_LAST_UPDATED,
 					this.getDateAsLongFromJson(this.getDateLastUpdated()));
 		}
 
 		//Password Changed At...
-		if (this.getPasswordChangedAt() != null)
-		{
+		if (this.getPasswordChangedAt() != null) {
 			returnVal.put(JSONMapping.PASSWORD_CHANGED_AT,
 					this.getDateAsLongFromJson(this.getPasswordChangedAt()));
 		}
 
 		//Logged In Date Time...
-		if (this.getLoggedInDateTime() != null)
-		{
+		if (this.getLoggedInDateTime() != null) {
 			returnVal.put(JSONMapping.LOGGED_IN_DATE_TIME,
 					this.getDateAsLongFromJson(this.getLoggedInDateTime()));
 		}
 
 		//SALT...
-		if (this.getSalt() != null)
-		{
+		if (this.getSalt() != null) {
 			returnVal.put(JSONMapping.SALT,this.getSalt());
 		}
 
 		//Timezone...
-		if (this.getTimezone() != null)
-		{
+		if (this.getTimezone() != null) {
 			returnVal.put(JSONMapping.TIMEZONE,
 					this.getTimezone().doubleValue());
 		}
 
 		//Date Format...
-		if (this.getDateFormat() != null)
-		{
+		if (this.getDateFormat() != null) {
 			returnVal.put(JSONMapping.DATE_FORMAT, this.getDateFormat());
 		}
 
 		//Time Format...
-		if (this.getTimeFormat() != null)
-		{
+		if (this.getTimeFormat() != null) {
 			returnVal.put(JSONMapping.TIME_FORMAT, this.getTimeFormat());
 		}
 
@@ -798,11 +782,9 @@ public class User extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.EMAIL_USER_NOTIFICATION, this.isEmailUserNotification());
 
 		//Roles...
-		if (this.getRoles() != null && !this.getRoles().isEmpty())
-		{
+		if (this.getRoles() != null && !this.getRoles().isEmpty()) {
 			JSONArray rolesArr = new JSONArray();
-			for (Role toAdd :this.getRoles())
-			{
+			for (Role toAdd :this.getRoles()) {
 				rolesArr.put(toAdd.toJsonObject());
 			}
 
@@ -810,12 +792,9 @@ public class User extends ABaseFluidJSONObject {
 		}
 
 		//Email Addresses...
-		if (this.getEmailAddresses() != null &&
-				!this.getEmailAddresses().isEmpty())
-		{
+		if (this.getEmailAddresses() != null && !this.getEmailAddresses().isEmpty()) {
 			JSONArray emailArr = new JSONArray();
-			for (String toAdd :this.getEmailAddresses())
-			{
+			for (String toAdd :this.getEmailAddresses()) {
 				emailArr.put(toAdd);
 			}
 
@@ -823,14 +802,11 @@ public class User extends ABaseFluidJSONObject {
 		}
 
 		//User Fields...
-		if (this.getUserFields() != null && !this.getUserFields().isEmpty())
-		{
+		if (this.getUserFields() != null && !this.getUserFields().isEmpty()) {
 			JSONArray userFieldsArr = new JSONArray();
-			for (Field toAdd :this.getUserFields())
-			{
+			for (Field toAdd :this.getUserFields()) {
 				userFieldsArr.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.USER_FIELDS,userFieldsArr);
 		}
 
@@ -918,21 +894,21 @@ public class User extends ABaseFluidJSONObject {
 		return null;
 	}
 
-    /**
-     * Gets the value of {@code this} {@code Field} as a {@code MultiChoice}.
-     *
-     * @param fieldNameParam The name of the field get get {@code MultiChoice} from.
-     *
-     * @return The Field Value or {@code null} if not found.
-     *
-     * @see Field.Type
-     * @see MultiChoice
-     */
-    @XmlTransient
-    public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam) {
-        Field fieldReturn = this.getField(fieldNameParam);
-        return (fieldReturn == null) ? null: fieldReturn.getFieldValueAsMultiChoice();
-    }
+	/**
+	 * Gets the value of {@code this} {@code Field} as a {@code MultiChoice}.
+	 *
+	 * @param fieldNameParam The name of the field get get {@code MultiChoice} from.
+	 *
+	 * @return The Field Value or {@code null} if not found.
+	 *
+	 * @see Field.Type
+	 * @see MultiChoice
+	 */
+	@XmlTransient
+	public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam) {
+		Field fieldReturn = this.getField(fieldNameParam);
+		return (fieldReturn == null) ? null: fieldReturn.getFieldValueAsMultiChoice();
+	}
 
 	/**
 	 * Returns a hash code value for the object. This method is
@@ -944,7 +920,6 @@ public class User extends ABaseFluidJSONObject {
 	@Override
 	@XmlTransient
 	public int hashCode() {
-
 		int hasRadix = 100000;
 		if (this.getId() != null){
 			hasRadix += this.getId().hashCode();

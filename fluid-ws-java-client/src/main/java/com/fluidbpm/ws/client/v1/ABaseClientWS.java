@@ -15,23 +15,12 @@
 
 package com.fluidbpm.ws.client.v1;
 
-import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.List;
-
-import javax.net.ssl.SSLContext;
-
+import com.fluidbpm.GitDescribe;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ws.Error;
+import com.fluidbpm.program.api.vo.ws.WS;
+import com.fluidbpm.ws.client.FluidClientException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -48,12 +37,21 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.GitDescribe;
-import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ws.Error;
-import com.fluidbpm.program.api.vo.ws.WS;
-import com.fluidbpm.ws.client.FluidClientException;
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.List;
+
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
 
 /**
  * Base class for all REST related calls.
@@ -242,10 +240,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see ResponseHandler
 	 */
 	private String executeHttp(
-			HttpClient httpClientParam,
-			HttpUriRequest httpUriRequestParam,
-			ResponseHandler responseHandlerParam,
-			String postfixUrlParam
+		HttpClient httpClientParam,
+		HttpUriRequest httpUriRequestParam,
+		ResponseHandler responseHandlerParam,
+		String postfixUrlParam
 	) {
 		try {
 			Object returnedObj = httpClientParam.execute(httpUriRequestParam, responseHandlerParam);
@@ -253,7 +251,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			//String text came back...
 			if (returnedObj instanceof String) {
 				return (String)returnedObj;
-			} else if (returnedObj == null){
+			} else if (returnedObj == null) {
 				//[null] - came back...
 				throw new FluidClientException(
 						"No results, [null] response.",
@@ -278,7 +276,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 						except,
 						FluidClientException.ErrorCode.CONNECT_ERROR);
 			}
-
 			throw new FluidClientException(
 					except.getMessage(),
 					except,
@@ -296,7 +293,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see JSONObject
 	 */
 	public JSONObject getJson(String postfixUrlParam) {
-
 		return this.getJson(
 				false,
 				postfixUrlParam);
@@ -315,9 +311,9 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see JSONObject
 	 */
 	public JSONObject getJson(
-			String postfixUrlParam,
-			List<HeaderNameValue> headerNameValuesParam) {
-
+		String postfixUrlParam,
+		List<HeaderNameValue> headerNameValuesParam
+	) {
 		return this.getJson(
 				false,
 				postfixUrlParam,
@@ -336,12 +332,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see JSONObject
 	 */
 	public JSONObject getJson(
-			boolean checkConnectionValidParam,
-			String postfixUrlParam) {
-
-		return this.getJson(
-				checkConnectionValidParam,
-				postfixUrlParam, null);
+		boolean checkConnectionValidParam,
+		String postfixUrlParam
+	) {
+		return this.getJson(checkConnectionValidParam, postfixUrlParam, null);
 	}
 
 	/**
@@ -357,10 +351,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see JSONObject
 	 */
 	public JSONObject getJson(
-			boolean checkConnectionValidParam,
-			String postfixUrlParam,
-			List<HeaderNameValue> headerNameValuesParam) {
-
+		boolean checkConnectionValidParam,
+		String postfixUrlParam,
+		List<HeaderNameValue> headerNameValuesParam
+	) {
 		//Connection is not valid...throw error...
 		if (checkConnectionValidParam && !this.isConnectionValid()) {
 			throw new FluidClientException(
@@ -384,34 +378,26 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			}
 
 			// Create a custom response handler
-			ResponseHandler<String> responseHandler =
-					this.getJsonResponseHandler(this.endpointUrl.concat(postfixUrlParam));
+			ResponseHandler<String> responseHandler = this.getJsonResponseHandler(this.endpointUrl.concat(postfixUrlParam));
 			String responseBody = this.executeHttp(httpclient, httpGet, responseHandler, postfixUrlParam);
 			if (responseBody == null || responseBody.trim().isEmpty()) {
 				throw new FluidClientException(
-						"No response data from '"+
-								this.endpointUrl.concat(postfixUrlParam)+"'.",
-						FluidClientException.ErrorCode.IO_ERROR);
+						"No response data from '"+ this.endpointUrl.concat(postfixUrlParam)+"'.", FluidClientException.ErrorCode.IO_ERROR);
 			}
 
 			JSONObject jsonOjb = new JSONObject(responseBody);
-			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) {
-				return jsonOjb;
-			}
+			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) return jsonOjb;
 
 			int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
 			if (errorCode > 0) {
 				String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
 						? "Not set":
 						jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
-
 				throw new FluidClientException(errorMessage, errorCode);
 			}
-
 			return jsonOjb;
 		} catch (JSONException jsonExcept) {
-			throw new FluidClientException(jsonExcept.getMessage(),
-					FluidClientException.ErrorCode.JSON_PARSING);
+			throw new FluidClientException(jsonExcept.getMessage(), FluidClientException.ErrorCode.JSON_PARSING);
 		}
 	}
 
@@ -616,10 +602,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			String postfixUrlParam
 	) {
 		//Validate that something is set.
-		if (baseDomainParam == null) {
-			throw new FluidClientException("No JSON body to post.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
-		}
+		if (baseDomainParam == null)
+			throw new FluidClientException("No JSON body to post.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
 		String bodyJsonString = baseDomainParam.toJsonObject().toString();
 
@@ -723,39 +707,30 @@ public abstract class ABaseClientWS implements AutoCloseable{
 				contentTypeParam,
 				postfixUrlParam);
 
-		if (responseBody == null || responseBody.trim().isEmpty()) {
+		if (responseBody == null || responseBody.trim().isEmpty())
 			throw new FluidClientException(
-					"No response data from '"+
-							this.endpointUrl.concat(postfixUrlParam)+"'.",
+					"No response data from '"+ this.endpointUrl.concat(postfixUrlParam)+"'.",
 					FluidClientException.ErrorCode.IO_ERROR);
-		}
 
 		try {
 			JSONObject jsonOjb = new JSONObject(responseBody);
-			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE))
-			{
-				return jsonOjb;
-			}
+			if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) return jsonOjb;
 
 			int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
-			if (errorCode > 0)
-			{
+			if (errorCode > 0) {
 				String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
 						? "Not set":
 						jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
-
 				throw new FluidClientException(errorMessage, errorCode);
 			}
 
 			return jsonOjb;
 		} catch (JSONException jsonExcept) {
 			//Invalid JSON Body...
-			if (responseBody != null && !responseBody.trim().isEmpty()) {
-				throw new FluidClientException(
+			if (responseBody != null && !responseBody.trim().isEmpty()) throw new FluidClientException(
 						jsonExcept.getMessage() + "\n Response Body is: \n\n" +
 								responseBody,
 						jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
-			}
 
 			throw new FluidClientException(
 					jsonExcept.getMessage(),
@@ -788,26 +763,21 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			ContentType contentTypeParam,
 			String postfixUrlParam
 	) {
-		if (stringParam == null || stringParam.isEmpty()) {
-			throw new FluidClientException("No JSON body to post.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
-		}
+		if (stringParam == null || stringParam.isEmpty()) throw new FluidClientException(
+				"No JSON body to post.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
 		//Check connection...
-		if (checkConnectionValidParam && !this.isConnectionValid()) {
+		if (checkConnectionValidParam && !this.isConnectionValid())
 			throw new FluidClientException(
-					"Unable to reach service at '"+
-							this.endpointUrl.concat(postfixUrlParam)+"'.",
+					"Unable to reach service at '"+ this.endpointUrl.concat(postfixUrlParam)+"'.",
 					FluidClientException.ErrorCode.CONNECT_ERROR);
-		}
+
 
 		CloseableHttpClient httpclient = this.getClient();
 
 		String responseBody = null;
-
 		try {
 			HttpUriRequest uriRequest = null;
-
 			//POST...
 			if (httpMethodParam == HttpMethod.POST) {
 				//When its html Form Data...
@@ -850,15 +820,10 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
 			//Set additional headers...
 			if (headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
-
 				for (HeaderNameValue headerNameVal : headerNameValuesParam) {
-					if (headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) {
-						continue;
-					}
+					if (headerNameVal.getName() == null || headerNameVal.getName().trim().isEmpty()) continue;
 
-					if (headerNameVal.getValue() == null) {
-						continue;
-					}
+					if (headerNameVal.getValue() == null) continue;
 
 					uriRequest.setHeader(headerNameVal.getName(), headerNameVal.getValue());
 				}
@@ -932,7 +897,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	private ResponseHandler<String> getJsonResponseHandler(final String urlCalledParam) {
 		// Create a custom response handler
 		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
 			/**
 			 * Process the {@code responseParam} and return text if valid.
 			 *
@@ -941,7 +905,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			 * @throws IOException If there are any communication or I/O problems.
 			 */
 			public String handleResponse(final HttpResponse responseParam) throws IOException {
-
 				int status = responseParam.getStatusLine().getStatusCode();
 				if (status == 404) {
 					throw new FluidClientException(
@@ -950,29 +913,19 @@ public abstract class ABaseClientWS implements AutoCloseable{
 							FluidClientException.ErrorCode.CONNECT_ERROR);
 				} else if (status >= 200 && status < 300) {
 					HttpEntity entity = responseParam.getEntity();
-
-					String responseJsonString = (entity == null) ? null:
-							EntityUtils.toString(entity);
-
+					String responseJsonString = (entity == null) ? null: EntityUtils.toString(entity);
 					return responseJsonString;
 				} else if (status == 400) {
 					//Bad Request... Server Side Error meant for client...
 					HttpEntity entity = responseParam.getEntity();
-
-					String responseJsonString = (entity == null) ? null :
-							EntityUtils.toString(entity);
-
+					String responseJsonString = (entity == null) ? null : EntityUtils.toString(entity);
 					return responseJsonString;
 				} else {
 					HttpEntity entity = responseParam.getEntity();
-
-					String responseString = (entity != null) ?
-							EntityUtils.toString(entity) : null;
-
+					String responseString = (entity != null) ? EntityUtils.toString(entity) : null;
 					throw new FluidClientException(
 							"Unexpected response status: " + status+". "
-							+responseParam.getStatusLine().getReasonPhrase()+". \nResponse Text ["+
-									responseString+"]",
+							+responseParam.getStatusLine().getReasonPhrase()+". \nResponse Text ["+ responseString+"]",
 							FluidClientException.ErrorCode.IO_ERROR);
 				}
 			}
@@ -993,16 +946,12 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see URLEncoder#encode(String, String)
 	 */
 	public static String encodeParam(String textParam) {
-		if (textParam == null) {
-			return null;
-		}
-
+		if (textParam == null) return null;
 		try {
 			return URLEncoder.encode(textParam,ENCODING_UTF_8);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
@@ -1015,18 +964,13 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	public boolean isConnectionValid() {
 		//Init the session to get the salt...
 		try {
-			this.getJson(
-					false,
-					WS.Path.Test.Version1.testConnection());
+			this.getJson(false, WS.Path.Test.Version1.testConnection());
 		} catch (FluidClientException flowJobExcept) {
 			//Connect problem...
-			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) {
-				return false;
-			}
+			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return false;
 
 			throw flowJobExcept;
 		}
-
 		return true;
 	}
 
@@ -1041,9 +985,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see Error
 	 */
 	protected boolean isError(ABaseFluidJSONObject baseDomainParam) {
-		if (baseDomainParam == null) {
-			return false;
-		}
+		if (baseDomainParam == null) return false;
 
 		//Must be subclass of error and error code greater than 0...
 		if (baseDomainParam instanceof Error && ((Error)baseDomainParam).getErrorCode() > 0) {
@@ -1123,25 +1065,20 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @since v1.1
 	 */
 	private CloseableHttpClient getClient() {
-		if (this.closeableHttpClient != null) {
-			return this.closeableHttpClient;
-		}
+		if (this.closeableHttpClient != null) return this.closeableHttpClient;
 
 		//Only accept self signed certificate if in Junit test case.
 		String pathToFluidTrustStore = this.getPathToFluidSpecificTrustStore();
 		//Test mode...
 		if (IS_IN_JUNIT_TEST_MODE || pathToFluidTrustStore != null) {
 			SSLContextBuilder builder = new SSLContextBuilder();
-
 			try {
 				//builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
 				if (pathToFluidTrustStore == null) {
 					builder.loadTrustMaterial(new SSLTrustAll());
 				} else {
 					String password = this.getFluidSpecificTrustStorePassword();
-					if (password == null) {
-						password = UtilGlobal.EMPTY;
-					}
+					if (password == null) password = UtilGlobal.EMPTY;
 
 					if (IS_IN_JUNIT_TEST_MODE) {
 						builder.loadTrustMaterial(
@@ -1154,11 +1091,12 @@ public abstract class ABaseClientWS implements AutoCloseable{
 								password.toCharArray());
 					}
 				}
-
 				SSLContext sslContext = builder.build();
-
-				this.closeableHttpClient = HttpClients.custom().setSSLSocketFactory(
-						new SSLConnectionSocketFactory(sslContext)).build();
+				this.closeableHttpClient = HttpClients.custom()
+						.setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext))
+						.setConnectionManagerShared(true)
+						.setMaxConnPerRoute(200)
+						.build();
 			} catch (NoSuchAlgorithmException e) {
 				//Changed for Java 1.6 compatibility...
 				throw new FluidClientException(
@@ -1183,7 +1121,11 @@ public abstract class ABaseClientWS implements AutoCloseable{
 			}
 		} else {
 			//Default HTTP Client...
-			this.closeableHttpClient = HttpClients.createDefault();
+			//this.closeableHttpClient = HttpClients.createDefault();
+			this.closeableHttpClient = HttpClients.custom()
+					.setMaxConnPerRoute(200)
+					.setConnectionManagerShared(true)
+					.build();
 		}
 
 		return this.closeableHttpClient;
@@ -1198,17 +1140,11 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see java.util.Properties
 	 */
 	private String getPathToFluidSpecificTrustStore() {
-		String fluidSystemTrustStore =
-				System.getProperty(SYSTEM_PROP_FLUID_TRUST_STORE);
-
-		if (fluidSystemTrustStore == null || fluidSystemTrustStore.trim().isEmpty()) {
-			return null;
-		}
+		String fluidSystemTrustStore = System.getProperty(SYSTEM_PROP_FLUID_TRUST_STORE);
+		if (fluidSystemTrustStore == null || fluidSystemTrustStore.trim().isEmpty()) return null;
 
 		File certFile = new File(fluidSystemTrustStore);
-		if (certFile.exists() && certFile.isFile()) {
-			return fluidSystemTrustStore;
-		}
+		if (certFile.exists() && certFile.isFile()) return fluidSystemTrustStore;
 
 		return null;
 	}
@@ -1232,12 +1168,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @since v1.1
 	 */
 	public void closeAndClean() {
-		CloseConnectionRunnable closeConnectionRunnable =
-				new CloseConnectionRunnable(this);
-
-		Thread closeConnThread = new Thread(
-				closeConnectionRunnable,
-				"Close ABaseClientWS Connection");
+		CloseConnectionRunnable closeConnectionRunnable = new CloseConnectionRunnable(this);
+		Thread closeConnThread = new Thread(closeConnectionRunnable, "Close ABaseClientWS Connection");
 		closeConnThread.start();
 	}
 
@@ -1263,9 +1195,8 @@ public abstract class ABaseClientWS implements AutoCloseable{
 				this.closeableHttpClient.close();
 			} catch (IOException e) {
 				throw new FluidClientException(
-						"Unable to close Http Client connection. "+
-								e.getMessage(),
-						e, FluidClientException.ErrorCode.IO_ERROR);
+						"Unable to close Http Client connection. "+ e.getMessage(), e,
+						FluidClientException.ErrorCode.IO_ERROR);
 			}
 		}
 
@@ -1283,8 +1214,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		 * @return {@code true}, always trusted.
 		 */
 		@Override
-		public boolean isTrusted(X509Certificate[] x509Certificates, String stringParam
-		) {
+		public boolean isTrusted(X509Certificate[] x509Certificates, String stringParam) {
 			return true;
 		}
 	}
@@ -1293,7 +1223,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * Utility class to close the connection in a thread.
 	 */
 	private static class CloseConnectionRunnable implements Runnable {
-
 		private ABaseClientWS baseClientWS;
 
 		/**
@@ -1310,10 +1239,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		 */
 		@Override
 		public void run() {
-
-			if (this.baseClientWS == null) {
-				return;
-			}
+			if (this.baseClientWS == null) return;
 
 			this.baseClientWS.closeConnectionNonThreaded();
 		}

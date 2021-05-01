@@ -15,13 +15,15 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.fluidbpm.program.api.util.ABaseUtil;
+import com.fluidbpm.program.api.util.cache.CacheUtil;
+import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
+import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
+import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.TableField;
+import com.fluidbpm.program.api.vo.form.Form;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -36,15 +38,12 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.util.ABaseUtil;
-import com.fluidbpm.program.api.util.cache.CacheUtil;
-import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
-import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
-import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.program.api.vo.field.TableField;
-import com.fluidbpm.program.api.vo.form.Form;
+import java.io.Closeable;
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ElasticSearch base Utility class.
@@ -320,9 +319,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		int limitParam,
 		String ... indicesParam
 	) {
-		if (formIdsParam == null || formIdsParam.isEmpty()) {
-			return null;
-		}
+		if (formIdsParam == null || formIdsParam.isEmpty()) return null;
 
 		//Query using the descendantId directly...
 		StringBuffer byIdQuery = new StringBuffer();
@@ -352,10 +349,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 					indicesParam);
 		}
 
-		if (returnVal == null || returnVal.isEmpty()) {
-			return null;
-		}
-
+		if (returnVal == null || returnVal.isEmpty()) return null;
 		return returnVal;
 	}
 
@@ -391,39 +385,29 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		if (searchHits != null && (totalHits = searchHits.getTotalHits().value) > 0) {
 			returnVal = new ArrayList();
 
-			if((searchHits.getHits().length != totalHits) &&
-					(searchHits.getHits().length != limitParam)) {
-				throw new FluidElasticSearchException(
-						"The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
+			if((searchHits.getHits().length != totalHits) && (searchHits.getHits().length != limitParam))
+				throw new FluidElasticSearchException("The Hits and fetch count has mismatch. Total hits is '"+totalHits+"' while hits is '"+
 								searchHits.getHits().length+"'.");
-			}
 
 			long iterationMax = totalHits;
-			if (limitParam > 0 && totalHits > limitParam) {
-				iterationMax = limitParam;
-			}
+			if (limitParam > 0 && totalHits > limitParam) iterationMax = limitParam;
 
 			//Iterate...
 			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 
 				String source;
-				if((source = searchHit.getSourceAsString()) == null) {
-					continue;
-				}
+				if((source = searchHit.getSourceAsString()) == null) continue;
 
 				this.printInfoOnSourceFromES(searchHit);
 
 				Form formFromSource = new Form();
-
 				JSONObject jsonObject = new JSONObject(source);
 				List<Field> fieldsForForm = null;
 				//Is Form Type available...
 				if (jsonObject.has(Form.JSONMapping.FORM_TYPE_ID)) {
-					if (this.fieldUtil == null) {
-						throw new FluidElasticSearchException(
-								"Field Util is not set. Use a different constructor.");
-					}
+					if (this.fieldUtil == null) throw new FluidElasticSearchException(
+							"Field Util is not set. Use a different constructor.");
 
 					fieldsForForm = formFromSource.convertTo(
 							this.fieldUtil.getFormFieldMappingForFormDefinition(
@@ -467,12 +451,11 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				indicesParam);
 
 		List<Form> returnVal = null;
-
 		long totalHits;
 		if (searchHits != null && (totalHits = searchHits.getTotalHits().value) > 0) {
 			returnVal = new ArrayList();
 
-			if((searchHits.getHits().length != totalHits) &&
+			if ((searchHits.getHits().length != totalHits) &&
 					(searchHits.getHits().length != limitParam)) {
 				throw new FluidElasticSearchException(
 						"The Hits and fetch count has mismatch. Total hits is '"+
@@ -481,23 +464,18 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 			}
 
 			long iterationMax = totalHits;
-			if (limitParam > 0 && totalHits > limitParam) {
-				iterationMax = limitParam;
-			}
+			if (limitParam > 0 && totalHits > limitParam) iterationMax = limitParam;
 
 			//Iterate...
 			for (int index = 0;index < iterationMax;index++) {
 				SearchHit searchHit = searchHits.getAt(index);
 
 				String source;
-				if ((source = searchHit.getSourceAsString()) == null) {
-					continue;
-				}
+				if ((source = searchHit.getSourceAsString()) == null) continue;
 
 				this.printInfoOnSourceFromES(searchHit);
 
 				Form formFromSource = new Form();
-
 				formFromSource.populateFromElasticSearchJson(
 						new JSONObject(source),
 						null);

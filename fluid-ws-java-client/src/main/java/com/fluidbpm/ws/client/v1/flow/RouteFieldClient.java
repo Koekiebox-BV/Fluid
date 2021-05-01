@@ -15,18 +15,18 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.RouteFieldListing;
+import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroup;
 import com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Java Web Service Client for Route Field related actions.
@@ -505,16 +505,26 @@ public class RouteFieldClient extends ABaseFieldClient {
 	 */
 	public Field getFieldById(Long fieldIdParam) {
 		Field field = new Field(fieldIdParam);
-
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
-
-		if (this.serviceTicket != null) {
-			field.setServiceTicket(this.serviceTicket);
-		}
-
+		field.setServiceTicket(this.serviceTicket);
 		return new Field(this.postJson(
 				field, Version1.getById()));
+	}
+
+	/**
+	 * Retrieves field listing by {@code viewGroup}.
+	 *
+	 * @param viewGroup The view group to fetch fields for.
+	 * @return Fields by view group.
+	 */
+	public RouteFieldListing getFieldsByViewGroup(WebKitViewGroup viewGroup) {
+		if (viewGroup == null) {
+			return null;
+		}
+		//Set for Payara server...
+		viewGroup.setServiceTicket(this.serviceTicket);
+		return new RouteFieldListing(this.postJson(viewGroup, Version1.getByViewGroup()));
 	}
 
 	/**

@@ -62,34 +62,50 @@ public class TestFormContainerClient extends ABaseTestCase {
 		}
 	}
 
-	/**
-	 *
-	 */
 	@Before
-	public void init()
-	{
+	public void init() {
 		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
 		this.loginClient = new LoginClient(BASE_URL);
 	}
 
-	/**
-	 *
-	 */
 	@After
 	public void destroy()
 	{
 		this.loginClient.closeAndClean();
 	}
 
-	/**
-	 *
-	 */
+	@Ignore
+	@Test
+	public void testCRUDFormContainerThrowAway() {
+		if (!this.isConnectionValid()) return;
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+
+		FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+		//1. Form...
+		Form toCreate = new Form("Main Form");
+		toCreate.setTitle(TestStatics.FORM_TITLE_PREFIX + new Date().toString());
+
+		List<Field> fields = new ArrayList();
+		fields.add(new Field("Text Field Plain", "0123456789     "));
+		toCreate.setFormFields(fields);
+
+		//Create...
+		Form createdForm = formContainerClient.createFormContainer(toCreate);
+
+		Form formById = formContainerClient.getFormContainerById(createdForm.getId());
+		String fieldVal = formById.getFieldValueAsString("Text Field Plain");
+
+		System.out.println("FieldVal" + fieldVal);
+	}
+
 	@Test
 	public void testCRUDFormContainerBasic() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -114,17 +130,12 @@ public class TestFormContainerClient extends ABaseTestCase {
 		//Create...
 		Form createdForm = formContainerClient.createFormContainer(toCreate);
 
-		TestCase.assertNotNull("The 'Form Container' needs to be set.",
-				createdForm);
-		TestCase.assertNotNull("The 'Form Container Id' needs to be set.",
-				createdForm.getId());
-		TestCase.assertNotNull("The 'Form Fields' needs to be set.",
-				createdForm.getFormFields());
-		TestCase.assertEquals("The number of 'Form Fields' is not equal.",
-				3, createdForm.getFormFields().size());
+		TestCase.assertNotNull("The 'Form Container' needs to be set.", createdForm);
+		TestCase.assertNotNull("The 'Form Container Id' needs to be set.", createdForm.getId());
+		TestCase.assertNotNull("The 'Form Fields' needs to be set.", createdForm.getFormFields());
+		TestCase.assertEquals("The number of 'Form Fields' is not equal.", 3, createdForm.getFormFields().size());
 
-		createdForm.getFormFields().add(
-				new Field(TestStatics.FieldName.EMAIL_SENT_DATE, new Date()));
+		createdForm.getFormFields().add(new Field(TestStatics.FieldName.EMAIL_SENT_DATE, new Date()));
 
 		//Updated
 		Form updatedForm = formContainerClient.updateFormContainer(createdForm);
@@ -149,16 +160,9 @@ public class TestFormContainerClient extends ABaseTestCase {
 				deletedForm.getId());
 	}
 
-	/**
-	 *
-	 */
 	@Test
-	public void testCRUDFormContainerBasicWebSocket()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testCRUDFormContainerBasicWebSocket() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -210,16 +214,10 @@ public class TestFormContainerClient extends ABaseTestCase {
 				deletedForm.getId());
 	}
 
-	/**
-	 *
-	 */
 	@Test
 	@Ignore
 	public void testCRUDFormContainerWithEncryptedField() {
-
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -231,10 +229,8 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 		Form formContEncToCreate = new Form("Form Test");
 		formContEncToCreate.setTitle("Created At "+new Date());
-		formContEncToCreate.setFieldValue(
-				"Field Crap", UtilGlobal.randomUUID(), Field.Type.Text);
-		formContEncToCreate.setFieldValue(
-				"Sample Encrypt Field", UtilGlobal.randomUUID(), Field.Type.TextEncrypted);
+		formContEncToCreate.setFieldValue("Field Crap", UtilGlobal.randomUUID(), Field.Type.Text);
+		formContEncToCreate.setFieldValue("Sample Encrypt Field", UtilGlobal.randomUUID(), Field.Type.TextEncrypted);
 
 		Form createdForm = formContainerClient.createFormContainer(formContEncToCreate);
 
@@ -253,14 +249,9 @@ public class TestFormContainerClient extends ABaseTestCase {
 				freshFetchById.getFieldValueAsString("Sample Encrypt Field"));
 	}
 
-	/**
-	 *
-	 */
 	@Test
 	public void testCRUDFormContainerAdvanced() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -408,16 +399,9 @@ public class TestFormContainerClient extends ABaseTestCase {
 		formFieldClient.deleteField(createdField);
 	}
 
-	/**
-	 *
-	 */
 	@Test
-	public void testCreateDeleteTableRecord()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testCreateDeleteTableRecord() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

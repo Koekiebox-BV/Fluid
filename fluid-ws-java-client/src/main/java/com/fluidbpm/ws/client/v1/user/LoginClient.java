@@ -14,15 +14,6 @@
  */
 package com.fluidbpm.ws.client.v1.user;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -33,6 +24,14 @@ import com.fluidbpm.program.api.vo.ws.auth.AuthResponse;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.google.common.io.BaseEncoding;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Java Web Service Client for User Login related actions.
@@ -198,16 +197,13 @@ public class LoginClient extends ABaseClientWS {
 	 * @see User
 	 */
 	public User loginBasic(String usernameParam, String passwordParam) {
-		if (usernameParam == null || passwordParam == null) {
-			return null;
-		}
+		if (usernameParam == null || passwordParam == null) return null;
 
 		try {
 			List<HeaderNameValue> headNameVal = new ArrayList<>();
 			String value = usernameParam.concat(":").concat(passwordParam);
 			value = BaseEncoding.base64().encode(value.getBytes());
-			HeaderNameValue basicHeader = new HeaderNameValue(AUTHORIZATION,
-					BASIC.concat(" ").concat(value));
+			HeaderNameValue basicHeader = new HeaderNameValue(AUTHORIZATION, BASIC.concat(" ").concat(value));
 			headNameVal.add(basicHeader);
 
 			return new User(this.getJson(

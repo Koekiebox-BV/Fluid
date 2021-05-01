@@ -153,13 +153,23 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 			public static final String SQ_OPEN = "[";
 			public static final String SQ_CLOSE = "]";
 		}
+
+		/**
+		 * Meta-Data types for Label fields specifically.
+		 */
+		public static final class Label {
+			public static final String PLAIN = "Plain";
+			public static final String ANCHOR = "Anchor";
+		}
 	}
 
 	/**
 	 * Construct the correct Meta-Data from parameters.
 	 *
 	 * @param metaDataPrefixParam Prefix for return val to indicate type. Example;
-	 *            Spinner.
+	 *            Spinner
+	 *            Rating
+	 *            Slider
 	 * @param minParam The min allowed value.
 	 * @param maxParam The max allowed value.
 	 * @param stepFactorParam The allowed step increments.
@@ -176,9 +186,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 	) {
 		StringBuffer returnBuffer = new StringBuffer();
 
-		if (metaDataPrefixParam != null && !metaDataPrefixParam.isEmpty()) {
-			returnBuffer.append(metaDataPrefixParam);
-		}
+		if (metaDataPrefixParam != null && !metaDataPrefixParam.isEmpty()) returnBuffer.append(metaDataPrefixParam);
 
 		//Min...
 		returnBuffer.append(FieldMetaData.Decimal.UNDERSCORE);

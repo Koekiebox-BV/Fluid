@@ -15,12 +15,6 @@
 
 package com.fluidbpm.program.api.util.sql.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
 import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
@@ -33,6 +27,12 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.common.io.BaseEncoding;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * SQL Utility class used for {@code Field} related actions.
@@ -135,9 +135,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 	public List<FormFieldMapping> getFormFieldMappingForForm(Long electronicFormIdParam) {
 		List<FormFieldMapping> returnVal = new ArrayList();
 
-		if (electronicFormIdParam == null) {
-			return returnVal;
-		}
+		if (electronicFormIdParam == null) return returnVal;
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -189,18 +187,14 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 	) {
 		List<FormFieldMapping> returnVal = new ArrayList();
 
-		if (formDefinitionIdParam == null || formDefinitionIdParam.longValue() < 1)
-		{
-			return returnVal;
-		}
+		if (formDefinitionIdParam == null || formDefinitionIdParam.longValue() < 1) return returnVal;
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			//Local Mapping...
 			//When we have the key by definition, we can just return.
-			if (this.localDefinitionToFieldsMapping.containsKey(formDefinitionIdParam))
-			{
+			if (this.localDefinitionToFieldsMapping.containsKey(formDefinitionIdParam)) {
 				return this.localDefinitionToFieldsMapping.get(formDefinitionIdParam);
 			}
 
@@ -216,21 +210,16 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 			resultSet = preparedStatement.executeQuery();
 
 			//Iterate each of the form containers...
-			while (resultSet.next())
-			{
+			while (resultSet.next()) {
 				returnVal.add(this.mapFormFieldMapping(resultSet));
 			}
 
 			this.localDefinitionToFieldsMapping.put(formDefinitionIdParam, returnVal);
 
 			return returnVal;
-		}
-		//
-		catch (SQLException sqlError) {
+		} catch (SQLException sqlError) {
 			throw new FluidSQLException(sqlError);
-		}
-		//
-		finally {
+		} finally {
 			this.closeStatement(preparedStatement, resultSet);
 		}
 	}
@@ -242,12 +231,8 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 	 * @param electronicFormIdParam The Electronic Form to fetch fields for.
 	 * @return The Form Definition for Electronic Form {@code electronicFormIdParam}.
 	 */
-	public Long getFormDefinitionId(Long electronicFormIdParam)
-	{
-		if (electronicFormIdParam == null)
-		{
-			return null;
-		}
+	public Long getFormDefinitionId(Long electronicFormIdParam) {
+		if (electronicFormIdParam == null) return null;
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet;
@@ -264,11 +249,9 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 			resultSet = preparedStatement.executeQuery();
 
 			//Iterate each of the form containers...
-			while (resultSet.next())
-			{
+			while (resultSet.next()) {
 				return resultSet.getLong(1);
 			}
-
 			return null;
 		} catch (SQLException sqlError) {
 			throw new FluidSQLException(sqlError);
@@ -288,28 +271,20 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 	 * @return The Form Fields for Electronic Form {@code electronicFormIdParam}.
 	 */
 	public List<Field> getFormFields(
-			Long electronicFormIdParam,
-			boolean includeTableFieldsParam,
-			boolean includeTableFieldFormRecordInfoParam
+		Long electronicFormIdParam,
+		boolean includeTableFieldsParam,
+		boolean includeTableFieldFormRecordInfoParam
 	) {
 		List<Field> returnVal = new ArrayList();
+		if (electronicFormIdParam == null) return returnVal;
 
-		if (electronicFormIdParam == null) {
-			return returnVal;
-		}
-
-		List<FormFieldMapping> fieldMappings =
-				this.getFormFieldMappingForForm(electronicFormIdParam);
-
-		if (fieldMappings == null || fieldMappings.isEmpty()) {
-			return returnVal;
-		}
+		List<FormFieldMapping> fieldMappings = this.getFormFieldMappingForForm(electronicFormIdParam);
+		if (fieldMappings == null || fieldMappings.isEmpty()) return returnVal;
 
 		//Get the values for each of the fields...
 		for (FormFieldMapping fieldMapping : fieldMappings) {
 			//Skip if ignore Table Fields...
-			if (!includeTableFieldsParam &&
-					fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD) {//Table Field...
+			if (!includeTableFieldsParam && fieldMapping.dataType == UtilGlobal.FieldTypeId._7_TABLE_FIELD) {//Table Field...
 				continue;
 			}
 
@@ -318,14 +293,11 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 					electronicFormIdParam,
 					includeTableFieldFormRecordInfoParam);
 
-			if (fieldToAdd == null) {
-				continue;
-			}
+			if (fieldToAdd == null) continue;
 
 			//When table field...
 			if (includeTableFieldsParam && (fieldToAdd.getFieldValue() instanceof TableField)) {
 				TableField tableField = (TableField)fieldToAdd.getFieldValue();
-
 				if (tableField.getTableRecords() != null && !tableField.getTableRecords().isEmpty()) {
 					for (Form tableRecordForm : tableField.getTableRecords()) {
 						tableRecordForm.setFormFields(
@@ -357,9 +329,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 		Long formContainerIdParam,
 		boolean includeTableFieldFormRecordInfoParam
 	) {
-		if (formFieldMappingParam == null) {
-			return null;
-		}
+		if (formFieldMappingParam == null) return null;
 
 		//First attempt to fetch from the cache...
 		if (this.getCacheUtil() != null) {
@@ -447,9 +417,10 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 				//Date Time...
 				case UtilGlobal.FieldTypeId._5_DATE_TIME:
 					if (resultSet.next()) {
+						Date date = resultSet.getTimestamp(1);
 						returnVal = new Field(
 								formFieldMappingParam.name,
-								resultSet.getDate(1),
+								date,
 								Field.Type.DateTime);
 					}
 				break;
@@ -470,9 +441,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 					}
 
 					//Break if empty...
-					if (formContainerIds.isEmpty()) {
-						break;
-					}
+					if (formContainerIds.isEmpty()) break;
 
 					TableField tableField = new TableField();
 
@@ -504,24 +473,18 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 								formRecordToSetInfoOn.setFormTypeId(formTypeId);
 								formRecordToSetInfoOn.setFormType(
 										this.sqlFormDefinitionUtil == null ? null :
-												this.sqlFormDefinitionUtil.getFormDefinitionIdAndTitle().get(formTypeId)
-								);
+												this.sqlFormDefinitionUtil.getFormDefinitionIdAndTitle().get(formTypeId));
 
-								formRecordToSetInfoOn.setTitle(resultSetForTblInfo.getString(
-										SQLFormUtil.SQLColumnIndex._03_TITLE));
+								formRecordToSetInfoOn.setTitle(resultSetForTblInfo.getString(SQLFormUtil.SQLColumnIndex._03_TITLE));
 
-								Date created = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._04_CREATED);
-								Date lastUpdated = resultSetForTblInfo.getDate(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
+								Date created = resultSetForTblInfo.getTimestamp(SQLFormUtil.SQLColumnIndex._04_CREATED);
+								Date lastUpdated = resultSetForTblInfo.getTimestamp(SQLFormUtil.SQLColumnIndex._05_LAST_UPDATED);
 
 								//Created...
-								if (created != null) {
-									formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
-								}
+								if (created != null) formRecordToSetInfoOn.setDateCreated(new Date(created.getTime()));
 
 								//Last Updated...
-								if (lastUpdated != null) {
-									formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
-								}
+								if (lastUpdated != null) formRecordToSetInfoOn.setDateLastUpdated(new Date(lastUpdated.getTime()));
 							}
 						}
 					}
@@ -535,9 +498,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 				break;
 				//Text Encrypted...
 				case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
-					if (ENCRYPTED_FIELD_KEY == null) {
-						throw new SQLException("Unable decrypt encrypted field if key is not set.");
-					}
+					if (ENCRYPTED_FIELD_KEY == null) throw new SQLException("Unable decrypt encrypted field if key is not set.");
 
 					if (resultSet.next()) {
 						String encryptedText = resultSet.getString(1);

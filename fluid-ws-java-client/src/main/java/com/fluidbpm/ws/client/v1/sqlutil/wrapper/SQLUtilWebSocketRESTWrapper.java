@@ -15,10 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil.wrapper;
 
-import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -28,8 +24,13 @@ import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.sqlutil.*;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
+
+import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Wrapper class used for when WebSockets is not a
@@ -38,7 +39,7 @@ import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNative
  * @author jasonbruwer on 3/20/18.
  * @since 1.8
  */
-public class SQLUtilWebSocketRESTWrapper implements Closeable {
+public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closeable {
 
 	//Instance...
 	private String baseURL;
@@ -108,7 +109,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			String serviceTicketParam,
 			long timeoutMillisParam
 	) {
-		super();
+		super(baseURLParam, serviceTicketParam);
 
 		this.baseURL = baseURLParam;
 
@@ -133,7 +134,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			User loggedInUserParam,
 			long timeoutMillisParam
 	) {
-		super();
+		super(baseURLParam, loggedInUserParam == null ? null : loggedInUserParam.getServiceTicket());
 
 		this.baseURL = baseURLParam;
 		this.loggedInUser = loggedInUserParam;
@@ -158,9 +159,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			boolean includeFieldDataParam,
 			boolean includeTableFieldsParam
 	) {
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
+		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 
 		//ANCESTOR...
 		try {
@@ -217,9 +216,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			boolean massFetchParam,
 			Form ... formsToGetDescForParam)
 	{
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
+		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 		
 		//DESCENDANTS...
 		try {
@@ -247,9 +244,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			this.mode = Mode.RESTfulActive;
 		}
 
-		if (formsToGetDescForParam == null || formsToGetDescForParam.length < 1) {
-			return null;
-		}
+		if (formsToGetDescForParam == null || formsToGetDescForParam.length < 1) return null;
 
 		Form[] formsToFetchFor =
 				new Form[formsToGetDescForParam.length];
@@ -310,9 +305,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 		Long formDefFilter,
 		Form ... formsToGetTableFormsForParam
 	) {
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
+		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 
 		//DESCENDANTS...
 		try {
@@ -338,9 +331,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			this.mode = Mode.RESTfulActive;
 		}
 
-		if (formsToGetTableFormsForParam == null || formsToGetTableFormsForParam.length < 1) {
-			return null;
-		}
+		if (formsToGetTableFormsForParam == null || formsToGetTableFormsForParam.length < 1) return null;
 
 		Form[] formsToFetchFor =
 				new Form[formsToGetTableFormsForParam.length];
@@ -382,9 +373,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			boolean includeTableFieldDataParam,
 			Form ... formsToGetFieldsForParam
 	) {
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
+		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 
 		//FORM FIELDS...
 		try {
@@ -409,10 +398,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			this.mode = Mode.RESTfulActive;
 		}
 
-		if (formsToGetFieldsForParam == null ||
-				formsToGetFieldsForParam.length < 1) {
-			return null;
-		}
+		if (formsToGetFieldsForParam == null || formsToGetFieldsForParam.length < 1) return null;
 
 		Form[] formsToFetchFor =
 				new Form[formsToGetFieldsForParam.length];
@@ -459,22 +445,16 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			//When mode is null or [WebSocketActive]...
 			this.initGetNativeSQLClient();
 		} catch (FluidClientException clientExcept) {
-			if (clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-				throw clientExcept;
-			}
+			if (clientExcept.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) throw clientExcept;
 			this.mode = Mode.RESTfulActive;
 		}
 
-		if (nativeSQLQueriesParam == null || nativeSQLQueriesParam.length < 1) {
-			return null;
-		}
+		if (nativeSQLQueriesParam == null || nativeSQLQueriesParam.length < 1) return null;
 
 		if (this.sqlUtilWebSocketExecNativeClient != null) {
 			return this.sqlUtilWebSocketExecNativeClient.executeNativeSQLSynchronized(nativeSQLQueriesParam);
 		} else {
 			List<SQLResultSet> returnVal = new ArrayList<>();
-
 			for (NativeSQLQuery sqlToExec : nativeSQLQueriesParam) {
 				SQLResultSet resultSet = this.sqlUtilClient.executeSQL(sqlToExec);
 				returnVal.add(resultSet);
@@ -490,9 +470,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 	 * @see SQLUtilWebSocketExecuteNativeSQLClient
 	 */
 	public SQLUtilWebSocketExecuteNativeSQLClient initGetNativeSQLClient() {
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
+		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 
 		if (this.sqlUtilWebSocketExecNativeClient == null && Mode.RESTfulActive != this.mode) {
 			this.sqlUtilWebSocketExecNativeClient = new SQLUtilWebSocketExecuteNativeSQLClient(
@@ -505,7 +483,6 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			);
 			this.mode = Mode.WebSocketActive;
 		}
-
 		return this.sqlUtilWebSocketExecNativeClient;
 	}
 
@@ -519,9 +496,7 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			boolean includeFieldDataParam,
 			Form ... formsToPopulateFormFieldsForParam
 	) {
-		if (DISABLE_WS) {
-			this.mode = Mode.RESTfulActive;
-		}
+		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 
 		//FORM FIELDS...
 		try {
@@ -548,16 +523,12 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 		}
 
 		//Nothing to do...
-		if (formsToPopulateFormFieldsForParam == null ||
-				formsToPopulateFormFieldsForParam.length < 1) {
-			return;
-		}
+		if (formsToPopulateFormFieldsForParam == null || formsToPopulateFormFieldsForParam.length < 1) return;
 
 		//Populate a known echo for all of the local form caches...
 		Form[] formsToFetchForLocalCacheArr =
 				new Form[formsToPopulateFormFieldsForParam.length];
-		for (int index = 0;index < formsToFetchForLocalCacheArr.length;index++) {
-
+		for (int index = 0; index < formsToFetchForLocalCacheArr.length; index++) {
 			formsToFetchForLocalCacheArr[index] = new Form(formsToPopulateFormFieldsForParam[index].getId());
 			formsToFetchForLocalCacheArr[index].setEcho(UtilGlobal.randomUUID());
 		}
@@ -608,28 +579,18 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 			List<FormFieldListing> listingReturnFieldValsPopulatedParam,
 			Form[] formsToFetchForLocalCacheArrParam){
 
-		if (formIdParam == null || formIdParam.longValue() < 1) {
-			return null;
-		}
+		if (formIdParam == null || formIdParam.longValue() < 1) return null;
 
-		if (listingReturnFieldValsPopulatedParam == null ||
-				listingReturnFieldValsPopulatedParam.isEmpty()) {
-			return null;
-		}
+		if (listingReturnFieldValsPopulatedParam == null || listingReturnFieldValsPopulatedParam.isEmpty()) return null;
 
-		if (formsToFetchForLocalCacheArrParam == null ||
-				formsToFetchForLocalCacheArrParam.length == 0) {
-			return null;
-		}
+		if (formsToFetchForLocalCacheArrParam == null || formsToFetchForLocalCacheArrParam.length == 0) return null;
 
 		for (Form formIter : formsToFetchForLocalCacheArrParam) {
 			//Form is a match...
 			if (formIdParam.equals(formIter.getId())) {
 				String echoToUse = formIter.getEcho();
 				for (FormFieldListing fieldListing : listingReturnFieldValsPopulatedParam) {
-					if (echoToUse.equals(fieldListing.getEcho())) {
-						return fieldListing.getListing();
-					}
+					if (echoToUse.equals(fieldListing.getEcho())) return fieldListing.getListing();
 				}
 			}
 		}
@@ -641,29 +602,17 @@ public class SQLUtilWebSocketRESTWrapper implements Closeable {
 	 * Close any clients used during lifetime of {@code this} object.
 	 */
 	public void closeAndClean() {
-		if (this.sqlUtilClient != null) {
-			this.sqlUtilClient.closeAndClean();
-		}
+		if (this.sqlUtilClient != null) this.sqlUtilClient.closeAndClean();
 
-		if (this.getAncestorClient != null) {
-			this.getAncestorClient.closeAndClean();
-		}
+		if (this.getAncestorClient != null) this.getAncestorClient.closeAndClean();
 
-		if (this.getDescendantsClient != null) {
-			this.getDescendantsClient.closeAndClean();
-		}
+		if (this.getDescendantsClient != null) this.getDescendantsClient.closeAndClean();
 
-		if (this.getTableFormsClient != null) {
-			this.getTableFormsClient.closeAndClean();
-		}
+		if (this.getTableFormsClient != null) this.getTableFormsClient.closeAndClean();
 
-		if (this.getFormFieldsClient != null) {
-			this.getFormFieldsClient.closeAndClean();
-		}
+		if (this.getFormFieldsClient != null) this.getFormFieldsClient.closeAndClean();
 
-		if (this.sqlUtilWebSocketExecNativeClient != null) {
-			this.sqlUtilWebSocketExecNativeClient.closeAndClean();
-		}
+		if (this.sqlUtilWebSocketExecNativeClient != null) this.sqlUtilWebSocketExecNativeClient.closeAndClean();
 	}
 
 	/**

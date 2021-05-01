@@ -15,19 +15,22 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
+import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.userquery.UserQueryListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Java Web Service Client for Form Field related actions.
@@ -93,8 +96,18 @@ public class FormFieldClient extends ABaseFieldClient {
 				if (FieldMetaData.Text.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldTextPlain(formFieldParam);
 				} else if (metaDataLower.contains(FieldMetaData.Text.MASKED.toLowerCase())) {
+					if (additionalInfo == null || additionalInfo.length < 1)
+						throw new FluidClientException(
+								String.format("No additional info for '%s' field '%s'.",
+										FieldMetaData.Text.MASKED, formFieldParam.getFieldName()),
+								FluidClientException.ErrorCode.FIELD_VALIDATE);
 					return this.createFieldTextMasked(formFieldParam, additionalInfo[0].toString());
 				} else if (metaDataLower.contains(FieldMetaData.Text.BARCODE.toLowerCase())) {
+					if (additionalInfo == null || additionalInfo.length < 1)
+						throw new FluidClientException(
+								String.format("No additional info for '%s' field '%s'.",
+										FieldMetaData.Text.BARCODE, formFieldParam.getFieldName()),
+								FluidClientException.ErrorCode.FIELD_VALIDATE);
 					return this.createFieldTextBarcode(formFieldParam, additionalInfo[0].toString());
 				} else if (metaDataLower.contains(FieldMetaData.Text.LATITUDE_AND_LONGITUDE.toLowerCase())) {
 					return this.createFieldTextLatitudeAndLongitude(formFieldParam);
@@ -146,9 +159,8 @@ public class FormFieldClient extends ABaseFieldClient {
 							additionalInfo[3].toString());
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
-								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case MultipleChoice:
 				if (FieldMetaData.MultiChoice.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldMultiChoicePlain(formFieldParam, (List)additionalInfo[0]);
@@ -160,9 +172,8 @@ public class FormFieldClient extends ABaseFieldClient {
 					return this.createFieldMultiChoiceSelectManyWithSearch(formFieldParam, (List)additionalInfo[0]);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
-								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case ParagraphText:
 				if (FieldMetaData.ParagraphText.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldParagraphTextPlain(formFieldParam);
@@ -170,11 +181,19 @@ public class FormFieldClient extends ABaseFieldClient {
 					return this.createFieldParagraphTextHTML(formFieldParam);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
-								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case Table:
 				return this.createFieldTable(formFieldParam, (Form)additionalInfo[0], (Boolean)additionalInfo[1]);
+			case Label:
+				if (FieldMetaData.Label.PLAIN.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldLabelPlain(formFieldParam);
+				} else if (FieldMetaData.Label.ANCHOR.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldLabelAnchor(formFieldParam, (String)additionalInfo[0]);
+				}
+				throw new FluidClientException(
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			default:
 				throw new FluidClientException(
 						String.format("Unable to determine type for '%s'.", formFieldParam.getTypeAsEnum()),
@@ -190,17 +209,14 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextPlain(Field formFieldParam) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Text);
 			formFieldParam.setTypeMetaData(FieldMetaData.Text.PLAIN);
 		}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -210,9 +226,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextEncryptedPlain(Field formFieldParam) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.TextEncrypted);
@@ -282,14 +296,10 @@ public class FormFieldClient extends ABaseFieldClient {
 		Field formFieldParam,
 		String barcodeTypeParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (barcodeTypeParam == null || barcodeTypeParam.trim().isEmpty()) {
-			throw new FluidClientException(
-					"Barcode type cannot be empty.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
+			throw new FluidClientException("Barcode type cannot be empty.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
 		if (formFieldParam != null) {
@@ -297,8 +307,7 @@ public class FormFieldClient extends ABaseFieldClient {
 			formFieldParam.setTypeMetaData(FieldMetaData.Text.BARCODE.concat(barcodeTypeParam));
 		}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -308,17 +317,61 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * @return Created Field.
 	 */
 	public Field createFieldTextLatitudeAndLongitude(Field formFieldParam) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Text);
 			formFieldParam.setTypeMetaData(FieldMetaData.Text.LATITUDE_AND_LONGITUDE);
 		}
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	/**
+	 * Create a new Label Plain field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @return Created Field.
+	 *
+	 * @see com.fluidbpm.ws.client.v1.ABaseFieldClient.FieldMetaData.Label
+	 */
+	public Field createFieldLabelPlain(
+		Field formFieldParam
+	) {
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
+		
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.Label);
+			formFieldParam.setTypeMetaData(FieldMetaData.Label.PLAIN);
+		}
+
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
+
+	/**
+	 * Create a new Label Anchor field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @param anchorValue The anchor value.
+	 * @return Created Field.
+	 *
+	 * @see com.fluidbpm.ws.client.v1.ABaseFieldClient.FieldMetaData.Label
+	 */
+	public Field createFieldLabelAnchor(
+		Field formFieldParam,
+		String anchorValue
+	) {
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
+
+		if (anchorValue == null || anchorValue.trim().isEmpty()) {
+			throw new FluidClientException("Anchor cannot be empty.", FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
+
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.Label);
+			formFieldParam.setTypeMetaData(String.format("%s_%s", FieldMetaData.Label.ANCHOR, anchorValue));
+		}
+
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -578,16 +631,14 @@ public class FormFieldClient extends ABaseFieldClient {
 		double stepFactorParam,
 		String prefixParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Decimal);
 			formFieldParam.setTypeMetaData(
 					this.getMetaDataForDecimalAs(
 							FieldMetaData.Decimal.SPINNER,
-							minParam,maxParam, stepFactorParam, prefixParam));
+							minParam, maxParam, stepFactorParam, prefixParam));
 		}
 
 		return new Field(this.putJson(
@@ -1186,10 +1237,7 @@ public class FormFieldClient extends ABaseFieldClient {
 		Form formDefinitionParam,
 		boolean sumDecimalsParam
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
-		}
-
+		formFieldParam.setServiceTicket(this.serviceTicket);
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Table);
 			formFieldParam.setTypeMetaData(
@@ -1209,17 +1257,11 @@ public class FormFieldClient extends ABaseFieldClient {
 	 */
 	public Field getFieldById(Long fieldIdParam) {
 		Field field = new Field(fieldIdParam);
-
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
+		field.setServiceTicket(this.serviceTicket);
 
-		if (this.serviceTicket != null) {
-			field.setServiceTicket(this.serviceTicket);
-		}
-
-		if (this.requestUuid != null) {
-			field.setRequestUuid(this.requestUuid);
-		}
+		if (this.requestUuid != null) field.setRequestUuid(this.requestUuid);
 
 		return new Field(this.postJson(
 				field, WS.Path.FormField.Version1.getById()));
@@ -1234,11 +1276,9 @@ public class FormFieldClient extends ABaseFieldClient {
 	public Field getFieldByName(String fieldNameParam) {
 		Field field = new Field();
 		field.setFieldName(fieldNameParam);
-
 		if (this.serviceTicket != null) {
 			field.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Field(this.postJson(
 				field, WS.Path.FormField.Version1.getByName()));
 	}
@@ -1251,24 +1291,185 @@ public class FormFieldClient extends ABaseFieldClient {
 	 *
 	 * @return Form Fields for {@code formNameParam}
 	 */
+	public FormFieldListing getFieldsByFormNameAndLoggedInUser(String formNameParam, boolean editOnlyFieldsParam) {
+		return this.getFieldsByFormNameAndLoggedInUser(formNameParam, editOnlyFieldsParam, false);
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition name.
+	 *
+	 * @param formNameParam The form definition name.
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
 	public FormFieldListing getFieldsByFormNameAndLoggedInUser(
 		String formNameParam,
-		boolean editOnlyFieldsParam
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields
 	) {
 		Form form = new Form();
 		form.setFormType(formNameParam);
 
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-
-		if (this.requestUuid != null) {
-			form.setRequestUuid(this.requestUuid);
-		}
+		if (this.serviceTicket != null) form.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) form.setRequestUuid(this.requestUuid);
 
 		return new FormFieldListing(this.postJson(
 				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
-						editOnlyFieldsParam)));
+						editOnlyFieldsParam, populateMultiChoiceFields)));
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formNamesParam The form definition names.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormNamesAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		List<String> formNamesParam
+	) {
+		if (formNamesParam == null || formNamesParam.isEmpty()) return new ArrayList<>();
+		FormListing formListing = new FormListing();
+		formListing.setListing(formNamesParam.stream().map(itm -> {
+					Form form = new Form();
+					form.setFormType(itm);
+					return form;
+				})
+				.collect(Collectors.toList()));
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formNamesParam The form definition names.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormNamesAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		String ... formNamesParam
+	) {
+		if (formNamesParam == null || formNamesParam.length == 0) return new ArrayList<>();
+		List<Form> formList = new ArrayList<>();
+		for (String formName : formNamesParam) {
+			Form form = new Form();
+			form.setFormType(formName);
+			formList.add(form);
+		}
+
+		FormListing formListing = new FormListing();
+		formListing.setListing(formList);
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formIdsParam The form definition names.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormIdsAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		List<Long> formIdsParam
+	) {
+		if (formIdsParam == null || formIdsParam.isEmpty()) return new ArrayList<>();
+		FormListing formListing = new FormListing();
+		formListing.setListing(formIdsParam.stream().map(itm -> new Form(itm)).collect(Collectors.toList()));
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via Form Definition names.
+	 *
+	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
+	 * @param formIdsParam The form definition ids.
+	 *
+	 * @return Form Fields for {@code formNameParam}
+	 */
+	public List<Form> getFieldsByFormIdsAndLoggedInUser(
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields,
+		Long ... formIdsParam
+	) {
+		if (formIdsParam == null || formIdsParam.length == 0) return new ArrayList<>();
+		List<Form> formList = new ArrayList<>();
+		for (Long formId : formIdsParam) formList.add(new Form(formId));
+
+		FormListing formListing = new FormListing();
+		formListing.setListing(formList);
+
+		if (this.serviceTicket != null) formListing.setServiceTicket(this.serviceTicket);
+		if (this.requestUuid != null) formListing.setRequestUuid(this.requestUuid);
+
+		return new FormListing(this.postJson(
+				formListing, WS.Path.FormField.Version1.getByFormDefinitionsAndLoggedInUser(
+						editOnlyFieldsParam, populateMultiChoiceFields))).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via User Query.
+	 *
+	 * @param userQuery The user query.
+	 *
+	 * @return Form Fields for {@code userQuery}
+	 */
+	public List<Field> getFormFieldsByUserQuery(UserQuery userQuery) {
+		if (userQuery != null) userQuery.setServiceTicket(this.serviceTicket);
+
+		return new FormFieldListing(this.postJson(
+				userQuery, WS.Path.FormField.Version1.getByUserQuery())).getListing();
+	}
+
+	/**
+	 * Retrieve the Form Fields via User Query.
+	 *
+	 * @param userQueries The user queries to fetch fields for.
+	 *
+	 * @return Form Fields for {@code userQuery}
+	 */
+	public List<UserQuery> getFormFieldsByUserQueries(List<UserQuery> userQueries) {
+		if (userQueries == null || userQueries.isEmpty()) return new ArrayList<>();
+
+		UserQueryListing userQueryListing = new UserQueryListing();
+		userQueryListing.setListing(userQueries);
+		userQueryListing.setServiceTicket(this.serviceTicket);
+
+		return new UserQueryListing(this.postJson(
+				userQueryListing, WS.Path.FormField.Version1.getByUserQueries())).getListing();
 	}
 
 	/**
@@ -1276,23 +1477,23 @@ public class FormFieldClient extends ABaseFieldClient {
 	 *
 	 * @param formTypeIdParam The form definition id.
 	 * @param editOnlyFieldsParam Only return the fields that are editable.
+	 * @param populateMultiChoiceFields Populate the multi-choice fields.
 	 *
 	 * @return Form Fields for {@code formIdParam}
 	 */
 	public FormFieldListing getFieldsByFormTypeIdAndLoggedInUser(
 		Long formTypeIdParam,
-		boolean editOnlyFieldsParam
+		boolean editOnlyFieldsParam,
+		boolean populateMultiChoiceFields
 	) {
 		Form form = new Form();
 		form.setFormTypeId(formTypeIdParam);
 
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
+		if (this.serviceTicket != null) form.setServiceTicket(this.serviceTicket);
 
 		return new FormFieldListing(this.postJson(
 				form, WS.Path.FormField.Version1.getByFormDefinitionAndLoggedInUser(
-						editOnlyFieldsParam)));
+						editOnlyFieldsParam, populateMultiChoiceFields)));
 	}
 
 	/**
@@ -1307,7 +1508,6 @@ public class FormFieldClient extends ABaseFieldClient {
 		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Field(this.postJson(fieldParam, WS.Path.FormField.Version1.formFieldDelete()));
 	}
 
@@ -1325,7 +1525,6 @@ public class FormFieldClient extends ABaseFieldClient {
 		if (fieldParam != null && this.serviceTicket != null) {
 			fieldParam.setServiceTicket(this.serviceTicket);
 		}
-
 		return new Field(this.postJson(
 				fieldParam, WS.Path.FormField.Version1.formFieldDelete(true)));
 	}
@@ -1342,7 +1541,6 @@ public class FormFieldClient extends ABaseFieldClient {
 		boolean sumDecimalsParam
 	) {
 		StringBuilder returnBuffer = new StringBuilder();
-
 		Long definitionId =
 				(formDefinitionParam == null) ? -1L:
 						formDefinitionParam.getId();

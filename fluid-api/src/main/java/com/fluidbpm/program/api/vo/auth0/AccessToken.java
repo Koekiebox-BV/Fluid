@@ -15,10 +15,11 @@
 
 package com.fluidbpm.program.api.vo.auth0;
 
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * An Auth0 Access Token used by Fluid.
@@ -36,8 +37,16 @@ public class AccessToken extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
 
+	@Getter
+	@Setter
 	private String accessToken;
+
+	@Getter
+	@Setter
 	private String idToken;
+
+	@Getter
+	@Setter
 	private String tokenType;
 
 	/**
@@ -64,9 +73,7 @@ public class AccessToken extends ABaseFluidJSONObject {
 	 */
 	public AccessToken(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
-
-		if (this.jsonObject == null)
-		{
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -87,60 +94,6 @@ public class AccessToken extends ABaseFluidJSONObject {
 	}
 
 	/**
-	 * Gets the Access Token.
-	 *
-	 * @return Access Token.
-	 */
-	public String getAccessToken() {
-		return this.accessToken;
-	}
-
-	/**
-	 * Sets the Access Token.
-	 *
-	 * @param accessTokenParam Access Token.
-	 */
-	public void setAccessToken(String accessTokenParam) {
-		this.accessToken = accessTokenParam;
-	}
-
-	/**
-	 * Gets the Id Token.
-	 *
-	 * @return Id Token.
-	 */
-	public String getIdToken() {
-		return this.idToken;
-	}
-
-	/**
-	 * Sets the Id Token.
-	 *
-	 * @param idTokenParam Id Token.
-	 */
-	public void setIdToken(String idTokenParam) {
-		this.idToken = idTokenParam;
-	}
-
-	/**
-	 * Gets the Token Type.
-	 *
-	 * @return Token Type.
-	 */
-	public String getTokenType() {
-		return this.tokenType;
-	}
-
-	/**
-	 * Sets the Token Type.
-	 *
-	 * @param tokenTypeParam Token Type.
-	 */
-	public void setTokenType(String tokenTypeParam) {
-		this.tokenType = tokenTypeParam;
-	}
-
-	/**
 	 * Conversion to {@code JSONObject} from Java Object.
 	 *
 	 * @return {@code JSONObject} representation of {@code AccessToken}
@@ -150,24 +103,20 @@ public class AccessToken extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
-
 		JSONObject returnVal = super.toJsonObject();
 
 		//Access Token...
-		if (this.getAccessToken() != null)
-		{
+		if (this.getAccessToken() != null) {
 			returnVal.put(JSONMapping.ACCESS_TOKEN,this.getAccessToken());
 		}
 
 		//Id Token...
-		if (this.getIdToken() != null)
-		{
+		if (this.getIdToken() != null) {
 			returnVal.put(JSONMapping.ID_TOKEN,this.getIdToken());
 		}
 
 		//Token Type...
-		if (this.getTokenType() != null)
-		{
+		if (this.getTokenType() != null) {
 			returnVal.put(JSONMapping.TOKEN_TYPE,this.getTokenType());
 		}
 

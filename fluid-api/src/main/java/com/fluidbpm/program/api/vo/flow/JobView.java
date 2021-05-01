@@ -15,10 +15,10 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * <p>
@@ -42,13 +42,13 @@ public class JobView extends ABaseFluidJSONObject {
 	private String viewFlowName;
 
 	private Integer viewPriority;
+	private Long viewOrder;
 	private String viewType;
 
 	/**
 	 * The JSON mapping for the {@code RoleToJobView} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String RULE = "rule";
 		public static final String VIEW_NAME = "viewName";
 		public static final String VIEW_GROUP_NAME = "viewGroupName";
@@ -56,6 +56,7 @@ public class JobView extends ABaseFluidJSONObject {
 		public static final String VIEW_FLOW_NAME = "viewFlowName";
 
 		public static final String VIEW_PRIORITY = "viewPriority";
+		public static final String VIEW_ORDER = "viewOrder";
 		public static final String VIEW_TYPE = "viewType";
 	}
 
@@ -73,8 +74,17 @@ public class JobView extends ABaseFluidJSONObject {
 	 */
 	public JobView(Long jobViewIdParam) {
 		super();
-
 		this.setId(jobViewIdParam);
+	}
+
+	/**
+	 * Sets the Name associated with a 'Job View'.
+	 *
+	 * @param jobViewName Job View name.
+	 */
+	public JobView(String jobViewName) {
+		super();
+		this.setViewName(jobViewName);
 	}
 
 	/**
@@ -85,8 +95,7 @@ public class JobView extends ABaseFluidJSONObject {
 	public JobView(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
+		if (this.jsonObject == null) {
 			return;
 		}
 
@@ -97,38 +106,37 @@ public class JobView extends ABaseFluidJSONObject {
 
 		//View Name...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
-			this.setViewName(this.jsonObject.getString(
-					JSONMapping.VIEW_NAME));
+			this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
 		}
 
 		//View Group...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_GROUP_NAME)) {
-			this.setViewGroupName(this.jsonObject.getString(
-					JSONMapping.VIEW_GROUP_NAME));
+			this.setViewGroupName(this.jsonObject.getString(JSONMapping.VIEW_GROUP_NAME));
 		}
 
 		//View Flow...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_FLOW_NAME)) {
-			this.setViewFlowName(this.jsonObject.getString(
-					JSONMapping.VIEW_FLOW_NAME));
+			this.setViewFlowName(this.jsonObject.getString(JSONMapping.VIEW_FLOW_NAME));
 		}
 
 		//View Step...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_STEP_NAME)) {
-			this.setViewStepName(this.jsonObject.getString(
-					JSONMapping.VIEW_STEP_NAME));
+			this.setViewStepName(this.jsonObject.getString(JSONMapping.VIEW_STEP_NAME));
 		}
 
 		//View Priority...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_PRIORITY)) {
-			this.setViewPriority(this.jsonObject.getInt(
-					JSONMapping.VIEW_PRIORITY));
+			this.setViewPriority(this.jsonObject.getInt(JSONMapping.VIEW_PRIORITY));
+		}
+
+		//View Order...
+		if (!this.jsonObject.isNull(JSONMapping.VIEW_ORDER)) {
+			this.setViewOrder(this.jsonObject.getLong(JSONMapping.VIEW_ORDER));
 		}
 
 		//View Type...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_TYPE)) {
-			this.setViewType(this.jsonObject.getString(
-					JSONMapping.VIEW_TYPE));
+			this.setViewType(this.jsonObject.getString(JSONMapping.VIEW_TYPE));
 		}
 	}
 
@@ -174,7 +182,7 @@ public class JobView extends ABaseFluidJSONObject {
 	 * @return View Name.
 	 */
 	public String getViewGroupName() {
-		return this.viewGroupName;
+		return (this.viewGroupName == null) ? UtilGlobal.EMPTY : this.viewGroupName;
 	}
 
 	/**
@@ -246,7 +254,7 @@ public class JobView extends ABaseFluidJSONObject {
 	 * @return View Priority.
 	 */
 	public Integer getViewPriority() {
-		return this.viewPriority;
+		return (this.viewPriority == null) ? 0 : this.viewPriority;
 	}
 
 	/**
@@ -256,6 +264,25 @@ public class JobView extends ABaseFluidJSONObject {
 	 */
 	public void setViewPriority(Integer viewPriorityParam) {
 		this.viewPriority = viewPriorityParam;
+	}
+
+
+	/**
+	 * Gets the priority in the Group for the View.
+	 *
+	 * @return View Order.
+	 */
+	public Long getViewOrder() {
+		return this.viewOrder;
+	}
+
+	/**
+	 * Sets the priority in the Group for the View.
+	 *
+	 * @param viewPriorityParam View Priority.
+	 */
+	public void setViewOrder(Long viewPriorityParam) {
+		this.viewOrder = viewPriorityParam;
 	}
 
 	/**
@@ -272,44 +299,42 @@ public class JobView extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Rule...
-		if (this.getRule() != null)
-		{
+		if (this.getRule() != null) {
 			returnVal.put(JSONMapping.RULE, this.getRule());
 		}
 
 		//View Name...
-		if (this.getViewName() != null)
-		{
+		if (this.getViewName() != null) {
 			returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
 		}
 
 		//View Group Name...
-		if (this.getViewGroupName() != null)
-		{
+		if (this.getViewGroupName() != null) {
 			returnVal.put(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
 		}
 
 		//View Flow Name...
-		if (this.getViewGroupName() != null)
-		{
+		if (this.getViewGroupName() != null) {
 			returnVal.put(JSONMapping.VIEW_FLOW_NAME, this.getViewFlowName());
 		}
 
 		//View Step Name...
-		if (this.getViewGroupName() != null)
-		{
+		if (this.getViewGroupName() != null) {
 			returnVal.put(JSONMapping.VIEW_STEP_NAME, this.getViewStepName());
 		}
 
 		//View Priority...
-		if (this.getViewPriority() != null)
-		{
+		if (this.getViewPriority() != null) {
 			returnVal.put(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
 		}
 
+		//View Order...
+		if (this.getViewOrder() != null) {
+			returnVal.put(JSONMapping.VIEW_ORDER, this.getViewOrder());
+		}
+
 		//View Type...
-		if (this.getViewType() != null)
-		{
+		if (this.getViewType() != null) {
 			returnVal.put(JSONMapping.VIEW_TYPE, this.getViewType());
 		}
 

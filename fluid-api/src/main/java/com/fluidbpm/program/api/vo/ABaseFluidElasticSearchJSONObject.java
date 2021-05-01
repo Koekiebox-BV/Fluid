@@ -15,17 +15,15 @@
 
 package com.fluidbpm.program.api.vo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluidbpm.program.api.vo.field.Field;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -95,7 +93,8 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	@XmlTransient
 	public abstract void populateFromElasticSearchJson(
 			JSONObject jsonObjectParam,
-			List<Field> formFieldsParam) throws JSONException;
+			List<Field> formFieldsParam
+	) throws JSONException;
 
 	/**
 	 * Convert the {@code SQLFormFieldUtil.FormFieldMapping} to {@code Field}.
@@ -105,15 +104,12 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 */
 	@XmlTransient
 	public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam) {
-		if (formFieldMappingsParam == null) {
-			return null;
-		}
+		if (formFieldMappingsParam == null) return null;
 
 		List<Field> returnVal = new ArrayList();
 
-		for (SQLFormFieldUtil.FormFieldMapping mappingToConvert : formFieldMappingsParam) {
+		for (SQLFormFieldUtil.FormFieldMapping mappingToConvert : formFieldMappingsParam)
 			returnVal.add(this.convertTo(mappingToConvert));
-		}
 
 		return returnVal;
 	}

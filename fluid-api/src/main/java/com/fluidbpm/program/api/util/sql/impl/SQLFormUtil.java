@@ -15,15 +15,6 @@
 
 package com.fluidbpm.program.api.util.sql.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import com.fluidbpm.program.api.util.IFormAction;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
 import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
@@ -34,6 +25,15 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.user.User;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SQL Utility class used for {@code Form} related actions.
@@ -97,16 +97,13 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * @return {@code List<Form>} records.
 	 */
 	public List<Form> getFormTableForms(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam
+		Long electronicFormIdParam,
+		boolean includeFieldDataParam
 	) {
 		List<Form> returnVal = new ArrayList();
-		if (electronicFormIdParam == null) {
-			return returnVal;
-		}
+		if (electronicFormIdParam == null) return returnVal;
 
-		Map<Long,String> definitionAndTitle =
-				this.formDefUtil.getFormDefinitionIdAndTitle();
+		Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -124,9 +121,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 
 			//Iterate each of the form containers...
 			while (resultSet.next()) {
-				returnVal.add(this.mapFormContainerTo(
-						definitionAndTitle,
-						resultSet));
+				returnVal.add(this.mapFormContainerTo(definitionAndTitle, resultSet));
 			}
 
 			//When field data must also be included...
@@ -136,7 +131,6 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 									form.getId(),
 									false,
 							false);
-
 					form.setFormFields(formFields);
 				}
 			}
@@ -168,9 +162,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			boolean includeTableFieldsParam,
 			boolean includeTableFieldFormRecordInfoParam) {
 
-		if (electronicFormIdsParam == null || electronicFormIdsParam.isEmpty()) {
-			return null;
-		}
+		if (electronicFormIdsParam == null || electronicFormIdsParam.isEmpty()) return null;
 
 		List<Form> returnVal = new ArrayList();
 
@@ -181,9 +173,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 					includeTableFieldsParam,
 					includeTableFieldFormRecordInfoParam);
 
-			if (forTheCycle == null) {
-				continue;
-			}
+			if (forTheCycle == null) continue;
 
 			returnVal.addAll(forTheCycle);
 		}
@@ -204,17 +194,14 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * @see Form
 	 */
 	public List<Form> getFormDescendants(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam,
-			boolean includeTableFieldFormRecordInfoParam
+		Long electronicFormIdParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam,
+		boolean includeTableFieldFormRecordInfoParam
 	) {
 		List<Form> returnVal = new ArrayList();
 
-		if (electronicFormIdParam == null)
-		{
-			return returnVal;
-		}
+		if (electronicFormIdParam == null) return returnVal;
 
 		Map<Long,String> definitionAndTitle =
 				this.formDefUtil.getFormDefinitionIdAndTitle();
@@ -234,16 +221,9 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			resultSet = preparedStatement.executeQuery();
 
 			//Iterate each of the form containers...
-			while (resultSet.next())
-			{
-				Form mappedForm = this.mapFormContainerTo(
-						definitionAndTitle,
-						resultSet);
-
-				if (mappedForm == null)
-				{
-					continue;
-				}
+			while (resultSet.next()) {
+				Form mappedForm = this.mapFormContainerTo(definitionAndTitle, resultSet);
+				if (mappedForm == null) continue;
 
 				//Ancestor...
 				mappedForm.setAncestorId(electronicFormIdParam);
@@ -252,16 +232,13 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			}
 
 			//When field data must also be included...
-			if (includeFieldDataParam)
-			{
-				for (Form form : returnVal)
-				{
+			if (includeFieldDataParam) {
+				for (Form form : returnVal) {
 					List<Field> formFields =
 							this.fieldUtil.getFormFields(
 									form.getId(),
 									includeTableFieldsParam,
 									includeTableFieldFormRecordInfoParam);
-
 					form.setFormFields(formFields);
 				}
 			}
@@ -287,15 +264,13 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 */
 	@Deprecated
 	public List<Form> getFormDescendantsWithStates(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam
+		Long electronicFormIdParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam
 	) {
 		List<Form> returnVal = new ArrayList();
 
-		if (electronicFormIdParam == null) {
-			return returnVal;
-		}
+		if (electronicFormIdParam == null) return returnVal;
 
 		Map<Long,String> definitionAndTitle =
 				this.formDefUtil.getFormDefinitionIdAndTitle();
@@ -320,9 +295,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 						definitionAndTitle,
 						resultSet);
 
-				if (mappedForm == null) {
-					continue;
-				}
+				if (mappedForm == null) continue;
 
 				//Map the states...
 				this.mapFormContainerStatesTo(mappedForm, resultSet);
@@ -364,13 +337,11 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * @see Form
 	 */
 	public Form getFormAncestor(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam
+		Long electronicFormIdParam,
+		boolean includeFieldDataParam,
+		boolean includeTableFieldsParam
 	) {
-		if (electronicFormIdParam == null) {
-			return null;
-		}
+		if (electronicFormIdParam == null) return null;
 
 		Form returnVal = null;
 		Map<Long,String> definitionAndTitle =
@@ -427,8 +398,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * @see ResultSet
 	 */
 	private Form mapFormContainerTo(
-			Map<Long,String> definitionAndTitleParam,
-			ResultSet resultSetParam
+		Map<Long,String> definitionAndTitleParam,
+		ResultSet resultSetParam
 	) throws SQLException {
 		Long formId = resultSetParam.getLong(SQLColumnIndex._01_FORM_ID);
 		String formType = definitionAndTitleParam.get(
@@ -439,10 +410,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		Date lastUpdated = resultSetParam.getDate(SQLColumnIndex._05_LAST_UPDATED);
 		Long currentUserId = resultSetParam.getLong(SQLColumnIndex._06_CURRENT_USER_ID);
 
-		if (formType == null) {
-			throw new SQLException("No mapping found for Form Type '"+
-					resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE)+"'.");
-		}
+		if (formType == null) throw new SQLException("No mapping found for Form Type '"+
+				resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE)+"'.");
 
 		Form toAdd = new Form(formType);
 
@@ -450,14 +419,10 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		toAdd.setTitle(title);
 
 		//Created...
-		if (created != null) {
-			toAdd.setDateCreated(new Date(created.getTime()));
-		}
+		if (created != null) toAdd.setDateCreated(new Date(created.getTime()));
 
 		//Last Updated...
-		if (lastUpdated != null) {
-			toAdd.setDateLastUpdated(new Date(lastUpdated.getTime()));
-		}
+		if (lastUpdated != null) toAdd.setDateLastUpdated(new Date(lastUpdated.getTime()));
 
 		//Current User...
 		if (currentUserId != null &&
@@ -482,12 +447,10 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * @see ResultSet
 	 */
 	private void mapFormContainerStatesTo(
-			Form previousMappedForm,
-			ResultSet resultSetParam
+		Form previousMappedForm,
+		ResultSet resultSetParam
 	) throws SQLException {
-		if (previousMappedForm == null) {
-			return;
-		}
+		if (previousMappedForm == null) return;
 
 		//Form Container State...
 		Long formContainerState = resultSetParam.getLong(
@@ -495,12 +458,9 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		long formContStateId = (formContainerState == null) ?
 				0: formContainerState.longValue();
 		if (formContStateId > 0) {
-			if (formContStateId == 1)
-			{
+			if (formContStateId == 1) {
 				previousMappedForm.setState(Form.State.OPEN);
-			}
-			else if (formContStateId == 2)
-			{
+			} else if (formContStateId == 2) {
 				previousMappedForm.setState(Form.State.LOCKED);
 			}
 		}
@@ -513,20 +473,16 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			if (formContFlowStateId == 1) {
 				previousMappedForm.setFlowState(
 						FluidItem.FlowState.NotInFlow.name());
-			}
-			else if (formContFlowStateId == 2) {
+			} else if (formContFlowStateId == 2) {
 				previousMappedForm.setFlowState(
 						FluidItem.FlowState.WorkInProgress.name());
-			}
-			else if (formContFlowStateId == 3) {
+			} else if (formContFlowStateId == 3) {
 				previousMappedForm.setFlowState(
 						FluidItem.FlowState.UserSend.name());
-			}
-			else if (formContFlowStateId == 4) {
+			} else if (formContFlowStateId == 4) {
 				previousMappedForm.setFlowState(
 						FluidItem.FlowState.UserSendWorkInProgress.name());
-			}
-			else if (formContFlowStateId == 5) {
+			} else if (formContFlowStateId == 5) {
 				previousMappedForm.setFlowState(FluidItem.FlowState.Archive.name());
 			}
 		}

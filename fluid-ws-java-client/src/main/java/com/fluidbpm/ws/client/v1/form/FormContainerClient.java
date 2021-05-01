@@ -15,24 +15,25 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricDataListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
+import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Java Web Service Client for Electronic Form related actions.
@@ -146,7 +147,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Form
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
-	public Form executeCustomWebAction(
+	public CustomWebAction executeCustomWebAction(
 			String customWebActionParam,
 			Form formParam) {
 		return this.executeCustomWebAction(
@@ -162,7 +163,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @param customWebActionParam The custom web action name. Action identifier.
 	 * @param isTableRecordParam Is the form a table record form.
-	 * @param formContainerTableRecordBelowsToParam The parent form container if table record.
+	 * @param formContainerTableRecordBelongsToParam The parent form container if table record.
 	 * @param formParam The Form to send for 3rd Party execution.
 	 *
 	 * @return Result after the 3rd Party Custom Web Action completed.
@@ -172,32 +173,23 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see TableRecord
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
-	public Form executeCustomWebAction(
-			String customWebActionParam,
-			boolean isTableRecordParam,
-			Long formContainerTableRecordBelowsToParam,
-			Form formParam) {
+	public CustomWebAction executeCustomWebAction(
+		String customWebActionParam,
+		boolean isTableRecordParam,
+		Long formContainerTableRecordBelongsToParam,
+		Form formParam
+	) {
+		if (customWebActionParam == null || customWebActionParam.trim().isEmpty()) throw new FluidClientException(
+				"Custom Web Action is mandatory.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		CustomWebAction action = new CustomWebAction();
+		action.setTaskIdentifier(customWebActionParam);
+		action.setServiceTicket(this.serviceTicket);
+		action.setForm(formParam);
+		action.setIsTableRecord(isTableRecordParam);
+		action.setFormTableRecordBelongsTo(formContainerTableRecordBelongsToParam);
 
-		if (customWebActionParam == null || customWebActionParam.trim().isEmpty()){
-			throw new FluidClientException(
-					"Custom Web Action is mandatory.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
-		}
-
-		try {
-			return new Form(this.postJson(
-					formParam, WS.Path.FormContainer.Version1.executeCustomWebAction(
-							customWebActionParam,
-							isTableRecordParam,
-							formContainerTableRecordBelowsToParam)));
-		} catch (UnsupportedEncodingException unsEncExcept) {
-			throw new FluidClientException(unsEncExcept.getMessage(),
-					unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
-		}
+		return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
 	}
 
 	/**
@@ -279,18 +271,50 @@ public class FormContainerClient extends ABaseClientWS {
 	/**
 	 * Retrieves the Form Container by Primary key.
 	 *
-	 * @param formContainerIdParam The Form Container primary key.
+	 * @param formContainerId The Form Container primary key.
 	 * @return Form by Primary key.
 	 */
-	public Form getFormContainerById(Long formContainerIdParam) {
-		Form form = new Form(formContainerIdParam);
+	public Form getFormContainerById(Long formContainerId) {
+		return this.getFormContainerById(formContainerId, false);
+	}
 
+	/**
+	 * Retrieves the Form Container by Primary key.
+	 *
+	 * @param formContainerId The Form Container primary key.
+	 * @param executeCalculatedLabels Should calculated labels be executed.
+	 * @return Form by Primary key.
+	 */
+	public Form getFormContainerById(Long formContainerId, boolean executeCalculatedLabels) {
+		Form form = new Form(formContainerId);
+		form.setServiceTicket(this.serviceTicket);
+
+		return new Form(this.postJson(
+				form, WS.Path.FormContainer.Version1.getById(executeCalculatedLabels)));
+	}
+
+	/**
+	 * Performs a lookup on Title only.
+	 *
+	 * @param titleLookupText The lookup value. Matches will be found where title contains lookup text.
+	 * @param limit The max number of results.
+	 * @param offset The starting offset.
+	 *
+	 * @return FormListing where title contains {@code titleLookupText}
+	 *
+	 * @see FormListing
+	 */
+	public FormListing getFormContainersByTitleContains(
+		String titleLookupText, int limit, int offset
+	) {
+		Form form = new Form();
+		form.setTitle(titleLookupText);
 		if (this.serviceTicket != null) {
 			form.setServiceTicket(this.serviceTicket);
 		}
 
-		return new Form(this.postJson(
-				form, WS.Path.FormContainer.Version1.getById()));
+		return new FormListing(this.postJson(
+				form, WS.Path.FormContainer.Version1.getByTitleContains(limit, offset)));
 	}
 
 	/**
@@ -430,10 +454,11 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return The un-locked form.
 	 */
 	public Form unLockFormContainer(
-			Form formParam,
-			User userToUnLockAsParam,
-			boolean unlockAsyncParam,
-			boolean removeFromPersonalInventoryParam) {
+		Form formParam,
+		User userToUnLockAsParam,
+		boolean unlockAsyncParam,
+		boolean removeFromPersonalInventoryParam
+	) {
 		if (this.serviceTicket != null && formParam != null) {
 			formParam.setServiceTicket(this.serviceTicket);
 		}
@@ -451,6 +476,40 @@ public class FormContainerClient extends ABaseClientWS {
 		}
 		//rethrow as a Fluid Client exception.
 		catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
+
+	/**
+	 * Create a PDF version of the attachment for form {@code formToPrint}
+	 * @param formToPrint The form to print.
+	 * @param includeCompanyLogo Should the company logo be included.
+	 * @param includeAncestor Should the ancestor form be included.
+	 * @param includeDescendants Should the descendant form/s be included.
+	 * @param includeFormProperties Should the form properties be included.
+	 *
+	 * @return Attachment with PDF content.
+	 *
+	 * @see Attachment
+	 */
+	public Attachment printForm(
+		Form formToPrint,
+		boolean includeCompanyLogo,
+		boolean includeAncestor,
+		boolean includeDescendants,
+		boolean includeFormProperties
+	) {
+		formToPrint.setServiceTicket(this.serviceTicket);
+		try {
+			return new Attachment(this.postJson(
+					formToPrint,
+					WS.Path.FormContainer.Version1.printAsPDFAttachment(
+							includeCompanyLogo,
+							includeAncestor,
+							includeDescendants,
+							includeFormProperties)));
+		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}

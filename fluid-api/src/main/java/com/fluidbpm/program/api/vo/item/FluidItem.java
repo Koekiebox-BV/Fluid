@@ -15,21 +15,24 @@
 
 package com.fluidbpm.program.api.vo.item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Represents an Electronic Form with all possible Meta-Data for an item
@@ -44,6 +47,8 @@ import com.fluidbpm.program.api.vo.form.Form;
  * @see FlowState
  * @see Properties
  */
+@Getter
+@Setter
 public class FluidItem extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -59,6 +64,9 @@ public class FluidItem extends ABaseFluidJSONObject {
 	private FlowState flowState;
 
 	private String flow;
+	private String step;
+
+	private Date stepEnteredTime;
 
 	private Boolean inCaseOfCreateLinkToParent;
 
@@ -75,11 +83,14 @@ public class FluidItem extends ABaseFluidJSONObject {
 		public static final String ROUTE_FIELDS = "routeFields";
 		public static final String GLOBAL_FIELDS = "globalFields";
 
+		public static final String STEP_ENTERED_TIME = "stepEnteredTime";
+
 		public static final String FORM = "form";
 
 		public static final String ATTACHMENTS = "attachments";
 		public static final String FLOW_STATE = "flowState";
 		public static final String FLOW = "flow";
+		public static final String STEP = "step";
 	}
 
 	/**
@@ -107,6 +118,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	/**
 	 * Additional properties for {@code this} {@code FluidItem}.
 	 */
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	@Setter
 	public static class FluidItemProperty extends ABaseFluidJSONObject {
 		private String name;
 		private String value;
@@ -114,28 +129,9 @@ public class FluidItem extends ABaseFluidJSONObject {
 		/**
 		 * The JSON mapping for the {@code FluidItemProperty} object.
 		 */
-		public static class JSONMapping
-		{
+		public static class JSONMapping {
 			public static final String NAME = "name";
 			public static final String VALUE = "value";
-		}
-
-		/**
-		 * Default constructor.
-		 */
-		public FluidItemProperty() {
-			super();
-		}
-
-		/**
-		 * Sets the Name and Value of the property.
-		 *
-		 * @param nameParam The Property Name.
-		 * @param valueParam The Property Value.
-		 */
-		public FluidItemProperty(String nameParam, String valueParam) {
-			this.setName(nameParam);
-			this.setValue(valueParam);
 		}
 
 		/**
@@ -145,21 +141,15 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 */
 		public FluidItemProperty(JSONObject jsonObjectParam) {
 			super(jsonObjectParam);
-
-			if (this.jsonObject == null)
-			{
-				return;
-			}
+			if (this.jsonObject == null) return;
 
 			//Name...
-			if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-				this.setName(this.jsonObject.getString(JSONMapping.NAME));
-			}
+			if (!this.jsonObject.isNull(JSONMapping.NAME)) this.setName(this.jsonObject.getString(JSONMapping.NAME));
+
 
 			//Value...
-			if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
-				this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
-			}
+			if (!this.jsonObject.isNull(JSONMapping.VALUE)) this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
+
 		}
 
 		/**
@@ -175,52 +165,12 @@ public class FluidItem extends ABaseFluidJSONObject {
 			JSONObject returnVal = super.toJsonObject();
 
 			//Name...
-			if (this.getName() != null) {
-				returnVal.put(JSONMapping.NAME, this.getName());
-			}
+			if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
 
 			//Value...
-			if (this.getValue() != null) {
-				returnVal.put(JSONMapping.VALUE, this.getValue());
-			}
+			if (this.getValue() != null) returnVal.put(JSONMapping.VALUE, this.getValue());
 
 			return returnVal;
-		}
-
-		/**
-		 * Gets the Name of the Property.
-		 *
-		 * @return Property Name.
-		 */
-		public String getName() {
-			return this.name;
-		}
-
-		/**
-		 * Sets the Name of the Property.
-		 *
-		 * @param nameParam Property Name.
-		 */
-		public void setName(String nameParam) {
-			this.name = nameParam;
-		}
-
-		/**
-		 * Gets the Value of the Property.
-		 *
-		 * @return Property Value.
-		 */
-		public String getValue() {
-			return this.value;
-		}
-
-		/**
-		 * Sets the Value of the Property.
-		 *
-		 * @param valueParam The value of the Fluid Item property.
-		 */
-		public void setValue(String valueParam) {
-			this.value = valueParam;
 		}
 	}
 
@@ -281,16 +231,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 * is not found, {@code null} will be returned.
 		 */
 		public static FlowState valueOfSafe(String flowStateStringParam) {
-			if (flowStateStringParam == null || flowStateStringParam.trim().isEmpty()) {
-				return null;
-			}
+			if (flowStateStringParam == null || flowStateStringParam.trim().isEmpty()) return null;
 
 			String paramLower = flowStateStringParam.trim().toLowerCase();
-			for (FlowState flowState : FlowState.values()) {
-				if (paramLower.equals(flowState.name().toLowerCase())) {
-					return flowState;
-				}
-			}
+			for (FlowState flowState : FlowState.values())
+				if (paramLower.equals(flowState.name().toLowerCase())) return flowState;
 
 			return null;
 		}
@@ -302,9 +247,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 * @return Whether {@code flowStateParam} is work-in-progress.
 		 */
 		public static boolean isFlowStateWIP(FlowState flowStateParam) {
-			if (flowStateParam == null) {
-				return false;
-			}
+			if (flowStateParam == null) return false;
 
 			switch (flowStateParam) {
 				case WorkInProgress:
@@ -359,16 +302,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		//User Fields...
 		if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
-
-			JSONArray fieldsArr = this.jsonObject.getJSONArray(
-					JSONMapping.USER_FIELDS);
-
+			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
 			List<Field> assUserFields = new ArrayList();
-			for (int index = 0;index < fieldsArr.length();index++)
-			{
+			for (int index = 0;index < fieldsArr.length();index++) {
 				assUserFields.add(new Field(fieldsArr.getJSONObject(index)));
 			}
-
 			this.setUserFields(assUserFields);
 		}
 
@@ -420,10 +358,18 @@ public class FluidItem extends ABaseFluidJSONObject {
 			this.setFlow(this.jsonObject.getString(JSONMapping.FLOW));
 		}
 
+		//Step...
+		if (!this.jsonObject.isNull(JSONMapping.STEP)) {
+			this.setStep(this.jsonObject.getString(JSONMapping.STEP));
+		}
+
 		//Flow State...
 		if (!this.jsonObject.isNull(JSONMapping.FLOW_STATE)) {
 			this.setFlowStateString(this.jsonObject.getString(JSONMapping.FLOW_STATE));
 		}
+
+		//Step Entered Time...
+		this.setStepEnteredTime(this.getDateFieldValueFromFieldWithName(JSONMapping.STEP_ENTERED_TIME));
 	}
 
 	/**
@@ -440,12 +386,17 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		//Flow...
 		if (this.getFlow() != null) {
-			returnVal.put(JSONMapping.FLOW,this.getFlow());
+			returnVal.put(JSONMapping.FLOW, this.getFlow());
+		}
+
+		//Step...
+		if (this.getStep() != null) {
+			returnVal.put(JSONMapping.STEP, this.getStep());
 		}
 
 		//Form...
 		if (this.getForm() != null) {
-			returnVal.put(JSONMapping.FORM,this.getForm().toJsonObject());
+			returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
 		}
 
 		//User Fields...
@@ -491,6 +442,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 		//Flow State...
 		if (this.getFlowState() != null) {
 			returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState().toString());
+		}
+
+		//Step Entered Time...
+		if (this.getStepEnteredTime() != null) {
+			returnVal.put(JSONMapping.STEP_ENTERED_TIME, this.getDateAsLongFromJson(this.getStepEnteredTime()));
 		}
 
 		return returnVal;
@@ -1226,28 +1182,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 */
 	public boolean containsAttachments() {
 		return (this.attachments != null && !this.attachments.isEmpty());
-	}
-
-	/**
-	 * Gets the {@code Flow} the {@code FluidItem} is associated with.
-	 *
-	 * @return Name of the {@code Flow}.
-	 *
-	 * @see com.fluidbpm.program.api.vo.flow.Flow
-	 */
-	public String getFlow() {
-		return this.flow;
-	}
-
-	/**
-	 * Sets the {@code Flow} the {@code FluidItem} is associated with.
-	 *
-	 * @param flowParam Name of the {@code Flow}.
-	 *
-	 * @see com.fluidbpm.program.api.vo.flow.Flow
-	 */
-	public void setFlow(String flowParam) {
-		this.flow = flowParam;
 	}
 
 	/**
