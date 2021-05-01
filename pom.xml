@@ -39,7 +39,7 @@
 		<version.jdk.compile>1.8</version.jdk.compile>
 
 		<!--Maven Dependency Versions-->
-		<version.junit>4.12</version.junit>
+		<version.junit>4.13.1</version.junit>
 		<version.slf4j>1.7.22</version.slf4j>
 
 		<version.javax.websocket>1.1</version.javax.websocket>
