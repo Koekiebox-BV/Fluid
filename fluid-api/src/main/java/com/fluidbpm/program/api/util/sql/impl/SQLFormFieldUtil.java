@@ -152,8 +152,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 					this.getSQLTypeFromConnection(),
 					ISyntax.ProcedureMapping.Field.GetFormFieldsForFormContainer);
 
-			preparedStatement = this.getConnection().prepareStatement(
-					syntax.getPreparedStatement());
+			preparedStatement = this.getConnection().prepareStatement(syntax.getPreparedStatement());
 
 			preparedStatement.setLong(1, electronicFormIdParam);
 
@@ -355,8 +354,7 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 		ResultSet resultSet = null,resultSetForTblInfo = null;
 		try {
 			ISyntax syntax = SyntaxFactory.getInstance().getFieldValueSyntaxFor(
-					this.getSQLTypeFromConnection(),
-					formFieldMappingParam);
+					this.getSQLTypeFromConnection(), formFieldMappingParam);
 
 			if (syntax != null) {
 				preparedStatement = this.getConnection().prepareStatement(

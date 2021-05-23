@@ -15,15 +15,15 @@
 
 package com.fluidbpm.program.api.util.sql.syntax;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluidbpm.program.api.util.sql.syntax.impl.StoredProcedureSyntax;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * Factory class used to construct SQL stored procedures.
@@ -80,13 +80,11 @@ public class SyntaxFactory {
 
 		if (ISyntax.ProcedureMapping.isStoredProcedureMapping(aliasParam)) {
 			return new StoredProcedureSyntax(
-					aliasParam,
-					ISyntax.ProcedureMapping.getParamCountForAlias(aliasParam));
+					aliasParam, ISyntax.ProcedureMapping.getParamCountForAlias(aliasParam));
 		}
 
-		throw new FluidSQLException(
-				new SQLException("Unable to find Syntax for alias '"+
-						aliasParam+"' and SQL Type '"+sqlTypeParam+"'."));
+		throw new FluidSQLException(new SQLException("Unable to find Syntax for alias '"+
+				aliasParam+"' and SQL Type '"+sqlTypeParam+"'."));
 	}
 
 	/**
@@ -104,20 +102,15 @@ public class SyntaxFactory {
 		SQLFormFieldUtil.FormFieldMapping formFieldMappingParam
 	) {
 		Long dataType = formFieldMappingParam.dataType;
-		if (dataType == null) {
-			return null;
-		}
+		if (dataType == null) return null;
 
 		switch (dataType.intValue()) {
 			case UtilGlobal.FieldTypeId._1_TEXT:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_1_Text);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_1_Text);
 			case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_2_TrueFalse);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_2_TrueFalse);
 			case UtilGlobal.FieldTypeId._3_PARAGRAPH_TEXT:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
 			case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
 				if (this.isPlain(formFieldMappingParam.metaData)) {
 					return this.getSyntaxFor(
@@ -134,25 +127,17 @@ public class SyntaxFactory {
 				}
 
 			case UtilGlobal.FieldTypeId._5_DATE_TIME:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_5_DateTime);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_5_DateTime);
 			case UtilGlobal.FieldTypeId._6_DECIMAL:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_6_Decimal);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_6_Decimal);
 			case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
 			case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
-				return this.getSyntaxFor(
-						sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_8_TextEncrypted);
+				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_8_TextEncrypted);
 			case UtilGlobal.FieldTypeId._9_LABEL:
 				return null;
 			default:
-				throw new FluidSQLException(
-						new SQLException("Data Type '"+
-								dataType
-								+"' is not supported."));
-
+				throw new FluidSQLException(new SQLException(String.format("Data Type '%s' is not supported.", dataType)));
 		}
 	}
 
