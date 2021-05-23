@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.field;
 
+import com.fluidbpm.program.api.util.GeoUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
@@ -887,16 +888,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		} else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
 				fieldValue instanceof String) {
 			//Other valid types...
-			if ((fieldValue instanceof String) &&
-					LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
-				String formFieldValueStr = fieldValue.toString();
-
-				UtilGlobal utilGlobal = new UtilGlobal();
-
-				String latitude = utilGlobal.getLatitudeFromFluidText(formFieldValueStr);
-				String longitude = utilGlobal.getLongitudeFromFluidText(formFieldValueStr);
-
-				fieldValue = (latitude.concat(UtilGlobal.COMMA).concat(longitude));
+			if ((fieldValue instanceof String) && LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
+				GeoUtil geo = new GeoUtil(fieldValue.toString());
+				fieldValue = String.format("%d,%d", geo.getLatitude(), geo.getLongitude());
 			}
 
 			returnVal.put(fieldIdAsString, fieldValue);
@@ -998,15 +992,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				if (formFieldValue instanceof String) {
 					//Latitude and Longitude storage...
 					if (LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
-						String formFieldValueStr = formFieldValue.toString();
-
-						UtilGlobal utilGlobal = new UtilGlobal();
-						double latitude = utilGlobal.getLatitudeFromElasticSearchText(formFieldValueStr);
-						double longitude = utilGlobal.getLongitudeFromElasticSearchText(formFieldValueStr);
-
-						String newFieldVal =
-								(latitude + UtilGlobal.PIPE + longitude + UtilGlobal.PIPE);
-						fieldToAdd = new Field(this.getId(), this.getFieldName(), newFieldVal, type);
+						GeoUtil geoUtil = new GeoUtil(formFieldValue.toString());
+						fieldToAdd = new Field(this.getId(), this.getFieldName(), geoUtil.toString(), type);
 					} else {
 						//Other...
 						fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue.toString(), type);

@@ -89,13 +89,9 @@ public class UtilGlobal {
 	 * @return The converted value.
 	 */
 	public String toCamelUpperCase(String inputParam) {
-		if (inputParam == null) {
-			return null;
-		}
+		if (inputParam == null) return null;
 
-		if (inputParam.isEmpty()) {
-			return EMPTY;
-		}
+		if (inputParam.isEmpty()) return EMPTY;
 
 		char[] original = inputParam.toCharArray();
 		StringBuilder returnBuffer =
@@ -105,7 +101,6 @@ public class UtilGlobal {
 		boolean nextTitleCase = false;
 		for (int index = 1;index < original.length;index++) {
 			char c = original[index];
-
 			if (Character.isSpaceChar(c)) {
 				nextTitleCase = true;
 				continue;
@@ -113,128 +108,10 @@ public class UtilGlobal {
 				c = Character.toTitleCase(c);
 				nextTitleCase = false;
 			}
-
 			returnBuffer.append(c);
 		}
 
 		return returnBuffer.toString();
-	}
-
-	/**
-	 * Extract and returns Latitude from {@code textToCheckParam} applicable to
-	 * Fluid.
-	 *
-	 * @param textToCheckParam The Latitude and Longitude to extract Latitude from.
-	 * @return Geo Latitude from {@code textToCheckParam}.
-	 */
-	public String getLatitudeFromFluidText(String textToCheckParam) {
-
-		if (textToCheckParam == null || textToCheckParam.isEmpty()) {
-			return EMPTY;
-		}
-
-		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
-			latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
-		}
-
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
-			return ZERO;
-		}
-
-		if (latitudeAndLongitude.length > 1)
-		{
-			return toGoeSafe(latitudeAndLongitude[0]);
-		}
-
-		return ZERO;
-	}
-
-	/**
-	 * Extract and returns Longitude from {@code textToCheckParam}
-	 * applicable to ElasticSearch.
-	 *
-	 * @param textToCheckParam The Latitude and Longitude to extract Longitude from.
-	 * @return Geo Longitude from {@code textToCheckParam}.
-	 */
-	public String getLongitudeFromFluidText(String textToCheckParam) {
-		if (textToCheckParam == null || textToCheckParam.trim().isEmpty())
-		{
-			return EMPTY;
-		}
-
-		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
-			latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
-		}
-
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
-			return ZERO;
-		}
-
-		if (latitudeAndLongitude.length > 1) {
-			return this.toGoeSafe(latitudeAndLongitude[1]);
-		}
-
-		return ZERO;
-	}
-
-	/**
-	 * Extract and returns Latitude from {@code textToCheckParam}
-	 * applicable to ElasticSearch.
-	 *
-	 * @param textToCheckParam The Latitude and Longitude to extract Latitude from.
-	 * @return Geo Latitude from {@code textToCheckParam}.
-	 */
-	public double getLatitudeFromElasticSearchText(String textToCheckParam)
-	{
-		if (textToCheckParam == null || textToCheckParam.isEmpty()) {
-			return 0.0;
-		}
-
-		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
-			latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
-		}
-
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
-			return 0.0;
-		}
-
-		if (latitudeAndLongitude.length > 1) {
-			return toDoubleSafe(latitudeAndLongitude[0]);
-		}
-
-		return 0.0;
-	}
-
-	/**
-	 * Extract and returns Longitude from {@code textToCheckParam}
-	 * applicable to ElasticSearch.
-	 *
-	 * @param textToCheckParam The Latitude and Longitude to extract Longitude from.
-	 * @return Geo Longitude from {@code textToCheckParam}.
-	 */
-	public double getLongitudeFromElasticSearchText(String textToCheckParam)
-	{
-		if (textToCheckParam == null || textToCheckParam.trim().isEmpty()) {
-			return 0.0;
-		}
-
-		String[] latitudeAndLongitude = textToCheckParam.split(REG_EX_COMMA);
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length < 2) {
-			latitudeAndLongitude = textToCheckParam.split(REG_EX_PIPE);
-		}
-
-		if (latitudeAndLongitude == null || latitudeAndLongitude.length == 0) {
-			return 0.0;
-		}
-
-		if (latitudeAndLongitude.length > 1) {
-			return this.toDoubleSafe(latitudeAndLongitude[1]);
-		}
-
-		return 0.0;
 	}
 
 	/**
@@ -429,28 +306,20 @@ public class UtilGlobal {
 	 * @see Field
 	 */
 	public void setFlatFieldOnJSONObj(
-			String fieldNamePrefixParam,
-			String fieldNameIdPrefixParam,
-			Field fieldToExtractFromParam,
-			JSONObject objectToSetFieldOnParam)
-	{
-		if (fieldToExtractFromParam == null)
-		{
-			return;
-		}
+		String fieldNamePrefixParam,
+		String fieldNameIdPrefixParam,
+		Field fieldToExtractFromParam,
+		JSONObject objectToSetFieldOnParam
+	) {
+		if (fieldToExtractFromParam == null) return;
 
 		String fieldName = fieldToExtractFromParam.getFieldNameAsUpperCamel();
-		if (fieldName == null || fieldName.trim().isEmpty())
-		{
-			return;
-		}
+		if (fieldName == null || fieldName.trim().isEmpty()) return;
 
 		String completeFieldName = fieldNamePrefixParam.concat(fieldName);
 		String completeFieldNameId = fieldNameIdPrefixParam.concat(fieldName);
 
-		objectToSetFieldOnParam.put(completeFieldNameId,
-				fieldToExtractFromParam.getId());
-
+		objectToSetFieldOnParam.put(completeFieldNameId, fieldToExtractFromParam.getId());
 		Object fieldValue = fieldToExtractFromParam.getFieldValue();
 
 		if (fieldValue == null) {
@@ -464,17 +333,13 @@ public class UtilGlobal {
 			//Multiple Choice...
 			MultiChoice multiChoice = (MultiChoice) fieldValue;
 			//Nothing provided...
-			if (multiChoice.getSelectedMultiChoices() == null ||
-					multiChoice.getSelectedMultiChoices().isEmpty()) {
-				objectToSetFieldOnParam.put(
-						completeFieldName,
-						JSONObject.NULL);
+			if (multiChoice.getSelectedMultiChoices() == null || multiChoice.getSelectedMultiChoices().isEmpty()) {
+				objectToSetFieldOnParam.put(completeFieldName, JSONObject.NULL);
 				return;
 			}
 
 			StringBuilder builder = new StringBuilder();
-			multiChoice.getSelectedMultiChoices().forEach(selectedChoice ->
-			{
+			multiChoice.getSelectedMultiChoices().forEach(selectedChoice -> {
 				builder.append(selectedChoice);
 				builder.append(", ");
 			});
@@ -485,18 +350,11 @@ public class UtilGlobal {
 			}
 
 			objectToSetFieldOnParam.put(completeFieldName, selectVal);
-		} else if((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
-				fieldValue instanceof String) {
+		} else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) || fieldValue instanceof String) {
 			//Other valid types...
-			if ((fieldValue instanceof String) &&
-					Field.LATITUDE_AND_LONGITUDE.equals(
-							fieldToExtractFromParam.getTypeMetaData())) {
-				String formFieldValueStr = fieldValue.toString();
-
-				String latitudeTxt = this.getLatitudeFromFluidText(formFieldValueStr);
-				String longitudeTxt = this.getLongitudeFromFluidText(formFieldValueStr);
-
-				fieldValue = (latitudeTxt.concat(UtilGlobal.COMMA).concat(longitudeTxt));
+			if ((fieldValue instanceof String) && Field.LATITUDE_AND_LONGITUDE.equals(fieldToExtractFromParam.getTypeMetaData())) {
+				GeoUtil geo = new GeoUtil(fieldValue.toString());
+				fieldValue = String.format("%d,%d", geo.getLatitude(), geo.getLongitude());
 			}
 
 			objectToSetFieldOnParam.put(completeFieldName, fieldValue);
@@ -720,7 +578,4 @@ public class UtilGlobal {
 		if (fileToRead == null) return null;
 		return Files.readAllBytes(fileToRead.toPath());
 	}
-
-	
-
 }
