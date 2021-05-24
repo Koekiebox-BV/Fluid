@@ -354,7 +354,7 @@ public class UtilGlobal {
 			//Other valid types...
 			if ((fieldValue instanceof String) && Field.LATITUDE_AND_LONGITUDE.equals(fieldToExtractFromParam.getTypeMetaData())) {
 				GeoUtil geo = new GeoUtil(fieldValue.toString());
-				fieldValue = String.format("%d,%d", geo.getLatitude(), geo.getLongitude());
+				fieldValue = String.format("%s,%s", geo.getLatitude(), geo.getLongitude());
 			}
 
 			objectToSetFieldOnParam.put(completeFieldName, fieldValue);

@@ -890,7 +890,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			//Other valid types...
 			if ((fieldValue instanceof String) && LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
 				GeoUtil geo = new GeoUtil(fieldValue.toString());
-				fieldValue = String.format("%d,%d", geo.getLatitude(), geo.getLongitude());
+				fieldValue = String.format("%s,%s", geo.getLatitude(), geo.getLongitude());
 			}
 
 			returnVal.put(fieldIdAsString, fieldValue);
