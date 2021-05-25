@@ -164,12 +164,24 @@ public class GeoUtil {
 	}
 
 	/**
+	 * Return the latitude and longitude formatted as {@code "123,456"}
+	 * @return {@code latitude,longitude}
+	 */
+	public String getMapCenterLatLong() {
+		return String.format("%s,%s", this.getLatitude(), this.getLongitude());
+	}
+
+	/**
 	 * @return JSON text version of the JSONObject.
 	 */
 	@Override
 	public String toString() {
 		double lat = this.getLatitude(), lon = this.getLongitude();
 		if (lat == 0.0 && lon == 0.0) return UtilGlobal.EMPTY;
+
+		if (this.json.has(JSONMapping.RADIUS) && this.json.getDouble(JSONMapping.RADIUS) < 1) {
+			this.json.remove(JSONMapping.RADIUS);
+		}
 
 		return this.json.toString();
 	}
