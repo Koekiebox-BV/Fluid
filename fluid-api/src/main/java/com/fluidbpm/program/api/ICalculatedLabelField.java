@@ -43,7 +43,7 @@ public interface ICalculatedLabelField extends IActionBase {
 	 *
 	 * @return The Fluid Implementation <code>Field Identifier</code>.
 	 */
-	public abstract String getLabelFieldApplicable();
+	String getLabelFieldApplicable();
 
 	/**
 	 * <code>Execute Order (3)</code>
@@ -57,5 +57,5 @@ public interface ICalculatedLabelField extends IActionBase {
 	 * @see FluidItem
 	 * @see Field
 	 */
-	public abstract Object calculateFieldValue(FluidItem fluidItemParam) throws Exception;
+	Object calculateFieldValue(FluidItem fluidItemParam) throws Exception;
 }

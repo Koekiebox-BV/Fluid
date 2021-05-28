@@ -15,10 +15,10 @@
 
 package com.fluidbpm.program.api;
 
-import java.util.List;
-
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+
+import java.util.List;
 
 /**
  * Implement this <code>interface</code> when you want Fluid to execute
@@ -46,7 +46,7 @@ public interface ICustomWebAction extends IActionBase {
 	 *
 	 * @return The Fluid Implementation <code>Unique Action Identifier</code>.
 	 */
-	public abstract String getActionIdentifier();
+	String getActionIdentifier();
 
 	/**
 	 * <code>Execute Order (3)</code>
@@ -54,7 +54,7 @@ public interface ICustomWebAction extends IActionBase {
 	 * @return The {@code List<String>} of Fluid <code>Form Definition / Form Types</code>
 	 *         That will be applicable to the <code>Custom Web Action</code>.
 	 */
-	public abstract List<String> getAllowedFormDefinitions();
+	List<String> getAllowedFormDefinitions();
 
 	/**
 	 * <code>Execute Order (4)</code>
@@ -65,5 +65,5 @@ public interface ICustomWebAction extends IActionBase {
 	 *         The FlowItem will be moved into an <code>Erroneous</code> state.
 	 * @see FluidItem
 	 */
-	public abstract List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;
+	List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;
 }

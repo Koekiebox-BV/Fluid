@@ -15,10 +15,10 @@
 
 package com.fluidbpm.program.api;
 
-import java.util.List;
-
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+
+import java.util.List;
 
 /**
  * The interface to extend when creating
@@ -45,7 +45,7 @@ public interface ICustomProgram extends IActionBase {
 	 * @return The Fluid Implementation <code>Unique Action Identifier</code>.
 	 * @see com.fluidbpm.program.api.vo.flow.FlowStep
 	 */
-	public abstract String getTaskIdentifier();
+	String getTaskIdentifier();
 
 	/**
 	 * <code>Execute Order (3)</code>
@@ -59,7 +59,7 @@ public interface ICustomProgram extends IActionBase {
 	 * @throws Exception When a exception is {@code throw}, the Fluid Workitem will move into an error state.
 	 * @see FluidItem
 	 */
-	public abstract List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;
+	List<FluidItem> execute(FluidItem fluidItemParam) throws Exception;
 
 	/**
 	 * <code>Execute Order (4)</code>
@@ -82,7 +82,7 @@ public interface ICustomProgram extends IActionBase {
 	 * @see ICustomProgram#execute(FluidItem)
 	 * @see ICustomProgram#postProcessFluidItem(FluidItem, List)
 	 */
-	public abstract String executePerFluidItemQuery(FluidItem fluidItemParam) throws Exception;
+	String executePerFluidItemQuery(FluidItem fluidItemParam) throws Exception;
 
 	/**
 	 * <code>Execute Order (5)</code>
@@ -115,7 +115,7 @@ public interface ICustomProgram extends IActionBase {
 	 * @see FluidItem
 	 * @see Form
 	 */
-	public abstract FluidItem postProcessFluidItem(FluidItem fluidItemParam,
+	FluidItem postProcessFluidItem(FluidItem fluidItemParam,
 												   List<FluidItem> executePerFluidItemQueryResultParam)
 			throws Exception;
 }

@@ -15,11 +15,10 @@
 
 package com.fluidbpm.program.api;
 
+import javax.sql.DataSource;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Properties;
-
-import javax.sql.DataSource;
 
 /**
  * The base <code>interface</code> for all Fluid Java Custom Programs.
@@ -65,10 +64,7 @@ public interface IActionBase extends Serializable {
 	 * @throws Exception If a problem occurs.
 	 *
 	 */
-	public abstract void init(
-			Properties propertiesParam,
-			List<DataSource> dataSourcesParam)
-	throws Exception;
+	void init(Properties propertiesParam, List<DataSource> dataSourcesParam) throws Exception;
 
 	/**
 	 * <code>Execute Order (LAST)</code>
@@ -80,5 +76,5 @@ public interface IActionBase extends Serializable {
 	 * @throws Exception If a problem occurs.
 	 *
 	 */
-	public abstract void destroy() throws Exception;
+	void destroy() throws Exception;
 }

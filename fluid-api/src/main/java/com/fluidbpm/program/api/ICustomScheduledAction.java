@@ -14,12 +14,12 @@
  */
 package com.fluidbpm.program.api;
 
-import java.util.List;
-
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.mail.MailMessage;
 import com.fluidbpm.program.api.vo.user.User;
+
+import java.util.List;
 
 /**
  * Implement this interface when you want Fluid to execute
@@ -48,7 +48,7 @@ public interface ICustomScheduledAction extends IActionBase {
 	 *
 	 * @return The Fluid Implementation <code>Unique Action Identifier</code>.
 	 */
-	public abstract String getActionIdentifier();
+	String getActionIdentifier();
 
 	/**
 	 * <code>Execute Order (3)</code>
@@ -65,7 +65,7 @@ public interface ICustomScheduledAction extends IActionBase {
 	 * @return A query {@code String} in Fluid UserQuery format.
 	 * @throws Exception When a exception is {@code throw}, the Fluid Workitem will move into an error state.
 	 */
-	public abstract String fluidItemQuery() throws Exception;
+	String fluidItemQuery() throws Exception;
 
 	/**
 	 * <code>Execute Order (4)</code>
@@ -81,7 +81,7 @@ public interface ICustomScheduledAction extends IActionBase {
 	 * @return A {@code List<FluidItem>} that may include new Fluid Items to create or update.
 	 * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
 	 */
-	public abstract List<FluidItem> execute(List<FluidItem> fluidItemsParam) throws Exception;
+	List<FluidItem> execute(List<FluidItem> fluidItemsParam) throws Exception;
 
 	/**
 	 * <code>Execute Order (5)</code>
@@ -95,7 +95,7 @@ public interface ICustomScheduledAction extends IActionBase {
 	 * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
 	 * @see User
 	 */
-	public abstract List<User> executeUsers(List<User> usersParam) throws Exception;
+	List<User> executeUsers(List<User> usersParam) throws Exception;
 
 	/**
 	 * <code>Execute Order (6)</code>
@@ -108,7 +108,7 @@ public interface ICustomScheduledAction extends IActionBase {
 	 * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
 	 * @see MailMessage
 	 */
-	public abstract List<MailMessage> getMailMessagesToSend() throws Exception;
+	List<MailMessage> getMailMessagesToSend() throws Exception;
 
 	/**
 	 * <code>Execute Order (7)</code>
@@ -119,5 +119,5 @@ public interface ICustomScheduledAction extends IActionBase {
 	 * @return The execution result to be stored after the execution of all tasks
 	 * are completed successfully.
 	 */
-	public abstract String getExecutionResult();
+	String getExecutionResult();
 }
