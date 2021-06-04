@@ -103,10 +103,7 @@ public class FlowStepClient extends ABaseClientWS {
 	) {
 		FlowStep flowStep = new FlowStep(flowStepIdParam);
 		flowStep.setFlowStepType(flowStepTypeParam);
-
-		if (this.serviceTicket != null) {
-			flowStep.setServiceTicket(this.serviceTicket);
-		}
+		flowStep.setServiceTicket(this.serviceTicket);
 
 		return new FlowStep(this.postJson(flowStep, WS.Path.FlowStep.Version1.getById()));
 	}

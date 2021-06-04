@@ -47,8 +47,7 @@ public class FlowClient extends ABaseClientWS {
 	 * @param endpointBaseUrlParam URL to base endpoint.
 	 * @param serviceTicketParam The Server issued Service Ticket.
 	 */
-	public FlowClient(String endpointBaseUrlParam,
-					  String serviceTicketParam) {
+	public FlowClient(String endpointBaseUrlParam, String serviceTicketParam) {
 		super(endpointBaseUrlParam);
 		this.setServiceTicket(serviceTicketParam);
 	}
@@ -62,9 +61,7 @@ public class FlowClient extends ABaseClientWS {
 	 * @see Flow
 	 */
 	public Flow createFlow(Flow flowParam) {
-		if (flowParam != null && this.serviceTicket != null) {
-			flowParam.setServiceTicket(this.serviceTicket);
-		}
+		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.putJson(flowParam, WS.Path.Flow.Version1.flowCreate()));
 	}
@@ -78,9 +75,7 @@ public class FlowClient extends ABaseClientWS {
 	 * @see Flow
 	 */
 	public Flow updateFlow(Flow flowParam) {
-		if (flowParam != null && this.serviceTicket != null) {
-			flowParam.setServiceTicket(this.serviceTicket);
-		}
+		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.postJson(flowParam, WS.Path.Flow.Version1.flowUpdate()));
 	}
@@ -93,10 +88,7 @@ public class FlowClient extends ABaseClientWS {
 	 */
 	public Flow getFlowById(Long flowIdParam) {
 		Flow flow = new Flow(flowIdParam);
-
-		if (this.serviceTicket != null) {
-			flow.setServiceTicket(this.serviceTicket);
-		}
+		flow.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.getById()));
 	}
@@ -110,9 +102,8 @@ public class FlowClient extends ABaseClientWS {
 	public Flow getFlowByName(String flowNameParam) {
 		Flow flow = new Flow();
 		flow.setName(flowNameParam);
-		if (this.serviceTicket != null) {
-			flow.setServiceTicket(this.serviceTicket);
-		}
+		flow.setServiceTicket(this.serviceTicket);
+
 		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.getByName()));
 	}
 
@@ -136,9 +127,8 @@ public class FlowClient extends ABaseClientWS {
 	 * @see WebKitViewGroupListing
 	 */
 	public WebKitViewGroupListing upsertViewGroupWebKit(WebKitViewGroupListing listing) {
-		if (listing == null) {
-			return null;
-		}
+		if (listing == null) return null;
+
 		listing.setServiceTicket(this.serviceTicket);
 		return new WebKitViewGroupListing(this.postJson(listing, WS.Path.Flow.Version1.flowViewGroupUpsert()));
 	}
@@ -151,9 +141,7 @@ public class FlowClient extends ABaseClientWS {
 	 */
 	public List<Flow> getAllFlows() {
 		Flow flow = new Flow();
-		if (this.serviceTicket != null) {
-			flow.setServiceTicket(this.serviceTicket);
-		}
+		flow.setServiceTicket(this.serviceTicket);
 
 		return new FlowListing(this.postJson(flow, WS.Path.Flow.Version1.getAllFlows())).getListing();
 	}
@@ -165,9 +153,7 @@ public class FlowClient extends ABaseClientWS {
 	 * @return The deleted Flow.
 	 */
 	public Flow deleteFlow(Flow flowParam) {
-		if (flowParam != null && this.serviceTicket != null) {
-			flowParam.setServiceTicket(this.serviceTicket);
-		}
+		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.postJson(flowParam, WS.Path.Flow.Version1.flowDelete()));
 	}
@@ -181,9 +167,7 @@ public class FlowClient extends ABaseClientWS {
 	 * @return The deleted Flow.
 	 */
 	public Flow forceDeleteFlow(Flow flowParam) {
-		if (flowParam != null && this.serviceTicket != null) {
-			flowParam.setServiceTicket(this.serviceTicket);
-		}
+		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.postJson(flowParam, WS.Path.Flow.Version1.flowDelete(true)));
 	}

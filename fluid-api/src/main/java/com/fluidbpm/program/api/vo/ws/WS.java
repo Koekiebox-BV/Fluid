@@ -3180,7 +3180,7 @@ public class WS {
 		 */
 		public static final class MandrillInbound {
 			/**
-			 * Role mappings.
+			 * Mandrill mappings.
 			 */
 			public static final class Version1 {
 				public static final String ROOT = ("/mandrill_inbound");
@@ -3196,6 +3196,44 @@ public class WS {
 				@Override
 				public String toString() {
 					return ROOT;
+				}
+			}
+		}
+
+		/**
+		 * The Payment Web Service mappings.
+		 */
+		public static final class Payment {
+			/**
+			 * Adyen mappings.
+			 */
+			public static final class Version1 {
+				public static final String ROOT = ("/payment");
+				public static final String ADYEN = ("/adyen");
+
+				public static final String ADYEN_PAYMENT_NOTIFICATION = (ADYEN + "/notification");
+				public static final String ADYEN_PAYMENT_LINK_REQUEST = (ADYEN + "/payment_link_request");
+
+				//Create...
+				public static final String CONSUME = ("/");
+
+				/**
+				 * Root for Payments.
+				 *
+				 * @return {@code /payment/}
+				 */
+				@Override
+				public String toString() {
+					return ROOT;
+				}
+
+				/**
+				 * URL Path for requesting a Adyen Payment Link.
+				 *
+				 * @return {@code v1/payment/adyen/payment_link_request}
+				 */
+				public static final String adyenPaymentLinkRequest() {
+					return String.format("%s%s%s", Version.VERSION_1, ROOT, ADYEN_PAYMENT_LINK_REQUEST);
 				}
 			}
 		}
@@ -3336,19 +3374,28 @@ public class WS {
 			public static final class Version1 {
 				public static final String ROOT = ("/custom_runner");
 
+				// [/web_socket/v1/custom_runner]
 				public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 
 				//Custom Web...
 				public static final String CUSTOM_WEB = ("/custom_web");
+				// [/web_socket/v1/custom_runner/custom_web]
 				public static final String CUSTOM_WEB_WEB_SOCKET = (ROOT_WEB_SOCKET + CUSTOM_WEB);
 
 				//Custom Flow Program...
 				public static final String CUSTOM_FLOW_PROGRAM = ("/custom_flow_program");
+				// [/web_socket/v1/custom_runner/custom_flow_program]
 				public static final String CUSTOM_FLOW_PROGRAM_WEB_SOCKET = (ROOT_WEB_SOCKET + CUSTOM_FLOW_PROGRAM);
 
 				//Custom Flow Program...
 				public static final String CUSTOM_SCHEDULE = ("/custom_schedule");
-				public static final String CUSTOM_SCHEDULE_WEB_SOCKET = (CUSTOM_SCHEDULE + CUSTOM_FLOW_PROGRAM);
+				// [/web_socket/v1/custom_runner/custom_schedule]
+				public static final String CUSTOM_SCHEDULE_WEB_SOCKET = (ROOT_WEB_SOCKET + CUSTOM_SCHEDULE);
+
+				//Custom View Filter...
+				public static final String CUSTOM_VIEW_FILTER = ("/custom_view_filter");
+				// [/web_socket/v1/custom_runner/custom_view_filter]
+				public static final String CUSTOM_VIEW_FILTER_WEB_SOCKET = (ROOT_WEB_SOCKET + CUSTOM_VIEW_FILTER);
 
 				/**
 				 * Mapping for frequently used HTTP parameters.
@@ -3421,6 +3468,22 @@ public class WS {
 
 					String returnVal = (CUSTOM_SCHEDULE_WEB_SOCKET + "/" + encodedValue + "/");
 
+					return returnVal;
+				}
+
+				/**
+				 * URL Path for Custom Running a View Filter via Web Socket.
+				 *
+				 * @param viewIdentifierParam The custom view identifier to execute.
+				 *
+				 * @return {@code web_socket/v1/custom_runner/custom_view_filter/}
+				 * @throws UnsupportedEncodingException When UTF-8 encoding is not supported.
+				 */
+				public static final String executeCustomViewFilterWebSocket(String viewIdentifierParam) throws UnsupportedEncodingException {
+					String encodedValue = "";
+					if (viewIdentifierParam != null) encodedValue = URLEncoder.encode(viewIdentifierParam, ENCODING_UTF_8);
+
+					String returnVal = (CUSTOM_VIEW_FILTER_WEB_SOCKET + "/" + encodedValue + "/");
 					return returnVal;
 				}
 			}
