@@ -56,7 +56,7 @@
 
 		<!--Apache-->
 		<version.apache.httpcomponents.httpcore>4.4.12</version.apache.httpcomponents.httpcore>
-		<version.apache.httpcomponents.httpclient>4.5.3</version.apache.httpcomponents.httpclient>
+		<version.apache.httpcomponents.httpclient>4.5.13</version.apache.httpcomponents.httpclient>
 
 		<!--Elasticsearch-->
 		<version.elasticsearch>7.7.0</version.elasticsearch>
