@@ -23,13 +23,10 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONObject;
 
 /**
- * Used to change any of the Flow's / Workflows.
- *
- * This is ideal for doing automated tests against
- * the Fluid platform.
+ * Client used to perform Payments securely.
  *
  * @author jasonbruwer
- * @since v1.1
+ * @since v1.12
  *
  * @see JSONObject
  * @see WS.Path.Configuration
