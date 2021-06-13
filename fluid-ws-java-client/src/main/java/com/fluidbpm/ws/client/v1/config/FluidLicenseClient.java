@@ -34,66 +34,57 @@ import com.fluidbpm.ws.client.v1.ABaseFieldClient;
  */
 public class FluidLicenseClient extends ABaseFieldClient {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public FluidLicenseClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public FluidLicenseClient(
+		String endpointBaseUrlParam,
+		String serviceTicketParam
+	) {
+		super(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+	/**
+	 * Request a new license based on the license request input.
+	 *
+	 * It is important to set the following fields.
+	 * {@code Valid From}
+	 * {@code Valid To}
+	 * {@code User Count}
+	 *
+	 * @param licenseRequestParam The license request used to issue a license request from.
+	 * @return The License Request file.
+	 */
+	public String requestLicense(LicenseRequest licenseRequestParam) {
 
-    /**
-     * Request a new license based on the license request input.
-     *
-     * It is important to set the following fields.
-     * {@code Valid From}
-     * {@code Valid To}
-     * {@code User Count}
-     *
-     * @param licenseRequestParam The license request used to issue a license request from.
-     * @return The License Request file.
-     */
-    public String requestLicense(LicenseRequest licenseRequestParam) {
+		if (licenseRequestParam != null) licenseRequestParam.setServiceTicket(this.serviceTicket);
 
-        if (licenseRequestParam != null &&
-                this.serviceTicket != null)
-        {
-            licenseRequestParam.setServiceTicket(this.serviceTicket);
-        }
+		return this.executeTxtReceiveTxt(
+			HttpMethod.POST,
+			null,
+			false,
+			(licenseRequestParam == null) ? null :
+					licenseRequestParam.toJsonObject().toString(),
+			ContentType.APPLICATION_JSON,
+			Version1.licenseRequest()
+		);
+	}
 
-        return this.executeTxtReceiveTxt(
-                HttpMethod.POST,
-                null,
-                false,
-                (licenseRequestParam == null) ? null :
-                        licenseRequestParam.toJsonObject().toString(),
-                ContentType.APPLICATION_JSON,
-                Version1.licenseRequest());
-    }
+	/**
+	 * Applies a generated license for the server.
+	 *
+	 * @param licenseToApplyParam The clear license to apply.
+	 * @return The applied license.
+	 */
+	public LicenseRequest applyLicense(String licenseToApplyParam) {
+		LicenseRequest liceReq = new LicenseRequest();
+		liceReq.setLicenseCipherText(licenseToApplyParam);
+		liceReq.setServiceTicket(this.serviceTicket);
 
-    /**
-     * Applies a generated license for the server.
-     * 
-     * @param licenseToApplyParam The clear license to apply.
-     * @return The applied license.
-     */
-    public LicenseRequest applyLicense(String licenseToApplyParam)
-    {
-        LicenseRequest liceReq = new LicenseRequest();
-        liceReq.setLicenseCipherText(licenseToApplyParam);
-
-        if (this.serviceTicket != null)
-        {
-            liceReq.setServiceTicket(this.serviceTicket);
-        }
-
-        return new LicenseRequest(this.postJson(
-                liceReq, Version1.licenseApply()));
-    }
+		return new LicenseRequest(this.postJson(liceReq, Version1.licenseApply()));
+	}
 }
