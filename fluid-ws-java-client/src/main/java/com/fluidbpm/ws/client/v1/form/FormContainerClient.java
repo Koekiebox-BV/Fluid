@@ -294,6 +294,22 @@ public class FormContainerClient extends ABaseClientWS {
 	}
 
 	/**
+	 * Fetch the parent/ancestor form for {@code form}
+	 *
+	 * @param form The child form.
+	 *
+	 * @return List of forms where child is {@code form}
+	 *
+	 * @see Form
+	 */
+	public List<Form> getAncestorFor(Form form) {
+		if (form != null) form.setServiceTicket(this.serviceTicket);
+
+		return new FormListing(this.postJson(
+				form, WS.Path.FormContainer.Version1.getAncestorByChild())).getListing();
+	}
+
+	/**
 	 * Performs a lookup on Title only.
 	 *
 	 * @param titleLookupText The lookup value. Matches will be found where title contains lookup text.

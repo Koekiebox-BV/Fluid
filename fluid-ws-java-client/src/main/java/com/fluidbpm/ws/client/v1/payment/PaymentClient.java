@@ -41,10 +41,7 @@ public class PaymentClient extends ABaseClientWS {
 	 * @param endpointBaseUrlParam URL to base endpoint.
 	 * @param serviceTicketParam The Server issued Service Ticket.
 	 */
-	public PaymentClient(
-		String endpointBaseUrlParam,
-		String serviceTicketParam
-	) {
+	public PaymentClient(String endpointBaseUrlParam, String serviceTicketParam) {
 		super(endpointBaseUrlParam);
 		this.setServiceTicket(serviceTicketParam);
 	}

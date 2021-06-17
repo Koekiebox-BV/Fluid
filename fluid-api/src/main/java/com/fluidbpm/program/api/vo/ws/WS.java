@@ -153,6 +153,7 @@ public class WS {
 
 				//Read...
 				public static final String READ = ("/get_by_id");
+				public static final String READ_ANCESTOR_BY_CHILD = ("/get_ancestor_by_child");
 				public static final String PRINT_AS_PDF = ("/print_as_pdf");
 
 				//Lock and Unlock
@@ -216,6 +217,15 @@ public class WS {
 							Version.VERSION_1.concat(ROOT).concat(READ),
 							QueryParam.EXECUTE_CALCULATED_LABELS,
 							executeCalculatedLabels);
+				}
+
+				/**
+				 * URL Path for Form Container Ancestor get by Child id.
+				 *
+				 * @return {@code v1/form_container/get_ancestor_by_child}
+				 */
+				public static final String getAncestorByChild() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ANCESTOR_BY_CHILD);
 				}
 
 				/**
