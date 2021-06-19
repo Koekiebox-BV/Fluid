@@ -188,6 +188,8 @@ public class FormFieldClient extends ABaseFieldClient {
 			case Label:
 				if (FieldMetaData.Label.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldLabelPlain(formFieldParam);
+				} else if (FieldMetaData.Label.MAKE_PAYMENT.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldLabelMakePayment(formFieldParam);
 				} else if (FieldMetaData.Label.ANCHOR.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldLabelAnchor(formFieldParam, (String)additionalInfo[0]);
 				}
@@ -342,6 +344,27 @@ public class FormFieldClient extends ABaseFieldClient {
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.Label);
 			formFieldParam.setTypeMetaData(FieldMetaData.Label.PLAIN);
+		}
+
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
+
+	/**
+	 * Create a new Label MakePayment field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @return Created Field.
+	 *
+	 * @see com.fluidbpm.ws.client.v1.ABaseFieldClient.FieldMetaData.Label
+	 */
+	public Field createFieldLabelMakePayment(
+		Field formFieldParam
+	) {
+		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
+
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.Label);
+			formFieldParam.setTypeMetaData(FieldMetaData.Label.MAKE_PAYMENT);
 		}
 
 		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
