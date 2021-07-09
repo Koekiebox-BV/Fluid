@@ -130,6 +130,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	public static class FlatFormJSONMapping {
 		//Form...
+		public static final String ID = "id";
 		public static final String FORM_ID = "form_id";
 		public static final String FORM_TITLE = "form_title";
 		public static final String FORM_STATE = "form_state";
@@ -1028,40 +1029,27 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Form Type...
-		if (this.getFormType() != null) {
-			returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
-		}
+		if (this.getFormType() != null) returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
 
 		//Form Type Id...
-		if (this.getFormTypeId() != null) {
-			returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
-		}
+		if (this.getFormTypeId() != null) returnVal.put(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
 
 		//Title...
-		if (this.getTitle() != null) {
-			returnVal.put(JSONMapping.TITLE, this.getTitle());
-		}
+		if (this.getTitle() != null) returnVal.put(JSONMapping.TITLE, this.getTitle());
 
 		//Form Description...
-		if (this.getFormDescription() != null) {
-			returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
-		}
+		if (this.getFormDescription() != null) returnVal.put(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
 
 		//State...
-		if (this.getState() != null) {
-			returnVal.put(JSONMapping.STATE, this.getState());
-		}
+		if (this.getState() != null) returnVal.put(JSONMapping.STATE, this.getState());
 
 		//Flow State...
-		if (this.getFlowState() != null) {
-			returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState());
-		}
+		if (this.getFlowState() != null) returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState());
 
 		//Current User...
 		JSONObject currentUserJsonObj = new JSONObject();
 		if (this.getCurrentUser() == null) {
-			currentUserJsonObj.put(
-					User.JSONMapping.Elastic.USER_ID, JSONObject.NULL);
+			currentUserJsonObj.put(User.JSONMapping.Elastic.USER_ID, JSONObject.NULL);
 			currentUserJsonObj.put(User.JSONMapping.USERNAME, JSONObject.NULL);
 		} else {
 			//Id...
@@ -1077,8 +1065,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			}
 
 			//Username...
-			if (this.getCurrentUser().getUsername() == null ||
-					this.getCurrentUser().getUsername().trim().isEmpty()) {
+			if (this.getCurrentUser().getUsername() == null || this.getCurrentUser().getUsername().trim().isEmpty()) {
 				currentUserJsonObj.put(User.JSONMapping.USERNAME, JSONObject.NULL);
 			} else {
 				currentUserJsonObj.put(User.JSONMapping.USERNAME, this.getCurrentUser().getUsername());
@@ -1088,14 +1075,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Date Created...
 		if (this.getDateCreated() != null) {
-			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateAsLongFromJson(this.getDateCreated()));
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-					this.getDateAsLongFromJson(this.getDateLastUpdated()));
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
 		}
 
 		//Form Fields...
@@ -1116,22 +1101,17 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Ancestor...
 		Long ancestorIdLcl = this.getAncestorId();
-		if (ancestorIdLcl != null) {
-			returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
-		}
+		if (ancestorIdLcl != null) returnVal.put(JSONMapping.ANCESTOR_ID, ancestorIdLcl);
 
 		//Table Field Parent Id...
 		if (this.getTableFieldParentId() != null) {
-			returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID,
-					this.getTableFieldParentId());
+			returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, this.getTableFieldParentId());
 		}
 
 		//Descendant Ids...
 		if (this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
 			JSONArray array = new JSONArray();
-			for (Long formId : this.getDescendantIds()) {
-				array.put(formId);
-			}
+			for (Long formId : this.getDescendantIds()) array.put(formId);
 
 			returnVal.put(JSONMapping.DESCENDANT_IDS, array);
 		}
@@ -1154,51 +1134,31 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_ID,
-				this.getId() == null ?
-						JSONObject.NULL : this.getId());
+		returnVal.put(FlatFormJSONMapping.ID, this.getId() == null ? JSONObject.NULL : this.getId());
+		returnVal.put(FlatFormJSONMapping.FORM_ID, this.getId() == null ? JSONObject.NULL : this.getId());
 
 		//Title...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_TITLE,
-				this.getTitle() == null ?
-						JSONObject.NULL : this.getTitle());
+		returnVal.put(FlatFormJSONMapping.FORM_TITLE, this.getTitle() == null ? JSONObject.NULL : this.getTitle());
 
 		//Form Type...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_TYPE,
-				this.getFormType() == null ?
-						JSONObject.NULL : this.getFormType());
+		returnVal.put(FlatFormJSONMapping.FORM_TYPE, this.getFormType() == null ? JSONObject.NULL : this.getFormType());
 
 		//State...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_STATE,
-				this.getState() == null ?
-						JSONObject.NULL : this.getState());
+		returnVal.put(FlatFormJSONMapping.FORM_STATE, this.getState() == null ? JSONObject.NULL : this.getState());
 
 		//Form Flow State...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_FLOW_STATE,
-				this.getFlowState() == null ?
-						JSONObject.NULL : this.getFlowState());
+		returnVal.put(FlatFormJSONMapping.FORM_FLOW_STATE, this.getFlowState() == null ? JSONObject.NULL : this.getFlowState());
 
 		//Date Created...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_DATE_CREATED,
-				(this.getDateCreated() == null) ?
-						JSONObject.NULL: this.getDateCreated().getTime());
+		returnVal.put(FlatFormJSONMapping.FORM_DATE_CREATED,
+				(this.getDateCreated() == null) ? JSONObject.NULL: this.getDateCreated().getTime());
 
 		//Date Last Updated...
-		returnVal.put(
-				FlatFormJSONMapping.FORM_DATE_LAST_UPDATED,
-				(this.getDateLastUpdated() == null) ?
-						JSONObject.NULL: this.getDateLastUpdated().getTime());
+		returnVal.put(FlatFormJSONMapping.FORM_DATE_LAST_UPDATED,
+				(this.getDateLastUpdated() == null) ? JSONObject.NULL: this.getDateLastUpdated().getTime());
 
 		//Form Fields...
-		if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
-			return returnVal;
-		}
+		if (this.getFormFields() == null || this.getFormFields().isEmpty()) return returnVal;
 
 		//Set the form fields...
 		UtilGlobal utilGlobal = new UtilGlobal();
@@ -1207,8 +1167,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 					utilGlobal.setFlatFieldOnJSONObj(
 							FlatFormJSONMapping.FORM_FIELD_PREFIX,
 							FlatFormJSONMapping.FORM_FIELD_ID_PREFIX,
-							formFieldItem,
-							returnVal
+							formFieldItem, returnVal
 					);
 				}
 		);

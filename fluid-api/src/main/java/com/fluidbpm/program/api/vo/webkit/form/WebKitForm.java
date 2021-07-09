@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 	private List<String> additionalSectionOptions;
 	private List<String> tableFieldsToInclude;
+	private List<String> mandatoryFields;
 
 	//Workflow related props...
 	private boolean lockFormOnOpen;//Lock as the form is being opened...
@@ -127,6 +129,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			this.jsonObject.getJSONArray(JSONMapping.TABLE_FIELDS_TO_INCLUDE).forEach(
 					section -> this.getTableFieldsToInclude().add(section.toString()));
 
+		this.setMandatoryFields(new ArrayList<>());
+		if (!this.jsonObject.isNull(JSONMapping.MANDATORY_FIELDS))
+			this.jsonObject.getJSONArray(JSONMapping.MANDATORY_FIELDS).forEach(
+					manField -> this.getMandatoryFields().add(manField.toString()));
+
 		if (!this.jsonObject.isNull(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR))
 			this.setVisibleSectionsDisplayBehaviour(
 					this.jsonObject.getString(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR));
@@ -180,7 +187,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String VISIBLE_SECTIONS = "visibleSections";
 		public static final String VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR = "visibleSectionsDisplayBehaviour";
 		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
-		
+		public static final String MANDATORY_FIELDS = "mandatoryFields";
+
 		public static final String LOCK_FORM_ON_OPEN = "lockFormOnOpen";
 		public static final String UNLOCK_FORM_ON_SAVE = "unlockFormOnSave";
 		public static final String SEND_ON_AFTER_SAVE = "sendOnAfterSave";
@@ -202,6 +210,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 * @see org.json.JSONObject
 	 */
 	@Override
+	@XmlTransient
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
 
@@ -239,6 +248,12 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.TABLE_FIELDS_TO_INCLUDE, tabFields);
 		}
 
+		if (this.getMandatoryFields() != null) {
+			JSONArray mandatoryFields = new JSONArray();
+			this.getMandatoryFields().forEach(manField -> mandatoryFields.put(manField));
+			returnVal.put(JSONMapping.MANDATORY_FIELDS, mandatoryFields);
+		}
+
 		returnVal.put(JSONMapping.LOCK_FORM_ON_OPEN, this.isLockFormOnOpen());
 		returnVal.put(JSONMapping.UNLOCK_FORM_ON_SAVE, this.isUnlockFormOnSave());
 		returnVal.put(JSONMapping.SEND_ON_AFTER_SAVE, this.isSendOnAfterSave());
@@ -253,6 +268,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 * Verify if any table forms are included.
 	 * @return {@code true} if table forms are included.
 	 */
+	@XmlTransient
 	public boolean isAnyTableFormsEnabled() {
 		return this.tableFieldsToInclude != null && !this.tableFieldsToInclude.isEmpty();
 	}
@@ -261,6 +277,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 * Validate whether the {@code newFormTitleFormula} is correctly formatted.
 	 * @throws UtilException if format invalid.
 	 */
+	@XmlTransient
 	public void validateAndFormatNewFormFormula() {
 		if (UtilGlobal.isBlank(this.newFormTitleFormula)) return;
 
@@ -270,9 +287,28 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		this.newFormTitleFormula = this.newFormTitleFormula.trim();
 	}
 
+	/**
+	 * Verify whether a field should be included.
+	 * 
+	 * @param tableFieldName The name of the field to verify whether included.
+	 * @return {@code true} If field {@code tableFieldName} is included, otherwise {@code false}.
+	 */
+	@XmlTransient
 	public boolean includeTableField(String tableFieldName) {
 		if (this.getTableFieldsToInclude() == null) return false;
 		return this.getTableFieldsToInclude().contains(tableFieldName);
+	}
+
+	/**
+	 * Verify whether a field is mandatory.
+	 *
+	 * @param fieldName The name of the field to verify whether mandatory.
+	 * @return {@code true} If field {@code fieldName} is mandatory, otherwise {@code false}.
+	 */
+	@XmlTransient
+	public boolean fieldMandatory(String fieldName) {
+		if (this.getMandatoryFields() == null) return false;
+		return this.getMandatoryFields().contains(fieldName);
 	}
 
 	@Override

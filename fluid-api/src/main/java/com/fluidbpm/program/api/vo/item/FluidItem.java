@@ -98,6 +98,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 */
 	public static class FlatFormJSONMapping {
 		//Fluid Item...
+		public static final String ID = "id";
 		public static final String FLUID_ITEM_ID = "fluid_item_id";
 		public static final String FLOW_STATE = "flow_state";
 
@@ -467,10 +468,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
-		returnVal.put(
-				FlatFormJSONMapping.FLUID_ITEM_ID,
-				this.getId() == null ?
-						JSONObject.NULL : this.getId());
+		returnVal.put(FlatFormJSONMapping.FLUID_ITEM_ID, this.getId() == null ? JSONObject.NULL : this.getId());
+		returnVal.put(FlatFormJSONMapping.ID, this.getId() == null ? JSONObject.NULL : this.getId());
 
 		//Flow State...
 		returnVal.put(
@@ -479,9 +478,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 						JSONObject.NULL : this.getFlowState().name());
 
 		//Populate the Form...
-		JSONObject formJSONObjFlat =
-				(this.getForm() == null) ? null :
-						this.getForm().convertToFlatJSONObject();
+		JSONObject formJSONObjFlat = (this.getForm() == null) ? null : this.getForm().convertToFlatJSONObject();
 
 		if (formJSONObjFlat != null) {
 			formJSONObjFlat.keySet().forEach(
@@ -493,7 +490,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		//Fields...
 		UtilGlobal utilGlobal = new UtilGlobal();
-
 		//Route Fields...
 		if (this.getRouteFields() != null) {
 			this.getRouteFields().forEach(
@@ -501,8 +497,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 						utilGlobal.setFlatFieldOnJSONObj(
 								FlatFormJSONMapping.ROUTE_FIELD_PREFIX,
 								FlatFormJSONMapping.ROUTE_FIELD_ID_PREFIX,
-								routeFieldItem,
-								returnVal
+								routeFieldItem, returnVal
 						);
 					}
 			);
@@ -515,8 +510,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 						utilGlobal.setFlatFieldOnJSONObj(
 								FlatFormJSONMapping.USER_FIELD_PREFIX,
 								FlatFormJSONMapping.USER_FIELD_ID_PREFIX,
-								userFieldItem,
-								returnVal
+								userFieldItem, returnVal
 						);
 					}
 			);
@@ -529,8 +523,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 						utilGlobal.setFlatFieldOnJSONObj(
 								FlatFormJSONMapping.GLOBAL_FIELD_PREFIX,
 								FlatFormJSONMapping.GLOBAL_FIELD_ID_PREFIX,
-								globalFieldItem,
-								returnVal
+								globalFieldItem, returnVal
 						);
 					}
 			);
@@ -562,9 +555,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 	public String getUserFieldValueAsString(String fieldNameParam) {
 		Object obj = this.getFieldValueForField(
 				fieldNameParam, this.getUserFields());
-		if (obj == null) {
-			return null;
-		}
+		if (obj == null) return null;
 
 		return obj.toString();
 	}
@@ -1284,15 +1275,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 	@Override
 	@XmlTransient
 	public boolean equals(Object objParam) {
-		if (objParam == null || this.getId() == null) {
-			return false;
-		}
+		if (objParam == null || this.getId() == null) return false;
 
 		if (objParam instanceof FluidItem) {
 			FluidItem paramCasted = (FluidItem)objParam;
-			if (paramCasted.getId() == null) {
-				return false;
-			}
+			if (paramCasted.getId() == null) return false;
 
 			return (this.getId().equals(paramCasted.getId()));
 		}
