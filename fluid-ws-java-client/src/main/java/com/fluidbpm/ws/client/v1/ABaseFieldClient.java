@@ -161,6 +161,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 			public static final String PLAIN = "Plain";
 			public static final String ANCHOR = "Anchor";
 			public static final String MAKE_PAYMENT = "MakePayment";
+			public static final String CUSTOM_WEB_ACTION = "CustomWebAction";
 		}
 	}
 

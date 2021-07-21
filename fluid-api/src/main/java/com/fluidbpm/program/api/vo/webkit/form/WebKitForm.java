@@ -67,6 +67,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private boolean enableCalculatedLabels;
 
 	private String newFormTitleFormula;// string format|Name,Surname
+	private String createNewInstanceIcon = "pi pi-file-o";
+	private String createNewInstanceGroup = "Add New";
 
 	public static final String EMAIL_FORM_TYPE = "Email";
 	public static WebKitForm emailWebKitForm() {
@@ -156,6 +158,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.NEW_FORM_TITLE_FORMULA))
 			this.setNewFormTitleFormula(this.jsonObject.getString(JSONMapping.NEW_FORM_TITLE_FORMULA));
 
+		if (!this.jsonObject.isNull(JSONMapping.CREATE_NEW_INSTANCE_ICON))
+			this.setCreateNewInstanceIcon(this.jsonObject.getString(JSONMapping.CREATE_NEW_INSTANCE_ICON));
+
+		if (!this.jsonObject.isNull(JSONMapping.CREATE_NEW_INSTANCE_GROUP))
+			this.setCreateNewInstanceGroup(this.jsonObject.getString(JSONMapping.CREATE_NEW_INSTANCE_GROUP));
 	}
 
 	/**
@@ -194,6 +201,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String SEND_ON_AFTER_SAVE = "sendOnAfterSave";
 		public static final String SEND_TO_WORKFLOW_AFTER_CREATE = "sendToWorkflowAfterCreate";
 		public static final String NEW_FORM_TITLE_FORMULA = "newFormTitleFormula";
+		public static final String CREATE_NEW_INSTANCE_ICON = "createNewInstanceIcon";
+		public static final String CREATE_NEW_INSTANCE_GROUP = "createNewInstanceGroup";
 
 		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
 	}
@@ -235,6 +244,12 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		if (this.getNewFormTitleFormula() == null || this.getNewFormTitleFormula().isEmpty()) returnVal.put(JSONMapping.NEW_FORM_TITLE_FORMULA, JSONObject.NULL);
 		else returnVal.put(JSONMapping.NEW_FORM_TITLE_FORMULA, this.getNewFormTitleFormula());
+
+		if (this.getCreateNewInstanceIcon() == null || this.getCreateNewInstanceIcon().isEmpty()) returnVal.put(JSONMapping.CREATE_NEW_INSTANCE_ICON, JSONObject.NULL);
+		else returnVal.put(JSONMapping.CREATE_NEW_INSTANCE_ICON, this.getCreateNewInstanceIcon());
+
+		if (this.getCreateNewInstanceGroup() == null || this.getCreateNewInstanceGroup().isEmpty()) returnVal.put(JSONMapping.CREATE_NEW_INSTANCE_GROUP, JSONObject.NULL);
+		else returnVal.put(JSONMapping.CREATE_NEW_INSTANCE_GROUP, this.getCreateNewInstanceGroup());
 
 		if (this.getVisibleSections() != null) {
 			JSONArray visSections = new JSONArray();
