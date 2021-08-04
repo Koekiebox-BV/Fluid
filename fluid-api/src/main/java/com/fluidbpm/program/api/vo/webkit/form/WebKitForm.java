@@ -70,6 +70,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private String createNewInstanceIcon = "pi pi-file-o";
 	private String createNewInstanceGroup = "Add New";
 
+	private boolean enableFormFieldHistory;
+
 	public static final String EMAIL_FORM_TYPE = "Email";
 	public static WebKitForm emailWebKitForm() {
 		WebKitForm webKitEmail = new WebKitForm(new JSONObject());
@@ -155,6 +157,9 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.ENABLE_CALCULATED_LABELS))
 			this.setEnableCalculatedLabels(this.jsonObject.getBoolean(JSONMapping.ENABLE_CALCULATED_LABELS));
 
+		if (!this.jsonObject.isNull(JSONMapping.ENABLE_FORM_FIELD_HISTORY))
+			this.setEnableFormFieldHistory(this.jsonObject.getBoolean(JSONMapping.ENABLE_FORM_FIELD_HISTORY));
+
 		if (!this.jsonObject.isNull(JSONMapping.NEW_FORM_TITLE_FORMULA))
 			this.setNewFormTitleFormula(this.jsonObject.getString(JSONMapping.NEW_FORM_TITLE_FORMULA));
 
@@ -205,6 +210,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String CREATE_NEW_INSTANCE_GROUP = "createNewInstanceGroup";
 
 		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
+		public static final String ENABLE_FORM_FIELD_HISTORY = "enableFormFieldHistory";
 	}
 
 	/**
@@ -275,6 +281,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE, this.isSendToWorkflowAfterCreate());
 
 		returnVal.put(JSONMapping.ENABLE_CALCULATED_LABELS, this.isEnableCalculatedLabels());
+		returnVal.put(JSONMapping.ENABLE_FORM_FIELD_HISTORY, this.isEnableFormFieldHistory());
 
 		return returnVal;
 	}

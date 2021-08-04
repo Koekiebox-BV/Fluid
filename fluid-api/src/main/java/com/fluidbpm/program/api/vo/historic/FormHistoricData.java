@@ -15,14 +15,15 @@
 
 package com.fluidbpm.program.api.vo.historic;
 
-import java.util.Date;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.user.User;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -39,21 +40,49 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
 
+	@Getter
+	@Setter
 	private String dateAndFieldName;
+
+	@Getter
+	@Setter
 	private Date date;
+
+	@Getter
+	@Setter
 	private String formContainerFieldValuesJSON;
 
+	@Getter
+	@Setter
 	private String logEntryType;
+
+	@Getter
+	@Setter
 	private String historicEntryType;
 
-	private String description;
-
+	@Getter
+	@Setter
 	private Boolean isFieldDifferentFromPrevious;
+
+	@Getter
+	@Setter
 	private Boolean isFieldTypeSignature;
+
+	@Getter
+	@Setter
 	private Boolean isEscapeText;
 
+	@Getter
+	@Setter
+	private String description;
+
 	//------------- Relationships -------------//
+	@Getter
+	@Setter
 	private User user;
+
+	@Getter
+	@Setter
 	private Field field;
 
 	//------------- Static Labels -------------//
@@ -106,72 +135,59 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	public FormHistoricData(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Date...
 		this.setDate(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE));
 
 		//Date and Time Field Name...
 		if (!this.jsonObject.isNull(JSONMapping.DATE_AND_FIELD_NAME)) {
-			this.setDateAndFieldName(this.jsonObject.getString(
-					JSONMapping.DATE_AND_FIELD_NAME));
+			this.setDateAndFieldName(this.jsonObject.getString(JSONMapping.DATE_AND_FIELD_NAME));
 		}
 
 		//Form Container Field values JSON...
 		if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON)) {
-			this.setFormContainerFieldValuesJSON(this.jsonObject.getString(
-					JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON));
+			this.setFormContainerFieldValuesJSON(this.jsonObject.getString(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON));
 		}
 
 		//Log Entry Type...
 		if (!this.jsonObject.isNull(JSONMapping.LOG_ENTRY_TYPE)) {
-			this.setLogEntryType(this.jsonObject.getString(
-					JSONMapping.LOG_ENTRY_TYPE));
+			this.setLogEntryType(this.jsonObject.getString(JSONMapping.LOG_ENTRY_TYPE));
 		}
 
 		//Description...
 		if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-			this.setDescription(this.jsonObject.getString(
-					JSONMapping.DESCRIPTION));
+			this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
 		}
 
 		//Historic Entry Type...
 		if (!this.jsonObject.isNull(JSONMapping.HISTORIC_ENTRY_TYPE)) {
-			this.setHistoricEntryType(this.jsonObject.getString(
-					JSONMapping.HISTORIC_ENTRY_TYPE));
+			this.setHistoricEntryType(this.jsonObject.getString(JSONMapping.HISTORIC_ENTRY_TYPE));
 		}
 
 		//User...
 		if (!this.jsonObject.isNull(JSONMapping.USER)) {
-			this.setUser(new User(this.jsonObject.getJSONObject(
-					JSONMapping.USER)));
+			this.setUser(new User(this.jsonObject.getJSONObject(JSONMapping.USER)));
 		}
 
 		//Field...
 		if (!this.jsonObject.isNull(JSONMapping.FIELD)) {
-			this.setField(new Field(this.jsonObject.getJSONObject(
-					JSONMapping.FIELD)));
+			this.setField(new Field(this.jsonObject.getJSONObject(JSONMapping.FIELD)));
 		}
 
 		//Field Different from Previous...
 		if (!this.jsonObject.isNull(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS)) {
-			this.setIsFieldDifferentFromPrevious(this.jsonObject.getBoolean(
-					JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
+			this.setIsFieldDifferentFromPrevious(this.jsonObject.getBoolean(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
 		}
 
 		//Field Type Signature...
 		if (!this.jsonObject.isNull(JSONMapping.IS_FIELD_TYPE_SIGNATURE)) {
-			this.setIsFieldTypeSignature(this.jsonObject.getBoolean(
-					JSONMapping.IS_FIELD_TYPE_SIGNATURE));
+			this.setIsFieldTypeSignature(this.jsonObject.getBoolean(JSONMapping.IS_FIELD_TYPE_SIGNATURE));
 		}
 
 		//Escape Text...
 		if (!this.jsonObject.isNull(JSONMapping.IS_ESCAPE_TEXT)) {
-			this.setIsEscapeText(
-					this.jsonObject.getBoolean(
-							JSONMapping.IS_ESCAPE_TEXT));
+			this.setIsEscapeText(this.jsonObject.getBoolean(JSONMapping.IS_ESCAPE_TEXT));
 		}
 	}
 
@@ -189,271 +205,59 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 
 		//Date...
 		if (this.getDate() != null) {
-			returnVal.put(JSONMapping.DATE,
-					this.getDateAsLongFromJson(this.getDate()));
+			returnVal.put(JSONMapping.DATE, this.getDateAsLongFromJson(this.getDate()));
 		}
 
 		//Date and Time Field Name...
 		if (this.getDateAndFieldName() != null) {
-			returnVal.put(JSONMapping.DATE_AND_FIELD_NAME,
-					this.getDateAndFieldName());
+			returnVal.put(JSONMapping.DATE_AND_FIELD_NAME, this.getDateAndFieldName());
 		}
 
 		//Form Container Field Values JSON...
 		if (this.getFormContainerFieldValuesJSON() != null) {
-			returnVal.put(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON,
-					this.getFormContainerFieldValuesJSON());
+			returnVal.put(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON, this.getFormContainerFieldValuesJSON());
 		}
 
 		//Log Entry Type...
 		if (this.getLogEntryType() != null) {
-			returnVal.put(JSONMapping.LOG_ENTRY_TYPE,
-					this.getLogEntryType());
+			returnVal.put(JSONMapping.LOG_ENTRY_TYPE, this.getLogEntryType());
 		}
 
 		//Description...
 		if (this.getDescription() != null) {
-			returnVal.put(JSONMapping.DESCRIPTION,
-					this.getDescription());
+			returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
 		}
 
 		//Historic Entry Type...
 		if (this.getHistoricEntryType() != null) {
-			returnVal.put(JSONMapping.HISTORIC_ENTRY_TYPE,
-					this.getHistoricEntryType());
+			returnVal.put(JSONMapping.HISTORIC_ENTRY_TYPE, this.getHistoricEntryType());
 		}
 
 		//User...
 		if (this.getUser() != null) {
-			returnVal.put(JSONMapping.USER,
-					this.getUser().toJsonObject());
+			returnVal.put(JSONMapping.USER, this.getUser().toJsonObject());
 		}
 
 		//Field...
 		if (this.getField() != null) {
-			returnVal.put(JSONMapping.FIELD,
-					this.getField().toJsonObject());
+			returnVal.put(JSONMapping.FIELD, this.getField().toJsonObject());
 		}
 
 		//Different from Previous...
 		if (this.getIsFieldDifferentFromPrevious() != null) {
-			returnVal.put(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS,
-					this.getIsFieldDifferentFromPrevious());
+			returnVal.put(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS, this.getIsFieldDifferentFromPrevious());
 		}
 
 		//Field type Signature...
 		if (this.getIsFieldTypeSignature() != null) {
-			returnVal.put(JSONMapping.IS_FIELD_TYPE_SIGNATURE,
-					this.getIsFieldTypeSignature());
+			returnVal.put(JSONMapping.IS_FIELD_TYPE_SIGNATURE, this.getIsFieldTypeSignature());
 		}
 
 		//Escape Text...
 		if (this.getIsEscapeText() != null) {
-			returnVal.put(
-					JSONMapping.IS_ESCAPE_TEXT,
-					this.getIsEscapeText());
+			returnVal.put(JSONMapping.IS_ESCAPE_TEXT, this.getIsEscapeText());
 		}
 
 		return returnVal;
-	}
-
-	/**
-	 * Gets Date.
-	 *
-	 * @return {@code Date} of when Historic entry.
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * Sets Date.
-	 *
-	 * @param dateParam {@code Date} of when Historic entry.
-	 */
-	public void setDate(Date dateParam) {
-		this.date = dateParam;
-	}
-
-	/**
-	 * Gets the Date and Field name.
-	 *
-	 * @return Date and Field name.
-	 */
-	public String getDateAndFieldName() {
-		return this.dateAndFieldName;
-	}
-
-	/**
-	 * Sets Date and Field name.
-	 *
-	 * @param dateAndFieldNameParam Date and Field name.
-	 */
-	public void setDateAndFieldName(String dateAndFieldNameParam) {
-		this.dateAndFieldName = dateAndFieldNameParam;
-	}
-
-	/**
-	 * Gets the Field values as {@code JSON}.
-	 *
-	 * @return JSON value of form field.
-	 */
-	public String getFormContainerFieldValuesJSON() {
-		return this.formContainerFieldValuesJSON;
-	}
-
-	/**
-	 * Sets the Field values as {@code JSON}.
-	 *
-	 * @param formContainerFieldValuesJSONParam JSON value of form field.
-	 */
-	public void setFormContainerFieldValuesJSON(String formContainerFieldValuesJSONParam) {
-		this.formContainerFieldValuesJSON = formContainerFieldValuesJSONParam;
-	}
-
-	/**
-	 * Gets the Historic Entry Type.
-	 *
-	 * @return Historic entry type.
-	 */
-	public String getHistoricEntryType() {
-		return this.historicEntryType;
-	}
-
-	/**
-	 * Sets the Historic Entry Type.
-	 *
-	 * @param historicEntryTypeParam Historic entry type.
-	 */
-	public void setHistoricEntryType(String historicEntryTypeParam) {
-		this.historicEntryType = historicEntryTypeParam;
-	}
-
-	/**
-	 * Gets whether field is different from previous.
-	 *
-	 * @return Whether record has changed value.
-	 */
-	public Boolean getIsFieldDifferentFromPrevious() {
-		return this.isFieldDifferentFromPrevious;
-	}
-
-	/**
-	 * Sets whether field is different from previous.
-	 *
-	 * @param fieldDifferentFromPreviousParam Whether record has changed value.
-	 */
-	public void setIsFieldDifferentFromPrevious(
-			Boolean fieldDifferentFromPreviousParam) {
-
-		this.isFieldDifferentFromPrevious = fieldDifferentFromPreviousParam;
-	}
-
-	/**
-	 * Gets whether field is of type signature.
-	 *
-	 * @return Whether record is of type signature.
-	 */
-	public Boolean getIsFieldTypeSignature() {
-		return this.isFieldTypeSignature;
-	}
-
-	/**
-	 * Sets whether field is of type signature.
-	 *
-	 * @param fieldTypeSignatureParam Whether record is of type signature.
-	 */
-	public void setIsFieldTypeSignature(Boolean fieldTypeSignatureParam) {
-		this.isFieldTypeSignature = fieldTypeSignatureParam;
-	}
-
-	/**
-	 * Gets whether field should be escaped.
-	 *
-	 * @return Whether field {@code HTML} should be escaped.
-	 */
-	public Boolean getIsEscapeText() {
-		return this.isEscapeText;
-	}
-
-	/**
-	 * Sets whether field should be escaped.
-	 *
-	 * @param escapeTextParam Whether field {@code HTML} should be escaped.
-	 */
-	public void setIsEscapeText(Boolean escapeTextParam) {
-		this.isEscapeText = escapeTextParam;
-	}
-
-	/**
-	 * Gets Type of Historic entry.
-	 *
-	 * @return Type of historic log entry.
-	 */
-	public String getLogEntryType() {
-		return this.logEntryType;
-	}
-
-	/**
-	 * Sets Type of Historic entry.
-	 *
-	 * @param logEntryTypeParam Type of historic log entry.
-	 */
-	public void setLogEntryType(String logEntryTypeParam) {
-		this.logEntryType = logEntryTypeParam;
-	}
-
-	/**
-	 * Gets Description.
-	 *
-	 * @return Description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * Sets Description.
-	 *
-	 * @param descriptionParam Description.
-	 */
-	public void setDescription(String descriptionParam) {
-		this.description = descriptionParam;
-	}
-
-	/**
-	 * Gets {@code User} responsible for historic entry.
-	 *
-	 * @return Person or User responsible for historic data.
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-	/**
-	 * Sets {@code User} responsible for historic entry.
-	 *
-	 * @param userParam Person or User responsible for historic data.
-	 */
-	public void setUser(User userParam) {
-		this.user = userParam;
-	}
-
-	/**
-	 * Gets {@code Field} historic entry belongs to.
-	 *
-	 * @return The {@code Field} returned.
-	 */
-	public Field getField() {
-		return this.field;
-	}
-
-	/**
-	 * Sets {@code Field} historic entry belongs to.
-	 *
-	 * @param fieldParam The {@code Field} to set.
-	 */
-	public void setField(Field fieldParam) {
-		this.field = fieldParam;
 	}
 }

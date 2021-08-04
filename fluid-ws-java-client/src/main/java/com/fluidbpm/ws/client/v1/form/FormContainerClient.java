@@ -74,13 +74,10 @@ public class FormContainerClient extends ABaseClientWS {
 		Form form,
 		boolean addToPersonalInventory
 	) {
-		if (form != null && this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
+		if (form != null) form.setServiceTicket(this.serviceTicket);
 
 		return new Form(this.putJson(
-				form,
-				WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory)));
+				form, WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory)));
 	}
 
 	/**
@@ -105,9 +102,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see TableRecord
 	 */
 	public TableRecord createTableRecord(TableRecord tableRecordParam) {
-		if (tableRecordParam != null && this.serviceTicket != null) {
-			tableRecordParam.setServiceTicket(this.serviceTicket);
-		}
+		if (tableRecordParam != null) tableRecordParam.setServiceTicket(this.serviceTicket);
 
 		return new TableRecord(this.putJson(
 				tableRecordParam,
@@ -126,12 +121,9 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Form
 	 */
 	public Form updateFormContainer(Form formParam) {
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
 
-		return new Form(this.postJson(
-				formParam, WS.Path.FormContainer.Version1.formContainerUpdate()));
+		return new Form(this.postJson(formParam, WS.Path.FormContainer.Version1.formContainerUpdate()));
 	}
 
 	/**
@@ -147,9 +139,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Form
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
-	public CustomWebAction executeCustomWebAction(
-			String customWebActionParam,
-			Form formParam) {
+	public CustomWebAction executeCustomWebAction(String customWebActionParam, Form formParam) {
 		return this.executeCustomWebAction(
 				customWebActionParam,
 				false,
@@ -200,13 +190,9 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return The deleted Form Container.
 	 */
 	public Form deleteFormContainer(Form formContainerParam) {
+		if (formContainerParam != null) formContainerParam.setServiceTicket(this.serviceTicket);
 
-		if (formContainerParam != null && this.serviceTicket != null) {
-			formContainerParam.setServiceTicket(this.serviceTicket);
-		}
-
-		return new Form(this.postJson(formContainerParam,
-				WS.Path.FormContainer.Version1.formContainerDelete()));
+		return new Form(this.postJson(formContainerParam, WS.Path.FormContainer.Version1.formContainerDelete()));
 	}
 
 	/**
@@ -218,9 +204,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return Electronic Form Workflow historic data.
 	 */
 	public List<FormFlowHistoricData> getFormFlowHistoricData(Form formParam) {
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
 
 		return new FormFlowHistoricDataListing(this.postJson(
 				formParam, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
@@ -240,9 +224,7 @@ public class FormContainerClient extends ABaseClientWS {
 		Form formParam,
 		boolean includeCurrentParam
 	) {
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
 
 		return new FormHistoricDataListing(this.postJson(
 				formParam, WS.Path.FormHistory.Version1.getByFormContainer(
@@ -260,9 +242,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return Electronic Form and Field historic data.
 	 */
 	public FormHistoricData getMostRecentFormAndFieldHistoricData(Form formParam) {
-		if (formParam != null && this.serviceTicket != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
 
 		return new FormHistoricData(this.postJson(
 				formParam, WS.Path.FormHistory.Version1.getByMostRecentByFormContainer()));
@@ -320,14 +300,10 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @see FormListing
 	 */
-	public FormListing getFormContainersByTitleContains(
-		String titleLookupText, int limit, int offset
-	) {
+	public FormListing getFormContainersByTitleContains(String titleLookupText, int limit, int offset) {
 		Form form = new Form();
 		form.setTitle(titleLookupText);
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
+		form.setServiceTicket(this.serviceTicket);
 
 		return new FormListing(this.postJson(
 				form, WS.Path.FormContainer.Version1.getByTitleContains(limit, offset)));
@@ -341,12 +317,8 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @return The locked form.
 	 */
-	public Form lockFormContainer(
-			Form formParam,
-			JobView jobViewParam
-	) {
-		return this.lockFormContainer(
-				formParam, jobViewParam, null);
+	public Form lockFormContainer(Form formParam, JobView jobViewParam) {
+		return this.lockFormContainer(formParam, jobViewParam, null);
 	}
 
 	/**
@@ -360,29 +332,18 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @return The locked form.
 	 */
-	public Form lockFormContainer(
-			Form formParam,
-			JobView jobViewParam,
-			User userToLockAsParam
-	) {
-		if (this.serviceTicket != null && formParam != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+	public Form lockFormContainer(Form formParam, JobView jobViewParam, User userToLockAsParam) {
+		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
 
-		Long jobViewId = (jobViewParam == null) ?
-				null : jobViewParam.getId();
-
-		Long lockAsUserId = (userToLockAsParam == null) ?
-				null : userToLockAsParam.getId();
+		Long jobViewId = (jobViewParam == null) ? null : jobViewParam.getId();
+		Long lockAsUserId = (userToLockAsParam == null) ? null : userToLockAsParam.getId();
 
 		try {
 			return new Form(this.postJson(
 					formParam,
 					WS.Path.FormContainer.Version1.lockFormContainer(
 							jobViewId, lockAsUserId)));
-		}
-		//rethrow as a Fluid Client exception.
-		catch (JSONException jsonExcept) {
+		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
@@ -397,8 +358,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return The un-locked form.
 	 */
 	public Form unLockFormContainer(Form formParam) {
-		return this.unLockFormContainer(
-				formParam, null,true,false);
+		return this.unLockFormContainer(formParam, null,true,false);
 	}
 
 	/**
@@ -410,11 +370,8 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @return The un-locked form.
 	 */
-	public Form unLockFormContainer(
-			Form formParam,
-			boolean unlockAsyncParam) {
-		return this.unLockFormContainer(
-				formParam, null, unlockAsyncParam, false);
+	public Form unLockFormContainer(Form formParam, boolean unlockAsyncParam) {
+		return this.unLockFormContainer(formParam, null, unlockAsyncParam, false);
 	}
 
 	/**
@@ -428,11 +385,8 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @return The un-locked form.
 	 */
-	public Form unLockFormContainer(
-			Form formParam,
-			User userToUnLockAsParam) {
-		return this.unLockFormContainer(
-				formParam, userToUnLockAsParam, true, false);
+	public Form unLockFormContainer(Form formParam, User userToUnLockAsParam) {
+		return this.unLockFormContainer(formParam, userToUnLockAsParam, true, false);
 	}
 
 	/**
@@ -448,9 +402,10 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return The un-locked form.
 	 */
 	public Form unLockFormContainer(
-			Form formParam,
-			User userToUnLockAsParam,
-			boolean unlockAsyncParam) {
+		Form formParam,
+		User userToUnLockAsParam,
+		boolean unlockAsyncParam
+	) {
 		return this.unLockFormContainer(
 				formParam,
 				userToUnLockAsParam,
@@ -475,12 +430,9 @@ public class FormContainerClient extends ABaseClientWS {
 		boolean unlockAsyncParam,
 		boolean removeFromPersonalInventoryParam
 	) {
-		if (this.serviceTicket != null && formParam != null) {
-			formParam.setServiceTicket(this.serviceTicket);
-		}
+		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
 
-		Long unLockAsUserId = (userToUnLockAsParam == null) ?
-				null : userToUnLockAsParam.getId();
+		Long unLockAsUserId = (userToUnLockAsParam == null) ? null : userToUnLockAsParam.getId();
 
 		try {
 			return new Form(this.postJson(
@@ -489,9 +441,7 @@ public class FormContainerClient extends ABaseClientWS {
 							unLockAsUserId,
 							unlockAsyncParam,
 							removeFromPersonalInventoryParam)));
-		}
-		//rethrow as a Fluid Client exception.
-		catch (JSONException jsonExcept) {
+		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}

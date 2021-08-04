@@ -244,7 +244,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		this.setFieldValue(multiChoiceParam);
 	}
 	
-	private Field(Field toClone) {
+	protected Field(Field toClone) {
 		if (toClone == null) return;
 
 		this.setId(toClone.getId());
@@ -555,7 +555,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Date getFieldValueAsDate() {
 		Object obj = this.getFieldValue();
-
 		if (obj == null) return null;
 
 		if (obj instanceof Date) {
@@ -750,14 +749,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Field Name...
-		if (this.getFieldName() != null) {
-			returnVal.put(JSONMapping.FIELD_NAME,this.getFieldName());
-		}
+		if (this.getFieldName() != null) returnVal.put(JSONMapping.FIELD_NAME,this.getFieldName());
 
 		//Field Description...
-		if (this.getFieldDescription() != null) {
-			returnVal.put(JSONMapping.FIELD_DESCRIPTION,this.getFieldDescription());
-		}
+		if (this.getFieldDescription() != null) returnVal.put(JSONMapping.FIELD_DESCRIPTION,this.getFieldDescription());
 
 		//Field Value...
 		if (this.getFieldValue() != null) {
@@ -919,9 +914,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@XmlTransient
-	public Field populateFromElasticSearchJson(
-		JSONObject jsonObjectParam
-	) throws JSONException {
+	public Field populateFromElasticSearchJson(JSONObject jsonObjectParam) throws JSONException {
 		if (this.getFieldNameAsUpperCamel() == null) return null;
 
 		String fieldIdAsString = this.getFieldNameAsUpperCamel();
@@ -1074,6 +1067,43 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	public Field clone() {
 		return new Field(this);
+	}
+
+	/**
+	 * Confirm if field values are the same.
+	 * @param field The field to match against {@code this}
+	 * @return {@code true} if {@code field.fieldName} and {@code field.fieldValue} matches {@code this}
+	 */
+	@XmlTransient
+	public boolean valueEquals(Field field) {
+		if (field == null) return false;
+
+		final String fieldName;
+		if (UtilGlobal.isBlank(fieldName = this.getFieldName())) return false;
+
+		String compareFieldName = field.getFieldName();
+		if (!fieldName.equals(compareFieldName)) return false;
+
+		Object fieldVal = this.getFieldValue();
+		Object compareFieldVal = field.getFieldValue();
+
+		if (fieldVal == null && compareFieldVal == null) return true;
+		if (fieldVal == null || compareFieldVal == null) return false;
+
+		if (!fieldVal.getClass().isAssignableFrom(compareFieldVal.getClass())) return false;
+
+		if (fieldVal instanceof String) {
+			return fieldVal.equals(compareFieldVal);
+		} else if (fieldVal instanceof Boolean) {
+			return fieldVal.equals(compareFieldVal);
+		} else if (fieldVal instanceof Date) {
+			return fieldVal.equals(compareFieldVal);
+		} else if (fieldVal instanceof Number) {
+			return fieldVal.equals(compareFieldVal);
+		} else if (fieldVal instanceof MultiChoice) {
+			MultiChoice mc = (MultiChoice)fieldVal , compareMc = (MultiChoice)compareFieldVal;
+			return mc.selectedEquals(compareMc);
+		} else return false;
 	}
 
 	/**

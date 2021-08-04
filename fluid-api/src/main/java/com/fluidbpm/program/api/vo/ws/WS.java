@@ -2343,7 +2343,6 @@ public class WS {
 			 * Mapping for frequently used HTTP parameters.
 			 */
 			public static final class QueryParam {
-
 				public static final String INCLUDE_CURRENT = "include_current";
 			}
 

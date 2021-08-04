@@ -398,4 +398,27 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	public MultiChoice getCloneMultiChoice() {
 		return this.cloneMultiChoice();
 	}
+
+	/**
+	 * Compare this multi choice selected values against {@code compareAgainst}.
+	 * 
+	 * @param compareAgainst The multi-choice to compare against.
+	 * @return {@code true} if {@code this} is equal to {@code compareAgainst}
+	 */
+	@XmlTransient
+	public boolean selectedEquals(MultiChoice compareAgainst) {
+		if (compareAgainst == null) return false;
+
+		List<String> selected = this.getSelectedMultiChoices(), compareSelected = compareAgainst.getSelectedMultiChoices();
+		if (selected != null && compareSelected != null) {
+			if (selected.size() != compareSelected.size()) return false;
+
+			for (int index = 0;index < selected.size();index++) {
+				if (!selected.get(index).equals(compareSelected.get(index))) return false;
+			}
+			return true;
+		} else if (this.getSelectedMultiChoice() != null && compareAgainst.getSelectedMultiChoice() != null) {
+			return this.getSelectedMultiChoice().equals(compareAgainst.getSelectedMultiChoice());
+		} else return false;
+	}
 }
