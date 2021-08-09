@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.vo.historic;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,6 +86,11 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	@Setter
 	private Field field;
 
+	//------------- For Create -------------//
+	@Getter
+	@Setter
+	private Form formForAuditCreate;
+
 	//------------- Static Labels -------------//
 	private static final String CURRENT_LABEL = "Current";
 	private static final String CURRENT_DESC = "The most recent field values for the form.";
@@ -93,8 +99,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	/**
 	 * The type of {@code Form} log entry.
 	 */
-	public static class HistoricEntryType{
-
+	public static class HistoricEntryType {
 		public static final String NULL = "Null";
 		public static final String FORM_CONTAINER = "FormContainer";
 		public static final String FORM_CONTAINER_LOG_ENTRY = "FormContainerLogEntry";
@@ -113,6 +118,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 		public static final String DESCRIPTION = "description";
 		public static final String HISTORIC_ENTRY_TYPE = "historicEntryType";
 		public static final String USER = "user";
+		public static final String FORM_FOR_AUDIT_CREATE = "formForAuditCreate";
 		public static final String FIELD = "field";
 
 		public static final String IS_FIELD_DIFFERENT_FROM_PREVIOUS = "isFieldDifferentFromPrevious";
@@ -168,6 +174,11 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 		//User...
 		if (!this.jsonObject.isNull(JSONMapping.USER)) {
 			this.setUser(new User(this.jsonObject.getJSONObject(JSONMapping.USER)));
+		}
+
+		//Form for Audit Create...
+		if (!this.jsonObject.isNull(JSONMapping.FORM_FOR_AUDIT_CREATE)) {
+			this.setFormForAuditCreate(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM_FOR_AUDIT_CREATE)));
 		}
 
 		//Field...
@@ -256,6 +267,11 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 		//Escape Text...
 		if (this.getIsEscapeText() != null) {
 			returnVal.put(JSONMapping.IS_ESCAPE_TEXT, this.getIsEscapeText());
+		}
+
+		//Form for Audit Create...
+		if (this.getFormForAuditCreate() != null) {
+			returnVal.put(JSONMapping.FORM_FOR_AUDIT_CREATE, this.getFormForAuditCreate().toJsonObject());
 		}
 
 		return returnVal;

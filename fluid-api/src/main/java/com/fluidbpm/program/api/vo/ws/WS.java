@@ -2351,6 +2351,7 @@ public class WS {
 			 */
 			public static final class Version1 {
 				public static final String ROOT = ("/form_history");
+				public static final String CREATE = ("/");
 
 				//Read...
 				public static final String BY_FORM_CONTAINER = ("/get_by_form_container");
@@ -2364,6 +2365,15 @@ public class WS {
 				@Override
 				public String toString() {
 					return ROOT;
+				}
+
+				/**
+				 * URL Path for Electronic Form History create.
+				 *
+				 * @return {@code v1/form_history/}
+				 */
+				public static final String formHistoryCreate() {
+					return Version.VERSION_1.concat(ROOT).concat(CREATE);
 				}
 
 				/**

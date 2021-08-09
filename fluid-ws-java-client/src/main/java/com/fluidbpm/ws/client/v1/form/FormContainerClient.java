@@ -94,6 +94,20 @@ public class FormContainerClient extends ABaseClientWS {
 	}
 
 	/**
+	 * Create a new history record for a {@code Form}.
+	 *
+	 * @param formHistory The FormHistoricData to create.
+	 * @return Created Form Historic Data.
+	 *
+	 * @see FormHistoricData
+	 */
+	public FormHistoricData createFormHistoricData(FormHistoricData formHistory) {
+		if (formHistory != null) formHistory.setServiceTicket(this.serviceTicket);
+
+		return new FormHistoricData(this.putJson(formHistory, WS.Path.FormHistory.Version1.formHistoryCreate()));
+	}
+
+	/**
 	 * Create a new Table Record.
 	 *
 	 * @param tableRecordParam The Table Record to create.

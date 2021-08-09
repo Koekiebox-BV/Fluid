@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
+import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -154,10 +155,49 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 		Form deletedForm = formContainerClient.deleteFormContainer(updatedForm);
 
-		TestCase.assertNotNull("The 'Form Container' needs to be set.",
-				deletedForm);
-		TestCase.assertNotNull("The 'Form Container Id' needs to be set.",
-				deletedForm.getId());
+		TestCase.assertNotNull("The 'Form Container' needs to be set.", deletedForm);
+		TestCase.assertNotNull("The 'Form Container Id' needs to be set.", deletedForm.getId());
+	}
+
+	@Test
+	public void testCRUDFormContainerBasicWithCustomHistory() {
+		if (!this.isConnectionValid()) return;
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+
+		FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+		//1. Form...
+		Form toCreate = new Form(TestStatics.FORM_DEFINITION);
+		toCreate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
+
+		List<Field> fields = new ArrayList();
+		fields.add(new Field(TestStatics.FieldName.EMAIL_FROM_ADDRESS, "zapper@zool.com"));
+		fields.add(new Field(TestStatics.FieldName.EMAIL_TO_ADDRESS, "pateldream@correct.com"));
+		fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject..."));
+
+		toCreate.setFormFields(fields);
+
+		//Create...
+		Form createdForm = formContainerClient.createFormContainer(toCreate);
+
+		TestCase.assertNotNull("The 'Form Container' needs to be set.", createdForm);
+		TestCase.assertNotNull("The 'Form Container Id' needs to be set.", createdForm.getId());
+		TestCase.assertNotNull("The 'Form Fields' needs to be set.", createdForm.getFormFields());
+		TestCase.assertEquals("The number of 'Form Fields' is not equal.", 3, createdForm.getFormFields().size());
+
+		//Create a history record...
+		FormHistoricData historicData = new FormHistoricData();
+		historicData.setFormForAuditCreate(createdForm);
+
+		historicData = formContainerClient.createFormHistoricData(historicData);
+		TestCase.assertNotNull("The 'History' needs to be set.", historicData);
+		TestCase.assertNotNull("The 'History Id' needs to be set.", historicData.getId());
+
+		formContainerClient.deleteFormContainer(createdForm);
 	}
 
 	@Test
