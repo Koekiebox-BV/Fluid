@@ -132,6 +132,18 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	public FormHistoricData() {
 		super();
 	}
+	
+	/**
+	 * Default constructor.
+	 */
+	public FormHistoricData(
+		Form fluidFormAuditData,
+		Date auditDate
+	) {
+		this();
+		this.setFormForAuditCreate(fluidFormAuditData);
+		this.setDate(auditDate);
+	}
 
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.

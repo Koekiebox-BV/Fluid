@@ -285,8 +285,35 @@ public class TestFormContainerClient extends ABaseTestCase {
 		Form freshFetchById = formContainerClient.getFormContainerById(createdForm.getId());
 
 		System.out.println(freshFetchById.getTitle());
-		System.out.println("-- ENC-FIELD-VAL --> "+
-				freshFetchById.getFieldValueAsString("Sample Encrypt Field"));
+		System.out.println("-- ENC-FIELD-VAL --> "+ freshFetchById.getFieldValueAsString("Sample Encrypt Field"));
+	}
+
+	@Test
+	@Ignore
+	public void testCRUDFormContainerWithEncryptedFieldHistory() {
+		if (!this.isConnectionValid()) return;
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		String serviceTicket = appRequestToken.getServiceTicket();
+
+		FormContainerClient fcClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+		Form historicOnly = new Form("Modify Customer Request", "Modify The Customer Audit Log");
+		historicOnly.setId(16L);
+		historicOnly.setFieldValue("Customer ID", "Cust091212112", Field.Type.Text);
+		historicOnly.setFieldValue("C1 First Name", "Sally", Field.Type.Text);
+		historicOnly.setFieldValue("National ID Number", "NID1212121212", Field.Type.TextEncrypted);
+		historicOnly.setFieldValue("Issuer", new MultiChoice(""), Field.Type.MultipleChoice);
+		historicOnly.setFieldValue("Date of Birth", new Date(System.currentTimeMillis() - TimeUnit.MILLISECONDS.toDays(300)), Field.Type.DateTime);
+
+		FormHistoricData historicData = new FormHistoricData();
+		historicData.setFormForAuditCreate(historicOnly);
+		//60 mins ago...
+		historicData.setDate(new Date(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(60)));
+
+		fcClient.createFormHistoricData(historicData);
 	}
 
 	@Test

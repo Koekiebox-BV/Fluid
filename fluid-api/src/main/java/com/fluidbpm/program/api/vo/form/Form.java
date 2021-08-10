@@ -332,6 +332,18 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
+	 * Constructor that also sets The Form Definition and Form Instance Title
+	 * associated with the {@code Form}.
+	 *
+	 * @param formType The Form Definition.
+	 * @param title The Form instance Title.
+	 */
+	public Form(String formType, String title) {
+		this.setFormType(formType);
+		this.setTitle(title);
+	}
+
+	/**
 	 * <p>
 	 *     Returns the value of the {@code fieldNameParam} requested.
 	 *
