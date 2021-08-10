@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -43,6 +44,9 @@ import java.util.zip.ZipInputStream;
  * @since 1.0
  */
 public class UtilGlobal {
+	private static String FLUID_WS_URL = "http://localhost:80/fluid-ws/";
+	private static String FLUID_CONFIG_USER = "admin";
+	private static String FLUID_CONFIG_USER_PASSWORD = "12345";
 
 	/**
 	 * Raygun API key for error tracking.
@@ -577,5 +581,60 @@ public class UtilGlobal {
 	public static byte[] readFileBytes(File fileToRead) throws IOException {
 		if (fileToRead == null) return null;
 		return Files.readAllBytes(fileToRead.toPath());
+	}
+
+	/**
+	 * Retrieve the value of the {@code FLUID_WS_URL} property.
+	 * @param existing Existing properties to attempt to retrieve from.
+	 * @return property value for {@code FLUID_WS_URL}
+	 */
+	public static String getConfigURLFromSystemProperty(Properties existing) {
+		return UtilGlobal.getProperty(
+				existing,
+				"FLUID_WS_URL",
+				FLUID_WS_URL);
+	}
+
+	/**
+	 * Retrieve the value of the {@code CONFIG_USER} property.
+	 * @param existing Existing properties to attempt to retrieve from.
+	 * @return property value for {@code CONFIG_USER}
+	 */
+	public static String getConfigUserProperty(Properties existing) {
+		return UtilGlobal.getProperty(
+				existing,
+				"CONFIG_USER",
+				FLUID_CONFIG_USER);
+	}
+
+	/**
+	 * Retrieve the value of the {@code CONFIG_USER_PASSWORD} property.
+	 * @param existing Existing properties to attempt to retrieve from.
+	 * @return property value for {@code CONFIG_USER_PASSWORD}
+	 */
+	public static String getConfigUserPasswordProperty(Properties existing) {
+		return UtilGlobal.getProperty(
+				existing,
+				"CONFIG_USER_PASSWORD",
+				FLUID_CONFIG_USER_PASSWORD);
+	}
+
+	private static String getProperty(
+			Properties existing,
+			String name,
+			String defaultVal
+	) {
+		//From provided properties...
+		if (existing != null) {
+			String val = existing.getProperty(name);
+			if (val != null && !val.trim().isEmpty()) return val;
+		}
+
+		//From System Properties...
+		String val = System.getProperties().getProperty(name);
+		if (val != null && !val.trim().isEmpty()) return val;
+
+		//From System...
+		return System.getProperty(name, defaultVal);
 	}
 }
