@@ -103,6 +103,7 @@ public abstract class ABaseFieldClient extends ABaseClientWS {
 		public static final class ParagraphText {
 			public static final String PLAIN = "Plain";
 			public static final String HTML = "HTML";
+			public static final String SIGNATURE = "Signature";
 		}
 
 		/**

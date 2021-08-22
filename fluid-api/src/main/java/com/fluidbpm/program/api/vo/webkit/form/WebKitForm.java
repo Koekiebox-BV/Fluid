@@ -38,7 +38,9 @@ import java.util.List;
 @Setter
 public class WebKitForm extends ABaseFluidJSONObject {
 	private Form form;
-	private String inputLayout = InputLayout.VERTICAL;
+	private String inputLayout = InputLayout.VERTICAL;//vertical / advanced
+	//The [webKitFormLayoutAdvances] is only applicable for [inputLayout] value 'advanced'.
+	private List<WebKitFormLayoutAdvance> layoutAdvances;
 	
 	private boolean displayFormDescription;
 	private boolean displayFieldDescription;
@@ -168,6 +170,16 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.CREATE_NEW_INSTANCE_GROUP))
 			this.setCreateNewInstanceGroup(this.jsonObject.getString(JSONMapping.CREATE_NEW_INSTANCE_GROUP));
+
+		this.setLayoutAdvances(new ArrayList<>());
+		if (!this.jsonObject.isNull(JSONMapping.LAYOUT_ADVANCES)) {
+			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.LAYOUT_ADVANCES);
+			List<WebKitFormLayoutAdvance> objs = new ArrayList();
+			for (int index = 0; index < jsonArray.length(); index++) {
+				objs.add(new WebKitFormLayoutAdvance(jsonArray.getJSONObject(index)));
+			}
+			this.setLayoutAdvances(objs);
+		}
 	}
 
 	/**
@@ -175,7 +187,6 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 */
 	public static final class InputLayout {
 		public static final String VERTICAL = "vertical";
-		public static final String HORIZONTAL = "horizontal";
 		public static final String ADVANCED = "advanced";
 	}
 
@@ -211,6 +222,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
 		public static final String ENABLE_FORM_FIELD_HISTORY = "enableFormFieldHistory";
+		public static final String LAYOUT_ADVANCES = "layoutAdvances";
 	}
 
 	/**
@@ -275,6 +287,12 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.MANDATORY_FIELDS, mandatoryFields);
 		}
 
+		JSONArray arrAdvances = new JSONArray();
+		if (this.getLayoutAdvances() != null) {
+			for (WebKitFormLayoutAdvance toAdd : this.getLayoutAdvances()) arrAdvances.put(toAdd.toJsonObject());
+		}
+		returnVal.put(JSONMapping.LAYOUT_ADVANCES, arrAdvances);
+
 		returnVal.put(JSONMapping.LOCK_FORM_ON_OPEN, this.isLockFormOnOpen());
 		returnVal.put(JSONMapping.UNLOCK_FORM_ON_SAVE, this.isUnlockFormOnSave());
 		returnVal.put(JSONMapping.SEND_ON_AFTER_SAVE, this.isSendOnAfterSave());
@@ -333,6 +351,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		return this.getMandatoryFields().contains(fieldName);
 	}
 
+	/**
+	 * {@code String} representation of {@code this} object.
+	 *
+	 * @return {@code super #toString}
+	 */
 	@Override
 	public String toString() {
 		return super.toString();

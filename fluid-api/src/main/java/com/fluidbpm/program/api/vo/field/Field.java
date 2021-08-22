@@ -169,41 +169,53 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	/**
 	 * Constructor to set the Id, Field Name, Value and Type.
 	 *
-	 * @param fieldIdParam Field Id.
-	 * @param fieldNameParam Sets Field Name.
-	 * @param fieldValueParam Sets Field Value.
-	 * @param fieldTypeParam Sets Field Type.
+	 * @param fieldId Field Id.
+	 * @param fieldName Sets Field Name.
+	 * @param fieldValue Sets Field Value.
+	 * @param fieldType Sets Field Type.
 	 */
 	public Field(
-		Long fieldIdParam,
-		String fieldNameParam,
-		Object fieldValueParam,
-		Type fieldTypeParam
+		Long fieldId,
+		String fieldName,
+		Object fieldValue,
+		Type fieldType
 	) {
-		this(fieldIdParam);
-		this.setFieldName(fieldNameParam);
-		this.setTypeAsEnum(fieldTypeParam);
-		this.setFieldValue(fieldValueParam);
+		this(fieldId);
+		this.setFieldName(fieldName);
+		this.setTypeAsEnum(fieldType);
+		this.setFieldValue(fieldValue);
+	}
+
+	/**
+	 * Sets the Id and name associated with a Field.
+	 *
+	 * @param fieldId Field Id.
+	 * @param fieldName Field Name.
+	 */
+	public Field(Long fieldId, String fieldName) {
+		super();
+		this.setId(fieldId);
+		this.setFieldName(fieldName);
 	}
 
 	/**
 	 * Sets the Id associated with a Field.
 	 *
-	 * @param fieldIdParam Field Id.
+	 * @param fieldId Field Id.
 	 */
-	public Field(Long fieldIdParam) {
+	public Field(Long fieldId) {
 		super();
-		this.setId(fieldIdParam);
+		this.setId(fieldId);
 	}
 
 	/**
 	 * Sets the Name associated with a Field.
 	 *
-	 * @param fieldNameParam Field Name.
+	 * @param fieldName Field Name.
 	 */
-	public Field(String fieldNameParam) {
+	public Field(String fieldName) {
 		super();
-		this.setFieldName(fieldNameParam);
+		this.setFieldName(fieldName);
 	}
 
 	/**

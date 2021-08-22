@@ -134,7 +134,10 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	}
 	
 	/**
-	 * Default constructor.
+	 * Instance with audit data and date.
+	 * 
+	 * @param fluidFormAuditData The {@code Form} audit data.
+	 * @param auditDate The date the audit needs to be logged as.
 	 */
 	public FormHistoricData(
 		Form fluidFormAuditData,

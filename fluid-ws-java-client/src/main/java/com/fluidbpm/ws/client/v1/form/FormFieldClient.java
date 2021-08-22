@@ -179,6 +179,8 @@ public class FormFieldClient extends ABaseFieldClient {
 					return this.createFieldParagraphTextPlain(formFieldParam);
 				} else if (FieldMetaData.ParagraphText.HTML.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldParagraphTextHTML(formFieldParam);
+				} else if (FieldMetaData.ParagraphText.SIGNATURE.toLowerCase().equals(metaDataLower)) {
+					return this.createFieldParagraphTextSignature(formFieldParam);
 				}
 				throw new FluidClientException(
 						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
@@ -475,8 +477,26 @@ public class FormFieldClient extends ABaseFieldClient {
 			formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.HTML);
 		}
 
-		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+	}
+
+	/**
+	 * Create a new Paragraph Signature field.
+	 *
+	 * @param formFieldParam Field to Create.
+	 * @return Created Field.
+	 */
+	public Field createFieldParagraphTextSignature(Field formFieldParam) {
+		if (formFieldParam != null && this.serviceTicket != null) {
+			formFieldParam.setServiceTicket(this.serviceTicket);
+		}
+
+		if (formFieldParam != null) {
+			formFieldParam.setTypeAsEnum(Field.Type.ParagraphText);
+			formFieldParam.setTypeMetaData(FieldMetaData.ParagraphText.SIGNATURE);
+		}
+
+		return new Field(this.putJson(formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
