@@ -44,6 +44,15 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Set the field.
+	 * @param field The field to set for advance.
+	 */
+	public WebKitFormLayoutAdvance(Field field) {
+		this();
+		this.setField(field);
+	}
+
+	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
 	 * @param jsonObjectParam The JSON Object.

@@ -18,6 +18,7 @@ package com.fluidbpm.program.api.vo.webkit.form;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.exception.UtilException;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,9 +76,56 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private boolean enableFormFieldHistory;
 
 	public static final String EMAIL_FORM_TYPE = "Email";
+
+	/**
+	 * The type of InputLayout.
+	 */
+	public static final class InputLayout {
+		public static final String VERTICAL = "vertical";
+		public static final String ADVANCED = "advanced";
+	}
+
+	/**
+	 * The JSON mapping for the {@code WebKitForm} object.
+	 */
+	public static class JSONMapping {
+		public static final String FORM = "form";
+		public static final String INPUT_LAYOUT = "inputLayout";
+
+		public static final String DISPLAY_FORM_DESCRIPTION = "displayFormDescription";
+		public static final String DISPLAY_FIELD_DESCRIPTION = "displayFieldDescription";
+
+		public static final String ATTACHMENT_SIZE = "attachmentSize";
+		public static final String ATTACHMENT_DISPLAY_LOCATION = "attachmentDisplayLocation";
+		public static final String ATTACHMENT_DISPLAY_TYPE = "attachmentDisplayType";
+
+		public static final String DISPLAY_WIDTH = "displayWidth";
+		public static final String DISPLAY_HEIGHT = "displayHeight";
+
+		public static final String VISIBLE_SECTIONS = "visibleSections";
+		public static final String VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR = "visibleSectionsDisplayBehaviour";
+		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
+		public static final String MANDATORY_FIELDS = "mandatoryFields";
+
+		public static final String LOCK_FORM_ON_OPEN = "lockFormOnOpen";
+		public static final String UNLOCK_FORM_ON_SAVE = "unlockFormOnSave";
+		public static final String SEND_ON_AFTER_SAVE = "sendOnAfterSave";
+		public static final String SEND_TO_WORKFLOW_AFTER_CREATE = "sendToWorkflowAfterCreate";
+		public static final String NEW_FORM_TITLE_FORMULA = "newFormTitleFormula";
+		public static final String CREATE_NEW_INSTANCE_ICON = "createNewInstanceIcon";
+		public static final String CREATE_NEW_INSTANCE_GROUP = "createNewInstanceGroup";
+
+		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
+		public static final String ENABLE_FORM_FIELD_HISTORY = "enableFormFieldHistory";
+		public static final String LAYOUT_ADVANCES = "layoutAdvances";
+	}
+
+	/**
+	 * Email WebKit form.
+	 * @return {@code WebKitForm} for Email form type.
+	 */
 	public static WebKitForm emailWebKitForm() {
-		WebKitForm webKitEmail = new WebKitForm(new JSONObject());
-		return webKitEmail;
+		return new WebKitForm(new JSONObject());
 	}
 
 	/**
@@ -180,49 +228,6 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			}
 			this.setLayoutAdvances(objs);
 		}
-	}
-
-	/**
-	 * The type of InputLayout.
-	 */
-	public static final class InputLayout {
-		public static final String VERTICAL = "vertical";
-		public static final String ADVANCED = "advanced";
-	}
-
-	/**
-	 * The JSON mapping for the {@code WebKitForm} object.
-	 */
-	public static class JSONMapping {
-		public static final String FORM = "form";
-		public static final String INPUT_LAYOUT = "inputLayout";
-
-		public static final String DISPLAY_FORM_DESCRIPTION = "displayFormDescription";
-		public static final String DISPLAY_FIELD_DESCRIPTION = "displayFieldDescription";
-
-		public static final String ATTACHMENT_SIZE = "attachmentSize";
-		public static final String ATTACHMENT_DISPLAY_LOCATION = "attachmentDisplayLocation";
-		public static final String ATTACHMENT_DISPLAY_TYPE = "attachmentDisplayType";
-
-		public static final String DISPLAY_WIDTH = "displayWidth";
-		public static final String DISPLAY_HEIGHT = "displayHeight";
-
-		public static final String VISIBLE_SECTIONS = "visibleSections";
-		public static final String VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR = "visibleSectionsDisplayBehaviour";
-		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
-		public static final String MANDATORY_FIELDS = "mandatoryFields";
-
-		public static final String LOCK_FORM_ON_OPEN = "lockFormOnOpen";
-		public static final String UNLOCK_FORM_ON_SAVE = "unlockFormOnSave";
-		public static final String SEND_ON_AFTER_SAVE = "sendOnAfterSave";
-		public static final String SEND_TO_WORKFLOW_AFTER_CREATE = "sendToWorkflowAfterCreate";
-		public static final String NEW_FORM_TITLE_FORMULA = "newFormTitleFormula";
-		public static final String CREATE_NEW_INSTANCE_ICON = "createNewInstanceIcon";
-		public static final String CREATE_NEW_INSTANCE_GROUP = "createNewInstanceGroup";
-
-		public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
-		public static final String ENABLE_FORM_FIELD_HISTORY = "enableFormFieldHistory";
-		public static final String LAYOUT_ADVANCES = "layoutAdvances";
 	}
 
 	/**
@@ -351,6 +356,82 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		return this.getMandatoryFields().contains(fieldName);
 	}
 
+	/**
+	 * Indicate whether the attachment type is {@code none}
+	 *
+	 * @return {@code true} If field {@code fieldName} is mandatory, otherwise {@code false}.
+	 */
+	@XmlTransient
+	public boolean isAttachmentDisplayLocationNone() {
+		if (this.getAttachmentDisplayLocation() == null) return true;
+
+		return this.getAttachmentDisplayLocation().equalsIgnoreCase("none");
+	}
+
+	/**
+	 * Indicate whether the [inputLayout] is {@code advanced}.
+	 *
+	 * @return {@code true} If [inputLayout] is {@code advanced}, otherwise {@code false}.
+	 */
+	@XmlTransient
+	public boolean isInputLayoutAdvanced() {
+		if (this.getInputLayout() == null) return false;
+
+		return this.getInputLayout().equalsIgnoreCase(InputLayout.ADVANCED);
+	}
+
+	/**
+	 * Locates the {@code WebKitFormLayoutAdvance} based on {@code field#getFieldName}.
+	 *
+	 * @param field The field to retrieve the advanced properties for.
+	 * @return {@code WebKitFormLayoutAdvance} for field {@code field}.
+	 */
+	@XmlTransient
+	public WebKitFormLayoutAdvance retrieveLayoutAdvanceForField(Field field) {
+		if (this.getLayoutAdvances() == null) return null;
+
+		String name = field.getFieldName();
+		if (UtilGlobal.isBlank(name)) return null;
+
+		return this.getLayoutAdvances().stream()
+				.filter(itm -> itm.getField() != null)
+				.filter(itm -> name.equalsIgnoreCase(itm.getField().getFieldName()))
+				.findFirst()
+				.orElse(null);
+	}
+
+	/**
+	 * Text representation for advanced layout properties.
+	 * 
+	 * @return {@code String} for {@code layoutAdvances}.
+	 */
+	@XmlTransient
+	public String getToStringLayoutAdvances() {
+		if (this.getLayoutAdvances() == null || this.getLayoutAdvances().isEmpty()) return "[None]";
+
+		StringBuilder returnVal = new StringBuilder();
+		this.getLayoutAdvances().stream()
+				.forEach(itm -> {
+					returnVal.append(String.format("'%s' = %d\n", itm.getField().getFieldName(), itm.getColSpan()));
+				});
+		return returnVal.toString();
+	}
+
+	/**
+	 * Text representation for mandatory fields.
+	 *
+	 * @return {@code String} for {@code layoutAdvances}.
+	 */
+	@XmlTransient
+	public String getToStringMandatoryFields() {
+		if (this.getMandatoryFields() == null || this.getMandatoryFields().isEmpty()) return "[None]";
+
+		StringBuilder returnVal = new StringBuilder();
+		this.getMandatoryFields().stream()
+				.forEach(itm -> returnVal.append(String.format("%s\n", itm)));
+		return returnVal.toString();
+	}
+	
 	/**
 	 * {@code String} representation of {@code this} object.
 	 *
