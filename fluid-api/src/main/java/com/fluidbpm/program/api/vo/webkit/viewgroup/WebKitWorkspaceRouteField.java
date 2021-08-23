@@ -36,7 +36,9 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	private Field routeField;
 
 	private int fieldOrder;
-	private String additionalFormatting;//FIXME [displayLabelAsBanner|fontWeight]
+	private boolean grouped;
+	private String cssStyle;
+	private String cssClass;
 
 	@XmlTransient
 	private boolean selected;
@@ -47,6 +49,9 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	public static class JSONMapping {
 		public static final String ROUTE_FIELD = "routeField";
 		public static final String FIELD_ORDER = "fieldOrder";
+		public static final String GROUPED = "grouped";
+		public static final String CSS_STYLE = "cssStyle";
+		public static final String CSS_CLASS = "cssClass";
 	}
 
 	public WebKitWorkspaceRouteField() {
@@ -60,9 +65,7 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	 */
 	public WebKitWorkspaceRouteField(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELD)) {
 			this.setRouteField(new Field(this.jsonObject.getJSONObject(JSONMapping.ROUTE_FIELD)));
@@ -70,6 +73,18 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.FIELD_ORDER)) {
 			this.setFieldOrder(this.jsonObject.getInt(JSONMapping.FIELD_ORDER));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.CSS_CLASS)) {
+			this.setCssClass(this.jsonObject.getString(JSONMapping.CSS_CLASS));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.CSS_STYLE)) {
+			this.setCssStyle(this.jsonObject.getString(JSONMapping.CSS_STYLE));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.GROUPED)) {
+			this.setGrouped(this.jsonObject.getBoolean(JSONMapping.GROUPED));
 		}
 	}
 
@@ -99,6 +114,15 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 		}
 
 		returnVal.put(JSONMapping.FIELD_ORDER, this.getFieldOrder());
+		returnVal.put(JSONMapping.GROUPED, this.isGrouped());
+
+		if (this.getCssClass() != null) {
+			returnVal.put(JSONMapping.CSS_CLASS, this.getCssClass());
+		}
+
+		if (this.getCssStyle() != null) {
+			returnVal.put(JSONMapping.CSS_STYLE, this.getCssStyle());
+		}
 
 		return returnVal;
 	}
@@ -120,7 +144,6 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public Long getId() {
-		return (this.routeField == null) ? null :
-				this.routeField.getId();
+		return (this.routeField == null) ? null : this.routeField.getId();
 	}
 }
