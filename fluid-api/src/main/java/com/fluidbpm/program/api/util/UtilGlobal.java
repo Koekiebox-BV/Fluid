@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.util;
 
+import com.fluidbpm.program.api.util.exception.UtilException;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
@@ -30,10 +31,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -47,6 +45,8 @@ public class UtilGlobal {
 	private static String FLUID_WS_URL = "http://localhost:80/fluid-ws/";
 	private static String FLUID_CONFIG_USER = "admin";
 	private static String FLUID_CONFIG_USER_PASSWORD = "12345";
+
+	private static String JSON_LINES = "lines";
 
 	/**
 	 * Raygun API key for error tracking.
@@ -549,7 +549,9 @@ public class UtilGlobal {
 		if (list == null) return null;
 
 		JSONArray jsonArray = new JSONArray();
+
 		for (T toAdd :list) jsonArray.put(toAdd.toJsonObject());
+
 		return jsonArray;
 	}
 
@@ -619,10 +621,54 @@ public class UtilGlobal {
 				FLUID_CONFIG_USER_PASSWORD);
 	}
 
+	/**
+	 * Creates an SVG XML image from {@code signature}.
+	 *
+	 * @param signature The signature JSON data.
+	 * @param width The width of the image.
+	 * @param height The height of the image.
+	 * @return SVG data as text.
+	 */
+	public static String toSvg(String signature, int width, int height) {
+
+		JSONObject jsonObj = new JSONObject(signature);
+		if (!jsonObj.has(JSON_LINES)) throw new UtilException("Signature does not have any lines.", UtilException.ErrorCode.GENERAL);
+
+		JSONArray jsonArr = jsonObj.getJSONArray(JSON_LINES);
+
+		final List<String> paths = new ArrayList<>();
+		jsonArr.forEach(line -> paths.add(toSvgPath(line)));
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("<svg width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\">\n", width, height));
+		paths.forEach(sb::append);
+		sb.append("</svg>");
+
+		return sb.toString();
+	}
+
+	private static String toSvgPath(Object line) {
+		StringBuilder sb = new StringBuilder("<path d=\"");
+
+		if (line instanceof JSONArray) {
+			JSONArray lineCasted = (JSONArray)line;
+			for (int index = 0; index < lineCasted.length(); index++) {
+				JSONArray coords = lineCasted.getJSONArray(index);
+				sb.append(String.format("%s%s %s ",
+						(index == 0 ? "M" : "L"),
+						coords.getDouble(0),
+						coords.getDouble(1)));
+			}
+		}
+		
+		sb.append("\" stroke=\"black\" fill=\"white\"/>\n");
+		return sb.toString();
+	}
+
 	private static String getProperty(
-			Properties existing,
-			String name,
-			String defaultVal
+		Properties existing,
+		String name,
+		String defaultVal
 	) {
 		//From provided properties...
 		if (existing != null) {

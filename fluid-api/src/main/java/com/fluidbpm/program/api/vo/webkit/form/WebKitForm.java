@@ -138,10 +138,10 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
-	 * @param jsonObjectParam The JSON Object.
+	 * @param jsonObject The JSON Object.
 	 */
-	public WebKitForm(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
+	public WebKitForm(JSONObject jsonObject) {
+		super(jsonObject);
 		if (this.jsonObject == null) return;
 
 		if (!this.jsonObject.isNull(JSONMapping.FORM))
@@ -228,6 +228,16 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			}
 			this.setLayoutAdvances(objs);
 		}
+	}
+
+	/**
+	 * Set the WebKit txt as well as the {@code Form}.
+	 * @param jsonObject The WebKit JSONObject.
+	 * @param form The Fluid {@code Form}.
+	 */
+	public WebKitForm(JSONObject jsonObject, Form form) {
+		this(jsonObject);
+		this.setForm(form);
 	}
 
 	/**

@@ -824,7 +824,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
 
-
 		//Current User...
 		if (this.getCurrentUser() != null) returnVal.put(JSONMapping.CURRENT_USER, this.getCurrentUser().toJsonObject());
 
