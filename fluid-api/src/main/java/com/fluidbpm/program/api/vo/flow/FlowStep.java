@@ -143,6 +143,12 @@ public class FlowStep extends ABaseFluidJSONObject {
 			public static final String CloneAttachments = "CloneAttachments";
 			public static final String SendCloneTo = "SendCloneTo";
 			public static final String DestinationForm = "DestinationForm";
+
+			//Document Template...
+			public static final String FilenamePatternOutput = "FilenamePatternOutput";
+			public static final String UserQueryTemplateLookup = "UserQueryTemplateLookup";
+			public static final String ContentTypeTemplate = "ContentTypeTemplate";
+			public static final String ContentTypeOutput = "ContentTypeOutput";
 		}
 
 		/**

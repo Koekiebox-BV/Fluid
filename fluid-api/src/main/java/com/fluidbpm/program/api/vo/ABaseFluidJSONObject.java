@@ -41,6 +41,9 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	@XmlTransient
 	protected JSONObject jsonObject;
 
+	@XmlTransient
+	public boolean jsonIncludeAll = false;
+
 	private static SimpleDateFormat DATE_FORMAT_001 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	private static SimpleDateFormat DATE_FORMAT_002 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	private static SimpleDateFormat DATE_FORMAT_003 = new SimpleDateFormat("h:mma");

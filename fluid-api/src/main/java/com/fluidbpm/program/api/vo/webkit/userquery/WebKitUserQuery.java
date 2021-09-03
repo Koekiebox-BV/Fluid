@@ -245,8 +245,13 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.PAGINATOR_ROWS, this.getPaginatorRows());
 
 		if (this.getUserQuery() != null) {
-			UserQuery reduced = new UserQuery(this.getUserQuery().getId());
-			returnVal.put(JSONMapping.USER_QUERY, reduced.toJsonObject());
+			if (this.jsonIncludeAll) {
+				returnVal.put(JSONMapping.USER_QUERY, this.getUserQuery().toJsonObject());
+			} else {
+				UserQuery reduced = new UserQuery(this.getUserQuery().getId());
+				reduced.setName(this.getUserQuery().getName());
+				returnVal.put(JSONMapping.USER_QUERY, reduced.toJsonObject());
+			}
 		}
 
 		if (this.getMenuItem() != null) {
@@ -254,8 +259,9 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.MENU_ITEM, reduced.toJsonObject());
 		}
 
-		if (this.getRowExpansion() != null) returnVal.put(
-				JSONMapping.ROW_EXPANSION, this.getRowExpansion().toJsonObject());
+		if (this.getRowExpansion() != null) {
+			returnVal.put(JSONMapping.ROW_EXPANSION, this.getRowExpansion().toJsonObject());
+		}
 
 		return returnVal;
 	}

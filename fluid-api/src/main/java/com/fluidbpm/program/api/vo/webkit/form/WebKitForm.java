@@ -257,10 +257,14 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		if (this.getForm() != null) {
-			Form reducedForm = new Form(this.getForm().getId());
-			reducedForm.setFormType(this.getForm().getFormType());
-			reducedForm.setFormTypeId(this.getForm().getFormTypeId());
-			returnVal.put(JSONMapping.FORM, reducedForm.toJsonObject());
+			if (this.jsonIncludeAll) {
+				returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
+			} else {
+				Form reducedForm = new Form(this.getForm().getId());
+				reducedForm.setFormType(this.getForm().getFormType());
+				reducedForm.setFormTypeId(this.getForm().getFormTypeId());
+				returnVal.put(JSONMapping.FORM, reducedForm.toJsonObject());
+			}
 		}
 
 		returnVal.put(JSONMapping.INPUT_LAYOUT, this.getInputLayout());
