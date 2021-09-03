@@ -31,7 +31,7 @@ Components include;
 1. Clone the repo: `git clone git@github.com:Koekiebox-PTY-LTD/Fluid.git` 
 2. Install [Maven](https://maven.apache.org/install.html).
 3. Navigate to local project folder: `cd Fluid`
-4. Run `mvn clean install`
+4. Run `mvn clean && mvn clean install -U -Dgpg.skip` or with GPG Signing `mvn clean install`.
 
 ## Test Results and Package Info
 

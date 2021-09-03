@@ -118,17 +118,41 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 		public static final String ROW_EXPANSION = "rowExpansion";
 	}
 
+	/**
+	 * Default with new instance of {@code JSONObject}.
+	 */
 	public WebKitUserQuery() {
 		this(new JSONObject());
 	}
 
 	/**
+	 * @param userQuery The user query associated.
+	 * @see UserQuery
+	 */
+	public WebKitUserQuery(UserQuery userQuery) {
+		this();
+		this.setUserQuery(userQuery);
+	}
+
+	/**
+	 * Set the WebKit JSON from {@code jsonObject} and then {@code userQuery} only.
+	 * @param jsonObject The JSON WebKit Obj
+	 * @param userQuery The {@code UserQuery}
+	 *
+	 * @see UserQuery
+	 */
+	public WebKitUserQuery(JSONObject jsonObject, UserQuery userQuery) {
+		this(jsonObject);
+		this.setUserQuery(userQuery);
+	}
+
+	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
-	 * @param jsonObjectParam The JSON Object.
+	 * @param jsonObject The JSON Object.
 	 */
-	public WebKitUserQuery(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
+	public WebKitUserQuery(JSONObject jsonObject) {
+		super(jsonObject);
 		if (this.jsonObject == null) return;
 
 		if (this.jsonObject.isNull(JSONMapping.ROW_EXPANSION)) this.setRowExpansion(new RowExpansion(new JSONObject()));
@@ -187,15 +211,6 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.PAGINATOR_ROWS))
 			this.setPaginatorRows(this.jsonObject.getInt(JSONMapping.PAGINATOR_ROWS));
-	}
-
-	/**
-	 * @param userQuery The user query associated.
-	 * @see UserQuery
-	 */
-	public WebKitUserQuery(UserQuery userQuery) {
-		this();
-		this.setUserQuery(userQuery);
 	}
 
 	/**

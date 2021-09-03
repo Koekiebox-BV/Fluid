@@ -15,15 +15,14 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Fluid workflow Step that belongs to a Flow.
@@ -122,6 +121,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
 			public static final String RouteFields = "RouteFields";
 			public static final String ViewGroup = "ViewGroup";
+			public static final String ViewGroupWebKit = "ViewGroupWebKit";
 			public static final String ViewGroupPriority = "ViewGroupPriority";
 
 			//Send Mail...

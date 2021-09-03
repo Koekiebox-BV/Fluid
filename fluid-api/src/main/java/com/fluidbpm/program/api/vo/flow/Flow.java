@@ -15,15 +15,16 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Fluid consolidation of a workflow.
@@ -35,8 +36,9 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see FlowStepRule
  * @see ABaseFluidJSONObject
  */
+@Getter
+@Setter
 public class Flow extends ABaseFluidJSONObject {
-
 	public static final long serialVersionUID = 1L;
 
 	private String name;
@@ -48,8 +50,7 @@ public class Flow extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code Flow} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String NAME = "name";
 		public static final String DESCRIPTION = "description";
 		public static final String DATE_CREATED = "dateCreated";
@@ -71,7 +72,6 @@ public class Flow extends ABaseFluidJSONObject {
 	 */
 	public Flow(Long flowIdParam) {
 		super();
-
 		this.setId(flowIdParam);
 	}
 
@@ -82,8 +82,18 @@ public class Flow extends ABaseFluidJSONObject {
 	 */
 	public Flow(String flowNameParam) {
 		super();
-
 		this.setName(flowNameParam);
+	}
+
+	/**
+	 * Constructor with the Flow id and name.
+	 *
+	 * @param flowId The Flow id.
+	 * @param flowName The Flow name.
+	 */
+	public Flow(Long flowId, String flowName) {
+		this(flowId);
+		this.setName(flowName);
 	}
 
 	/**
@@ -94,10 +104,7 @@ public class Flow extends ABaseFluidJSONObject {
 	public Flow(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Name...
 		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
@@ -121,103 +128,12 @@ public class Flow extends ABaseFluidJSONObject {
 			JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.FLOW_STEPS);
 
 			List<FlowStep> listOfFlowSteps = new ArrayList();
-			for (int index = 0;index < entryRules.length();index++)
-			{
+			for (int index = 0;index < entryRules.length();index++) {
 				listOfFlowSteps.add(new FlowStep(entryRules.getJSONObject(index)));
 			}
 
 			this.setFlowSteps(listOfFlowSteps);
 		}
-	}
-
-	/**
-	 * Gets the Name of the Flow.
-	 *
-	 * @return Flow name.
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Sets the Name of the Flow.
-	 *
-	 * @param nameParam Flow name.
-	 */
-	public void setName(String nameParam) {
-		this.name = nameParam;
-	}
-
-	/**
-	 * Gets the Description of the Flow.
-	 *
-	 * @return Flow description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * Sets the Description of the Flow.
-	 *
-	 * @param descriptionParam Flow description.
-	 */
-	public void setDescription(String descriptionParam) {
-		this.description = descriptionParam;
-	}
-
-	/**
-	 * Gets the date the Flow was created.
-	 *
-	 * @return The Flow creation date.
-	 */
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	/**
-	 * Sets the date the Flow was created.
-	 *
-	 * @param dateCreatedParam The Flow creation date.
-	 */
-	public void setDateCreated(Date dateCreatedParam) {
-		this.dateCreated = dateCreatedParam;
-	}
-
-	/**
-	 * Gets the date the Flow was last updated.
-	 *
-	 * @return Last Updated Timestamp.
-	 */
-	public Date getDateLastUpdated() {
-		return this.dateLastUpdated;
-	}
-
-	/**
-	 * Sets the date the Flow was last updated.
-	 *
-	 * @param dateLastUpdatedParam Last Updated Timestamp.
-	 */
-	public void setDateLastUpdated(Date dateLastUpdatedParam) {
-		this.dateLastUpdated = dateLastUpdatedParam;
-	}
-
-	/**
-	 * Gets the Flow steps.
-	 *
-	 * @return Flow Steps.
-	 */
-	public List<FlowStep> getFlowSteps() {
-		return this.flowSteps;
-	}
-
-	/**
-	 * Sets the Flow steps.
-	 *
-	 * @param flowStepsParam The Flow Steps.
-	 */
-	public void setFlowSteps(List<FlowStep> flowStepsParam) {
-		this.flowSteps = flowStepsParam;
 	}
 
 	/**
@@ -229,49 +145,37 @@ public class Flow extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException
-	{
+	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Name...
-		if (this.getName() != null)
-		{
+		if (this.getName() != null) {
 			returnVal.put(JSONMapping.NAME,this.getName());
 		}
 
 		//Description...
-		if (this.getDescription() != null)
-		{
+		if (this.getDescription() != null) {
 			returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
 		}
 
 		//Flow Steps...
-		if (this.getFlowSteps() != null && !this.getFlowSteps().isEmpty())
-		{
+		if (this.getFlowSteps() != null && !this.getFlowSteps().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-
-			for (FlowStep rule : this.getFlowSteps())
-			{
+			for (FlowStep rule : this.getFlowSteps()) {
 				jsonArray.put(rule.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.FLOW_STEPS, jsonArray);
 		}
 
 		//Date Created...
-		if (this.getDateCreated() != null)
-		{
-			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(
-					this.getDateCreated()));
+		if (this.getDateCreated() != null) {
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
-		if (this.getDateLastUpdated() != null)
-		{
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(
-					this.getDateLastUpdated()));
+		if (this.getDateLastUpdated() != null) {
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
 		}
-
 		return returnVal;
 	}
 }

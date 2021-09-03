@@ -20,9 +20,10 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
-import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.webkit.form.WebKitForm;
+import com.fluidbpm.program.api.vo.webkit.userquery.WebKitUserQuery;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class FluidTemplate extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -62,7 +64,7 @@ public class FluidTemplate extends ABaseFluidJSONObject {
 	private String templateComment;
 
 	private List<WebKitForm> formsAndFields;
-	private List<UserQuery> userQueries;
+	private List<WebKitUserQuery> userQueries;
 	private List<Flow> flows;
 
 	private List<ThirdPartyLibrary> thirdPartyLibraries;
@@ -88,13 +90,8 @@ public class FluidTemplate extends ABaseFluidJSONObject {
 		public static final String USER_FIELDS = "userFields";
 		public static final String ROUTE_FIELDS = "routeFields";
 		public static final String GLOBAL_FIELDS = "globalFields";
-	}
-
-	/**
-	 * Default constructor.
-	 */
-	public FluidTemplate() {
-		super();
+		
+		public static final String VIEW_GROUPS = "webKitViewGroups";
 	}
 
 	/**
@@ -133,9 +130,9 @@ public class FluidTemplate extends ABaseFluidJSONObject {
 		//User Queries...
 		if (!this.jsonObject.isNull(JSONMapping.USER_QUERIES)) {
 			JSONArray userQueries = this.jsonObject.getJSONArray(JSONMapping.USER_QUERIES);
-			List<UserQuery> listOfUserQueries = new ArrayList();
+			List<WebKitUserQuery> listOfUserQueries = new ArrayList();
 			for (int index = 0;index < userQueries.length();index++) {
-				listOfUserQueries.add(new UserQuery(userQueries.getJSONObject(index)));
+				listOfUserQueries.add(new WebKitUserQuery(userQueries.getJSONObject(index)));
 			}
 			this.setUserQueries(listOfUserQueries);
 		}
@@ -229,7 +226,7 @@ public class FluidTemplate extends ABaseFluidJSONObject {
 		//User Queries...
 		if (this.getUserQueries() != null && !this.getUserQueries().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-			for (UserQuery userQuery : this.getUserQueries()) {
+			for (WebKitUserQuery userQuery : this.getUserQueries()) {
 				jsonArray.put(userQuery.toJsonObject());
 			}
 			returnVal.put(JSONMapping.USER_QUERIES, jsonArray);
