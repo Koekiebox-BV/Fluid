@@ -320,7 +320,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
 
 				//Multi Choices Selected Multi Choices...
-				if((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
+				if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
 						jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
 						jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)) {
 					this.setFieldValue(new MultiChoice(jsonObject));
@@ -329,14 +329,15 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 					//[Payara] mapping for rest...
 					String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
 					if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
-						this.setFieldValue(
-								new MultiChoice(
-										new JSONObject(jsonObject.getString(
-												MultiChoice.JSONMapping.VALUE))));
+						this.setFieldValue(new MultiChoice(new JSONObject(jsonObject.getString(MultiChoice.JSONMapping.VALUE))));
 					}
 				} else if (jsonObject.has(TableField.JSONMapping.TABLE_RECORDS)) {
 					//Table Field...
 					this.setFieldValue(new TableField(jsonObject));
+				} else if ((jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_MULTI_CHOICES) ||
+						jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES)) ||
+						jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
+					this.setFieldValue(new MultiChoice(jsonObject));
 				}
 			} else if (objFromKey instanceof Long) {
 				Long castedLong = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
