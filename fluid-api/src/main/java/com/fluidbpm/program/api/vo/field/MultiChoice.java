@@ -293,6 +293,15 @@ public class MultiChoice extends ABaseFluidJSONObject {
 		return this.selectedMultiChoices.stream().collect(Collectors.joining(", "));
 	}
 
+	/**
+	 * Verify whether the selected values are empty.
+	 * 
+	 * @return {@code true} if empty, otherwise {@code false}.
+	 */
+	@XmlTransient
+	public boolean isSelectedValuesEmpty() {
+		return  (this.getSelectedMultiChoices() == null || this.getSelectedMultiChoices().isEmpty());
+	}
 
 	/**
 	 * Sets Selected MultiChoice.

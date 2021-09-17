@@ -75,134 +75,134 @@ public class FormFieldClient extends ABaseFieldClient {
 	/**
 	 * Create the field based on the {@code Field#getTypeAsEnum} and {@code Field#getTypeMetaData}.
 	 *
-	 * @param formFieldParam Field to Create.
+	 * @param formField Field to Create.
 	 * @param additionalInfo The meta-data additional info used for creation.
 	 * @return Created Field.
 	 *
 	 * @throws FluidClientException If there are validation failures.
 	 * @see FluidClientException.ErrorCode#FIELD_VALIDATE
 	 */
-	public Field createField(Field formFieldParam, Object ... additionalInfo) {
-		if (formFieldParam.getTypeAsEnum() == null || formFieldParam.getTypeMetaData() == null) {
+	public Field createField(Field formField, Object ... additionalInfo) {
+		if (formField.getTypeAsEnum() == null || formField.getTypeMetaData() == null) {
 			throw new FluidClientException(
-					"Field type and meta-data is mandatory.",
+					String.format("Field type and meta-data is mandatory. See '%s'.", formField.getFieldName()),
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
-		String metaData = formFieldParam.getTypeMetaData();
+		String metaData = formField.getTypeMetaData();
 		String metaDataLower = metaData.toLowerCase();
-		switch (formFieldParam.getTypeAsEnum()) {
+		switch (formField.getTypeAsEnum()) {
 			case Text:
 				if (FieldMetaData.Text.PLAIN.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldTextPlain(formFieldParam);
+					return this.createFieldTextPlain(formField);
 				} else if (metaDataLower.contains(FieldMetaData.Text.MASKED.toLowerCase())) {
 					if (additionalInfo == null || additionalInfo.length < 1)
 						throw new FluidClientException(
 								String.format("No additional info for '%s' field '%s'.",
-										FieldMetaData.Text.MASKED, formFieldParam.getFieldName()),
+										FieldMetaData.Text.MASKED, formField.getFieldName()),
 								FluidClientException.ErrorCode.FIELD_VALIDATE);
-					return this.createFieldTextMasked(formFieldParam, additionalInfo[0].toString());
+					return this.createFieldTextMasked(formField, additionalInfo[0].toString());
 				} else if (metaDataLower.contains(FieldMetaData.Text.BARCODE.toLowerCase())) {
 					if (additionalInfo == null || additionalInfo.length < 1)
 						throw new FluidClientException(
 								String.format("No additional info for '%s' field '%s'.",
-										FieldMetaData.Text.BARCODE, formFieldParam.getFieldName()),
+										FieldMetaData.Text.BARCODE, formField.getFieldName()),
 								FluidClientException.ErrorCode.FIELD_VALIDATE);
-					return this.createFieldTextBarcode(formFieldParam, additionalInfo[0].toString());
+					return this.createFieldTextBarcode(formField, additionalInfo[0].toString());
 				} else if (metaDataLower.contains(FieldMetaData.Text.LATITUDE_AND_LONGITUDE.toLowerCase())) {
-					return this.createFieldTextLatitudeAndLongitude(formFieldParam);
+					return this.createFieldTextLatitudeAndLongitude(formField);
 				}
 				throw new FluidClientException(
 						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
+								formField.getTypeAsEnum(),
 								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case TextEncrypted:
 				if (FieldMetaData.EncryptedText.PLAIN.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldTextEncryptedPlain(formFieldParam);
+					return this.createFieldTextEncryptedPlain(formField);
 				} else if (metaDataLower.contains(FieldMetaData.EncryptedText.MASKED.toLowerCase())) {
-					return this.createFieldTextEncryptedMasked(formFieldParam, additionalInfo[0].toString());
+					return this.createFieldTextEncryptedMasked(formField, additionalInfo[0].toString());
 				}
 				throw new FluidClientException(
 						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
+								formField.getTypeAsEnum(),
 								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case TrueFalse:
-				return this.createFieldTrueFalse(formFieldParam);
+				return this.createFieldTrueFalse(formField);
 			case DateTime:
 				if (FieldMetaData.DateTime.DATE.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldDateTimeDate(formFieldParam);
+					return this.createFieldDateTimeDate(formField);
 				} else if (FieldMetaData.DateTime.DATE_AND_TIME.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldDateTimeDateAndTime(formFieldParam);
+					return this.createFieldDateTimeDateAndTime(formField);
 				}
 				throw new FluidClientException(
 						String.format("Unable to determine '%s' type for meta-data '%s'.",
-								formFieldParam.getTypeAsEnum(),
+								formField.getTypeAsEnum(),
 								metaData), FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case Decimal:
 				if (FieldMetaData.Decimal.PLAIN.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldDecimalPlain(formFieldParam);
+					return this.createFieldDecimalPlain(formField);
 				} else if (metaDataLower.contains(FieldMetaData.Decimal.RATING.toLowerCase())) {
 					return this.createFieldDecimalRating(
-							formFieldParam, (Double)additionalInfo[0], (Double)additionalInfo[1]);
+							formField, (Double)additionalInfo[0], (Double)additionalInfo[1]);
 				} else if (metaDataLower.contains(FieldMetaData.Decimal.SLIDER.toLowerCase())) {
 					return this.createFieldDecimalSlider(
-							formFieldParam,
+							formField,
 							(Double)additionalInfo[0],
 							(Double)additionalInfo[1],
 							(Double)additionalInfo[2]);
 				} else if (metaDataLower.contains(FieldMetaData.Decimal.SPINNER.toLowerCase())) {
 					return this.createFieldDecimalSpinner(
-							formFieldParam,
+							formField,
 							(Double)additionalInfo[0],
 							(Double)additionalInfo[1],
 							(Double)additionalInfo[2],
 							additionalInfo[3].toString());
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formField.getTypeAsEnum(), metaData),
 						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case MultipleChoice:
 				if (FieldMetaData.MultiChoice.PLAIN.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldMultiChoicePlain(formFieldParam, (List)additionalInfo[0]);
+					return this.createFieldMultiChoicePlain(formField, (List)additionalInfo[0]);
 				} else if (FieldMetaData.MultiChoice.PLAIN_SEARCH.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldMultiChoicePlainWithSearch(formFieldParam, (List)additionalInfo[0]);
+					return this.createFieldMultiChoicePlainWithSearch(formField, (List)additionalInfo[0]);
 				} else if (FieldMetaData.MultiChoice.SELECT_MANY.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldMultiChoiceSelectMany(formFieldParam, (List)additionalInfo[0]);
+					return this.createFieldMultiChoiceSelectMany(formField, (List)additionalInfo[0]);
 				} else if (FieldMetaData.MultiChoice.SELECT_MANY_SEARCH.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldMultiChoiceSelectManyWithSearch(formFieldParam, (List)additionalInfo[0]);
+					return this.createFieldMultiChoiceSelectManyWithSearch(formField, (List)additionalInfo[0]);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formField.getTypeAsEnum(), metaData),
 						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case ParagraphText:
 				if (FieldMetaData.ParagraphText.PLAIN.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldParagraphTextPlain(formFieldParam);
+					return this.createFieldParagraphTextPlain(formField);
 				} else if (FieldMetaData.ParagraphText.HTML.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldParagraphTextHTML(formFieldParam);
+					return this.createFieldParagraphTextHTML(formField);
 				} else if (FieldMetaData.ParagraphText.SIGNATURE.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldParagraphTextSignature(formFieldParam);
+					return this.createFieldParagraphTextSignature(formField);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formField.getTypeAsEnum(), metaData),
 						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case Table:
-				return this.createFieldTable(formFieldParam, (Form)additionalInfo[0], (Boolean)additionalInfo[1]);
+				return this.createFieldTable(formField, (Form)additionalInfo[0], (Boolean)additionalInfo[1]);
 			case Label:
 				if (FieldMetaData.Label.PLAIN.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldLabelPlain(formFieldParam);
+					return this.createFieldLabelPlain(formField);
 				} else if (FieldMetaData.Label.MAKE_PAYMENT.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldLabelMakePayment(formFieldParam);
+					return this.createFieldLabelMakePayment(formField);
 				} else if (FieldMetaData.Label.CUSTOM_WEB_ACTION.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldLabelCustomWebAction(formFieldParam);
+					return this.createFieldLabelCustomWebAction(formField);
 				} else if (FieldMetaData.Label.ANCHOR.toLowerCase().equals(metaDataLower)) {
-					return this.createFieldLabelAnchor(formFieldParam, (String)additionalInfo[0]);
+					return this.createFieldLabelAnchor(formField, (String)additionalInfo[0]);
 				}
 				throw new FluidClientException(
-						String.format("Unable to determine '%s' type for meta-data '%s'.", formFieldParam.getTypeAsEnum(), metaData),
+						String.format("Unable to determine '%s' type for meta-data '%s'.", formField.getTypeAsEnum(), metaData),
 						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			default:
 				throw new FluidClientException(
-						String.format("Unable to determine type for '%s'.", formFieldParam.getTypeAsEnum()),
+						String.format("Unable to determine type for '%s'.", formField.getTypeAsEnum()),
 						FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 	}

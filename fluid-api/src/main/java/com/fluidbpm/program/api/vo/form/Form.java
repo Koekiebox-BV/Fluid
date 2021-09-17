@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
@@ -1497,5 +1498,24 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 						formField.getFieldValue());
 			}
 		}
+	}
+
+	/**
+	 * Verify whether all Form fields are empty.
+	 * @return {@code true} if all fields are empty, otherwise {@code false}
+	 */
+	@XmlTransient
+	public boolean isAllFormFieldsEmpty() {
+		if (this.getFormFields() == null || this.getFormFields().isEmpty()) return true;
+
+		AtomicBoolean allEmpty = new AtomicBoolean(true);
+
+		this.getFormFields().stream().forEach(itm -> {
+			if (!allEmpty.get()) return;//already marked as empty...
+
+			if (!itm.isFieldValueEmpty()) allEmpty.set(false);
+		});
+
+		return allEmpty.get();
 	}
 }

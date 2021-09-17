@@ -49,7 +49,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	//Attachment...
 	private int attachmentSize = 300;
 	private String attachmentDisplayLocation;//tab / bottom / top / none
-	private String attachmentDisplayType = "list";//galleria / list / grid
+	private String attachmentDisplayType = "grid";//galleria / list / grid
 
 	private int displayWidth = 900;
 	private Integer displayHeight;

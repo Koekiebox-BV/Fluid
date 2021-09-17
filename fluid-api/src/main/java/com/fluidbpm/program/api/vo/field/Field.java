@@ -1120,6 +1120,41 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
+	 * Verify whether the fieldValue is empty.
+	 *
+	 * @return {@code true} if empty, otherwise {@code false}.
+	 */
+	@XmlTransient
+	public boolean isFieldValueEmpty() {
+		if (this.getFieldValue() == null) return true;
+
+		if (this.getTypeAsEnum() == null) return true;
+
+		switch (this.getTypeAsEnum()) {
+			case Text:
+			case ParagraphText:
+			case TextEncrypted:
+				return UtilGlobal.isBlank(this.getFieldValueAsString());
+			case Label: return false;
+			case Table:
+				TableField tblField = this.getFieldValueAsTableField();
+				return (tblField == null || tblField.isTableRecordsEmpty());
+			case TrueFalse:
+				return (this.getFieldValueAsBoolean() == null);
+			case DateTime:
+				return (this.getFieldValueAsDate() == null);
+			case Decimal:
+				return (this.getFieldValueAsDouble() == null ||
+						(this.getFieldValueAsDouble().isNaN() || this.getFieldValueAsDouble().intValue() == 0));
+			case MultipleChoice:
+				MultiChoice valMulti = this.getFieldValueAsMultiChoice();
+				if (valMulti == null) return true;
+				return valMulti.isSelectedValuesEmpty();
+			default: return true;
+		}
+	}
+
+	/**
 	 * Checks whether the provided {@code fieldParam} qualifies for
 	 * insert into Elastic Search.
 	 *
