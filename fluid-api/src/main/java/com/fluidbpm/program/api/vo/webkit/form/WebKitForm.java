@@ -60,6 +60,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private List<String> additionalSectionOptions;
 	private List<String> tableFieldsToInclude;
 	private List<String> mandatoryFields;
+	private List<String> userToFormFieldLimitOnMultiChoice;
 
 	//Workflow related props...
 	private boolean lockFormOnOpen;//Lock as the form is being opened...
@@ -76,6 +77,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private boolean enableFormFieldHistory;
 
 	public static final String EMAIL_FORM_TYPE = "Email";
+
+	private static final String NONE = "[None]";
 
 	/**
 	 * The type of InputLayout.
@@ -106,6 +109,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR = "visibleSectionsDisplayBehaviour";
 		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
 		public static final String MANDATORY_FIELDS = "mandatoryFields";
+		public static final String USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE = "userToFormFieldLimitOnMultiChoice";
 
 		public static final String LOCK_FORM_ON_OPEN = "lockFormOnOpen";
 		public static final String UNLOCK_FORM_ON_SAVE = "unlockFormOnSave";
@@ -187,6 +191,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.MANDATORY_FIELDS))
 			this.jsonObject.getJSONArray(JSONMapping.MANDATORY_FIELDS).forEach(
 					manField -> this.getMandatoryFields().add(manField.toString()));
+
+		this.setUserToFormFieldLimitOnMultiChoice(new ArrayList<>());
+		if (!this.jsonObject.isNull(JSONMapping.USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE))
+			this.jsonObject.getJSONArray(JSONMapping.USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE).forEach(
+					manField -> this.getUserToFormFieldLimitOnMultiChoice().add(manField.toString()));
 
 		if (!this.jsonObject.isNull(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR))
 			this.setVisibleSectionsDisplayBehaviour(
@@ -306,6 +315,12 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.MANDATORY_FIELDS, mandatoryFields);
 		}
 
+		if (this.getUserToFormFieldLimitOnMultiChoice() != null) {
+			JSONArray userToFormFields = new JSONArray();
+			this.getUserToFormFieldLimitOnMultiChoice().forEach(manField -> userToFormFields.put(manField));
+			returnVal.put(JSONMapping.USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE, userToFormFields);
+		}
+
 		JSONArray arrAdvances = new JSONArray();
 		if (this.getLayoutAdvances() != null) {
 			for (WebKitFormLayoutAdvance toAdd : this.getLayoutAdvances()) arrAdvances.put(toAdd.toJsonObject());
@@ -421,7 +436,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 */
 	@XmlTransient
 	public String getToStringLayoutAdvances() {
-		if (this.getLayoutAdvances() == null || this.getLayoutAdvances().isEmpty()) return "[None]";
+		if (this.getLayoutAdvances() == null || this.getLayoutAdvances().isEmpty()) return NONE;
 
 		StringBuilder returnVal = new StringBuilder();
 		this.getLayoutAdvances().stream()
@@ -434,11 +449,27 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	/**
 	 * Text representation for mandatory fields.
 	 *
-	 * @return {@code String} for {@code layoutAdvances}.
+	 * @return {@code String} for {@code mandatoryFields}.
 	 */
 	@XmlTransient
 	public String getToStringMandatoryFields() {
-		if (this.getMandatoryFields() == null || this.getMandatoryFields().isEmpty()) return "[None]";
+		if (this.getMandatoryFields() == null || this.getMandatoryFields().isEmpty()) return NONE;
+
+		StringBuilder returnVal = new StringBuilder();
+		this.getMandatoryFields().stream()
+				.forEach(itm -> returnVal.append(String.format("%s\n", itm)));
+		return returnVal.toString();
+	}
+
+	/**
+	 * Text representation for User to Form mapping fields.
+	 *
+	 * @return {@code String} for {@code userToFormFieldLimitOnMultiChoice}.
+	 */
+	@XmlTransient
+	public String getToStringUserToFormFields() {
+		if (this.getUserToFormFieldLimitOnMultiChoice() == null ||
+				this.getUserToFormFieldLimitOnMultiChoice().isEmpty()) return NONE;
 
 		StringBuilder returnVal = new StringBuilder();
 		this.getMandatoryFields().stream()

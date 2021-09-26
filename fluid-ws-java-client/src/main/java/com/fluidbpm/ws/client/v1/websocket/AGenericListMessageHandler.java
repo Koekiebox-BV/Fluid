@@ -28,8 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @see CompletableFuture
  */
-public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
-		implements IMessageResponseHandler {
+public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject> implements IMessageResponseHandler {
 
 	private WebSocketClient webSocketClient;
 	
@@ -84,33 +83,26 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * Checks whether {@code this} message handler can process
 	 * the message {@code messageParam}
 	 *
-	 * @param messageParam The message to check for qualification.
+	 * @param message The message to check for qualification.
 	 * @return The JSONObject.
 	 *
 	 * @see JSONObject
 	 */
-	public Object doesHandlerQualifyForProcessing(String messageParam) {
+	public Object doesHandlerQualifyForProcessing(String message) {
 		JSONObject jsonObject = null;
 		try {
-			jsonObject = new JSONObject(messageParam);
+			jsonObject = new JSONObject(message);
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(
-					"Unable to parse ["+messageParam+"]. "+
-							jsonExcept.getMessage(),
-					jsonExcept,
-					FluidClientException.ErrorCode.JSON_PARSING);
+					"Unable to parse ["+message+"]. "+ jsonExcept.getMessage(),
+					jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
 		}
 
 		Error fluidError = new Error(jsonObject);
-		if (fluidError.getErrorCode() > 0) {
-			return fluidError;
-		}
+		if (fluidError.getErrorCode() > 0) return fluidError;
 
 		String echo = fluidError.getEcho();
-		//We can process the me...
-		if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
-			return jsonObject;
-		}
+		if (this.expectedEchoMessagesBeforeComplete.contains(echo)) return jsonObject;
 
 		return null;
 	}
@@ -133,16 +125,12 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 			this.errors.add(fluidError);
 
 			//Do a message callback...
-			if (this.messageReceivedCallback != null) {
-				this.messageReceivedCallback.errorMessageReceived(fluidError);
-			}
+			if (this.messageReceivedCallback != null) this.messageReceivedCallback.errorMessageReceived(fluidError);
 
 			//If complete future is provided...
 			if (this.completableFuture != null) {
 				this.completableFuture.completeExceptionally(
-						new FluidClientException(
-								fluidError.getErrorMessage(),
-								fluidError.getErrorCode()));
+						new FluidClientException(fluidError.getErrorMessage(), fluidError.getErrorCode()));
 			}
 		} else {
 			//No Error...
@@ -173,16 +161,12 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 			this.returnValue.add(messageForm);
 
 			//Do a message callback...
-			if (this.messageReceivedCallback != null) {
-				this.messageReceivedCallback.messageReceived(messageForm);
-			}
+			if (this.messageReceivedCallback != null) this.messageReceivedCallback.messageReceived(messageForm);
 
 			//Completable future is set, and all response messages received...
 			if (this.completableFuture != null) {
 				String echo = messageForm.getEcho();
-				if (echo != null && !echo.trim().isEmpty()) {
-					this.expectedEchoMessagesBeforeComplete.remove(echo);
-				}
+				if (echo != null && !echo.trim().isEmpty()) this.expectedEchoMessagesBeforeComplete.remove(echo);
 
 				if (this.webSocketClient.getSentMessages() == this.webSocketClient.getReceivedMessages()) {
 					//Sent and received messages match...
@@ -202,9 +186,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @see CompletableFuture
 	 */
 	public CompletableFuture<List<T>> getCF() {
-		if (this.completableFuture == null) {
-			this.completableFuture = new CompletableFuture<>();
-		}
+		if (this.completableFuture == null) this.completableFuture = new CompletableFuture<>();
 
 		return this.completableFuture;
 	}
@@ -256,10 +238,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @param expectedMessageEchoParam The echo to expect.
 	 */
 	public void addExpectedMessage(String expectedMessageEchoParam) {
-		if (expectedMessageEchoParam == null ||
-				expectedMessageEchoParam.trim().isEmpty()) {
-			return;
-		}
+		if (expectedMessageEchoParam == null || expectedMessageEchoParam.trim().isEmpty()) return;
 
 		this.expectedEchoMessagesBeforeComplete.add(expectedMessageEchoParam);
 	}
@@ -298,8 +277,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 *
 	 * @return Added Count.
 	 */
-	public int getAddedCount()
-	{
+	public int getAddedCount() {
 		return this.returnValue.size();
 	}
 
@@ -311,19 +289,15 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	private List<String> getEchoMessagesFromReturnValue() {
 		List<String> returnListing = new ArrayList();
 
-		if (this.returnValue == null) {
-			return returnListing;
-		}
+		if (this.returnValue == null) return returnListing;
 
 		Iterator<T> iterForReturnVal =
 				this.returnValue.iterator();
 
 		//Only add where the ECHO message is set...
-		while(iterForReturnVal.hasNext()) {
+		while (iterForReturnVal.hasNext()) {
 			T returnVal = iterForReturnVal.next();
-			if (returnVal.getEcho() == null) {
-				continue;
-			}
+			if (returnVal.getEcho() == null) continue;
 
 			returnListing.add(returnVal.getEcho());
 		}
@@ -335,25 +309,20 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * Checks the local return value echo messages if all
 	 * of them contain {@code echoMessageParam}.
 	 *
-	 * @param echoMessageParam The echo messages to check.
+	 * @param echoMessage The echo messages to check.
 	 *
 	 * @return Whether local return value echo messages contain {@code echoMessageParam}.
 	 */
 	public boolean doReturnValueEchoMessageContainAll(
-			List<String> echoMessageParam
+		List<String> echoMessage
 	) {
-		if (echoMessageParam == null || echoMessageParam.isEmpty())
-		{
-			return false;
-		}
+		if (echoMessage == null || echoMessage.isEmpty()) return false;
 
 		List<String> allReturnValueEchoMessages =
 				this.getEchoMessagesFromReturnValue();
 
-		for (String toCheckFor: echoMessageParam) {
-			if (!allReturnValueEchoMessages.contains(toCheckFor)) {
-				return false;
-			}
+		for (String toCheckFor: echoMessage) {
+			if (!allReturnValueEchoMessages.contains(toCheckFor)) return false;
 		}
 
 		return true;
@@ -362,8 +331,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	/**
 	 * Clears the return value.
 	 */
-	public void clear()
-	{
+	public void clear() {
 		this.returnValue.clear();
 	}
 
@@ -385,9 +353,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 *
 	 * @throws IOException - If there is an issue during the un-compression.
 	 */
-	protected byte[] uncompress(
-		byte[] compressedBytesParam
-	) throws IOException {
+	protected byte[] uncompress(byte[] compressedBytesParam) throws IOException {
 		return UtilGlobal.uncompress(compressedBytesParam, CHARSET);
 	}
 }

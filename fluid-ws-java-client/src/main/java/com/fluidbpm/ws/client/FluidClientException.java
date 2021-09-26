@@ -70,12 +70,12 @@ public class FluidClientException extends RuntimeException {
 	 *
 	 * @param message the detail message. The detail message is saved for later
 	 *            retrieval by the {@link #getMessage()} method.
-	 * @param errorCodeParam Error code of the {@code Exception}.
+	 * @param errorCode Error code of the {@code Exception}.
 	 *
 	 */
-	public FluidClientException(String message, int errorCodeParam) {
+	public FluidClientException(String message, int errorCode) {
 		super(message);
-		this.errorCode = errorCodeParam;
+		this.errorCode = errorCode;
 	}
 
 	/**
@@ -90,11 +90,11 @@ public class FluidClientException extends RuntimeException {
 	 *            {@link #getCause()} method). (A {@code null} value is
 	 *            permitted, and indicates that the cause is nonexistent or
 	 *            unknown.)
-	 * @param errorCodeParam Error code of the {@code Exception}.
+	 * @param errorCode Error code of the {@code Exception}.
 	 */
-	public FluidClientException(String message, Throwable cause, int errorCodeParam) {
+	public FluidClientException(String message, Throwable cause, int errorCode) {
 		super(message, cause);
-		this.errorCode = errorCodeParam;
+		this.errorCode = errorCode;
 	}
 
 	/**
