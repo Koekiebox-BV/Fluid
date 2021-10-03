@@ -1103,15 +1103,19 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		if (fieldVal == null && compareFieldVal == null) return true;
 		if (fieldVal == null || compareFieldVal == null) return false;
 
-		if (!fieldVal.getClass().isAssignableFrom(compareFieldVal.getClass())) return false;
+		if (fieldVal instanceof Number) {
+			boolean match = fieldVal.equals(compareFieldVal);
+			if (!match && compareFieldVal instanceof Number) {
+				if (((Number)fieldVal).doubleValue() == 0.0D && ((Number) compareFieldVal).doubleValue() == 0.0D) match = true;
+			}
+			return match;
+		} else if (!fieldVal.getClass().isAssignableFrom(compareFieldVal.getClass())) return false;
 
 		if (fieldVal instanceof String) {
 			return fieldVal.equals(compareFieldVal);
 		} else if (fieldVal instanceof Boolean) {
 			return fieldVal.equals(compareFieldVal);
 		} else if (fieldVal instanceof Date) {
-			return fieldVal.equals(compareFieldVal);
-		} else if (fieldVal instanceof Number) {
 			return fieldVal.equals(compareFieldVal);
 		} else if (fieldVal instanceof MultiChoice) {
 			MultiChoice mc = (MultiChoice)fieldVal , compareMc = (MultiChoice)compareFieldVal;
