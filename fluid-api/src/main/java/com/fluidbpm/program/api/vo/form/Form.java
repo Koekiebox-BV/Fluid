@@ -1459,14 +1459,14 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 *     Title will be set to <br>
 	 *     "[No Title from Custom Program]"
 	 *
-	 * @param titleParam Form Title.
+	 * @param title Form Title.
 	 */
-	public void setTitle(String titleParam) {
-		if (titleParam == null) {
+	public void setTitle(String title) {
+		if (title == null) {
 			this.title = EMPTY_TITLE_MARKER;
 			return;
 		}
-		this.title = titleParam;
+		this.title = title;
 	}
 
 	/**
@@ -1479,9 +1479,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		Map<String, Field> returnVal = new HashMap<>();
 		if (fields == null || fields.isEmpty()) return returnVal;
 
-		fields.stream().forEach(field -> {
-			returnVal.put(field.getFieldName(), field);
-		});
+		fields.stream().forEach(field -> returnVal.put(field.getFieldName(), field));
+
 		return returnVal;
 	}
 
