@@ -438,6 +438,29 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		return new UtilGlobal().toCamelUpperCase(this.getFieldName());
 	}
 
+	/**
+	 * Extracts the field name from the field description if set.
+	 * Example of field name from display; [[Field Name]].
+	 * Example of field name from display; [[Field Name Two]].
+	 *
+	 * @return {@code getFieldName()} or 'Display Field Name' extracted from {@code getFieldDescription()}
+	 */
+	@XmlTransient
+	public String getFieldNameDisplayValue() {
+		String fieldNameFromDesc = UtilGlobal.extractFieldNameFromText(this.getFieldDescription());
+		if (fieldNameFromDesc != null) return fieldNameFromDesc;
+		return this.getFieldName();
+	}
+
+	/**
+	 * Removes the field name from the field description if set.
+	 *
+	 * @return {@code getFieldName()} or 'Display Field Name' extracted from {@code getFieldDescription()}
+	 */
+	@XmlTransient
+	public String getFieldDescriptionDisplayValue() {
+		return UtilGlobal.removeFieldNameFromText(this.getFieldDescription());
+	}
 
 	/**
 	 * Sets the field as double.

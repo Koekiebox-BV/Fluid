@@ -87,6 +87,38 @@ public class UtilGlobal {
 	}
 
 	/**
+	 * Extracts the field name from description.
+	 *
+	 * @param text The Field value to extract the field name from.
+	 * @return Field name extracted from {@code text}.
+	 */
+	public static String extractFieldNameFromText(String text) {
+		if (isBlank(text)) return null;
+
+		int lastOfOpen = text.lastIndexOf("[["), lastClose = text.lastIndexOf("]]");
+		if ((lastOfOpen > -1 && lastClose > -1) && lastOfOpen < lastClose) {
+			return text.substring(lastOfOpen + 2, lastClose);
+		}
+		return null;
+	}
+
+	/**
+	 * Extracts the field name from description.
+	 *
+	 * @param text The Field value to extract the field name from.
+	 * @return Field name extracted from {@code text}.
+	 */
+	public static String removeFieldNameFromText(String text) {
+		if (isBlank(text)) return null;
+
+		String fieldName;
+		while ((fieldName = extractFieldNameFromText(text)) != null) {
+			text = text.replace(String.format("[[%s]]", fieldName), EMPTY);
+		}
+		return text;
+	}
+
+	/**
 	 * Utility method for creating camel-case-upper from {@code inputParam}
 	 *
 	 * @param inputParam The input to convert.

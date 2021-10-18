@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.util;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -29,5 +30,17 @@ public class TestUtilGlobal extends ABaseTestCase {
 	public void testSVGFromSignature() {
 		String svg = UtilGlobal.toSvg(SIGNATURE, 300, 200);
 		System.out.println(svg);
+	}
+
+	@Test
+	public void testExtractFieldName() {
+		String val = UtilGlobal.extractFieldNameFromText("This is a [[Field Name]].");
+		Assert.assertEquals("Field Name", val);
+
+		String val2 = UtilGlobal.extractFieldNameFromText("This is a [[Field Name].");
+		Assert.assertNull(val2);
+
+		String val3 = UtilGlobal.removeFieldNameFromText("This is a [[Field Name]].");
+		Assert.assertEquals("This is a .", val3);
 	}
 }
