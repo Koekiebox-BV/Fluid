@@ -63,6 +63,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private boolean showButtonLock;
 	private boolean showButtonAddToPI;
 
+	private boolean openWorkItemInMainLayout;
+
 	private List<WebKitViewSub> webKitViewSubs;
 	/**
 	 * The types of table generation modes for the View Group.
@@ -118,6 +120,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		public static final String TABLE_MAX_COUNT_PER_PAGE = "tableMaxCountPerPage";
 
 		public static final String WEB_KIT_VIEW_SUBS = "webKitViewSubs";
+
+		public static final String OPEN_WORK_ITEM_IN_MAIN_LAYOUT = "openWorkItemInMainLayout";
 	}
 
 	public enum VisibleButtonItems {
@@ -233,6 +237,10 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			this.setShowButtonAddToPI(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_ADD_TO_PI));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT)) {
+			this.setOpenWorkItemInMainLayout(this.jsonObject.getBoolean(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT));
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.WEB_KIT_VIEW_SUBS)) {
 			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_VIEW_SUBS);
 			List<WebKitViewSub> objs = new ArrayList();
@@ -306,6 +314,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 			}
 			returnVal.put(JSONMapping.WEB_KIT_VIEW_SUBS, jsonArray);
 		}
+
+		returnVal.put(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT, this.isOpenWorkItemInMainLayout());
 
 		return returnVal;
 	}

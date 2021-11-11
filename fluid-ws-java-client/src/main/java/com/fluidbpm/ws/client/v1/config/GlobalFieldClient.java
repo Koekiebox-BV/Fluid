@@ -15,15 +15,14 @@
 
 package com.fluidbpm.ws.client.v1.config;
 
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.config.GlobalFieldListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
+import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Java Web Service Client for Global Field related actions.
@@ -38,108 +37,88 @@ import com.fluidbpm.ws.client.v1.ABaseFieldClient;
  */
 public class GlobalFieldClient extends ABaseFieldClient {
 
-    /**
-     * Constructor that sets the Service Ticket from authentication.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param serviceTicketParam The Server issued Service Ticket.
-     */
-    public GlobalFieldClient(
-            String endpointBaseUrlParam,
-            String serviceTicketParam) {
-        super(endpointBaseUrlParam);
+	/**
+	 * Constructor that sets the Service Ticket from authentication.
+	 *
+	 * @param endpointBaseUrlParam URL to base endpoint.
+	 * @param serviceTicketParam The Server issued Service Ticket.
+	 */
+	public GlobalFieldClient(String endpointBaseUrlParam, String serviceTicketParam) {
+		super(endpointBaseUrlParam);
+		this.setServiceTicket(serviceTicketParam);
+	}
 
-        this.setServiceTicket(serviceTicketParam);
-    }
+	/**
+	 * Update an existing Global field value.
+	 *
+	 * @param globalFieldValueParam Field to Update.
+	 * @return Updated Field.
+	 */
+	public Field updateFieldValue(Field globalFieldValueParam) {
+		if (globalFieldValueParam != null && this.serviceTicket != null) {
+			globalFieldValueParam.setServiceTicket(this.serviceTicket);
+		}
 
-    /**
-     * Update an existing Global field value.
-     *
-     * @param globalFieldValueParam Field to Update.
-     * @return Updated Field.
-     */
-    public Field updateFieldValue(Field globalFieldValueParam)
-    {
-        if (globalFieldValueParam != null && this.serviceTicket != null)
-        {
-            globalFieldValueParam.setServiceTicket(this.serviceTicket);
-        }
+		return new Field(this.postJson(
+				globalFieldValueParam, Version1.globalFieldUpdateValue()));
+	}
 
-        return new Field(this.postJson(
-                globalFieldValueParam,
-                Version1.globalFieldUpdateValue()));
-    }
+	/**
+	 * Retrieves field value by {@code fieldNameParam}.
+	 *
+	 * @param fieldNameParam The field name.
+	 * @return Field by primary key.
+	 */
+	public Field getFieldValueByName(String fieldNameParam) {
+		Field field = new Field();
+		field.setFieldName(fieldNameParam);
+		return this.getFieldValueBy(field);
+	}
 
-    /**
-     * Retrieves field value by {@code fieldNameParam}.
-     *
-     * @param fieldNameParam The field name.
-     * @return Field by primary key.
-     */
-    public Field getFieldValueByName(String fieldNameParam)
-    {
-        Field field = new Field();
-        field.setFieldName(fieldNameParam);
-        
-        return this.getFieldValueBy(field);
-    }
+	/**
+	 * Retrieves field value by {@code fieldIdParam}.
+	 *
+	 * @param fieldIdParam The field id.
+	 * @return Field value by Global field primary key.
+	 */
+	public Field getFieldValueByFieldId(Long fieldIdParam)
+	{
+		return this.getFieldValueBy(new Field(fieldIdParam));
+	}
 
-    /**
-     * Retrieves field value by {@code fieldIdParam}.
-     *
-     * @param fieldIdParam The field id.
-     * @return Field value by Global field primary key.
-     */
-    public Field getFieldValueByFieldId(Long fieldIdParam)
-    {
-        return this.getFieldValueBy(new Field(fieldIdParam));
-    }
+	/**
+	 * Retrieves field value by {@code fieldParam}.
+	 *
+	 * @param field The field name.
+	 * @return Field by primary key.
+	 */
+	private Field getFieldValueBy(Field field) {
+		if (field != null) {
+			//Set for Payara server...
+			field.setFieldValue(new MultiChoice());
 
-    /**
-     * Retrieves field value by {@code fieldParam}.
-     *
-     * @param fieldParam The field name.
-     * @return Field by primary key.
-     */
-    private Field getFieldValueBy(Field fieldParam)
-    {
-        if (fieldParam != null)
-        {
-            //Set for Payara server...
-            fieldParam.setFieldValue(new MultiChoice());
+			if (this.serviceTicket != null) field.setServiceTicket(this.serviceTicket);
+		}
+		return new Field(this.postJson(field, Version1.getValueBy()));
+	}
 
-            if (this.serviceTicket != null)
-            {
-                fieldParam.setServiceTicket(this.serviceTicket);
-            }
-        }
+	/**
+	 * Retrieve all the Global field values.
+	 *
+	 * @return Global Fields in the destination system.
+	 *
+	 * @see GlobalFieldListing
+	 * @see Field
+	 */
+	public List<Field> getAllGlobalFieldValues() {
+		Field field = new Field();
 
-        return new Field(this.postJson(
-                fieldParam, Version1.getValueBy()));
-    }
+		//Set for Payara server...
+		field.setFieldValue(new MultiChoice());
 
-    /**
-     * Retrieve all the Global field values.
-     *
-     * @return Global Fields in the destination system.
-     *
-     * @see GlobalFieldListing
-     * @see Field
-     */
-    public List<Field> getAllGlobalFieldValues()
-    {
-        Field field = new Field();
+		if (this.serviceTicket != null) field.setServiceTicket(this.serviceTicket);
 
-        //Set for Payara server...
-        field.setFieldValue(new MultiChoice());
-        
-        if (this.serviceTicket != null)
-        {
-            field.setServiceTicket(this.serviceTicket);
-        }
-
-        return new GlobalFieldListing(this.postJson(
-                field, Version1.getAllValues())).getListing();
-    }
+		return new GlobalFieldListing(this.postJson(field, Version1.getAllValues())).getListing();
+	}
 
 }

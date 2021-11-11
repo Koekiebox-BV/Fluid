@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.flowitem;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.*;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
@@ -41,8 +33,14 @@ import com.fluidbpm.ws.client.v1.flow.TestFlowClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import com.fluidbpm.ws.client.v1.user.PersonalInventoryClient;
-
 import junit.framework.TestCase;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -187,45 +185,36 @@ public class TestFlowItemClient extends ABaseTestCase {
      */
     @Test
     @Ignore
-    public void testViewItemsForWorkflowStep()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testViewItemsForWorkflowStep() {
+        if (!this.isConnectionValid()) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
 
         String serviceTicket = appRequestToken.getServiceTicket();
 
-        FlowStepClient flowStepClient =
-                new FlowStepClient(BASE_URL, serviceTicket);
+        FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, serviceTicket);
+        String stepName = "Review Create Customer";//Make config...
+        String flowName = "Insert Customer";//Make config...
+        String viewName = "Review Create Customer";//Make config...
 
-        String stepName = "Have a look";//Make config...
-        String flowName = "Approve Bin";//Make config...
-        String viewName = "Have a look";//Make config...
+        JobView foundView = flowStepClient.getStandardJobViewBy(flowName, stepName, viewName);
 
-        JobView foundView = flowStepClient.getStandardJobViewBy(
-                flowName, stepName, viewName);
-
-        FlowItemClient flowItemClient =
-                new FlowItemClient(BASE_URL, serviceTicket);
+        FlowItemClient flowItemClient = new FlowItemClient(BASE_URL, serviceTicket);
+        FluidItemListing itemListingFromViewOne = flowItemClient.getFluidItemsForView(
+                foundView, 1000,0);
+        TestCase.assertNotNull("Item listing not set.",itemListingFromViewOne);
+        TestCase.assertTrue("Item listing not set", itemListingFromViewOne.getListingCount().intValue() > 0);
 
         FluidItemListing itemListingFromView = flowItemClient.getFluidItemsForView(
                         foundView, 10,0,null,null);
 
         TestCase.assertNotNull("Item listing not set.",itemListingFromView);
-        TestCase.assertTrue("Item listing not set",
-                itemListingFromView.getListingCount().intValue() > 0);
+        TestCase.assertTrue("Item listing not set", itemListingFromView.getListingCount().intValue() > 0);
 
         FluidItem fluidItemToSendOn = null;
-        for (FluidItem fluidItem : itemListingFromView.getListing())
-        {
-            if (fluidItemToSendOn == null)
-            {
-                fluidItemToSendOn = fluidItem;
-            }
+        for (FluidItem fluidItem : itemListingFromView.getListing()) {
+            if (fluidItemToSendOn == null) fluidItemToSendOn = fluidItem;
 
             System.out.println(" *** START *** ");
 

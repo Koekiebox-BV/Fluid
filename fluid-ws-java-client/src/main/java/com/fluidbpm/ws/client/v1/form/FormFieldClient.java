@@ -956,43 +956,41 @@ public class FormFieldClient extends ABaseFieldClient {
 	/**
 	 * Update an existing Multi Choice field.
 	 *
-	 * @param formFieldParam Field to Update.
-	 * @param multiChoiceValuesParam New available Multi-choices.
+	 * @param formField Field to Update.
+	 * @param multiChoiceValues New available Multi-choices.
 	 * @return Updated Field.
 	 */
 	public Field updateFieldMultiChoicePlain(
-		Field formFieldParam,
-		List<String> multiChoiceValuesParam
+		Field formField,
+		List<String> multiChoiceValues
 	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
+		if (formField != null) {
+			formField.setServiceTicket(this.serviceTicket);
 		}
 
-		if (multiChoiceValuesParam == null ||
-				multiChoiceValuesParam.isEmpty()) {
+		if (multiChoiceValues == null || multiChoiceValues.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
 		List<String> beforeAvail = null, beforeSelected = null;
-		if (formFieldParam != null) {
-			formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
-			formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
+		if (formField != null) {
+			formField.setTypeAsEnum(Field.Type.MultipleChoice);
+			formField.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
 
-			if (formFieldParam.getFieldValue() instanceof MultiChoice) {
-				MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
+			if (formField.getFieldValue() instanceof MultiChoice) {
+				MultiChoice casted = (MultiChoice)formField.getFieldValue();
 				beforeAvail = casted.getAvailableMultiChoices();
 				beforeSelected = casted.getSelectedMultiChoices();
 			}
 
-			formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+			formField.setFieldValue(new MultiChoice(multiChoiceValues));
 		}
 
-		Field returnVal = new Field(this.postJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldUpdate()));
-		if (formFieldParam != null){
-			formFieldParam.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+		Field returnVal = new Field(this.postJson(formField, WS.Path.FormField.Version1.formFieldUpdate()));
+		if (formField != null) {
+			formField.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
 		}
 
 		return returnVal;
@@ -1001,43 +999,40 @@ public class FormFieldClient extends ABaseFieldClient {
 	/**
 	 * Update an existing Multi Choice field with Search.
 	 *
-	 * @param formFieldParam Field to Update.
-	 * @param multiChoiceValuesParam New available Multi-choices.
+	 * @param formField Field to Update.
+	 * @param multiChoiceValues New available Multi-choices.
 	 * @return Updated Field.
 	 */
-	public Field updateFieldMultiChoicePlainWithSearch(
-		Field formFieldParam,
-		List<String> multiChoiceValuesParam
-	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
+	public Field updateFieldMultiChoicePlainWithSearch(Field formField, List<String> multiChoiceValues) {
+		if (formField != null && this.serviceTicket != null) {
+			formField.setServiceTicket(this.serviceTicket);
 		}
 
-		if (multiChoiceValuesParam == null ||
-				multiChoiceValuesParam.isEmpty()) {
+		if (multiChoiceValues == null ||
+				multiChoiceValues.isEmpty()) {
 			throw new FluidClientException(
 					"No Multi-choice values provided.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
 		List<String> beforeAvail = null, beforeSelected = null;
-		if (formFieldParam != null) {
-			formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
-			formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN_SEARCH);
+		if (formField != null) {
+			formField.setTypeAsEnum(Field.Type.MultipleChoice);
+			formField.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN_SEARCH);
 
-			if (formFieldParam.getFieldValue() instanceof MultiChoice){
-				MultiChoice casted = (MultiChoice)formFieldParam.getFieldValue();
+			if (formField.getFieldValue() instanceof MultiChoice) {
+				MultiChoice casted = (MultiChoice)formField.getFieldValue();
 				beforeAvail = casted.getAvailableMultiChoices();
 				beforeSelected = casted.getSelectedMultiChoices();
 			}
 
-			formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+			formField.setFieldValue(new MultiChoice(multiChoiceValues));
 		}
 
 		Field returnVal = new Field(this.postJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldUpdate()));
-		if (formFieldParam != null){
-			formFieldParam.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+				formField, WS.Path.FormField.Version1.formFieldUpdate()));
+		if (formField != null){
+			formField.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
 		}
 
 		return returnVal;
