@@ -964,18 +964,14 @@ public class FormFieldClient extends ABaseFieldClient {
 		Field formField,
 		List<String> multiChoiceValues
 	) {
-		if (formField != null) {
-			formField.setServiceTicket(this.serviceTicket);
-		}
-
 		if (multiChoiceValues == null || multiChoiceValues.isEmpty()) {
 			throw new FluidClientException(
-					"No Multi-choice values provided.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE);
+					"No Multi-choice values provided.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
 		List<String> beforeAvail = null, beforeSelected = null;
 		if (formField != null) {
+			formField.setServiceTicket(this.serviceTicket);
 			formField.setTypeAsEnum(Field.Type.MultipleChoice);
 			formField.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
 

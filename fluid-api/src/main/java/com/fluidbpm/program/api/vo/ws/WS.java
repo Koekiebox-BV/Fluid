@@ -853,12 +853,12 @@ public class WS {
 				//Create...
 				public static final String CREATE = ("/");
 
+				//Update...
+				public static final String UPDATE = ("/update");
+
 				//Delete...
 				public static final String DELETE = ("/delete");
 				public static final String DELETE_FORCE = ("/delete?force=true");
-
-				//Update...
-				public static final String UPDATE = ("/update");
 
 				//Read...
 				public static final String READ = ("/get_by_id");
@@ -1008,12 +1008,17 @@ public class WS {
 			public static final class Version1 {
 				public static final String ROOT = ("/global_field");
 
+				//Create...
+				public static final String CREATE = ("/");
+
 				//Update...
+				public static final String UPDATE = ("/update");
 				public static final String UPDATE_VALUE = ("/update_value");
 
 				//Read...
 				public static final String READ_VALUE_BY = ("/get_value_by");
 				public static final String READ_ALL_VALUES = ("/get_all_values");
+				public static final String READ_ALL = ("/get_all");
 
 				/**
 				 * Root for Global Field.
@@ -1050,6 +1055,33 @@ public class WS {
 				 */
 				public static final String getAllValues() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VALUES);
+				}
+
+				/**
+				 * URL Path for retrieving all Global Fields.
+				 *
+				 * @return {@code v1/global_field/get_all}
+				 */
+				public static final String getAllFields() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+				}
+
+				/**
+				 * URL Path for Global Field create.
+				 *
+				 * @return {@code /v1/global_field/}
+				 */
+				public static final String globalFieldCreate() {
+					return Version.VERSION_1.concat(ROOT).concat(CREATE);
+				}
+
+				/**
+				 * URL Path for Global Field update.
+				 *
+				 * @return {@code v1/global_field/update}
+				 */
+				public static final String globalFieldUpdate() {
+					return Version.VERSION_1.concat(ROOT).concat(UPDATE);
 				}
 			}
 		}

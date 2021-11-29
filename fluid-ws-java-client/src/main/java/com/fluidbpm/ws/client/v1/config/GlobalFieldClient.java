@@ -19,10 +19,15 @@ import com.fluidbpm.program.api.vo.config.GlobalFieldListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1;
+import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1.globalFieldCreate;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1.globalFieldUpdate;
 
 /**
  * Java Web Service Client for Global Field related actions.
@@ -46,6 +51,66 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	public GlobalFieldClient(String endpointBaseUrlParam, String serviceTicketParam) {
 		super(endpointBaseUrlParam);
 		this.setServiceTicket(serviceTicketParam);
+	}
+
+	/**
+	 * Create a new Multi Choice field.
+	 *
+	 * @param globalField Field to Create.
+	 * @param multiChoiceValues The available multi choice values.
+	 * @return Created Field.
+	 */
+	public Field createFieldMultiChoicePlain(
+		Field globalField,
+		List<String> multiChoiceValues
+	) {
+		if (multiChoiceValues == null) multiChoiceValues = new ArrayList();
+
+		if (globalField != null) {
+			globalField.setServiceTicket(this.serviceTicket);
+			globalField.setTypeAsEnum(Field.Type.MultipleChoice);
+			globalField.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
+			globalField.setFieldValue(new MultiChoice(multiChoiceValues));
+		}
+
+		return new Field(this.putJson(globalField, globalFieldCreate()));
+	}
+
+	/**
+	 * Update an existing Multi Choice field.
+	 *
+	 * @param globalField Field to Update.
+	 * @param multiChoiceValues New available Multi-choices.
+	 * @return Updated Field.
+	 */
+	public Field updateFieldMultiChoicePlain(
+		Field globalField,
+		List<String> multiChoiceValues
+	) {
+		if (multiChoiceValues == null || multiChoiceValues.isEmpty()) {
+			throw new FluidClientException(
+					"No Multi-choice values provided.", FluidClientException.ErrorCode.FIELD_VALIDATE);
+		}
+
+		List<String> beforeAvail = null, beforeSelected = null;
+		if (globalField != null) {
+			globalField.setServiceTicket(this.serviceTicket);
+			globalField.setTypeAsEnum(Field.Type.MultipleChoice);
+			globalField.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
+
+			if (globalField.getFieldValue() instanceof MultiChoice) {
+				MultiChoice casted = (MultiChoice)globalField.getFieldValue();
+				beforeAvail = casted.getAvailableMultiChoices();
+				beforeSelected = casted.getSelectedMultiChoices();
+			}
+
+			globalField.setFieldValue(new MultiChoice(multiChoiceValues));
+		}
+
+		Field returnVal = new Field(this.postJson(globalField, globalFieldUpdate()));
+		if (globalField != null) globalField.setFieldValue(new MultiChoice(beforeSelected, beforeAvail));
+
+		return returnVal;
 	}
 
 	/**
@@ -119,6 +184,26 @@ public class GlobalFieldClient extends ABaseFieldClient {
 		if (this.serviceTicket != null) field.setServiceTicket(this.serviceTicket);
 
 		return new GlobalFieldListing(this.postJson(field, Version1.getAllValues())).getListing();
+	}
+
+
+	/**
+	 * Retrieve all the Global fields.
+	 *
+	 * @return Global Fields in the destination system.
+	 *
+	 * @see GlobalFieldListing
+	 * @see Field
+	 */
+	public List<Field> getAllGlobalFields() {
+		Field field = new Field();
+
+		//Set for Payara server...
+		field.setFieldValue(new MultiChoice());
+
+		if (this.serviceTicket != null) field.setServiceTicket(this.serviceTicket);
+
+		return new GlobalFieldListing(this.postJson(field, Version1.getAllFields())).getListing();
 	}
 
 }
