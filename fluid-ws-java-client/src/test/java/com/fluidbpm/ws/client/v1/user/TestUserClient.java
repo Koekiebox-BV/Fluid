@@ -366,9 +366,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testGetAllUserFieldValues() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -380,6 +378,7 @@ public class TestUserClient extends ABaseTestCase {
 		User loggedIn = userClient.getLoggedInUserInformation();
 
 		UserFieldListing userFieldListing = userClient.getAllUserFieldValuesByUser(loggedIn);
+		System.out.println(userFieldListing.toJsonObject().toString());
 
 		TestCase.assertNotNull(userFieldListing);
 		TestCase.assertTrue("User Field Value listing must be greater than '0'.",

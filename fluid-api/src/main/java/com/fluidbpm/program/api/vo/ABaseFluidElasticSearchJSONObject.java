@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluidbpm.program.api.vo.field.Field;
@@ -65,6 +66,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public abstract JSONObject toJsonForElasticSearch() throws JSONException;
 
 	/**
@@ -78,6 +80,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public abstract JSONObject toJsonMappingForElasticSearch() throws JSONException;
 
 	/**
@@ -91,6 +94,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public abstract void populateFromElasticSearchJson(
 			JSONObject jsonObjectParam,
 			List<Field> formFieldsParam
@@ -103,6 +107,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @return The converted {@code Field}s.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam) {
 		if (formFieldMappingsParam == null) return null;
 
@@ -122,6 +127,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
 	 * @return Converted {@code Field} from {@code SQLFormFieldUtil.FormFieldMapping}.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Field convertTo(SQLFormFieldUtil.FormFieldMapping formFieldMappingParam) {
 		switch (formFieldMappingParam.dataType.intValue()) {
 			//Text...

@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,9 +40,11 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	public static final long serialVersionUID = 1L;
 
 	@XmlTransient
+	@JsonIgnore
 	protected JSONObject jsonObject;
 
 	@XmlTransient
+	@JsonIgnore
 	public boolean jsonIncludeAll = false;
 
 	private static SimpleDateFormat DATE_FORMAT_001 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
@@ -137,6 +140,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @see org.json.JSONObject
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = new JSONObject();
 
@@ -173,11 +177,9 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 *
 	 */
 	@XmlTransient
+	@JsonIgnore
 	private Date getLongAsDateFromJson(Long longValueParam) {
-		if (longValueParam == null) {
-			return null;
-		}
-
+		if (longValueParam == null) return null;
 		return new Date(longValueParam);
 	}
 
@@ -188,8 +190,9 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @return The value of the JSON Object as a {@code java.util.Date}.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Date getDateFieldValueFromFieldWithName(String fieldNameParam) {
-		if((fieldNameParam == null || fieldNameParam.trim().isEmpty()) ||
+		if ((fieldNameParam == null || fieldNameParam.trim().isEmpty()) ||
 				(this.jsonObject == null || this.jsonObject.isNull(fieldNameParam))) {
 			return null;
 		}
@@ -210,7 +213,6 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 					validDate = null;
 				}
 			}
-
 			return validDate;
 		}
 
@@ -226,6 +228,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @return The milliseconds since January 1, 1970, 00:00:00 GMT
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Long getDateAsLongFromJson(Date dateValueParam) {
 		if (dateValueParam == null) {
 			return null;
@@ -240,6 +243,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 * @return The local set {@code JSONObject} object.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject getJSONObject() {
 		return this.jsonObject;
 	}
@@ -251,6 +255,7 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public String toString() {
 		JSONObject jsonObject = this.toJsonObject();
 		return (jsonObject == null) ? null : jsonObject.toString();

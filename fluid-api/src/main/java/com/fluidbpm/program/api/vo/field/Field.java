@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.GeoUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
@@ -356,7 +357,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			} else if (objFromKey instanceof Boolean) {
 				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
 			} else {
-				this.setFieldValue(this.jsonObject.getString(JSONMapping.FIELD_VALUE));
+				String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
+				if (this.getTypeAsEnum() == Type.MultipleChoice) {
+					this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+				} else {
+					this.setFieldValue(stringVal);
+				}
 			}
 		}
 	}
@@ -423,6 +429,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getFieldValueAsString() {
 		Object returnObj = this.getFieldValue();
 		return (returnObj == null) ? null : returnObj.toString();
@@ -434,6 +441,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code getFieldName()} as upper_camel_case.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getFieldNameAsUpperCamel() {
 		return new UtilGlobal().toCamelUpperCase(this.getFieldName());
 	}
@@ -446,6 +454,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code getFieldName()} or 'Display Field Name' extracted from {@code getFieldDescription()}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getFieldNameDisplayValue() {
 		String fieldNameFromDesc = UtilGlobal.extractFieldNameFromText(this.getFieldDescription());
 		if (fieldNameFromDesc != null) return fieldNameFromDesc;
@@ -458,6 +467,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code getFieldName()} or 'Display Field Name' extracted from {@code getFieldDescription()}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getFieldDescriptionDisplayValue() {
 		return UtilGlobal.removeFieldNameFromText(this.getFieldDescription());
 	}
@@ -468,6 +478,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Boolean
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setFieldValueAsDouble(Double val) {
 		this.setFieldValue(val);
 	}
@@ -480,6 +491,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Double getFieldValueAsDouble() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -499,6 +511,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Long getFieldValueAsLong() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -518,6 +531,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Integer getFieldValueAsInteger() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -545,6 +559,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Number getFieldValueAsNumber() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -562,6 +577,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Boolean getFieldValueAsBoolean() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -577,6 +593,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Boolean
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setFieldValueAsBoolean(Boolean trueFalse) {
 		this.setFieldValue(trueFalse);
 	}
@@ -589,6 +606,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Date getFieldValueAsDate() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -608,6 +626,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Date
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setFieldValueAsDate(Date date) {
 		this.setFieldValue(date);
 	}
@@ -621,6 +640,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see MultiChoice
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public MultiChoice getFieldValueAsMultiChoice() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -639,6 +659,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see TableField
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public TableField getFieldValueAsTableField() {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
@@ -711,6 +732,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setTypeAsEnum(Type typeParam) {
 		if (typeParam == null) {
 			this.fieldType = null;
@@ -727,6 +749,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Type getTypeAsEnum() {
 		if (this.getFieldType() == null || this.getFieldType().trim().isEmpty()) return null;
 
@@ -781,6 +804,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
@@ -845,6 +869,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonMappingForElasticSearch() throws JSONException {
 		String fieldNameUpperCamel = this.getFieldNameAsUpperCamel();
 		if (fieldNameUpperCamel == null) return null;
@@ -867,6 +892,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonForElasticSearch() throws JSONException {
 		if (!this.doesFieldQualifyForElasticSearchInsert()) return null;
 
@@ -950,6 +976,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Field populateFromElasticSearchJson(JSONObject jsonObjectParam) throws JSONException {
 		if (this.getFieldNameAsUpperCamel() == null) return null;
 
@@ -1051,6 +1078,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public void populateFromElasticSearchJson(
 		JSONObject jsonObjectParam,
 		List<Field> formFieldsParam
@@ -1067,6 +1095,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @see ElasticSearchType
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getElasticSearchFieldType() {
 		Type fieldType = this.getTypeAsEnum();
 		if (fieldType == null) return null;
@@ -1101,6 +1130,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public Field clone() {
 		return new Field(this);
 	}
@@ -1111,6 +1141,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code true} if {@code field.fieldName} and {@code field.fieldValue} matches {@code this}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean valueEquals(Field field) {
 		if (field == null) return false;
 
@@ -1152,6 +1183,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code true} if empty, otherwise {@code false}.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFieldValueEmpty() {
 		if (this.getFieldValue() == null) return true;
 

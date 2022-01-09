@@ -4,6 +4,7 @@ mvn clean && mvn clean install -U -Dgpg.skip
 #PROPERTIES
 export WORKSPACE_HOME='/run/media/jbruwer/KB-Storage/Workspace/KB'
 export WF_HOME='/home/jbruwer/Applications/wildfly-20.0.1.Final'
+export WL_HOME='/home/jbruwer/Oracle/Middleware/Oracle_Home'
 
 echo '[INFO] Updating jar in FlowJob'
 rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar
@@ -20,6 +21,10 @@ rm -rf $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/extern
 echo '[INFO] Updating $WF_HOME'
 echo $WF_HOME
 cp -f $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar $WF_HOME/modules/com/fluidbpm/main/
+
+echo '[INFO] Updating $WL_HOME'
+echo $WL_HOME
+cp -f $WORKSPACE_HOME/FlowJob/flow-job-setup/docker/koekiebox/fluid_base/external_lib/com/fluidbpm/fluid-*.jar $WL_HOME/user_projects/domains/fluid/lib/
 
 echo '[INFO] *** *** *** ***'
 echo '[INFO] * DONE. Date: '$(date)

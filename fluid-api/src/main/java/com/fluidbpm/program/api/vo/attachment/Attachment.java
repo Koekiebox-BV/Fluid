@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.attachment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -41,7 +42,6 @@ import java.util.Date;
  * @see com.fluidbpm.program.api.vo.mail.MailMessageAttachment
  */
 public class Attachment extends ABaseFluidJSONObject {
-
 	public static final long serialVersionUID = 1L;
 
 	private String version;
@@ -150,10 +150,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	public Attachment(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Name...
 		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
@@ -194,8 +191,7 @@ public class Attachment extends ABaseFluidJSONObject {
 
 		//Attachment Data...
 		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DATA_BASE64)) {
-			this.setAttachmentDataBase64(this.jsonObject.getString(
-					JSONMapping.ATTACHMENT_DATA_BASE64));
+			this.setAttachmentDataBase64(this.jsonObject.getString(JSONMapping.ATTACHMENT_DATA_BASE64));
 		}
 	}
 
@@ -361,17 +357,13 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return Whether the {@code Attachment} name contains {@code containingTextParam}.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean doesNameContain(String containingTextParam) {
-		if (this.getName() == null || this.getName().trim().isEmpty()) {
-			return false;
-		}
+		if (this.getName() == null || this.getName().trim().isEmpty()) return false;
 
-		if (containingTextParam == null || containingTextParam.trim().isEmpty()) {
-			return false;
-		}
+		if (containingTextParam == null || containingTextParam.trim().isEmpty()) return false;
 
 		String paramLower = containingTextParam.toLowerCase();
-
 		String nameLower = this.getName().toLowerCase();
 
 		return nameLower.contains(paramLower);
@@ -386,6 +378,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 		//Attachment Data...
@@ -437,6 +430,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return cloned instance of {@code Attachment}.
 	 */
 	@Override
+	@JsonIgnore
 	public Attachment clone() {
 		return new Attachment(this);
 	}
@@ -446,6 +440,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return {@code true} if content type is image.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFileTypeImage() {
 		if (this.getContentType() == null || this.getContentType().trim().isEmpty()) return false;
 		return (this.getContentType().trim().toLowerCase().startsWith("image"));
@@ -456,6 +451,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return {@code true} if content type is PDF.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFileTypePDF() {
 		return "application/pdf".equals(this.getContentType().trim().toLowerCase());
 	}
@@ -465,6 +461,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return {@code true} if content type is Microsoft Word Document.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFileTypeMSWord() {
 		String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
 		switch (contentTypeLower) {
@@ -482,6 +479,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return {@code true} if content type is Microsoft Word Document.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFileTypeMSExcel() {
 		String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
 		switch (contentTypeLower) {
@@ -499,6 +497,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return {@code true} if content type is JSON.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFileTypeJSON() {
 		return "application/json".equals(this.getContentType().trim().toLowerCase());
 	}
@@ -508,6 +507,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return String - The user friendly name for the content type.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getContentTypeFriendly() {
 		if (this.isFileTypeImage()) return "Image";
 		if (this.isFileTypePDF()) return "PDF";
@@ -523,6 +523,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return {@code byte[]}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public byte[] getAttachmentDataRAW() {
 		if (UtilGlobal.isBlank(this.getAttachmentDataBase64())) return null;
 		return BaseEncoding.base64().decode(this.getAttachmentDataBase64());
@@ -532,6 +533,7 @@ public class Attachment extends ABaseFluidJSONObject {
 	 * @return Extension from filename.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getExtensionFromFilename() {
 		if (this.getName() == null) return null;
 		int indexOf = this.getName().lastIndexOf(".");

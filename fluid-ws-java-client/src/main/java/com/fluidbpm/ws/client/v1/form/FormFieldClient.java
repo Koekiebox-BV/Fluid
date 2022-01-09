@@ -1521,8 +1521,11 @@ public class FormFieldClient extends ABaseFieldClient {
 		if (userQueries == null || userQueries.isEmpty()) return new ArrayList<>();
 
 		UserQueryListing userQueryListing = new UserQueryListing();
-		userQueryListing.setListing(userQueries);
+		userQueryListing.setListing(userQueries.stream()
+				.map(toAdd -> new UserQuery(toAdd.getId(), toAdd.getName()))
+				.collect(Collectors.toList()));
 		userQueryListing.setServiceTicket(this.serviceTicket);
+		userQueryListing.setListingCount(userQueries.size());
 
 		return new UserQueryListing(this.postJson(
 				userQueryListing, WS.Path.FormField.Version1.getByUserQueries())).getListing();

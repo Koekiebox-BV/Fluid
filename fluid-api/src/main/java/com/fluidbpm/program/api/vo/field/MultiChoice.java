@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import lombok.EqualsAndHashCode;
@@ -223,6 +224,8 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
+	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
@@ -265,6 +268,8 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * Have a look at {@code MultiChoice#getSelectedMultiChoices()}.
 	 */
 	@Override
+	@XmlTransient
+	@JsonIgnore
 	public String toString() {
 		return this.combineStringArrayWith(this.getSelectedMultiChoices(), UtilGlobal.COMMA_SPACE);
 	}
@@ -286,6 +291,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return {@code String} Single value of selected multi choice.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getSelectedMultiChoicesTxt() {
 		if (this.selectedMultiChoices == null) this.selectedMultiChoices = new ArrayList<>();
 		if (this.selectedMultiChoices.isEmpty()) return null;
@@ -299,6 +305,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return {@code true} if empty, otherwise {@code false}.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isSelectedValuesEmpty() {
 		return  (this.getSelectedMultiChoices() == null || this.getSelectedMultiChoices().isEmpty());
 	}
@@ -364,6 +371,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return The combined text value.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String combineStringArrayWith(List<String> listToCombineParam, String separatorCharsParam) {
 		String returnValue = UtilGlobal.EMPTY;
 
@@ -386,6 +394,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return Cloned object from {@code this}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public MultiChoice cloneMultiChoice() {
 		return new MultiChoice(this);
 	}
@@ -394,6 +403,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return Cloned object from {@code this}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	@Override
 	public MultiChoice clone() {
 		return new MultiChoice(this);
@@ -404,6 +414,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return {@code this#cloneMultiChoice}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public MultiChoice getCloneMultiChoice() {
 		return this.cloneMultiChoice();
 	}
@@ -415,6 +426,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @return {@code true} if {@code this} is equal to {@code compareAgainst}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean selectedEquals(MultiChoice compareAgainst) {
 		if (compareAgainst == null) return false;
 

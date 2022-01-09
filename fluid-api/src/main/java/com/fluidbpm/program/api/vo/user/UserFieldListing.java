@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.user;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.program.api.vo.field.Field;
+import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -61,6 +61,7 @@ public class UserFieldListing extends ABaseListing<Field> {
      */
     @Override
     @XmlTransient
+    @JsonIgnore
     public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
         return new Field(jsonObjectParam);
     }

@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,29 +65,22 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
-	 * @param jsonObjectParam The JSON Object.
+	 * @param jsonObject The JSON Object.
 	 */
-	public ABaseListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+	public ABaseListing(JSONObject jsonObject){
+		super(jsonObject);
+		if (this.jsonObject == null) return;
 
 		//Listing...
 		int listingArrCount = 0;
 		if (!this.jsonObject.isNull(JSONMapping.LISTING)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(
-					JSONMapping.LISTING);
+			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.LISTING);
 			listingArrCount = listingArray.length();
 
 			List<T> listing = new ArrayList();
-
-			for (int index = 0;index < listingArrCount;index++)
-			{
-				listing.add(this.getObjectFromJSONObject(
-						listingArray.getJSONObject(index)));
+			for (int index = 0;index < listingArrCount;index++) {
+				listing.add(this.getObjectFromJSONObject(listingArray.getJSONObject(index)));
 			}
-
 			this.setListing(listing);
 		}
 
@@ -190,8 +184,8 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
-
 		JSONObject returnVal = super.toJsonObject();
 
 		//Listing...
@@ -235,6 +229,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	 * @see JSONObject
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public abstract T getObjectFromJSONObject(JSONObject jsonObjectParam);
 
 	/**
@@ -243,8 +238,8 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	 * @return {@code true} if the listing is {@code null} or empty.
 	 */
 	@XmlTransient
-	public boolean isListingEmpty()
-	{
+	@JsonIgnore
+	public boolean isListingEmpty() {
 		return (this.listing == null || this.listing.isEmpty());
 	}
 }

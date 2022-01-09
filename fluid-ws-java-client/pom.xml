@@ -176,8 +176,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${version.plugin.compiler}</version>
 				<configuration>
-					<source>${version.jdk.compile}</source>
-					<target>${version.jdk.compile}</target>
+					<source>8</source>
+					<target>8</target>
 
 					<!--compilerArgs>
 						<arg>add-modules</arg>

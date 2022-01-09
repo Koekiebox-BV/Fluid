@@ -15,9 +15,9 @@
 
 package com.fluidbpm.ws.client.v1;
 
-import java.util.concurrent.TimeUnit;
-
 import com.fluidbpm.ws.client.v1.user.LoginClient;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base test case for all Fluid WS Test Cases.
@@ -42,7 +42,7 @@ public class ABaseTestCase {
 	{
 		return System.getProperty(
 				"FLUID_WS_URL",
-				"http://localhost:8080/fluid-ws/");
+				"http://localhost:7001/fluid-ws/");
 	}
 
 	/**

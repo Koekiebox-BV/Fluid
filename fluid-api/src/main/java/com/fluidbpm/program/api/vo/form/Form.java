@@ -179,9 +179,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	public Form(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Form Description...
 		if (!this.jsonObject.isNull(JSONMapping.FORM_DESCRIPTION)) {
@@ -276,9 +274,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Form Fields...
 		if (!this.jsonObject.isNull(JSONMapping.FORM_FIELDS)) {
-			JSONArray formFieldsArr = this.jsonObject.getJSONArray(
-					JSONMapping.FORM_FIELDS);
-
+			JSONArray formFieldsArr = this.jsonObject.getJSONArray(JSONMapping.FORM_FIELDS);
 			List<Field> assFormFields = new ArrayList<>();
 			for (int index = 0;index < formFieldsArr.length();index++) {
 				assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));

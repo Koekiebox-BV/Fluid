@@ -79,11 +79,23 @@ public class UserQuery extends ABaseListing<FluidItem> {
 	/**
 	 * Sets the Id associated with a 'User Query'.
 	 *
-	 * @param userQueryIdParam UserQuery Id.
+	 * @param userQueryId UserQuery Id.
 	 */
-	public UserQuery(Long userQueryIdParam) {
+	public UserQuery(Long userQueryId) {
 		super();
-		this.setId(userQueryIdParam);
+		this.setId(userQueryId);
+	}
+
+	/**
+	 * Sets the Id and name associated with a 'User Query'.
+	 *
+	 * @param userQueryId UserQuery Id.
+	 * @param name UserQuery Name.
+	 */
+	public UserQuery(Long userQueryId, String name) {
+		super();
+		this.setId(userQueryId);
+		this.setName(name);
 	}
 
 	/**
