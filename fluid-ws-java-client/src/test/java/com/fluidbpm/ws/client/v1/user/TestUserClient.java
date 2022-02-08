@@ -241,9 +241,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testUpdateUserRole() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -296,9 +294,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testGetLoggedUserInfo() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -316,9 +312,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testGetAllUserInfo() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -341,9 +335,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testIncrementInvalidLogin() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -392,9 +384,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testGetUserInfoByUsername() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -412,9 +402,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testGetUserInfoById() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

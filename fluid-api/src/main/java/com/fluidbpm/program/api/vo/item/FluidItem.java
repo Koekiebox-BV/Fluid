@@ -447,7 +447,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		//Step Entered Time...
 		if (this.getStepEnteredTime() != null) {
-			returnVal.put(JSONMapping.STEP_ENTERED_TIME, this.getDateAsLongFromJson(this.getStepEnteredTime()));
+			returnVal.put(JSONMapping.STEP_ENTERED_TIME, this.getDateAsObjectFromJson(this.getStepEnteredTime()));
 		}
 
 		return returnVal;

@@ -358,7 +358,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
 			} else {
 				String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
-				if (this.getTypeAsEnum() == Type.MultipleChoice) {
+				if (this.getTypeAsEnum() == Type.MultipleChoice &&
+						stringVal != null && stringVal.startsWith("{")) {
 					this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
 				} else {
 					this.setFieldValue(stringVal);
@@ -830,7 +831,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			} else if (this.getFieldValue() instanceof Date) {
 				//Date Time...
 				returnVal.put(JSONMapping.FIELD_VALUE,
-						this.getDateAsLongFromJson((Date)this.getFieldValue()));
+						this.getDateAsObjectFromJson((Date)this.getFieldValue()));
 			} else if (this.getFieldValue() instanceof MultiChoice) {
 				//Multi Choice...
 				returnVal.put(JSONMapping.FIELD_VALUE,

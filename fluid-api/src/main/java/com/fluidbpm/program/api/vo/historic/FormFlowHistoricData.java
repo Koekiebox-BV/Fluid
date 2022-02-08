@@ -15,15 +15,14 @@
 
 package com.fluidbpm.program.api.vo.historic;
 
-import java.util.Date;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -154,66 +153,48 @@ public class FormFlowHistoricData extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Date Created...
-		if (this.getDateCreated() != null)
-		{
-			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateAsLongFromJson(this.getDateCreated()));
+		if (this.getDateCreated() != null) {
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsObjectFromJson(this.getDateCreated()));
 		}
 
 		//Rule Executed...
-		if (this.getRuleExecuted() != null)
-		{
-			returnVal.put(JSONMapping.RULE_EXECUTED,
-					this.getRuleExecuted());
+		if (this.getRuleExecuted() != null) {
+			returnVal.put(JSONMapping.RULE_EXECUTED, this.getRuleExecuted());
 		}
 
 		//Rule Executed Result...
-		if (this.getRuleExecutedResult() != null)
-		{
-			returnVal.put(JSONMapping.RULE_EXECUTED_RESULT,
-					this.getRuleExecutedResult());
+		if (this.getRuleExecutedResult() != null) {
+			returnVal.put(JSONMapping.RULE_EXECUTED_RESULT, this.getRuleExecutedResult());
 		}
 
 		//Rule Order...
-		if (this.getFlowRuleOrder() != null)
-		{
-			returnVal.put(JSONMapping.FLOW_RULE_ORDER,
-					this.getFlowRuleOrder());
+		if (this.getFlowRuleOrder() != null) {
+			returnVal.put(JSONMapping.FLOW_RULE_ORDER, this.getFlowRuleOrder());
 		}
 
 		//Log Entry Type...
-		if (this.getLogEntryType() != null)
-		{
-			returnVal.put(JSONMapping.LOG_ENTRY_TYPE,
-					this.getLogEntryType());
+		if (this.getLogEntryType() != null) {
+			returnVal.put(JSONMapping.LOG_ENTRY_TYPE, this.getLogEntryType());
 		}
 
 		//User...
-		if (this.getUser() != null)
-		{
-			returnVal.put(JSONMapping.USER,
-					this.getUser().toJsonObject());
+		if (this.getUser() != null) {
+			returnVal.put(JSONMapping.USER, this.getUser().toJsonObject());
 		}
 
 		//Flow Step...
-		if (this.getFlowStep() != null)
-		{
-			returnVal.put(JSONMapping.FLOW_STEP,
-					this.getFlowStep().toJsonObject());
+		if (this.getFlowStep() != null) {
+			returnVal.put(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
 		}
 
 		//Form...
-		if (this.getForm() != null)
-		{
-			returnVal.put(JSONMapping.FORM,
-					this.getForm().toJsonObject());
+		if (this.getForm() != null) {
+			returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
 		}
 
 		//Job View...
-		if (this.getJobView() != null)
-		{
-			returnVal.put(JSONMapping.JOB_VIEW,
-					this.getJobView());
+		if (this.getJobView() != null) {
+			returnVal.put(JSONMapping.JOB_VIEW, this.getJobView());
 		}
 
 		return returnVal;

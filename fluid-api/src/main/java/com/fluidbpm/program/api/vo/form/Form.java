@@ -816,10 +816,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (this.getNumberInputs() != null) returnVal.put(JSONMapping.NUMBER_INPUTS, this.getNumberInputs());
 
 		//Date Created...
-		if (this.getDateCreated() != null) returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
+		if (this.getDateCreated() != null) returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsObjectFromJson(this.getDateCreated()));
 
 		//Date Last Updated...
-		if (this.getDateLastUpdated() != null) returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+		if (this.getDateLastUpdated() != null) returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsObjectFromJson(this.getDateLastUpdated()));
 
 		//Current User...
 		if (this.getCurrentUser() != null) returnVal.put(JSONMapping.CURRENT_USER, this.getCurrentUser().toJsonObject());
@@ -1083,12 +1083,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Date Created...
 		if (this.getDateCreated() != null) {
-			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsObjectFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsObjectFromJson(this.getDateLastUpdated()));
 		}
 
 		//Form Fields...

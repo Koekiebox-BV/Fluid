@@ -51,6 +51,10 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 
 	@Getter
 	@Setter
+	private Long dateTimestamp;
+
+	@Getter
+	@Setter
 	private String formContainerFieldValuesJSON;
 
 	@Getter
@@ -231,7 +235,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 
 		//Date...
 		if (this.getDate() != null) {
-			returnVal.put(JSONMapping.DATE, this.getDateAsLongFromJson(this.getDate()));
+			returnVal.put(JSONMapping.DATE, this.getDateAsObjectFromJson(this.getDate()));
 		}
 
 		//Date and Time Field Name...

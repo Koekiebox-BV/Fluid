@@ -21,6 +21,9 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -77,7 +80,13 @@ public abstract class ABaseClientWS implements AutoCloseable{
 
 	//Protected variables used by subclasses...
 	protected String endpointUrl = "https://localhost:8443/fluid-ws/";
+
+	@Getter
+	@Setter
 	protected String serviceTicket;
+
+	@Getter
+	@Setter
 	protected String requestUuid;
 
 	private static String EQUALS = "=";
@@ -96,76 +105,21 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	/**
 	 * The HTML Form Name and Value mapping.
 	 */
+	@RequiredArgsConstructor
+	@Getter
 	public static class FormNameValue {
-		private String name;
-		private String value;
-
-		/**
-		 * Sets the HTML name and value.
-		 *
-		 * @param nameParam The HTML name.
-		 * @param valueParam The HTML value.
-		 */
-		public FormNameValue(String nameParam, String valueParam) {
-			this.name = nameParam;
-			this.value = valueParam;
-			this.value = ABaseClientWS.encodeParam(this.value);
-		}
-
-		/**
-		 * Gets the Form Param Name.
-		 *
-		 * @return The Form Param Name.
-		 */
-		public String getName() {
-			return this.name;
-		}
-
-		/**
-		 * Gets the Form Param Value.
-		 *
-		 * @return The Form Param Value.
-		 */
-		public String getValue() {
-			return value;
-		}
+		private final String name;
+		private final String value;
 	}
 
 	/**
 	 * The HTML Header Name and Value mapping.
 	 */
+	@RequiredArgsConstructor
+	@Getter
 	public static class HeaderNameValue {
-		private String name;
-		private String value;
-
-		/**
-		 * Sets the HTML Header name and value.
-		 *
-		 * @param nameParam The HTML header name.
-		 * @param valueParam The HTML header value.
-		 */
-		public HeaderNameValue(String nameParam, String valueParam) {
-			this.name = nameParam;
-			this.value = valueParam;
-		}
-
-		/**
-		 * Gets the Form Param Name.
-		 *
-		 * @return The Form Param Name.
-		 */
-		public String getName() {
-			return this.name;
-		}
-
-		/**
-		 * Gets the Form Param Value.
-		 *
-		 * @return The Form Param Value.
-		 */
-		public String getValue() {
-			return value;
-		}
+		private final String name;
+		private final String value;
 	}
 
 	/**
@@ -692,12 +646,12 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see ABaseFluidJSONObject
 	 */
 	protected JSONObject executeString(
-			HttpMethod httpMethodParam,
-			List<HeaderNameValue> headerNameValuesParam,
-			boolean checkConnectionValidParam,
-			String stringParam,
-			ContentType contentTypeParam,
-			String postfixUrlParam
+		HttpMethod httpMethodParam,
+		List<HeaderNameValue> headerNameValuesParam,
+		boolean checkConnectionValidParam,
+		String stringParam,
+		ContentType contentTypeParam,
+		String postfixUrlParam
 	) {
 		String responseBody = this.executeTxtReceiveTxt(
 				httpMethodParam,
@@ -993,42 +947,6 @@ public abstract class ABaseClientWS implements AutoCloseable{
 		}
 
 		return false;
-	}
-
-	/**
-	 * Gets the service ticket.
-	 *
-	 * @return The service ticket.
-	 */
-	public String getServiceTicket() {
-		return this.serviceTicket;
-	}
-
-	/**
-	 * Sets the service ticket.
-	 *
-	 * @param serviceTicketParam The service ticket.
-	 */
-	public void setServiceTicket(String serviceTicketParam) {
-		this.serviceTicket = serviceTicketParam;
-	}
-
-	/**
-	 * Gets the request UUID for tracing purposes.
-	 *
-	 * @return Request UUID
-	 */
-	public String getRequestUuid() {
-		return this.requestUuid;
-	}
-
-	/**
-	 * Sets the request UUID for tracing purposes.
-	 *
-	 * @param requestUuidParam The unique identifier for the request.
-	 */
-	public void setRequestUuid(String requestUuidParam) {
-		this.requestUuid = requestUuidParam;
 	}
 
 	/**

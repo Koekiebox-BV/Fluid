@@ -145,13 +145,13 @@ public class LicenseRequest extends ABaseFluidJSONObject {
 		//Date Valid From...
 		if (this.getDateValidFrom() != null) {
 			returnVal.put(JSONMapping.DATE_VALID_FROM,
-					this.getDateAsLongFromJson(this.getDateValidFrom()));
+					this.getDateAsObjectFromJson(this.getDateValidFrom()));
 		}
 
 		//Date Valid To...
 		if (this.getDateValidTo() != null) {
 			returnVal.put(JSONMapping.DATE_VALID_TO,
-					this.getDateAsLongFromJson(this.getDateValidTo()));
+					this.getDateAsObjectFromJson(this.getDateValidTo()));
 		}
 
 		return returnVal;

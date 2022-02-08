@@ -38,6 +38,7 @@ import java.util.Date;
 public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
 	public static final long serialVersionUID = 1L;
+	public static int JSON_INDENT_FACTOR = 2;
 
 	@XmlTransient
 	@JsonIgnore
@@ -47,13 +48,14 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	@JsonIgnore
 	public boolean jsonIncludeAll = false;
 
-	private static SimpleDateFormat DATE_FORMAT_001 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-	private static SimpleDateFormat DATE_FORMAT_002 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	private static SimpleDateFormat DATE_FORMAT_003 = new SimpleDateFormat("h:mma");
-	private static SimpleDateFormat DATE_FORMAT_004 = new SimpleDateFormat("yyyy-MM-dd");
+	private static String DATE_FORMAT_001 = "yyyy-MM-dd'T'HH:mm:sss";//2022-02-07T13:37:22.557Z[UTC]
+	private static String DATE_FORMAT_002 = "yyyy-MM-dd'T'HH:mm:ssZ";//2022-02-07T13:37:22.55UTC
+	private static String DATE_FORMAT_003 = "yyyy-MM-dd'T'HH:mm:ss";
+	private static String DATE_FORMAT_004 = "h:mma";
+	private static String DATE_FORMAT_005 = "yyyy-MM-dd";
 
-	private static SimpleDateFormat[] SUPPORTED_FORMATS = {
-			DATE_FORMAT_001, DATE_FORMAT_002, DATE_FORMAT_003, DATE_FORMAT_004
+	private static String[] SUPPORTED_FORMATS = {
+			DATE_FORMAT_001, DATE_FORMAT_002, DATE_FORMAT_003, DATE_FORMAT_004,DATE_FORMAT_005
 	};
 
 	/**
@@ -203,19 +205,16 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 			return this.getLongAsDateFromJson(((Number)objectAtIndex).longValue());
 		} else if (objectAtIndex instanceof String) {
 			Date validDate = null;
-			for (SimpleDateFormat format : SUPPORTED_FORMATS) {
+			for (String format : SUPPORTED_FORMATS) {
 				try {
-					validDate = format.parse((String)objectAtIndex);
-					if (validDate != null) {
-						break;
-					}
+					validDate = new SimpleDateFormat(format).parse((String)objectAtIndex);
+					if (validDate != null) break;
 				} catch (ParseException parseExcept) {
 					validDate = null;
 				}
 			}
 			return validDate;
 		}
-
 		return null;
 	}
 
@@ -230,10 +229,25 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	@XmlTransient
 	@JsonIgnore
 	public Long getDateAsLongFromJson(Date dateValueParam) {
-		if (dateValueParam == null) {
-			return null;
-		}
+		if (dateValueParam == null) return null;
 		return dateValueParam.getTime();
+	}
+
+	/**
+	 * Converts the {@code Date} object into a {@code Long} timestamp.
+	 *
+	 * Returns {@code null} if {@code dateValueParam} is {@code null}.
+	 *
+	 * @param dateValue {@code Long} Object from {@code dateValueParam}
+	 * @return The milliseconds since January 1, 1970, 00:00:00 GMT
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public Object getDateAsObjectFromJson(Date dateValue) {
+		return this.getDateAsLongFromJson(dateValue);
+
+		//return new SimpleDateFormat(DATE_FORMAT_001).format(dateValue);
+		//return dateValue.toString();
 	}
 
 	/**
@@ -258,6 +272,6 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 	@JsonIgnore
 	public String toString() {
 		JSONObject jsonObject = this.toJsonObject();
-		return (jsonObject == null) ? null : jsonObject.toString();
+		return (jsonObject == null) ? null : jsonObject.toString(JSON_INDENT_FACTOR);
 	}
 }

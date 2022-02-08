@@ -15,13 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
@@ -29,8 +22,13 @@ import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -66,10 +64,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
     @Ignore
     public void testRetrieveFormFlowHistoricData()
     {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+        if (!this.isConnectionValid()) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
@@ -79,13 +74,12 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
         FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
 
         List<FormFlowHistoricData> flowHistoricData =
-                formContainerClient.getFormFlowHistoricData(new Form(674L));
+                formContainerClient.getFormFlowHistoricData(new Form(4L));
 
         //Confirm the historic data is set...
         TestCase.assertNotNull(flowHistoricData);
 
-        for (FormFlowHistoricData data : flowHistoricData)
-        {
+        for (FormFlowHistoricData data : flowHistoricData) {
             TestCase.assertNotNull(data);
             TestCase.assertNotNull("Id not set",data.getId());
             TestCase.assertNotNull("Date Created not set",data.getDateCreated());

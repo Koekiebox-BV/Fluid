@@ -2376,6 +2376,7 @@ public class WS {
 			 */
 			public static final class QueryParam {
 				public static final String INCLUDE_CURRENT = "include_current";
+				public static final String LABEL_FIELD_NAME = "label_field_name";
 			}
 
 			/**
@@ -2411,23 +2412,23 @@ public class WS {
 				/**
 				 * URL Path for Form History by 'Form Container'.
 				 *
-				 * @param includeCurrentParam Whether the current values should be included.
+				 * @param includeCurrent Whether the current values should be included.
+				 * @param makeUseOfLabelFieldName Should the label field name be used instead of the system name.
 				 *
 				 * @return {@code v1/form_history/get_by_form_container}
 				 */
-				public static final String getByFormContainer(boolean includeCurrentParam) {
-					if (!includeCurrentParam) {
-						return Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
-					}
-
-					String returnVal = Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER);
-
-					returnVal = returnVal.concat("?");
-					returnVal = returnVal.concat(INCLUDE_CURRENT);
-					returnVal = returnVal.concat("=");
-					returnVal += includeCurrentParam;
-
-					return returnVal;
+				public static final String getByFormContainer(
+					boolean includeCurrent,
+					boolean makeUseOfLabelFieldName
+				) {
+					return String.format(
+						"%s?%s=%s&%s=%s",
+						Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER),
+						INCLUDE_CURRENT,
+						includeCurrent,
+						QueryParam.LABEL_FIELD_NAME,
+						makeUseOfLabelFieldName
+					);
 				}
 
 				/**

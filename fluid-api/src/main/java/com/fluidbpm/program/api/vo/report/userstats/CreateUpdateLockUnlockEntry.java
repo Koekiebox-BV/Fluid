@@ -105,7 +105,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 
 		if (this.getEntryDay() != null) {
 			returnVal.put(JSONMapping.ENTRY_DAY,
-					this.getDateAsLongFromJson(this.getEntryDay()));
+					this.getDateAsObjectFromJson(this.getEntryDay()));
 		}
 
 		if (this.getFormContainerTypeStats() != null && !this.getFormContainerTypeStats().isEmpty()) {

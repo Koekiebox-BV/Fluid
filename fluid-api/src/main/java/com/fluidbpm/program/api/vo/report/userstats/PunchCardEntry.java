@@ -109,27 +109,27 @@ public class PunchCardEntry extends ABaseFluidJSONReportObject {
 
 		if (this.getPunchCardDay() != null) {
 			returnVal.put(JSONMapping.PUNCH_CARD_DAY,
-					this.getDateAsLongFromJson(this.getPunchCardDay()));
+					this.getDateAsObjectFromJson(this.getPunchCardDay()));
 		}
 
 		if (this.getFirstLoginForDay() != null) {
 			returnVal.put(JSONMapping.FIRST_LOGIN_FOR_DAY,
-					this.getDateAsLongFromJson(this.getFirstLoginForDay()));
+					this.getDateAsObjectFromJson(this.getFirstLoginForDay()));
 		}
 
 		if (this.getSecondLastLogout() != null) {
 			returnVal.put(JSONMapping.SECOND_LAST_LOGOUT,
-					this.getDateAsLongFromJson(this.getSecondLastLogout()));
+					this.getDateAsObjectFromJson(this.getSecondLastLogout()));
 		}
 
 		if (this.getSecondLastLogin() != null) {
 			returnVal.put(JSONMapping.SECOND_LAST_LOGIN,
-					this.getDateAsLongFromJson(this.getSecondLastLogin()));
+					this.getDateAsObjectFromJson(this.getSecondLastLogin()));
 		}
 
 		if (this.getLastLogout() != null) {
 			returnVal.put(JSONMapping.LAST_LOGOUT,
-					this.getDateAsLongFromJson(this.getLastLogout()));
+					this.getDateAsObjectFromJson(this.getLastLogout()));
 		}
 
 		return returnVal;

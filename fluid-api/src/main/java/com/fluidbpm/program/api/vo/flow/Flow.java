@@ -169,12 +169,12 @@ public class Flow extends ABaseFluidJSONObject {
 
 		//Date Created...
 		if (this.getDateCreated() != null) {
-			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
+			returnVal.put(JSONMapping.DATE_CREATED, this.getDateAsObjectFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+			returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateAsObjectFromJson(this.getDateLastUpdated()));
 		}
 		return returnVal;
 	}

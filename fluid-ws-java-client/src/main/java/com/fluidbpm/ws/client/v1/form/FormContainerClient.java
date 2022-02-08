@@ -214,14 +214,17 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * The Form Id must be provided.
 	 *
-	 * @param formParam The form to retrieve historic data for.
+	 * @param form The form to retrieve historic data for.
 	 * @return Electronic Form Workflow historic data.
 	 */
-	public List<FormFlowHistoricData> getFormFlowHistoricData(Form formParam) {
-		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
+	public List<FormFlowHistoricData> getFormFlowHistoricData(Form form) {
+		Form formToSend = new Form(form.getId());
+		formToSend.setFormType(form.getFormType());
+		formToSend.setFormTypeId(form.getFormTypeId());
+		formToSend.setServiceTicket(this.serviceTicket);
 
 		return new FormFlowHistoricDataListing(this.postJson(
-				formParam, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
+				formToSend, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
 	}
 
 	/**
@@ -229,20 +232,42 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * The Form Id must be provided.
 	 *
-	 * @param includeCurrentParam Whether the current values should be included.
+	 * @param includeCurrent Whether the current values should be included.
 	 *
-	 * @param formParam The form to retrieve historic data for.
+	 * @param form The form to retrieve historic data for.
 	 * @return Electronic Form and Field historic data.
 	 */
 	public List<FormHistoricData> getFormAndFieldHistoricData(
-		Form formParam,
-		boolean includeCurrentParam
+			Form form,
+			boolean includeCurrent
 	) {
-		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
+		return this.getFormAndFieldHistoricData(form, includeCurrent, false);
+	}
+
+	/**
+	 * Retrieves Electronic Form and Field historic information.
+	 *
+	 * The Form Id must be provided.
+	 *
+	 * @param includeCurrent Whether the current values should be included.
+	 * @param labelFieldName Should the label field name be used instead of the system name.
+	 *
+	 * @param form The form to retrieve historic data for.
+	 * @return Electronic Form and Field historic data.
+	 */
+	public List<FormHistoricData> getFormAndFieldHistoricData(
+		Form form,
+		boolean includeCurrent,
+		boolean labelFieldName
+	) {
+		Form formToSend = new Form(form.getId());
+		formToSend.setFormType(form.getFormType());
+		formToSend.setFormTypeId(form.getFormTypeId());
+		formToSend.setServiceTicket(this.serviceTicket);
 
 		return new FormHistoricDataListing(this.postJson(
-				formParam, WS.Path.FormHistory.Version1.getByFormContainer(
-						includeCurrentParam))).getListing();
+				formToSend, WS.Path.FormHistory.Version1.getByFormContainer(
+						includeCurrent, labelFieldName))).getListing();
 	}
 
 	/**

@@ -190,8 +190,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 		TestCase.assertEquals("The number of 'Form Fields' is not equal.", 3, createdForm.getFormFields().size());
 
 		//Create a history record...
-		FormHistoricData historicData = new FormHistoricData();
-		historicData.setFormForAuditCreate(createdForm);
+		FormHistoricData historicData = new FormHistoricData(createdForm, new Date());
 
 		historicData = formContainerClient.createFormHistoricData(historicData);
 		TestCase.assertNotNull("The 'History' needs to be set.", historicData);
@@ -314,6 +313,58 @@ public class TestFormContainerClient extends ABaseTestCase {
 		historicData.setDate(new Date(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(60)));
 
 		fcClient.createFormHistoricData(historicData);
+	}
+
+	@Test
+	@Ignore
+	public void testCRUDFormContainerWithComplexFieldHistory() {
+		if (!this.isConnectionValid()) return;
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		String serviceTicket = appRequestToken.getServiceTicket();
+
+		FormContainerClient fcClient = new FormContainerClient(BASE_URL, serviceTicket);
+
+		Form original = new Form("Modify Card Request", "Modify Card Request - "+ new Date());
+		original.setFieldValue("Primary Account Number", "4567840011224660", Field.Type.TextEncrypted);
+		original.setFieldValue("Customer ID", "12345", Field.Type.Text);
+		original.setFieldValue("PAN Sequence Number", "001", Field.Type.TextEncrypted);
+		original.setFieldValue("Card Program", new MultiChoice("CBC"), Field.Type.MultipleChoice);
+		original.setFieldValue("Card Status", new MultiChoice("InActive"), Field.Type.MultipleChoice);
+		original.setFieldValue("Expiry Date Date", new Date(), Field.Type.DateTime);
+		original.setFieldValue("Hold Response Code", new MultiChoice("02 - Refer to card issuer, special condition"), Field.Type.MultipleChoice);
+		original.setFieldValue("Mailer Destination", new MultiChoice("Issuer"), Field.Type.MultipleChoice);
+		original.setFieldValue("Company Card", Boolean.TRUE, Field.Type.TrueFalse);
+
+		Form orgCreated = fcClient.createFormContainer(original);
+
+		Form historicOnly = new Form("Modify Card Request", "Modify The Card Audit Log - "+new Date());
+		historicOnly.setId(orgCreated.getId());
+		historicOnly.setFieldValue("Primary Account Number", "4567840011224660", Field.Type.TextEncrypted);
+		historicOnly.setFieldValue("Customer ID", "12345", Field.Type.Text);
+		historicOnly.setFieldValue("PAN Sequence Number", "001", Field.Type.TextEncrypted);
+		historicOnly.setFieldValue("Card Program", new MultiChoice("ASBS Signature"), Field.Type.MultipleChoice);
+		historicOnly.setFieldValue("Card Status", new MultiChoice("Active"), Field.Type.MultipleChoice);
+		historicOnly.setFieldValue("Expiry Date Date", new Date(), Field.Type.DateTime);
+		historicOnly.setFieldValue("Hold Response Code", new MultiChoice("02 - Refer to card issuer, special condition"), Field.Type.MultipleChoice);
+		historicOnly.setFieldValue("Mailer Destination", new MultiChoice("Mailed"), Field.Type.MultipleChoice);
+		historicOnly.setFieldValue("Company Card", Boolean.FALSE, Field.Type.TrueFalse);
+		historicOnly.setFieldValue("Discretionary Data", "1PPPPCCCS_556", Field.Type.Text);
+		historicOnly.setFieldValue("Date Activated", new Date(), Field.Type.DateTime);
+		historicOnly.setFieldValue("Branch Code Text", "45", Field.Type.Text);
+
+		fcClient.createFormHistoricData(new FormHistoricData(
+			historicOnly,
+			new Date(System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(60))
+		));
+
+		List<FormHistoricData> historicData = fcClient.getFormAndFieldHistoricData(orgCreated, false);
+		for (FormHistoricData data : historicData) {
+			System.out.printf("\n\nLOG::::: %s - %s :::::\n", data.getHistoricEntryType(), data.getLogEntryType());
+			System.out.println(data.toString());
+		}
+
+		System.out.println(historicData);
 	}
 
 	@Test

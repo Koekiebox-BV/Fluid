@@ -34,43 +34,24 @@ public class ABaseTestCase {
 	public static String USERNAME = getTestUsername();
 	public static String PASSWORD = getTestPassword();
 
-	/**
-	 *
-	 * @return
-	 */
-	private static String getTestBASE_URL()
-	{
+	private static String getTestBASE_URL() {
 		return System.getProperty(
 				"FLUID_WS_URL",
-				"http://localhost:7001/fluid-ws/");
+				"http://localhost:8080/fluid-ws/");
 	}
 
-	/**
-	 *
-	 * @return
-	 */
-	private static String getTestUsername()
-	{
+	private static String getTestUsername() {
 		return System.getProperty(
 				"FLUID_WS_USERNAME",
 				"admin");
 	}
 
-	/**
-	 *
-	 * @return
-	 */
-	private static String getTestPassword()
-	{
+	private static String getTestPassword() {
 		return System.getProperty(
 				"FLUID_WS_PASSWORD",
 				"12345");
 	}
 
-	/**
-	 *
-	 * @param secondsToMillisParam
-	 */
 	public void sleepForSeconds(int secondsToMillisParam) {
 		try {
 			Thread.sleep(TimeUnit.SECONDS.toMillis(secondsToMillisParam));
@@ -79,14 +60,10 @@ public class ABaseTestCase {
 		}
 	}
 
-	/**
-	 *
-	 */
 	public void sleepForASecond()
 	{
 		this.sleepForSeconds(1);
 	}
-
 
 	/**
 	 * Check whether the {@code BASE_URL} is valid.
@@ -94,9 +71,7 @@ public class ABaseTestCase {
 	 * @return {@code true} if the connection is valid, otherwise {@code false}.
 	 */
 	protected boolean isConnectionValid() {
-
 		LoginClient loginClient = new LoginClient(BASE_URL);
-
 		try {
 			boolean isConValid = loginClient.isConnectionValid();
 
@@ -107,8 +82,7 @@ public class ABaseTestCase {
 			}
 
 			return isConValid;
-		}
-		finally {
+		} finally {
 			loginClient.closeAndClean();
 		}
 	}

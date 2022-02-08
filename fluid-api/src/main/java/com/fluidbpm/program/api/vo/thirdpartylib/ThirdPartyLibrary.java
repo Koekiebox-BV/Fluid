@@ -285,13 +285,13 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 		//Date Created...
 		if (this.getDateCreated() != null) {
 			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateAsLongFromJson(this.getDateCreated()));
+					this.getDateAsObjectFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
 			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-					this.getDateAsLongFromJson(this.getDateLastUpdated()));
+					this.getDateAsObjectFromJson(this.getDateLastUpdated()));
 		}
 
 		return returnVal;

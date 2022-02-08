@@ -15,13 +15,12 @@
 
 package com.fluidbpm.program.api.vo.form;
 
-import java.util.Date;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.user.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.user.User;
+import java.util.Date;
 
 /**
  * Represents a Collaboration of a Form between multiple users.
@@ -181,14 +180,12 @@ public class Collaboration extends ABaseFluidJSONObject {
 
 		//Date Read...
 		if (this.getDateRead() != null) {
-			returnVal.put(JSONMapping.DATE_READ,
-					this.getDateAsLongFromJson(this.getDateRead()));
+			returnVal.put(JSONMapping.DATE_READ, this.getDateAsObjectFromJson(this.getDateRead()));
 		}
 
 		//Date Sent...
 		if (this.getDateSent() != null) {
-			returnVal.put(JSONMapping.DATE_SENT,
-					this.getDateAsLongFromJson(this.getDateSent()));
+			returnVal.put(JSONMapping.DATE_SENT, this.getDateAsObjectFromJson(this.getDateSent()));
 		}
 
 		//From User...

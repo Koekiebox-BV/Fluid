@@ -731,25 +731,25 @@ public class User extends ABaseFluidJSONObject {
 		//Date Created...
 		if (this.getDateCreated() != null) {
 			returnVal.put(User.JSONMapping.DATE_CREATED,
-					this.getDateAsLongFromJson(this.getDateCreated()));
+					this.getDateAsObjectFromJson(this.getDateCreated()));
 		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null) {
 			returnVal.put(User.JSONMapping.DATE_LAST_UPDATED,
-					this.getDateAsLongFromJson(this.getDateLastUpdated()));
+					this.getDateAsObjectFromJson(this.getDateLastUpdated()));
 		}
 
 		//Password Changed At...
 		if (this.getPasswordChangedAt() != null) {
 			returnVal.put(JSONMapping.PASSWORD_CHANGED_AT,
-					this.getDateAsLongFromJson(this.getPasswordChangedAt()));
+					this.getDateAsObjectFromJson(this.getPasswordChangedAt()));
 		}
 
 		//Logged In Date Time...
 		if (this.getLoggedInDateTime() != null) {
 			returnVal.put(JSONMapping.LOGGED_IN_DATE_TIME,
-					this.getDateAsLongFromJson(this.getLoggedInDateTime()));
+					this.getDateAsObjectFromJson(this.getLoggedInDateTime()));
 		}
 
 		//SALT...

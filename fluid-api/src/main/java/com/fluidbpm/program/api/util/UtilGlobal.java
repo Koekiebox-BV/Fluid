@@ -697,7 +697,15 @@ public class UtilGlobal {
 		return sb.toString();
 	}
 
-	private static String getProperty(
+	/**
+	 * Retrieve environment or system property.
+	 *
+	 * @param existing Existing properties.
+	 * @param name The name of the property to fetch.
+	 * @param defaultVal The default value.
+	 * @return The value.
+	 */
+	public static String getProperty(
 		Properties existing,
 		String name,
 		String defaultVal

@@ -179,14 +179,18 @@ public class Attachment extends ABaseFluidJSONObject {
 
 		//Date Created...
 		if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
-			this.setDateCreated(new Date(
-					this.jsonObject.getLong(JSONMapping.DATE_CREATED)));
+			Object obj = this.jsonObject.get(JSONMapping.DATE_CREATED);
+			if (obj instanceof Number) {
+				this.setDateCreated(new Date(((Number)obj).longValue()));
+			}
 		}
 
 		//Date Last Updated...
 		if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
-			this.setDateLastUpdated(new Date(
-					this.jsonObject.getLong(JSONMapping.DATE_LAST_UPDATED)));
+			Object obj = this.jsonObject.get(JSONMapping.DATE_LAST_UPDATED);
+			if (obj instanceof Number) {
+				this.setDateLastUpdated(new Date(((Number)obj).longValue()));
+			}
 		}
 
 		//Attachment Data...
