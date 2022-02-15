@@ -615,8 +615,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		if (obj instanceof Date) {
 			return (Date)obj;
 		} else if (obj instanceof Number) {
-			Number longValue = (Number)obj;
-			if (longValue.longValue() > 0) return new Date(longValue.longValue());
+			return new Date(((Number)obj).longValue());
 		}
 		return null;
 	}

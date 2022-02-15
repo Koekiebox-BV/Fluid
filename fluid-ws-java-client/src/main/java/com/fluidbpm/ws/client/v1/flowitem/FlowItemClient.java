@@ -26,6 +26,8 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Java Web Service Client for Fluid / Flow Item related actions.
  *
@@ -99,6 +101,24 @@ public class FlowItemClient extends ABaseClientWS {
 	}
 
 	/**
+	 * Retrieves all items in an error state.
+	 * @return All the Fluid items in error state.
+	 * @see FluidItem
+	 */
+	public List<FluidItem> getFluidItemsInError() {
+		JobView jobView = new JobView();
+		jobView.setServiceTicket(this.serviceTicket);
+		try {
+			return new FluidItemListing(this.postJson(
+					jobView,
+					WS.Path.FlowItem.Version1.getAllInError())).getListing();
+		} catch (JSONException jsonExcept) {
+			throw new FluidClientException(jsonExcept.getMessage(),
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
+
+	/**
 	 * Retrieves items for the provided JobView.
 	 *
 	 * @param jobViewParam The {@link JobView} to retrieve items from.
@@ -115,9 +135,7 @@ public class FlowItemClient extends ABaseClientWS {
 		String sortFieldParam,
 		String sortOrderParam
 	) {
-		if (this.serviceTicket != null && jobViewParam != null) {
-			jobViewParam.setServiceTicket(this.serviceTicket);
-		}
+		if (jobViewParam != null) jobViewParam.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new FluidItemListing(this.postJson(
@@ -129,7 +147,6 @@ public class FlowItemClient extends ABaseClientWS {
 							sortOrderParam
 					)));
 		} catch (JSONException jsonExcept) {
-			//rethrow as a Fluid Client exception.
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}

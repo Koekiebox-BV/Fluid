@@ -2169,6 +2169,7 @@ public class WS {
 
 				//Get...
 				public static final String GET_BY_JOB_VIEW = ("/get_by_job_view");
+				public static final String GET_ALL_IN_ERROR = ("/get_all_error");
 				public static final String READ = ("/get_by_id");
 				public static final String READ_BY_FORM = ("/get_by_form");
 
@@ -2276,6 +2277,15 @@ public class WS {
 				 */
 				public static final String getByForm() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM);
+				}
+
+				/**
+				 * URL Path for Flow Item currently in error.
+				 *
+				 * @return {@code v1/flow_item/get_all_error}
+				 */
+				public static final String getAllInError() {
+					return Version.VERSION_1.concat(ROOT).concat(GET_ALL_IN_ERROR);
 				}
 
 				/**
