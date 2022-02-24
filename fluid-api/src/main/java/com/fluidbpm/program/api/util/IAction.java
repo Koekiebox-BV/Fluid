@@ -26,5 +26,5 @@ public interface IAction {
 	/**
 	 * Close any open connection used by the subclass.
 	 */
-	public abstract void closeConnection();
+	void closeConnection();
 }

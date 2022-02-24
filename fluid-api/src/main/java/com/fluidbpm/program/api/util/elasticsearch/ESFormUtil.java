@@ -15,18 +15,17 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
-
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.IFormAction;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ElasticSearch Utility class used for {@code Form} related actions.
@@ -134,10 +133,10 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 	/**
 	 * Gets the descendants for the {@code electronicFormIdParam} Form.
 	 *
-	 * @param electronicFormIdParam Identifier for the Form.
-	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-	 * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
-	 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+	 * @param electronicFormId Identifier for the Form.
+	 * @param includeFieldData Whether to populate the return {@code List<Form>} fields.
+	 * @param includeTableFields Whether to populate the return {@code List<Form>} table fields.
+	 * @param includeTableFieldFormRecordInfo Does table record form data need to be included.
 	 *
 	 * @return {@code List<Form>} descendants.
 	 *
@@ -145,24 +144,23 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
 	 */
 	@Override
 	public List<Form> getFormDescendants(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam,
-			boolean includeTableFieldFormRecordInfoParam
+			Long electronicFormId,
+			boolean includeFieldData,
+			boolean includeTableFields,
+			boolean includeTableFieldFormRecordInfo
 	) {
-		if (electronicFormIdParam == null) {
-			return null;
-		}
+		if (electronicFormId == null) return null;
 
 		List<Long> electronicFormIds = new ArrayList();
-		electronicFormIds.add(electronicFormIdParam);
+		electronicFormIds.add(electronicFormId);
 
 		//Get Form Descendants...
 		return this.getFormDescendants(
-				electronicFormIds,
-				includeFieldDataParam,
-				includeTableFieldsParam,
-				includeTableFieldFormRecordInfoParam);
+			electronicFormIds,
+			includeFieldData,
+			includeTableFields,
+			includeTableFieldFormRecordInfo
+		);
 	}
 
 	/**

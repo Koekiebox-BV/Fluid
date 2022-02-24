@@ -352,6 +352,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 		historicOnly.setFieldValue("Discretionary Data", "1PPPPCCCS_556", Field.Type.Text);
 		historicOnly.setFieldValue("Date Activated", new Date(), Field.Type.DateTime);
 		historicOnly.setFieldValue("Branch Code Text", "45", Field.Type.Text);
+		historicOnly.setFieldValue("Decimal", "1000000000", Field.Type.Decimal);
 
 		fcClient.createFormHistoricData(new FormHistoricData(
 			historicOnly,

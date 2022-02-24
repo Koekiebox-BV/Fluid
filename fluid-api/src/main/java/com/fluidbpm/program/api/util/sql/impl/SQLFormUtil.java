@@ -184,24 +184,24 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	/**
 	 * Gets the descendants for the {@code electronicFormIdParam} Form.
 	 *
-	 * @param electronicFormIdParam Identifier for the Form.
-	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-	 * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
-	 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+	 * @param electronicFormId Identifier for the Form.
+	 * @param includeFieldData Whether to populate the return {@code List<Form>} fields.
+	 * @param includeTableFields Whether to populate the return {@code List<Form>} table fields.
+	 * @param includeTableFieldFormRecordInfo Does table record form data need to be included.
 	 *
 	 * @return {@code List<Form>} descendants.
 	 *
 	 * @see Form
 	 */
 	public List<Form> getFormDescendants(
-		Long electronicFormIdParam,
-		boolean includeFieldDataParam,
-		boolean includeTableFieldsParam,
-		boolean includeTableFieldFormRecordInfoParam
+		Long electronicFormId,
+		boolean includeFieldData,
+		boolean includeTableFields,
+		boolean includeTableFieldFormRecordInfo
 	) {
 		List<Form> returnVal = new ArrayList();
 
-		if (electronicFormIdParam == null) return returnVal;
+		if (electronicFormId == null) return returnVal;
 
 		Map<Long,String> definitionAndTitle =
 				this.formDefUtil.getFormDefinitionIdAndTitle();
@@ -216,7 +216,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			preparedStatement = this.getConnection().prepareStatement(
 					syntax.getPreparedStatement());
 
-			preparedStatement.setLong(1,electronicFormIdParam);
+			preparedStatement.setLong(1, electronicFormId);
 
 			resultSet = preparedStatement.executeQuery();
 
@@ -226,19 +226,19 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 				if (mappedForm == null) continue;
 
 				//Ancestor...
-				mappedForm.setAncestorId(electronicFormIdParam);
+				mappedForm.setAncestorId(electronicFormId);
 
 				returnVal.add(mappedForm);
 			}
 
 			//When field data must also be included...
-			if (includeFieldDataParam) {
+			if (includeFieldData) {
 				for (Form form : returnVal) {
 					List<Field> formFields =
 							this.fieldUtil.getFormFields(
 									form.getId(),
-									includeTableFieldsParam,
-									includeTableFieldFormRecordInfoParam);
+									includeTableFields,
+									includeTableFieldFormRecordInfo);
 					form.setFormFields(formFields);
 				}
 			}

@@ -15,9 +15,9 @@
 
 package com.fluidbpm.program.api.util;
 
-import java.util.List;
-
 import com.fluidbpm.program.api.vo.form.Form;
+
+import java.util.List;
 
 /**
  * Any form related actions.
@@ -38,7 +38,7 @@ public interface IFormAction extends IAction {
 	 *
 	 * @see Form
 	 */
-	public abstract Form getFormAncestor(
+	Form getFormAncestor(
 			Long electronicFormIdParam,
 			boolean includeFieldDataParam,
 			boolean includeTableFieldsParam);
@@ -50,27 +50,25 @@ public interface IFormAction extends IAction {
 	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
 	 * @return {@code List<Form>} records.
 	 */
-	public List<Form> getFormTableForms(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam);
+	List<Form> getFormTableForms(Long electronicFormIdParam, boolean includeFieldDataParam);
 
 	/**
 	 * Gets the descendants for the {@code electronicFormIdParam} Form.
 	 *
-	 * @param electronicFormIdParam Identifier for the Form.
-	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-	 * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
-	 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+	 * @param electronicFormId Identifier for the Form.
+	 * @param includeFieldData Whether to populate the return {@code List<Form>} fields.
+	 * @param includeTableFields Whether to populate the return {@code List<Form>} table fields.
+	 * @param includeTableFieldFormRecordInfo Does table record form data need to be included.
 	 *
 	 * @return {@code List<Form>} descendants.
 	 *
 	 * @see Form
 	 */
-	public List<Form> getFormDescendants(
-			Long electronicFormIdParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam,
-			boolean includeTableFieldFormRecordInfoParam);
+	List<Form> getFormDescendants(
+			Long electronicFormId,
+			boolean includeFieldData,
+			boolean includeTableFields,
+			boolean includeTableFieldFormRecordInfo);
 
 	/**
 	 * Gets the descendants for the {@code electronicFormIdsParam} Forms.
@@ -84,7 +82,7 @@ public interface IFormAction extends IAction {
 	 *
 	 * @see Form
 	 */
-	public List<Form> getFormDescendants(
+	List<Form> getFormDescendants(
 			List<Long> electronicFormIdsParam,
 			boolean includeFieldDataParam,
 			boolean includeTableFieldsParam,

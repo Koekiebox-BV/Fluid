@@ -2,8 +2,10 @@
 mvn clean && mvn clean install -U -Dgpg.skip
 
 #PROPERTIES
-export WORKSPACE_HOME='/run/media/jbruwer/KB-Storage/Workspace/KB'
-export WF_HOME='/home/jbruwer/Applications/wildfly-20.0.1.Final'
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home
+
+export WORKSPACE_HOME='/Users/jasonbruwer/GDrive/Workspace'
+export WF_HOME='/Users/jasonbruwer/Applications/wildfly-20.0.1.Final'
 export WL_HOME='/home/jbruwer/Oracle/Middleware/Oracle_Home'
 
 echo '[INFO] Updating jar in FlowJob'

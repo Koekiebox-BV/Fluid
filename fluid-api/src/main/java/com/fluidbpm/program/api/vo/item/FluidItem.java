@@ -974,13 +974,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 			Object fieldValueParam,
 			Field.Type typeParam
 	) {
-		if (fieldToSelectFrom == null) {
-			return;
-		}
-
-		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
-			return;
-		}
+		if (fieldToSelectFrom == null) return;
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return;
 
 		List<Field> copyList = new ArrayList();
 		copyList.addAll(fieldToSelectFrom);
@@ -995,9 +990,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 			fieldToSelectFrom.add(new Field(fieldNameParam, fieldValueParam, typeParam));
 		} else {
 			fieldWithName.setFieldValue(fieldValueParam);
-			if (typeParam != null) {
-				fieldWithName.setTypeAsEnum(typeParam);
-			}
+			if (typeParam != null) fieldWithName.setTypeAsEnum(typeParam);
 		}
 	}
 
