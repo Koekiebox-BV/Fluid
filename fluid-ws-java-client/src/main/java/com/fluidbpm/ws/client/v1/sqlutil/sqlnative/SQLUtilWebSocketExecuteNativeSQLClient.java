@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil.sqlnative;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
@@ -31,6 +23,13 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Java Web Socket Client for {@code SQLUtil} related actions.
@@ -116,12 +115,8 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 	 *
 	 * @throws FluidClientException if data-source name is not set.
 	 */
-	public List<SQLResultSet> executeNativeSQLSynchronized(
-			NativeSQLQuery ... nativeSQLQueriesParam
-	) {
-		if (nativeSQLQueriesParam == null) {
-			return null;
-		}
+	public List<SQLResultSet> executeNativeSQLSynchronized(NativeSQLQuery ... nativeSQLQueriesParam) {
+		if (nativeSQLQueriesParam == null) return null;
 
 		//Start a new request...
 		String uniqueReqId = this.initNewRequest();
@@ -142,8 +137,7 @@ public class SQLUtilWebSocketExecuteNativeSQLClient extends
 
 		try {
 			List<SQLResultSet> returnValue =
-					this.getHandler(uniqueReqId).getCF().get(
-							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
+					this.getHandler(uniqueReqId).getCF().get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
 			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
