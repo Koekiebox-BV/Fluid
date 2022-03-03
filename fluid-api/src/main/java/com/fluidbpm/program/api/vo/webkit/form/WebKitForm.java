@@ -55,7 +55,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private Integer displayHeight;
 
 	private List<String> visibleSections;
-	private String visibleSectionsDisplayBehaviour;//accordion / tab
+	private String visibleSectionsDisplayBehaviour;//main / accordion / tab
+	private String formDisplayBehaviour;//dialog / workspace
 
 	private List<String> additionalSectionOptions;
 	private List<String> tableFieldsToInclude;
@@ -107,6 +108,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		public static final String VISIBLE_SECTIONS = "visibleSections";
 		public static final String VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR = "visibleSectionsDisplayBehaviour";
+		public static final String FORM_DISPLAY_BEHAVIOUR = "formDisplayBehaviour";
 		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
 		public static final String MANDATORY_FIELDS = "mandatoryFields";
 		public static final String USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE = "userToFormFieldLimitOnMultiChoice";
@@ -198,8 +200,10 @@ public class WebKitForm extends ABaseFluidJSONObject {
 					manField -> this.getUserToFormFieldLimitOnMultiChoice().add(manField.toString()));
 
 		if (!this.jsonObject.isNull(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR))
-			this.setVisibleSectionsDisplayBehaviour(
-					this.jsonObject.getString(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR));
+			this.setVisibleSectionsDisplayBehaviour(this.jsonObject.getString(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR));
+
+		if (!this.jsonObject.isNull(JSONMapping.FORM_DISPLAY_BEHAVIOUR))
+			this.setFormDisplayBehaviour(this.jsonObject.getString(JSONMapping.FORM_DISPLAY_BEHAVIOUR));
 
 		if (!this.jsonObject.isNull(JSONMapping.LOCK_FORM_ON_OPEN))
 			this.setLockFormOnOpen(this.jsonObject.getBoolean(JSONMapping.LOCK_FORM_ON_OPEN));
@@ -283,6 +287,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		returnVal.put(JSONMapping.ATTACHMENT_DISPLAY_LOCATION, this.getAttachmentDisplayLocation());
 		returnVal.put(JSONMapping.ATTACHMENT_DISPLAY_TYPE, this.getAttachmentDisplayType());
 		returnVal.put(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR, this.getVisibleSectionsDisplayBehaviour());
+		returnVal.put(JSONMapping.FORM_DISPLAY_BEHAVIOUR, this.getFormDisplayBehaviour());
 		returnVal.put(JSONMapping.DISPLAY_WIDTH, this.getDisplayWidth());
 
 		if (this.getDisplayHeight() == null || this.getDisplayHeight() == 0) returnVal.put(JSONMapping.DISPLAY_HEIGHT, JSONObject.NULL);

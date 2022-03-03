@@ -723,4 +723,20 @@ public class UtilGlobal {
 		//From System...
 		return System.getProperty(name, defaultVal);
 	}
+
+	/**
+	 * Removes all the whitespace from {@code text}.
+	 *
+	 * @param text The text to clear of whitespace.
+	 * @return New String without whitespace.
+	 */
+	public static String removeWhitespace(String text) {
+		if (text == null) return null;
+
+		return text
+				.replace(" ", EMPTY)
+				.replace("\t", EMPTY)
+				.replace("\n", EMPTY)
+				;
+	}
 }
