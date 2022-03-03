@@ -30,10 +30,7 @@ import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -388,15 +385,30 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 		routeFieldClient.deleteField(fieldKapoel);
 	}
 
+	/**
+	 *
+	 */
+	@Test
+	@Ignore
+	public void testFlowJobForceDelete() {
+		if (!this.isConnectionValid()) return;
+
+		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
+		TestCase.assertNotNull(appRequestToken);
+
+		Flow flowToDel = new Flow();
+		flowToDel.setName("JUnit - Main");
+
+		FlowClient flowClient = new FlowClient(BASE_URL, appRequestToken.getServiceTicket());
+		flowClient.forceDeleteFlow(flowToDel);
+	}
 
 	/**
 	 *
 	 */
 	@Test
 	public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
