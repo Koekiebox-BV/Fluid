@@ -423,9 +423,7 @@ public class TestUserClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testGetUserGravatar() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

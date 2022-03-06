@@ -136,22 +136,16 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testNativeSQLExecutionStoredProc()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testNativeSQLExecutionStoredProc() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
 
 		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
-			serviceTicketHex =
-					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		if (serviceTicket != null && !serviceTicket.isEmpty()) {
+			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
 		}
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
@@ -191,39 +185,25 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		System.out.println("Took '"+took+"|"+tookSecond+"' millis for '"+numberOfRecords+"' random records.");
 
-		if (resultListing != null)
-		{
+		if (resultListing != null) {
 			System.out.println("Listing is '"+resultListing.size()+"' -> \n\n\n");
 
-			for (SQLResultSet listing : resultListing)
-			{
+			for (SQLResultSet listing : resultListing) {
 				//System.out.println("Response For ::: "+listing.getEcho());
 
 				List<SQLRow> tableForms = listing.getListing();
 
-				if (tableForms == null){
-					continue;
-				}
+				if (tableForms == null) continue;
 
-				for (SQLRow form : tableForms)
-				{
-					if (form.getSqlColumns() == null)
-					{
-						continue;
-					}
+				for (SQLRow form : tableForms) {
+					if (form.getSqlColumns() == null) continue;
 
-					for (SQLColumn column : form.getSqlColumns())
-					{
-						System.out.println(
-								"|"+column.getColumnName()+"|"+
-										column.getColumnIndex()
-										+"| ->" +column.getSqlValue());
+					for (SQLColumn column : form.getSqlColumns()) {
+						System.out.println("|"+column.getColumnName()+"|"+ column.getColumnIndex() +"| ->" +column.getSqlValue());
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			System.out.println("Nothing...");
 		}
 
@@ -234,22 +214,16 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testNativeSQLExecutionStoredProcCompressed()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testNativeSQLExecutionStoredProcCompressed() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
 
 		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
-			serviceTicketHex =
-					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		if (serviceTicket != null && !serviceTicket.isEmpty()) {
+			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
 		}
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
@@ -290,39 +264,23 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		System.out.println("Took '"+took+"|"+tookSecond+"' millis for '"+numberOfRecords+"' random records.");
 
-		if (resultListing != null)
-		{
+		if (resultListing != null) {
 			System.out.println("Listing is '"+resultListing.size()+"' -> \n\n\n");
 
-			for (SQLResultSet listing : resultListing)
-			{
-				//System.out.println("Response For ::: "+listing.getEcho());
-
+			for (SQLResultSet listing : resultListing) {
 				List<SQLRow> tableForms = listing.getListing();
 
-				if (tableForms == null){
-					continue;
-				}
+				if (tableForms == null) continue;
 
-				for (SQLRow form : tableForms)
-				{
-					if (form.getSqlColumns() == null)
-					{
-						continue;
-					}
+				for (SQLRow form : tableForms) {
+					if (form.getSqlColumns() == null) continue;
 
-					for (SQLColumn column : form.getSqlColumns())
-					{
-						System.out.println(
-								"|"+column.getColumnName()+"|"+
-										column.getColumnIndex()
-										+"| ->" +column.getSqlValue());
+					for (SQLColumn column : form.getSqlColumns()) {
+						System.out.println("|"+column.getColumnName()+"|"+ column.getColumnIndex() +"| ->" +column.getSqlValue());
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			System.out.println("Nothing...");
 		}
 
