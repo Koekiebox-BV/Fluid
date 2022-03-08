@@ -48,6 +48,8 @@ public class UtilGlobal {
 
 	private static String JSON_LINES = "lines";
 
+	private static Boolean enableTrace = null;
+
 	/**
 	 * Raygun API key for error tracking.
 	 */
@@ -492,17 +494,30 @@ public class UtilGlobal {
 	/**
 	 * Returns -1 if there is a problem with conversion.
 	 *
-	 * @param toParseParam The {@code String} value to parse to {@code long}.
+	 * @param toParse The {@code String} value to parse to {@code long}.
 	 * @return long for {@code toParseParam}.
 	 */
-	public static final long toLongSafe(String toParseParam) {
-		if (toParseParam == null || toParseParam.isEmpty()) {
-			return -1;
-		}
+	public static final long toLongSafe(String toParse) {
+		if (toParse == null || toParse.isEmpty()) return -1;
 		try {
-			return Double.valueOf(toParseParam).longValue();
+			return Double.valueOf(toParse).longValue();
 		} catch (NumberFormatException e) {
 			return -1L;
+		}
+	}
+
+	/**
+	 * Returns false if there is a problem with conversion.
+	 *
+	 * @param toParse The {@code String} value to parse to {@code boolean}.
+	 * @return boolean for {@code toParseParam}.
+	 */
+	public static final boolean toBooleanSafe(String toParse) {
+		if (toParse == null || toParse.isEmpty()) return false;
+		try {
+			return Boolean.valueOf(toParse.trim()).booleanValue();
+		} catch (NumberFormatException e) {
+			return false;
 		}
 	}
 
@@ -733,10 +748,25 @@ public class UtilGlobal {
 	public static String removeWhitespace(String text) {
 		if (text == null) return null;
 
-		return text
-				.replace(" ", EMPTY)
-				.replace("\t", EMPTY)
-				.replace("\n", EMPTY)
-				;
+		return text.replace(" ", EMPTY).replace("\t", EMPTY).replace("\n", EMPTY);
+	}
+
+	/**
+	 * Performs an {@code out.println} using {@code template} and {@code params}.
+	 * Tracing will only be enabled if {@code ENABLE_TRACE=true}
+	 *
+	 * @param template Template to apply.
+	 * @param params The params to parse to {@code template}
+	 */
+	public static void sysOut(String template, Object ... params) {
+		if (enableTrace == null) {
+			enableTrace = toBooleanSafe(
+					UtilGlobal.getProperty(System.getProperties(),
+							"ENABLE_TRACE", "false").trim().toLowerCase());
+		}
+
+		if (!enableTrace) return;
+
+		System.out.println(String.format(template, params));
 	}
 }
