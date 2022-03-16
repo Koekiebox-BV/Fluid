@@ -15,10 +15,11 @@
 
 package com.fluidbpm.program.api.util.elasticsearch;
 
-import static com.fluidbpm.program.api.vo.ABaseFluidJSONObject.JSONMapping.Elastic.FORM_INDEX_PREFIX;
-
-import java.io.IOException;
-
+import com.fluidbpm.program.api.util.ABaseUtil;
+import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.IndicesClient;
 import org.elasticsearch.client.RequestOptions;
@@ -28,11 +29,9 @@ import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.util.ABaseUtil;
-import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.program.api.vo.form.Form;
+import java.io.IOException;
+
+import static com.fluidbpm.program.api.vo.ABaseFluidJSONObject.JSONMapping.Elastic.FORM_INDEX_PREFIX;
 
 /**
  * ElasticSearch Utility class used for {@code Field} mappings.
@@ -88,22 +87,19 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	) {
 		//The Form mapping to update...
 		if (fluidFormMappingToUpdate == null) {
-			throw new FluidElasticSearchException(
-					"Form for mapping not set.");
+			throw new FluidElasticSearchException("Form for mapping not set.");
 		}
 
 		//Form Type Id...
 		if (fluidFormMappingToUpdate.getFormTypeId() == null ||
 				fluidFormMappingToUpdate.getFormTypeId().longValue() < 1) {
-			throw new FluidElasticSearchException(
-					"Form 'FormType' not set for mapping.");
+			throw new FluidElasticSearchException("Form 'FormType' not set for mapping.");
 		}
 
 		String formTypeString = fluidFormMappingToUpdate.getFormTypeId().toString();
 		formTypeString = FORM_INDEX_PREFIX.concat(formTypeString);
 
-		JSONObject newContentMappingBuilderFromParam =
-				fluidFormMappingToUpdate.toJsonMappingForElasticSearch();
+		JSONObject newContentMappingBuilderFromParam = fluidFormMappingToUpdate.toJsonMappingForElasticSearch();
 
 		this.mergeMappingForIndex(
 				parentType,
@@ -129,8 +125,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	) {
 		//The Form mapping to update...
 		if (newContentMappingBuilderFrom == null) {
-			throw new FluidElasticSearchException(
-					"'JSON Object' for mapping not set.");
+			throw new FluidElasticSearchException("'JSON Object' for mapping not set.");
 		}
 
 		//Retrieve and update...
@@ -139,9 +134,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 
 		for (String mappingKey : getExistingIndex.getMappings().keySet()) {
 			//Found index...
-			if (!mappingKey.equals(formTypeString)) {
-				continue;
-			}
+			if (!mappingKey.equals(formTypeString)) continue;
 
 			//Found a match...
 			Object obj = getExistingIndex.getMappings().get(mappingKey);
@@ -192,8 +185,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 
 		//Merge existing with new...
 		for (String existingKey : existingPropsToUpdate.keySet()) {
-			newContentMappingBuilderFrom.put(existingKey,
-					existingPropsToUpdate.get(existingKey));
+			newContentMappingBuilderFrom.put(existingKey, existingPropsToUpdate.get(existingKey));
 		}
 
 		//Check to see whether there are any new fields added...
@@ -205,19 +197,14 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 			}
 		}
 
-		if (noChanges) {
-			return;
-		}
+		if (noChanges) return;
 
 		//Update the properties to new values...
 		existingPropsToUpdate.put(
-				ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES,
-				newContentMappingBuilderFrom);
+				ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES, newContentMappingBuilderFrom);
 
 		//Set the additional properties...
-		this.setAdditionalProps(
-				existingPropsToUpdate,
-				parentType);
+		this.setAdditionalProps(existingPropsToUpdate, parentType);
 
 		//Push the change...
 		PutMappingRequest putMappingRequest = new PutMappingRequest(formTypeString);
@@ -250,15 +237,12 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		JSONObject existingPropsToUpdate,
 		String parentType
 	) {
-		if (parentType == null || parentType.trim().length() == 0) {
-			return;
-		}
+		if (parentType == null || parentType.trim().length() == 0) return;
 
 		JSONObject typeJson = new JSONObject();
 		typeJson.put(Field.JSONMapping.FIELD_TYPE, parentType);
 
-		existingPropsToUpdate.put(
-				Form.JSONMapping._PARENT, typeJson);
+		existingPropsToUpdate.put(Form.JSONMapping._PARENT, typeJson);
 	}
 
 	/**
@@ -268,13 +252,10 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 	 * @return {@code true} if ElasticSearch index {@code indexToCheckParam} exists, otherwise {@code false}.
 	 */
 	public boolean doesIndexExist(String indexToCheck) {
-		if (indexToCheck == null || indexToCheck.trim().isEmpty()) {
-			return false;
-		}
+		if (indexToCheck == null || indexToCheck.trim().isEmpty()) return false;
 
 		if (this.indicesClient == null) {
-			throw new FluidElasticSearchException(
-					"ElasticSearch IndicesClient is not initialized.");
+			throw new FluidElasticSearchException("ElasticSearch IndicesClient is not initialized.");
 		}
 
 		GetIndexRequest getIndexReq = new GetIndexRequest(indexToCheck);
@@ -284,8 +265,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 		} catch (IOException ioErr) {
 			throw new FluidElasticSearchException(
 					String.format("Unable to check if index '%s' exists. %s",
-							indexToCheck,
-							ioErr.getMessage()), ioErr);
+							indexToCheck, ioErr.getMessage()), ioErr);
 		}
 	}
 
