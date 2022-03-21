@@ -769,4 +769,18 @@ public class UtilGlobal {
 
 		System.out.println(String.format(template, params));
 	}
+
+	/**
+	 * Check if any one of the {@code booleansToCheckParam} values are {@code true}.
+	 *
+	 * @param booleansToCheck The boolean values to check.
+	 * @return {@code true} If any one of the elements for {@code booleansToCheck} is {@code true}.
+	 */
+	public static final boolean isAnyTrue(boolean ... booleansToCheck) {
+		if (booleansToCheck == null || booleansToCheck.length == 0) return false;
+
+		for (boolean toCheck : booleansToCheck) if (toCheck) return true;
+
+		return false;
+	}
 }

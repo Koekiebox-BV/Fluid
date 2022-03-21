@@ -170,8 +170,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		nativeSQLQuery.setSqlInputs(inputs);
 
-		List<SQLResultSet> resultListing =
-				webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
+		List<SQLResultSet> resultListing = webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
 
 		long took = (System.currentTimeMillis() - start);
 
@@ -249,8 +248,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		nativeSQLQuery.setSqlInputs(inputs);
 
-		List<SQLResultSet> resultListing =
-				webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
+		List<SQLResultSet> resultListing = webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
 
 		long took = (System.currentTimeMillis() - start);
 
