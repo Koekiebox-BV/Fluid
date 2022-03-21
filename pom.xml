@@ -58,18 +58,14 @@
 		<version.apache.httpcomponents.httpcore>4.4.12</version.apache.httpcomponents.httpcore>
 		<version.apache.httpcomponents.httpclient>4.5.13</version.apache.httpcomponents.httpclient>
 
-		<!--Elasticsearch-->
+		<!--ElasticSearch-->
 		<version.elasticsearch>7.7.0</version.elasticsearch>
 
 		<!--GlassFish Tyrus-->
-		<version.glassfish.tyrus.core>1.13.1</version.glassfish.tyrus.core>
-		<version.glassfish.tyrus.client>1.13.1</version.glassfish.tyrus.client>
-		<version.glassfish.tyrus.container.client>1.13.1</version.glassfish.tyrus.container.client>
-		<version.glassfish.tyrus.spi>1.13.1</version.glassfish.tyrus.spi>
+		<version.glassfish.tyrus>1.18</version.glassfish.tyrus>
 
 		<!--GlassFish Grizzly-->
-		<version.glassfish.grizzly.framework>2.3.31</version.glassfish.grizzly.framework>
-		<version.glassfish.grizzly.http>2.3.31</version.glassfish.grizzly.http>
+		<version.glassfish.grizzly>2.4.4</version.glassfish.grizzly>
 
 		<!--Plugins-->
 		<version.plugin.compiler>3.6.0</version.plugin.compiler>
@@ -188,28 +184,28 @@
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-container-grizzly-client</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus.container.client}</version>
+				<version>${version.glassfish.tyrus}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-client</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus.client}</version>
+				<version>${version.glassfish.tyrus}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-core</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus.core}</version>
+				<version>${version.glassfish.tyrus}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-spi</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus.spi}</version>
+				<version>${version.glassfish.tyrus}</version>
 			</dependency>
 
 			<!--GlassFish Grizzly-->
@@ -217,14 +213,14 @@
 				<groupId>org.glassfish.grizzly</groupId>
 				<artifactId>grizzly-framework</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.grizzly.framework}</version>
+				<version>${version.glassfish.grizzly}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.grizzly</groupId>
 				<artifactId>grizzly-http</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.grizzly.http}</version>
+				<version>${version.glassfish.grizzly}</version>
 			</dependency>
 
 			<!--Jackson Provider-->
