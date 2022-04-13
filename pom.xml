@@ -6,15 +6,15 @@
 	<groupId>com.fluidbpm</groupId>
 	<artifactId>fluid-root</artifactId>
 	<packaging>pom</packaging>
-	<version>1.12</version>
+	<version>1.13</version>
 	<name>Fluid Root</name>
 	<description>Parent pom providing default setups for all application and admin servers modules.</description>
-	<url>https://github.com/Koekiebox-PTY-LTD/Fluid</url>
+	<url>https://github.com/Koekiebox-BV/Fluid</url>
 
 	<licenses>
 		<license>
 			<name>GNU GENERAL PUBLIC LICENSE, Version 3</name>
-			<url>https://github.com/Koekiebox-PTY-LTD/Fluid/blob/develop/LICENSE</url>
+			<url>https://github.com/Koekiebox-BV/Fluid/blob/develop/LICENSE</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -28,9 +28,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</connection>
-		<developerConnection>scm:git:git@github.com:Koekiebox-PTY-LTD/Fluid.git</developerConnection>
-		<url>git@github.com:Koekiebox-PTY-LTD/Fluid.git</url>
+		<connection>scm:git:git@github.com:Koekiebox-BV/Fluid.git</connection>
+		<developerConnection>scm:git:git@github.com:Koekiebox-BV/Fluid.git</developerConnection>
+		<url>git@github.com:Koekiebox-BV/Fluid.git</url>
 	</scm>
 
 	<properties>

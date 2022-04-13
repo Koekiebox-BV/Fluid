@@ -15,13 +15,12 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.flow.*;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import org.json.JSONObject;
 
 /**
  * Used to change any of the Flow Steps.
@@ -249,9 +248,7 @@ public class FlowStepClient extends ABaseClientWS {
 	 */
 	public JobViewListing getJobViewsByLoggedInUser() {
 		FlowStep flowStep = new FlowStep();
-		if (this.serviceTicket != null) {
-			flowStep.setServiceTicket(this.serviceTicket);
-		}
+		flowStep.setServiceTicket(this.serviceTicket);
 		return new JobViewListing(this.postJson(flowStep, WS.Path.FlowStep.Version1.getAllViewsByLoggedInUser()));
 	}
 
