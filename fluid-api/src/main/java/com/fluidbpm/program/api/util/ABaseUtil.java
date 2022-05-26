@@ -15,20 +15,19 @@
 
 package com.fluidbpm.program.api.util;
 
-import java.io.Serializable;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.Properties;
+import com.fluidbpm.program.api.util.cache.CacheUtil;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.fluidbpm.program.api.util.cache.CacheUtil;
+import java.io.Serializable;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * Base class for any utility classes used in the Fluid framework.
@@ -147,8 +146,7 @@ public abstract class ABaseUtil implements Serializable {
 	 *
 	 * @throws SQLException If unable to decrypt.
 	 */
-	public static byte[] decryptECB(byte[] dataToDecryptParam)
-			throws SQLException{
+	public static byte[] decryptECB(byte[] dataToDecryptParam) throws SQLException {
 		Key key = new SecretKeySpec(ENCRYPTED_FIELD_KEY, KEY_ALGO);
 		try {
 			Cipher cipher = Cipher.getInstance(ALGO_ECB);
