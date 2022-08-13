@@ -147,24 +147,13 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
-		if (this.getId() != null) {
-			returnVal.put(JSONMapping.ID,this.getId());
-		}
-
+		if (this.getId() != null) returnVal.put(JSONMapping.ID,this.getId());
 		//Service Ticket...
-		if (this.getServiceTicket() != null) {
-			returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
-		}
-
+		if (this.getServiceTicket() != null) returnVal.put(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
 		//Request UUID...
-		if (this.getRequestUuid() != null) {
-			returnVal.put(JSONMapping.REQUEST_UUID, this.getRequestUuid());
-		}
-
+		if (this.getRequestUuid() != null) returnVal.put(JSONMapping.REQUEST_UUID, this.getRequestUuid());
 		//Echo...
-		if (this.getEcho() != null) {
-			returnVal.put(JSONMapping.ECHO, this.getEcho());
-		}
+		if (this.getEcho() != null) returnVal.put(JSONMapping.ECHO, this.getEcho());
 
 		return returnVal;
 	}

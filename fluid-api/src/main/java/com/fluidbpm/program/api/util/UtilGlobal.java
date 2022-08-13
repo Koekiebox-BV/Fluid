@@ -159,10 +159,9 @@ public class UtilGlobal {
 	 *
 	 * @return {@code toParseParam} converted to a {@code double}.
 	 */
-	public final double toDoubleSafe(String toParseParam) {
-		if (toParseParam == null || toParseParam.trim().isEmpty()) {
-			return 0D;
-		}
+	public static final double toDoubleSafe(String toParseParam) {
+		if (toParseParam == null || toParseParam.trim().isEmpty()) return 0D;
+
 		try {
 			return Double.parseDouble(toParseParam);
 		} catch (NumberFormatException e) {
@@ -178,20 +177,14 @@ public class UtilGlobal {
 	 * @return {@code toParseParam} converted to a {@code double}.
 	 */
 	public final String toGoeSafe(String toParseParam) {
-		if (toParseParam == null || toParseParam.trim().isEmpty()) {
-			return ZERO;
-		}
+		if (toParseParam == null || toParseParam.trim().isEmpty()) return ZERO;
+
 		try {
 			for (char charToCheck : toParseParam.toCharArray()){
-
-				if (!Character.isDigit(charToCheck) && '.' != charToCheck){
-					return ZERO;
-				}
+				if (!Character.isDigit(charToCheck) && '.' != charToCheck) return ZERO;
 			}
 
-			if (toParseParam.length() > 12){
-				return toParseParam.substring(0,12);
-			}
+			if (toParseParam.length() > 12) return toParseParam.substring(0,12);
 
 			return toParseParam;
 		} catch (NumberFormatException e) {
@@ -206,13 +199,9 @@ public class UtilGlobal {
 	 * @return byte[].
 	 */
 	public static byte[] decodeBase64(String base64StringParam) {
-		if (base64StringParam == null) {
-			return null;
-		}
+		if (base64StringParam == null) return null;
 
-		if (base64StringParam.isEmpty()) {
-			return new byte[]{};
-		}
+		if (base64StringParam.isEmpty()) return new byte[]{};
 
 		return BaseEncoding.base64().decode(base64StringParam);
 	}
@@ -224,15 +213,9 @@ public class UtilGlobal {
 	 * @return Hex String in upper case.
 	 */
 	public static String encodeBase16(byte[] bytesParam) {
-		if (bytesParam == null)
-		{
-			return null;
-		}
+		if (bytesParam == null) return null;
 
-		if (bytesParam.length == 0)
-		{
-			return UtilGlobal.EMPTY;
-		}
+		if (bytesParam.length == 0) return UtilGlobal.EMPTY;
 
 		return DatatypeConverter.printHexBinary(bytesParam).toUpperCase();
 	}
@@ -244,15 +227,10 @@ public class UtilGlobal {
 	 * @return bytes from {@code stringParam}.
 	 */
 	public static byte[] decodeBase16(String stringParam) {
+		if (stringParam == null) return null;
 
-		if (stringParam == null) {
-			return null;
-		}
+		if (stringParam.trim().isEmpty()) return new byte[]{};
 
-		if (stringParam.trim().isEmpty())
-		{
-			return new byte[]{};
-		}
 
 		int len = stringParam.length();
 		byte[] data = new byte[len / 2];
@@ -260,7 +238,6 @@ public class UtilGlobal {
 			data[i / 2] = (byte) ((Character.digit(stringParam.charAt(i), 16) << 4)
 					+ Character.digit(stringParam.charAt(i+1), 16));
 		}
-
 		return data;
 	}
 
@@ -271,13 +248,9 @@ public class UtilGlobal {
 	 * @return Base64 String.
 	 */
 	public static String encodeBase64(byte[] bytesParam) {
-		if (bytesParam == null) {
-			return null;
-		}
+		if (bytesParam == null) return null;
 
-		if (bytesParam.length == 0) {
-			return UtilGlobal.EMPTY;
-		}
+		if (bytesParam.length == 0) return UtilGlobal.EMPTY;
 
 		return BaseEncoding.base64().encode(bytesParam);
 	}
@@ -300,11 +273,9 @@ public class UtilGlobal {
 	 * @since 2.1
 	 */
 	public static byte[] addAll(final byte[] array1, final byte... array2) {
-		if (array1 == null) {
-			return clone(array2);
-		} else if (array2 == null) {
-			return clone(array1);
-		}
+		if (array1 == null) return clone(array2);
+		else if (array2 == null) return clone(array1);
+
 		final byte[] joinedArray = new byte[array1.length + array2.length];
 		System.arraycopy(array1, 0, joinedArray, 0, array1.length);
 		System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
@@ -321,9 +292,7 @@ public class UtilGlobal {
 	 * @return the cloned array, {@code null} if {@code null} input
 	 */
 	public static byte[] clone(final byte[] array) {
-		if (array == null) {
-			return null;
-		}
+		if (array == null) return null;
 		return array.clone();
 	}
 

@@ -61,6 +61,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private List<String> additionalSectionOptions;
 	private List<String> tableFieldsToInclude;
 	private List<String> mandatoryFields;
+	private List<NewInstanceDefault> newInstanceDefaults;
 	private List<String> userToFormFieldLimitOnMultiChoice;
 
 	//Workflow related props...
@@ -80,7 +81,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	public static final String EMAIL_FORM_TYPE = "Email";
 
 	private static final String NONE = "[None]";
-
+	
 	/**
 	 * The type of InputLayout.
 	 */
@@ -111,6 +112,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String FORM_DISPLAY_BEHAVIOUR = "formDisplayBehaviour";
 		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
 		public static final String MANDATORY_FIELDS = "mandatoryFields";
+		public static final String NEW_INSTANCE_DEFAULTS = "newInstanceDefaults";
 		public static final String USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE = "userToFormFieldLimitOnMultiChoice";
 
 		public static final String LOCK_FORM_ON_OPEN = "lockFormOnOpen";
@@ -193,6 +195,14 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.MANDATORY_FIELDS))
 			this.jsonObject.getJSONArray(JSONMapping.MANDATORY_FIELDS).forEach(
 					manField -> this.getMandatoryFields().add(manField.toString()));
+
+		this.setNewInstanceDefaults(new ArrayList<>());
+		if (!this.jsonObject.isNull(JSONMapping.NEW_INSTANCE_DEFAULTS))
+			this.jsonObject.getJSONArray(JSONMapping.NEW_INSTANCE_DEFAULTS).forEach(object -> {
+				if (object instanceof JSONObject) {
+					this.getNewInstanceDefaults().add(new NewInstanceDefault((JSONObject)object));
+				}
+			});
 
 		this.setUserToFormFieldLimitOnMultiChoice(new ArrayList<>());
 		if (!this.jsonObject.isNull(JSONMapping.USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE))
@@ -318,6 +328,15 @@ public class WebKitForm extends ABaseFluidJSONObject {
 			JSONArray mandatoryFields = new JSONArray();
 			this.getMandatoryFields().forEach(manField -> mandatoryFields.put(manField));
 			returnVal.put(JSONMapping.MANDATORY_FIELDS, mandatoryFields);
+		}
+
+		if (this.getNewInstanceDefaults() != null) {
+			JSONArray newInstDef = new JSONArray();
+			this.getNewInstanceDefaults()
+					.stream()
+					.filter(itm -> UtilGlobal.isNotBlank(itm.getDefaultVal()))
+					.forEach(defField -> newInstDef.put(defField.toJsonObject()));
+			returnVal.put(JSONMapping.NEW_INSTANCE_DEFAULTS, newInstDef);
 		}
 
 		if (this.getUserToFormFieldLimitOnMultiChoice() != null) {
