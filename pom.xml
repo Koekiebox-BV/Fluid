@@ -71,7 +71,7 @@
 		<version.plugin.compiler>3.6.0</version.plugin.compiler>
 		<version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
 		<version.plugin.java.source>3.2.1</version.plugin.java.source>
-		<version.plugin.java.doc>3.2.0</version.plugin.java.doc>
+		<version.plugin.java.doc>3.4.1</version.plugin.java.doc>
 		<version.plugin.gpg>1.6</version.plugin.gpg>
 		<version.plugin.dependency>3.0.1</version.plugin.dependency>
 
@@ -289,6 +289,17 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<!--Javadoc Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${version.plugin.java.doc}</version>
+				<configuration>
+					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+					<!--<doclint>none</doclint>-->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
