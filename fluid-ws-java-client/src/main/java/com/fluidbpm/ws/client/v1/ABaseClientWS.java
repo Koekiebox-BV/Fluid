@@ -366,10 +366,7 @@ public abstract class ABaseClientWS implements AutoCloseable{
 	 * @see JSONObject
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject postJson(
-			ABaseFluidJSONObject baseDomainParam,
-			String postfixUrlParam) {
-
+	protected JSONObject postJson(ABaseFluidJSONObject baseDomainParam, String postfixUrlParam) {
 		//No need to check connection...
 		return this.postJson(false, baseDomainParam, postfixUrlParam);
 	}

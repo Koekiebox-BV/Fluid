@@ -398,22 +398,24 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * @see ResultSet
 	 */
 	private Form mapFormContainerTo(
-		Map<Long,String> definitionAndTitleParam,
+		Map<Long, String> definitionAndTitleParam,
 		ResultSet resultSetParam
 	) throws SQLException {
 		Long formId = resultSetParam.getLong(SQLColumnIndex._01_FORM_ID);
-		String formType = definitionAndTitleParam.get(
-				resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE));
+		Long formTypeId = resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE);
+		String formType = definitionAndTitleParam.get(formTypeId);
 
 		String title = resultSetParam.getString(SQLColumnIndex._03_TITLE);
 		Date created = resultSetParam.getDate(SQLColumnIndex._04_CREATED);
 		Date lastUpdated = resultSetParam.getDate(SQLColumnIndex._05_LAST_UPDATED);
 		Long currentUserId = resultSetParam.getLong(SQLColumnIndex._06_CURRENT_USER_ID);
 
-		if (formType == null) throw new SQLException("No mapping found for Form Type '"+
-				resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE)+"'.");
+		if (formType == null) {
+			throw new SQLException(String.format("No mapping found for Form Type '%s'.", formTypeId));
+		}
 
 		Form toAdd = new Form(formType);
+		toAdd.setFormTypeId(formTypeId);
 
 		toAdd.setId(formId);
 		toAdd.setTitle(title);
