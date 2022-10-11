@@ -47,8 +47,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 *
 	 */
 	@Before
-	public void init()
-	{
+	public void init() {
 		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
 		this.loginClient = new LoginClient(BASE_URL);
@@ -67,12 +66,8 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testFlowStepEntryRule_CRUD()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testFlowStepEntryRule_CRUD() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -98,7 +93,11 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 		Field fieldBadool = new Field();
 		fieldBadool.setFieldName("Badool JUnit");
 		fieldBadool.setFieldDescription("Field Description");
-		fieldBadool = routeFieldClient.createFieldTextPlain(fieldBadool);
+		try {
+			fieldBadool = routeFieldClient.createFieldTextPlain(fieldBadool);
+		} catch (FluidClientException fce) {
+			if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+		}
 
 		FlowStep toCreate = new FlowStep();
 		toCreate.setName("JUnit Step");
@@ -138,136 +137,104 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testFlowStepEntryRule_GetNextValidSyntax()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testFlowStepEntryRule_GetNextValidSyntax() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
-
 		String serviceTicket = appRequestToken.getServiceTicket();
 
-		FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
+		FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, serviceTicket);
 
 		//Empty...
 		try {
 			flowStepRuleClient.getNextValidSyntaxWordsEntryRule(null);
 			Assert.fail("Expected to fail.");
-		}
-		//
-		catch(FluidClientException prob)
-		{
-
-		}
+		} catch(FluidClientException prob) {}
 
 		//S...
 		try {
 			flowStepRuleClient.getNextValidSyntaxWordsEntryRule("S");
 			Assert.fail("Expected to fail.");
-		}
-		//
-		catch(FluidClientException prob)
-		{
-
-		}
+		} catch(FluidClientException prob) {}
 
 		//SET...
-		List<String> nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET");
+		List<String> nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET");
 
 		Assert.assertNotNull("Next valid syntax must be set.",nextValidSyntaxWords);
-		Assert.assertEquals("Expected number of rules missmatch.",
-				4,nextValidSyntaxWords.size());
+		Assert.assertEquals("Expected number of rules mismatch.", 4, nextValidSyntaxWords.size());
 
 		boolean isScope = false;
-		for (String iter : nextValidSyntaxWords)
-		{
-			if (iter.equals("FORM."))
-			{
-				isScope = true;
-			}
-		}
+		for (String iter : nextValidSyntaxWords) if (iter.equals("FORM.")) isScope = true;
 
 		Assert.assertTrue("Expected at least FORM.",isScope);
 
 		//FORM.
-		nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET FORM.");
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET FORM.");
 
-		Assert.assertTrue("Expected at least 5 fields.",
-				nextValidSyntaxWords.size() > 5);
-
-		for (String iter : nextValidSyntaxWords)
-		{
-			if (!iter.startsWith("FORM."))
-			{
-				Assert.fail("Did not start with FORM. "+iter);
-			}
-		}
+		Assert.assertTrue("Expected at least 5 fields.", nextValidSyntaxWords.size() > 5);
+		for (String iter : nextValidSyntaxWords) if (!iter.startsWith("FORM.")) Assert.fail("Did not start with FORM. "+iter);
 
 		//SET FORM.FORM.Email Subject
-		nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
-						"SET FORM.Email Subject");
-
-		Assert.assertTrue("Expected only 1 value.",
-				nextValidSyntaxWords.size() == 1);
-
-		Assert.assertTrue("Expected TO.",
-				nextValidSyntaxWords.get(0).equals("TO"));
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET FORM.Email Subject");
+		Assert.assertTrue("Expected only 1 value.", nextValidSyntaxWords.size() == 1);
+		Assert.assertTrue("Expected TO.", nextValidSyntaxWords.get(0).equals("TO"));
 
 		//SET FORM.FORM.Email Subject TO
-		nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
-						"SET FORM.Email Subject TO");
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET FORM.Email Subject TO");
 
-		Assert.assertTrue("Expected 5 values.",
-				nextValidSyntaxWords.size() == 5);
-
+		Assert.assertTrue("Expected 5 values.", nextValidSyntaxWords.size() == 5);
 
 		//SET FORM.FORM.Email Subject TO 'Zool'
-		nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
-						"SET FORM.Email Subject TO 'Zool'");
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("SET FORM.Email Subject TO 'Zool'");
 
-		Assert.assertTrue("Expected 1 values.",
-				nextValidSyntaxWords.size() == 1);
-
-		Assert.assertEquals("Expected an IF",
-				"IF", nextValidSyntaxWords.get(0));
+		Assert.assertTrue("Expected 1 values.", nextValidSyntaxWords.size() == 1);
+		Assert.assertEquals("Expected an IF", "IF", nextValidSyntaxWords.get(0));
 
 		//SET FORM.FORM.Email Subject TO 'Zool' IF
-		nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
 						"SET FORM.Email Subject TO 'Zool' if");
-		Assert.assertTrue("Expected 0 values.",
-				nextValidSyntaxWords.size() == 0);
+		Assert.assertTrue("Expected 0 values.", nextValidSyntaxWords.size() == 0);
 
 		//SET FORM.Email Sent Date TO FORM.
-		nextValidSyntaxWords =
-				flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
 						"SET FORM.Email Subject TO FORM.Age");
 
-		Assert.assertTrue("Expected 1 values.",
-				nextValidSyntaxWords.size() == 1);
+		Assert.assertTrue("Expected 1 values.", nextValidSyntaxWords.size() == 1);
+		Assert.assertEquals("Expected an IF", "IF", nextValidSyntaxWords.get(0));
 
-		Assert.assertEquals("Expected an IF",
-				"IF", nextValidSyntaxWords.get(0));
+		//CLEAR:
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("CLEAR");
+
+		Assert.assertNotNull("Next valid syntax must be set.",nextValidSyntaxWords);
+		Assert.assertEquals("Expected number of rules mismatch.", 4, nextValidSyntaxWords.size());
+
+		isScope = false;
+		for (String iter : nextValidSyntaxWords) if (iter.equals("FORM.")) isScope = true;
+		Assert.assertTrue("Expected at least FORM.",isScope);
+
+		//FORM.
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("CLEAR FORM.");
+		Assert.assertTrue("Expected at least 5 fields.", nextValidSyntaxWords.size() > 5);
+		for (String iter : nextValidSyntaxWords) if (!iter.startsWith("FORM.")) Assert.fail("Did not start with FORM. "+iter);
+
+		//CLEAR FORM.Email Subject
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule("CLEAR FORM.Email Subject");
+		Assert.assertTrue("Expected only 1 value.", nextValidSyntaxWords.size() == 1);
+		Assert.assertEquals("Expected an IF", "IF", nextValidSyntaxWords.get(0));
+
+		//CLEAR FORM.FORM.Email Subject IF
+		nextValidSyntaxWords = flowStepRuleClient.getNextValidSyntaxWordsEntryRule(
+				"CLEAR FORM.Email Subject if");
+		Assert.assertTrue("Expected 0 values.", nextValidSyntaxWords.size() == 0);
 	}
 
 	/**
 	 *
 	 */
 	@Test
-	public void testFlowStepEntryRule_CompileSucceed()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testFlowStepEntryRule_CompileSucceed() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -291,21 +258,15 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 		FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL,serviceTicket);
 
 		String[] compileListPass = {
-				"SET ROUTE.JUnit Test Entry Rule TO 'Cool'",
-
+			"SET ROUTE.JUnit Test Entry Rule TO 'Cool'",
 		};
 
 		//THE COMPILE RULES THAT PASSES...
-		for (String passRule : compileListPass)
-		{
+		for (String passRule : compileListPass) {
 			try {
 				flowStepRuleClient.compileFlowStepEntryRule(passRule);
-			}
-			//
-			catch(FluidClientException cle)
-			{
+			} catch (FluidClientException cle) {
 				cle.printStackTrace();
-
 				Assert.fail(cle.getMessage());
 				routeFieldClient.deleteField(fieldZool);
 				return;
@@ -320,12 +281,8 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 *
 	 */
 	@Test
-	public void testFlowStepEntryRule_CompileFail()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testFlowStepEntryRule_CompileFail() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -355,20 +312,15 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 				"SET ROUTE.JUnit Test Entry Rule TO",
 				"SET ROUTE.JUnit Test Entry TO 'Cool'",};
 
-		for (String passRule : compListFail)
-		{
+		for (String passRule : compListFail) {
 			try {
 				flowStepRuleClient.compileFlowStepEntryRule(passRule);
 
 				Assert.fail("Expected rule: \n\n"+passRule+"\n to fail.");
 				routeFieldClient.deleteField(fieldZool);
 				return;
-			}
-			//
-			catch(FluidClientException cle)
-			{
-				if (FluidClientException.ErrorCode.STATEMENT_SYNTAX_ERROR == cle.getErrorCode())
-				{
+			} catch(FluidClientException cle) {
+				if (FluidClientException.ErrorCode.STATEMENT_SYNTAX_ERROR == cle.getErrorCode()) {
 					System.out.println(cle.getErrorCode() + ":"+ cle.getMessage());
 					continue;
 				}
