@@ -170,7 +170,7 @@
 			</plugin>
 
 			<!--Maven Source Plugin-->
-			<plugin>
+			<!--plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${version.plugin.java.source}</version>
@@ -182,10 +182,10 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin-->
 
 			<!--Maven Javadoc Plugin-->
-			<plugin>
+			<!--plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${version.plugin.java.doc}</version>
@@ -200,7 +200,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin-->
 		</plugins>
 	</build>
 </project>

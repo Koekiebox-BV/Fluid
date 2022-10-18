@@ -107,4 +107,18 @@ public class FluidClientException extends RuntimeException {
 	public int getErrorCode() {
 		return this.errorCode;
 	}
+
+	/**
+	 * Verify whether the type of exception for {@code exception} is
+	 * *
+	 * @param exception The {@code Exception} to verify for no-result.
+	 * @return {@code true} if the exception is {@code FluidClientException} with code {@code ErrorCode.NO_RESULT}
+	 * otherwise {@code false}.
+	 */
+	public static boolean isNoResultError(Exception exception) {
+		if (!(exception instanceof FluidClientException)) return false;
+
+		FluidClientException fce = (FluidClientException)exception;
+		return ErrorCode.NO_RESULT == fce.getErrorCode();
+	}
 }

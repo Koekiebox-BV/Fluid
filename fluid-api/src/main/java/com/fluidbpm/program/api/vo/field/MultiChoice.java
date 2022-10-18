@@ -317,13 +317,10 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 */
 	public void setSelectedMultiChoice(String selectedMultiChoice) {
 		if (this.selectedMultiChoices == null) this.selectedMultiChoices = new ArrayList<>();
+		this.selectedMultiChoices.clear();
+
 		if (selectedMultiChoice == null) return;
-		if (this.selectedMultiChoices.isEmpty()) {
-			this.selectedMultiChoices.add(selectedMultiChoice);
-			return;
-		} else {
-			this.selectedMultiChoices.set(0, selectedMultiChoice);
-		}
+		this.selectedMultiChoices.add(selectedMultiChoice);
 	}
 
 	/**

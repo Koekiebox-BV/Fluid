@@ -43,8 +43,6 @@ public class FlowStep extends ABaseFluidJSONObject {
 
 	private Date dateCreated;
 	private Date dateLastUpdated;
-
-	//
 	private Flow flow;
 	private String flowStepType;
 
@@ -59,8 +57,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code FlowStep} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String NAME = "name";
 		public static final String DESCRIPTION = "description";
 
@@ -282,8 +279,17 @@ public class FlowStep extends ABaseFluidJSONObject {
 	 */
 	public FlowStep(Long flowStepIdParam) {
 		super();
-
 		this.setId(flowStepIdParam);
+	}
+
+	/**
+	 * Flow Step name constructor.
+	 *
+	 * @param flowStepName Flow Step Name.
+	 */
+	public FlowStep(String flowStepName) {
+		super();
+		this.setName(flowStepName);
 	}
 
 	/**
