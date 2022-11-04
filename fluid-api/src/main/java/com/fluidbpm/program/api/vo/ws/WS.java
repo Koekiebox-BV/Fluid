@@ -3263,6 +3263,31 @@ public class WS {
 		}
 
 		/**
+		 * The SendGrid Inbound Mail Web Service mappings.
+		 */
+		public static final class SendGridInbound {
+			/**
+			 * SendGrid mappings.
+			 */
+			public static final class Version1 {
+				public static final String ROOT = ("/sendgrid_inbound");
+
+				//Create...
+				public static final String CONSUME = ("/");
+
+				/**
+				 * Root for SendGrid inbound.
+				 *
+				 * @return {@code /sendgrid_inbound/}
+				 */
+				@Override
+				public String toString() {
+					return ROOT;
+				}
+			}
+		}
+
+		/**
 		 * The Payment Web Service mappings.
 		 */
 		public static final class Payment {
