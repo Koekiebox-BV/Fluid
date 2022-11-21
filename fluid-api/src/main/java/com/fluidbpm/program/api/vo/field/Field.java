@@ -553,6 +553,14 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
+	 * Set the field value as long.
+	 * @param longVal Set the field value to {@code longVal}.
+	 */
+	public void setFieldValueAsLong(Long longVal) {
+		this.setFieldValue(longVal);
+	}
+
+	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Number}.
 	 *
 	 * @return The Field Value.
