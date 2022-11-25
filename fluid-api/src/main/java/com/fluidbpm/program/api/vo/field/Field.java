@@ -28,7 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -53,9 +55,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	private String fieldType;
 	private String typeMetaData;
+	private DecimalMetaFormat decimalMetaFormat;
 
 	public static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
 	public static final String PLAIN_KEYWORD = "Plain Keyword";
+	private static String TEMPLATE_DECIMAL_FORMAT = "###,###,###,###.";
+	private static String DEF_DECIMAL_FORMAT = TEMPLATE_DECIMAL_FORMAT.concat("00");
 
 	/**
 	 * The JSON mapping for the {@code Field} object.
@@ -497,11 +502,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
 
-		if (obj instanceof Double) return (Double)obj;
+		final double doubleValue;
+		if (obj instanceof Double) doubleValue = (Double)obj;
+		else if (obj instanceof Number) doubleValue = ((Number)obj).doubleValue();
+		else return null;
 
-		if (obj instanceof Number) return ((Number)obj).doubleValue();
+		if (this.decimalMetaFormat == null || !this.decimalMetaFormat.isAmountMinorWithCurrency()) return doubleValue;
 
-		return null;
+		return new BigDecimal(doubleValue).movePointLeft(
+			this.decimalMetaFormat.getAmountCurrency().getDefaultFractionDigits()
+		).doubleValue();
 	}
 
 	/**
@@ -620,11 +630,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		Object obj = this.getFieldValue();
 		if (obj == null) return null;
 
-		if (obj instanceof Date) {
-			return (Date)obj;
-		} else if (obj instanceof Number) {
-			return new Date(((Number)obj).longValue());
-		}
+		if (obj instanceof Date) return (Date)obj;
+		else if (obj instanceof Number) return new Date(((Number)obj).longValue());
+
 		return null;
 	}
 
@@ -794,12 +802,16 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * <p>
 	 * Example: Text field may be {@code Plain}, {@code Masked}, {@code Latitude and Longitude}.
 	 *
+	 * In addition, the {@code decimalMetaFormat} will be created from {@code typeMetaDataParam}
+	 *
 	 * @param typeMetaDataParam The Field Meta-Data.
 	 *
 	 * @see Type
+	 * @see DecimalMetaFormat#parse(String) The parsing.
 	 */
 	public void setTypeMetaData(String typeMetaDataParam) {
 		this.typeMetaData = typeMetaDataParam;
+		this.decimalMetaFormat = DecimalMetaFormat.parse(this.typeMetaData);
 	}
 
 	/**
@@ -1141,6 +1153,28 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@JsonIgnore
 	public Field clone() {
 		return new Field(this);
+	}
+
+	/**
+	 * @return Decimal Meta Format.
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public DecimalMetaFormat getDecimalMetaFormat() {
+		return this.decimalMetaFormat;
+	}
+
+	@XmlTransient
+	@JsonIgnore
+	public String getDecimalFormat() {
+		if (this.getDecimalMetaFormat() == null) return DEF_DECIMAL_FORMAT;
+
+		DecimalMetaFormat dmf = this.getDecimalMetaFormat();
+		Currency currencyFromPrefix = dmf.getAmountCurrency();
+		if (currencyFromPrefix == null) return DEF_DECIMAL_FORMAT;
+
+		String returnVal = String.format("%1$" + currencyFromPrefix.getDefaultFractionDigits()+ "s", TEMPLATE_DECIMAL_FORMAT).replace(' ', '0');
+		return returnVal;
 	}
 
 	/**
