@@ -1173,8 +1173,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		Currency currencyFromPrefix = dmf.getAmountCurrency();
 		if (currencyFromPrefix == null) return DEF_DECIMAL_FORMAT;
 
-		String returnVal = String.format("%1$" + currencyFromPrefix.getDefaultFractionDigits()+ "s", TEMPLATE_DECIMAL_FORMAT).replace(' ', '0');
-		return returnVal;
+		String txtVal = String.format("%1$" + currencyFromPrefix.getDefaultFractionDigits()+ "s", "0").replace(' ', '0');
+		txtVal = String.format("%s%s", TEMPLATE_DECIMAL_FORMAT, txtVal);
+		return txtVal;
 	}
 
 	/**
