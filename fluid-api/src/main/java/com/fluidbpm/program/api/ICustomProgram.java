@@ -69,6 +69,9 @@ public interface ICustomProgram extends IActionBase {
 	 * previous data stored in Fluid's workflow.
 	 * This is ideal for identifying and preventing the creation of duplicated data.
 	 *
+	 * <p>
+	 * Example: {@code [Field Name] = 'Field Value', [Field Name Two] = 'Field Value Two'}
+	 *
 	 * @param fluidItemParam The {@code FluidItem}
 	 *
 	 * @return The Fluid {@code UserQuery} that will be executed once the {@code execute(FluidItem fluidItemParam)}
@@ -77,7 +80,7 @@ public interface ICustomProgram extends IActionBase {
 	 *         for each of the {@code List<FluidItem>} items returned from the {@code execute} method.
 	 *         The item must be part of the Workflow to qualify.
 	 *
-	 * @throws Exception When a exception is {@code throw}, the Fluid workitem will move into an error state.
+	 * @throws Exception When a exception is {@code throw}, the Fluid work-item will move into an error state.
 	 *
 	 * @see ICustomProgram#execute(FluidItem)
 	 * @see ICustomProgram#postProcessFluidItem(FluidItem, List)
