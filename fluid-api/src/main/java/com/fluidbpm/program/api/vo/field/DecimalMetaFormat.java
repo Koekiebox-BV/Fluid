@@ -115,7 +115,7 @@ public class DecimalMetaFormat {
 			toFormat.stepFactor = Double.parseDouble(txtVal);
 			toFormat.prefix = DecimalMetaFormat.AMOUNT_MINOR_PREFIX.concat(newCurrency.getCurrencyCode());
 			toFormat.min = 0;
-			toFormat.max = Integer.MAX_VALUE;
+			toFormat.max = 999999999.999;
 		}
 
 		returnVal.append(toFormat.type);//               Spinner
