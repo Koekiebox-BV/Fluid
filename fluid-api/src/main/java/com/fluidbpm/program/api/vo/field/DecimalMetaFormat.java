@@ -37,6 +37,8 @@ import java.util.Currency;
 @Getter
 public class DecimalMetaFormat {
 	private String type;
+
+	@Setter
 	private String prefix;
 	private Number min;
 	private Number max;
