@@ -1244,7 +1244,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		if (fieldVal instanceof Number) {
 			boolean match = fieldVal.equals(compareFieldVal);
 			if (!match && compareFieldVal instanceof Number) {
-				if (((Number)fieldVal).doubleValue() == 0.0D && ((Number) compareFieldVal).doubleValue() == 0.0D) match = true;
+				double fieldValDbl = ((Number) fieldVal).doubleValue();
+				double compareFieldValDbl = ((Number) compareFieldVal).doubleValue();
+				return (fieldValDbl == compareFieldValDbl);
 			}
 			return match;
 		} else if (!fieldVal.getClass().isAssignableFrom(compareFieldVal.getClass())) return false;
