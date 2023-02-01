@@ -117,7 +117,7 @@ public class DecimalMetaFormat {
 			toFormat.stepFactor = Double.parseDouble(txtVal);
 			toFormat.prefix = DecimalMetaFormat.AMOUNT_MINOR_PREFIX.concat(newCurrency.getCurrencyCode());
 			toFormat.min = 0;
-			toFormat.max = 999999999.999;
+			toFormat.max = 888888888888.123d;
 		}
 
 		returnVal.append(toFormat.type);//               Spinner
@@ -181,5 +181,15 @@ public class DecimalMetaFormat {
 	public String getPrefix() {
 		if (this.isAmountMinorWithCurrency()) return String.format("%s ", this.amountCurrency.getSymbol());
 		return this.prefix;
+	}
+
+	/**
+	 * If {@code amountCurrency} is set, the currency default fraction digits is returned.
+	 * Otherwise, {code 2}.
+	 * @return The Currency Decimal Places the currency.
+	 */
+	public int getCurrencyDecimalPlaces() {
+		if (this.isAmountMinorWithCurrency()) return this.amountCurrency.getDefaultFractionDigits();
+		return 2;
 	}
 }

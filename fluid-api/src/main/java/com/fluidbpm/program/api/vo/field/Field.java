@@ -29,6 +29,8 @@ import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
@@ -59,7 +61,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	public static final String LATITUDE_AND_LONGITUDE = "Latitude and Longitude";
 	public static final String PLAIN_KEYWORD = "Plain Keyword";
-	private static String TEMPLATE_DECIMAL_FORMAT = "###,###,###,###.";
+	private static String TEMPLATE_DECIMAL_FORMAT = "###,###,###,##0.";
 	private static String DEF_DECIMAL_FORMAT = TEMPLATE_DECIMAL_FORMAT.concat("00");
 
 	/**
@@ -507,9 +509,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		else if (obj instanceof Number) doubleValue = ((Number)obj).doubleValue();
 		else return null;
 
-		if (this.decimalMetaFormat == null || !this.decimalMetaFormat.isAmountMinorWithCurrency()) return doubleValue;
+		if (!this.isAmountMinorWithCurrency()) return doubleValue;
 
-		return new BigDecimal(doubleValue).movePointLeft(
+		return new BigDecimal(doubleValue)
+				.round(MathContext.UNLIMITED)
+				.movePointLeft(
 			this.decimalMetaFormat.getAmountCurrency().getDefaultFractionDigits()
 		).doubleValue();
 	}
@@ -683,6 +687,18 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		if (obj instanceof TableField) return (TableField)obj;
 
 		return null;
+	}
+
+	/**
+	 * Boolean indicator whether the decimal is currency formatted.
+	 *
+	 * @return {@code true} if decimal format and {@code isAmountMinorWithCurrency}.
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public boolean isAmountMinorWithCurrency() {
+		return (this.decimalMetaFormat == null) ?
+				false : this.decimalMetaFormat.isAmountMinorWithCurrency();
 	}
 
 	/**
@@ -1164,6 +1180,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		return this.decimalMetaFormat;
 	}
 
+	/**
+	 * Retrieve the decimal format based on {code decimalMetaFormat}.
+	 * @return The decimal format.
+	 */
 	@XmlTransient
 	@JsonIgnore
 	public String getDecimalFormat() {
@@ -1176,6 +1196,27 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		String txtVal = String.format("%1$" + currencyFromPrefix.getDefaultFractionDigits()+ "s", "0").replace(' ', '0');
 		txtVal = String.format("%s%s", TEMPLATE_DECIMAL_FORMAT, txtVal);
 		return txtVal;
+	}
+
+	/**
+	 * Applies the decimal format to {@code getFieldValueAsDouble}.
+	 * @return Double value formatted as {@code getDecimalFormat}.
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public String getFieldValueAsDoubleDecimalFormat() {
+		DecimalFormat df = new DecimalFormat(this.getDecimalFormat());
+
+		Double dblVal = this.getFieldValueAsDouble();
+		if (dblVal == null) dblVal = 0.0;
+
+		String formatted = df.format(dblVal);
+
+		if (this.decimalMetaFormat != null && UtilGlobal.isNotBlank(this.decimalMetaFormat.getPrefix())) {
+			return String.format("%s%s", this.decimalMetaFormat.getPrefix(), formatted);
+		}
+
+		return formatted;
 	}
 
 	/**
@@ -1246,8 +1287,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			case DateTime:
 				return (this.getFieldValueAsDate() == null);
 			case Decimal:
-				return (this.getFieldValueAsDouble() == null ||
-						(this.getFieldValueAsDouble().isNaN() || this.getFieldValueAsDouble().intValue() == 0));
+				return ((this.getFieldValueAsDouble() == null || this.getFieldValueAsDouble().isNaN()) ||
+						(this.getFieldValueAsInteger() == 0 && this.getFieldValueAsDouble() < 0.0001));
 			case MultipleChoice:
 				MultiChoice valMulti = this.getFieldValueAsMultiChoice();
 				if (valMulti == null) return true;
