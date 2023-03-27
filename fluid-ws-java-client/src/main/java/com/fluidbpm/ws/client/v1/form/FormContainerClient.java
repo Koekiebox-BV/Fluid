@@ -50,14 +50,12 @@ public class FormContainerClient extends ABaseClientWS {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public FormContainerClient(
-		String endpointBaseUrlParam, String serviceTicketParam
-	) {
-		super(endpointBaseUrlParam);
-		this.setServiceTicket(serviceTicketParam);
+	public FormContainerClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
@@ -70,14 +68,11 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * @see Field
 	 */
-	public Form createFormContainer(
-		Form form,
-		boolean addToPersonalInventory
-	) {
-		if (form != null) form.setServiceTicket(this.serviceTicket);
-
+	public Form createFormContainer(Form form, boolean addToPersonalInventory) {
 		return new Form(this.putJson(
-				form, WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory)));
+			this.clearForRestCreateUpdate(form),
+			WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory))
+		);
 	}
 
 	/**
@@ -90,7 +85,10 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Field
 	 */
 	public Form createFormContainer(Form form) {
-		return this.createFormContainer(form, false);
+		return this.createFormContainer(
+			this.clearForRestCreateUpdate(form),
+			false
+		);
 	}
 
 	/**
@@ -102,7 +100,10 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see FormHistoricData
 	 */
 	public FormHistoricData createFormHistoricData(FormHistoricData formHistory) {
-		if (formHistory != null) formHistory.setServiceTicket(this.serviceTicket);
+		if (formHistory != null) {
+			formHistory.setServiceTicket(this.serviceTicket);
+			formHistory.setFormForAuditCreate(this.clearForRestIdOnly(formHistory.getFormForAuditCreate()));
+		}
 
 		return new FormHistoricData(this.putJson(formHistory, WS.Path.FormHistory.Version1.formHistoryCreate()));
 	}
@@ -110,16 +111,20 @@ public class FormContainerClient extends ABaseClientWS {
 	/**
 	 * Create a new Table Record.
 	 *
-	 * @param tableRecordParam The Table Record to create.
+	 * @param tableRecord The Table Record to create.
 	 * @return Created Table Record.
 	 *
 	 * @see TableRecord
 	 */
-	public TableRecord createTableRecord(TableRecord tableRecordParam) {
-		if (tableRecordParam != null) tableRecordParam.setServiceTicket(this.serviceTicket);
+	public TableRecord createTableRecord(TableRecord tableRecord) {
+		if (tableRecord != null) {
+			tableRecord.setServiceTicket(this.serviceTicket);
+			tableRecord.setFormContainer(this.clearForRestCreateUpdate(tableRecord.getFormContainer()));
+			tableRecord.setParentFormContainer(this.clearForRestIdOnly(tableRecord.getParentFormContainer()));
+		}
 
 		return new TableRecord(this.putJson(
-				tableRecordParam,
+				tableRecord,
 				WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreate()));
 	}
 
@@ -127,25 +132,26 @@ public class FormContainerClient extends ABaseClientWS {
 	 * Update a Form Container / Electronic Form.
 	 * The table record forms may also be updated with
 	 *
-	 * @param formParam The Form to update.
+	 * @param form The Form to update.
 	 * @return Updated Form Container / Electronic Form.
 	 *
 	 * @see Field
 	 * @see TableRecord
 	 * @see Form
 	 */
-	public Form updateFormContainer(Form formParam) {
-		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
-
-		return new Form(this.postJson(formParam, WS.Path.FormContainer.Version1.formContainerUpdate()));
+	public Form updateFormContainer(Form form) {
+		return new Form(this.postJson(
+			this.clearForRestCreateUpdate(form),
+			WS.Path.FormContainer.Version1.formContainerUpdate())
+		);
 	}
 
 	/**
 	 * Execute the Custom Program with action alias {@code customWebActionParam}.
 	 * This method may be used for Form and Table Records.
 	 *
-	 * @param customWebActionParam The custom web action name. Action identifier.
-	 * @param formParam The Form to send for 3rd Party execution.
+	 * @param customWebAction The custom web action name. Action identifier.
+	 * @param form The Form to send for 3rd Party execution.
 	 *
 	 * @return Result after the 3rd Party Custom Web Action completed.
 	 *
@@ -153,22 +159,23 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Form
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
-	public CustomWebAction executeCustomWebAction(String customWebActionParam, Form formParam) {
+	public CustomWebAction executeCustomWebAction(String customWebAction, Form form) {
 		return this.executeCustomWebAction(
-				customWebActionParam,
-				false,
-				null,
-				formParam);
+			customWebAction,
+			false,
+			null,
+			this.clearForRestCreateUpdate(form)
+		);
 	}
 
 	/**
 	 * Execute the Custom Program with action alias {@code customWebActionParam}.
 	 * This method may be used for Form and Table Records.
 	 *
-	 * @param customWebActionParam The custom web action name. Action identifier.
-	 * @param isTableRecordParam Is the form a table record form.
-	 * @param formContainerTableRecordBelongsToParam The parent form container if table record.
-	 * @param formParam The Form to send for 3rd Party execution.
+	 * @param customWebAction The custom web action name. Action identifier.
+	 * @param isTableRecord Is the form a table record form.
+	 * @param formContainerTableRecordBelongsTo The parent form container if table record.
+	 * @param form The Form to send for 3rd Party execution.
 	 *
 	 * @return Result after the 3rd Party Custom Web Action completed.
 	 *
@@ -178,20 +185,20 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
 	 */
 	public CustomWebAction executeCustomWebAction(
-		String customWebActionParam,
-		boolean isTableRecordParam,
-		Long formContainerTableRecordBelongsToParam,
-		Form formParam
+		String customWebAction,
+		boolean isTableRecord,
+		Long formContainerTableRecordBelongsTo,
+		Form form
 	) {
-		if (customWebActionParam == null || customWebActionParam.trim().isEmpty()) throw new FluidClientException(
+		if (customWebAction == null || customWebAction.trim().isEmpty()) throw new FluidClientException(
 				"Custom Web Action is mandatory.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 
 		CustomWebAction action = new CustomWebAction();
-		action.setTaskIdentifier(customWebActionParam);
+		action.setTaskIdentifier(customWebAction);
 		action.setServiceTicket(this.serviceTicket);
-		action.setForm(formParam);
-		action.setIsTableRecord(isTableRecordParam);
-		action.setFormTableRecordBelongsTo(formContainerTableRecordBelongsToParam);
+		action.setForm(this.clearForRestCreateUpdate(form));
+		action.setIsTableRecord(isTableRecord);
+		action.setFormTableRecordBelongsTo(formContainerTableRecordBelongsTo);
 
 		return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
 	}
@@ -200,13 +207,14 @@ public class FormContainerClient extends ABaseClientWS {
 	 * Deletes the Form Container provided.
 	 * Id must be set on the Form Container.
 	 *
-	 * @param formContainerParam The Form Container to Delete.
+	 * @param form The Form Container to Delete.
 	 * @return The deleted Form Container.
 	 */
-	public Form deleteFormContainer(Form formContainerParam) {
-		if (formContainerParam != null) formContainerParam.setServiceTicket(this.serviceTicket);
-
-		return new Form(this.postJson(formContainerParam, WS.Path.FormContainer.Version1.formContainerDelete()));
+	public Form deleteFormContainer(Form form) {
+		return new Form(
+			this.postJson(this.clearForRestIdOnly(form),
+			WS.Path.FormContainer.Version1.formContainerDelete())
+		);
 	}
 
 	/**
@@ -218,13 +226,10 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @return Electronic Form Workflow historic data.
 	 */
 	public List<FormFlowHistoricData> getFormFlowHistoricData(Form form) {
-		Form formToSend = new Form(form.getId());
-		formToSend.setFormType(form.getFormType());
-		formToSend.setFormTypeId(form.getFormTypeId());
-		formToSend.setServiceTicket(this.serviceTicket);
-
 		return new FormFlowHistoricDataListing(this.postJson(
-				formToSend, WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
+			this.clearForRestIdOnly(form),
+			WS.Path.FlowItemHistory.Version1.getByFormContainer())
+		).getListing();
 	}
 
 	/**
@@ -237,10 +242,7 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @param form The form to retrieve historic data for.
 	 * @return Electronic Form and Field historic data.
 	 */
-	public List<FormHistoricData> getFormAndFieldHistoricData(
-			Form form,
-			boolean includeCurrent
-	) {
+	public List<FormHistoricData> getFormAndFieldHistoricData(Form form, boolean includeCurrent) {
 		return this.getFormAndFieldHistoricData(form, includeCurrent, false);
 	}
 
@@ -260,14 +262,10 @@ public class FormContainerClient extends ABaseClientWS {
 		boolean includeCurrent,
 		boolean labelFieldName
 	) {
-		Form formToSend = new Form(form.getId());
-		formToSend.setFormType(form.getFormType());
-		formToSend.setFormTypeId(form.getFormTypeId());
-		formToSend.setServiceTicket(this.serviceTicket);
-
 		return new FormHistoricDataListing(this.postJson(
-				formToSend, WS.Path.FormHistory.Version1.getByFormContainer(
-						includeCurrent, labelFieldName))).getListing();
+			this.clearForRestIdOnly(form),
+			WS.Path.FormHistory.Version1.getByFormContainer(includeCurrent, labelFieldName))
+		).getListing();
 	}
 
 	/**
@@ -276,15 +274,14 @@ public class FormContainerClient extends ABaseClientWS {
 	 *
 	 * The Form Id must be provided.
 	 *
-	 * @param formParam The form to retrieve historic data for.
+	 * @param form The form to retrieve historic data for.
 	 *
 	 * @return Electronic Form and Field historic data.
 	 */
-	public FormHistoricData getMostRecentFormAndFieldHistoricData(Form formParam) {
-		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
-
+	public FormHistoricData getMostRecentFormAndFieldHistoricData(Form form) {
 		return new FormHistoricData(this.postJson(
-				formParam, WS.Path.FormHistory.Version1.getByMostRecentByFormContainer()));
+				this.clearForRestIdOnly(form),
+				WS.Path.FormHistory.Version1.getByMostRecentByFormContainer()));
 	}
 
 	/**
@@ -309,7 +306,9 @@ public class FormContainerClient extends ABaseClientWS {
 		form.setServiceTicket(this.serviceTicket);
 
 		return new Form(this.postJson(
-				form, WS.Path.FormContainer.Version1.getById(executeCalculatedLabels)));
+			form,
+			WS.Path.FormContainer.Version1.getById(executeCalculatedLabels))
+		);
 	}
 
 	/**
@@ -322,10 +321,10 @@ public class FormContainerClient extends ABaseClientWS {
 	 * @see Form
 	 */
 	public List<Form> getAncestorFor(Form form) {
-		if (form != null) form.setServiceTicket(this.serviceTicket);
-
 		return new FormListing(this.postJson(
-				form, WS.Path.FormContainer.Version1.getAncestorByChild())).getListing();
+			this.clearForRestIdOnly(form),
+			WS.Path.FormContainer.Version1.getAncestorByChild())
+		).getListing();
 	}
 
 	/**
@@ -345,43 +344,43 @@ public class FormContainerClient extends ABaseClientWS {
 		form.setServiceTicket(this.serviceTicket);
 
 		return new FormListing(this.postJson(
-				form, WS.Path.FormContainer.Version1.getByTitleContains(limit, offset)));
+			form,
+			WS.Path.FormContainer.Version1.getByTitleContains(limit, offset))
+		);
 	}
 
 	/**
 	 * Lock the provided form container for logged in user.
 	 *
-	 * @param formParam The form to lock.
-	 * @param jobViewParam If retrieved from a view, the lock to view from.
+	 * @param form The form to lock.
+	 * @param jobView If retrieved from a view, the lock to view from.
 	 *
 	 * @return The locked form.
 	 */
-	public Form lockFormContainer(Form formParam, JobView jobViewParam) {
-		return this.lockFormContainer(formParam, jobViewParam, null);
+	public Form lockFormContainer(Form form, JobView jobView) {
+		return this.lockFormContainer(form, jobView, null);
 	}
 
 	/**
 	 * Lock the provided form container for logged in user.
 	 * If {@code userToLockAsParam} is provided and valid, that user will be used instead.
 	 *
-	 * @param formParam The form to lock.
-	 * @param jobViewParam If retrieved from a view, the lock to view from.
-	 * @param userToLockAsParam The form will be locked as this user.
+	 * @param form The form to lock.
+	 * @param jobView If retrieved from a view, the lock to view from.
+	 * @param userToLockAs The form will be locked as this user.
 	 *                          The logged in user must have permission to perform this action.
 	 *
 	 * @return The locked form.
 	 */
-	public Form lockFormContainer(Form formParam, JobView jobViewParam, User userToLockAsParam) {
-		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
-
-		Long jobViewId = (jobViewParam == null) ? null : jobViewParam.getId();
-		Long lockAsUserId = (userToLockAsParam == null) ? null : userToLockAsParam.getId();
+	public Form lockFormContainer(Form form, JobView jobView, User userToLockAs) {
+		Long jobViewId = (jobView == null) ? null : jobView.getId();
+		Long lockAsUserId = (userToLockAs == null) ? null : userToLockAs.getId();
 
 		try {
 			return new Form(this.postJson(
-					formParam,
-					WS.Path.FormContainer.Version1.lockFormContainer(
-							jobViewId, lockAsUserId)));
+				this.clearForRestIdOnly(form),
+				WS.Path.FormContainer.Version1.lockFormContainer(jobViewId, lockAsUserId))
+			);
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -392,40 +391,25 @@ public class FormContainerClient extends ABaseClientWS {
 	 * Unlock the provided form container from the logged in user.
 	 * Item will not be removed from users Personal Inventory.
 	 *
-	 * @param formParam The form to unlock.
+	 * @param form The form to unlock.
 	 *
 	 * @return The un-locked form.
 	 */
-	public Form unLockFormContainer(Form formParam) {
-		return this.unLockFormContainer(formParam, null,true,false);
+	public Form unLockFormContainer(Form form) {
+		return this.unLockFormContainer(form, null,true,false);
 	}
 
 	/**
 	 * Unlock the provided form container from the logged in user.
 	 * Item will not be removed from users Personal Inventory.
 	 *
-	 * @param formParam The form to unlock.
-	 * @param unlockAsyncParam Should the unlock be performed asynchronous.
+	 * @param form The form to unlock.
+	 * @param unlockAsync Should unlock be performed asynchronous.
 	 *
 	 * @return The un-locked form.
 	 */
-	public Form unLockFormContainer(Form formParam, boolean unlockAsyncParam) {
-		return this.unLockFormContainer(formParam, null, unlockAsyncParam, false);
-	}
-
-	/**
-	 * Unlock the provided form container from the logged in user.
-	 * The unlock will be performed asynchronous.
-	 * Item will not be removed from users Personal Inventory.
-	 *
-	 * @param formParam The form to unlock.
-	 * @param userToUnLockAsParam The form will be un-locked as this user.
-	 *                          The logged in user must have permission to perform this action.
-	 *
-	 * @return The un-locked form.
-	 */
-	public Form unLockFormContainer(Form formParam, User userToUnLockAsParam) {
-		return this.unLockFormContainer(formParam, userToUnLockAsParam, true, false);
+	public Form unLockFormContainer(Form form, boolean unlockAsync) {
+		return this.unLockFormContainer(form, null, unlockAsync, false);
 	}
 
 	/**
@@ -433,53 +417,66 @@ public class FormContainerClient extends ABaseClientWS {
 	 * The unlock will be performed asynchronous.
 	 * Item will not be removed from users Personal Inventory.
 	 *
-	 * @param formParam The form to unlock.
-	 * @param userToUnLockAsParam The form will be un-locked as this user.
+	 * @param form The form to unlock.
+	 * @param userToUnLockAs The form will be un-locked as this user.
 	 *                          The logged in user must have permission to perform this action.
-	 * @param unlockAsyncParam Should the unlock be performed asynchronous.
+	 *
+	 * @return The un-locked form.
+	 */
+	public Form unLockFormContainer(Form form, User userToUnLockAs) {
+		return this.unLockFormContainer(form, userToUnLockAs, true, false);
+	}
+
+	/**
+	 * Unlock the provided form container from the logged in user.
+	 * The unlock will be performed asynchronous.
+	 * Item will not be removed from users Personal Inventory.
+	 *
+	 * @param form The form to unlock.
+	 * @param userToUnLockAs The form will be un-locked as this user.
+	 *                          The logged in user must have permission to perform this action.
+	 * @param unlockAsync Should unlock be performed asynchronous.
 	 *
 	 * @return The un-locked form.
 	 */
 	public Form unLockFormContainer(
-		Form formParam,
-		User userToUnLockAsParam,
-		boolean unlockAsyncParam
+		Form form,
+		User userToUnLockAs,
+		boolean unlockAsync
 	) {
 		return this.unLockFormContainer(
-				formParam,
-				userToUnLockAsParam,
-				unlockAsyncParam,
+				this.clearForRestIdOnly(form),
+				userToUnLockAs,
+				unlockAsync,
 				false);
 	}
 
 	/**
 	 * Unlock the provided form container from the logged in user.
 	 *
-	 * @param formParam The form to unlock.
-	 * @param userToUnLockAsParam The form will be un-locked as this user.
+	 * @param form The form to unlock.
+	 * @param userToUnLockAs The form will be un-locked as this user.
 	 *                          The logged in user must have permission to perform this action.
-	 * @param unlockAsyncParam Should the unlock be performed asynchronous.
-	 * @param removeFromPersonalInventoryParam Remove from Personal Inventory when unlocked.
+	 * @param unlockAsync Should the unlock be performed asynchronous.
+	 * @param removeFromPersonalInventory Remove from Personal Inventory when unlocked.
 	 *
 	 * @return The un-locked form.
 	 */
 	public Form unLockFormContainer(
-		Form formParam,
-		User userToUnLockAsParam,
-		boolean unlockAsyncParam,
-		boolean removeFromPersonalInventoryParam
+		Form form,
+		User userToUnLockAs,
+		boolean unlockAsync,
+		boolean removeFromPersonalInventory
 	) {
-		if (formParam != null) formParam.setServiceTicket(this.serviceTicket);
-
-		Long unLockAsUserId = (userToUnLockAsParam == null) ? null : userToUnLockAsParam.getId();
+		Long unLockAsUserId = (userToUnLockAs == null) ? null : userToUnLockAs.getId();
 
 		try {
 			return new Form(this.postJson(
-					formParam,
+					this.clearForRestIdOnly(form),
 					WS.Path.FormContainer.Version1.unLockFormContainer(
 							unLockAsUserId,
-							unlockAsyncParam,
-							removeFromPersonalInventoryParam)));
+							unlockAsync,
+							removeFromPersonalInventory)));
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -505,10 +502,9 @@ public class FormContainerClient extends ABaseClientWS {
 		boolean includeDescendants,
 		boolean includeFormProperties
 	) {
-		formToPrint.setServiceTicket(this.serviceTicket);
 		try {
 			return new Attachment(this.postJson(
-					formToPrint,
+					this.clearForRestIdOnly(formToPrint),
 					WS.Path.FormContainer.Version1.printAsPDFAttachment(
 							includeCompanyLogo,
 							includeAncestor,
@@ -518,5 +514,38 @@ public class FormContainerClient extends ABaseClientWS {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
 		}
+	}
+
+	/**
+	 * Clear redundant JSON payloads to improve performance.
+	 * @param form To sanitise prior to sending through REST interface.
+	 */
+	private Form clearForRestCreateUpdate(Form form) {
+		if (form == null || form.getFormFields() == null) return form;
+
+		form.setServiceTicket(this.serviceTicket);
+		form.getFormFields().stream()
+				.filter(itm -> itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice)
+				.map(itm -> itm.getFieldValueAsMultiChoice())
+				.forEach(multiChoice -> {
+					multiChoice.setAvailableMultiChoices(null);
+					multiChoice.setAvailableMultiChoicesCombined(null);
+				});
+		return form;
+	}
+
+	/**
+	 * Only send the id and service ticket from {@code form}.
+	 * @param form To sanitise prior to sending through REST interface.
+	 */
+	private Form clearForRestIdOnly(Form form) {
+		if (form == null) return null;
+
+		Form returnVal = new Form(form.getId());
+		returnVal.setFormType(form.getFormType());
+		returnVal.setFormTypeId(form.getFormTypeId());
+		returnVal.setServiceTicket(this.serviceTicket);
+
+		return returnVal;
 	}
 }
