@@ -271,7 +271,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		this.fieldName = toClone.fieldName;
 		this.fieldDescription = toClone.fieldDescription;
 		this.fieldType = toClone.fieldType;
-		this.typeMetaData = toClone.typeMetaData;
+		this.setTypeMetaData(toClone.typeMetaData);
 
 		if (toClone.fieldValue instanceof String) {
 			this.fieldValue = toClone.fieldValue.toString();
