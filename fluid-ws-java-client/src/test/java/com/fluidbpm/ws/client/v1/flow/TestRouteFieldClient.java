@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -31,8 +23,14 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -172,12 +170,8 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_TrueFalse_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testRouteField_TrueFalse_CRUD() {
+        if (!this.isConnectionValid()) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
