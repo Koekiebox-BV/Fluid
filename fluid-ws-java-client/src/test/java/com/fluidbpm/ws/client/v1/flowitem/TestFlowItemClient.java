@@ -436,11 +436,10 @@ public class TestFlowItemClient extends ABaseTestCase {
             long allAvgItemCount = (alAll.get() / itemCount);
             long allRuleItemCount = (alPerRule.get() / itemCount);
 
-            TestCase.assertTrue("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000);
-            TestCase.assertTrue("Avg. processing per RULE is taking too long.", allAvgItemCount > 1000);
+            log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule", itemCount, allAvgItemCount, allRuleItemCount));
 
-            log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule",
-                    itemCount, allAvgItemCount, allRuleItemCount));
+            TestCase.assertFalse("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000L);
+            TestCase.assertFalse("Avg. processing per RULE is taking too long.", allRuleItemCount > 1000L);
 
             // send it on:
             itemsFromLookup.forEach(itm -> {
