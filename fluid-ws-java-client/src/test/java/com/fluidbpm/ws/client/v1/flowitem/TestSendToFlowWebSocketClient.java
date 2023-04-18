@@ -15,13 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.flowitem;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.*;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
@@ -40,8 +33,13 @@ import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jasonbruwer on 17/06/23.
@@ -158,8 +156,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestCase {
         introductFlowStep.setName("Introduction");
         introductFlowStep.setFlow(this.testFlow);
         flowStepSetRule.setFlowStep(introductFlowStep);
-        flowStepSetRule.setRule("SET FORM."+
-                fieldName+" TO 'ZabberMan2000'");
+        flowStepSetRule.setRule("SET FORM."+ fieldName+" TO 'ZabberMan2000'");
         this.flowStepRule = this.flowStepRuleClient.createFlowStepExitRule(flowStepSetRule);
 
         //Form Definition...

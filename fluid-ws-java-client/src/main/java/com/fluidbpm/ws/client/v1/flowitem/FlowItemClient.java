@@ -202,8 +202,8 @@ public class FlowItemClient extends ABaseClientWS {
 
 		try {
 			return new FluidItem(this.postJson(
-					flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn(
-							allowCollaboratorToSendOnParam)));
+					flowJobItemParam, WS.Path.FlowItem.Version1.sendFlowItemOn(allowCollaboratorToSendOnParam))
+			);
 		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -226,7 +226,8 @@ public class FlowItemClient extends ABaseClientWS {
 
 		try {
 			return new FluidItem(this.postJson(
-					itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow()));
+				itemToSend, WS.Path.FlowItem.Version1.sendFlowItemToFlow())
+			);
 		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -243,13 +244,12 @@ public class FlowItemClient extends ABaseClientWS {
 	 * @see FluidItem
 	 */
 	public FluidItem removeFromFlow(FluidItem fluidItem) {
-		if (fluidItem != null) {
-			fluidItem.setServiceTicket(this.serviceTicket);
-		}
+		if (fluidItem != null) fluidItem.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new FluidItem(this.postJson(
-					fluidItem, WS.Path.FlowItem.Version1.removeFluidItemFromFlow()));
+				fluidItem, WS.Path.FlowItem.Version1.removeFluidItemFromFlow())
+			);
 		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);

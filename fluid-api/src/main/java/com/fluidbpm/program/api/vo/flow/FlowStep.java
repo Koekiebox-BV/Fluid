@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.flow;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,8 @@ import java.util.List;
  * @see FlowStepRule
  * @see ABaseFluidJSONObject
  */
+@Getter
+@Setter
 public class FlowStep extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -93,16 +96,18 @@ public class FlowStep extends ABaseFluidJSONObject {
 	/**
 	 * Additional properties applicable to specific <code>FlowStep</code> types.
 	 */
-	public static class StepProperty extends ABaseFluidJSONObject
-	{
+	@AllArgsConstructor
+	@NoArgsConstructor
+	@Getter
+	@Setter
+	public static class StepProperty extends ABaseFluidJSONObject {
 		private String name;
 		private String value;
 
 		/**
 		 * A list of the available properties to set.
 		 */
-		public static class PropName
-		{
+		public static class PropName {
 			//Assignment Step...
 			public static final String ItemTimeoutDays = "ItemTimeoutDays";
 			public static final String ItemTimeoutHours = "ItemTimeoutHours";
@@ -151,29 +156,9 @@ public class FlowStep extends ABaseFluidJSONObject {
 		/**
 		 * The JSON mapping for the {@code StepProperty} object.
 		 */
-		public static class JSONMapping
-		{
+		public static class JSONMapping {
 			public static final String NAME = "name";
 			public static final String VALUE = "value";
-		}
-
-		/**
-		 * Default constructor.
-		 */
-		public StepProperty() {
-			super();
-		}
-
-		/**
-		 * Sets a step property name and value.
-		 *
-		 * @param nameParam The property name.
-		 * @param valueParam The property value.
-		 */
-		public StepProperty(String nameParam, String valueParam) {
-
-			this.setName(nameParam);
-			this.setValue(valueParam);
 		}
 
 		/**
@@ -184,10 +169,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 		public StepProperty(JSONObject jsonObjectParam) {
 			super(jsonObjectParam);
 
-			if (this.jsonObject == null)
-			{
-				return;
-			}
+			if (this.jsonObject == null) return;
 
 			//Name...
 			if (!this.jsonObject.isNull(JSONMapping.NAME)) {
@@ -201,42 +183,6 @@ public class FlowStep extends ABaseFluidJSONObject {
 		}
 
 		/**
-		 * Name of the Step property.
-		 *
-		 * @return Step Property Name.
-		 */
-		public String getName() {
-			return this.name;
-		}
-
-		/**
-		 * Name of the Step property.
-		 *
-		 * @param nameParam Step Property Name.
-		 */
-		public void setName(String nameParam) {
-			this.name = nameParam;
-		}
-
-		/**
-		 * Value of the Step property.
-		 *
-		 * @return Step Property Value.
-		 */
-		public String getValue() {
-			return this.value;
-		}
-
-		/**
-		 * Value of the Step property.
-		 *
-		 * @param valueParam Step Property Value.
-		 */
-		public void setValue(String valueParam) {
-			this.value = valueParam;
-		}
-
-		/**
 		 * Conversion to {@code JSONObject} from Java Object.
 		 *
 		 * @return {@code JSONObject} representation of {@code StepProperty}
@@ -245,19 +191,16 @@ public class FlowStep extends ABaseFluidJSONObject {
 		 * @see ABaseFluidJSONObject#toJsonObject()
 		 */
 		@Override
-		public JSONObject toJsonObject() throws JSONException
-		{
+		public JSONObject toJsonObject() throws JSONException {
 			JSONObject returnVal = super.toJsonObject();
 
 			//Name...
-			if (this.getName() != null)
-			{
+			if (this.getName() != null) {
 				returnVal.put(JSONMapping.NAME, this.getName());
 			}
 
 			//Value...
-			if (this.getValue() != null)
-			{
+			if (this.getValue() != null) {
 				returnVal.put(JSONMapping.VALUE, this.getValue());
 			}
 
@@ -293,6 +236,28 @@ public class FlowStep extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Flow Step name and flow constructor.
+	 *
+	 * @param flowStepName Flow Step Name.
+	 * @param flow Flow Step workflow.
+	 */
+	public FlowStep(String flowStepName, Flow flow) {
+		this(flowStepName);
+		this.setFlow(flow);
+	}
+
+	/**
+	 * Flow Step name and description constructor.
+	 *
+	 * @param flowStepName Flow Step name.
+	 * @param flowStepDescription Flow Step description.
+	 */
+	public FlowStep(String flowStepName, String flowStepDescription) {
+		this(flowStepName);
+		this.setDescription(flowStepDescription);
+	}
+
+	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
 	 * @param jsonObjectParam The JSON Object.
@@ -300,10 +265,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 	public FlowStep(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Name...
 		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
@@ -406,27 +368,13 @@ public class FlowStep extends ABaseFluidJSONObject {
 	public void setStepProperty(
 			String nameParam, String valueParam)
 	{
-		if (this.getStepProperties() == null)
-		{
-			this.setStepProperties(new ArrayList());
-		}
-
-		if (nameParam == null || nameParam.trim().isEmpty())
-		{
-			return;
-		}
-
-		if (valueParam.trim().isEmpty())
-		{
-			return;
-		}
+		if (this.getStepProperties() == null) this.setStepProperties(new ArrayList());
+		if (nameParam == null || nameParam.trim().isEmpty()) return;
+		if (valueParam.trim().isEmpty()) return;
 
 		String paramLower = nameParam.toLowerCase();
-
-		for (StepProperty existingProp : this.getStepProperties())
-		{
-			if (existingProp.getName().toLowerCase().equals(paramLower))
-			{
+		for (StepProperty existingProp : this.getStepProperties()) {
+			if (existingProp.getName().toLowerCase().equals(paramLower)) {
 				existingProp.setValue(valueParam);
 				return;
 			}
@@ -441,26 +389,15 @@ public class FlowStep extends ABaseFluidJSONObject {
 	 * @param nameParam The property to retrieve.
 	 * @return Value of the property with name {@code nameParam}.
 	 */
-	public String getStepProperty(String nameParam)
-	{
-		if (this.getStepProperties() == null || this.getStepProperties().isEmpty())
-		{
-			return null;
-		}
+	public String getStepProperty(String nameParam) {
+		if (this.getStepProperties() == null || this.getStepProperties().isEmpty()) return null;
 
-		if (nameParam == null || nameParam.trim().isEmpty())
-		{
-			return null;
-		}
+		if (nameParam == null || nameParam.trim().isEmpty()) return null;
 
 		String paramLower = nameParam.toLowerCase();
 
-		for (StepProperty stepProperty : this.getStepProperties())
-		{
-			if (stepProperty.getName().toLowerCase().equals(paramLower))
-			{
-				return stepProperty.getValue();
-			}
+		for (StepProperty stepProperty : this.getStepProperties()) {
+			if (stepProperty.getName().toLowerCase().equals(paramLower)) return stepProperty.getValue();
 		}
 
 		return null;
@@ -475,28 +412,18 @@ public class FlowStep extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException
-	{
+	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Name...
-		if (this.getName() != null)
-		{
-			returnVal.put(JSONMapping.NAME,this.getName());
-		}
+		if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
 
 		//Description...
-		if (this.getDescription() != null)
-		{
-			returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
-		}
+		if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
 
 		//Date Created...
-		if (this.getDateCreated() != null)
-		{
-			returnVal.put(JSONMapping.DATE_CREATED,
+		if (this.getDateCreated() != null) returnVal.put(JSONMapping.DATE_CREATED,
 					this.getDateAsObjectFromJson(this.getDateCreated()));
-		}
 
 		//Date Last Updated...
 		if (this.getDateLastUpdated() != null)
@@ -506,71 +433,46 @@ public class FlowStep extends ABaseFluidJSONObject {
 		}
 
 		//Flow...
-		if (this.getFlow() != null)
-		{
-			returnVal.put(JSONMapping.FLOW,
-					this.getFlow().toJsonObject());
-		}
+		if (this.getFlow() != null) returnVal.put(JSONMapping.FLOW, this.getFlow().toJsonObject());
 
 		//Flow Step Type...
-		if (this.getFlowStepType() != null)
-		{
+		if (this.getFlowStepType() != null) {
 			returnVal.put(JSONMapping.FLOW_STEP_TYPE,this.getFlowStepType());
 		}
 
 		//Flow Step Parent Id...
-		if (this.getFlowStepParentId() != null)
-		{
-			returnVal.put(
-					JSONMapping.FLOW_STEP_PARENT_ID, this.getFlowStepParentId());
+		if (this.getFlowStepParentId() != null) {
+			returnVal.put(JSONMapping.FLOW_STEP_PARENT_ID, this.getFlowStepParentId());
 		}
 
 		//Entry Rules...
-		if (this.getEntryRules() != null && !this.getEntryRules().isEmpty())
-		{
+		if (this.getEntryRules() != null && !this.getEntryRules().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-
-			for (FlowStepRule rule : this.getEntryRules())
-			{
-				jsonArray.put(rule.toJsonObject());
-			}
-
+			for (FlowStepRule rule : this.getEntryRules()) jsonArray.put(rule.toJsonObject());
 			returnVal.put(JSONMapping.ENTRY_RULES, jsonArray);
 		}
 
 		//Exit Rules...
-		if (this.getExitRules() != null && !this.getExitRules().isEmpty())
-		{
+		if (this.getExitRules() != null && !this.getExitRules().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
-
-			for (FlowStepRule rule : this.getExitRules())
-			{
-				jsonArray.put(rule.toJsonObject());
-			}
-
+			for (FlowStepRule rule : this.getExitRules()) jsonArray.put(rule.toJsonObject());
 			returnVal.put(JSONMapping.EXIT_RULES, jsonArray);
 		}
 
 		//View Rules...
-		if (this.getViewRules() != null && !this.getViewRules().isEmpty())
-		{
+		if (this.getViewRules() != null && !this.getViewRules().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
 
-			for (FlowStepRule rule : this.getViewRules())
-			{
-				jsonArray.put(rule.toJsonObject());
-			}
+			for (FlowStepRule rule : this.getViewRules()) jsonArray.put(rule.toJsonObject());
 
 			returnVal.put(JSONMapping.VIEW_RULES, jsonArray);
 		}
 
 		//Step Properties...
-		if (this.getStepProperties() != null && !this.getStepProperties().isEmpty())
-		{
+		if (this.getStepProperties() != null && !this.getStepProperties().isEmpty()) {
 			JSONArray jsonArray = new JSONArray();
 
-			for (StepProperty stepProperty : this.getStepProperties())
-			{
+			for (StepProperty stepProperty : this.getStepProperties()) {
 				jsonArray.put(stepProperty.toJsonObject());
 			}
 
@@ -578,227 +480,5 @@ public class FlowStep extends ABaseFluidJSONObject {
 		}
 
 		return returnVal;
-	}
-
-	/**
-	 * Gets Name of the step.
-	 *
-	 * @return Step name.
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Sets Name of the step.
-	 *
-	 * @param nameParam Step name.
-	 */
-	public void setName(String nameParam) {
-		this.name = nameParam;
-	}
-
-	/**
-	 * Gets Description of the step.
-	 *
-	 * @return Step description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * Sets Description of the step.
-	 *
-	 * @param descriptionParam Step description.
-	 */
-	public void setDescription(String descriptionParam) {
-		this.description = descriptionParam;
-	}
-
-	/**
-	 * Gets the  date Step was created.
-	 *
-	 * @return Step Creation Timestamp.
-	 *
-	 * @see Date
-	 */
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	/**
-	 * Sets the date Step was created.
-	 *
-	 * @param dateCreatedParam Step Creation Timestamp.
-	 *
-	 * @see Date
-	 */
-	public void setDateCreated(Date dateCreatedParam) {
-		this.dateCreated = dateCreatedParam;
-	}
-
-	/**
-	 * Gets the date Step was last updated.
-	 *
-	 * @return Step last Update Timestamp.
-	 *
-	 * @see Date
-	 */
-	public Date getDateLastUpdated() {
-		return this.dateLastUpdated;
-	}
-
-	/**
-	 * Sets the date Step was last updated.
-	 *
-	 * @param dateLastUpdatedParam Step last Update Timestamp.
-	 *
-	 * @see Date
-	 */
-	public void setDateLastUpdated(Date dateLastUpdatedParam) {
-		this.dateLastUpdated = dateLastUpdatedParam;
-	}
-
-	/**
-	 * Gets the Flow associated with the step.
-	 *
-	 * @return Flow for the Step.
-	 */
-	public Flow getFlow() {
-		return this.flow;
-	}
-
-	/**
-	 * Sets the Flow associated with the step.
-	 *
-	 * @param flowParam Flow for the Step.
-	 */
-	public void setFlow(Flow flowParam) {
-		this.flow = flowParam;
-	}
-
-	/**
-	 * Gets the type of Step.
-	 *
-	 * @return Text version of Flow Step type.
-	 *
-	 * @see StepType
-	 */
-	public String getFlowStepType() {
-		return this.flowStepType;
-	}
-
-	/**
-	 * Sets the type of Step.
-	 *
-	 * @param flowStepTypeParam Text version of Flow Step type.
-	 *
-	 * @see StepType
-	 */
-	public void setFlowStepType(String flowStepTypeParam) {
-		this.flowStepType = flowStepTypeParam;
-	}
-
-	/**
-	 * Gets the Flow Step parent id with {@code this} Step.
-	 *
-	 * The parent id is the containing Step primary key.
-	 *
-	 * Example would be the primary key for an {@code AssignmentStep}.
-	 *
-	 * @return Parent Id for {@code this} Step.
-	 */
-	public Long getFlowStepParentId() {
-		return this.flowStepParentId;
-	}
-
-	/**
-	 * Gets the Flow Step parent id with {@code this} Step.
-	 *
-	 * The parent id is the containing Step primary key.
-	 *
-	 * Example would be the primary key for an {@code AssignmentStep}.
-	 *
-	 * @param flowStepParentIdParam Parent Id for {@code this} Step.
-	 */
-	public void setFlowStepParentId(Long flowStepParentIdParam) {
-		this.flowStepParentId = flowStepParentIdParam;
-	}
-
-	/**
-	 * Gets the Entry Rules associated with {@code this} Step.
-	 *
-	 * @return Entry rules for {@code this} Step.
-	 */
-	public List<FlowStepRule> getEntryRules() {
-		return this.entryRules;
-	}
-
-	/**
-	 * Sets the Entry Rules associated with {@code this} Step.
-	 *
-	 * @param entryRulesParam Entry rules for {@code this} Step.
-	 */
-	public void setEntryRules(List<FlowStepRule> entryRulesParam) {
-		this.entryRules = entryRulesParam;
-	}
-
-	/**
-	 * Gets the Exit Rules associated with {@code this} Step.
-	 *
-	 * @return Exit rules for {@code this} Step.
-	 */
-	public List<FlowStepRule> getExitRules() {
-		return this.exitRules;
-	}
-
-	/**
-	 * Sets the Exit Rules associated with {@code this} Step.
-	 *
-	 * @param exitRulesParam Exit rules for {@code this} Step.
-	 */
-	public void setExitRules(List<FlowStepRule> exitRulesParam) {
-		this.exitRules = exitRulesParam;
-	}
-
-	/**
-	 * Gets the View Rules associated with {@code this} Step.
-	 *
-	 * @return View rules for {@code this} Step.
-	 */
-	public List<FlowStepRule> getViewRules() {
-		return this.viewRules;
-	}
-
-	/**
-	 * Sets the View Rules associated with {@code this} Step.
-	 *
-	 * @param viewRulesParam View rules for {@code this} Step.
-	 */
-	public void setViewRules(List<FlowStepRule> viewRulesParam) {
-		this.viewRules = viewRulesParam;
-	}
-
-	/**
-	 * Gets the Step Properties.
-	 *
-	 * @return Step Properties.
-	 *
-	 * @see StepProperty
-	 */
-	public List<StepProperty> getStepProperties() {
-		return this.stepProperties;
-	}
-
-	/**
-	 * Sets the Step Properties.
-	 *
-	 * @param stepPropertiesParam Step Properties.
-	 *
-	 * @see StepProperty
-	 */
-	public void setStepProperties(List<StepProperty> stepPropertiesParam) {
-		this.stepProperties = stepPropertiesParam;
 	}
 }

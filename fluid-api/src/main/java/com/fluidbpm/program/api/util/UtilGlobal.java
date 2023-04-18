@@ -752,4 +752,18 @@ public class UtilGlobal {
 
 		return false;
 	}
+
+	/**
+	 * Check if all of the {@code booleansToCheckParam} values are {@code true}.
+	 *
+	 * @param booleansToCheck The boolean values to check.
+	 * @return {@code true} If ALL of the elements for {@code booleansToCheck} is {@code true}.
+	 */
+	public static final boolean isAllTrue(boolean ... booleansToCheck) {
+		if (booleansToCheck == null || booleansToCheck.length == 0) return false;
+
+		for (boolean toCheck : booleansToCheck) if (!toCheck) return false;
+
+		return true;
+	}
 }

@@ -15,14 +15,16 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fluid workflow Step Rule that belongs to,
@@ -35,6 +37,9 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see FlowStep
  * @see ABaseFluidJSONObject
  */
+@NoArgsConstructor
+@Getter
+@Setter
 public class FlowStepRule extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -51,8 +56,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	/**
 	 * The JSON mapping for the {@code FlowStepRule} object.
 	 */
-	public static class JSONMapping
-	{
+	public static class JSONMapping {
 		public static final String ORDER = "order";
 		public static final String RULE = "rule";
 		public static final String FLOW = "flow";
@@ -63,21 +67,27 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	}
 
 	/**
-	 * Default constructor.
-	 */
-	public FlowStepRule() {
-		super();
-	}
-
-	/**
 	 * The unique identifier of the Step Rule.
 	 *
 	 * @param flowStepRuleIdParam Rule Primary Key.
 	 */
 	public FlowStepRule(Long flowStepRuleIdParam) {
 		super();
-
 		this.setId(flowStepRuleIdParam);
+	}
+
+	/**
+	 * Constructor to set the flow, step and rule.
+	 *
+	 * @param flow The workflow the rule is part of.
+	 * @param flowStep The workflow step the rule is part of.
+	 * @param rule The rule to be executed.
+	 */
+	public FlowStepRule(Flow flow, FlowStep flowStep, String rule) {
+		super();
+		this.setFlow(flow);
+		this.setFlowStep(flowStep);
+		this.setRule(rule);
 	}
 
 	/**
@@ -88,10 +98,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	public FlowStepRule(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Order...
 		if (!this.jsonObject.isNull(JSONMapping.ORDER)) {
@@ -120,14 +127,11 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 
 		//Next Valid Syntax Words...
 		if (!this.jsonObject.isNull(JSONMapping.NEXT_VALID_SYNTAX_WORDS)) {
-
 			JSONArray listOfValidWordsArray =
 					this.jsonObject.getJSONArray(JSONMapping.NEXT_VALID_SYNTAX_WORDS);
-
 			List<String> validWordsString = new ArrayList<String>();
 
-			for (int index = 0;index < listOfValidWordsArray.length();index++)
-			{
+			for (int index = 0;index < listOfValidWordsArray.length();index++) {
 				validWordsString.add(listOfValidWordsArray.getString(index));
 			}
 
@@ -144,162 +148,44 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException
-	{
+	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Order...
-		if (this.getOrder() != null)
-		{
+		if (this.getOrder() != null) {
 			returnVal.put(JSONMapping.ORDER, this.getOrder());
 		}
 
 		//Rule...
-		if (this.getRule() != null)
-		{
+		if (this.getRule() != null) {
 			returnVal.put(JSONMapping.RULE, this.getRule());
 		}
 
 		//Current Typed Syntax...
-		if (this.getCurrentTypedSyntax() != null)
-		{
+		if (this.getCurrentTypedSyntax() != null) {
 			returnVal.put(JSONMapping.CURRENT_TYPED_SYNTAX,
 					this.getCurrentTypedSyntax());
 		}
 
 		//Flow...
-		if (this.getFlow() != null)
-		{
+		if (this.getFlow() != null) {
 			returnVal.put(JSONMapping.FLOW, this.getFlow().toJsonObject());
 		}
 
 		//Flow Step...
-		if (this.getFlowStep() != null)
-		{
+		if (this.getFlowStep() != null) {
 			returnVal.put(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
 		}
 
 		//Next Valid Syntax Words...
-		if (this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty())
-		{
+		if (this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty()) {
 			JSONArray jsonArrayOfValidWords = new JSONArray();
-
-			for (String validWord : this.getNextValidSyntaxWords())
-			{
+			for (String validWord : this.getNextValidSyntaxWords()) {
 				jsonArrayOfValidWords.put(validWord);
 			}
-
 			returnVal.put(JSONMapping.NEXT_VALID_SYNTAX_WORDS, jsonArrayOfValidWords);
 		}
 
 		return returnVal;
-	}
-
-	/**
-	 * The order within the Entry, Exit or View.
-	 *
-	 * @return The order of the rule.
-	 */
-	public Long getOrder() {
-		return this.order;
-	}
-
-	/**
-	 * The order within the Entry, Exit or View.
-	 *
-	 * @param orderParam The order of the rule.
-	 */
-	public void setOrder(Long orderParam) {
-		this.order = orderParam;
-	}
-
-	/**
-	 * Gets the Rule as text.
-	 *
-	 * @return Text version of the rule.
-	 */
-	public String getRule() {
-		return this.rule;
-	}
-
-	/**
-	 * Sets the Rule as text.
-	 *
-	 * @param ruleParam Text version of the rule.
-	 */
-	public void setRule(String ruleParam) {
-		this.rule = ruleParam;
-	}
-
-	/**
-	 * The {@code Flow} the rule forms part of.
-	 *
-	 * @return The Flow of the rule.
-	 */
-	public Flow getFlow() {
-		return this.flow;
-	}
-
-	/**
-	 * The {@code Flow} the rule forms part of.
-	 *
-	 * @param flowParam The Flow of the rule.
-	 */
-	public void setFlow(Flow flowParam) {
-		this.flow = flowParam;
-	}
-
-	/**
-	 * The {@code FlowStep} the rule forms part of.
-	 *
-	 * @return The Flow Step of the rule.
-	 */
-	public FlowStep getFlowStep() {
-		return this.flowStep;
-	}
-
-	/**
-	 * The {@code FlowStep} the rule forms part of.
-	 *
-	 * @param flowStepParam The Flow Step of the rule.
-	 */
-	public void setFlowStep(FlowStep flowStepParam) {
-		this.flowStep = flowStepParam;
-	}
-
-	/**
-	 * Typed syntax to provide the {@code getNextValidSyntaxWords}.
-	 *
-	 * @return Text entered to get the next valid syntax words.
-	 */
-	public String getCurrentTypedSyntax() {
-		return this.currentTypedSyntax;
-	}
-
-	/**
-	 * Typed syntax to provide the {@code getNextValidSyntaxWords}.
-	 *
-	 * @param currentTypedSyntaxParam Text entered to get the next valid syntax words.
-	 */
-	public void setCurrentTypedSyntax(String currentTypedSyntaxParam) {
-		this.currentTypedSyntax = currentTypedSyntaxParam;
-	}
-
-	/**
-	 * The next valid words from {@code getCurrentTypedSyntax}.
-	 *
-	 * @return Next valid syntax.
-	 */
-	public List<String> getNextValidSyntaxWords() {
-		return this.nextValidSyntaxWords;
-	}
-
-	/**
-	 * The next valid words from {@code getCurrentTypedSyntax}.
-	 *
-	 * @param nextValidSyntaxWordsParam Next valid syntax.
-	 */
-	public void setNextValidSyntaxWords(List<String> nextValidSyntaxWordsParam) {
-		this.nextValidSyntaxWords = nextValidSyntaxWordsParam;
 	}
 }

@@ -86,6 +86,17 @@ public class Flow extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Constructor with the Flow name.
+	 *
+	 * @param flowName The Flow name.
+	 * @param flowDescription The Flow description.
+	 */
+	public Flow(String flowName, String flowDescription) {
+		this(flowName);
+		this.setDescription(flowDescription);
+	}
+
+	/**
 	 * Constructor with the Flow id and name.
 	 *
 	 * @param flowId The Flow id.

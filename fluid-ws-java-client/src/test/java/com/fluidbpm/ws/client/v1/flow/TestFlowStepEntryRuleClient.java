@@ -427,9 +427,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_CompileAndRunSucceed_AnotherFieldValue() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
