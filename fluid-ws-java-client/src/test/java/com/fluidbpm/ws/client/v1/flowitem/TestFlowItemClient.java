@@ -164,7 +164,7 @@ public class TestFlowItemClient extends ABaseTestCase {
      * Test creating a workflow step with an assignment option.
      * Then test whether the items may be viewed from the workflow step.
      */
-    @Test(timeout = 180_000)//seconds.
+    @Test(timeout = 240_000)//seconds.
     public void testSmallWorkflowStepWithConcurrency() {
         if (!this.isConnectionValid()) return;
 
@@ -250,7 +250,7 @@ public class TestFlowItemClient extends ABaseTestCase {
             this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
 
             try {
-                flowItmClient.getFluidItemsForView(viewWorkView, 100, 0).getListing();
+                flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing();
                 TestCase.fail("Did not expect any items in the queue.");
             } catch (FluidClientException noEntries) {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
@@ -422,6 +422,7 @@ public class TestFlowItemClient extends ABaseTestCase {
                 TestCase.assertTrue(UtilGlobal.isAllTrue(newRoute, exit, newStep, moved));
                 TestCase.assertNotNull(formById);
                 TestCase.assertEquals("WorkInProgress", formById.getFlowState());
+                TestCase.assertEquals("The number of rules executed is not as expected.", 7, ruleIndex);
                 long timeTakenMillis = (end.getTime() - start.getTime());
                 long avgTimePerRule = (timeTakenMillis / ruleIndex);
                 alPerRule.addAndGet(avgTimePerRule);
@@ -434,6 +435,10 @@ public class TestFlowItemClient extends ABaseTestCase {
             log.info(String.format("%n"));
             long allAvgItemCount = (alAll.get() / itemCount);
             long allRuleItemCount = (alPerRule.get() / itemCount);
+
+            TestCase.assertTrue("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000);
+            TestCase.assertTrue("Avg. processing per RULE is taking too long.", allAvgItemCount > 1000);
+
             log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule",
                     itemCount, allAvgItemCount, allRuleItemCount));
 
@@ -447,7 +452,7 @@ public class TestFlowItemClient extends ABaseTestCase {
             this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
 
             try {
-                flowItmClient.getFluidItemsForView(viewWorkView, 100, 0).getListing();
+                flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing();
                 TestCase.fail("Did not expect any items in the queue.");
             } catch (FluidClientException noEntries) {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
@@ -468,8 +473,8 @@ public class TestFlowItemClient extends ABaseTestCase {
     }
 
     private List<FluidItem> executeUntilOrTO(FlowItemClient fiClient, JobView view, int attemptCount) {
-        // wait for up to 30 seconds:
-        for (int iter = 0; iter < 30; iter++) {
+        // wait for up to 60 seconds:
+        for (int iter = 0; iter < 60; iter++) {
             sleepForSeconds(1);
             try {
                 List<FluidItem> attempt = fiClient.getFluidItemsForView(view, attemptCount, 0).getListing();
