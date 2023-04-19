@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.flowitem;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
@@ -25,10 +26,10 @@ import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.flow.*;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
@@ -57,6 +58,10 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TestFlowItemClient extends ABaseTestCase {
 
     private LoginClient loginClient;
+    private String serviceTicket;
+    private String prevConfMemory;
+
+    private static String CONFIG_KEY_MEM = "MemoryCacheType";
 
     /**
      *
@@ -73,6 +78,20 @@ public class TestFlowItemClient extends ABaseTestCase {
     public void init() {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
         this.loginClient = new LoginClient(BASE_URL);
+
+        if (!this.isConnectionValid()) return;
+
+        this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();
+
+        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
+            Configuration conf = confClient.getConfigurationByKey(CONFIG_KEY_MEM);
+            if (conf == null) this.prevConfMemory = "None";
+            else this.prevConfMemory = conf.getValue();
+
+            if ("None".equalsIgnoreCase(this.prevConfMemory)) {
+                confClient.upsertConfiguration(CONFIG_KEY_MEM, "Internal");
+            }
+        }
     }
 
     /**
@@ -80,6 +99,10 @@ public class TestFlowItemClient extends ABaseTestCase {
      */
     @After
     public void destroy() {
+        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
+            confClient.upsertConfiguration(CONFIG_KEY_MEM, this.prevConfMemory);
+        }
+
         this.loginClient.closeAndClean();
     }
 
@@ -91,14 +114,9 @@ public class TestFlowItemClient extends ABaseTestCase {
     public void testCreateEmailFormAndSendToWorkflow() {
         if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, serviceTicket);
-        FormContainerClient fcClient = new FormContainerClient(BASE_URL, serviceTicket);
-        FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
+        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, this.serviceTicket);
+        FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+        FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
 
         // Fluid Item:
         FluidItem toCreate = emailItem("Single Email Item");
@@ -165,18 +183,16 @@ public class TestFlowItemClient extends ABaseTestCase {
      * Then test whether the items may be viewed from the workflow step.
      */
     @Test(timeout = 240_000)//seconds.
-    public void testSmallWorkflowStepWithConcurrency() {
+    public void testSmallWorkflowAssignStepWithConcurrency() {
         if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        String serviceTicket = appRequestToken.getServiceTicket();
         int itemCount = 50;
         try (
-                FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
-                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, serviceTicket);
-                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, serviceTicket);
-                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, serviceTicket);
+                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
+                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, this.serviceTicket);
+                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
+                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
         ) {
             // create the flow:
             final String flowName = "JUnit Assign Flow Test";
@@ -295,16 +311,14 @@ public class TestFlowItemClient extends ABaseTestCase {
     public void testWorkflowRuleExecutionWithConcurrency() {
         if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        String serviceTicket = appRequestToken.getServiceTicket();
         int itemCount = 100;
         try (
-                FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
-                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, serviceTicket);
-                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, serviceTicket);
-                RouteFieldClient rfClient = new RouteFieldClient(BASE_URL, serviceTicket);
-                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, serviceTicket);
+                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
+                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, this.serviceTicket);
+                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
+                RouteFieldClient rfClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
         ) {
             // create the flow:
             final String flowName = "JUnit Rule Execution Time Test";
