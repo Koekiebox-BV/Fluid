@@ -221,6 +221,9 @@ public class TestFlowItemClient extends ABaseTestCase {
             TestCase.assertEquals(2, viewsForAssignStep.size());
             JobView viewWorkView = viewsForAssignStep.get(1);
 
+            // run once to cache the view:
+            this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
+
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
             long itmCreate = System.currentTimeMillis();
@@ -376,6 +379,9 @@ public class TestFlowItemClient extends ABaseTestCase {
             TestCase.assertNotNull(viewsForAssignStep);
             TestCase.assertEquals(2, viewsForAssignStep.size());
             JobView viewWorkView = viewsForAssignStep.get(1);
+
+            // run once to cache the view:
+            this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
