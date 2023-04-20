@@ -1133,6 +1133,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 * @see FlowState
 	 */
 	public FlowState getFlowState() {
+		if (this.flowState == null &&
+				(this.getForm() != null && UtilGlobal.isNotBlank(this.getForm().getFlowState()))) {
+			return FlowState.valueOf(this.getForm().getFlowState());
+		}
 		return this.flowState;
 	}
 

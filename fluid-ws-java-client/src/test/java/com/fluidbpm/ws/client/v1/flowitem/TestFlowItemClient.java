@@ -16,8 +16,6 @@
 package com.fluidbpm.ws.client.v1.flowitem;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.attachment.Attachment;
-import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
@@ -27,22 +25,13 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.flow.*;
+import com.fluidbpm.ws.client.v1.flow.step.ABaseTestFlowStep;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -55,57 +44,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by jasonbruwer on 14/12/22.
  */
 @Log
-public class TestFlowItemClient extends ABaseTestCase {
-
-    private LoginClient loginClient;
-    private String serviceTicket;
-    private String prevConfMemory;
-
-    private static String CONFIG_KEY_MEM = "MemoryCacheType";
-
-    /**
-     *
-     */
+public class TestFlowItemClient extends ABaseTestFlowStep {
     public static final class TestStatics {
         public static final String FORM_DEFINITION = "Email";
         public static final String FORM_TITLE_PREFIX = "Test api doc with email...";
-    }
-
-    /**
-     * Initialize.
-     */
-    @Before
-    public void init() {
-        if (!this.isConnectionValid()) return;
-
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-        this.loginClient = new LoginClient(BASE_URL);
-
-        this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();
-
-        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
-            Configuration conf = confClient.getConfigurationByKey(CONFIG_KEY_MEM);
-            if (conf == null) this.prevConfMemory = "None";
-            else this.prevConfMemory = conf.getValue();
-
-            if ("None".equalsIgnoreCase(this.prevConfMemory)) {
-                confClient.upsertConfiguration(CONFIG_KEY_MEM, "Internal");
-            }
-        }
-    }
-
-    /**
-     * Teardown.
-     */
-    @After
-    public void destroy() {
-        if (!this.isConnectionValid()) return;
-
-        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
-            confClient.upsertConfiguration(CONFIG_KEY_MEM, this.prevConfMemory);
-        }
-
-        this.loginClient.closeAndClean();
     }
 
     /**
@@ -493,75 +435,5 @@ public class TestFlowItemClient extends ABaseTestCase {
             rfClient.deleteField(rfStatus);
             rfClient.deleteField(rfEmailFrom);
         }
-    }
-
-    private List<FluidItem> executeUntilOrTO(FlowItemClient fiClient, JobView view, int attemptCount) {
-        // wait for up to 60 seconds:
-        for (int iter = 0; iter < 60; iter++) {
-            sleepForSeconds(1);
-            try {
-                List<FluidItem> attempt = fiClient.getFluidItemsForView(view, attemptCount, 0).getListing();
-                if (attempt != null && attempt.size() == attemptCount) {
-                    return attempt;
-                }
-            } catch (FluidClientException fce) {
-                if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
-                if (attemptCount == 0) return null;
-            }
-        }
-        return null;
-    }
-
-    private static FluidItem emailItem(String identifier) {
-        //Fluid Item...
-        Form frm = new Form(TestStatics.FORM_DEFINITION, TestStatics.FORM_TITLE_PREFIX+new Date().toString()+ " "+identifier);
-        frm.setFieldValue("Email From Address", String.format("jack@frost@%s.com", identifier), Field.Type.Text);
-        frm.setFieldValue("Email Received Date", new Date(), Field.Type.DateTime);
-        frm.setFieldValue("Email Sent Date", new Date(), Field.Type.DateTime);
-        frm.setFieldValue("Email Subject", String.format("I am a subject [%s]", identifier), Field.Type.Text);
-        frm.setFieldValue("Email To Address", String.format("peter@zool@%s.com", identifier), Field.Type.Text);
-        frm.setFieldValue("Email Unique Identifier", Math.random(), Field.Type.Decimal);
-        FluidItem toCreate = new FluidItem(frm);
-
-        //2. Attachments...
-        List<Attachment> attachments = new ArrayList<Attachment>();
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            JSONObject jsonMemberObject = new JSONObject();
-
-            jsonMemberObject.put("firstname","Jason"+identifier);
-            jsonMemberObject.put("lastname", "Bruwer"+identifier);
-            jsonMemberObject.put("id_number","81212211122");
-            jsonMemberObject.put("cellphone","1111");
-            jsonMemberObject.put("member_number","ZOOOOL");
-
-            jsonObject.put("member",jsonMemberObject);
-        } catch (JSONException e) {
-            Assert.fail(e.getMessage());
-            return toCreate;
-        }
-
-        //First Attachment...
-        Attachment attachmentToAdd = new Attachment();
-        attachmentToAdd.setAttachmentDataBase64(
-                UtilGlobal.encodeBase64(jsonObject.toString().getBytes()));
-
-        attachmentToAdd.setName("Test assessment JSON.json");
-        attachmentToAdd.setContentType("application/json");
-
-        //Second Attachment...
-        Attachment secondToAdd = new Attachment();
-        secondToAdd.setAttachmentDataBase64(UtilGlobal.encodeBase64("De Beers".toString().getBytes()));
-
-        secondToAdd.setName("Test Text Plain.txt");
-        secondToAdd.setContentType("text/plain");
-
-        attachments.add(attachmentToAdd);
-        attachments.add(secondToAdd);
-
-        toCreate.setAttachments(attachments);
-
-        return toCreate;
     }
 }
