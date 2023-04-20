@@ -54,19 +54,34 @@ public class FlowItemClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Retrieves the Form Container by Primary key.
+	 * Retrieves the Fluid item by Primary key.
+	 *
+	 * @param formIdParam The Form primary key.
+	 * @param populateForm Should the FlowItem form be populated (even if FlowItem is not found)
+	 * @param executeCalculatedLabels Execute the calculated label if form should be populated {@code populateForm == true}.
+	 * @return Form by Primary key.
+	 */
+	public FluidItem getFluidItemByFormId(
+			Long formIdParam,
+			boolean populateForm,
+			boolean executeCalculatedLabels
+	) {
+		Form form = new Form(formIdParam);
+		form.setServiceTicket(this.serviceTicket);
+		return new FluidItem(this.postJson(form, WS.Path.FlowItem.Version1.getByForm(populateForm, executeCalculatedLabels)));
+	}
+
+	/**
+	 * Retrieves the Fluid item by Primary key.
+	 * Form will not be populated and label fields will not be calculated.
 	 *
 	 * @param formIdParam The Form primary key.
 	 * @return Form by Primary key.
 	 */
 	public FluidItem getFluidItemByFormId(Long formIdParam) {
 		Form form = new Form(formIdParam);
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-
-		return new FluidItem(this.postJson(
-				form, WS.Path.FlowItem.Version1.getByForm()));
+		form.setServiceTicket(this.serviceTicket);
+		return new FluidItem(this.postJson(form, WS.Path.FlowItem.Version1.getByForm(false, false)));
 	}
 
 	/**

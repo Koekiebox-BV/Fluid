@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 
 import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
 import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.FlowItem.Version1.QueryParam.EXECUTE_CALCULATED_LABELS;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
@@ -2191,6 +2192,8 @@ public class WS {
 
 					//Allow a collaborator user to send the item on...
 					public static final String ALLOW_COLLABORATOR_SEND_ON = "allow_collaborator_send_on";
+					public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
+					public static final String POPULATE_FORM = "populate_form";
 				}
 
 				/**
@@ -2273,10 +2276,23 @@ public class WS {
 				/**
 				 * URL Path for Flow Item get by Form.
 				 *
+				 * @param populateForm Should the FlowItem form be populated (even if FlowItem is not found)
+				 * @param executeCalculatedLabels Execute the calculated label if form should be populated {@code populateForm == true}.
+				 *
 				 * @return {@code v1/flow_item/get_by_form}
 				 */
-				public static final String getByForm() {
-					return Version.VERSION_1.concat(ROOT).concat(READ_BY_FORM);
+				public static final String getByForm(boolean populateForm, boolean executeCalculatedLabels) {
+					return String.format(
+							"%s%s%s?%s=%s&%s=%s",
+							Version.VERSION_1,
+							ROOT,
+							READ_BY_FORM,
+							//params
+							EXECUTE_CALCULATED_LABELS,
+							executeCalculatedLabels,
+							QueryParam.POPULATE_FORM,
+							populateForm
+					);
 				}
 
 				/**

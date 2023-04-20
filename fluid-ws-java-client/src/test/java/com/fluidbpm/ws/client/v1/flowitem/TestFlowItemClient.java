@@ -76,10 +76,10 @@ public class TestFlowItemClient extends ABaseTestCase {
      */
     @Before
     public void init() {
+        if (!this.isConnectionValid()) return;
+
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
         this.loginClient = new LoginClient(BASE_URL);
-
-        if (!this.isConnectionValid()) return;
 
         this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();
 
@@ -99,6 +99,8 @@ public class TestFlowItemClient extends ABaseTestCase {
      */
     @After
     public void destroy() {
+        if (!this.isConnectionValid()) return;
+
         try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
             confClient.upsertConfiguration(CONFIG_KEY_MEM, this.prevConfMemory);
         }
@@ -317,7 +319,7 @@ public class TestFlowItemClient extends ABaseTestCase {
                 FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, this.serviceTicket);
                 FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
                 RouteFieldClient rfClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
-                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, this.serviceTicket);
+                FlowItemClient fiClient = new FlowItemClient(BASE_URL, this.serviceTicket);
                 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
         ) {
             // create the flow:
@@ -395,21 +397,21 @@ public class TestFlowItemClient extends ABaseTestCase {
             JobView viewWorkView = viewsForAssignStep.get(1);
 
             // run once to cache the view:
-            this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
+            this.executeUntilOrTO(fiClient, viewWorkView, 0);
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
             long itmCreate = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
                 executor.submit(() -> {
-                    FluidItem toCreate = flowItmClient.createFlowItem(
+                    FluidItem toCreate = fiClient.createFlowItem(
                             emailItem(UUID.randomUUID().toString()), flowName);
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
                 });
             }
 
-            List<FluidItem> itemsFromLookup = this.executeUntilOrTO(flowItmClient, viewWorkView, itemCount);
+            List<FluidItem> itemsFromLookup = this.executeUntilOrTO(fiClient, viewWorkView, itemCount);
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
             long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
             log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
@@ -419,8 +421,10 @@ public class TestFlowItemClient extends ABaseTestCase {
             // ensure the correct steps have taken place and within a timely fashion:
             AtomicLong alAll = new AtomicLong(), alPerRule  = new AtomicLong();
             itemsFromLookup.forEach(itm -> {
-                Form formById = fcClient.getFormContainerById(itm.getForm().getId());
-                List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(formById);
+                long formId = itm.getForm().getId();
+                FluidItem fluidItm = fiClient.getFluidItemByFormId(formId, true, false);
+                Form form = fluidItm.getForm();
+                List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(form);
                 TestCase.assertNotNull(flowHistoryData);
                 boolean newStep = false, newRoute = false, moved = false, exit = false;
                 Date start = null, end = null;
@@ -440,15 +444,15 @@ public class TestFlowItemClient extends ABaseTestCase {
                     }
                 }
                 TestCase.assertTrue(UtilGlobal.isAllTrue(newRoute, exit, newStep, moved));
-                TestCase.assertNotNull(formById);
-                TestCase.assertEquals("WorkInProgress", formById.getFlowState());
+                TestCase.assertNotNull(form);
+                TestCase.assertEquals("WorkInProgress", form.getFlowState());
                 TestCase.assertEquals("The number of rules executed is not as expected.", 7, ruleIndex);
                 long timeTakenMillis = (end.getTime() - start.getTime());
                 long avgTimePerRule = (timeTakenMillis / ruleIndex);
                 alPerRule.addAndGet(avgTimePerRule);
                 alAll.addAndGet(timeTakenMillis);
                 log.info(String.format("Processing [%d]millis for [%d]rules with [%d]avg on [%d]item",
-                        timeTakenMillis, ruleIndex, avgTimePerRule, formById.getId()));
+                        timeTakenMillis, ruleIndex, avgTimePerRule, form.getId()));
             });
 
             log.info(String.format("%n"));
@@ -464,15 +468,15 @@ public class TestFlowItemClient extends ABaseTestCase {
             // send it on:
             itemsFromLookup.forEach(itm -> {
                 fcClient.lockFormContainer(itm.getForm(), viewWorkView);
-                flowItmClient.sendFlowItemOn(itm);
+                fiClient.sendFlowItemOn(itm);
             });
 
             // wait until all the items are moved out:
-            this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
+            this.executeUntilOrTO(fiClient, viewWorkView, 0);
 
             try {
-                flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing();
-                TestCase.fail("Did not expect any items in the queue.");
+                int count = fiClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing().size();
+                TestCase.fail(String.format("Did not expect any items in the queue. Total of '%d' detected", count));
             } catch (FluidClientException noEntries) {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
             }
