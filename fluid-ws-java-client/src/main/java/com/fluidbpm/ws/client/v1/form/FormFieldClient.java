@@ -162,6 +162,11 @@ public class FormFieldClient extends ABaseFieldClient {
 						String.format("Unable to determine '%s' type for meta-data '%s'.", formField.getTypeAsEnum(), metaData),
 						FluidClientException.ErrorCode.FIELD_VALIDATE);
 			case MultipleChoice:
+				if (additionalInfo == null || additionalInfo.length < 1) {
+					throw new FluidClientException(
+							String.format("Unable to determine '%s' type for meta-data '%s'.", formField.getTypeAsEnum(), metaData),
+							FluidClientException.ErrorCode.FIELD_VALIDATE);
+				}
 				if (FieldMetaData.MultiChoice.PLAIN.toLowerCase().equals(metaDataLower)) {
 					return this.createFieldMultiChoicePlain(formField, (List)additionalInfo[0]);
 				} else if (FieldMetaData.MultiChoice.PLAIN_SEARCH.toLowerCase().equals(metaDataLower)) {
@@ -503,24 +508,22 @@ public class FormFieldClient extends ABaseFieldClient {
 	 * Create a new Multi Choice field.
 	 *
 	 * @param formFieldParam Field to Create.
-	 * @param multiChoiceValuesParam The available multi choice values.
+	 * @param multiChoiceValues The available multi choice values.
 	 * @return Created Field.
 	 */
 	public Field createFieldMultiChoicePlain(
-		Field formFieldParam, List<String> multiChoiceValuesParam
+		Field formFieldParam, List<String> multiChoiceValues
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) {
 			formFieldParam.setServiceTicket(this.serviceTicket);
 		}
 
-		if (multiChoiceValuesParam == null) {
-			multiChoiceValuesParam = new ArrayList();
-		}
+		if (multiChoiceValues == null) multiChoiceValues = new ArrayList();
 
 		if (formFieldParam != null) {
 			formFieldParam.setTypeAsEnum(Field.Type.MultipleChoice);
 			formFieldParam.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
-			formFieldParam.setFieldValue(new MultiChoice(multiChoiceValuesParam));
+			formFieldParam.setFieldValue(new MultiChoice(multiChoiceValues));
 		}
 
 		return new Field(this.putJson(

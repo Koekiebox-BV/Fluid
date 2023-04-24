@@ -335,7 +335,8 @@ public class TestRoleClient extends ABaseTestCase {
 		userQueryFirst.setRules(TestUserQueryClient.TestStatics.toRuleListing(TestUserQueryClient.TestStatics.RULE_NR_1));
 		userQueryFirst.setInputs(TestUserQueryClient.TestStatics.toFieldListing(
 				TestUserQueryClient.TestStatics.RESULT_FIELD_1,
-				TestUserQueryClient.TestStatics.RESULT_FIELD_1_NAME));
+				TestUserQueryClient.TestStatics.RESULT_FIELD_1_NAME)
+		);
 
 		//2. Create...
 		userQueryFirst = userQueryClient.createUserQuery(userQueryFirst);

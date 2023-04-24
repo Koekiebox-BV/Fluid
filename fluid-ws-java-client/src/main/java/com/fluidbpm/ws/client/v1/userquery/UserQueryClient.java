@@ -136,15 +136,15 @@ public class UserQueryClient extends ABaseClientWS {
 	/**
 	 * Retrieves User Query information for the provided {@code userQueryNameParam}.
 	 *
-	 * @param userQueryNameParam The Name of the {@code UserQuery} to retrieve info for.
+	 * @param userQueryName The Name of the {@code UserQuery} to retrieve info for.
 	 *
 	 * @return UserQuery information.
 	 *
 	 * @see UserQuery
 	 */
-	public UserQuery getUserQueryByName(String userQueryNameParam) {
+	public UserQuery getUserQueryByName(String userQueryName) {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
-		userQueryToGetInfoFor.setName(userQueryNameParam);
+		userQueryToGetInfoFor.setName(userQueryName);
 		userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 
 		try {

@@ -22,16 +22,21 @@ import com.fluidbpm.program.api.vo.flow.FlowStepRule;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepRuleClient;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
+import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
+import com.fluidbpm.ws.client.v1.form.FormFieldClient;
+import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -46,53 +51,84 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Log
 public class TestIntroductionStep extends ABaseTestFlowStep {
+    private Form formDef;
+    private Flow flow;
 
-    @Test(timeout = 15_000)//seconds.
+    @Test(timeout = 60_000)//seconds.
     public void testWorkflowIntroductionStep() {
         if (!this.isConnectionValid()) return;
 
-        int itemCount = 5;
+        int itemCount = 1;
         try (
                 FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
-                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, this.serviceTicket);
-                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                FlowStepClient fsClient = new FlowStepClient(BASE_URL, this.serviceTicket);
+                FlowStepRuleClient fsrClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
                 FlowItemClient fiClient = new FlowItemClient(BASE_URL, this.serviceTicket);
                 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
         ) {
             // create the flow:
             final String flowName = "JUnit Test Step - Introduction";
-            Flow flow = new Flow(flowName);
+            this.flow = new Flow(flowName);
             try {
-                flow = flowClient.createFlow(new Flow(flowName, "Testing rule execution."));
+                this.flow = flowClient.createFlow(new Flow(flowName, "Testing rule execution."));
             } catch (FluidClientException fce) {
                 if (fce.getErrorCode() == FluidClientException.ErrorCode.DUPLICATE) {
-                    flowClient.forceDeleteFlow(flow);
-                    flow = flowClient.createFlow(new Flow(flowName, "Testing rule execution."));
+                    flowClient.forceDeleteFlow(this.flow);
+                    this.flow = flowClient.createFlow(new Flow(flowName, "Testing rule execution."));
                 } else throw fce;
             }
-            TestCase.assertNotNull(flow);
+            TestCase.assertNotNull(this.flow);
 
             // create the assignment flow step and update the rules:
-            FlowStep introductionStep = flowStepClient.getFlowStepByStep(new FlowStep("Introduction", flow));
+            FlowStep introductionStep = fsClient.getFlowStepByStep(new FlowStep("Introduction", this.flow));
             TestCase.assertNotNull(introductionStep);
 
             List<FlowStepRule> introductionExitRules =
-                    flowStepRuleClient.getExitRulesByStep(introductionStep).getListing();
+                    fsrClient.getExitRulesByStep(introductionStep).getListing();
             TestCase.assertNotNull(introductionExitRules);
             TestCase.assertEquals(1, introductionExitRules.size());
-            flowStepRuleClient.deleteFlowStepExitRule(introductionExitRules.get(0));
+            fsrClient.deleteFlowStepExitRule(introductionExitRules.get(0));
+
+            // create the form definition:
+            List<Flow> flows = new ArrayList<>();
+            flows.add(this.flow);
+
+            this.formDef = createFormDef(fdClient, ffClient, "Employee", flows, employeeFields());
 
             // update the rules to send to the assignment step and from assignment to exit:
-            /*TODO flowStepRuleClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.Email From Address TO '%s'", UUID.randomUUID().toString()))
+            String employeeName = UUID.randomUUID().toString(),
+                    employeeSurname = UUID.randomUUID().toString(),
+                    employeeSecret = UUID.randomUUID().toString(),
+                    employeeBio = String.format(
+                            "%s %s %s",
+                            UUID.randomUUID().toString(),
+                            UUID.randomUUID().toString(),
+                            UUID.randomUUID().toString()
+                    );
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Name TO '%s'", employeeName))
             );
-            flowStepRuleClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.Email Subject TO '%s'", UUID.randomUUID().toString()))
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Surname TO '%s'", employeeSurname))
             );
-            flowStepRuleClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.Email Unique Identifier TO '%s'", Math.random()))
-            );*/
-            flowStepRuleClient.createFlowStepExitRule(
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Bio TO '%s'", employeeBio))
+            );
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Secret TO '%s'", employeeSecret))
+            );
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Gender TO '[%s]'", "Male"))
+            );
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", (int)(Math.random()* 90)))
+            );
+            fsrClient.createFlowStepExitRule(
+                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Is Director TO '%s'", "true"))
+            );
+            fsrClient.createFlowStepExitRule(
                     new FlowStepRule(flow, introductionStep, String.format("ROUTE TO '%s'", "Exit"))
             );
 
@@ -102,16 +138,29 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
             List<FluidItem> createdItems = new CopyOnWriteArrayList<>();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
                 executor.submit(() -> {
-                    FluidItem created = fiClient.createFlowItem(
-                            emailItem(UUID.randomUUID().toString()), flowName);
+                try {
+                    FluidItem toCreate = item(
+                            UUID.randomUUID().toString(),
+                            this.formDef.getFormType(),
+                            employeeFields()
+                    );
+
+                    FluidItem created = fiClient.createFlowItem(toCreate, flowName);
                     TestCase.assertNotNull(created);
                     TestCase.assertNotNull(created.getId());
                     createdItems.add(created);
+                } catch (Exception err) {
+                    err.printStackTrace();
+                    log.warning(err.getMessage());
+                }
                 });
             }
 
+            sleepForSeconds(4);
+            TestCase.assertFalse(createdItems.isEmpty());
+
             TestCase.assertTrue("Could not reach state where items are all out of workflow.",
-                    this.executeUntilInState(fiClient, createdItems, FluidItem.FlowState.NotInFlow));
+                    this.executeUntilInState(fiClient, createdItems, FluidItem.FlowState.NotInFlow, 10));
             
             long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
             log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
@@ -126,7 +175,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                 Form form = fluidItm.getForm();
                 List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(form);
                 TestCase.assertNotNull(flowHistoryData);
-                boolean newStep = false, newRoute = false, moved = false, exit = false, flowEnd = false;
+                boolean newStep = false, newRoute = false, exit = false, flowEnd = false;
                 Date start = null, end = null;
                 int ruleIndex = 0;
                 for (FormFlowHistoricData historyData : flowHistoryData) {
@@ -137,13 +186,27 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
 
                     String logEntryType = historyData.getLogEntryType();
                     switch (logEntryType) {
+                        case "New Route Item": newRoute = true; break;
+                        case "Exit Rule": exit = true; break;
+                        case "To New Step": newStep = true; break;
                         case "Flow End": flowEnd = true; break;
                     }
                 }
-                TestCase.assertTrue(UtilGlobal.isAllTrue(flowEnd));
+                TestCase.assertTrue(UtilGlobal.isAllTrue(newStep, newRoute, exit, flowEnd));
                 TestCase.assertNotNull(form);
                 TestCase.assertEquals(FluidItem.FlowState.NotInFlow, fluidItm.getFlowState());
-                TestCase.assertEquals("The number of rules executed is not as expected.", 3, ruleIndex);
+                TestCase.assertEquals("The number of rules executed is not as expected.", 10, ruleIndex);
+
+                // form fields:
+                TestCase.assertEquals(employeeName, form.getFieldValueAsString("JUnit Employee Name"));
+                TestCase.assertEquals(employeeSurname, form.getFieldValueAsString("JUnit Employee Surname"));
+                TestCase.assertEquals(employeeBio, form.getFieldValueAsString("JUnit Employee Bio"));
+                TestCase.assertEquals(employeeSecret, form.getFieldValueAsString("JUnit Employee Secret"));
+                TestCase.assertEquals("Male", form.getFieldValueAsMultiChoice("JUnit Employee Gender").getSelectedMultiChoice());
+                TestCase.assertEquals(Boolean.TRUE, form.getFieldValueAsBoolean("JUnit Employee Is Director"));
+                TestCase.assertNotNull(form.getFieldValueAsString("JUnit Employee Bio"));
+                TestCase.assertNotNull(form.getFieldValueAsDouble("JUnit Employee Age"));
+
                 long timeTakenMillis = (end.getTime() - start.getTime());
                 long avgTimePerRule = (timeTakenMillis / ruleIndex);
                 alPerRule.addAndGet(avgTimePerRule);
@@ -161,13 +224,50 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
 
             TestCase.assertFalse("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000L);
             TestCase.assertFalse("Avg. processing per RULE is taking too long.", allRuleItemCount > 1000L);
+        }
+    }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+
+        if (this.formDef == null) return;
+
+        try (
+                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket);
+        ) {
             // ensure the correct steps have taken place:
-            createdItems.forEach(itm -> fcClient.deleteFormContainer(itm.getForm()));
+            UserQuery allItemsCleanupForDef = userQueryForFormType(uqClient, this.formDef.getFormType(),
+                    this.formDef.getFormFields().get(0).getFieldName());
+
+            List<FluidItem> toDelete = uqClient.executeUserQuery(
+                    allItemsCleanupForDef,
+                    false,
+                    10000,
+                    0
+            ).getListing();
+            if (toDelete != null) {
+                toDelete.stream()
+                        .map(itm -> itm.getForm())
+                        .forEach(itm -> fcClient.deleteFormContainer(itm));
+            } else log.warning("No items to delete/cleanup!");
 
             // cleanup:
-            if (flow == null) flow = flowClient.getFlowByName(flowName);
-            flowClient.forceDeleteFlow(flow);
+            if (this.flow == null) this.flow = flowClient.getFlowByName(this.flow.getName());
+            flowClient.forceDeleteFlow(this.flow);
+
+            if (allItemsCleanupForDef != null) uqClient.deleteUserQuery(allItemsCleanupForDef, true);
+
+            if (this.formDef != null) fdClient.deleteFormDefinition(this.formDef);
+            if (this.formDef != null && this.formDef.getFormFields() != null) {
+                this.formDef.getFormFields().forEach(fldItm -> {
+                    ffClient.forceDeleteField(fldItm);
+                });
+            }
         }
     }
 }

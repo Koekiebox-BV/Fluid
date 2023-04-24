@@ -72,15 +72,13 @@ public class TestUserQueryClient extends ABaseTestCase {
 		}
 
 		/**
+		 * Create a field listing from.
 		 *
 		 * @param fieldIdParam
 		 * @param nameParam
 		 * @return
 		 */
-		public static List<Field> toFieldListing(
-				Long fieldIdParam,
-				String nameParam)
-		{
+		public static List<Field> toFieldListing(Long fieldIdParam, String nameParam) {
 			List<Field> returnVal = new ArrayList();
 
 			Field field = new Field(fieldIdParam);
