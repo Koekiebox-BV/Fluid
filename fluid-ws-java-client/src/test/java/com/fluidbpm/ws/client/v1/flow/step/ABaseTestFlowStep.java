@@ -62,6 +62,8 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
     private static String CONFIG_KEY_MEM = "MemoryCacheType";
     private static String DESC = "Created by step Unit tests.";
 
+    protected int ITEM_COUNT_PER_SUB = 15;
+
     /**
      * Initialize.
      */
@@ -138,7 +140,7 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
             });
             if (isNotDone.get() == 0) return true;
         }
-        log.warning("After 60 seconds we still have "+isNotDone.get()+" that is not "+state+"!!!");
+        log.warning("After "+timeoutInSeconds+" seconds we still have "+isNotDone.get()+" that is not "+state+"!!!");
         return (isNotDone.get() == 0);
     }
 

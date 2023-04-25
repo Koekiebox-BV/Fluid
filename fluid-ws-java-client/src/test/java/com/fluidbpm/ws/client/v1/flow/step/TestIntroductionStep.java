@@ -57,8 +57,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
     @Test(timeout = 60_000)//seconds.
     public void testWorkflowIntroductionStep() {
         if (!this.isConnectionValid()) return;
-
-        int itemCount = 15;
+        
         try (
                 FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
                 FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
@@ -67,7 +66,6 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                 FlowStepRuleClient fsrClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
                 FlowItemClient fiClient = new FlowItemClient(BASE_URL, this.serviceTicket);
                 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
         ) {
             // create the flow:
             final String flowName = "JUnit Test Step - Introduction";
@@ -134,39 +132,59 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
             );
 
             // create the work-items:
+            List<FluidItem> createdItems = new CopyOnWriteArrayList<>();
             ExecutorService executor = Executors.newFixedThreadPool(6);
             long itmCreate = System.currentTimeMillis();
-            List<FluidItem> createdItems = new CopyOnWriteArrayList<>();
-            for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
+
+            // create item to warmup the container:
+            FluidItem createdFirst = fiClient.createFlowItem(item(
+                    UUID.randomUUID().toString(),
+                    this.formDef.getFormType(),
+                    employeeFields()), flowName);
+            TestCase.assertNotNull(createdFirst);
+            TestCase.assertNotNull(createdFirst.getId());
+            createdItems.add(createdFirst);
+
+            sleepForSeconds(5);
+
+            StringBuilder content = new StringBuilder();
+            for (int cycleTimes = 0; cycleTimes < ITEM_COUNT_PER_SUB; cycleTimes++) {
                 executor.submit(() -> {
-                try {
-                    FluidItem toCreate = item(
+                    try {
+                        FluidItem toCreate = item(
                             UUID.randomUUID().toString(),
                             this.formDef.getFormType(),
                             employeeFields()
-                    );
+                        );
 
-                    FluidItem created = fiClient.createFlowItem(toCreate, flowName);
-                    TestCase.assertNotNull(created);
-                    TestCase.assertNotNull(created.getId());
-                    createdItems.add(created);
-                } catch (Exception err) {
-                    err.printStackTrace();
-                    log.warning(err.getMessage());
-                }
+                        long start = System.currentTimeMillis();
+                        FluidItem created = fiClient.createFlowItem(toCreate, flowName);
+                        long roundTripTime = (System.currentTimeMillis() - start);
+                        createdItems.add(created);
+
+                        TestCase.assertNotNull(created);
+                        TestCase.assertNotNull(created.getId());
+                        if (roundTripTime > 500) content.append(String.format("%nItem [%s] took [%d]millis!", created.getId(), roundTripTime));
+                        TestCase.assertTrue(roundTripTime < 1_500);
+                    } catch (Exception err) {
+                        err.printStackTrace();
+                        log.warning(err.getMessage());
+                        TestCase.fail(err.getMessage());
+                    }
                 });
             }
+            log.warning(content.toString());
 
-            sleepForSeconds(2);
-            TestCase.assertFalse(createdItems.isEmpty());
+            sleepForSeconds(5);
+            TestCase.assertTrue(createdItems.size() > 1);
 
             TestCase.assertTrue("Could not reach state where items are all out of workflow.",
                     this.executeUntilInState(fiClient, createdItems, FluidItem.FlowState.NotInFlow, 10));
             
             long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
-            log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
+            log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, ITEM_COUNT_PER_SUB));
             TestCase.assertTrue(String.format("Performance is too slow! [%d] seconds to create [%d] items!",
-                    timeTakenInS, itemCount), timeTakenInS < 40);
+                    timeTakenInS, ITEM_COUNT_PER_SUB), timeTakenInS < 40);
 
             // ensure the correct steps have taken place and within a timely fashion:
             AtomicLong alAll = new AtomicLong(), alPerRule  = new AtomicLong();
@@ -218,10 +236,10 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
 
             log.info(String.format("%n"));
             log.info(String.format("%n"));
-            long allAvgItemCount = (alAll.get() / itemCount);
-            long allRuleItemCount = (alPerRule.get() / itemCount);
+            long allAvgItemCount = (alAll.get() / ITEM_COUNT_PER_SUB);
+            long allRuleItemCount = (alPerRule.get() / ITEM_COUNT_PER_SUB);
 
-            log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule", itemCount, allAvgItemCount, allRuleItemCount));
+            log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule", ITEM_COUNT_PER_SUB, allAvgItemCount, allRuleItemCount));
 
             TestCase.assertFalse("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000L);
             TestCase.assertFalse("Avg. processing per RULE is taking too long.", allRuleItemCount > 1000L);
