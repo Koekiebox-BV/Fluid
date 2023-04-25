@@ -58,7 +58,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
     public void testWorkflowIntroductionStep() {
         if (!this.isConnectionValid()) return;
 
-        int itemCount = 1;
+        int itemCount = 15;
         try (
                 FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
                 FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
@@ -67,6 +67,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                 FlowStepRuleClient fsrClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
                 FlowItemClient fiClient = new FlowItemClient(BASE_URL, this.serviceTicket);
                 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
         ) {
             // create the flow:
             final String flowName = "JUnit Test Step - Introduction";
@@ -156,7 +157,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                 });
             }
 
-            sleepForSeconds(4);
+            sleepForSeconds(2);
             TestCase.assertFalse(createdItems.isEmpty());
 
             TestCase.assertTrue("Could not reach state where items are all out of workflow.",
@@ -238,29 +239,20 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                 FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
                 FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
                 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
         ) {
             // ensure the correct steps have taken place:
-            UserQuery allItemsCleanupForDef = userQueryForFormType(uqClient, this.formDef.getFormType(),
+            UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDef.getFormType(),
                     this.formDef.getFormFields().get(0).getFieldName());
-
-            List<FluidItem> toDelete = uqClient.executeUserQuery(
-                    allItemsCleanupForDef,
-                    false,
-                    10000,
-                    0
-            ).getListing();
-            if (toDelete != null) {
-                toDelete.stream()
-                        .map(itm -> itm.getForm())
-                        .forEach(itm -> fcClient.deleteFormContainer(itm));
-            } else log.warning("No items to delete/cleanup!");
+            deleteFormContainersAndUserQuery(
+                    uqClient,
+                    fcClient,
+                    uqCleanup
+            );
 
             // cleanup:
             if (this.flow == null) this.flow = flowClient.getFlowByName(this.flow.getName());
             flowClient.forceDeleteFlow(this.flow);
-
-            if (allItemsCleanupForDef != null) uqClient.deleteUserQuery(allItemsCleanupForDef, true);
 
             if (this.formDef != null) fdClient.deleteFormDefinition(this.formDef);
             if (this.formDef != null && this.formDef.getFormFields() != null) {

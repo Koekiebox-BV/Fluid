@@ -31,6 +31,7 @@ import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
+import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
@@ -377,5 +378,25 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
 
             return uqClient.getUserQueryByName(uqName);
         }
+    }
+
+    protected static void deleteFormContainersAndUserQuery(
+            UserQueryClient uqClient,
+            FormContainerClient fcClient,
+            UserQuery queryToExecAndDel
+    ) {
+        List<FluidItem> toDelete = uqClient.executeUserQuery(
+                queryToExecAndDel,
+                false,
+                10000,
+                0
+        ).getListing();
+        if (toDelete != null) {
+            toDelete.stream()
+                    .map(itm -> itm.getForm())
+                    .forEach(itm -> fcClient.deleteFormContainer(itm));
+        } else log.warning("No items to delete/cleanup!");
+
+        if (uqClient != null) uqClient.deleteUserQuery(queryToExecAndDel, true);
     }
 }
