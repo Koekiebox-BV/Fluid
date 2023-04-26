@@ -217,6 +217,7 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
     protected static FluidItem item(
         String identifier,
         String formType,
+        boolean includeAttachment,
         Field ... fields
     ) {
         //Fluid Item...
@@ -256,9 +257,10 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
         });
 
         FluidItem toCreate = new FluidItem(frm);
+        if (!includeAttachment) return toCreate;
 
         //2. Attachments...
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        List<Attachment> attachments = new ArrayList();
 
         JSONObject jsonObject = new JSONObject();
         try {

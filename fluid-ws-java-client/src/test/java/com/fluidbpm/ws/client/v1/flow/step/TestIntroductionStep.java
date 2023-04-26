@@ -140,6 +140,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
             FluidItem createdFirst = fiClient.createFlowItem(item(
                     UUID.randomUUID().toString(),
                     this.formDef.getFormType(),
+                    true,
                     employeeFields()), flowName);
             TestCase.assertNotNull(createdFirst);
             TestCase.assertNotNull(createdFirst.getId());
@@ -154,6 +155,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                         FluidItem toCreate = item(
                             UUID.randomUUID().toString(),
                             this.formDef.getFormType(),
+                            false,
                             employeeFields()
                         );
 
