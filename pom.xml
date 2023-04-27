@@ -55,14 +55,14 @@
 		<version.google.guava>30.1.1-jre</version.google.guava>
 
 		<!--Apache-->
-		<version.apache.httpcomponents.httpcore>4.4.12</version.apache.httpcomponents.httpcore>
-		<version.apache.httpcomponents.httpclient>4.5.13</version.apache.httpcomponents.httpclient>
+		<version.apache.httpcomponents.httpcore>4.4.16</version.apache.httpcomponents.httpcore>
+		<version.apache.httpcomponents.httpclient>4.5.14</version.apache.httpcomponents.httpclient>
 
 		<!--ElasticSearch-->
 		<version.elasticsearch>7.7.0</version.elasticsearch>
 
 		<!--GlassFish Tyrus-->
-		<version.glassfish.tyrus>1.18</version.glassfish.tyrus>
+		<version.glassfish.tyrus>1.20</version.glassfish.tyrus>
 
 		<!--GlassFish Grizzly-->
 		<version.glassfish.grizzly>2.4.4</version.glassfish.grizzly>
