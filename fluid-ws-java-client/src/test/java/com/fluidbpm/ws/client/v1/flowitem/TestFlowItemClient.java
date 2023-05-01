@@ -213,8 +213,8 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             this.executeUntilOrTO(flowItmClient, viewWorkView, 0);
 
             try {
-                flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing();
-                TestCase.fail("Did not expect any items in the queue.");
+                Integer count = flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListingCount();
+                TestCase.fail("Did not expect any items in the queue. Total "+count);
             } catch (FluidClientException noEntries) {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
             }
