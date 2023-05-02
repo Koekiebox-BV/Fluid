@@ -212,6 +212,21 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
         return returnVal;
     }
 
+    protected static Field[] interviewFields() {
+        Field[] returnVal = new Field[]{
+                new Field("JUnit Candidate Name", null, Field.Type.Text),
+                new Field("JUnit Candidate Surname", null, Field.Type.Text),
+                new Field("JUnit Candidate Birth Date", null, Field.Type.DateTime),
+        };
+        returnVal[0].setTypeMetaData(ABaseFieldClient.FieldMetaData.Text.PLAIN);
+        returnVal[1].setTypeMetaData(ABaseFieldClient.FieldMetaData.Text.PLAIN);
+        returnVal[2].setTypeMetaData(ABaseFieldClient.FieldMetaData.DateTime.DATE);
+
+        for (Field fld : returnVal) fld.setFieldDescription(DESC);
+
+        return returnVal;
+    }
+
     protected static FluidItem item(
         String identifier,
         String formType,
