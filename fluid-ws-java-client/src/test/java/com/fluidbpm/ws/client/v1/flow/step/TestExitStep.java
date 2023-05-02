@@ -1,7 +1,7 @@
 /*
  * Koekiebox CONFIDENTIAL
  *
- * [2012] - [2017] Koekiebox (Pty) Ltd
+ * [2012] - [2023] Koekiebox (Pty) Ltd
  * All Rights Reserved.
  *
  * NOTICE: All information contained herein is, and remains the property
@@ -99,16 +99,16 @@ public class TestExitStep extends ABaseTestFlowStep {
             // update the rules to send to the assignment step and from assignment to exit:
             String candidateName = String.format("%s-Can-Name", UUID.randomUUID());
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, exitStep, String.format("SET FORM.JUnit Candidate Name TO '%s'", candidateName))
+                    new FlowStepRule(this.flow, exitStep, String.format("SET FORM.JUnit Candidate Name TO '%s'", candidateName))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, exitStep, String.format("ROUTE TO 'Introduction' IF(FORM.JUnit Candidate Name EQUAL '123')"))
+                    new FlowStepRule(this.flow, exitStep, String.format("ROUTE TO 'Introduction' IF(FORM.JUnit Candidate Name EQUAL '123')"))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, exitStep, String.format("ROUTE TO 'Introduction' IF(FORM.JUnit Candidate Name NOT_EQUAL '%s')", candidateName))
+                    new FlowStepRule(this.flow, exitStep, String.format("ROUTE TO 'Introduction' IF(FORM.JUnit Candidate Name NOT_EQUAL '%s')", candidateName))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, exitStep, String.format("REMOVE FROM FLOW"))
+                    new FlowStepRule(this.flow, exitStep, String.format("REMOVE FROM FLOW"))
             );
 
             // create the work-items:

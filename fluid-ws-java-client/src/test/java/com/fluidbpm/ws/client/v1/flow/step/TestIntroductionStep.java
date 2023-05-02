@@ -1,7 +1,7 @@
 /*
  * Koekiebox CONFIDENTIAL
  *
- * [2012] - [2017] Koekiebox (Pty) Ltd
+ * [2012] - [2023] Koekiebox (Pty) Ltd
  * All Rights Reserved.
  *
  * NOTICE: All information contained herein is, and remains the property
@@ -80,7 +80,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
             }
             TestCase.assertNotNull(this.flow);
 
-            // create the assignment flow step and update the rules:
+            // fetch the introduction flow step and update the rules:
             FlowStep introductionStep = fsClient.getFlowStepByStep(new FlowStep("Introduction", this.flow));
             TestCase.assertNotNull(introductionStep);
 
@@ -107,28 +107,28 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                             UUID.randomUUID().toString()
                     );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Name TO '%s'", employeeName))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Name TO '%s'", employeeName))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Surname TO '%s'", employeeSurname))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Surname TO '%s'", employeeSurname))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Bio TO '%s'", employeeBio))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Bio TO '%s'", employeeBio))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Secret TO '%s'", employeeSecret))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Secret TO '%s'", employeeSecret))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Gender TO '[%s]'", "Male"))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Gender TO '[%s]'", "Male"))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", (int)(Math.random()* 90)))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", (int)(Math.random()* 90)))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("SET FORM.JUnit Employee Is Director TO '%s'", "true"))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Is Director TO '%s'", "true"))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, introductionStep, String.format("ROUTE TO '%s'", "Exit"))
+                    new FlowStepRule(this.flow, introductionStep, String.format("ROUTE TO '%s'", "Exit"))
             );
 
             // create the work-items:
@@ -136,7 +136,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
             ExecutorService executor = Executors.newFixedThreadPool(6);
             long itmCreate = System.currentTimeMillis();
 
-            // create item to warmup the container:
+            // create item to warm-up the container:
             FluidItem createdFirst = fiClient.createFlowItem(item(
                     UUID.randomUUID().toString(),
                     this.formDef.getFormType(),
