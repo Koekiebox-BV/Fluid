@@ -15,17 +15,16 @@
 
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import javax.xml.bind.annotation.XmlTransient;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -124,9 +123,7 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 
 			this.setSqlInputs(inputs);
 		}
-		else{
-			this.setSqlInputs(null);
-		}
+		else this.setSqlInputs(null);
 	}
 
 	/**
@@ -255,21 +252,17 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 	 * If the sql inputs is {@code null}, a new instance
 	 * of {@code ArrayList} will be created prior to adding the parameter.
 	 *
-	 * @param sqlInputToAddParam The SQL Input to add.
+	 * @param sqlInputToAdd The SQL Input to add.
 	 *
 	 * @see SQLColumn
 	 */
 	@XmlTransient
-	public void addSqlInput(SQLColumn sqlInputToAddParam){
-		if (this.sqlInputs == null){
-			this.sqlInputs = new ArrayList<>();
-		}
+	@JsonIgnore
+	public void addSqlInput(SQLColumn sqlInputToAdd){
+		if (this.sqlInputs == null) this.sqlInputs = new ArrayList<>();
+		if (sqlInputToAdd == null) return;
 
-		if (sqlInputToAddParam == null){
-			return;
-		}
-
-		this.sqlInputs.add(sqlInputToAddParam);
+		this.sqlInputs.add(sqlInputToAdd);
 	}
 
 	/**
@@ -296,8 +289,8 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 	 * @return {@code true} if stored procedure is populated, otherwise {@code false}.
 	 */
 	@XmlTransient
-	public boolean isTypeStoredProcedure(){
-
+	@JsonIgnore
+	public boolean isTypeStoredProcedure() {
 		return (this.getStoredProcedure() == null ||
 				this.getStoredProcedure().trim().isEmpty()) ? false:true;
 	}
