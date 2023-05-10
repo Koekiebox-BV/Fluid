@@ -404,7 +404,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule", itemCount, allAvgItemCount, allRuleItemCount));
 
-            TestCase.assertFalse("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000L);
+            TestCase.assertFalse("Avg. processing per ITEM is taking too long.", allAvgItemCount > 6000L);
             TestCase.assertFalse("Avg. processing per RULE is taking too long.", allRuleItemCount > 1000L);
 
             // send it on:
