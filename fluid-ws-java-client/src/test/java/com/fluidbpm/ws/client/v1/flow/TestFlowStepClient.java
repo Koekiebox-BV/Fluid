@@ -377,7 +377,4 @@ public class TestFlowStepClient extends ABaseTestCase {
 		JobViewListing views = fsClient.getJobViewsByLoggedInUser();
 		System.out.println(views);
 	}
-
-
-
 }

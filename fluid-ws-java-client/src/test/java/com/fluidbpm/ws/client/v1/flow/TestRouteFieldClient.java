@@ -17,16 +17,9 @@ package com.fluidbpm.ws.client.v1.flow;
 
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
-import com.fluidbpm.program.api.vo.item.FluidItem;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,9 +28,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 15/12/28.
  */
-public class TestRouteFieldClient extends ABaseTestCase {
-
-    private LoginClient loginClient;
+public class TestRouteFieldClient extends ABaseLoggedInTestCase {
 
     /**
      *
@@ -89,40 +80,11 @@ public class TestRouteFieldClient extends ABaseTestCase {
     /**
      *
      */
-    @Before
-    public void init()
-    {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
-        this.loginClient = new LoginClient(BASE_URL);
-    }
-
-    /**
-     *
-     */
-    @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
-    }
-
-    /**
-     *
-     */
     @Test
-    public void testRouteField_TextPlain_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    void testRouteField_TextPlain_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -170,15 +132,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_TrueFalse_CRUD() {
+    void testRouteField_TrueFalse_CRUD() {
         if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -226,19 +183,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_ParagraphTextPlain_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    void testRouteField_ParagraphTextPlain_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -286,19 +234,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_ParagraphTextHTML_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    void testRouteField_ParagraphTextHTML_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -347,19 +286,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testRouteField_MultiChoicePlain_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    void testRouteField_MultiChoicePlain_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -377,8 +307,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         TestCase.assertEquals("'Type Meta-Data' mismatch.",
                 RouteFieldClient.FieldMetaData.MultiChoice.PLAIN, createdField.getTypeMetaData());
 
-        if (!(createdField.getFieldValue() instanceof MultiChoice))
-        {
+        if (!(createdField.getFieldValue() instanceof MultiChoice)) {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
 
@@ -402,8 +331,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         TestCase.assertEquals("UPDATE: 'Type Meta-Data' mismatch.",
                 RouteFieldClient.FieldMetaData.MultiChoice.PLAIN, updatedField.getTypeMetaData());
 
-        if (!(updatedField.getFieldValue() instanceof MultiChoice))
-        {
+        if (!(updatedField.getFieldValue() instanceof MultiChoice)) {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
 
@@ -425,8 +353,7 @@ public class TestRouteFieldClient extends ABaseTestCase {
         TestCase.assertEquals("BY_ID: 'Type Meta-Data' mismatch.",
                 RouteFieldClient.FieldMetaData.MultiChoice.PLAIN, byIdField.getTypeMetaData());
 
-        if (!(byIdField.getFieldValue() instanceof MultiChoice))
-        {
+        if (!(byIdField.getFieldValue() instanceof MultiChoice)) {
             TestCase.fail("Return value for field Object must be 'MultiChoice'.");
         }
 
@@ -448,19 +375,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      */
     @Test
     @SuppressWarnings("unchecked")
-    public void testRouteField_MultiChoiceSelectMany_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    void testRouteField_MultiChoiceSelectMany_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -468,16 +386,13 @@ public class TestRouteFieldClient extends ABaseTestCase {
         toCreate.setFieldDescription(TestStatics.FIELD_DESCRIPTION);
 
         //2. Create...
-        try
-        {
+        try {
             routeFieldClient.createFieldMultiChoiceSelectMany(
                     toCreate, TestStatics.MultiChoice.CREATE_LIST);
 
             TestCase.fail("Expected an error for creating " +
                     "multiple choice.");
-        }
-        catch (FluidClientException fce)
-        {
+        } catch (FluidClientException fce) {
             if (FluidClientException.ErrorCode.FIELD_VALIDATE != fce.getErrorCode())
             {
                 TestCase.fail("Expected field validate error code.");
@@ -489,19 +404,11 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_DateTimeDate_CRUD()
+    void testRouteField_DateTimeDate_CRUD()
     {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL,serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -549,19 +456,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_DateTimeDateAndTime_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    void testRouteField_DateTimeDateAndTime_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -609,17 +507,10 @@ public class TestRouteFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_DecimalPlain_CRUD() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
+    void testRouteField_DecimalPlain_CRUD() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
 
         //1. Text...
         Field toCreate = new Field();
@@ -661,32 +552,5 @@ public class TestRouteFieldClient extends ABaseTestCase {
         //5. Delete...
         Field deletedField = routeFieldClient.deleteField(byIdField);
         TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedField.getId());
-    }
-
-    /**
-     *
-     */
-    @Test
-    @Ignore
-    public void testRouteFieldTextSetVal() {
-        if (!this.isConnectionValid()) {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, serviceTicket);
-
-
-        FluidItem fldItm = new FluidItem();
-        fldItm.setId(2L);
-        Field createdField = routeFieldClient.createFieldValue(
-                new Field("Encrypt Display","This is a test.", Field.Type.Text),
-                fldItm);
-
-        System.out.println(createdField);
     }
 }

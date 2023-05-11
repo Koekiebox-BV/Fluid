@@ -26,15 +26,14 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
+import com.fluidbpm.ws.client.v1.flow.RouteFieldClient;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import lombok.extern.java.Log;
 import org.json.JSONException;
@@ -54,9 +53,7 @@ import java.util.stream.Stream;
  * Base test case for scenarios where workflow steps are being tested.
  */
 @Log
-public abstract class ABaseTestFlowStep extends ABaseTestCase {
-    private LoginClient loginClient;
-    protected String serviceTicket;
+public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
     private String prevConfMemory;
 
     private static String CONFIG_KEY_MEM = "MemoryCacheType";
@@ -71,10 +68,7 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
     public void init() {
         if (!this.isConnectionValid()) return;
 
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-        this.loginClient = new LoginClient(BASE_URL);
-
-        this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();
+        super.init();
 
         try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
             Configuration conf = confClient.getConfigurationByKey(CONFIG_KEY_MEM);
@@ -98,7 +92,7 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
             confClient.upsertConfiguration(CONFIG_KEY_MEM, this.prevConfMemory);
         }
 
-        this.loginClient.closeAndClean();
+        super.destroy();
     }
 
     protected List<FluidItem> executeUntilOrTO(
@@ -144,6 +138,23 @@ public abstract class ABaseTestFlowStep extends ABaseTestCase {
         }
         log.warning("After "+timeoutInSeconds+" seconds we still have "+isNotDone.get()+" that is not "+state+"!!!");
         return (isNotDone.get() == 0);
+    }
+
+    protected static Field createRouteField(RouteFieldClient rfClient, String name, Field.Type type) {
+        try {
+            Field toCreate = new Field(name);
+            toCreate.setFieldDescription("Route field by unit test.");
+
+            switch (type) {
+                case Text: return rfClient.createFieldTextPlain(toCreate);
+                case TrueFalse: return rfClient.createFieldTrueFalse(toCreate);
+                default: return null;
+            }
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+
+            return rfClient.getFieldByName(name);
+        }
     }
 
     protected static Form createFormDef(

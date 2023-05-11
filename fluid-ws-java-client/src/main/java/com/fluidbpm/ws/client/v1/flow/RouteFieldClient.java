@@ -500,16 +500,29 @@ public class RouteFieldClient extends ABaseFieldClient {
 	/**
 	 * Retrieves field information by {@code fieldIdParam}.
 	 *
-	 * @param fieldIdParam The field Primary Key.
+	 * @param fieldId The field Primary Key.
 	 * @return Field Definition by primary key.
 	 */
-	public Field getFieldById(Long fieldIdParam) {
-		Field field = new Field(fieldIdParam);
+	public Field getFieldById(Long fieldId) {
+		Field field = new Field(fieldId);
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
 		field.setServiceTicket(this.serviceTicket);
-		return new Field(this.postJson(
-				field, Version1.getById()));
+		return new Field(this.postJson(field, Version1.getById()));
+	}
+
+	/**
+	 * Retrieves field information by {@code fieldIdParam}.
+	 *
+	 * @param fieldName The field name.
+	 * @return Field by name.
+	 */
+	public Field getFieldByName(String fieldName) {
+		Field field = new Field(fieldName);
+		//Set for Payara server...
+		field.setFieldValue(new MultiChoice());
+		field.setServiceTicket(this.serviceTicket);
+		return new Field(this.postJson(field, Version1.getById()));
 	}
 
 	/**
