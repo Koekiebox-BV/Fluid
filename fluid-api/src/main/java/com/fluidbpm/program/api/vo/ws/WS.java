@@ -2905,22 +2905,18 @@ public class WS {
 				/**
 				 * URL Path for User gravatar by user.
 				 *
-				 * @param sizeParam The size of the image to be returned.
+				 * @param size The size of the image to be returned.
 				 *
 				 * @return {@code v1/user/get_gravatar_by_user?size=50}.
 				 */
-				public static final String getGravatarByUser(int sizeParam) {
+				public static final String getGravatarByUser(int size) {
 					StringBuffer returnVal = new StringBuffer(Version.VERSION_1.concat(ROOT).concat(GET_GRAVATAR_BY_USER));
-
 					returnVal.append("?");
-
-					if (sizeParam < 1 || sizeParam > 512) {
-						sizeParam = 50;
-					}
+					if (size < 1 || size > 512) size = 50;
 
 					returnVal.append(QueryParam.SIZE);
 					returnVal.append("=");
-					returnVal.append(sizeParam);
+					returnVal.append(size);
 
 					return returnVal.toString();
 				}

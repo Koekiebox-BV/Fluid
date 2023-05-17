@@ -66,87 +66,85 @@ public class UserClient extends ABaseClientWS {
 	 * Creates a new {@code User} with the Email, Fields and
 	 * Roles inside the {@code userParam}.
 	 *
-	 * @param userParam The {@code User} to create.
+	 * @param user The {@code User} to create.
 	 * @return The Created User.
 	 *
 	 * @see com.fluidbpm.program.api.vo.user.User
 	 * @see Field
 	 * @see com.fluidbpm.program.api.vo.role.Role
 	 */
-	public User createUser(User userParam) {
-		if (userParam != null && this.serviceTicket != null) userParam.setServiceTicket(this.serviceTicket);
+	public User createUser(User user) {
+		if (user != null && this.serviceTicket != null) user.setServiceTicket(this.serviceTicket);
 
 		return new User(this.putJson(
-				userParam, WS.Path.User.Version1.userCreate()));
+				user, WS.Path.User.Version1.userCreate()));
 	}
 
 	/**
 	 * Updates an existing {@code User} with the Email, Fields and
 	 * Roles inside the {@code userParam}.
 	 *
-	 * @param userParam The User to update.
+	 * @param user The User to update.
 	 * @return The Updated User.
 	 *
 	 * @see com.fluidbpm.program.api.vo.user.User
 	 * @see Field
 	 * @see com.fluidbpm.program.api.vo.role.Role
 	 */
-	public User updateUser(User userParam) {
-		if (userParam != null && this.serviceTicket != null) userParam.setServiceTicket(this.serviceTicket);
+	public User updateUser(User user) {
+		if (user != null && this.serviceTicket != null) user.setServiceTicket(this.serviceTicket);
 
 		return new User(this.postJson(
-				userParam, WS.Path.User.Version1.userUpdate()));
+				user, WS.Path.User.Version1.userUpdate()));
 	}
 
 	/**
 	 * Activate an existing {@code User} that is currently
 	 * Deactivated.
 	 *
-	 * @param userParam The User to activate.
+	 * @param user The User to activate.
 	 * @return The Activated User.
 	 *
 	 * @see com.fluidbpm.program.api.vo.user.User
 	 * @see Field
 	 * @see com.fluidbpm.program.api.vo.role.Role
 	 */
-	public User activateUser(User userParam) {
-		if (userParam != null && this.serviceTicket != null) userParam.setServiceTicket(this.serviceTicket);
+	public User activateUser(User user) {
+		if (user != null && this.serviceTicket != null) user.setServiceTicket(this.serviceTicket);
 
-		return new User(this.postJson(userParam, WS.Path.User.Version1.userActivate()));
+		return new User(this.postJson(user, WS.Path.User.Version1.userActivate()));
 	}
 
 	/**
 	 * Deactivate an existing {@code User} that is currently
 	 * Active.
 	 *
-	 * @param userParam The User to De-Activate.
+	 * @param user The User to De-Activate.
 	 * @return The DeActivated User.
 	 *
 	 * @see com.fluidbpm.program.api.vo.user.User
 	 * @see Field
 	 * @see com.fluidbpm.program.api.vo.role.Role
 	 */
-	public User deActivateUser(User userParam) {
-		if (userParam != null && this.serviceTicket != null) userParam.setServiceTicket(this.serviceTicket);
+	public User deActivateUser(User user) {
+		if (user != null && this.serviceTicket != null) user.setServiceTicket(this.serviceTicket);
 
 		return new User(this.postJson(
-				userParam, WS.Path.User.Version1.userDeActivate()));
+				user, WS.Path.User.Version1.userDeActivate()));
 	}
 
 	/**
 	 * Increment the invalid login count for {@code userParam}.
 	 *
-	 * @param userParam The User to increment invalid count for.
+	 * @param user The User to increment invalid count for.
 	 * @return The User where invalid count performed.
 	 *
 	 * @see com.fluidbpm.program.api.vo.user.User
 	 */
-	public User incrementInvalidLoginForUser(User userParam) {
-		if (userParam != null && this.serviceTicket != null) {
-			userParam.setServiceTicket(this.serviceTicket);
-		}
+	public User incrementInvalidLoginForUser(User user) {
+		if (user != null && this.serviceTicket != null) user.setServiceTicket(this.serviceTicket);
 
-		return new User(this.postJson(userParam, WS.Path.User.Version1.incrementInvalidLogin()));
+		return new User(this.postJson(user, WS.Path.User.Version1.incrementInvalidLogin()));
 	}
 
 	/**
@@ -170,7 +168,8 @@ public class UserClient extends ABaseClientWS {
 	public User changePasswordForLoggedInUser(
 			String existingPasswordParam,
 			String newPasswordParam,
-			String confirmNewPasswordParam) {
+			String confirmNewPasswordParam
+	) {
 		User toChangePasswordFor = new User();
 
 		toChangePasswordFor.setServiceTicket(this.serviceTicket);
@@ -196,27 +195,27 @@ public class UserClient extends ABaseClientWS {
 	 * Deletes the {@code User} provided.
 	 * Id must be set on the {@code User}.
 	 *
-	 * @param userToDeleteParam The User to Delete.
+	 * @param userToDelete The User to Delete.
 	 * @return The deleted User.
 	 */
-	public User deleteUser(User userToDeleteParam) {
-		if (userToDeleteParam != null) userToDeleteParam.setServiceTicket(this.serviceTicket);
+	public User deleteUser(User userToDelete) {
+		if (userToDelete != null) userToDelete.setServiceTicket(this.serviceTicket);
 
-		return new User(this.postJson(userToDeleteParam, WS.Path.User.Version1.userDelete()));
+		return new User(this.postJson(userToDelete, WS.Path.User.Version1.userDelete()));
 	}
 
 	/**
 	 * Deletes the {@code User} provided.
 	 * Id must be set on the {@code User}.
 	 *
-	 * @param userToDeleteParam The User to Delete.
-	 * @param forcefullyDeleteParam Delete the User forcefully.
+	 * @param userToDelete The User to Delete.
+	 * @param forcefullyDelete Delete the User forcefully.
 	 * @return The deleted User.
 	 */
-	public User deleteUser(User userToDeleteParam, boolean forcefullyDeleteParam) {
-		if (userToDeleteParam != null) userToDeleteParam.setServiceTicket(this.serviceTicket);
+	public User deleteUser(User userToDelete, boolean forcefullyDelete) {
+		if (userToDelete != null) userToDelete.setServiceTicket(this.serviceTicket);
 
-		return new User(this.postJson(userToDeleteParam, WS.Path.User.Version1.userDelete(forcefullyDeleteParam)));
+		return new User(this.postJson(userToDelete, WS.Path.User.Version1.userDelete(forcefullyDelete)));
 	}
 
 	/**
@@ -243,14 +242,14 @@ public class UserClient extends ABaseClientWS {
 	/**
 	 * Retrieves user information for the provided {@code usernameParam}.
 	 *
-	 * @param usernameParam The username of the user to retrieve info for.
+	 * @param username The username of the user to retrieve info for.
 	 * @return User information.
 	 *
 	 * @see User
 	 */
-	public User getUserWhereUsername(String usernameParam) {
+	public User getUserWhereUsername(String username) {
 		User userToGetInfoFor = new User();
-		userToGetInfoFor.setUsername(usernameParam);
+		userToGetInfoFor.setUsername(username);
 		userToGetInfoFor.setServiceTicket(this.serviceTicket);
 
 		try {
@@ -267,17 +266,17 @@ public class UserClient extends ABaseClientWS {
 	 *
 	 * The email address must be confirmed.
 	 *
-	 * @param emailAddressParam The confirmed Email of the user to retrieve info for.
+	 * @param emailAddress The confirmed Email of the user to retrieve info for.
 	 * @return User information.
 	 *
 	 * @see User
 	 */
-	public User getUserWhereEmail(String emailAddressParam) {
+	public User getUserWhereEmail(String emailAddress) {
 		User userToGetInfoFor = new User();
 
-		if (emailAddressParam != null) {
+		if (emailAddress != null) {
 			List<String> emailAdd = new ArrayList();
-			emailAdd.add(emailAddressParam);
+			emailAdd.add(emailAddress);
 			userToGetInfoFor.setEmailAddresses(emailAdd);
 		}
 
@@ -295,14 +294,14 @@ public class UserClient extends ABaseClientWS {
 	/**
 	 * Retrieves user information for the provided {@code userIdParam}.
 	 *
-	 * @param userIdParam The ID of the {@code User} to retrieve info for.
+	 * @param userId The ID of the {@code User} to retrieve info for.
 	 * @return User information.
 	 *
 	 * @see User
 	 */
-	public User getUserById(Long userIdParam) {
+	public User getUserById(Long userId) {
 		User userToGetInfoFor = new User();
-		userToGetInfoFor.setId(userIdParam);
+		userToGetInfoFor.setId(userId);
 
 		userToGetInfoFor.setServiceTicket(this.serviceTicket);
 
@@ -340,17 +339,17 @@ public class UserClient extends ABaseClientWS {
 	 *
 	 * @return User information at {@code UserListing}
 	 *
-	 * @param jobViewParam The {@link JobView} to get users for.
+	 * @param jobView The {@link JobView} to get users for.
 	 *
 	 * @see UserListing
 	 * @see JobView
 	 */
-	public UserListing getAllUsersByJobView(JobView jobViewParam) {
-		if (jobViewParam != null) jobViewParam.setServiceTicket(this.serviceTicket);
+	public UserListing getAllUsersByJobView(JobView jobView) {
+		if (jobView != null) jobView.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new UserListing(this.postJson(
-					jobViewParam,
+					jobView,
 					WS.Path.User.Version1.getAllUsersByJobView()));
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
@@ -363,17 +362,17 @@ public class UserClient extends ABaseClientWS {
 	 *
 	 * @return User information at {@code UserListing}
 	 *
-	 * @param roleParam The {@link Role} to get users for.
+	 * @param role The {@link Role} to get users for.
 	 *
 	 * @see UserListing
 	 * @see Role
 	 */
-	public UserListing getAllUsersByRole(Role roleParam) {
-		if (roleParam != null) roleParam.setServiceTicket(this.serviceTicket);
+	public UserListing getAllUsersByRole(Role role) {
+		if (role != null) role.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new UserListing(this.postJson(
-					roleParam, WS.Path.User.Version1.getAllUsersByRole()));
+					role, WS.Path.User.Version1.getAllUsersByRole()));
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -385,13 +384,13 @@ public class UserClient extends ABaseClientWS {
 	 *
 	 * @return User information at {@code UserListing}
 	 *
-	 * @param loggedInSinceParam The date for last logged in.
+	 * @param loggedInSince The date for last logged in.
 	 *
 	 * @see UserListing
 	 */
-	public UserListing getAllUsersWhereLoggedInSince(Date loggedInSinceParam) {
+	public UserListing getAllUsersWhereLoggedInSince(Date loggedInSince) {
 		User userToPost = new User();
-		userToPost.setLoggedInDateTime(loggedInSinceParam);
+		userToPost.setLoggedInDateTime(loggedInSince);
 		
 		userToPost.setServiceTicket(this.serviceTicket);
 
@@ -406,18 +405,18 @@ public class UserClient extends ABaseClientWS {
 	/**
 	 * Retrieves all user field values information by the {@code userParam}.
 	 *
-	 * @param userParam The {@code User} to retrieve the field values for.
+	 * @param user The {@code User} to retrieve the field values for.
 	 * @return User information.
 	 *
 	 * @see UserFieldListing
 	 */
-	public UserFieldListing getAllUserFieldValuesByUser(User userParam) {
-		if (userParam == null) return null;
+	public UserFieldListing getAllUserFieldValuesByUser(User user) {
+		if (user == null) return null;
 
-		userParam.setServiceTicket(this.serviceTicket);
+		user.setServiceTicket(this.serviceTicket);
 		try {
 			return new UserFieldListing(this.postJson(
-					userParam,
+					user,
 					WS.Path.User.Version1.getUserFieldValuesByUser()));
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(), FluidClientException.ErrorCode.JSON_PARSING);
@@ -428,26 +427,26 @@ public class UserClient extends ABaseClientWS {
 	 * Retrieve the gravatar bytes by email.
 	 * The size will be 50x50.
 	 *
-	 * @param emailAddressParam The email to use for the gravatar.
+	 * @param emailAddress The email to use for the gravatar.
 	 *
 	 * @return JPEG image bytes.
 	 */
-	public byte[] getGravatarForEmail(String emailAddressParam) {
-		return this.getGravatarForEmail(emailAddressParam, 50);
+	public byte[] getGravatarForEmail(String emailAddress) {
+		return this.getGravatarForEmail(emailAddress, 50);
 	}
 
 	/**
 	 * Retrieve the gravatar bytes by email.
 	 *
-	 * @param emailAddressParam The email to use for the gravatar.
-	 * @param sizeParam The pixel dimension for the image.
+	 * @param emailAddress The email to use for the gravatar.
+	 * @param size The pixel dimension for the image.
 	 *
 	 * @return JPEG image bytes.
 	 */
-	public byte[] getGravatarForEmail(String emailAddressParam, int sizeParam) {
+	public byte[] getGravatarForEmail(String emailAddress, int size) {
 		try {
 			JSONObject gravatarJSONObj =
-					this.getJson(WS.Path.User.Version1.getGravatarByEmail(emailAddressParam, sizeParam));
+					this.getJson(WS.Path.User.Version1.getGravatarByEmail(emailAddress, size));
 
 			String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
 			if (base64Text == null || base64Text.isEmpty()) return null;
@@ -466,30 +465,32 @@ public class UserClient extends ABaseClientWS {
 	 * Retrieve the gravatar bytes for Fluid user.
 	 * The size will be 50x50.
 	 *
-	 * @param userParam The user to get the gravatar for.
+	 * @param user The user to get the gravatar for.
 	 *
 	 * @return JPEG image bytes.
 	 */
-	public byte[] getGravatarForUser(User userParam)
+	public byte[] getGravatarForUser(User user)
 	{
-		return this.getGravatarForUser(userParam, 50);
+		return this.getGravatarForUser(user, 50);
 	}
 
 	/**
 	 * Retrieve the gravatar bytes for Fluid user.
 	 *
-	 * @param userParam The user to get the gravatar for.
-	 * @param sizeParam The pixel dimension for the image.
+	 * @param user The user to get the gravatar for.
+	 * @param size The pixel dimension for the image.
 	 *
 	 * @return JPEG image bytes.
 	 */
-	public byte[] getGravatarForUser(User userParam, int sizeParam) {
-		if (userParam == null) return null;
+	public byte[] getGravatarForUser(User user, int size) {
+		if (user == null) return null;
+
+		if ((user.getId() == null || user.getId().longValue() < 1L) &&
+				UtilGlobal.isBlank(user.getUsername())) return null;
 
 		try {
 			JSONObject gravatarJSONObj = this.postJson(
-							userParam,
-							WS.Path.User.Version1.getGravatarByUser(sizeParam));
+					user, WS.Path.User.Version1.getGravatarByUser(size));
 
 			String base64Text = gravatarJSONObj.optString(JSON_TAG_DATA,"");
 			if (base64Text == null || base64Text.isEmpty()) return null;
