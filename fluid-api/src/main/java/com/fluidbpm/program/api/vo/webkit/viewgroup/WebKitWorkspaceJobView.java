@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	private JobView jobView;
 	private Integer fetchLimit;
@@ -88,6 +89,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() {
 		JSONObject returnVal = super.toJsonObject();
 		if (this.getJobView() != null) {
@@ -109,6 +111,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public String toString() {
 		return super.toString();
 	}
@@ -118,6 +121,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 * @return {@code this.getJobView().getViewName()}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getViewStepName() {
 		return (this.getJobView() == null) ? null : this.getJobView().getViewStepName();
 	}
@@ -127,6 +131,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 * @return {@code this.getJobView().getViewFlowName()}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getViewFlowName() {
 		return (this.getJobView() == null) ? null : this.getJobView().getViewFlowName();
 	}
@@ -136,6 +141,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 * @return {@code this.getJobView().getViewPriority()}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Integer getViewPriority() {
 		return (this.getJobView() == null) ? null : this.getJobView().getViewPriority();
 	}
@@ -145,6 +151,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 * @return {@code this.getJobView().getViewOrder()}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Long getViewOrder() {
 		Long viewOrder = (this.getJobView() == null) ? null : this.getJobView().getViewOrder();
 		return (viewOrder == null) ? 0L : viewOrder;
@@ -155,11 +162,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 * @return "%s_%s_%010d" FlowName StepName and ViewOrder with 10 places 0 filled.
 	 */
 	public String getViewFlowStepViewOrder() {
-		String returnVal = String.format("%s_%s_%010d",
-				this.getViewFlowName(),
-				this.getViewStepName(),
-				this.getViewOrder());
-		return returnVal;
+		return String.format("%s_%s_%010d", this.getViewFlowName(), this.getViewStepName(), this.getViewOrder());
 	}
 
 	/**
@@ -168,7 +171,6 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public Long getId() {
-		return (this.jobView == null) ? null :
-				this.jobView.getId();
+		return (this.jobView == null) ? null : this.jobView.getId();
 	}
 }

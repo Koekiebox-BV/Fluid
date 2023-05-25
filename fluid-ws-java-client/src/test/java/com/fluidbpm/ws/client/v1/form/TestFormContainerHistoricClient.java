@@ -41,10 +41,8 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
      *
      */
     @Before
-    public void init()
-    {
+    public void init() {
         ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
         this.loginClient = new LoginClient(BASE_URL);
     }
 
@@ -62,8 +60,7 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
      */
     @Test
     @Ignore
-    public void testRetrieveFormFlowHistoricData()
-    {
+    public void testRetrieveFormFlowHistoricData() {
         if (!this.isConnectionValid()) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
@@ -96,12 +93,8 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
      */
     @Test
     @Ignore
-    public void testRetrieveFormFieldHistoricData()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testRetrieveFormFieldHistoricData() {
+        if (!this.isConnectionValid()) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
@@ -111,14 +104,12 @@ public class TestFormContainerHistoricClient extends ABaseTestCase {
         FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, serviceTicket);
 
         List<FormHistoricData> formHistoricData = formContainerClient.getFormAndFieldHistoricData(
-                new Form(674L),
-                false);
+                new Form(674L), false);
 
         //Confirm the historic data is set...
         TestCase.assertNotNull(formHistoricData);
 
-        for (FormHistoricData data : formHistoricData)
-        {
+        for (FormHistoricData data : formHistoricData) {
             TestCase.assertNotNull(data);
             TestCase.assertNotNull("Id not set",data.getId());
             TestCase.assertNotNull("Date not set",data.getDate());

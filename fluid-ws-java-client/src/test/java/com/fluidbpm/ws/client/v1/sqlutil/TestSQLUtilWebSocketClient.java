@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.TableField;
@@ -32,8 +24,14 @@ import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -46,8 +44,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 	 *
 	 */
 	@Before
-	public void init()
-	{
+	public void init() {
 		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
 		this.loginClient = new LoginClient(BASE_URL);
@@ -68,9 +65,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void testGetTableFormsWithSpecificId() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -316,22 +311,16 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 	 */
 	@Test
 	@Ignore
-	public void testExecuteSQLWhereIdGreaterThan()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testExecuteSQLWhereIdGreaterThan() {
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
 
 		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
-			serviceTicketHex =
-					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		if (serviceTicket != null && !serviceTicket.isEmpty()) {
+			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
 		}
 
 		SQLUtilWebSocketExecuteSQLClient webSocketClient =
@@ -353,8 +342,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 				"WHERE id > ?" +
 				" LIMIT 0,1000;");
 
-		formToUse.getFormFields().add(new Field(
-				1L,"Zool",new Long(6000L), Field.Type.Decimal));
+		formToUse.getFormFields().add(new Field(1L,"id",new Long(6000L), Field.Type.Decimal));
 
 		List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
 

@@ -29,6 +29,7 @@ import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
 import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.FlowItem.Version1.QueryParam.EXECUTE_CALCULATED_LABELS;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.INCLUDE_CURRENT;
+import static com.fluidbpm.program.api.vo.ws.WS.Path.FormHistory.QueryParam.LABEL_FIELD_NAME;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1.QueryParam.FLUID_ITEM;
 import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryParam.POPULATE_ANCESTOR_ID;
 
@@ -2410,10 +2411,14 @@ public class WS {
 			 */
 			public static final class Version1 {
 				public static final String ROOT = ("/form_history");
+
+				public static final String ROOT_WEB_SOCKET = (Path.WEB_SOCKET + Version.VERSION_1 + ROOT);
 				public static final String CREATE = ("/");
 
 				//Read...
 				public static final String BY_FORM_CONTAINER = ("/get_by_form_container");
+
+				public static final String BY_FORM_CONTAINER_WEB_SOCKET = (ROOT_WEB_SOCKET + BY_FORM_CONTAINER);
 				public static final String MOST_RECENT_BY_FORM_CONTAINER = ("/get_most_recent_by_form_container");
 
 				/**
@@ -2452,8 +2457,32 @@ public class WS {
 						Version.VERSION_1.concat(ROOT).concat(BY_FORM_CONTAINER),
 						INCLUDE_CURRENT,
 						includeCurrent,
-						QueryParam.LABEL_FIELD_NAME,
+						LABEL_FIELD_NAME,
 						makeUseOfLabelFieldName
+					);
+				}
+
+				/**
+				 * URL Path for retrieving Form historic data using a Web Socket.
+				 *
+				 * @param serviceTicket The service ticket in hex-decimal text format.
+				 * @param includeCurrent Include the current field values for historic data.
+				 * @param labelFieldName Make use of label field names.
+				 *
+				 * @return {@code /web_socket/v1/form_history_by_form_container}
+				 */
+				public static final String getByFormContainerWebSocket(
+						String serviceTicket,
+						boolean includeCurrent,
+						boolean labelFieldName
+				) {
+					return String.format("%s/%s?%s=%s&%s=%s",
+							BY_FORM_CONTAINER_WEB_SOCKET,
+							serviceTicket,
+							INCLUDE_CURRENT,
+							includeCurrent,
+							LABEL_FIELD_NAME,
+							labelFieldName
 					);
 				}
 
