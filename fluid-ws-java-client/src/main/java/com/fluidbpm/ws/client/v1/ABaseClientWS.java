@@ -74,7 +74,7 @@ import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
  *
  * @see AutoCloseable
  */
-public abstract class ABaseClientWS implements AutoCloseable{
+public abstract class ABaseClientWS implements AutoCloseable {
 
 	public static final String CONTENT_TYPE_HEADER = "Content-type";
 

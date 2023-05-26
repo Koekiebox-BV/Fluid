@@ -1,20 +1,18 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Map;
-
-import javax.websocket.*;
-
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ws.Error;
+import com.fluidbpm.ws.client.FluidClientException;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ws.Error;
-import com.fluidbpm.ws.client.FluidClientException;
+import javax.websocket.*;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * The {@code ClientEndpoint} Web Socket client.
@@ -101,16 +99,16 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	/**
 	 * Callback hook for Message Events. This method will be invoked when
 	 * a client sends a message.
-	 * @param messageParam The text message      
+	 * @param message The text message.
 	 */
 	@OnMessage
-	public void onMessage(String messageParam) {
+	public void onMessage(String message) {
 		this.receivedMessages++;
 
 		boolean handlerFoundForMsg = false;
 		for (IMessageResponseHandler handler :
 				new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
-			Object qualifyObj = handler.doesHandlerQualifyForProcessing(messageParam);
+			Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
 			if (qualifyObj instanceof Error) {
 				handler.handleMessage(qualifyObj);
 			} else if (qualifyObj instanceof JSONObject) {
@@ -122,25 +120,23 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 
 		if (!handlerFoundForMsg) {
 			throw new FluidClientException(
-					"No handler found for message;\n"+messageParam,
-					FluidClientException.ErrorCode.IO_ERROR);
+					"No handler found for message;\n"+message,
+					FluidClientException.ErrorCode.IO_ERROR
+			);
 		}
 	}
 
 	/**
 	 * Send a message.
 	 *
-	 * @param aBaseFluidJSONObjectParam The JSON Object to send.
+	 * @param aBaseFluidJSONObject The JSON Object to send.
 	 */
-	public void sendMessage(ABaseFluidJSONObject aBaseFluidJSONObjectParam) {
-
-		if (aBaseFluidJSONObjectParam == null) {
+	public void sendMessage(ABaseFluidJSONObject aBaseFluidJSONObject) {
+		if (aBaseFluidJSONObject == null) {
 			throw new FluidClientException(
 					"No JSON Object to send.",
 					FluidClientException.ErrorCode.IO_ERROR);
-		} else {
-			this.sendMessage(aBaseFluidJSONObjectParam.toJsonObject().toString());
-		}
+		} else this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
 	}
 
 	/**
@@ -171,9 +167,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	 * Closes the Web Socket User session.
 	 */
 	public void closeSession() {
-		if (this.userSession == null) {
-			return;
-		}
+		if (this.userSession == null) return;
 
 		try {
 			this.userSession.close();
@@ -190,10 +184,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	 * @return {@code true} if session is open, otherwise {@code false}.
 	 */
 	public boolean isSessionOpen() {
-		if (this.userSession == null) {
-			return false;
-		}
-
+		if (this.userSession == null) return false;
 		return this.userSession.isOpen();
 	}
 
@@ -203,10 +194,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	 * @return {@code Session ID} if session is open, otherwise {@code null}.
 	 */
 	public String getSessionId(){
-		if (this.userSession == null) {
-			return null;
-		}
-
+		if (this.userSession == null) return null;
 		return this.userSession.getId();
 	}
 

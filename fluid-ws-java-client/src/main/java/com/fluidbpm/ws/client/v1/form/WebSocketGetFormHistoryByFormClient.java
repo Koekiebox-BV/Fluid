@@ -75,6 +75,12 @@ public class WebSocketGetFormHistoryByFormClient extends
 		this.setServiceTicket(serviceTicketAsHex);
 	}
 
+	public List<FormHistoricDataListing> getByFormSynchronized(List<Form> formsToGetFieldListingForFor) {
+		if (formsToGetFieldListingForFor == null) return null;
+
+		return this.getByFormSynchronized(formsToGetFieldListingForFor.toArray(new Form[]{}));
+	}
+
 	/**
 	 * Retrieves all the Ancestors (Forms) for the {@code formToGetAncestorsForForParam}.
 	 *
@@ -84,7 +90,6 @@ public class WebSocketGetFormHistoryByFormClient extends
 	 */
 	public List<FormHistoricDataListing> getByFormSynchronized(Form ... formsToGetFieldListingForFor) {
 		if (formsToGetFieldListingForFor == null) return null;
-
 		if (formsToGetFieldListingForFor.length == 0) return null;
 
 		//Start a new request...

@@ -237,8 +237,11 @@ public class TestExitStep extends ABaseTestFlowStep {
                 UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
         ) {
             // ensure the correct steps have taken place:
-            UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDef.getFormType(),
-                    this.formDef.getFormFields().get(0).getFieldName());
+            UserQuery uqCleanup = userQueryForFormType(
+                    uqClient,
+                    this.formDef.getFormType(),
+                    this.formDef.getFormFields().get(0).getFieldName()
+            );
             deleteFormContainersAndUserQuery(
                     uqClient,
                     fcClient,

@@ -664,9 +664,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testCreateDeleteTableRecordWebSocket() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -798,7 +796,6 @@ public class TestFormContainerClient extends ABaseTestCase {
 			toAdd = webSocketTableRecordClient.createTableRecordSynchronized(toAdd);
 			additionalForSpeed.add(toAdd);
 		}
-
 		long takenInMillis = (System.currentTimeMillis() - now);
 
 		System.out.println("Took '"+takenInMillis+"' millis to create '"+
@@ -811,8 +808,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 		TestCase.assertEquals("Expected 3 Table Fields.", 3, formFields.size());
 		for (Field formField : formFields) {
 			TestCase.assertNotNull("Form Field Id is not set. " +
-							"Expected value to be set.",
-					formField.getId());
+					"Expected value to be set.", formField.getId());
 		}
 
 		//DELETE THE ITEMS...

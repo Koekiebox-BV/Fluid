@@ -20,21 +20,15 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
-import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
-import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.flow.RouteFieldClient;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
-import com.fluidbpm.ws.client.v1.form.FormContainerClient;
-import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
-import com.fluidbpm.ws.client.v1.form.FormFieldClient;
-import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import lombok.extern.java.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,9 +39,7 @@ import org.junit.Before;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 /**
  * Base test case for scenarios where workflow steps are being tested.
@@ -57,9 +49,6 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
     private String prevConfMemory;
 
     private static String CONFIG_KEY_MEM = "MemoryCacheType";
-    private static String DESC = "Created by step Unit tests.";
-
-    protected int ITEM_COUNT_PER_SUB = 15;
 
     /**
      * Initialize.
@@ -157,47 +146,6 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         }
     }
 
-    protected static Form createFormDef(
-            FormDefinitionClient fdClient,
-            FormFieldClient ffClient,
-            String formDef,
-            List<Flow> associatedFlows,
-            Field ... fields
-    ) {
-        if (fields == null || fields.length < 1) return null;
-
-        try {
-            Form formToCreate = new Form(formDef);
-            formToCreate.setAssociatedFlows(associatedFlows);
-            formToCreate.setFormDescription(DESC);
-
-            List<Field> fieldsCreated = new ArrayList<>();
-            Stream.of(fields).forEach(itm -> {
-                try {
-                    switch (itm.getTypeAsEnum()) {
-                        case MultipleChoice:
-                            fieldsCreated.add(ffClient.createField(itm,
-                                    itm.getFieldValueAsMultiChoice().getAvailableMultiChoices()));
-                        break;
-                        default:
-                            fieldsCreated.add(ffClient.createField(itm));
-                    }
-                } catch (FluidClientException fce) {
-                    if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
-
-                    fieldsCreated.add(itm);
-                }
-            });
-            formToCreate.setFormFields(fieldsCreated);
-
-            return fdClient.createFormDefinition(formToCreate);
-        } catch (FluidClientException fce) {
-            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
-
-            return fdClient.getFormDefinitionByName(formDef);
-        }
-    }
-
     protected static Field[] employeeFields() {
         List<String> options = new ArrayList<>();
         options.add("Male");
@@ -240,92 +188,6 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         for (Field fld : returnVal) fld.setFieldDescription(DESC);
 
         return returnVal;
-    }
-
-    protected static FluidItem item(
-        String identifier,
-        String formType,
-        boolean includeAttachment,
-        Field ... fields
-    ) {
-        //Fluid Item...
-        Form frm = new Form(formType, new Date().toString()+ " "+identifier);
-        Stream.of(fields).forEach(itm -> {
-            if (itm.getTypeAsEnum() == null) {
-                log.warning("Field ["+itm+"] does not have a type set!");
-                return;
-            }
-
-            switch (itm.getTypeAsEnum()) {
-                case Text:
-                case TextEncrypted:
-                case ParagraphText:
-                    frm.setFieldValue(itm.getFieldName(), UUID.randomUUID().toString(), itm.getTypeAsEnum());
-                break;
-                case TrueFalse:
-                    frm.setFieldValue(itm.getFieldName(), new Boolean(true), itm.getTypeAsEnum());
-                break;
-                case MultipleChoice:
-                    MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();
-                    if (multiChoice != null &&
-                            multiChoice.getAvailableMultiChoices() != null && !multiChoice.getAvailableMultiChoices().isEmpty()) {
-                        multiChoice.setSelectedMultiChoice(
-                                multiChoice.getAvailableMultiChoices().get(0)
-                        );
-                    }
-                    frm.setFieldValue(itm.getFieldName(), multiChoice, itm.getTypeAsEnum());
-                break;
-                case DateTime:
-                    frm.setFieldValue(itm.getFieldName(), new Date(), itm.getTypeAsEnum());
-                break;
-                case Decimal:
-                    frm.setFieldValue(itm.getFieldName(), Math.random() * 90, itm.getTypeAsEnum());
-                break;
-            }
-        });
-
-        FluidItem toCreate = new FluidItem(frm);
-        if (!includeAttachment) return toCreate;
-
-        //2. Attachments...
-        List<Attachment> attachments = new ArrayList();
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            JSONObject jsonMemberObject = new JSONObject();
-
-            jsonMemberObject.put("firstname","Piet"+identifier);
-            jsonMemberObject.put("lastname", "Brarer"+identifier);
-            jsonMemberObject.put("id_number",identifier);
-            jsonMemberObject.put("cellphone","1111");
-            jsonMemberObject.put("member_number","ZOOOOL");
-
-            jsonObject.put("member",jsonMemberObject);
-        } catch (JSONException e) {
-            Assert.fail(e.getMessage());
-            return toCreate;
-        }
-
-        //First Attachment...
-        Attachment attachmentToAdd = new Attachment();
-        attachmentToAdd.setAttachmentDataBase64(UtilGlobal.encodeBase64(jsonObject.toString().getBytes()));
-
-        attachmentToAdd.setName("Test assessment JSON.json");
-        attachmentToAdd.setContentType("application/json");
-
-        //Second Attachment...
-        Attachment secondToAdd = new Attachment();
-        secondToAdd.setAttachmentDataBase64(UtilGlobal.encodeBase64("De Beers".toString().getBytes()));
-
-        secondToAdd.setName("Test Text Plain.txt");
-        secondToAdd.setContentType("text/plain");
-
-        attachments.add(attachmentToAdd);
-        attachments.add(secondToAdd);
-
-        toCreate.setAttachments(attachments);
-
-        return toCreate;
     }
 
     public static final class TestStatics {
@@ -383,52 +245,5 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         toCreate.setAttachments(attachments);
 
         return toCreate;
-    }
-
-    protected static UserQuery userQueryForFormType(
-        UserQueryClient uqClient,
-        String formDef,
-        String ... formFields
-    ) {
-        List<Field> inputs = new ArrayList<>();
-        if (formFields != null && formFields.length > 0) {
-            for (String field : formFields) inputs.add(new Field(field));
-        }
-
-        List<String> ruleByFormType = new ArrayList<>();
-        ruleByFormType.add(String.format("[Form Type] = '%s'", formDef));
-        String uqName = String.format("JUnit By Form Type %s", formDef);
-        UserQuery toCreate = new UserQuery(uqName, inputs);
-        toCreate.setRules(ruleByFormType);
-        toCreate.setInputs(inputs);
-        toCreate.setDescription(DESC);
-
-        try {
-            return uqClient.createUserQuery(toCreate);
-        } catch (FluidClientException fce) {
-            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
-
-            return uqClient.getUserQueryByName(uqName);
-        }
-    }
-
-    protected static void deleteFormContainersAndUserQuery(
-            UserQueryClient uqClient,
-            FormContainerClient fcClient,
-            UserQuery queryToExecAndDel
-    ) {
-        List<FluidItem> toDelete = uqClient.executeUserQuery(
-                queryToExecAndDel,
-                false,
-                10000,
-                0
-        ).getListing();
-        if (toDelete != null) {
-            toDelete.stream()
-                    .map(itm -> itm.getForm())
-                    .forEach(itm -> fcClient.deleteFormContainer(itm));
-        } else log.warning("No items to delete/cleanup!");
-
-        if (uqClient != null) uqClient.deleteUserQuery(queryToExecAndDel, true);
     }
 }

@@ -81,7 +81,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_TextPlain_CRUD() {
+    public void testRouteField_TextPlain_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -132,7 +132,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_TrueFalse_CRUD() {
+    public void testRouteField_TrueFalse_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -183,7 +183,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_ParagraphTextPlain_CRUD() {
+    public void testRouteField_ParagraphTextPlain_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -234,7 +234,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_ParagraphTextHTML_CRUD() {
+    public void testRouteField_ParagraphTextHTML_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -286,7 +286,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void testRouteField_MultiChoicePlain_CRUD() {
+    public void testRouteField_MultiChoicePlain_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -375,7 +375,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     @SuppressWarnings("unchecked")
-    void testRouteField_MultiChoiceSelectMany_CRUD() {
+    public void testRouteField_MultiChoiceSelectMany_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -404,8 +404,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_DateTimeDate_CRUD()
-    {
+    public void testRouteField_DateTimeDate_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -456,7 +455,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_DateTimeDateAndTime_CRUD() {
+    public void testRouteField_DateTimeDateAndTime_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
@@ -507,7 +506,7 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      *
      */
     @Test
-    void testRouteField_DecimalPlain_CRUD() {
+    public void testRouteField_DecimalPlain_CRUD() {
         if (!this.isConnectionValid()) return;
 
         RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);

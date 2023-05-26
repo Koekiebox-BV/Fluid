@@ -15,10 +15,14 @@
 
 package com.fluidbpm.program.api.vo.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.role.Role;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,6 +53,9 @@ import java.util.List;
  * @see com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile
  */
 @XmlRootElement
+@NoArgsConstructor
+@Getter
+@Setter
 public class User extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -56,22 +63,19 @@ public class User extends ABaseFluidJSONObject {
 	private String username;
 	private String passwordSha256;
 	private String passwordClear;
-
+	// Gets 20 Random ASCII {@code Character}s
 	private String salt;
 	private List<Role> roles;
 	private boolean emailUserNotification;
 	private List<String> emailAddresses;
 	private List<Field> userFields;
-
 	private boolean active;
 	private int invalidLoginCount;
-
 	private Date passwordChangedAt;
 	private Date loggedInDateTime;
-
 	private Date dateCreated;
 	private Date dateLastUpdated;
-
+	// See https://www.worldtimezone.com/
 	private Float timezone;
 	private String dateFormat;
 	private String timeFormat;
@@ -119,56 +123,45 @@ public class User extends ABaseFluidJSONObject {
 	}
 
 	/**
-	 * Default constructor.
-	 */
-	public User() {
-		super();
-	}
-
-	/**
 	 * New user object to set the username.
 	 *
-	 * @param usernameParam The username.
+	 * @param username The username.
 	 */
-	public User(String usernameParam) {
+	public User(String username) {
 		super();
-		this.setUsername(usernameParam);
+		this.setUsername(username);
 	}
 
 	/**
 	 * Creates a {@code new} of {@code this} with id set.
 	 *
-	 * @param userIdParam The {@code User} primary key.
+	 * @param userId The {@code User} primary key.
 	 */
-	public User(Long userIdParam) {
+	public User(Long userId) {
 		super();
-		this.setId(userIdParam);
+		this.setId(userId);
 	}
 
 	/**
 	 * Creates a {@code new} of {@code this} with id set.
 	 *
-	 * @param userIdParam The {@code User} primary key.
-	 * @param usernameParam The {@code User} username.
+	 * @param userId The {@code User} primary key.
+	 * @param username The {@code User} username.
 	 */
-	public User(Long userIdParam, String usernameParam) {
+	public User(Long userId, String username) {
 		super();
-		this.setId(userIdParam);
-		this.setUsername(usernameParam);
+		this.setId(userId);
+		this.setUsername(username);
 	}
 
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
-	 * @param jsonObjectParam The JSON Object.
+	 * @param jsonObject The JSON Object.
 	 */
-	public User(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+	public User(JSONObject jsonObject){
+		super(jsonObject);
+		if (this.jsonObject == null) return;
 
 		//Username...
 		if (!this.jsonObject.isNull(JSONMapping.USERNAME)) {
@@ -250,48 +243,31 @@ public class User extends ABaseFluidJSONObject {
 
 		//Roles...
 		if (!this.jsonObject.isNull(JSONMapping.ROLES)) {
-
 			JSONArray roleListing = this.jsonObject.getJSONArray(JSONMapping.ROLES);
-
 			List<Role> roleListingList = new ArrayList();
-
-			for (int index = 0;index < roleListing.length();index++)
-			{
+			for (int index = 0;index < roleListing.length();index++) {
 				roleListingList.add(new Role(roleListing.getJSONObject(index)));
 			}
-
 			this.setRoles(roleListingList);
 		}
 
 		//Email Addresses...
 		if (!this.jsonObject.isNull(JSONMapping.EMAIL_ADDRESSES)) {
-
-			JSONArray emailListing =
-					this.jsonObject.getJSONArray(JSONMapping.EMAIL_ADDRESSES);
-
+			JSONArray emailListing = this.jsonObject.getJSONArray(JSONMapping.EMAIL_ADDRESSES);
 			List<String> emailAddressList = new ArrayList();
-
-			for (int index = 0;index < emailListing.length();index++)
-			{
+			for (int index = 0;index < emailListing.length();index++) {
 				emailAddressList.add(emailListing.getString(index));
 			}
-
 			this.setEmailAddresses(emailAddressList);
 		}
 
 		//User Fields...
 		if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
-
 			JSONArray userFieldListing = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
-
 			List<Field> userFieldListingList = new ArrayList();
-
-			for (int index = 0;index < userFieldListing.length();index++)
-			{
-				userFieldListingList.add(
-						new Field(userFieldListing.getJSONObject(index)));
+			for (int index = 0;index < userFieldListing.length();index++) {
+				userFieldListingList.add(new Field(userFieldListing.getJSONObject(index)));
 			}
-
 			this.setUserFields(userFieldListingList);
 		}
 	}
@@ -306,12 +282,9 @@ public class User extends ABaseFluidJSONObject {
 	 * @see Role
 	 */
 	@XmlTransient
-	public boolean doesUserHaveAccessToRole(Role roleParam)
-	{
-		if (roleParam == null)
-		{
-			return false;
-		}
+	@JsonIgnore
+	public boolean doesUserHaveAccessToRole(Role roleParam) {
+		if (roleParam == null) return false;
 
 		return this.doesUserHaveAccessToRole(roleParam.getName());
 	}
@@ -326,370 +299,22 @@ public class User extends ABaseFluidJSONObject {
 	 * @see Role
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean doesUserHaveAccessToRole(String roleNameParam) {
-		if (roleNameParam == null || roleNameParam.trim().isEmpty()) {
-			return false;
-		}
+		if (roleNameParam == null || roleNameParam.trim().isEmpty()) return false;
 
-		if (this.getRoles() == null || this.getRoles().isEmpty()) {
-			return false;
-		}
+		if (this.getRoles() == null || this.getRoles().isEmpty()) return false;
 
 		String roleNameParamLower = roleNameParam.trim().toLowerCase();
 
 		for (Role roleAtIndex : this.getRoles()) {
-			if (roleAtIndex.getName() == null || roleAtIndex.getName().trim().isEmpty()) {
-				continue;
-			}
+			if (roleAtIndex.getName() == null || roleAtIndex.getName().trim().isEmpty()) continue;
 
 			String iterRoleNameLower = roleAtIndex.getName().trim().toLowerCase();
-			if (roleNameParamLower.equals(iterRoleNameLower)) {
-				return true;
-			}
+			if (roleNameParamLower.equals(iterRoleNameLower)) return true;
 		}
 
 		return false;
-	}
-
-	/**
-	 * Gets whether a user is active.
-	 *
-	 * @return A Users state.
-	 */
-	public boolean isActive() {
-		return active;
-	}
-
-	/**
-	 * Sets whether a user is active.
-	 *
-	 * @param activeParam A Users active status.
-	 */
-	public void setActive(boolean activeParam) {
-		this.active = activeParam;
-	}
-
-	/**
-	 * Gets the {@code Date} when the password was last changed.
-	 *
-	 * @return When password was last changed.
-	 */
-	public Date getPasswordChangedAt() {
-		return this.passwordChangedAt;
-	}
-
-	/**
-	 * Sets the {@code Date} when the password was last changed.
-	 *
-	 * @param passwordChangedAtParam Password Changed at.
-	 */
-	public void setPasswordChangedAt(Date passwordChangedAtParam) {
-		this.passwordChangedAt = passwordChangedAtParam;
-	}
-
-	/**
-	 * Gets Users username.
-	 *
-	 * @return A Users username.
-	 */
-	public String getUsername() {
-		return this.username;
-	}
-
-	/**
-	 * Sets Users username.
-	 *
-	 * @param usernameParam A Users username.
-	 */
-	public void setUsername(String usernameParam) {
-		this.username = usernameParam;
-	}
-
-	/**
-	 * Gets Users timezone.
-	 * See https://www.worldtimezone.com/
-	 *
-	 * @return A Users timezone.
-	 */
-	public Float getTimezone() {
-		return this.timezone;
-	}
-
-	/**
-	 * Sets Users timezone.
-	 * See https://www.worldtimezone.com/
-	 *
-	 * @param timezoneParam A Users timezone.
-	 */
-	public void setTimezone(Float timezoneParam) {
-		this.timezone = timezoneParam;
-	}
-
-	/**
-	 * Gets Users date format.
-	 *
-	 * @return A Users date format.
-	 *
-	 * @see java.text.SimpleDateFormat
-	 */
-	public String getDateFormat() {
-		return this.dateFormat;
-	}
-
-	/**
-	 * Sets Users date format.
-	 *
-	 * @param dateFormatParam A Users date format.
-	 *
-	 * @see java.text.SimpleDateFormat
-	 */
-	public void setDateFormat(String dateFormatParam) {
-		this.dateFormat = dateFormatParam;
-	}
-
-	/**
-	 * Gets Users time format.
-	 *
-	 * @return A Users time format.
-	 */
-	public String getTimeFormat() {
-		return this.timeFormat;
-	}
-
-	/**
-	 * Sets Users time format.
-	 *
-	 * @param timeFormatParam A Users time format.
-	 *
-	 * @see java.text.SimpleDateFormat
-	 */
-	public void setTimeFormat(String timeFormatParam) {
-		this.timeFormat = timeFormatParam;
-	}
-
-	/**
-	 * Gets Users locale.
-	 *
-	 * @return A Users locale.
-	 *
-	 * @see java.util.Locale
-	 */
-	public String getLocale() {
-		return this.locale;
-	}
-
-	/**
-	 * Sets Users locale.
-	 *
-	 * @param localeParam A Users locale.
-	 *
-	 * @see java.text.SimpleDateFormat
-	 */
-	public void setLocale(String localeParam) {
-		this.locale = localeParam;
-	}
-
-	/**
-	 * Gets whether user will receive email notification.
-	 *
-	 * @return {@code true} if user will receive email, otherwise {@code false}.
-	 */
-	public boolean isEmailUserNotification() {
-		return this.emailUserNotification;
-	}
-
-	/**
-	 * Sets whether user will receive email notification.
-	 *
-	 * @param emailUserNotificationParam Send email for notification.
-	 */
-	public void setEmailUserNotification(boolean emailUserNotificationParam) {
-		this.emailUserNotification = emailUserNotificationParam;
-	}
-
-	/**
-	 * Gets The invalid login count for the {@code User}.
-	 *
-	 * @return Invalid Login Count.
-	 */
-	public int getInvalidLoginCount() {
-		return this.invalidLoginCount;
-	}
-
-	/**
-	 * Sets The invalid login count for the {@code User}.
-	 *
-	 * @param invalidLoginCountParam Invalid Login Count.
-	 */
-	public void setInvalidLoginCount(int invalidLoginCountParam) {
-		this.invalidLoginCount = invalidLoginCountParam;
-	}
-
-	/**
-	 * Gets The {@code Date} the User was created.
-	 *
-	 * @return Date Created.
-	 */
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	/**
-	 * Sets The {@code Date} the User was created.
-	 *
-	 * @param dateCreatedParam Date Created.
-	 */
-	public void setDateCreated(Date dateCreatedParam) {
-		this.dateCreated = dateCreatedParam;
-	}
-
-	/**
-	 * Gets The {@code Date} the User was last updated.
-	 *
-	 * @return Date Last Updated.
-	 */
-	public Date getDateLastUpdated() {
-		return this.dateLastUpdated;
-	}
-
-	/**
-	 * Sets The {@code Date} the User was last updated.
-	 *
-	 * @param dateLastUpdatedParam Date Last Updated.
-	 */
-	public void setDateLastUpdated(Date dateLastUpdatedParam) {
-		this.dateLastUpdated = dateLastUpdatedParam;
-	}
-
-	/**
-	 * Gets The {@code Date} the User last logged in.
-	 *
-	 * @return Date Last Logged in.
-	 */
-	public Date getLoggedInDateTime() {
-		return this.loggedInDateTime;
-	}
-
-	/**
-	 * Sets The {@code Date} the User last logged in.
-	 *
-	 * @param loggedInDateTimeParam Date Last Logged in.
-	 */
-	public void setLoggedInDateTime(Date loggedInDateTimeParam) {
-		this.loggedInDateTime = loggedInDateTimeParam;
-	}
-
-	/**
-	 * Gets Users password in Sha256 format.
-	 *
-	 * @return Password in Sha256 Base16 format.
-	 */
-	public String getPasswordSha256() {
-		return this.passwordSha256;
-	}
-
-	/**
-	 * Sets Users password in Sha256 format.
-	 *
-	 * @param passwordSha256Param Password in Sha256 Base16 format.
-	 */
-	public void setPasswordSha256(String passwordSha256Param) {
-		this.passwordSha256 = passwordSha256Param;
-	}
-
-	/**
-	 * Gets Users password in the clear (For user create and update).
-	 *
-	 * @return Password in clear format.
-	 */
-	public String getPasswordClear() {
-		return this.passwordClear;
-	}
-
-	/**
-	 * Sets Users password in the clear (For user create and update).
-	 *
-	 * @param passwordClearParam Password in clear.
-	 */
-	public void setPasswordClear(String passwordClearParam) {
-		this.passwordClear = passwordClearParam;
-	}
-
-	/**
-	 * Gets List of {@code Role}s for user.
-	 *
-	 * @return {@code List} of Roles for {@code User}.
-	 *
-	 * @see Role
-	 */
-	public List<Role> getRoles() {
-		return this.roles;
-	}
-
-	/**
-	 * Sets List of {@code Role}s for user.
-	 *
-	 * @param rolesParam {@code List} of roles associated with a {@code User}.
-	 *
-	 * @see Role
-	 */
-	public void setRoles(List<Role> rolesParam) {
-		this.roles = rolesParam;
-	}
-
-	/**
-	 * Gets List of Email Addresses for a user.
-	 *
-	 * @return {@code List} of Emails for the {@code User}.
-	 */
-	public List<String> getEmailAddresses() {
-		return this.emailAddresses;
-	}
-
-	/**
-	 * Sets List of Email addresses for user.
-	 *
-	 * @param emailAddressesParam {@code List} of email addresses for a {@code User}.
-	 */
-	public void setEmailAddresses(List<String> emailAddressesParam) {
-		this.emailAddresses = emailAddressesParam;
-	}
-
-	/**
-	 * Gets 20 Random ASCII {@code Character}s
-	 *
-	 * @return 20 Random ASCII {@code Character}s paired with the {@code User} password.
-	 */
-	public String getSalt() {
-		return this.salt;
-	}
-
-	/**
-	 * Sets 20 Random ASCII {@code Character}s
-	 *
-	 * @param saltParam 20 Random ASCII {@code Character}s paired with the {@code User} password.
-	 */
-	public void setSalt(String saltParam) {
-		this.salt = saltParam;
-	}
-
-	/**
-	 * Gets Customized Fluid Fields associated with a {@code User}.
-	 *
-	 * @return {@code List} of {@code User}s
-	 * @see Field
-	 */
-	public List<Field> getUserFields() {
-		return this.userFields;
-	}
-
-	/**
-	 * Sets Customized Fluid Fields associated with a {@code User}.
-	 *
-	 * @param userFieldsParam {@code List} of Custom {@code User} fields.
-	 */
-	public void setUserFields(List<Field> userFieldsParam) {
-		this.userFields = userFieldsParam;
 	}
 
 	/**
@@ -702,6 +327,7 @@ public class User extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 
 		JSONObject returnVal = super.toJsonObject();
@@ -753,14 +379,11 @@ public class User extends ABaseFluidJSONObject {
 		}
 
 		//SALT...
-		if (this.getSalt() != null) {
-			returnVal.put(JSONMapping.SALT,this.getSalt());
-		}
+		if (this.getSalt() != null) returnVal.put(JSONMapping.SALT,this.getSalt());
 
 		//Timezone...
 		if (this.getTimezone() != null) {
-			returnVal.put(JSONMapping.TIMEZONE,
-					this.getTimezone().doubleValue());
+			returnVal.put(JSONMapping.TIMEZONE, this.getTimezone().doubleValue());
 		}
 
 		//Date Format...
@@ -787,7 +410,6 @@ public class User extends ABaseFluidJSONObject {
 			for (Role toAdd :this.getRoles()) {
 				rolesArr.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.ROLES,rolesArr);
 		}
 
@@ -797,7 +419,6 @@ public class User extends ABaseFluidJSONObject {
 			for (String toAdd :this.getEmailAddresses()) {
 				emailArr.put(toAdd);
 			}
-
 			returnVal.put(JSONMapping.EMAIL_ADDRESSES, emailArr);
 		}
 
@@ -821,25 +442,20 @@ public class User extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public boolean equals(Object objParam) {
-		if (!(objParam instanceof User)){
-			return false;
-		}
+		if (!(objParam instanceof User)) return false;
 
-		if (this.getId() == null && this.getUsername() == null){
-			return false;
-		}
+		if (this.getId() == null && this.getUsername() == null) return false;
 
 		User paramCasted = (User)objParam;
-		if (paramCasted.getId() == null && paramCasted.getUsername() == null){
-			return false;
-		}
+		if (paramCasted.getId() == null && paramCasted.getUsername() == null) return false;
 
-		if (this.getId() != null && paramCasted.getId() != null){
+		if (this.getId() != null && paramCasted.getId() != null) {
 			return (this.getId().equals(paramCasted.getId()));
 		}
 
-		if (this.getUsername() != null && paramCasted.getUsername() != null){
+		if (this.getUsername() != null && paramCasted.getUsername() != null) {
 			return (this.getUsername().equals(paramCasted.getUsername()));
 		}
 
@@ -868,14 +484,10 @@ public class User extends ABaseFluidJSONObject {
 	 * @see Field
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Field getField(String fieldNameParam) {
-		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
-			return null;
-		}
-
-		if (this.userFields == null || this.userFields.isEmpty()) {
-			return null;
-		}
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return null;
+		if (this.userFields == null || this.userFields.isEmpty()) return null;
 
 		String fieldNameParamLower = fieldNameParam.trim().toLowerCase();
 
@@ -905,6 +517,7 @@ public class User extends ABaseFluidJSONObject {
 	 * @see MultiChoice
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam) {
 		Field fieldReturn = this.getField(fieldNameParam);
 		return (fieldReturn == null) ? null: fieldReturn.getFieldValueAsMultiChoice();
@@ -919,15 +532,12 @@ public class User extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public int hashCode() {
 		int hasRadix = 100000;
-		if (this.getId() != null){
-			hasRadix += this.getId().hashCode();
-		}
 
-		if (this.getUsername() != null){
-			hasRadix += this.getUsername().hashCode();
-		}
+		if (this.getId() != null) hasRadix += this.getId().hashCode();
+		if (this.getUsername() != null) hasRadix += this.getUsername().hashCode();
 
 		return hasRadix;
 	}

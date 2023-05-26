@@ -15,20 +15,18 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 15/12/28.
@@ -40,18 +38,17 @@ public class TestUserFieldClient extends ABaseTestCase {
     /**
      *
      */
-    public static final class TestStatics{
-        public static final String FIELD_NAME = "JUnit Route Field";
-        public static final String FIELD_DESCRIPTION = "JUnit Route Field Description.";
+    public static final class TestStatics {
+        public static final String FIELD_NAME = "JUnit User Field";
+        public static final String FIELD_DESCRIPTION = "JUnit User Field Description.";
 
-        public static final String FIELD_NAME_UPDATE = "JUnit Route Field UPDATED";
-        public static final String FIELD_DESCRIPTION_UPDATE = "JUnit Route Field Description UPDATED.";
+        public static final String FIELD_NAME_UPDATE = "JUnit User Field UPDATED";
+        public static final String FIELD_DESCRIPTION_UPDATE = "JUnit User Field Description UPDATED.";
 
         /**
          *
          */
-        public static final class MultiChoice{
-
+        public static final class MultiChoice {
             public static final String OPTION_1 = "Andrew";
             public static final String OPTION_2 = "Benny";
             public static final String OPTION_3 = "Charles";
@@ -108,12 +105,8 @@ public class TestUserFieldClient extends ABaseTestCase {
      *
      */
     @Test
-    public void testRouteField_TextPlain_CRUD()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testUserField_TextPlain_CRUD() {
+        if (!this.isConnectionValid()) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
