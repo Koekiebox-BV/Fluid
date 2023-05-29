@@ -73,16 +73,15 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 
 		//Listing...
 		int listingArrCount = 0;
+		List<T> listing = new ArrayList();
 		if (!this.jsonObject.isNull(JSONMapping.LISTING)) {
 			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.LISTING);
 			listingArrCount = listingArray.length();
-
-			List<T> listing = new ArrayList();
 			for (int index = 0;index < listingArrCount;index++) {
 				listing.add(this.getObjectFromJSONObject(listingArray.getJSONObject(index)));
 			}
-			this.setListing(listing);
 		}
+		this.setListing(listing);
 
 		//Listing Count...
 		if (this.jsonObject.isNull(JSONMapping.LISTING_COUNT)) {
