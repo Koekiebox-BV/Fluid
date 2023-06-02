@@ -102,7 +102,7 @@ public class FormContainerClient extends ABaseClientWS {
 	public FormHistoricData createFormHistoricData(FormHistoricData formHistory) {
 		if (formHistory != null) {
 			formHistory.setServiceTicket(this.serviceTicket);
-			formHistory.setFormForAuditCreate(this.clearForRestIdOnly(formHistory.getFormForAuditCreate()));
+			formHistory.setFormForAuditCreate(this.clearForRestCreateUpdate(formHistory.getFormForAuditCreate()));
 		}
 
 		return new FormHistoricData(this.putJson(formHistory, WS.Path.FormHistory.Version1.formHistoryCreate()));
