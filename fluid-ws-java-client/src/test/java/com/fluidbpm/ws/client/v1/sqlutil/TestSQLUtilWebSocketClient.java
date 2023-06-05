@@ -334,61 +334,70 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	 *
 	 */
 	@Test
-	@Ignore
 	public void testExecuteSQLWhereIdGreaterThan() {
 		if (!this.isConnectionValid()) return;
 
-		SQLUtilWebSocketExecuteSQLClient webSocketClient = new SQLUtilWebSocketExecuteSQLClient(
+		if (!this.isConnectionValid()) return;
+
+		try (SQLUtilWebSocketExecuteSQLClient webSocketClient = new SQLUtilWebSocketExecuteSQLClient(
 				BASE_URL,
 				null,
 				this.serviceTicketHex,
-				TimeUnit.SECONDS.toMillis(10)
-		);
-
-		long start = System.currentTimeMillis();
-
-		int numberOfRecords = 1;
-
-		Form formToUse = new Form();
-		formToUse.setEcho("zool");
-
-		//Set the SQL Query as a Field...
-		formToUse.setFieldValue(
-				"SQL Query",
-				"SELECT * FROM form_container " +
-				"WHERE id > ?" +
-				" LIMIT 0,1000;");
-
-		formToUse.getFormFields().add(new Field(1L,"id",new Long(6000L), Field.Type.Decimal));
-
-		List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
-
-		long took = (System.currentTimeMillis() - start);
-
-		webSocketClient.closeAndClean();
-
-		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-
-		if (formListing != null) {
-			for (FormListing listing : formListing) {
-				List<Form> resultForms = listing.getListing();
-
-				if (resultForms == null) continue;
-
-				for (Form form : resultForms) {
-					System.out.println(form.getFormTypeId() + " - " + form.getTitle());
-					if (form.getFormFields() != null) {
-						for (Field field : form.getFormFields()) {
-							System.out.println("["+field.getFieldName()+"] = '"+ field.getFieldValue()+"'");
-						}
+				TimeUnit.SECONDS.toMillis(10));
+			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+		) {
+			// Create forms:
+			List<Form> createdForms = new CopyOnWriteArrayList<>();
+			ExecutorService executor = Executors.newFixedThreadPool(6);
+			for (int cycleTimes = 0; cycleTimes < ITEM_COUNT_PER_SUB; cycleTimes++) {
+				executor.submit(() -> {
+					try {
+						FluidItem toCreate = item(
+								UUID.randomUUID().toString(),
+								this.formTimesheet.getFormType(),
+								false,
+								timesheetFields()
+						);
+						Form created = fcClient.createFormContainer(toCreate.getForm());
+						createdForms.add(created);
+						TestCase.assertNotNull(created);
+						TestCase.assertNotNull(created.getId());
+					} catch (Exception err) {
+						err.printStackTrace();
+						log.warning(err.getMessage());
+						TestCase.fail(err.getMessage());
 					}
-				}
+				});
 			}
-		} else {
-			System.out.println("Nothing...");
-		}
 
-		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+			sleepForSeconds(5);
+			TestCase.assertEquals(ITEM_COUNT_PER_SUB, createdForms.size());
+
+			// Execute the SQL:
+			Form formToUse = new Form();
+			formToUse.setEcho(UUID.randomUUID().toString());
+
+			//Set the SQL Query as a Field...
+			formToUse.setFieldValue("SQL Query", "SELECT * FROM form_container WHERE id > ?;");
+			formToUse.getFormFields().add(new Field(1L,"id",new Long(6000L), Field.Type.Decimal));
+
+			long start = System.currentTimeMillis();
+			List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);
+			long took = (System.currentTimeMillis() - start);
+			TestCase.assertNotNull(formListing);
+			TestCase.assertFalse(formListing.isEmpty());
+			FormListing firstResult = formListing.get(0);
+			TestCase.assertTrue(firstResult.getListingCount() == ITEM_COUNT_PER_SUB);
+			TestCase.assertTrue(took < 1_000);
+
+			firstResult.getListing().stream()
+					.forEach(itm -> {
+						TestCase.assertNotNull(itm.getId());
+						TestCase.assertNotNull(itm.getFormFields());
+						TestCase.assertNotNull(itm.getDateCreated());
+						TestCase.assertNotNull(itm.getDateLastUpdated());
+					});
+		}
 	}
 
 	public static Form[] generateLotsOfFormsFor(int numberOfFormsParam,long ... idsToPicFrom) {

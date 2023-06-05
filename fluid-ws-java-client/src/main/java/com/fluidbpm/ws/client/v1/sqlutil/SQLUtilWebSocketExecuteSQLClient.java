@@ -15,14 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
@@ -31,6 +23,13 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Java Web Socket Client for {@code SQLUtil} related actions.
@@ -42,8 +41,7 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
  * @see JSONObject
  * @see Form
  */
-public class SQLUtilWebSocketExecuteSQLClient extends
-		ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
+public class SQLUtilWebSocketExecuteSQLClient extends ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
 
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
@@ -100,31 +98,27 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 	}
 
 	/**
-	 * Retrieves all the Descendants (Forms) for the {@code formToGetTableFormsForParam}.
+	 * Executes the SQL on Form {@code formWithSQLField}.
+	 * Important that {@code SQL Query} field is set for the SQL to execute.
 	 *
-	 * @param formWithSQLFieldParam The Fluid Form to Execute custom SQL for.
+	 * @param formWithSQLField The Fluid Form to Execute custom SQL for.
 	 *
 	 * @return The SQL Execution result as {@code Form}'s.
 	 */
-	public List<FormListing> executeSQLSynchronized(Form formWithSQLFieldParam) {
-
-		if (formWithSQLFieldParam == null) {
-			return null;
-		}
-
-		if (formWithSQLFieldParam.getFormFields() == null ||
-				formWithSQLFieldParam.getFormFields().isEmpty()) {
+	public List<FormListing> executeSQLSynchronized(Form formWithSQLField) {
+		if (formWithSQLField == null) return null;
+		if (formWithSQLField.getFormFields() == null || formWithSQLField.getFormFields().isEmpty()) {
 			return null;
 		}
 
 		//Validate the echo...
-		this.setEchoIfNotSet(formWithSQLFieldParam);
+		this.setEchoIfNotSet(formWithSQLField);
 
 		//Start a new request...
 		String uniqueReqId = this.initNewRequest();
 
 		//Send the actual message...
-		this.sendMessage(formWithSQLFieldParam, uniqueReqId);
+		this.sendMessage(formWithSQLField, uniqueReqId);
 
 		try {
 			List<FormListing> returnValue = this.getHandler(uniqueReqId).getCF().get(
@@ -137,7 +131,6 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 								"The connection was closed by the server prior to the response received.",
 						FluidClientException.ErrorCode.IO_ERROR);
 			}
-
 			return returnValue;
 		} catch (InterruptedException exceptParam) {
 			//Interrupted...
@@ -148,9 +141,7 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
 		} catch (ExecutionException executeProblem) {
 			//Error on the web-socket...
-
 			Throwable cause = executeProblem.getCause();
-
 			//Fluid client exception...
 			if (cause instanceof FluidClientException) {
 				throw (FluidClientException)cause;
@@ -163,9 +154,10 @@ public class SQLUtilWebSocketExecuteSQLClient extends
 		} catch (TimeoutException eParam) {
 			//Timeout...
 			String errMessage = this.getExceptionMessageVerbose(
-					"SQLUtil-WebSocket-ExecuteSQL",
-					uniqueReqId,
-					formWithSQLFieldParam);
+				"SQLUtil-WebSocket-ExecuteSQL",
+				uniqueReqId,
+				formWithSQLField
+			);
 
 			throw new FluidClientException(errMessage,
 					FluidClientException.ErrorCode.IO_ERROR);
