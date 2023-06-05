@@ -15,20 +15,19 @@
 
 package com.fluidbpm.ws.client.v1.websocket;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import javax.websocket.DeploymentException;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base class for all REST related calls.
@@ -336,8 +335,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 *
 	 * @param baseToSetEchoOnIfNotSetParam The value object to set {@code echo} on.
 	 */
-	protected void setEchoIfNotSet(ABaseFluidVO baseToSetEchoOnIfNotSetParam){
-
+	protected void setEchoIfNotSet(ABaseFluidVO baseToSetEchoOnIfNotSetParam) {
 		if (baseToSetEchoOnIfNotSetParam == null) {
 			throw new FluidClientException(
 					"Cannot provide 'null' for value object / pojo.",

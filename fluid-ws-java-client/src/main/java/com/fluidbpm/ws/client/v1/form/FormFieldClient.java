@@ -777,29 +777,23 @@ public class FormFieldClient extends ABaseFieldClient {
 	/**
 	 * Creates a new Table Field.
 	 *
-	 * @param formFieldParam The Base field to create.
-	 * @param formDefinitionParam The Form Definition for the Table Field.
-	 * @param sumDecimalsParam Whether decimals should be summed.
+	 * @param formField The Base field to create.
+	 * @param formDefinition The Form Definition for the Table Field.
+	 * @param sumDecimals Whether decimals should be summed.
 	 * @return Table Field.
 	 */
-	public Field createFieldTable(
-		Field formFieldParam,
-		Form formDefinitionParam,
-		boolean sumDecimalsParam
-	) {
-		if (formFieldParam != null && this.serviceTicket != null) {
-			formFieldParam.setServiceTicket(this.serviceTicket);
+	public Field createFieldTable(Field formField, Form formDefinition, boolean sumDecimals) {
+		if (formField != null && this.serviceTicket != null) {
+			formField.setServiceTicket(this.serviceTicket);
 		}
 
-		if (formFieldParam != null) {
-			formFieldParam.setTypeAsEnum(Field.Type.Table);
-			formFieldParam.setTypeMetaData(
-					this.getMetaDataForTableField(
-							formDefinitionParam, sumDecimalsParam));
+		if (formField != null) {
+			formField.setTypeAsEnum(Field.Type.Table);
+			formField.setTypeMetaData(this.getMetaDataForTableField(formDefinition, sumDecimals));
 		}
 
 		return new Field(this.putJson(
-				formFieldParam, WS.Path.FormField.Version1.formFieldCreate()));
+				formField, WS.Path.FormField.Version1.formFieldCreate()));
 	}
 
 	/**
@@ -1594,25 +1588,22 @@ public class FormFieldClient extends ABaseFieldClient {
 	/**
 	 * Generates the Meta Data for a table field.
 	 *
-	 * @param formDefinitionParam The Form Definition to use.
-	 * @param sumDecimalsParam Whether decimal values should be summarized.
+	 * @param formDefinition The Form Definition to use.
+	 * @param sumDecimals Whether decimal values should be summarized.
 	 * @return Meta Data for the Table Field.
 	 */
-	private String getMetaDataForTableField(
-		Form formDefinitionParam,
-		boolean sumDecimalsParam
-	) {
+	private String getMetaDataForTableField(Form formDefinition, boolean sumDecimals) {
 		StringBuilder returnBuffer = new StringBuilder();
-		Long definitionId =
-				(formDefinitionParam == null) ? -1L:
-						formDefinitionParam.getId();
+		Long definitionId = (formDefinition == null ||
+				formDefinition.getFormTypeId() == null) ? -1L: formDefinition.getFormTypeId();
+		String formDefVal = String.valueOf(definitionId);
+		if (definitionId < 1L) formDefVal = formDefinition.getFormType();
 
-		//Min...
-		returnBuffer.append(definitionId);
+		returnBuffer.append(formDefVal);
 		returnBuffer.append(FieldMetaData.TableField.UNDERSCORE);
 		returnBuffer.append(FieldMetaData.TableField.SUM_DECIMALS);
 		returnBuffer.append(FieldMetaData.Decimal.SQ_OPEN);
-		returnBuffer.append(sumDecimalsParam);
+		returnBuffer.append(sumDecimals);
 		returnBuffer.append(FieldMetaData.Decimal.SQ_CLOSE);
 
 		return returnBuffer.toString();

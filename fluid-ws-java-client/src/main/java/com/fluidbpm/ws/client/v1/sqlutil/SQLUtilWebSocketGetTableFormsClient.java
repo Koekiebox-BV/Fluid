@@ -15,13 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
@@ -31,6 +24,12 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Java Web Socket Client for {@code SQLUtil} related actions.
@@ -174,38 +173,49 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 	}
 
 	/**
-	 * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
+	 * Retrieves all the Table Records (Forms) for the {@code formsToGetTableFormsFor}.
 	 *
-	 * @param formsToGetTableFormsForParam The Fluid Form to get Table Fields for.
+	 * @param formsToGetTableFormsFor The Fluid Form to get Table Fields for.
 	 *
-	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+	 * @return The {@code formsToGetTableFormsFor} Table Records as {@code Form}'s.
 	 */
-	public List<FormListing> getTableFormsSynchronized(Form ... formsToGetTableFormsForParam) {
-		if (formsToGetTableFormsForParam == null) {
-			return null;
-		}
+	public List<FormListing> getTableFormsSynchronized(List<Form> formsToGetTableFormsFor) {
+		if (formsToGetTableFormsFor == null) return null;
+		return this.getTableFormsSynchronized(formsToGetTableFormsFor.toArray(new Form[]{}));
+	}
 
-		if (formsToGetTableFormsForParam.length == 0) {
-			return null;
-		}
+	/**
+	 * Retrieves all the Table Records (Forms) for the {@code formsToGetTableFormsFor}.
+	 *
+	 * @param formsToGetTableFormsFor The Fluid Form to get Table Fields for.
+	 *
+	 * @return The {@code formsToGetTableFormsFor} Table Records as {@code Form}'s.
+	 */
+	public List<FormListing> getTableFormsSynchronized(Form ... formsToGetTableFormsFor) {
+		if (formsToGetTableFormsFor == null) return null;
+		if (formsToGetTableFormsFor.length == 0) return null;
 
 		//Start a new request...
 		String uniqueReqId = this.initNewRequest();
 
 		//Send all the messages...
 		int numberOfSentForms = 0;
-		for (Form formToSend : formsToGetTableFormsForParam) {
-			this.setEchoIfNotSet(formToSend);
+		for (Form formToSend : formsToGetTableFormsFor) {
+			if (formToSend == null) continue;
+
+			Form toAddMin = new Form(formToSend.getId());
+			toAddMin.setEcho(formToSend.getEcho());
+
+			this.setEchoIfNotSet(toAddMin);
 
 			//Send the actual message...
-			this.sendMessage(formToSend, uniqueReqId);
+			this.sendMessage(toAddMin, uniqueReqId);
 			numberOfSentForms++;
 		}
 
 		try {
-			List<FormListing> returnValue =
-					this.getHandler(uniqueReqId).getCF().get(
-							this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
+			List<FormListing> returnValue = this.getHandler(uniqueReqId).getCF().get(
+					this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
 			//Connection was closed.. this is a problem....
 			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
@@ -218,7 +228,6 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 			return returnValue;
 		} catch (InterruptedException exceptParam) {
 			//Interrupted...
-
 			throw new FluidClientException(
 					"SQLUtil-WebSocket-Interrupted-GetTableRecordForms: " +
 							exceptParam.getMessage(),
@@ -240,7 +249,7 @@ public class SQLUtilWebSocketGetTableFormsClient extends
 		} catch (TimeoutException eParam) {
 			String errMessage = this.getExceptionMessageVerbose(
 							"SQLUtil-WebSocket-GetTableRecordForms",
-							uniqueReqId, (Object[]) formsToGetTableFormsForParam);
+							uniqueReqId, (Object[]) formsToGetTableFormsFor);
 			throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
 		} finally {
 			this.removeHandler(uniqueReqId);

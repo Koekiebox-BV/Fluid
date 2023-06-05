@@ -98,7 +98,10 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 						case MultipleChoice:
 							fieldsCreated.add(ffClient.createField(itm,
 									itm.getFieldValueAsMultiChoice().getAvailableMultiChoices()));
-							break;
+						break;
+						case Table:
+							fieldsCreated.add(ffClient.createFieldTable(itm, new Form(itm.getFieldName()), false));
+						break;
 						default:
 							fieldsCreated.add(ffClient.createField(itm));
 					}
@@ -115,6 +118,31 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 			if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
 
 			return fdClient.getFormDefinitionByName(formDef);
+		}
+	}
+
+	protected static void deleteAllFormData(
+			UserQueryClient uqClient,
+			FormDefinitionClient fdClient,
+			FormFieldClient ffClient,
+			FormContainerClient fcClient,
+			Form formDefToRemove
+	) {
+		if (formDefToRemove == null) return;
+
+		UserQuery uqCleanup = userQueryForFormType(uqClient, formDefToRemove.getFormType(),
+				formDefToRemove.getFormFields().get(0).getFieldName());
+
+		// Delete the Form Containers and User Query:
+		deleteFormContainersAndUserQuery(uqClient, fcClient, uqCleanup);
+
+		// Remove the Definition:
+		fdClient.deleteFormDefinition(formDefToRemove);
+
+		if (formDefToRemove.getFormFields() != null) {
+			formDefToRemove.getFormFields().forEach(fldItm -> {
+				ffClient.forceDeleteField(fldItm);
+			});
 		}
 	}
 

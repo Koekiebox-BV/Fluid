@@ -20,115 +20,161 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
+import com.fluidbpm.program.api.vo.form.TableRecord;
+import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.ws.client.v1.ABaseFieldClient;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
+import com.fluidbpm.ws.client.v1.form.FormContainerClient;
+import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
+import com.fluidbpm.ws.client.v1.form.FormFieldClient;
+import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestSQLUtilWebSocketClient extends ABaseTestCase {
+@Log
+public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
+	private String serviceTicketHex;
+	private Form formTimesheetEntry;
+	private Form formTimesheet;
 
-	private LoginClient loginClient;
+	private static Field[] timesheetEntryFields() {
+		Field[] returnVal = new Field[]{
+				new Field("JUnit Job Description", null, Field.Type.Text),
+				new Field("JUnit Duration", null, Field.Type.Decimal),
+				new Field("JUnit Log Date", null, Field.Type.DateTime),
+		};
+		returnVal[0].setTypeMetaData(ABaseFieldClient.FieldMetaData.Text.PLAIN);
+		returnVal[1].setTypeMetaData(ABaseFieldClient.FieldMetaData.Decimal.PLAIN);
+		returnVal[2].setTypeMetaData(ABaseFieldClient.FieldMetaData.DateTime.DATE);
 
-	/**
-	 *
-	 */
+		for (Field fld : returnVal) fld.setFieldDescription(DESC);
+
+		return returnVal;
+	}
+
+	private static Field[] timesheetFields() {
+		Field[] returnVal = new Field[]{
+				new Field("JUnit Employee Name", null, Field.Type.Text),
+				new Field("JUnit Timesheet Entry", null, Field.Type.Table),
+		};
+		returnVal[0].setTypeMetaData(ABaseFieldClient.FieldMetaData.Text.PLAIN);
+
+		for (Field fld : returnVal) fld.setFieldDescription(DESC);
+
+		return returnVal;
+	}
+
 	@Before
+	@Override
 	public void init() {
-		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
-		this.loginClient = new LoginClient(BASE_URL);
-	}
-
-	/**
-	 *
-	 */
-	@After
-	public void destroy()
-	{
-		this.loginClient.closeAndClean();
-	}
-
-	/**
-	 *
-	 */
-	@Test
-	@Ignore
-	public void testGetTableFormsWithSpecificId() {
 		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
+		// Login:
+		super.init();
 
-		String serviceTicket = appRequestToken.getServiceTicket();
-		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		this.serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(this.serviceTicket));
+
+		try (
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+		) {
+			// Create the Form Definition:
+			this.formTimesheetEntry = createFormDef(fdClient, ffClient, "JUnit Timesheet Entry", null, timesheetEntryFields());
+			this.formTimesheet = createFormDef(fdClient, ffClient, "Form Def SQL Util Timesheet", null, timesheetFields());
 		}
+	}
 
-		SQLUtilWebSocketGetTableFormsClient webSocketClient =
-				new SQLUtilWebSocketGetTableFormsClient(
-						BASE_URL,
-						null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true);
+	/**
+	 * Retrieve the table records for a parent form.
+	 */
+	@Test
+	public void testGetTableFormsWithFormId() {
+		if (!this.isConnectionValid()) return;
 
-		long start = System.currentTimeMillis();
-		int numberOfRecords = 1;
+		try (SQLUtilWebSocketGetTableFormsClient webSocketClient = new SQLUtilWebSocketGetTableFormsClient(
+				BASE_URL,
+				null,
+				this.serviceTicketHex,
+				TimeUnit.SECONDS.toMillis(60), true);
+			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+		) {
+			// Create forms:
+			List<Form> createdForms = new CopyOnWriteArrayList<>();
+			ExecutorService executor = Executors.newFixedThreadPool(6);
+			int trCreateCount = 5;
+			for (int cycleTimes = 0; cycleTimes < ITEM_COUNT_PER_SUB; cycleTimes++) {
+				executor.submit(() -> {
+					try {
+						FluidItem toCreate = item(
+								UUID.randomUUID().toString(),
+								this.formTimesheet.getFormType(),
+								false,
+								timesheetFields()
+						);
+						Form created = fcClient.createFormContainer(toCreate.getForm());
+						createdForms.add(created);
+						TestCase.assertNotNull(created);
+						TestCase.assertNotNull(created.getId());
 
-		List<FormListing> formListing = webSocketClient.getTableFormsSynchronized(
-				generateLotsOfFormsFor(numberOfRecords, 2192L));
+						// Create
+						for (int trIdx = 0; trIdx < trCreateCount; trIdx++) {
+							Form trFormCont = new Form(
+									this.formTimesheetEntry.getFormType(),
+									String.format("Timesheet Entry '%d' of '%d'", trIdx, trCreateCount)
+							);
+							trFormCont.setFieldValue(
+									timesheetEntryFields()[0].getFieldName(),
+									UUID.randomUUID().toString(),
+									timesheetEntryFields()[0].getTypeAsEnum()
+							);//JUnit Job Description
+							trFormCont.setFieldValue(
+									timesheetEntryFields()[1].getFieldName(),
+									Math.random() * 1000,
+									timesheetEntryFields()[1].getTypeAsEnum()
+							);//JUnit Duration
+							trFormCont.setFieldValue(
+									timesheetEntryFields()[2].getFieldName(),
+									new Date(),
+									timesheetEntryFields()[2].getTypeAsEnum()
+							);//JUnit Log Date
 
-		long took = (System.currentTimeMillis() - start);
-		webSocketClient.closeAndClean();
-
-		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
-
-		if (formListing != null) {
-			System.out.println("Listing is '"+formListing.size()+"' -> \n\n\n");
-
-			for (FormListing listing : formListing)
-			{
-				//System.out.println("Response For ::: "+listing.getEcho());
-
-				List<Form> tableForms = listing.getListing();
-
-				if (tableForms == null){
-					continue;
-				}
-
-				for (Form form : tableForms)
-				{
-					System.out.println("\n-> "+form.getFormType() + " - " + form.getTitle());
-
-					if (form.getFormFields() == null)
-					{
-						continue;
+							TableRecord tr = new TableRecord(trFormCont, created, timesheetFields()[1]);//JUnit Timesheet Entry
+							TableRecord createdTR = fcClient.createTableRecord(tr);
+							TestCase.assertNotNull(createdTR);
+							TestCase.assertNotNull(createdTR.getFormContainer().getId());
+						}
+					} catch (Exception err) {
+						err.printStackTrace();
+						log.warning(err.getMessage());
+						TestCase.fail(err.getMessage());
 					}
-
-					for (Field field : form.getFormFields())
-					{
-						System.out.println("|"+field.getFieldName()+"|"+
-								field.getFieldType()
-								+"| ->" +field.getFieldValue());
-					}
-				}
+				});
 			}
-		}
-		else
-		{
-			System.out.println("Nothing...");
-		}
 
-		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+			sleepForSeconds(8);
+			TestCase.assertEquals(ITEM_COUNT_PER_SUB, createdForms.size());
+
+			// Fetch the forms:
+			List<FormListing> formListing = webSocketClient.getTableFormsSynchronized(createdForms);
+
+			TestCase.assertEquals(formListing.size(), createdForms.size());
+			formListing.forEach(listing -> TestCase.assertEquals(trCreateCount, listing.getListingCount().intValue()));
+		}
 	}
 
 	/**
@@ -136,22 +182,12 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 	 */
 	@Test
 	@Ignore
-	public void testGetAncestorFormWithSpecificId()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testGetAncestorFormWithSpecificId() {
+		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
-
-		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
-			serviceTicketHex =
-					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		if (this.serviceTicket != null && !this.serviceTicket.isEmpty()) {
+			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
 		}
 
 		SQLUtilWebSocketGetAncestorClient webSocketClient =
@@ -192,22 +228,12 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 	 */
 	@Test
 	@Ignore
-	public void testGetDescendantFormsWithSpecificId()
-	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+	public void testGetDescendantFormsWithSpecificId() {
+		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
-
-		String serviceTicket = appRequestToken.getServiceTicket();
 		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty())
-		{
-			serviceTicketHex =
-					UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
+		if (this.serviceTicket != null && !this.serviceTicket.isEmpty()) {
+			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
 		}
 
 		SQLUtilWebSocketGetDescendantsClient webSocketClient =
@@ -296,9 +322,7 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			System.out.println("Nothing...");
 		}
 
@@ -314,19 +338,12 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 	public void testExecuteSQLWhereIdGreaterThan() {
 		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
-
-		String serviceTicket = appRequestToken.getServiceTicket();
-		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-		}
-
-		SQLUtilWebSocketExecuteSQLClient webSocketClient =
-				new SQLUtilWebSocketExecuteSQLClient(
-						BASE_URL,
-						null, serviceTicketHex, TimeUnit.SECONDS.toMillis(10));
+		SQLUtilWebSocketExecuteSQLClient webSocketClient = new SQLUtilWebSocketExecuteSQLClient(
+				BASE_URL,
+				null,
+				this.serviceTicketHex,
+				TimeUnit.SECONDS.toMillis(10)
+		);
 
 		long start = System.currentTimeMillis();
 
@@ -352,65 +369,57 @@ public class TestSQLUtilWebSocketClient extends ABaseTestCase {
 
 		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
 
-		if (formListing != null)
-		{
-			for (FormListing listing : formListing)
-			{
+		if (formListing != null) {
+			for (FormListing listing : formListing) {
 				List<Form> resultForms = listing.getListing();
 
-				if (resultForms == null)
-				{
-					continue;
-				}
+				if (resultForms == null) continue;
 
-				for (Form form : resultForms)
-				{
-					System.out.println(form.getFormTypeId() +
-							" - " +
-							form.getTitle());
-
-					if (form.getFormFields() != null)
-					{
-						for (Field field : form.getFormFields())
-						{
-							System.out.println("["+field.getFieldName()+"] = '"+
-									field.getFieldValue()+"'");
+				for (Form form : resultForms) {
+					System.out.println(form.getFormTypeId() + " - " + form.getTitle());
+					if (form.getFormFields() != null) {
+						for (Field field : form.getFormFields()) {
+							System.out.println("["+field.getFieldName()+"] = '"+ field.getFieldValue()+"'");
 						}
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			System.out.println("Nothing...");
 		}
 
 		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
 	}
 
-	/**
-	 *
-	 * @param numberOfFormsParam
-	 * @param idsToPicFrom
-	 * @return
-	 */
-	public static Form[] generateLotsOfFormsFor(
-			int numberOfFormsParam,long ... idsToPicFrom)
-	{
+	public static Form[] generateLotsOfFormsFor(int numberOfFormsParam,long ... idsToPicFrom) {
 		Form[] returnVal = new Form[numberOfFormsParam];
-		for (int index = 0;index < numberOfFormsParam; index++)
-		{
-			//Pic a random form...
+		for (int index = 0;index < numberOfFormsParam; index++) {
 			long randomId = idsToPicFrom[0];
 
 			String uuidForm1 = UtilGlobal.randomUUID();
 			Form form1 = new Form(randomId);
 			form1.setEcho(uuidForm1);
-			//System.out.println("ExpectResponse: "+uuidForm1);
 
 			returnVal[index] = form1;
 		}
 
 		return returnVal;
+	}
+
+	@After
+	@Override
+	public void destroy() {
+		super.destroy();
+
+		try (
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+				FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+				UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+		) {
+			// Timesheet Entry:
+			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
+			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheet);
+		}
 	}
 }

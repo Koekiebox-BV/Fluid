@@ -23,7 +23,6 @@ import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.user.User;
-import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
@@ -32,7 +31,10 @@ import lombok.extern.java.Log;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -310,7 +312,8 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                 case "Create" : create = true; break;
             }
         }
-        TestCase.assertTrue("Not all types match!",
+        TestCase.assertTrue("Not all types match! "+
+                        new boolean[]{fcLogEntry, fieldAndVal, dash, update, create},
                 UtilGlobal.isAllTrue(fcLogEntry, fieldAndVal, dash, update, create));
 
     }
@@ -325,27 +328,8 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
                 UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
         ) {
-            // ensure the correct steps have taken place:
-            if (this.formDef != null) {
-                UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDef.getFormType(),
-                        this.formDef.getFormFields().get(0).getFieldName());
-                deleteFormContainersAndUserQuery(uqClient, fcClient, uqCleanup);
-            }
-
-            if (this.formDefCreate != null) {
-                UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDefCreate.getFormType(),
-                        this.formDefCreate.getFormFields().get(0).getFieldName());
-                deleteFormContainersAndUserQuery(uqClient, fcClient, uqCleanup);
-            }
-
-            // cleanup:
-            if (this.formDef != null) fdClient.deleteFormDefinition(this.formDef);
-            if (this.formDefCreate != null) fdClient.deleteFormDefinition(this.formDefCreate);
-            if (this.formDef != null && this.formDef.getFormFields() != null) {
-                this.formDef.getFormFields().forEach(fldItm -> {
-                    ffClient.forceDeleteField(fldItm);
-                });
-            }
+            deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formDef);
+            deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formDefCreate);
         }
     }
 }
