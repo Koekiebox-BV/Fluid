@@ -83,12 +83,9 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 
 	//Assign the property whether ti dis
 	static {
-
 		try {
 			DISABLE_WS = Boolean.parseBoolean(
-					System.getProperty(
-							PropName.FLUID_API_DISABLE_WEB_SOCKETS,
-							String.valueOf(false)).trim());
+					System.getProperty(PropName.FLUID_API_DISABLE_WEB_SOCKETS, String.valueOf(false)).trim());
 
 		} catch (NumberFormatException nfe) {
 			DISABLE_WS = false;
@@ -116,7 +113,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 			long timeoutMillisParam
 	) {
 		super(baseURLParam, serviceTicket);
-
 		this.baseURL = baseURLParam;
 
 		this.loggedInUser = new User();
@@ -136,7 +132,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 */
 	public SQLUtilWebSocketRESTWrapper(String baseURL, User loggedInUser, long timeoutMillis) {
 		super(baseURL, loggedInUser == null ? null : loggedInUser.getServiceTicket());
-
 		this.baseURL = baseURL;
 		this.loggedInUser = loggedInUser;
 		this.timeoutMillis = timeoutMillis;
@@ -160,8 +155,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		//ANCESTOR...
 		try {
 			//When mode is null or [WebSocketActive]...
-			if (this.getAncestorClient == null &&
-					Mode.RESTfulActive != this.mode) {
+			if (this.getAncestorClient == null && Mode.RESTfulActive != this.mode) {
 				this.getAncestorClient = new SQLUtilWebSocketGetAncestorClient(
 						this.baseURL,
 						null,
@@ -170,8 +164,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 						includeFieldData,
 						includeTableFields,
 						COMPRESS_RSP,
-						COMPRESS_RSP_CHARSET);
-
+						COMPRESS_RSP_CHARSET
+				);
 				this.mode = Mode.WebSocketActive;
 			}
 		} catch (FluidClientException clientExcept) {
@@ -179,18 +173,12 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
-
 			this.mode = Mode.RESTfulActive;
 		}
 
-		Form formToUse = (formToGetAncestorFor == null) ? null:
-				new Form(formToGetAncestorFor.getId());
-
+		Form formToUse = (formToGetAncestorFor == null) ? null: new Form(formToGetAncestorFor.getId());
 		return (this.getAncestorClient == null) ?
-				this.sqlUtilClient.getAncestor(
-						formToUse,
-						includeFieldData,
-						includeTableFields):
+				this.sqlUtilClient.getAncestor(formToUse, includeFieldData, includeTableFields) :
 				this.getAncestorClient.getAncestorSynchronized(formToUse);
 	}
 
@@ -228,8 +216,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 						includeTableFieldFormRecordInfo,
 						massFetch,
 						COMPRESS_RSP,
-						COMPRESS_RSP_CHARSET);
-
+						COMPRESS_RSP_CHARSET
+				);
 				this.mode = Mode.WebSocketActive;
 			}
 		} catch (FluidClientException clientExcept) {
@@ -249,25 +237,17 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		}
 
 		if (this.getDescendantsClient != null) {
-			return this.getDescendantsClient.getDescendantsSynchronized(
-					formsToFetchFor);
+			return this.getDescendantsClient.getDescendantsSynchronized(formsToFetchFor);
 		} else {
 			List<FormListing> returnVal = new ArrayList<>();
-
 			for (Form formToFetchFor : formsToFetchFor) {
-				List<Form> listOfForms =
-						this.sqlUtilClient.getDescendants(
-								formToFetchFor,
-								includeFieldData,
-								includeTableFields,
-								includeTableFieldFormRecordInfo);
-
+				List<Form> listOfForms = this.sqlUtilClient.getDescendants(
+						formToFetchFor, includeFieldData, includeTableFields, includeTableFieldFormRecordInfo);
 				FormListing toAdd = new FormListing();
 				toAdd.setListing(listOfForms);
 				toAdd.setListingCount((listOfForms == null) ? 0 : listOfForms.size());
 				returnVal.add(toAdd);
 			}
-
 			return returnVal;
 		}
 	}
@@ -275,16 +255,26 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	/**
 	 * Retrieves all the Table (Forms) for the {@code formsToGetDescForParam}.
 	 *
-	 * @param includeFieldDataParam Should Field data be included?
-	 * @param formsToGetTableFormsForParam The Fluid Form to get Descendants for.
+	 * @param includeFieldData Should Field data be included?
+	 * @param formsToGetTableFormsFor The Fluid Form to get Descendants for.
+	 *
+	 * @return The {@code formsToGetTableFormsFor} as {@code Form}'s.
+	 */
+	public List<FormListing> getTableForms(boolean includeFieldData, List<Form> formsToGetTableFormsFor) {
+		if (formsToGetTableFormsFor == null) return null;
+		return this.getTableForms(includeFieldData, null, formsToGetTableFormsFor.toArray(new Form[]{}));
+	}
+
+	/**
+	 * Retrieves all the Table (Forms) for the {@code formsToGetDescForParam}.
+	 *
+	 * @param includeFieldData Should Field data be included?
+	 * @param formsToGetTableFormsFor The Fluid Form to get Descendants for.
 	 *
 	 * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
 	 */
-	public List<FormListing> getTableForms(
-		boolean includeFieldDataParam,
-		Form ... formsToGetTableFormsForParam
-	) {
-		return this.getTableForms(includeFieldDataParam, null, formsToGetTableFormsForParam);
+	public List<FormListing> getTableForms(boolean includeFieldData, Form ... formsToGetTableFormsFor) {
+		return this.getTableForms(includeFieldData, null, formsToGetTableFormsFor);
 	}
 
 	/**
@@ -296,11 +286,21 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 *
 	 * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
 	 */
-	public List<FormListing> getTableForms(
-		boolean includeFieldData,
-		Long formDefFilter,
-		Form ... formsToGetTableFormsFor
-	) {
+	public List<FormListing> getTableForms(boolean includeFieldData, Long formDefFilter, List<Form> formsToGetTableFormsFor) {
+		if (formsToGetTableFormsFor == null) return null;
+		return this.getTableForms(includeFieldData, formDefFilter, formsToGetTableFormsFor.toArray(new Form[]{}));
+	}
+
+	/**
+	 * Retrieves all the Table (Forms) for the {@code formsToGetDescForParam}.
+	 *
+	 * @param includeFieldData Should Field data be included?
+	 * @param formDefFilter The filter for form definitions.
+	 * @param formsToGetTableFormsFor The Fluid Form to get Descendants for.
+	 *
+	 * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
+	 */
+	public List<FormListing> getTableForms(boolean includeFieldData, Long formDefFilter, Form ... formsToGetTableFormsFor) {
 		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
 
 		//DESCENDANTS...
@@ -315,8 +315,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 						includeFieldData,
 						formDefFilter,
 						COMPRESS_RSP,
-						COMPRESS_RSP_CHARSET);
-
+						COMPRESS_RSP_CHARSET
+				);
 				this.mode = Mode.WebSocketActive;
 			}
 		} catch (FluidClientException clientExcept) {
@@ -329,8 +329,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 
 		if (formsToGetTableFormsFor == null || formsToGetTableFormsFor.length < 1) return null;
 
-		Form[] formsToFetchFor =
-				new Form[formsToGetTableFormsFor.length];
+		Form[] formsToFetchFor = new Form[formsToGetTableFormsFor.length];
 		for (int index = 0;index < formsToFetchFor.length;index++) {
 			formsToFetchFor[index] = new Form(formsToGetTableFormsFor[index].getId());
 		}
@@ -339,14 +338,12 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 			return this.getTableFormsClient.getTableFormsSynchronized(formsToFetchFor);
 		} else {
 			List<FormListing> returnVal = new ArrayList<>();
-
 			for (Form formToFetchFor : formsToFetchFor) {
 				List<Form> listOfForms = this.sqlUtilClient.getTableForms(
 					formToFetchFor,
 					includeFieldData,
 					formDefFilter
 				);
-
 				FormListing toAdd = new FormListing();
 				toAdd.setListing(listOfForms);
 				toAdd.setListingCount((listOfForms == null) ? 0 : listOfForms.size());
@@ -379,13 +376,12 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 						this.timeoutMillis,
 						includeTableFieldData,
 						COMPRESS_RSP,
-						COMPRESS_RSP_CHARSET);
-
+						COMPRESS_RSP_CHARSET
+				);
 				this.mode = Mode.WebSocketActive;
 			}
 		} catch (FluidClientException clientExcept) {
-			if (clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
+			if (clientExcept.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
 			this.mode = Mode.RESTfulActive;
@@ -400,23 +396,16 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		}
 
 		if (this.getFormFieldsClient != null) {
-			return this.getFormFieldsClient.getFormFieldsSynchronized(
-					formsToFetchFor);
+			return this.getFormFieldsClient.getFormFieldsSynchronized(formsToFetchFor);
 		} else {
 			List<FormFieldListing> returnVal = new ArrayList<>();
-
 			for (Form formToFetchFor : formsToFetchFor) {
-				List<Field> listOfFields =
-						this.sqlUtilClient.getFormFields(
-								formToFetchFor,
-								includeTableFieldData);
-
+				List<Field> listOfFields = this.sqlUtilClient.getFormFields(formToFetchFor, includeTableFieldData);
 				FormFieldListing toAdd = new FormFieldListing();
 				toAdd.setListing(listOfFields);
 				toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
 				returnVal.add(toAdd);
 			}
-
 			return returnVal;
 		}
 	}
@@ -452,8 +441,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 				this.mode = Mode.WebSocketActive;
 			}
 		} catch (FluidClientException clientExcept) {
-			if (clientExcept.getErrorCode() !=
-					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
+			if (clientExcept.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
 			this.mode = Mode.RESTfulActive;
@@ -462,7 +450,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		if (formsToGetHistoryFor == null || formsToGetHistoryFor.length < 1) return null;
 
 		Form[] formsToFetchFor = new Form[formsToGetHistoryFor.length];
-		for (int index = 0;index < formsToFetchFor.length;index++) {
+		for (int index = 0;index < formsToFetchFor.length; index++) {
 			formsToFetchFor[index] = new Form(formsToGetHistoryFor[index].getId());
 		}
 
@@ -476,7 +464,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 						includeCurrent,
 						labelFieldName
 				);
-
 				FormHistoricDataListing toAdd = new FormHistoricDataListing();
 				toAdd.setListing(listOfFields);
 				toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
@@ -518,7 +505,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 				SQLResultSet resultSet = this.sqlUtilClient.executeSQL(sqlToExec);
 				returnVal.add(resultSet);
 			}
-
 			return returnVal;
 		}
 	}
@@ -565,8 +551,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 						this.timeoutMillis,
 						includeFieldData,
 						COMPRESS_RSP,
-						COMPRESS_RSP_CHARSET);
-
+						COMPRESS_RSP_CHARSET
+				);
 				this.mode = Mode.WebSocketActive;
 			}
 		} catch (FluidClientException clientExcept) {
@@ -598,11 +584,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		} else {
 			//Old Rest way of fetching all of the values...
 			for (Form formToFetchFor : formsToFetchForLocalCacheArr) {
-				List<Field> listOfFields =
-						this.sqlUtilClient.getFormFields(
-								formToFetchFor,
-								includeFieldData);
-
+				List<Field> listOfFields = this.sqlUtilClient.getFormFields(formToFetchFor, includeFieldData);
 				FormFieldListing toAdd = new FormFieldListing();
 				toAdd.setListing(listOfFields);
 				toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
@@ -617,7 +599,9 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 					this.getFieldValuesForFormFromCache(
 							formToSetFieldsOn.getId(),
 							listingReturnFieldValsPopulated,
-							formsToFetchForLocalCacheArr));
+							formsToFetchForLocalCacheArr
+					)
+			);
 		}
 	}
 
