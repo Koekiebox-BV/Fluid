@@ -391,8 +391,8 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 			TestCase.assertNotNull(formListing);
 			TestCase.assertFalse(formListing.isEmpty());
 			FormListing firstResult = formListing.get(0);
-			TestCase.assertTrue(firstResult.getListingCount() > 0);
-			TestCase.assertTrue(took < 1_000);
+			TestCase.assertFalse("Expected results! Count is "+firstResult.getListing().size(), firstResult.getListing().isEmpty());
+			TestCase.assertTrue("Took too long. Took "+took,took < 1_000);
 
 			firstResult.getListing().stream()
 					.forEach(itm -> {
