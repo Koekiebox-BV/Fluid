@@ -341,8 +341,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	public void testExecuteSQLWhereIdGreaterThan() {
 		if (!this.isConnectionValid()) return;
 
-		if (!this.isConnectionValid()) return;
-
 		try (SQLUtilWebSocketExecuteSQLClient webSocketClient = new SQLUtilWebSocketExecuteSQLClient(
 				BASE_URL,
 				null,
