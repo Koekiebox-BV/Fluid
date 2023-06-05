@@ -29,6 +29,7 @@ import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.*;
@@ -44,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Log
 public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
     private Form formDef;
+    private Form formDefCreate;
 
     private static Field[] fields() {
         List<String> options = new ArrayList<>();
@@ -76,10 +78,93 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
     }
 
     /**
+     * Test creating and fetching the form field historic data.
+     */
+    @Test
+    public void testCreateFormHistoricData() {
+        if (!this.isConnectionValid()) return;
+
+        User user = new User();
+        user.setServiceTicket(this.serviceTicket);
+
+        try (
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                WebSocketGetFormHistoryByFormClient wsGetFormHist = new WebSocketGetFormHistoryByFormClient(
+                        BASE_URL,
+                        null,
+                        user.getServiceTicketAsHexUpper(),
+                        TimeUnit.SECONDS.toMillis(15),
+                        false,
+                        false)
+        ) {
+            this.formDefCreate = createFormDef(fdClient, ffClient, "Employee Val Create History", null, fields());
+            TestCase.assertNotNull(this.formDefCreate);
+
+            FluidItem toCreate = item(
+                    UUID.randomUUID().toString(),
+                    this.formDefCreate.getFormType(),
+                    false,
+                    fields()
+            );
+
+            Form created = fcClient.createFormContainer(toCreate.getForm());
+            TestCase.assertNotNull(created);
+            TestCase.assertNotNull(created.getId());
+
+            Date auditDate = new Date(System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(10));
+
+            // Update the form to create history:
+            String employeeName = UUID.randomUUID().toString(),
+                    employeeSurname = UUID.randomUUID().toString(),
+                    employeeSecret = UUID.randomUUID().toString(),
+                    employeeBio = String.format(
+                            "%s %s %s",
+                            UUID.randomUUID().toString(),
+                            UUID.randomUUID().toString(),
+                            UUID.randomUUID().toString()
+                    );
+            Form auditForm = new Form(this.formDefCreate.getFormType(), "ThisIsADirectAuditCreate");
+            auditForm.setFieldValue("JUnit Employee Name", employeeName, Field.Type.Text);
+            auditForm.setFieldValue("JUnit Employee Surname", employeeSurname, Field.Type.Text);
+            auditForm.setFieldValue("JUnit Employee Bio", employeeBio, Field.Type.ParagraphText);
+            auditForm.setFieldValue("JUnit Employee Secret", employeeSecret, Field.Type.TextEncrypted);
+            auditForm.setFieldValue("JUnit Employee Gender", new MultiChoice("Female"), Field.Type.MultipleChoice);
+            auditForm.setFieldValue("JUnit Employee Age", Math.random() * 90, Field.Type.Decimal);
+            auditForm.setFieldValue("JUnit Employee Birth Date", new Date(), Field.Type.DateTime);
+            auditForm.setFieldValue("JUnit Employee Is Director", Boolean.FALSE, Field.Type.TrueFalse);
+            auditForm.setId(created.getId());
+
+            FormHistoricData historicData = new FormHistoricData(auditForm, auditDate);
+            long start = System.currentTimeMillis();
+            fcClient.createFormHistoricData(historicData);
+            long roundTripTime = (System.currentTimeMillis() - start);
+            TestCase.assertTrue(roundTripTime < 1_000);
+
+            List<FormHistoricData> historicDataEntries =
+                    fcClient.getFormAndFieldHistoricData(created, false, false);
+
+            this.validateHistoricData(historicDataEntries);
+
+            FormHistoricData adminUpdated = historicDataEntries.stream()
+                    .filter(itm -> "Updated by 'admin'.".equals(itm.getDescription()))
+                    .findFirst()
+                    .orElse(null);
+            TestCase.assertNotNull(adminUpdated);
+
+            JSONObject adminJson = new JSONObject(adminUpdated.getFormContainerFieldValuesJSON());
+
+            TestCase.assertEquals(auditForm.getTitle(), adminJson.get("title"));
+            TestCase.assertEquals(9, adminJson.length());
+        }
+    }
+
+    /**
      * Test fetching the form field historic data.
      */
     @Test
-    public void testRetrieveFormHistoricData() {
+    public void testUpdateAndRetrieveFormHistoricData() {
         if (!this.isConnectionValid()) return;
 
         User user = new User();
@@ -121,8 +206,7 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                         TestCase.assertNotNull(created);
                         TestCase.assertNotNull(created.getId());
                         if (roundTripTime > 500) {
-                            content.append(String.format("%nCreate: Item [%s] took [%d]millis!",
-                                    created.getId(), roundTripTime));
+                            content.append(String.format("%nCreate: Item [%s] took [%d]millis!", created.getId(), roundTripTime));
                         }
                         TestCase.assertTrue(roundTripTime < 1_500);
 
@@ -235,8 +319,6 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
     public void destroy() {
         super.destroy();
 
-        if (this.formDef == null) return;
-
         try (
                 FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
                 FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
@@ -244,12 +326,21 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                 UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
         ) {
             // ensure the correct steps have taken place:
-            UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDef.getFormType(),
-                    this.formDef.getFormFields().get(0).getFieldName());
-            deleteFormContainersAndUserQuery(uqClient, fcClient, uqCleanup);
+            if (this.formDef != null) {
+                UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDef.getFormType(),
+                        this.formDef.getFormFields().get(0).getFieldName());
+                deleteFormContainersAndUserQuery(uqClient, fcClient, uqCleanup);
+            }
+
+            if (this.formDefCreate != null) {
+                UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDefCreate.getFormType(),
+                        this.formDefCreate.getFormFields().get(0).getFieldName());
+                deleteFormContainersAndUserQuery(uqClient, fcClient, uqCleanup);
+            }
 
             // cleanup:
             if (this.formDef != null) fdClient.deleteFormDefinition(this.formDef);
+            if (this.formDefCreate != null) fdClient.deleteFormDefinition(this.formDefCreate);
             if (this.formDef != null && this.formDef.getFormFields() != null) {
                 this.formDef.getFormFields().forEach(fldItm -> {
                     ffClient.forceDeleteField(fldItm);
