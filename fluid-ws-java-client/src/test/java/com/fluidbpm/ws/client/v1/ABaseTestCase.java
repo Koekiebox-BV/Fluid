@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * Created by jasonbruwer on 15/01/19.
  */
 public class ABaseTestCase {
-
+	public static String FLUID_DS = "flow-job";
 	public static String BASE_URL = getTestBASE_URL();
 	public static String USERNAME = getTestUsername();
 	public static String PASSWORD = getTestPassword();

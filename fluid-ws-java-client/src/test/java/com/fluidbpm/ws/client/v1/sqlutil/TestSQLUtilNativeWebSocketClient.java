@@ -20,15 +20,9 @@ import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
-import junit.framework.TestCase;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.sql.Types;
@@ -37,55 +31,42 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Test the execution of native standard SQL as well as stored procedures.
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
+public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
+	private String serviceTicketHex;
 
-	private LoginClient loginClient;
-
-	/**
-	 *
-	 */
 	@Before
+	@Override
 	public void init() {
-		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
-		this.loginClient = new LoginClient(BASE_URL);
-	}
-	
-	@After
-	public void destroy()
-	{
-		this.loginClient.closeAndClean();
-	}
-
-	@Test
-	@Ignore//TODO need to re-enable...
-	public void testNativeSQLExecutionQuery() {
 		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
+		// Login:
+		super.init();
 
-		String serviceTicket = appRequestToken.getServiceTicket();
-		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-		}
+		this.serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(this.serviceTicket));
+	}
+
+	/**
+	 * Plain SQL (no stored proc)
+	 */
+	@Test
+	public void testNativeSQLExecutionQuery() {
+		if (!this.isConnectionValid()) return;
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
 				new SQLUtilWebSocketExecuteNativeSQLClient(
 						BASE_URL,
 						null,
-						serviceTicketHex,
+						this.serviceTicketHex,
 						TimeUnit.SECONDS.toMillis(60));
 
 		long start = System.currentTimeMillis();
 		int numberOfRecords = 1;
 
 		NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
-
-		nativeSQLQuery.setDatasourceName("flow-job");
+		nativeSQLQuery.setDatasourceName(FLUID_DS);
 		nativeSQLQuery.setQuery("SELECT * FROM form_definition WHERE title = ?");
 
 		List<SQLColumn> inputs = new ArrayList<>();
@@ -133,26 +114,17 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 	}
 
 	/**
-	 *
+	 * Standard Stored Proc Execution.
 	 */
 	@Test
 	public void testNativeSQLExecutionStoredProc() {
 		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
-
-		String serviceTicket = appRequestToken.getServiceTicket();
-		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-		}
-
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
 				new SQLUtilWebSocketExecuteNativeSQLClient(
 						BASE_URL,
 						null,
-						serviceTicketHex,
+						this.serviceTicketHex,
 						TimeUnit.SECONDS.toMillis(60));
 
 		long start = System.currentTimeMillis();
@@ -160,26 +132,22 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
 
-		nativeSQLQuery.setDatasourceName("flow-job");
+		nativeSQLQuery.setDatasourceName(FLUID_DS);
 		nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
 
 		List<SQLColumn> inputs = new ArrayList<>();
 		inputs.add(new SQLColumn(
 				null,1,Types.BIGINT,
 				1L));
-
 		nativeSQLQuery.setSqlInputs(inputs);
 
 		List<SQLResultSet> resultListing = webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
-
 		long took = (System.currentTimeMillis() - start);
 
 		start = System.currentTimeMillis();
 
 		webSocketClient.executeNativeSQLSynchronized(nativeSQLQuery);
-
 		long tookSecond = (System.currentTimeMillis() - start);
-
 		webSocketClient.closeAndClean();
 
 		System.out.println("Took '"+took+"|"+tookSecond+"' millis for '"+numberOfRecords+"' random records.");
@@ -210,26 +178,17 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 	}
 
 	/**
-	 *
+	 * Compressed Query.
 	 */
 	@Test
 	public void testNativeSQLExecutionStoredProcCompressed() {
 		if (!this.isConnectionValid()) return;
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
-
-		String serviceTicket = appRequestToken.getServiceTicket();
-		String serviceTicketHex = null;
-		if (serviceTicket != null && !serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-		}
-
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
 				new SQLUtilWebSocketExecuteNativeSQLClient(
 						BASE_URL,
 						null,
-						serviceTicketHex,
+						this.serviceTicketHex,
 						TimeUnit.SECONDS.toMillis(60),
 						true,"");
 
@@ -238,7 +197,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseTestCase {
 
 		NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
 
-		nativeSQLQuery.setDatasourceName("flow-job");
+		nativeSQLQuery.setDatasourceName(FLUID_DS);
 		nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
 
 		List<SQLColumn> inputs = new ArrayList<>();

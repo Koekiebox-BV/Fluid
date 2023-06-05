@@ -67,9 +67,7 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void testExecuteSelect() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (!this.isConnectionValid()) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -79,7 +77,7 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseTestCase {
 		SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
 
         NativeSQLQuery query = new NativeSQLQuery();
-        query.setDatasourceName("flow-job");
+        query.setDatasourceName(FLUID_DS);
         query.setQuery("SELECT 1");
 
         SQLResultSet result = sqlUtilClient.executeSQL(query);

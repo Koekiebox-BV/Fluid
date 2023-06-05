@@ -185,6 +185,8 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	public void testGetAncestorFormWithSpecificId() {
 		if (!this.isConnectionValid()) return;
 
+		//TODO need to move to Clone step logic.
+
 		String serviceTicketHex = null;
 		if (this.serviceTicket != null && !this.serviceTicket.isEmpty()) {
 			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
@@ -230,6 +232,8 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	@Ignore
 	public void testGetDescendantFormsWithSpecificId() {
 		if (!this.isConnectionValid()) return;
+
+		//TODO need to move to Clone step logic.
 
 		String serviceTicketHex = null;
 		if (this.serviceTicket != null && !this.serviceTicket.isEmpty()) {
