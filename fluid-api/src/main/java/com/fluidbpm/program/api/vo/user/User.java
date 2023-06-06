@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
@@ -39,7 +40,6 @@ import java.util.List;
  * </p>
  *
  * The following fields are mandatory for creating or updating a User;
- *
  * Username (create and update)
  * Password (create). Needs to be at least 5 characters.
  *
@@ -179,20 +179,16 @@ public class User extends ABaseFluidJSONObject {
 		}
 
 		//Date Created...
-		this.setDateCreated(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.DATE_CREATED));
+		this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
 
 		//Date Last Updated...
-		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.DATE_LAST_UPDATED));
+		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
 
 		//Password Changed At...
-		this.setPasswordChangedAt(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.PASSWORD_CHANGED_AT));
+		this.setPasswordChangedAt(this.getDateFieldValueFromFieldWithName(JSONMapping.PASSWORD_CHANGED_AT));
 
 		//Logged In Date Time...
-		this.setLoggedInDateTime(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.LOGGED_IN_DATE_TIME));
+		this.setLoggedInDateTime(this.getDateFieldValueFromFieldWithName(JSONMapping.LOGGED_IN_DATE_TIME));
 
 		//Salt...
 		if (!this.jsonObject.isNull(JSONMapping.SALT)) {
@@ -206,26 +202,22 @@ public class User extends ABaseFluidJSONObject {
 
 		//Invalid Login Count...
 		if (!this.jsonObject.isNull(JSONMapping.INVALID_LOGIN_COUNT)) {
-			this.setInvalidLoginCount(this.jsonObject.getInt(
-					JSONMapping.INVALID_LOGIN_COUNT));
+			this.setInvalidLoginCount(this.jsonObject.getInt(JSONMapping.INVALID_LOGIN_COUNT));
 		}
 
 		//Timezone...
 		if (!this.jsonObject.isNull(JSONMapping.TIMEZONE)) {
-			this.setTimezone((float)this.jsonObject.getDouble(
-					JSONMapping.TIMEZONE));
+			this.setTimezone((float)this.jsonObject.getDouble(JSONMapping.TIMEZONE));
 		}
 
 		//Date format...
 		if (!this.jsonObject.isNull(JSONMapping.DATE_FORMAT)) {
-			this.setDateFormat(this.jsonObject.getString(
-					JSONMapping.DATE_FORMAT));
+			this.setDateFormat(this.jsonObject.getString(JSONMapping.DATE_FORMAT));
 		}
 
 		//Time format...
 		if (!this.jsonObject.isNull(JSONMapping.TIME_FORMAT)) {
-			this.setTimeFormat(this.jsonObject.getString(
-					JSONMapping.TIME_FORMAT));
+			this.setTimeFormat(this.jsonObject.getString(JSONMapping.TIME_FORMAT));
 		}
 
 		//Locale...
@@ -237,8 +229,7 @@ public class User extends ABaseFluidJSONObject {
 		if (this.jsonObject.isNull(JSONMapping.EMAIL_USER_NOTIFICATION)) {
 			this.setEmailUserNotification(false);
 		} else{
-			this.setEmailUserNotification(
-					this.jsonObject.getBoolean(JSONMapping.EMAIL_USER_NOTIFICATION));
+			this.setEmailUserNotification(this.jsonObject.getBoolean(JSONMapping.EMAIL_USER_NOTIFICATION));
 		}
 
 		//Roles...
@@ -458,7 +449,6 @@ public class User extends ABaseFluidJSONObject {
 		if (this.getUsername() != null && paramCasted.getUsername() != null) {
 			return (this.getUsername().equals(paramCasted.getUsername()));
 		}
-
 		return false;
 	}
 
@@ -490,20 +480,26 @@ public class User extends ABaseFluidJSONObject {
 		if (this.userFields == null || this.userFields.isEmpty()) return null;
 
 		String fieldNameParamLower = fieldNameParam.trim().toLowerCase();
-
 		for (Field field : this.userFields) {
 			String fieldName = field.getFieldName();
-			if (fieldName == null || fieldName.trim().isEmpty()) {
-				continue;
-			}
+			if (fieldName == null || fieldName.trim().isEmpty()) continue;
 
 			String fieldNameLower = fieldName.trim().toLowerCase();
-			if (fieldNameParamLower.equals(fieldNameLower)) {
-				return field;
-			}
+			if (fieldNameParamLower.equals(fieldNameLower)) return field;
 		}
-
 		return null;
+	}
+
+	/**
+	 * Add the {@code emailToAdd} to the list of email addresses.
+	 * @param emailToAdd Email to add.
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public void addEmailToEmailAddresses(String emailToAdd) {
+		if (UtilGlobal.isBlank(emailToAdd)) return;
+		if (this.emailAddresses == null) this.emailAddresses = new ArrayList<>();
+		this.emailAddresses.add(emailToAdd);
 	}
 
 	/**

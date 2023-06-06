@@ -395,7 +395,8 @@ public class UserClient extends ABaseClientWS {
 		userToPost.setServiceTicket(this.serviceTicket);
 
 		try {
-			return new UserListing(this.postJson(userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince()));
+			return new UserListing(this.postJson(
+					userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince()));
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -469,8 +470,7 @@ public class UserClient extends ABaseClientWS {
 	 *
 	 * @return JPEG image bytes.
 	 */
-	public byte[] getGravatarForUser(User user)
-	{
+	public byte[] getGravatarForUser(User user) {
 		return this.getGravatarForUser(user, 50);
 	}
 
