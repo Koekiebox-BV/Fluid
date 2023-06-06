@@ -77,6 +77,27 @@ public class SQLUtilClient extends ABaseClientWS {
 	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
 	 */
 	public List<Form> getTableForms(
+			Form formToGetTableFormsFor,
+			boolean includeFieldData,
+			Long formDefinitionId
+	) {
+		return this.getTableForms(
+				formToGetTableFormsFor,
+				includeFieldData,
+				Optional.ofNullable(formDefinitionId)
+		);
+	}
+
+	/**
+	 * Retrieves all the Table Records (Forms) for the {@code formToGetTableFormsForParam}.
+	 *
+	 * @param formToGetTableFormsFor The Fluid Form to get Table Fields for.
+	 * @param includeFieldData Should Table Record (Form) Field data be included?
+	 * @param formDefinitionId Optional Form Definition Id filter.
+	 *
+	 * @return The {@code formToGetTableFormsForParam} Table Records as {@code Form}'s.
+	 */
+	public List<Form> getTableForms(
 		Form formToGetTableFormsFor,
 		boolean includeFieldData,
 		@NonNull

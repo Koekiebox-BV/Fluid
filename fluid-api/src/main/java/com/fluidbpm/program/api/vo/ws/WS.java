@@ -3703,7 +3703,7 @@ public class WS {
 							.append(SQL_UTIL_FORM_GET_TABLE_FORMS)
 							.append("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldData);
 
-					formDefinitionId.ifPresent(id -> strBld.append("&"+QueryParam.FORM_DEFINITION + "=" + formDefinitionId));
+					formDefinitionId.ifPresent(id -> strBld.append("&"+QueryParam.FORM_DEFINITION + "=" + id));
 
 					return strBld.toString();
 				}

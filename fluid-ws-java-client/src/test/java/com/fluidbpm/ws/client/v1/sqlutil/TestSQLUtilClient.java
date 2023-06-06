@@ -109,7 +109,7 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
     }
 
     @Test
-    public void testGetTableFormsWithFormId() {
+    public void testSQLUtilMethods() {
         if (!this.isConnectionValid()) return;
 
         try (
@@ -138,7 +138,7 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
                         for (int trIdx = 0; trIdx < trCreateCount; trIdx++) {
                             Form trFormCont = new Form(
                                     this.formTimesheetEntry.getFormType(),
-                                    String.format("Timesheet Entry '%d' of '%d'", trIdx, trCreateCount)
+                                    String.format("Timesheet Entry '%d' of '%d'", trIdx + 1, trCreateCount)
                             );
                             trFormCont.setFieldValue(
                                     timesheetEntryFields()[0].getFieldName(),
@@ -169,13 +169,34 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
                 });
             }
 
-            sleepForSeconds(8);
+            sleepForSeconds(7);
             TestCase.assertEquals(ITEM_COUNT_PER_SUB, createdForms.size());
+
+            // Fetch by Form Definition:
+            List<Form> tableFormsByDefFilter = sqlUtilClient.getTableForms(
+                    createdForms.get(0),
+                    false,
+                    this.formTimesheetEntry.getFormTypeId()
+            );
+            TestCase.assertNotNull(tableFormsByDefFilter);
+            TestCase.assertEquals(trCreateCount, tableFormsByDefFilter.size());
 
             // Fetch the forms:
             createdForms.forEach(created -> {
                 List<Form> forms = sqlUtilClient.getTableForms(created, true);
                 TestCase.assertEquals(trCreateCount, forms.size());
+
+                forms.forEach(tblForm -> {
+                    TestCase.assertNotNull(tblForm.getId());
+                    TestCase.assertNotNull(tblForm.getFormType());
+                    TestCase.assertNotNull(tblForm.getFormTypeId());
+                    TestCase.assertNotNull(tblForm.getTitle());
+                    TestCase.assertNotNull(tblForm.getCurrentUser());
+                    TestCase.assertNotNull(tblForm.getDateCreated());
+                    TestCase.assertNotNull(tblForm.getDateLastUpdated());
+                    TestCase.assertNotNull(tblForm.getFormFields());
+                    TestCase.assertEquals(3, tblForm.getFormFields().size());
+                });
             });
         }
     }
