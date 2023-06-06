@@ -35,6 +35,7 @@ import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNative
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Wrapper class used for when WebSockets is not a
@@ -342,7 +343,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 				List<Form> listOfForms = this.sqlUtilClient.getTableForms(
 					formToFetchFor,
 					includeFieldData,
-					formDefFilter
+					Optional.ofNullable(formDefFilter)
 				);
 				FormListing toAdd = new FormListing();
 				toAdd.setListing(listOfForms);

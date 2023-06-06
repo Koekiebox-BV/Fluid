@@ -15,17 +15,18 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import com.fluidbpm.program.api.vo.flow.Flow;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.item.FluidItem;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.flow.FlowClient;
-import com.fluidbpm.ws.client.v1.flow.TestFlowClient;
-import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
+import com.fluidbpm.ws.client.v1.ABaseFieldClient;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
+import com.fluidbpm.ws.client.v1.form.FormContainerClient;
+import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
+import com.fluidbpm.ws.client.v1.form.FormFieldClient;
+import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,161 +34,160 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestSQLUtilClient extends ABaseTestCase {
+@Log
+public class TestSQLUtilClient extends ABaseLoggedInTestCase {
+    private Form formTimesheetEntry;
+    private Form formTimesheet;
 
-    private LoginClient loginClient;
+    private static Field[] timesheetEntryFields() {
+        Field[] returnVal = new Field[]{
+                new Field("Rest JUnit Job Description", null, Field.Type.Text),
+                new Field("Rest JUnit Duration", null, Field.Type.Decimal),
+                new Field("Rest JUnit Log Date", null, Field.Type.DateTime),
+        };
+        returnVal[0].setTypeMetaData(ABaseFieldClient.FieldMetaData.Text.PLAIN);
+        returnVal[1].setTypeMetaData(ABaseFieldClient.FieldMetaData.Decimal.PLAIN);
+        returnVal[2].setTypeMetaData(ABaseFieldClient.FieldMetaData.DateTime.DATE);
 
-    /**
-     *
-     */
-    public static final class TestStatics{
-        public static final String FORM_DEFINITION = "Email";
-        public static final String FORM_TITLE_PREFIX = "Test api doc with email...";
+        for (Field fld : returnVal) fld.setFieldDescription(DESC);
+
+        return returnVal;
     }
 
-    /**
-     *
-     */
+    private static Field[] timesheetFields() {
+        Field[] returnVal = new Field[]{
+                new Field("Rest JUnit Employee Name", null, Field.Type.Text),
+                new Field("Rest JUnit Timesheet Entry", null, Field.Type.Table),
+        };
+        returnVal[0].setTypeMetaData(ABaseFieldClient.FieldMetaData.Text.PLAIN);
+
+        for (Field fld : returnVal) fld.setFieldDescription(DESC);
+
+        return returnVal;
+    }
+
     @Before
-    public void init()
-    {
-        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+    @Override
+    public void init() {
+        if (!this.isConnectionValid()) return;
 
-        this.loginClient = new LoginClient(BASE_URL);
+        // Login:
+        super.init();
+
+        try (
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+        ) {
+            this.formTimesheetEntry = createFormDef(fdClient, ffClient, "Rest JUnit Timesheet Entry", null, timesheetEntryFields());
+            this.formTimesheet = createFormDef(fdClient, ffClient, "Rest Form Def SQL Util Timesheet", null, timesheetFields());
+        }
     }
 
-    /**
-     *
-     */
     @After
-    public void destroy()
-    {
-        this.loginClient.closeAndClean();
+    @Override
+    public void destroy() {
+        super.destroy();
+
+        try (
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+        ) {
+            // Timesheet Entry:
+            deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
+            deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheet);
+        }
     }
 
-    /**
-     *
-     */
     @Test
-    @Ignore
-    public void testGetTableFormsWithSpecificId()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testGetTableFormsWithFormId() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+        try (
+                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+        ) {
+            // Create forms:
+            List<Form> createdForms = new CopyOnWriteArrayList<>();
+            ExecutorService executor = Executors.newFixedThreadPool(6);
+            int trCreateCount = 5;
+            for (int cycleTimes = 0; cycleTimes < ITEM_COUNT_PER_SUB; cycleTimes++) {
+                executor.submit(() -> {
+                    try {
+                        FluidItem toCreate = item(
+                                UUID.randomUUID().toString(),
+                                this.formTimesheet.getFormType(),
+                                false,
+                                timesheetFields()
+                        );
+                        Form created = fcClient.createFormContainer(toCreate.getForm());
+                        createdForms.add(created);
+                        TestCase.assertNotNull(created);
+                        TestCase.assertNotNull(created.getId());
 
-        String serviceTicket = appRequestToken.getServiceTicket();
+                        // Create
+                        for (int trIdx = 0; trIdx < trCreateCount; trIdx++) {
+                            Form trFormCont = new Form(
+                                    this.formTimesheetEntry.getFormType(),
+                                    String.format("Timesheet Entry '%d' of '%d'", trIdx, trCreateCount)
+                            );
+                            trFormCont.setFieldValue(
+                                    timesheetEntryFields()[0].getFieldName(),
+                                    UUID.randomUUID().toString(),
+                                    timesheetEntryFields()[0].getTypeAsEnum()
+                            );// Rest JUnit Job Description
+                            trFormCont.setFieldValue(
+                                    timesheetEntryFields()[1].getFieldName(),
+                                    Math.random() * 1000,
+                                    timesheetEntryFields()[1].getTypeAsEnum()
+                            );// Rest JUnit Duration
+                            trFormCont.setFieldValue(
+                                    timesheetEntryFields()[2].getFieldName(),
+                                    new Date(),
+                                    timesheetEntryFields()[2].getTypeAsEnum()
+                            );// Rest JUnit Log Date
 
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
-
-        int numberOfRecords = 5;
-        Form[] testForms =
-                TestSQLUtilWebSocketClient.generateLotsOfFormsFor(
-                        numberOfRecords, 2192L);
-
-        long start = System.currentTimeMillis();
-
-        for (Form forToSend :testForms) {
-            List<Form> tableForms = sqlUtilClient.getTableForms(
-                    forToSend,true);
-
-            if (tableForms != null && tableForms.size() > 0)
-            {
-                for (Form form : tableForms)
-                {
-                    /*System.out.println(form.getFormType() +
-                            " - " +
-                            form.getTitle());*/
-                }
+                            TableRecord tr = new TableRecord(trFormCont, created, timesheetFields()[1]);//JUnit Timesheet Entry
+                            TableRecord createdTR = fcClient.createTableRecord(tr);
+                            TestCase.assertNotNull(createdTR);
+                            TestCase.assertNotNull(createdTR.getFormContainer().getId());
+                        }
+                    } catch (Exception err) {
+                        err.printStackTrace();
+                        log.warning(err.getMessage());
+                        TestCase.fail(err.getMessage());
+                    }
+                });
             }
-            else
-            {
-                System.out.println("Nothing...");
-            }
-        }
 
-        long took = (System.currentTimeMillis() - start);
-        System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+            sleepForSeconds(8);
+            TestCase.assertEquals(ITEM_COUNT_PER_SUB, createdForms.size());
+
+            // Fetch the forms:
+            createdForms.forEach(created -> {
+                List<Form> forms = sqlUtilClient.getTableForms(created, true);
+                TestCase.assertEquals(trCreateCount, forms.size());
+            });
+        }
     }
 
-    /**
-     *
-     */
     @Test
     @Ignore
-    public void testGetTableForms()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testGetDescendants() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, serviceTicket);
-        FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
-
-        //1. Form...
-        Form frm = new Form(TestStatics.FORM_DEFINITION);
-        frm.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
-
-        //Fluid Item...
-        FluidItem toCreate = new FluidItem();
-        toCreate.setForm(frm);
-
-        //0. Create the Flow...
-        Flow flowToCreate = new Flow();
-        flowToCreate.setName(TestFlowClient.TestStatics.FLOW_NAME);
-        flowToCreate.setDescription(TestFlowClient.TestStatics.FLOW_DESCRIPTION);
-
-        Flow createdFlow = flowClient.createFlow(flowToCreate);
-
-        //Create...
-        FluidItem createdItem =
-                flowItmClient.createFlowItem(toCreate, createdFlow.getName());
-
-        //Wait for 3 seconds...
-        sleepForSeconds(3);
-
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
-
-
-        List<Form> tableForms = sqlUtilClient.getTableForms(
-                createdItem.getForm(),true);
-
-        //Cleanup...
-        flowClient.forceDeleteFlow(createdFlow);
-    }
-
-    /**
-     *
-     */
-    @Test
-    @Ignore
-    public void testGetDescendants()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
-
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
-
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
+        //TODO need to move to Clone step logic.
         
         List<Form> descendants = sqlUtilClient.getDescendants(
                 new Form(2909L),
@@ -198,24 +198,14 @@ public class TestSQLUtilClient extends ABaseTestCase {
         TestCase.assertNotNull(descendants);
     }
 
-    /**
-     *
-     */
     @Test
     @Ignore
-    public void testGetAncestor()
-    {
-        if (!this.isConnectionValid())
-        {
-            return;
-        }
+    public void testGetAncestor() {
+        if (!this.isConnectionValid()) return;
 
-        AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-        TestCase.assertNotNull(appRequestToken);
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
 
-        String serviceTicket = appRequestToken.getServiceTicket();
-
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, serviceTicket);
+        //TODO need to move to Clone step logic.
 
         Form ancestor = sqlUtilClient.getAncestor(
                 //new Form(2575L),
@@ -225,5 +215,4 @@ public class TestSQLUtilClient extends ABaseTestCase {
 
         TestCase.assertNotNull(ancestor);
     }
-
 }

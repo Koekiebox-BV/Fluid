@@ -86,7 +86,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 
 		// Login:
 		super.init();
-
 		this.serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(this.serviceTicket));
 
 		try (
@@ -99,9 +98,23 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 		}
 	}
 
-	/**
-	 * Retrieve the table records for a parent form.
-	 */
+	@After
+	@Override
+	public void destroy() {
+		super.destroy();
+
+		try (
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+				FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+				UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+		) {
+			// Timesheet Entry:
+			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
+			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheet);
+		}
+	}
+
 	@Test
 	public void testGetTableFormsWithFormId() {
 		if (!this.isConnectionValid()) return;
@@ -113,7 +126,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 				TimeUnit.SECONDS.toMillis(60), true);
 			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
 		) {
-			// Create forms:
 			List<Form> createdForms = new CopyOnWriteArrayList<>();
 			ExecutorService executor = Executors.newFixedThreadPool(6);
 			int trCreateCount = 5;
@@ -177,9 +189,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 		}
 	}
 
-	/**
-	 *
-	 */
 	@Test
 	@Ignore
 	public void testGetAncestorFormWithSpecificId() {
@@ -225,9 +234,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 		}
 	}
 
-	/**
-	 *
-	 */
 	@Test
 	@Ignore
 	public void testGetDescendantFormsWithSpecificId() {
@@ -335,7 +341,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 
 	/**
 	 * Make use of a WebSocket to test the SQL execution function.
-	 *
 	 */
 	@Test
 	public void testExecuteSQLWhereIdGreaterThan() {
@@ -417,22 +422,5 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 		}
 
 		return returnVal;
-	}
-
-	@After
-	@Override
-	public void destroy() {
-		super.destroy();
-
-		try (
-				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-				FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-				UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
-		) {
-			// Timesheet Entry:
-			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
-			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheet);
-		}
 	}
 }

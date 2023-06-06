@@ -20,10 +20,12 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import lombok.NonNull;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Optional;
 
 import static com.fluidbpm.program.api.util.UtilGlobal.EMPTY;
 import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
@@ -3686,23 +3688,24 @@ public class WS {
 				 * URL Path for retrieving Table records for electronic form with id
 				 * {@code electronicFormIdParam}.
 				 *
-				 * @param includeFieldDataParam Does field data need to be included.
+				 * @param includeFieldData Does field data need to be included.
 				 * @param formDefinitionId Optional Form Definition Id filter.
 				 *
 				 * @return {@code v1/sql_util/form/get_table_forms_by_electronic_form_id}
 				 */
 				public static final String getTableForms(
-					boolean includeFieldDataParam,
-					Long formDefinitionId
+					boolean includeFieldData,
+					@NonNull
+					Optional<Long> formDefinitionId
 				) {
-					String returnVal = Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_FORM_GET_TABLE_FORMS)
-							.concat("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldDataParam);
+					StringBuilder strBld = new StringBuilder(Version.VERSION_1)
+							.append(ROOT)
+							.append(SQL_UTIL_FORM_GET_TABLE_FORMS)
+							.append("?" + QueryParam.INCLUDE_FIELD_DATA + "=" + includeFieldData);
 
-					if (formDefinitionId != null && formDefinitionId.longValue() > 0) {
-						returnVal += ("&"+QueryParam.FORM_DEFINITION + "=" + formDefinitionId);
-					}
+					formDefinitionId.ifPresent(id -> strBld.append("&"+QueryParam.FORM_DEFINITION + "=" + formDefinitionId));
 
-					return returnVal;
+					return strBld.toString();
 				}
 
 				/**

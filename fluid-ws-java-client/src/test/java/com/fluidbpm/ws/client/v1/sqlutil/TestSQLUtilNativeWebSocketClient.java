@@ -22,6 +22,7 @@ import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
+import lombok.extern.java.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
  * Test the execution of native standard SQL as well as stored procedures.
  * Created by jasonbruwer on 14/12/22.
  */
+@Log
 public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 	private String serviceTicketHex;
 
@@ -87,7 +89,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 
 		webSocketClient.closeAndClean();
 
-		System.out.println("Took '"+took+"|"+tookSecond+"' millis for '"+numberOfRecords+"' random records.");
+		log.info("Took '"+took+"|"+tookSecond+"' millis for '"+numberOfRecords+"' random records.");
 
 		if (resultListing != null) {
 			System.out.println("Listing is '"+resultListing.size()+"' -> \n\n\n");
@@ -106,9 +108,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 					}
 				}
 			}
-		} else {
-			System.out.println("Nothing...");
-		}
+		} else System.out.println("Nothing...");
 
 		System.out.println("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
 	}
