@@ -122,22 +122,15 @@ public class FormDefinitionClient extends ABaseClientWS {
 	/**
 	 * Retrieves the Form Definition by Name.
 	 *
-	 * @param formDefinitionNameParam The Form Definition name.
+	 * @param formDefName The Form Definition name.
 	 * @return Form by Name.
 	 */
-	public Form getFormDefinitionByName(String formDefinitionNameParam) {
-		Form form = new Form(formDefinitionNameParam);
-
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-
-		if (this.requestUuid != null) {
-			form.setRequestUuid(this.requestUuid);
-		}
+	public Form getFormDefinitionByName(String formDefName) {
+		Form form = new Form(formDefName);
+		form.setServiceTicket(this.serviceTicket);
+		form.setRequestUuid(this.requestUuid);
 		
-		return new Form(this.postJson(
-				form, WS.Path.FormDefinition.Version1.getByName()));
+		return new Form(this.postJson(form, WS.Path.FormDefinition.Version1.getByName()));
 	}
 
 	/**
@@ -149,14 +142,8 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 */
 	public List<Form> getAllByLoggedInUser(boolean includeTableRecordTypesParam) {
 		Form form = new Form();
-
-		if (this.serviceTicket != null) {
-			form.setServiceTicket(this.serviceTicket);
-		}
-
-		if (this.requestUuid != null) {
-			form.setRequestUuid(this.requestUuid);
-		}
+		form.setRequestUuid(this.requestUuid);
+		form.setServiceTicket(this.serviceTicket);
 
 		if (includeTableRecordTypesParam) {
 			return new FormListing(this.postJson(

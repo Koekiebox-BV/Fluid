@@ -76,8 +76,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		super(connectionParam, cacheUtilParam);
 
 		this.formDefUtil = new SQLFormDefinitionUtil(connectionParam);
-		this.fieldUtil = new SQLFormFieldUtil(
-				connectionParam, cacheUtilParam, this.formDefUtil);
+		this.fieldUtil = new SQLFormFieldUtil(connectionParam, cacheUtilParam, this.formDefUtil);
 	}
 
 	/**
@@ -92,18 +91,15 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	/**
 	 * Retrieves the Table field records as {@code List<Form>}.
 	 *
-	 * @param electronicFormIdParam The Form Identifier.
-	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
+	 * @param electronicFormId The Form Identifier.
+	 * @param includeFieldData Whether to populate the return {@code List<Form>} fields.
 	 * @return {@code List<Form>} records.
 	 */
-	public List<Form> getFormTableForms(
-		Long electronicFormIdParam,
-		boolean includeFieldDataParam
-	) {
+	public List<Form> getFormTableForms(Long electronicFormId, boolean includeFieldData) {
 		List<Form> returnVal = new ArrayList();
-		if (electronicFormIdParam == null) return returnVal;
+		if (electronicFormId == null) return returnVal;
 
-		Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
+		Map<Long, String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -112,25 +108,21 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 					this.getSQLTypeFromConnection(),
 					ISyntax.ProcedureMapping.Form.GetFormContainersTableFieldFormContainers);
 
-			preparedStatement = this.getConnection().prepareStatement(
-					syntax.getPreparedStatement());
-
-			preparedStatement.setLong(1, electronicFormIdParam);
+			preparedStatement = this.getConnection().prepareStatement(syntax.getPreparedStatement());
+			preparedStatement.setLong(1, electronicFormId);
 
 			resultSet = preparedStatement.executeQuery();
-
 			//Iterate each of the form containers...
-			while (resultSet.next()) {
-				returnVal.add(this.mapFormContainerTo(definitionAndTitle, resultSet));
-			}
+			while (resultSet.next()) returnVal.add(this.mapFormContainerTo(definitionAndTitle, resultSet));
 
 			//When field data must also be included...
-			if (includeFieldDataParam) {
+			if (includeFieldData) {
 				for (Form form : returnVal) {
 					List<Field> formFields = this.fieldUtil.getFormFields(
-									form.getId(),
-									false,
-							false);
+							form.getId(),
+							false,
+							false
+					);
 					form.setFormFields(formFields);
 				}
 			}
@@ -139,17 +131,16 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		} finally {
 			this.closeStatement(preparedStatement,resultSet);
 		}
-
 		return returnVal;
 	}
 
 	/**
 	 * Gets the descendants for the {@code electronicFormIdsParam} Forms.
 	 *
-	 * @param electronicFormIdsParam Identifiers for the Forms to retrieve.
-	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-	 * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
-	 * @param includeTableFieldFormRecordInfoParam Does table record form data need to be included.
+	 * @param electronicFormIds Identifiers for the Forms to retrieve.
+	 * @param includeFieldData Whether to populate the return {@code List<Form>} fields.
+	 * @param includeTableFields Whether to populate the return {@code List<Form>} table fields.
+	 * @param includeTableFieldFormRecordInfo Does table record form data need to be included.
 	 *
 	 * @return {@code List<Form>} descendants.
 	 *
@@ -157,27 +148,26 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 */
 	@Override
 	public List<Form> getFormDescendants(
-			List<Long> electronicFormIdsParam,
-			boolean includeFieldDataParam,
-			boolean includeTableFieldsParam,
-			boolean includeTableFieldFormRecordInfoParam) {
-
-		if (electronicFormIdsParam == null || electronicFormIdsParam.isEmpty()) return null;
+			List<Long> electronicFormIds,
+			boolean includeFieldData,
+			boolean includeTableFields,
+			boolean includeTableFieldFormRecordInfo
+	) {
+		if (electronicFormIds == null || electronicFormIds.isEmpty()) return null;
 
 		List<Form> returnVal = new ArrayList();
 
-		for (Long electronicFormId : electronicFormIdsParam) {
+		for (Long electronicFormId : electronicFormIds) {
 			List<Form> forTheCycle = this.getFormDescendants(
 					electronicFormId,
-					includeFieldDataParam,
-					includeTableFieldsParam,
-					includeTableFieldFormRecordInfoParam);
-
+					includeFieldData,
+					includeTableFields,
+					includeTableFieldFormRecordInfo
+			);
 			if (forTheCycle == null) continue;
 
 			returnVal.addAll(forTheCycle);
 		}
-
 		return returnVal;
 	}
 
@@ -200,22 +190,17 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		boolean includeTableFieldFormRecordInfo
 	) {
 		List<Form> returnVal = new ArrayList();
-
 		if (electronicFormId == null) return returnVal;
 
-		Map<Long,String> definitionAndTitle =
-				this.formDefUtil.getFormDefinitionIdAndTitle();
-
+		Map<Long, String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
 					this.getSQLTypeFromConnection(),
-					ISyntax.ProcedureMapping.Form.GetFormContainersChildFormContainers);
-
-			preparedStatement = this.getConnection().prepareStatement(
-					syntax.getPreparedStatement());
-
+					ISyntax.ProcedureMapping.Form.GetFormContainersChildFormContainers
+			);
+			preparedStatement = this.getConnection().prepareStatement(syntax.getPreparedStatement());
 			preparedStatement.setLong(1, electronicFormId);
 
 			resultSet = preparedStatement.executeQuery();
@@ -227,7 +212,6 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 
 				//Ancestor...
 				mappedForm.setAncestorId(electronicFormId);
-
 				returnVal.add(mappedForm);
 			}
 
@@ -255,37 +239,32 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 * Gets the descendants for the {@code electronicFormIdParam} Form with the
 	 * FormContainer and FormContainerFlow state.
 	 *
-	 * @param electronicFormIdParam Identifier for the Form.
-	 * @param includeFieldDataParam Whether to populate the return {@code List<Form>} fields.
-	 * @param includeTableFieldsParam Whether to populate the return {@code List<Form>} table fields.
+	 * @param electronicFormId Identifier for the Form.
+	 * @param includeFieldData Whether to populate the return {@code List<Form>} fields.
+	 * @param includeTableFields Whether to populate the return {@code List<Form>} table fields.
 	 * @return {@code List<Form>} descendants.
 	 *
 	 * @see Form
 	 */
 	@Deprecated
 	public List<Form> getFormDescendantsWithStates(
-		Long electronicFormIdParam,
-		boolean includeFieldDataParam,
-		boolean includeTableFieldsParam
+		Long electronicFormId,
+		boolean includeFieldData,
+		boolean includeTableFields
 	) {
 		List<Form> returnVal = new ArrayList();
+		if (electronicFormId == null) return returnVal;
 
-		if (electronicFormIdParam == null) return returnVal;
-
-		Map<Long,String> definitionAndTitle =
-				this.formDefUtil.getFormDefinitionIdAndTitle();
-
+		Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
 					this.getSQLTypeFromConnection(),
-					ISyntax.ProcedureMapping.Form.GetFormContainersChildFormContainersWithStates);
-
-			preparedStatement = this.getConnection().prepareStatement(
-					syntax.getPreparedStatement());
-
-			preparedStatement.setLong(1, electronicFormIdParam);
+					ISyntax.ProcedureMapping.Form.GetFormContainersChildFormContainersWithStates
+			);
+			preparedStatement = this.getConnection().prepareStatement(syntax.getPreparedStatement());
+			preparedStatement.setLong(1, electronicFormId);
 
 			resultSet = preparedStatement.executeQuery();
 
@@ -301,18 +280,17 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 				this.mapFormContainerStatesTo(mappedForm, resultSet);
 
 				//Ancestor...
-				mappedForm.setAncestorId(electronicFormIdParam);
-
+				mappedForm.setAncestorId(electronicFormId);
 				returnVal.add(mappedForm);
 			}
 
 			//When field data must also be included...
-			if (includeFieldDataParam) {
+			if (includeFieldData) {
 				for (Form form : returnVal) {
 					List<Field> formFields =
 							this.fieldUtil.getFormFields(
 									form.getId(),
-									includeTableFieldsParam,
+									includeTableFields,
 									false);
 					form.setFormFields(formFields);
 				}
@@ -329,54 +307,43 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	/**
 	 * Gets the ancestor for the {@code electronicFormIdParam} Form.
 	 *
-	 * @param electronicFormIdParam Identifier for the Form.
-	 * @param includeFieldDataParam Whether to populate the return {@code Form} fields.
-	 * @param includeTableFieldsParam Whether to populate the return {@code Form} table fields.
+	 * @param electronicFormId Identifier for the Form.
+	 * @param includeFieldData Whether to populate the return {@code Form} fields.
+	 * @param includeTableFields Whether to populate the return {@code Form} table fields.
 	 * @return {@code Form} descendants.
 	 *
 	 * @see Form
 	 */
-	public Form getFormAncestor(
-		Long electronicFormIdParam,
-		boolean includeFieldDataParam,
-		boolean includeTableFieldsParam
-	) {
-		if (electronicFormIdParam == null) return null;
+	public Form getFormAncestor(Long electronicFormId, boolean includeFieldData, boolean includeTableFields) {
+		if (electronicFormId == null) return null;
 
 		Form returnVal = null;
-		Map<Long,String> definitionAndTitle =
-				this.formDefUtil.getFormDefinitionIdAndTitle();
-
+		Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
 			ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
 					this.getSQLTypeFromConnection(),
-					ISyntax.ProcedureMapping.Form.GetFormContainersParentFormContainer);
+					ISyntax.ProcedureMapping.Form.GetFormContainersParentFormContainer
+			);
 
-			preparedStatement = this.getConnection().prepareStatement(
-					syntax.getPreparedStatement());
-
-			preparedStatement.setLong(1,electronicFormIdParam);
+			preparedStatement = this.getConnection().prepareStatement(syntax.getPreparedStatement());
+			preparedStatement.setLong(1,electronicFormId);
 
 			resultSet = preparedStatement.executeQuery();
 
 			//Iterate each of the form containers...
-			if (resultSet.next()) {
-				returnVal = this.mapFormContainerTo(
-						definitionAndTitle,
-						resultSet);
-			}
+			if (resultSet.next()) returnVal = this.mapFormContainerTo(definitionAndTitle, resultSet);
 
 			//When field data must also be included...
-			if (includeFieldDataParam && returnVal != null) {
+			if (includeFieldData && returnVal != null) {
 				returnVal.setFormFields(
 						this.fieldUtil.getFormFields(
 								returnVal.getId(),
-								includeTableFieldsParam,
-								false));
+								includeTableFields,
+								false)
+				);
 			}
-
 			return returnVal;
 		} catch (SQLException sqlError) {
 			throw new FluidSQLException(sqlError);
@@ -388,8 +355,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	/**
 	 * Maps the Form to the provided Definition-Id and Title.
 	 *
-	 * @param definitionAndTitleParam Form Definition Id and Title mapping.
-	 * @param resultSetParam Result Set used to populate {@code Form} with.
+	 * @param definitionAndTitle Form Definition Id and Title mapping.
+	 * @param resultSet Result Set used to populate {@code Form} with.
 	 *
 	 * @return Form
 	 *
@@ -397,18 +364,15 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 	 *
 	 * @see ResultSet
 	 */
-	private Form mapFormContainerTo(
-		Map<Long, String> definitionAndTitleParam,
-		ResultSet resultSetParam
-	) throws SQLException {
-		Long formId = resultSetParam.getLong(SQLColumnIndex._01_FORM_ID);
-		Long formTypeId = resultSetParam.getLong(SQLColumnIndex._02_FORM_TYPE);
-		String formType = definitionAndTitleParam.get(formTypeId);
+	private Form mapFormContainerTo(Map<Long, String> definitionAndTitle, ResultSet resultSet) throws SQLException {
+		Long formId = resultSet.getLong(SQLColumnIndex._01_FORM_ID);
+		Long formTypeId = resultSet.getLong(SQLColumnIndex._02_FORM_TYPE);
+		String formType = definitionAndTitle.get(formTypeId);
 
-		String title = resultSetParam.getString(SQLColumnIndex._03_TITLE);
-		Date created = resultSetParam.getDate(SQLColumnIndex._04_CREATED);
-		Date lastUpdated = resultSetParam.getDate(SQLColumnIndex._05_LAST_UPDATED);
-		Long currentUserId = resultSetParam.getLong(SQLColumnIndex._06_CURRENT_USER_ID);
+		String title = resultSet.getString(SQLColumnIndex._03_TITLE);
+		Date created = resultSet.getDate(SQLColumnIndex._04_CREATED);
+		Date lastUpdated = resultSet.getDate(SQLColumnIndex._05_LAST_UPDATED);
+		Long currentUserId = resultSet.getLong(SQLColumnIndex._06_CURRENT_USER_ID);
 
 		if (formType == null) {
 			throw new SQLException(String.format("No mapping found for Form Type '%s'.", formTypeId));
@@ -420,15 +384,14 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		toAdd.setId(formId);
 		toAdd.setTitle(title);
 
-		//Created...
+		// Created:
 		if (created != null) toAdd.setDateCreated(new Date(created.getTime()));
 
-		//Last Updated...
+		// Last Updated:
 		if (lastUpdated != null) toAdd.setDateLastUpdated(new Date(lastUpdated.getTime()));
 
-		//Current User...
-		if (currentUserId != null &&
-				currentUserId.longValue() > 0) {
+		// Current User:
+		if (currentUserId != null && currentUserId.longValue() > 0) {
 			User currentUser = new User();
 			currentUser.setId(currentUserId);
 			toAdd.setCurrentUser(currentUser);

@@ -188,20 +188,17 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Ancestor Label...
 		if (!this.jsonObject.isNull(JSONMapping.ANCESTOR_LABEL)) {
-			this.setAncestorLabel(
-					this.jsonObject.getString(JSONMapping.ANCESTOR_LABEL));
+			this.setAncestorLabel(this.jsonObject.getString(JSONMapping.ANCESTOR_LABEL));
 		}
 
 		//Descendant Label...
 		if (!this.jsonObject.isNull(JSONMapping.DESCENDANTS_LABEL)) {
-			this.setDescendantsLabel(
-					this.jsonObject.getString(JSONMapping.DESCENDANTS_LABEL));
+			this.setDescendantsLabel(this.jsonObject.getString(JSONMapping.DESCENDANTS_LABEL));
 		}
 
 		//Number Inputs...
 		if (!this.jsonObject.isNull(JSONMapping.NUMBER_INPUTS)) {
-			this.setNumberInputs(this.jsonObject.getBoolean(
-					JSONMapping.NUMBER_INPUTS));
+			this.setNumberInputs(this.jsonObject.getBoolean(JSONMapping.NUMBER_INPUTS));
 		}
 
 		//Title...
@@ -238,7 +235,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			if (!jsonObj.isNull(User.JSONMapping.USERNAME)) {
 				currentUser.setUsername(jsonObj.getString(User.JSONMapping.USERNAME));
 			}
-
 			this.setCurrentUser(currentUser);
 		}
 
@@ -256,19 +252,16 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
 
 		//Date Last Updated...
-		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(
-				JSONMapping.DATE_LAST_UPDATED));
+		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
 
 		//Associated Flows...
 		if (!this.jsonObject.isNull(JSONMapping.ASSOCIATED_FLOWS)) {
-			JSONArray associatedJobsArr = this.jsonObject.getJSONArray(
-					JSONMapping.ASSOCIATED_FLOWS);
+			JSONArray associatedJobsArr = this.jsonObject.getJSONArray(JSONMapping.ASSOCIATED_FLOWS);
 
 			List<Flow> assFlowsObj = new ArrayList<>();
 			for (int index = 0;index < associatedJobsArr.length();index++) {
 				assFlowsObj.add(new Flow(associatedJobsArr.getJSONObject(index)));
 			}
-
 			this.setAssociatedFlows(assFlowsObj);
 		}
 
@@ -279,7 +272,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			for (int index = 0;index < formFieldsArr.length();index++) {
 				assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
 			}
-
 			this.setFormFields(assFormFields);
 		}
 
@@ -287,8 +279,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (this.jsonObject.isNull(JSONMapping.ANCESTOR_ID)) {
 			this.setAncestorId(null);
 		} else {
-			this.setAncestorId(this.jsonObject.getLong(
-					JSONMapping.ANCESTOR_ID));
+			this.setAncestorId(this.jsonObject.getLong(JSONMapping.ANCESTOR_ID));
 		}
 
 		//Table Field Parent Id...
@@ -310,11 +301,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 				descendantIds.add(jsonArray.getLong(index));
 			}
 
-			if (descendantIds.isEmpty()) {
-				this.setDescendantIds(null);
-			} else {
-				this.setDescendantIds(descendantIds);
-			}
+			if (descendantIds.isEmpty()) this.setDescendantIds(null);
+			else this.setDescendantIds(descendantIds);
 		}
 	}
 
@@ -322,10 +310,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * Constructor that also sets The Form Definition
 	 * associated with the {@code Form}.
 	 *
-	 * @param formTypeParam The Form Definition.
+	 * @param formType The Form Definition.
 	 */
-	public Form(String formTypeParam) {
-		this.setFormType(formTypeParam);
+	public Form(String formType) {
+		this.setFormType(formType);
 	}
 
 	/**
