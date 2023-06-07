@@ -14,6 +14,12 @@
  */
 package com.fluidbpm.program.api.util.sql.impl;
 
+import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
+import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
+import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
+import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
+import com.fluidbpm.program.api.vo.form.Form;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,12 +27,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
-import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
-import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
-import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
-import com.fluidbpm.program.api.vo.form.Form;
 
 /**
  * SQL Utility class used for {@code Form} Definition related actions.
@@ -38,7 +38,6 @@ import com.fluidbpm.program.api.vo.form.Form;
  * @see Form
  */
 public class SQLFormDefinitionUtil extends ABaseSQLUtil {
-
 	private static final Map<Long,String> LOCAL_MAPPING = new HashMap();
 	private static long timeToUpdateAgain = 0;
 
@@ -57,37 +56,25 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 	 *
 	 * @return Form Definition Id and Title.
 	 */
-	public Map<Long,String> getFormDefinitionIdAndTitle()
-	{
+	public Map<Long,String> getFormDefinitionIdAndTitle() {
 		//When already cached, use the cached value...
-		if (!LOCAL_MAPPING.isEmpty())
-		{
+		if (!LOCAL_MAPPING.isEmpty()) {
 			Map<Long,String> returnVal = new HashMap<>(LOCAL_MAPPING);
-
 			//The id's are outdated...
-			if (System.currentTimeMillis() > timeToUpdateAgain){
-
-				synchronized (LOCAL_MAPPING)
-				{
+			if (System.currentTimeMillis() > SQLFormDefinitionUtil.timeToUpdateAgain) {
+				synchronized (LOCAL_MAPPING) {
 					LOCAL_MAPPING.clear();
 				}
 			}
-
 			return returnVal;
 		}
 
 		//Only allow one thread to set the local mapping...
-		synchronized (LOCAL_MAPPING)
-		{
-			if (!LOCAL_MAPPING.isEmpty())
-			{
-				return new HashMap<>(LOCAL_MAPPING);
-			}
-
+		synchronized (LOCAL_MAPPING) {
+			if (!LOCAL_MAPPING.isEmpty()) return new HashMap<>(LOCAL_MAPPING);
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
-			try
-			{
+			try {
 				ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
 						this.getSQLTypeFromConnection(),
 						ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
@@ -98,29 +85,25 @@ public class SQLFormDefinitionUtil extends ABaseSQLUtil {
 				resultSet = preparedStatement.executeQuery();
 
 				//Iterate each of the form containers...
-				while (resultSet.next())
-				{
+				while (resultSet.next()) {
 					Long id = resultSet.getLong(1);
 					String title = resultSet.getString(2);
-
 					LOCAL_MAPPING.put(id,title);
 				}
-
-				//Update in 10 mins...
-				timeToUpdateAgain =
-						(System.currentTimeMillis() +
-								TimeUnit.MINUTES.toMillis(10));
-			}
-			//
-			catch (SQLException sqlError) {
+				SQLFormDefinitionUtil.timeToUpdateAgain = (System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10));
+			} catch (SQLException sqlError) {
 				throw new FluidSQLException(sqlError);
-			}
-			//
-			finally {
+			} finally {
 				this.closeStatement(preparedStatement,resultSet);
 			}
-
 			return new HashMap<>(LOCAL_MAPPING);
 		}
+	}
+
+	/**
+	 * Clear the local cache for form definition titles to primary key mappings.
+	 */
+	public static void clearStaticMapping() {
+		LOCAL_MAPPING.clear();
 	}
 }

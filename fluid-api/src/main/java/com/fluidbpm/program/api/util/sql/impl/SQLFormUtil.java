@@ -255,7 +255,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 		List<Form> returnVal = new ArrayList();
 		if (electronicFormId == null) return returnVal;
 
-		Map<Long,String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
+		Map<Long, String> definitionAndTitle = this.formDefUtil.getFormDefinitionIdAndTitle();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -270,10 +270,7 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 
 			//Iterate each of the form containers...
 			while (resultSet.next()) {
-				Form mappedForm = this.mapFormContainerTo(
-						definitionAndTitle,
-						resultSet);
-
+				Form mappedForm = this.mapFormContainerTo(definitionAndTitle, resultSet);
 				if (mappedForm == null) continue;
 
 				//Map the states...
@@ -287,11 +284,8 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
 			//When field data must also be included...
 			if (includeFieldData) {
 				for (Form form : returnVal) {
-					List<Field> formFields =
-							this.fieldUtil.getFormFields(
-									form.getId(),
-									includeTableFields,
-									false);
+					List<Field> formFields = this.fieldUtil.getFormFields(
+							form.getId(), includeTableFields, false);
 					form.setFormFields(formFields);
 				}
 			}
