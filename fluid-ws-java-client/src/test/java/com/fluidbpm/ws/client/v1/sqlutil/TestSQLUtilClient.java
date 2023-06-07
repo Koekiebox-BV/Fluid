@@ -19,6 +19,9 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
+import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
@@ -32,6 +35,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -186,6 +191,14 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
                 List<Form> forms = sqlUtilClient.getTableForms(created, true);
                 TestCase.assertEquals(trCreateCount, forms.size());
 
+                List<Field> withoutTblFields = sqlUtilClient.getFormFields(created, false);
+                TestCase.assertNotNull(withoutTblFields);
+                TestCase.assertEquals(1, withoutTblFields.size());
+
+                List<Field> withTblFields = sqlUtilClient.getFormFields(created, true);
+                TestCase.assertNotNull(withTblFields);
+                TestCase.assertEquals(2, withTblFields.size());
+
                 forms.forEach(tblForm -> {
                     TestCase.assertNotNull(tblForm.getId());
                     TestCase.assertNotNull(tblForm.getFormType());
@@ -198,6 +211,64 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
                     TestCase.assertEquals(3, tblForm.getFormFields().size());
                 });
             });
+        }
+    }
+
+    @Test
+    public void testSQLUtilExecuteNativeSQLStoredProc() {
+        if (!this.isConnectionValid()) return;
+
+        try (
+                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+        ) {
+            long start = System.currentTimeMillis();
+            int numberOfRecords = 1;
+
+            NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
+
+            nativeSQLQuery.setDatasourceName(FLUID_DS);
+            nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
+
+            List<SQLColumn> inputs = new ArrayList<>();
+            inputs.add(new SQLColumn(null,1, Types.BIGINT, 1L));
+            nativeSQLQuery.setSqlInputs(inputs);
+
+            SQLResultSet resultListing = sqlUtilClient.executeSQL(nativeSQLQuery);
+            long took = (System.currentTimeMillis() - start);
+            start = System.currentTimeMillis();
+
+            log.info("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+            this.validateResultSet(resultListing, 6);
+            log.info("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+        }
+    }
+
+    @Test
+    public void testSQLUtilExecuteNativeSQLOnly() {
+        if (!this.isConnectionValid()) return;
+
+        try (
+                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+        ) {
+            long start = System.currentTimeMillis();
+            int numberOfRecords = 1;
+
+            NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
+
+            nativeSQLQuery.setDatasourceName(FLUID_DS);
+            nativeSQLQuery.setQuery("SELECT * FROM form_definition WHERE title = ?");
+
+            List<SQLColumn> inputs = new ArrayList<>();
+            inputs.add(new SQLColumn(null,1,Types.VARCHAR, "Email"));
+            nativeSQLQuery.setSqlInputs(inputs);
+
+            SQLResultSet resultListing = sqlUtilClient.executeSQL(nativeSQLQuery);
+            long took = (System.currentTimeMillis() - start);
+            start = System.currentTimeMillis();
+
+            log.info("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
+            this.validateResultSet(resultListing, 11);
+            log.info("Took '"+took+"' millis for '"+numberOfRecords+"' random records.");
         }
     }
 
@@ -229,11 +300,18 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
         //TODO need to move to Clone step logic.
 
         Form ancestor = sqlUtilClient.getAncestor(
-                //new Form(2575L),
                 new Form(4071L),
                 true,
                 false);
 
         TestCase.assertNotNull(ancestor);
+    }
+
+    private void validateResultSet(SQLResultSet resultSet, int expectedColumns) {
+        TestCase.assertNotNull(resultSet);
+        resultSet.getListing().forEach(row -> {
+            TestCase.assertNotNull(row.getSqlColumns());
+            TestCase.assertEquals(expectedColumns, row.getSqlColumns().size());
+        });
     }
 }
