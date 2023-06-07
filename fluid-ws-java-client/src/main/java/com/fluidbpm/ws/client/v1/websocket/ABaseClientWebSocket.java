@@ -191,9 +191,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * a separate {@code Thread}.
 	 */
 	protected void closeConnectionNonThreaded() {
-		if (this.webSocketClient == null) {
-			return;
-		}
+		if (this.webSocketClient == null) return;
 
 		this.webSocketClient.closeSession();
 		super.closeConnectionNonThreaded();

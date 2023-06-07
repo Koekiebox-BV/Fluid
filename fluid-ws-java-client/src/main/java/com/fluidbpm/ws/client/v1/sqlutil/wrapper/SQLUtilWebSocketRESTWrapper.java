@@ -45,12 +45,10 @@ import java.util.Optional;
  * @since 1.8
  */
 public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closeable {
+	private final String baseURL;
+	private final User loggedInUser;
 
-	//Instance...
-	private String baseURL;
-	private User loggedInUser;
-
-	private long timeoutMillis;
+	private final long timeoutMillis;
 
 	//Clients...
 	private SQLUtilWebSocketGetAncestorClient getAncestorClient = null;
@@ -70,7 +68,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	//Mode...
 	private Mode mode = null;
 
-	private static boolean DISABLE_WS;
+	public static boolean DISABLE_WS;
 
 	/**
 	 * Aliases for properties used by the {@code SQLUtilWebSocketRESTWrapper}.
@@ -85,9 +83,10 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	//Assign the property whether ti dis
 	static {
 		try {
-			DISABLE_WS = Boolean.parseBoolean(
-					System.getProperty(PropName.FLUID_API_DISABLE_WEB_SOCKETS, String.valueOf(false)).trim());
-
+			DISABLE_WS = Boolean.parseBoolean(System.getProperty(
+					PropName.FLUID_API_DISABLE_WEB_SOCKETS,
+					String.valueOf(false)).trim()
+			);
 		} catch (NumberFormatException nfe) {
 			DISABLE_WS = false;
 		}
@@ -104,21 +103,17 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	/**
 	 * New wrapper instance.
 	 *
-	 * @param baseURLParam Example {@code https://[instance].fluidbpm.com/fluid-ws/}
+	 * @param baseURL Example {@code https://[instance].fluidbpm.com/fluid-ws/}
 	 * @param serviceTicket The service ticket for the logged in user.
-	 * @param timeoutMillisParam The timeout of the request in millis.
+	 * @param timeoutMillis The timeout of the request in millis.
 	 */
-	public SQLUtilWebSocketRESTWrapper(
-			String baseURLParam,
-			String serviceTicket,
-			long timeoutMillisParam
-	) {
-		super(baseURLParam, serviceTicket);
-		this.baseURL = baseURLParam;
+	public SQLUtilWebSocketRESTWrapper(String baseURL, String serviceTicket, long timeoutMillis) {
+		super(baseURL, serviceTicket);
+		this.baseURL = baseURL;
 
 		this.loggedInUser = new User();
 		this.loggedInUser.setServiceTicket(serviceTicket);
-		this.timeoutMillis = timeoutMillisParam;
+		this.timeoutMillis = timeoutMillis;
 
 		this.sqlUtilClient = new SQLUtilClient(this.baseURL, this.loggedInUser.getServiceTicket());
 		this.fcClient = new FormContainerClient(this.baseURL, this.loggedInUser.getServiceTicket());
@@ -151,7 +146,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 * @return The {@code formToGetAncestorForParam} Ancestor as {@code Form}'s.
 	 */
 	public Form getAncestor(Form formToGetAncestorFor, boolean includeFieldData, boolean includeTableFields) {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 
 		//ANCESTOR...
 		try {
@@ -201,7 +196,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 			boolean massFetch,
 			Form ... formsToGetDescFor
 	) {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 		
 		//DESCENDANTS...
 		try {
@@ -302,7 +297,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
 	 */
 	public List<FormListing> getTableForms(boolean includeFieldData, Long formDefFilter, Form ... formsToGetTableFormsFor) {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 
 		//DESCENDANTS...
 		try {
@@ -363,8 +358,21 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 *
 	 * @return The {@code formsToGetFieldsForParam} Fields as {@code Field}'s.
 	 */
+	public List<FormFieldListing> getFormFields(boolean includeTableFieldData, List<Form> formsToGetFieldsFor) {
+		if (formsToGetFieldsFor == null) return null;
+		return this.getFormFields(includeTableFieldData, formsToGetFieldsFor.toArray(new Form[]{}));
+	}
+
+	/**
+	 * Retrieves all the (Fields) for the {@code formsToGetDescForParam}.
+	 *
+	 * @param includeTableFieldData Should Table Record Field data be included?
+	 * @param formsToGetFieldsFor The Fluid Form to get Descendants for.
+	 *
+	 * @return The {@code formsToGetFieldsForParam} Fields as {@code Field}'s.
+	 */
 	public List<FormFieldListing> getFormFields(boolean includeTableFieldData, Form ... formsToGetFieldsFor) {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 
 		//FORM FIELDS...
 		try {
@@ -423,9 +431,27 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	public List<FormHistoricDataListing> getFormHistoryByForm(
 			boolean includeCurrent,
 			boolean labelFieldName,
+			List<Form> formsToGetHistoryFor
+	) {
+		if (formsToGetHistoryFor == null) return null;
+		return this.getFormHistoryByForm(includeCurrent, labelFieldName, formsToGetHistoryFor.toArray(new Form[]{}));
+	}
+
+	/**
+	 * Retrieves all the (FormHistoricData) for the {@code formsToGetFieldsFor}.
+	 *
+	 * @param includeCurrent Include the current field values.
+	 * @param labelFieldName Make use of label field names.
+	 * @param formsToGetHistoryFor The Fluid Form to get History for.
+	 *
+	 * @return The {@code formsToGetHistoryFor} Historic Data as {@code FormHistoricData}'s.
+	 */
+	public List<FormHistoricDataListing> getFormHistoryByForm(
+			boolean includeCurrent,
+			boolean labelFieldName,
 			Form ... formsToGetHistoryFor
 	) {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 
 		//FORM FIELDS...
 		try {
@@ -516,7 +542,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 * @see SQLUtilWebSocketExecuteNativeSQLClient
 	 */
 	public SQLUtilWebSocketExecuteNativeSQLClient initGetNativeSQLClient() {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 
 		if (this.sqlUtilWebSocketExecNativeClient == null && Mode.RESTfulActive != this.mode) {
 			this.sqlUtilWebSocketExecNativeClient = new SQLUtilWebSocketExecuteNativeSQLClient(
@@ -538,8 +564,19 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 * @param includeFieldData Should Field data be included?
 	 * @param formsToPopulateFormFieldsFor The Fluid Form to get Descendants for.
 	 */
+	public void massPopulateFormFields(boolean includeFieldData, List<Form> formsToPopulateFormFieldsFor) {
+		if (formsToPopulateFormFieldsFor == null) return;
+		this.massPopulateFormFields(includeFieldData, formsToPopulateFormFieldsFor.toArray(new Form[]{}));
+	}
+
+	/**
+	 * Retrieves all the (Fields) for the {@code formsToGetDescForParam}.
+	 *
+	 * @param includeFieldData Should Field data be included?
+	 * @param formsToPopulateFormFieldsFor The Fluid Form to get Descendants for.
+	 */
 	public void massPopulateFormFields(boolean includeFieldData, Form ... formsToPopulateFormFieldsFor) {
-		if (DISABLE_WS) this.mode = Mode.RESTfulActive;
+		this.clearClientsIfRest();
 
 		//FORM FIELDS...
 		try {
@@ -561,7 +598,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 					FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
 				throw clientExcept;
 			}
-
 			this.mode = Mode.RESTfulActive;
 		}
 
@@ -569,21 +605,19 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		if (formsToPopulateFormFieldsFor == null || formsToPopulateFormFieldsFor.length < 1) return;
 
 		//Populate a known echo for all of the local form caches...
-		Form[] formsToFetchForLocalCacheArr =
-				new Form[formsToPopulateFormFieldsFor.length];
+		Form[] formsToFetchForLocalCacheArr = new Form[formsToPopulateFormFieldsFor.length];
 		for (int index = 0; index < formsToFetchForLocalCacheArr.length; index++) {
 			formsToFetchForLocalCacheArr[index] = new Form(formsToPopulateFormFieldsFor[index].getId());
 			formsToFetchForLocalCacheArr[index].setEcho(UtilGlobal.randomUUID());
 		}
 
 		List<FormFieldListing> listingReturnFieldValsPopulated = new ArrayList<>();
-
-		//Fetch all of the values in a single go...
+		// Fetch all the values in a single go:
 		if (this.getFormFieldsClient != null) {
 			listingReturnFieldValsPopulated =
 					this.getFormFieldsClient.getFormFieldsSynchronized(formsToFetchForLocalCacheArr);
 		} else {
-			//Old Rest way of fetching all of the values...
+			// Old Rest way of fetching all the values:
 			for (Form formToFetchFor : formsToFetchForLocalCacheArr) {
 				List<Field> listOfFields = this.sqlUtilClient.getFormFields(formToFetchFor, includeFieldData);
 				FormFieldListing toAdd = new FormFieldListing();
@@ -594,7 +628,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 			}
 		}
 
-		//Populate each of the form from the param...
+		// Populate each of the form from the param:
 		for (Form formToSetFieldsOn : formsToPopulateFormFieldsFor) {
 			formToSetFieldsOn.setFormFields(
 					this.getFieldValuesForFormFromCache(
@@ -610,31 +644,40 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	 * Populate the field values from the cache.
 	 *
 	 * @param formId The id of the form to populate.
-	 * @param listingReturnFieldValsPopulated The cache of field values.
+	 * @param listingReturnFieldsPopulated The cache of field values.
 	 * @param formsToFetchForLocalCacheArr The forms that contain the ids and echos.
 	 *
 	 * @return The field values for form with id {@code formIdParam}.
 	 */
 	private List<Field> getFieldValuesForFormFromCache(
 			Long formId,
-			List<FormFieldListing> listingReturnFieldValsPopulated,
+			List<FormFieldListing> listingReturnFieldsPopulated,
 			Form[] formsToFetchForLocalCacheArr
-	){
+	) {
 		if (formId == null || formId.longValue() < 1) return null;
-
-		if (listingReturnFieldValsPopulated == null || listingReturnFieldValsPopulated.isEmpty()) return null;
+		if (listingReturnFieldsPopulated == null || listingReturnFieldsPopulated.isEmpty()) return null;
 		if (formsToFetchForLocalCacheArr == null || formsToFetchForLocalCacheArr.length == 0) return null;
 
 		for (Form formIter : formsToFetchForLocalCacheArr) {
 			//Form is a match...
 			if (formId.equals(formIter.getId())) {
 				String echoToUse = formIter.getEcho();
-				for (FormFieldListing fieldListing : listingReturnFieldValsPopulated) {
+				for (FormFieldListing fieldListing : listingReturnFieldsPopulated) {
 					if (echoToUse.equals(fieldListing.getEcho())) return fieldListing.getListing();
 				}
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * When mode is disabled WebSockets, the clients will be closed and cleared ({@code null}).
+	 */
+	private void clearClientsIfRest() {
+		if (DISABLE_WS && this.mode != Mode.RESTfulActive) {
+			this.closeAndClean();
+			this.mode = Mode.RESTfulActive;
+		}
 	}
 
 	/**
@@ -644,11 +687,19 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		if (this.sqlUtilClient != null) this.sqlUtilClient.closeAndClean();
 		if (this.fcClient != null) this.fcClient.closeAndClean();
 
+		// WebSocket clients:
 		if (this.getAncestorClient != null) this.getAncestorClient.closeAndClean();
+		this.getAncestorClient = null;
 		if (this.getDescendantsClient != null) this.getDescendantsClient.closeAndClean();
+		this.getDescendantsClient = null;
 		if (this.getTableFormsClient != null) this.getTableFormsClient.closeAndClean();
+		this.getTableFormsClient = null;
 		if (this.getFormFieldsClient != null) this.getFormFieldsClient.closeAndClean();
+		this.getFormFieldsClient = null;
 		if (this.sqlUtilWebSocketExecNativeClient != null) this.sqlUtilWebSocketExecNativeClient.closeAndClean();
+		this.sqlUtilWebSocketExecNativeClient = null;
+		if (this.getFormHistoryByFormClient != null) this.getFormHistoryByFormClient.closeAndClean();
+		this.getFormHistoryByFormClient = null;
 	}
 
 	/**
