@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Log
 public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
-	private String serviceTicketHex;
 
 	@Before
 	@Override
@@ -55,10 +54,10 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 		if (this.isConnectionInValid) return;
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient = new SQLUtilWebSocketExecuteNativeSQLClient(
-						BASE_URL,
-						null,
-						this.serviceTicketHex,
-						TimeUnit.SECONDS.toMillis(60)
+				BASE_URL,
+				null,
+				ADMIN_SERVICE_TICKET_HEX,
+				TimeUnit.SECONDS.toMillis(60)
 		);
 
 		long start = System.currentTimeMillis();
@@ -96,7 +95,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 				new SQLUtilWebSocketExecuteNativeSQLClient(
 						BASE_URL,
 						null,
-						this.serviceTicketHex,
+						ADMIN_SERVICE_TICKET_HEX,
 						TimeUnit.SECONDS.toMillis(60));
 
 		long start = System.currentTimeMillis();
@@ -134,7 +133,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 				new SQLUtilWebSocketExecuteNativeSQLClient(
 						BASE_URL,
 						null,
-						this.serviceTicketHex,
+						ADMIN_SERVICE_TICKET_HEX,
 						TimeUnit.SECONDS.toMillis(60),
 						true,"");
 

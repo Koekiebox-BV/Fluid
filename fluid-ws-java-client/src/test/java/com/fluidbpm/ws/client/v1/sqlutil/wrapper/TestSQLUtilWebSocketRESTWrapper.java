@@ -127,7 +127,7 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
 	 * Plain SQL (no stored proc)
 	 */
 	@Test
-	public void testNativeSQLExecutionQuery() {
+	public void testNativeSQLExecutionQueryWrapper() {
 		if (this.isConnectionInValid) return;
 
 		try (SQLUtilWebSocketRESTWrapper wClient = new SQLUtilWebSocketRESTWrapper(
