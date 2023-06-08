@@ -56,9 +56,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testCreateUser() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User userToCreate = new User();
 		userToCreate.setUsername(TestStatics.Create.USERNAME);
@@ -78,9 +78,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testCreateAndUpdateUser() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 		User userToCreate = new User();
 		userToCreate.setUsername(TestStatics.Create.USERNAME);
 		userToCreate.setPasswordClear(TestStatics.Create.PASSWORD);
@@ -104,9 +104,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testActivateAndDeactivateUser() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User userToCreate = new User();
 		userToCreate.setUsername(TestStatics.Create.USERNAME);
@@ -137,10 +137,10 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testCreateUserWithRole() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
-		RoleClient roleClient = new RoleClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+		RoleClient roleClient = new RoleClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		Role roleToAssociate = new Role();
 		roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
@@ -180,10 +180,10 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testUpdateUserRole() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
-		RoleClient roleClient = new RoleClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+		RoleClient roleClient = new RoleClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		Role roleToAssociate = new Role();
 		roleToAssociate.setName(TestRoleClient.TestStatics.Create.ROLE_NAME);
@@ -226,8 +226,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetLoggedUserInfo() {
-		if (!this.isConnectionValid()) return;
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		if (this.isConnectionInValid) return;
+
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User loggedInUser = userClient.getLoggedInUserInformation();
 		TestCase.assertNotNull(loggedInUser);
@@ -238,9 +239,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetAllUserInfo() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		UserListing userListing = userClient.getAllUsers();
 
@@ -256,9 +257,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testIncrementInvalidLogin() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User invalidLogin = new User();
 		invalidLogin.setUsername(USERNAME);
@@ -272,9 +273,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetAllUserFieldValues() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User loggedIn = userClient.getLoggedInUserInformation();
 
@@ -293,9 +294,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetUserInfoByUsername() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
 		TestCase.assertNotNull(user);
@@ -306,9 +307,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetUserInfoById() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		User user = userClient.getUserWhereUsername(ABaseTestCase.USERNAME);
 		TestCase.assertNotNull(user);
@@ -322,9 +323,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetUserGravatar() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);
+		UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		byte[] ralfGrav = userClient.getGravatarForEmail("info@ralfebert.de");
 		TestCase.assertNotNull(ralfGrav);
@@ -336,9 +337,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testGetUserGravatarByUser() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		try (UserClient userClient = new UserClient(BASE_URL, this.serviceTicket)) {
+		try (UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
 
 			User adminUser = userClient.getUserWhereUsername(USERNAME);
 			adminUser.addEmailToEmailAddresses("info@ralfebert.de");
@@ -355,9 +356,9 @@ public class TestUserClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testUsersLoggedInSince() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
-		try (UserClient userClient = new UserClient(BASE_URL, this.serviceTicket);) {
+		try (UserClient userClient = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);) {
 			UserListing loggedInSince = userClient.getAllUsersWhereLoggedInSince(
 					new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7)));
 			TestCase.assertNotNull(loggedInSince);

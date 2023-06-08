@@ -37,15 +37,12 @@ public class FluidLicenseClient extends ABaseFieldClient {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public FluidLicenseClient(
-		String endpointBaseUrlParam,
-		String serviceTicketParam
-	) {
-		super(endpointBaseUrlParam);
-		this.setServiceTicket(serviceTicketParam);
+	public FluidLicenseClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
@@ -56,19 +53,19 @@ public class FluidLicenseClient extends ABaseFieldClient {
 	 * {@code Valid To}
 	 * {@code User Count}
 	 *
-	 * @param licenseRequestParam The license request used to issue a license request from.
+	 * @param licenseRequest The license request used to issue a license request from.
 	 * @return The License Request file.
 	 */
-	public String requestLicense(LicenseRequest licenseRequestParam) {
+	public String requestLicense(LicenseRequest licenseRequest) {
 
-		if (licenseRequestParam != null) licenseRequestParam.setServiceTicket(this.serviceTicket);
+		if (licenseRequest != null) licenseRequest.setServiceTicket(this.serviceTicket);
 
 		return this.executeTxtReceiveTxt(
 			HttpMethod.POST,
 			null,
 			false,
-			(licenseRequestParam == null) ? null :
-					licenseRequestParam.toJsonObject().toString(),
+			(licenseRequest == null) ? null :
+					licenseRequest.toJsonObject().toString(),
 			ContentType.APPLICATION_JSON,
 			Version1.licenseRequest()
 		);
@@ -77,14 +74,13 @@ public class FluidLicenseClient extends ABaseFieldClient {
 	/**
 	 * Applies a generated license for the server.
 	 *
-	 * @param licenseToApplyParam The clear license to apply.
+	 * @param licenseToApply The clear license to apply.
 	 * @return The applied license.
 	 */
-	public LicenseRequest applyLicense(String licenseToApplyParam) {
+	public LicenseRequest applyLicense(String licenseToApply) {
 		LicenseRequest liceReq = new LicenseRequest();
-		liceReq.setLicenseCipherText(licenseToApplyParam);
+		liceReq.setLicenseCipherText(licenseToApply);
 		liceReq.setServiceTicket(this.serviceTicket);
-
 		return new LicenseRequest(this.postJson(liceReq, Version1.licenseApply()));
 	}
 }

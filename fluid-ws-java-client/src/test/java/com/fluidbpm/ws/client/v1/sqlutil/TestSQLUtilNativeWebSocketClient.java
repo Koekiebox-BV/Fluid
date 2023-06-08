@@ -15,7 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
@@ -42,12 +41,10 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 	@Before
 	@Override
 	public void init() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		// Login:
 		super.init();
-
-		this.serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(this.serviceTicket));
 	}
 
 	/**
@@ -55,7 +52,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testNativeSQLExecutionQuery() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient = new SQLUtilWebSocketExecuteNativeSQLClient(
 						BASE_URL,
@@ -93,7 +90,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testNativeSQLExecutionStoredProc() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
 				new SQLUtilWebSocketExecuteNativeSQLClient(
@@ -131,7 +128,7 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testNativeSQLExecutionStoredProcCompressed() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		SQLUtilWebSocketExecuteNativeSQLClient webSocketClient =
 				new SQLUtilWebSocketExecuteNativeSQLClient(

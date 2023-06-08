@@ -56,16 +56,16 @@ public class TestExitStep extends ABaseTestFlowStep {
 
     @Test(timeout = 60_000)//seconds.
     public void testWorkflowExitStep() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
         
         try (
-                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-                FlowStepClient fsClient = new FlowStepClient(BASE_URL, this.serviceTicket);
-                FlowStepRuleClient fsrClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
-                FlowItemClient fiClient = new FlowItemClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowStepClient fsClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowStepRuleClient fsrClient = new FlowStepRuleClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowItemClient fiClient = new FlowItemClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
             // create the flow:
             final String flowName = "JUnit Test Step - Exit";
@@ -230,11 +230,11 @@ public class TestExitStep extends ABaseTestFlowStep {
         if (this.formDef == null) return;
 
         try (
-                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+                FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             // ensure the correct steps have taken place:
             UserQuery uqCleanup = userQueryForFormType(

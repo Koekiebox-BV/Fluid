@@ -15,25 +15,23 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.ArrayList;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
 
 /**
  * Created by jasonbruwer on 15/12/28.
  */
-public class TestFormFieldClientInvalids extends ABaseTestCase {
+public class TestFormFieldClientInvalids extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -71,7 +69,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_NoFieldName()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -108,7 +106,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_NoFieldDescription()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -145,7 +143,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_TextMasked()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -182,7 +180,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_TextBarcode()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -219,7 +217,7 @@ public class TestFormFieldClientInvalids extends ABaseTestCase {
     @Test
     public void testFormFieldInvalid_MultiChoicePlain()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }

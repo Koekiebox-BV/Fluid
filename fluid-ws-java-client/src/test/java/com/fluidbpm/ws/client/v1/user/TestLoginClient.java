@@ -15,21 +15,21 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
+import com.fluidbpm.program.api.vo.user.User;
+import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
+import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
+import junit.framework.TestCase;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.user.User;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-
-import junit.framework.TestCase;
-
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestLoginClient extends ABaseTestCase {
+@Log
+public class TestLoginClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -43,23 +43,15 @@ public class TestLoginClient extends ABaseTestCase {
 		this.loginClient = new LoginClient(BASE_URL);
 	}
 
-	/**
-	 *
-	 */
 	@After
 	public void destroy()
 	{
 		this.loginClient.closeAndClean();
 	}
 
-	/**
-	 *
-	 */
 	@Test
 	public void testLogin() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (this.isConnectionInValid) return;
 
 		//First...
 		AppRequestToken firstAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
@@ -67,7 +59,7 @@ public class TestLoginClient extends ABaseTestCase {
 
 		String firstServiceTicket = firstAppRequestToken.getServiceTicket();
 		TestCase.assertNotNull(firstServiceTicket);
-		System.out.println("1st Token: "+firstServiceTicket);
+		log.info("1st Token: "+firstServiceTicket);
 
 		//Second...
 		AppRequestToken secondAppRequestToken = this.loginClient.login(USERNAME, PASSWORD);
@@ -75,7 +67,7 @@ public class TestLoginClient extends ABaseTestCase {
 
 		String secondServiceTicket = secondAppRequestToken.getServiceTicket();
 		TestCase.assertNotNull(secondServiceTicket);
-		System.out.println("2nd Token: "+secondServiceTicket);
+		log.info("2nd Token: "+secondServiceTicket);
 
 		TestCase.assertNotSame("(1 and 2) Service Tickets not allowed to match."
 				,firstServiceTicket,secondServiceTicket);
@@ -86,20 +78,15 @@ public class TestLoginClient extends ABaseTestCase {
 
 		String thirdServiceTicket = thirdAppRequestToken.getServiceTicket();
 		TestCase.assertNotNull(thirdServiceTicket);
-		System.out.println("3rd Token: "+thirdServiceTicket);
+		log.info("3rd Token: "+thirdServiceTicket);
 
 		TestCase.assertNotSame("(2 and 3) Service Tickets not allowed to match."
 				,secondServiceTicket,thirdServiceTicket);
 	}
 
-	/**
-	 *
-	 */
 	@Test
 	public void testLoginBASIC() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
+		if (this.isConnectionInValid) return;
 
 		//First...
 		User loggedInUser = this.loginClient.loginBasic(USERNAME, PASSWORD);
@@ -107,6 +94,6 @@ public class TestLoginClient extends ABaseTestCase {
 
 		String firstServiceTicket = loggedInUser.getServiceTicket();
 		TestCase.assertNotNull(firstServiceTicket);
-		System.out.println("1st Token: "+firstServiceTicket);
+		log.info("1st Token: "+firstServiceTicket);
 	}
 }

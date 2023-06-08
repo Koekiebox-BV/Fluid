@@ -19,7 +19,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Created by jasonbruwer on 15/12/28.
  */
-public class TestFormFieldClientSystemFields extends ABaseTestCase {
+public class TestFormFieldClientSystemFields extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -87,7 +87,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_DateCreated()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -124,7 +124,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_DateLastUpdated()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -161,7 +161,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_FormType()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -198,7 +198,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_FormFlowState()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -235,7 +235,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_Title()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -272,7 +272,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailFromAddress()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -309,7 +309,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailToAddress()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -346,7 +346,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailSubject()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -383,7 +383,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailSentDate()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -420,7 +420,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailReceivedDate()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -457,7 +457,7 @@ public class TestFormFieldClientSystemFields extends ABaseTestCase {
     @Test
     public void testFormFieldSystemField_EmailUniqueIdentifierDate()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }

@@ -15,26 +15,24 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.util.List;
-
+import com.fluidbpm.program.api.vo.user.UserNotification;
+import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
+import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.user.UserNotification;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
-import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-
-import junit.framework.TestCase;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 18/04/05.
  * @since 1.8
  */
-public class TestUserNotificationClient extends ABaseTestCase {
+public class TestUserNotificationClient extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -63,7 +61,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test
     public void testCreateUserNotificationCRUD() {
         
-        if (!this.isConnectionValid()) {
+        if (this.isConnectionInValid) {
             return;
         }
 
@@ -118,7 +116,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test(expected = FluidClientException.class)
     public void testFetchUserInformationUnreadExcept() {
 
-        if (!this.isConnectionValid()) {
+        if (this.isConnectionInValid) {
 
             throw new FluidClientException(
                     "Server is not up.",
@@ -155,7 +153,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test
     public void testFetchUserInformationUnread() {
 
-        if (!this.isConnectionValid()) {
+        if (this.isConnectionInValid) {
             return;
         }
 
@@ -197,7 +195,7 @@ public class TestUserNotificationClient extends ABaseTestCase {
     @Test
     public void testFetchUserInformationRead() {
 
-        if (!this.isConnectionValid()) {
+        if (this.isConnectionInValid) {
             return;
         }
 

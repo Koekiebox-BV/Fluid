@@ -44,50 +44,50 @@ public class FlowClient extends ABaseClientWS {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public FlowClient(String endpointBaseUrlParam, String serviceTicketParam) {
-		super(endpointBaseUrlParam);
-		this.setServiceTicket(serviceTicketParam);
+	public FlowClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
 	 * Creates a new Flow with an Introduction and Exit basic rule.
 	 *
-	 * @param flowParam The flow to Create.
+	 * @param flow The flow to Create.
 	 * @return The created flow.
 	 *
 	 * @see Flow
 	 */
-	public Flow createFlow(Flow flowParam) {
-		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
+	public Flow createFlow(Flow flow) {
+		if (flow != null) flow.setServiceTicket(this.serviceTicket);
 
-		return new Flow(this.putJson(flowParam, WS.Path.Flow.Version1.flowCreate()));
+		return new Flow(this.putJson(flow, WS.Path.Flow.Version1.flowCreate()));
 	}
 
 	/**
 	 * Updates an existing Flow.
 	 *
-	 * @param flowParam The flow to Update.
+	 * @param flow The flow to Update.
 	 * @return The updated flow.
 	 *
 	 * @see Flow
 	 */
-	public Flow updateFlow(Flow flowParam) {
-		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
+	public Flow updateFlow(Flow flow) {
+		if (flow != null) flow.setServiceTicket(this.serviceTicket);
 
-		return new Flow(this.postJson(flowParam, WS.Path.Flow.Version1.flowUpdate()));
+		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.flowUpdate()));
 	}
 
 	/**
 	 * Retrieves a Flow by Primary Key.
 	 *
-	 * @param flowIdParam The Flow primary key.
+	 * @param flowId The Flow primary key.
 	 * @return The Flow.
 	 */
-	public Flow getFlowById(Long flowIdParam) {
-		Flow flow = new Flow(flowIdParam);
+	public Flow getFlowById(Long flowId) {
+		Flow flow = new Flow(flowId);
 		flow.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.getById()));
@@ -96,12 +96,12 @@ public class FlowClient extends ABaseClientWS {
 	/**
 	 * Retrieves a Flow by unique Name.
 	 *
-	 * @param flowNameParam The Flow name.
+	 * @param flowName The Flow name.
 	 * @return The Flow.
 	 */
-	public Flow getFlowByName(String flowNameParam) {
+	public Flow getFlowByName(String flowName) {
 		Flow flow = new Flow();
-		flow.setName(flowNameParam);
+		flow.setName(flowName);
 		flow.setServiceTicket(this.serviceTicket);
 
 		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.getByName()));
@@ -149,13 +149,13 @@ public class FlowClient extends ABaseClientWS {
 	/**
 	 * Delete an existing Flow.
 	 *
-	 * @param flowParam The Flow to delete.
+	 * @param flow The Flow to delete.
 	 * @return The deleted Flow.
 	 */
-	public Flow deleteFlow(Flow flowParam) {
-		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
+	public Flow deleteFlow(Flow flow) {
+		if (flow != null) flow.setServiceTicket(this.serviceTicket);
 
-		return new Flow(this.postJson(flowParam, WS.Path.Flow.Version1.flowDelete()));
+		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.flowDelete()));
 	}
 
 	/**
@@ -163,12 +163,12 @@ public class FlowClient extends ABaseClientWS {
 	 *
 	 * Only 'admin' can forcefully delete a Flow.
 	 *
-	 * @param flowParam The Flow to delete.
+	 * @param flow The Flow to delete.
 	 * @return The deleted Flow.
 	 */
-	public Flow forceDeleteFlow(Flow flowParam) {
-		if (flowParam != null) flowParam.setServiceTicket(this.serviceTicket);
+	public Flow forceDeleteFlow(Flow flow) {
+		if (flow != null) flow.setServiceTicket(this.serviceTicket);
 
-		return new Flow(this.postJson(flowParam, WS.Path.Flow.Version1.flowDelete(true)));
+		return new Flow(this.postJson(flow, WS.Path.Flow.Version1.flowDelete(true)));
 	}
 }

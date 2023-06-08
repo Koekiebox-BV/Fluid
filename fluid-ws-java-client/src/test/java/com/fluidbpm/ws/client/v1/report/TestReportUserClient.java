@@ -18,7 +18,7 @@ package com.fluidbpm.ws.client.v1.report;
 import com.fluidbpm.program.api.vo.report.userstats.UserStatsReport;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -28,7 +28,7 @@ import org.junit.Test;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class TestReportUserClient extends ABaseTestCase {
+public class TestReportUserClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -46,7 +46,7 @@ public class TestReportUserClient extends ABaseTestCase {
 
 	@Test(timeout = 5000)
 	public void testReport_OneWeek() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 
@@ -68,7 +68,7 @@ public class TestReportUserClient extends ABaseTestCase {
 
 	@Test(timeout = 5000)
 	public void testReport_Default() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 

@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ import junit.framework.TestCase;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFlowClient extends ABaseTestCase {
+public class TestFlowClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -72,7 +73,7 @@ public class TestFlowClient extends ABaseTestCase {
 	@Test
 	public void testFlowCRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -128,7 +129,7 @@ public class TestFlowClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testInvalidCreateData() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 

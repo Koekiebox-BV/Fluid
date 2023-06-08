@@ -84,15 +84,15 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testCreateFormHistoricData() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         User user = new User();
-        user.setServiceTicket(this.serviceTicket);
+        user.setServiceTicket(ADMIN_SERVICE_TICKET);
 
         try (
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
                 WebSocketGetFormHistoryByFormClient wsGetFormHist = new WebSocketGetFormHistoryByFormClient(
                         BASE_URL,
                         null,
@@ -167,15 +167,15 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testUpdateAndRetrieveFormHistoricData() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         User user = new User();
-        user.setServiceTicket(this.serviceTicket);
+        user.setServiceTicket(ADMIN_SERVICE_TICKET);
 
         try (
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
                 WebSocketGetFormHistoryByFormClient wsGetFormHist = new WebSocketGetFormHistoryByFormClient(
                      BASE_URL,
                      null,
@@ -323,10 +323,10 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
         super.destroy();
 
         try (
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formDef);
             deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formDefCreate);

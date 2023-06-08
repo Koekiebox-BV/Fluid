@@ -41,14 +41,12 @@ public class AttachmentClient extends ABaseClientWS {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public AttachmentClient(String endpointBaseUrlParam,
-							String serviceTicketParam) {
-		super(endpointBaseUrlParam);
-
-		this.setServiceTicket(serviceTicketParam);
+	public AttachmentClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
@@ -56,60 +54,48 @@ public class AttachmentClient extends ABaseClientWS {
 	 * If there is an existing attachment with the same name, a new version will be
 	 * uploaded.
 	 *
-	 * @param attachmentParam The attachment to upload.
+	 * @param attachment The attachment to upload.
 	 * @return The created attachment.
 	 *
 	 * @see Attachment
 	 */
-	public Attachment createAttachment(Attachment attachmentParam) {
-		if (attachmentParam != null && this.serviceTicket != null) {
-			attachmentParam.setServiceTicket(this.serviceTicket);
-		}
-
-		return new Attachment(this.putJson(attachmentParam, WS.Path.Attachment.Version1.attachmentCreate()));
+	public Attachment createAttachment(Attachment attachment) {
+		if (attachment != null) attachment.setServiceTicket(this.serviceTicket);
+		return new Attachment(this.putJson(attachment, WS.Path.Attachment.Version1.attachmentCreate()));
 	}
 
 	/**
 	 * Retrieves a Attachment by Primary Key.
 	 *
-	 * @param attachmentIdParam The Attachment primary key.
-	 * @param includeAttachmentDataParam Include the attachment data (Base-64).
+	 * @param attachmentId The Attachment primary key.
+	 * @param includeAttachmentData Include the attachment data (Base-64).
 	 *
 	 * @return The Attachment associated with {@code attachmentIdParam}.
 	 */
-	public Attachment getAttachmentById(
-		Long attachmentIdParam,
-		boolean includeAttachmentDataParam
-	) {
-		Attachment attachment = new Attachment(attachmentIdParam);
-		if (this.serviceTicket != null) {
-			attachment.setServiceTicket(this.serviceTicket);
-		}
+	public Attachment getAttachmentById(Long attachmentId, boolean includeAttachmentData) {
+		Attachment attachment = new Attachment(attachmentId);
+		attachment.setServiceTicket(this.serviceTicket);
 
 		return new Attachment(this.postJson(
-				attachment, WS.Path.Attachment.Version1.getById(
-						includeAttachmentDataParam)));
+				attachment, WS.Path.Attachment.Version1.getById(includeAttachmentData)));
 	}
 
 	/**
 	 * Retrieves all the Attachments associated with Form {@code formParam}.
 	 *
 	 * @param form The Form to use for lookup.
-	 * @param includeAttachmentDataParam Include the attachment data (Base-64).
+	 * @param includeAttachmentData Include the attachment data (Base-64).
 	 *
 	 * @return The Attachments associated with {@code formParam}.
 	 */
-	public List<Attachment> getAttachmentsByForm(
-		Form form,
-		boolean includeAttachmentDataParam
-	) {
+	public List<Attachment> getAttachmentsByForm(Form form, boolean includeAttachmentData) {
 		Form formPost = new Form(form.getId());
 		formPost.setServiceTicket(this.serviceTicket);
 
 		AttachmentListing returnedListing =
 				new AttachmentListing(postJson(
 						formPost, WS.Path.Attachment.Version1.getAllByFormContainer(
-								includeAttachmentDataParam,false)));
+								includeAttachmentData,false)));
 
 		return (returnedListing == null) ? null : returnedListing.getListing();
 	}
@@ -118,21 +104,17 @@ public class AttachmentClient extends ABaseClientWS {
 	 * Retrieves only {@code image} Attachments by Primary Key.
 	 *
 	 * @param form The Form to use for lookup.
-	 * @param includeAttachmentDataParam Include the attachment data (Base-64).
+	 * @param includeAttachmentData Include the attachment data (Base-64).
 	 *
 	 * @return The Attachment associated with {@code attachmentIdParam}.
 	 */
-	public List<Attachment> getImageAttachmentsByForm(
-		Form form,
-		boolean includeAttachmentDataParam
-	) {
+	public List<Attachment> getImageAttachmentsByForm(Form form, boolean includeAttachmentData) {
 		Form formPost = new Form(form.getId());
 		formPost.setServiceTicket(this.serviceTicket);
 
 		AttachmentListing returnedListing =
-				new AttachmentListing(postJson(
-						formPost, WS.Path.Attachment.Version1.getAllByFormContainer(
-								includeAttachmentDataParam, true)));
+				new AttachmentListing(postJson(formPost, WS.Path.Attachment.Version1.getAllByFormContainer(
+						includeAttachmentData, true)));
 
 		return (returnedListing == null) ? null : returnedListing.getListing();
 	}
@@ -140,16 +122,14 @@ public class AttachmentClient extends ABaseClientWS {
 	/**
 	 * Delete an existing Attachment.
 	 *
-	 * @param attachmentParam The Attachment to delete.
+	 * @param attachment The Attachment to delete.
 	 * @return The deleted Attachment.
 	 */
-	public Attachment deleteAttachment(Attachment attachmentParam) {
-		if (attachmentParam != null && this.serviceTicket != null) {
-			attachmentParam.setServiceTicket(this.serviceTicket);
-		}
+	public Attachment deleteAttachment(Attachment attachment) {
+		Attachment toPost = new Attachment(attachment == null ? null : attachment.getId());
+		toPost.setServiceTicket(this.serviceTicket);
 
-		return new Attachment(this.postJson(
-				attachmentParam, WS.Path.Attachment.Version1.attachmentDelete()));
+		return new Attachment(this.postJson(toPost, WS.Path.Attachment.Version1.attachmentDelete()));
 	}
 
 	/**
@@ -157,16 +137,13 @@ public class AttachmentClient extends ABaseClientWS {
 	 *
 	 * Only 'admin' can forcefully delete a Attachment.
 	 *
-	 * @param attachmentParam The Attachment to delete.
+	 * @param attachment The Attachment to delete.
 	 * @return The deleted Attachment.
 	 */
-	public Attachment forceDeleteAttachment(Attachment attachmentParam) {
-		if (attachmentParam != null && this.serviceTicket != null) {
-			attachmentParam.setServiceTicket(this.serviceTicket);
-		}
+	public Attachment forceDeleteAttachment(Attachment attachment) {
+		Attachment toPost = new Attachment(attachment == null ? null : attachment.getId());
+		toPost.setServiceTicket(this.serviceTicket);
 
-		return new Attachment(this.postJson(
-				attachmentParam,
-				WS.Path.Attachment.Version1.attachmentDelete(true)));
+		return new Attachment(this.postJson(toPost, WS.Path.Attachment.Version1.attachmentDelete(true)));
 	}
 }

@@ -15,19 +15,17 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import com.fluidbpm.program.api.vo.field.MultiChoice;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 15/12/28.
  */
-public class TestFormFieldClientDuplicates extends ABaseTestCase {
+public class TestFormFieldClientDuplicates extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -120,7 +118,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
      */
     @Test
     public void testFormField_TextPlain_Duplicate() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);
@@ -160,7 +158,7 @@ public class TestFormFieldClientDuplicates extends ABaseTestCase {
      */
     @Test
     public void testFormField_MultiChoicePlain_DuplicateUpdate() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
         TestCase.assertNotNull(appRequestToken);

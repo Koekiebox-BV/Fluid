@@ -24,7 +24,7 @@ import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFormContainerClient extends ABaseTestCase {
+public class TestFormContainerClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -78,7 +78,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 	@Ignore
 	@Test
 	public void testCRUDFormContainerThrowAway() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -106,7 +106,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 	@Test
 	public void testCRUDFormContainerBasic() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -161,7 +161,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 	@Test
 	public void testCRUDFormContainerBasicWithCustomHistory() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -201,7 +201,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 	@Test
 	public void testCRUDFormContainerBasicWebSocket() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -256,7 +256,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void testCRUDFormContainerWithEncryptedField() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -290,7 +290,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void testCRUDFormContainerWithEncryptedFieldHistory() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -318,7 +318,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void testCRUDFormContainerWithComplexFieldHistory() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		String serviceTicket = appRequestToken.getServiceTicket();
@@ -370,7 +370,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 	@Test
 	public void testCRUDFormContainerAdvanced() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -520,7 +520,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 
 	@Test
 	public void testCreateDeleteTableRecord() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -664,7 +664,7 @@ public class TestFormContainerClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testCreateDeleteTableRecordWebSocket() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

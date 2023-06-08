@@ -22,7 +22,7 @@ import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestUserQueryClient extends ABaseTestCase {
+public class TestUserQueryClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -116,7 +116,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testUserQuery_CRUD() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -172,7 +172,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void executeUserQueryWithSpecificNameVolume() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 
@@ -280,7 +280,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void executeUserQueryWithSpecificName() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -332,7 +332,7 @@ public class TestUserQueryClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void executeUserQueryWithSpecificNameNoInput() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 

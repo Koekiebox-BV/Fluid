@@ -55,11 +55,11 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
      */
     @Before
     public void init() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         super.init();
 
-        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
+        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
             Configuration conf = confClient.getConfigurationByKey(CONFIG_KEY_MEM);
             if (conf == null) this.prevConfMemory = "None";
             else this.prevConfMemory = conf.getValue();
@@ -75,9 +75,9 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
      */
     @After
     public void destroy() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, this.serviceTicket)) {
+        try (ConfigurationClient confClient = new ConfigurationClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
             confClient.upsertConfiguration(CONFIG_KEY_MEM, this.prevConfMemory);
         }
 

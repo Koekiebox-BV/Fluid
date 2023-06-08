@@ -15,25 +15,23 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
-import java.util.List;
-
+import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
+import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
+import com.fluidbpm.ws.client.v1.user.LoginClient;
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
-import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
-
-import junit.framework.TestCase;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFlowStepExitRuleClient extends ABaseTestCase {
+public class TestFlowStepExitRuleClient extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -63,7 +61,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_GetNextValidSyntax()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -158,7 +156,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CRUD()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -176,7 +174,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CompileSucceedAndFail()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -194,7 +192,7 @@ public class TestFlowStepExitRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepExitRule_CompileAndRunSucceed()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }

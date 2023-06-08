@@ -15,29 +15,27 @@
 
 package com.fluidbpm.ws.client.v1.form;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 15/12/28.
  */
-public class TestFormDefinitionClient extends ABaseTestCase {
+public class TestFormDefinitionClient extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -93,7 +91,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testFormDefinitionCRUD()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -223,7 +221,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testInvalidCreateData()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -312,7 +310,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testFormDefinitionSystem_Mail()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -362,7 +360,7 @@ public class TestFormDefinitionClient extends ABaseTestCase {
     @Test
     public void testDuplicateCreateData()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }

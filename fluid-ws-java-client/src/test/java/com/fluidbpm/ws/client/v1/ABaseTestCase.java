@@ -15,7 +15,7 @@
 
 package com.fluidbpm.ws.client.v1;
 
-import com.fluidbpm.ws.client.v1.user.LoginClient;
+import lombok.extern.java.Log;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  *
  * Created by jasonbruwer on 15/01/19.
  */
+@Log
 public class ABaseTestCase {
 	public static String FLUID_DS = "flow-job";
 	public static String BASE_URL = getTestBASE_URL();
@@ -57,33 +58,6 @@ public class ABaseTestCase {
 			Thread.sleep(TimeUnit.SECONDS.toMillis(secondsToMillisParam));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public void sleepForASecond()
-	{
-		this.sleepForSeconds(1);
-	}
-
-	/**
-	 * Check whether the {@code BASE_URL} is valid.
-	 *
-	 * @return {@code true} if the connection is valid, otherwise {@code false}.
-	 */
-	protected boolean isConnectionValid() {
-		LoginClient loginClient = new LoginClient(BASE_URL);
-		try {
-			boolean isConValid = loginClient.isConnectionValid();
-
-			if (!isConValid)
-			{
-				System.err.println("Connection to '"
-						+BASE_URL+"' is not valid!");
-			}
-
-			return isConValid;
-		} finally {
-			loginClient.closeAndClean();
 		}
 	}
 }

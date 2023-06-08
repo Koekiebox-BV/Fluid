@@ -22,19 +22,14 @@ import com.fluidbpm.program.api.vo.flow.JobViewListing;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.role.*;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.TestFlowStepClient;
-import com.fluidbpm.ws.client.v1.user.LoginClient;
 import com.fluidbpm.ws.client.v1.userquery.TestUserQueryClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -43,18 +38,8 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestRoleClient extends ABaseTestCase {
-
-	private LoginClient loginClient;
-
-	/**
-	 *
-	 */
+public class TestRoleClient extends ABaseLoggedInTestCase {
 	public static final class TestStatics {
-
-		/**
-		 *
-		 */
 		public static final class Permission {
 
 			public static final String CHANGE_OWN_PASSWORD = "change_own_password";
@@ -68,9 +53,6 @@ public class TestRoleClient extends ABaseTestCase {
 			public static final String REVEAL_MASKED_FIELD = "reveal_masked_field";
 		}
 
-		/**
-		 *
-		 */
 		public static final class Create {
 
 			public static final String ROLE_NAME = "junit Testing Role";
@@ -85,9 +67,6 @@ public class TestRoleClient extends ABaseTestCase {
 			}
 		}
 
-		/**
-		 *
-		 */
 		public static final class Update {
 
 			public static final String ROLE_NAME = "junit Testing Role - Update";
@@ -103,18 +82,11 @@ public class TestRoleClient extends ABaseTestCase {
 			}
 		}
 
-		/**
-		 *
-		 * @param formFieldToFormDefParam
-		 * @param canCreateAndModParam
-		 * @param canViewParam
-		 * @return
-		 */
 		public static final List<RoleToFormFieldToFormDefinition> toRoleToFormFieldToFormDefinition(
 				FormFieldToFormDefinition formFieldToFormDefParam,
 				boolean canCreateAndModParam,
-				boolean canViewParam){
-
+				boolean canViewParam
+		){
 			List<RoleToFormFieldToFormDefinition> returnVal = new ArrayList();
 
 			RoleToFormFieldToFormDefinition roleToFormFieldToFormDef =
@@ -129,15 +101,7 @@ public class TestRoleClient extends ABaseTestCase {
 			return returnVal;
 		}
 
-		/**
-		 *
-		 * @param formParam
-		 * @param canCreateParam
-		 * @return
-		 */
-		public static final List<RoleToFormDefinition> toRoleToFormFormDefinition(
-				Form formParam,
-				boolean canCreateParam){
+		public static final List<RoleToFormDefinition> toRoleToFormFormDefinition(Form formParam, boolean canCreateParam){
 
 			List<RoleToFormDefinition> returnVal = new ArrayList();
 
@@ -150,23 +114,13 @@ public class TestRoleClient extends ABaseTestCase {
 			return returnVal;
 		}
 
-		/**
-		 *
-		 * @param jobViewsParam
-		 * @return
-		 */
-		public static final List<RoleToJobView> toRoleToJobView(
-				JobView ... jobViewsParam){
+		public static final List<RoleToJobView> toRoleToJobView(JobView ... jobViewsParam) {
 
 			List<RoleToJobView> returnVal = new ArrayList();
-
-			if (jobViewsParam != null)
-			{
-				for (JobView jobView : jobViewsParam)
-				{
+			if (jobViewsParam != null) {
+				for (JobView jobView : jobViewsParam) {
 					RoleToJobView toAdd = new RoleToJobView();
 					toAdd.setJobView(jobView);
-
 					returnVal.add(toAdd);
 				}
 			}
@@ -174,23 +128,12 @@ public class TestRoleClient extends ABaseTestCase {
 			return returnVal;
 		}
 
-		/**
-		 *
-		 * @param userQueriesParam
-		 * @return
-		 */
-		public static final List<RoleToUserQuery> toRoleToUserQuery(
-				UserQuery ... userQueriesParam){
-
+		public static final List<RoleToUserQuery> toRoleToUserQuery(UserQuery ... userQueriesParam){
 			List<RoleToUserQuery> returnVal = new ArrayList();
-
-			if (userQueriesParam != null)
-			{
-				for (UserQuery userQuery : userQueriesParam)
-				{
+			if (userQueriesParam != null) {
+				for (UserQuery userQuery : userQueriesParam) {
 					RoleToUserQuery toAdd = new RoleToUserQuery();
 					toAdd.setUserQuery(userQuery);
-
 					returnVal.add(toAdd);
 				}
 			}
@@ -199,61 +142,25 @@ public class TestRoleClient extends ABaseTestCase {
 		}
 	}
 
-		/**
-	 *
-	 */
-	@Before
-	public void init() {
-		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
-		//this.loginClient = new LoginClient("http://fluid.sahousingclub.co.za/fluid-ws/");
-		this.loginClient = new LoginClient(BASE_URL);
-	}
-
-	/**
-	 *
-	 */
-	@After
-	public void destroy()
-	{
-		this.loginClient.closeAndClean();
-	}
-
-	/**
-	 *
-	 */
 	@Test
 	public void testRole_CRUD() {
-		if (!this.isConnectionValid()) {
-			return;
-		}
-
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
-
-		String serviceTicket = appRequestToken.getServiceTicket();
+		if (this.isConnectionInValid) return;
 
 		//JOB VIEW...
-		FlowClient flowClient = new FlowClient(BASE_URL, serviceTicket);
-		FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, serviceTicket);
+		FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
+		FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		//1. The Test Flow Step...
 		Flow createdFlow = new Flow();
 		createdFlow.setName("JUnit Test Flow");
 		createdFlow.setDescription("Test Flow Description.");
 
-		try
-		{
+		try {
 			createdFlow = flowClient.getFlowByName(createdFlow.getName());
-		}
-		catch (FluidClientException fce)
-		{
-			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
-			{
+		} catch (FluidClientException fce) {
+			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) {
 				TestCase.fail(fce.getMessage());
-			}
-			else
-			{
+			} else {
 				createdFlow = flowClient.createFlow(createdFlow);
 			}
 		}
@@ -266,18 +173,12 @@ public class TestRoleClient extends ABaseTestCase {
 
 		//2. CREATE...
 		FlowStep createdFlowStep = null;
-		try
-		{
+		try {
 			createdFlowStep = flowStepClient.getFlowStepByStep(toCreate);
-		}
-		catch (FluidClientException fce)
-		{
-			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT)
-			{
+		} catch (FluidClientException fce) {
+			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) {
 				TestCase.fail(fce.getMessage());
-			}
-			else
-			{
+			} else {
 				createdFlowStep = flowStepClient.createFlowStep(toCreate);
 			}
 		}
@@ -326,7 +227,7 @@ public class TestRoleClient extends ABaseTestCase {
 				"ByStepName-Flow-Name: 'First Job View' not set.", firstJobView);
 
 		//-- Role to User Query...
-		UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, serviceTicket);
+		UserQueryClient userQueryClient = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		//1. Text...
 		UserQuery userQueryFirst = new UserQuery();
@@ -351,7 +252,7 @@ public class TestRoleClient extends ABaseTestCase {
 
 		userQuerySecond = userQueryClient.createUserQuery(userQuerySecond);
 
-		RoleClient roleClient = new RoleClient(BASE_URL, serviceTicket);
+		RoleClient roleClient = new RoleClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
 		Role roleToCreate = new Role();
 		roleToCreate.setName(TestStatics.Create.ROLE_NAME);

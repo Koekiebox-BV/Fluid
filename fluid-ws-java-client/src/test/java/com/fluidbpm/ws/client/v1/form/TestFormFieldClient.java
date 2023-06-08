@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
@@ -33,7 +34,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 15/12/28.
  */
-public class TestFormFieldClient extends ABaseTestCase {
+public class TestFormFieldClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -187,7 +188,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_TextPlain_CRUD()
 	{
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 
@@ -246,10 +247,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_TextMasked_CRUD()
 	{
-		if (!this.isConnectionValid())
-		{
-			return;
-		}
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -313,7 +311,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_TextBarcode_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -380,7 +378,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_TextLatitudeAndLongitude_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -443,7 +441,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_TrueFalse_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -503,7 +501,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_ParagraphTextPlain_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -573,7 +571,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_ParagraphTextHTML_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -632,7 +630,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFormField_MultiChoicePlain_CRUD() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 
@@ -737,7 +735,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_MultiChoicePlainWithSearch_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -836,7 +834,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_MultiChoiceSelectMany_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -936,7 +934,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_MultiChoiceSelectManyWithSearch_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -1036,7 +1034,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_DateTimeDate_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -1096,7 +1094,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_DateTimeDateAndTime_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -1156,7 +1154,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_DecimalPlain_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -1216,7 +1214,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_DecimalSpinner_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -1286,7 +1284,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_DecimalSlider_CRUD()
 	{
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -1353,7 +1351,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFormField_DecimalRating_CRUD() {
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 
@@ -1417,7 +1415,7 @@ public class TestFormFieldClient extends ABaseTestCase {
 	@Test
 	public void testFormField_Table_CRUD()
 	{
-		if (!this.isConnectionValid()) {
+		if (this.isConnectionInValid) {
 			return;
 		}
 

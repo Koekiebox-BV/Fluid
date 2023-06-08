@@ -165,25 +165,25 @@ public class WebSocketSendToFlowClient extends
 		/**
 		 * The default constructor that sets a ancestor message handler.
 		 *
-		 * @param messageReceivedCallbackParam The optional message callback.
-		 * @param webSocketClientParam The web-socket client.
+		 * @param messageReceivedCallback The optional message callback.
+		 * @param webSocketClient The web-socket client.
 		 */
 		public SendToFlowMessageHandler(
-				IMessageReceivedCallback<FluidItem> messageReceivedCallbackParam,
-				WebSocketClient webSocketClientParam
+				IMessageReceivedCallback<FluidItem> messageReceivedCallback,
+				WebSocketClient webSocketClient
 		) {
-			super(messageReceivedCallbackParam, webSocketClientParam);
+			super(messageReceivedCallback, webSocketClient);
 		}
 
 		/**
 		 * New {@code Form} by {@code jsonObjectParam}
 		 *
-		 * @param jsonObjectParam The JSON Object to parse.
+		 * @param jsonObject The JSON Object to parse.
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public FluidItem getNewInstanceBy(JSONObject jsonObjectParam) {
-			this.returnedFluidItem = new FluidItem(jsonObjectParam);
+		public FluidItem getNewInstanceBy(JSONObject jsonObject) {
+			this.returnedFluidItem = new FluidItem(jsonObject);
 			return this.returnedFluidItem;
 		}
 

@@ -89,15 +89,15 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
 	@Before
 	@Override
 	public void init() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 		this.valBeforeDisableSQL = SQLUtilWebSocketRESTWrapper.DISABLE_WS;
 
 		// Login:
 		super.init();
 
 		try (
-				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 		) {
 			// Create the Form Definition:
 			this.formTimesheetEntry = createFormDef(fdClient, ffClient, "SQLUtilWS JUnit Timesheet Entry", null, timesheetEntryFields());
@@ -112,10 +112,10 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
 		SQLUtilWebSocketRESTWrapper.DISABLE_WS = this.valBeforeDisableSQL;
 
 		try (
-				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-				FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-				UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				UserQueryClient uqClient = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET)
 		) {
 			// Timesheet Entry:
 			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
@@ -128,11 +128,11 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testNativeSQLExecutionQuery() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		try (SQLUtilWebSocketRESTWrapper wClient = new SQLUtilWebSocketRESTWrapper(
 				BASE_URL,
-				this.serviceTicket,
+				ADMIN_SERVICE_TICKET,
 				TimeUnit.SECONDS.toMillis(60));
 		) {
 			NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
@@ -165,13 +165,13 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
 
 	@Test
 	public void testAllMethodsModeWebSocketAndRest() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
  		try (SQLUtilWebSocketRESTWrapper wClient = new SQLUtilWebSocketRESTWrapper(
 				BASE_URL,
-				this.serviceTicket,
+				ADMIN_SERVICE_TICKET,
 				TimeUnit.SECONDS.toMillis(60));
-			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)
 		) {
 			List<Form> createdForms = new CopyOnWriteArrayList<>();
 			ExecutorService executor = Executors.newFixedThreadPool(6);

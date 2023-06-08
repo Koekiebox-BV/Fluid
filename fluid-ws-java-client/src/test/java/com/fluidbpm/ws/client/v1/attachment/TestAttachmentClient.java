@@ -21,7 +21,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.TestFormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 18/03/5.
  */
-public class TestAttachmentClient extends ABaseTestCase {
+public class TestAttachmentClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -67,7 +67,7 @@ public class TestAttachmentClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testAttachmentCRUD() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

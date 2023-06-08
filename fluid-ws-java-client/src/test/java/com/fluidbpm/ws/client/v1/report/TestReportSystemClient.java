@@ -18,14 +18,14 @@ package com.fluidbpm.ws.client.v1.report;
 import com.fluidbpm.program.api.vo.report.system.SystemUptimeReport;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestReportSystemClient extends ABaseTestCase {
+public class TestReportSystemClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -43,7 +43,7 @@ public class TestReportSystemClient extends ABaseTestCase {
 
 	@Test
 	public void testReport_FullReport() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -73,7 +73,7 @@ public class TestReportSystemClient extends ABaseTestCase {
 
 	@Test
 	public void testReport_DownReport() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -94,7 +94,7 @@ public class TestReportSystemClient extends ABaseTestCase {
 
 	@Test(timeout = 5000)
 	public void testReport_UpReport() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

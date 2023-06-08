@@ -47,23 +47,37 @@ import java.util.stream.Stream;
  */
 @Log
 public class ABaseLoggedInTestCase extends ABaseTestCase {
-	private LoginClient loginClient;
-	protected String serviceTicket;
+	protected static String ADMIN_SERVICE_TICKET;
+	protected static String ADMIN_SERVICE_TICKET_HEX;
+	protected static Boolean isConnectionInValid;
 
 	protected static String DESC = "Created by step Unit tests.";
 
 	protected int ITEM_COUNT_PER_SUB = 15;
+
+	// Perform global operation for all tests cases.
+	static {
+		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+		try (LoginClient loginClient = new LoginClient(BASE_URL)) {
+			if (isConnectionInValid == null) isConnectionInValid = !loginClient.isConnectionValid();
+
+			if (!isConnectionInValid) {
+				ADMIN_SERVICE_TICKET = loginClient.login(USERNAME, PASSWORD).getServiceTicket();
+				ADMIN_SERVICE_TICKET_HEX = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(ADMIN_SERVICE_TICKET));
+			}
+		}
+	}
 
 	/**
 	 * Initialize.
 	 */
 	@Before
 	public void init() {
-		if (!this.isConnectionValid()) return;
+		/*if (this.isConnectionInValid) return;
 
 		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 		this.loginClient = new LoginClient(BASE_URL);
-		this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();
+		this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();*/
 	}
 
 	/**
@@ -71,8 +85,7 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 	 */
 	@After
 	public void destroy() {
-		if (!this.isConnectionValid()) return;
-		this.loginClient.closeAndClean();
+		// Do nothing.
 	}
 
 	protected static Form createFormDef(

@@ -15,24 +15,22 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
-
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Created by jasonbruwer on 18/03/30.
  */
-public class TestPersonalInventoryClient extends ABaseTestCase {
+public class TestPersonalInventoryClient extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -60,7 +58,7 @@ public class TestPersonalInventoryClient extends ABaseTestCase {
      */
     @Test
     public void testCreatePersonalInventory() {
-        if (!this.isConnectionValid()) {
+        if (this.isConnectionInValid) {
             return;
         }
 

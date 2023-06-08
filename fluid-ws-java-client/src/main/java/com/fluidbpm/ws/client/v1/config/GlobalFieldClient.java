@@ -45,12 +45,12 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public GlobalFieldClient(String endpointBaseUrlParam, String serviceTicketParam) {
-		super(endpointBaseUrlParam);
-		this.setServiceTicket(serviceTicketParam);
+	public GlobalFieldClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
@@ -60,10 +60,7 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	 * @param multiChoiceValues The available multi choice values.
 	 * @return Created Field.
 	 */
-	public Field createFieldMultiChoicePlain(
-		Field globalField,
-		List<String> multiChoiceValues
-	) {
+	public Field createFieldMultiChoicePlain(Field globalField, List<String> multiChoiceValues) {
 		if (multiChoiceValues == null) multiChoiceValues = new ArrayList();
 
 		if (globalField != null) {
@@ -89,7 +86,9 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	) {
 		if (multiChoiceValues == null || multiChoiceValues.isEmpty()) {
 			throw new FluidClientException(
-					"No Multi-choice values provided.", FluidClientException.ErrorCode.FIELD_VALIDATE);
+					"No Multi-choice values provided.",
+					FluidClientException.ErrorCode.FIELD_VALIDATE
+			);
 		}
 
 		List<String> beforeAvail = null, beforeSelected = null;
@@ -116,39 +115,36 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	/**
 	 * Update an existing Global field value.
 	 *
-	 * @param globalFieldValueParam Field to Update.
+	 * @param globalFieldValue Field to Update.
 	 * @return Updated Field.
 	 */
-	public Field updateFieldValue(Field globalFieldValueParam) {
-		if (globalFieldValueParam != null && this.serviceTicket != null) {
-			globalFieldValueParam.setServiceTicket(this.serviceTicket);
+	public Field updateFieldValue(Field globalFieldValue) {
+		if (globalFieldValue != null && this.serviceTicket != null) {
+			globalFieldValue.setServiceTicket(this.serviceTicket);
 		}
-
-		return new Field(this.postJson(
-				globalFieldValueParam, Version1.globalFieldUpdateValue()));
+		return new Field(this.postJson(globalFieldValue, Version1.globalFieldUpdateValue()));
 	}
 
 	/**
 	 * Retrieves field value by {@code fieldNameParam}.
 	 *
-	 * @param fieldNameParam The field name.
+	 * @param fieldName The field name.
 	 * @return Field by primary key.
 	 */
-	public Field getFieldValueByName(String fieldNameParam) {
-		Field field = new Field();
-		field.setFieldName(fieldNameParam);
+	public Field getFieldValueByName(String fieldName) {
+		Field field = new Field(fieldName);
 		return this.getFieldValueBy(field);
 	}
 
 	/**
 	 * Retrieves field value by {@code fieldIdParam}.
 	 *
-	 * @param fieldIdParam The field id.
+	 * @param fieldId The field id.
 	 * @return Field value by Global field primary key.
 	 */
-	public Field getFieldValueByFieldId(Long fieldIdParam)
+	public Field getFieldValueByFieldId(Long fieldId)
 	{
-		return this.getFieldValueBy(new Field(fieldIdParam));
+		return this.getFieldValueBy(new Field(fieldId));
 	}
 
 	/**
@@ -161,7 +157,6 @@ public class GlobalFieldClient extends ABaseFieldClient {
 		if (field != null) {
 			//Set for Payara server...
 			field.setFieldValue(new MultiChoice());
-
 			if (this.serviceTicket != null) field.setServiceTicket(this.serviceTicket);
 		}
 		return new Field(this.postJson(field, Version1.getValueBy()));
@@ -200,10 +195,8 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
-
-		if (this.serviceTicket != null) field.setServiceTicket(this.serviceTicket);
+		field.setServiceTicket(this.serviceTicket);
 
 		return new GlobalFieldListing(this.postJson(field, Version1.getAllFields())).getListing();
 	}
-
 }

@@ -25,6 +25,7 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFlowStepEntryRuleClient extends ABaseTestCase {
+public class TestFlowStepEntryRuleClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -67,7 +68,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_CRUD() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -138,7 +139,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_GetNextValidSyntax() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -234,7 +235,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_CompileSucceed() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -282,7 +283,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_CompileFail() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -343,7 +344,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	@Test
 	@Ignore
 	public void testFlowJobForceDelete() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -360,7 +361,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_CompileAndRunSucceed_StaticValue() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -427,7 +428,7 @@ public class TestFlowStepEntryRuleClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStepEntryRule_CompileAndRunSucceed_AnotherFieldValue() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

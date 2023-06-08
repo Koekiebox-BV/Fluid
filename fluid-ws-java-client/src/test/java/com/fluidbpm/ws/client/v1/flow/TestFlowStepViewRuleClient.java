@@ -15,26 +15,24 @@
 
 package com.fluidbpm.ws.client.v1.flow;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.program.api.vo.flow.FlowStepRule;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
-
 import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFlowStepViewRuleClient extends ABaseTestCase {
+public class TestFlowStepViewRuleClient extends ABaseLoggedInTestCase {
 
     private LoginClient loginClient;
 
@@ -64,7 +62,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepViewRule_CRUD()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }
@@ -143,7 +141,7 @@ public class TestFlowStepViewRuleClient extends ABaseTestCase {
     @Test
     public void testFlowStepViewRule_CompileSucceed()
     {
-        if (!this.isConnectionValid())
+        if (this.isConnectionInValid)
         {
             return;
         }

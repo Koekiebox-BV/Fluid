@@ -82,14 +82,14 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
     @Before
     @Override
     public void init() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         // Login:
         super.init();
 
         try (
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
             this.formTimesheetEntry = createFormDef(fdClient, ffClient, "Rest JUnit Timesheet Entry", null, timesheetEntryFields());
             this.formTimesheet = createFormDef(fdClient, ffClient, "Rest Form Def SQL Util Timesheet", null, timesheetFields());
@@ -102,10 +102,10 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
         super.destroy();
 
         try (
-                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-                FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-                UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+                FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                UserQueryClient uqClient = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             // Timesheet Entry:
             deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
@@ -115,11 +115,11 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
 
     @Test
     public void testSQLUtilMethods() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         try (
-                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             // Create forms:
             List<Form> createdForms = new CopyOnWriteArrayList<>();
@@ -216,10 +216,10 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
 
     @Test
     public void testSQLUtilExecuteNativeSQLStoredProc() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         try (
-                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
             long start = System.currentTimeMillis();
             int numberOfRecords = 1;
@@ -245,10 +245,10 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
 
     @Test
     public void testSQLUtilExecuteNativeSQLOnly() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         try (
-                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+                SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
             long start = System.currentTimeMillis();
             int numberOfRecords = 1;
@@ -275,9 +275,9 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
     @Test
     @Ignore
     public void testGetDescendants() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //TODO need to move to Clone step logic.
         
@@ -293,9 +293,9 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
     @Test
     @Ignore
     public void testGetAncestor() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, this.serviceTicket);
+        SQLUtilClient sqlUtilClient = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //TODO need to move to Clone step logic.
 

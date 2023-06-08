@@ -22,7 +22,7 @@ import com.fluidbpm.program.api.vo.flow.FlowStepRule;
 import com.fluidbpm.program.api.vo.flow.JobViewListing;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
 import org.junit.After;
@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestFlowStepClient extends ABaseTestCase {
+public class TestFlowStepClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 
@@ -114,7 +114,7 @@ public class TestFlowStepClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFlowStep_Assignment_CRUD() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -366,7 +366,7 @@ public class TestFlowStepClient extends ABaseTestCase {
 	@Ignore
 	@Test
 	public void testFetchViewsForLoggedIn() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login("checker", PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

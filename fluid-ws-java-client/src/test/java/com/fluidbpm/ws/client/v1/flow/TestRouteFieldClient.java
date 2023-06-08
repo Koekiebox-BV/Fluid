@@ -82,9 +82,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_TextPlain_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -133,9 +133,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_TrueFalse_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -184,9 +184,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_ParagraphTextPlain_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -235,9 +235,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_ParagraphTextHTML_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -287,9 +287,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
     @Test
     @SuppressWarnings("unchecked")
     public void testRouteField_MultiChoicePlain_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -376,9 +376,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
     @Test
     @SuppressWarnings("unchecked")
     public void testRouteField_MultiChoiceSelectMany_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -405,9 +405,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_DateTimeDate_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -456,9 +456,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_DateTimeDateAndTime_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();
@@ -507,9 +507,9 @@ public class TestRouteFieldClient extends ABaseLoggedInTestCase {
      */
     @Test
     public void testRouteField_DecimalPlain_CRUD() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
+        RouteFieldClient routeFieldClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         //1. Text...
         Field toCreate = new Field();

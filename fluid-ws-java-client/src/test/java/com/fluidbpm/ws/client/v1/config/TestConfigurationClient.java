@@ -23,7 +23,7 @@ import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 16/04/16.
  */
-public class TestConfigurationClient extends ABaseTestCase {
+public class TestConfigurationClient extends ABaseLoggedInTestCase {
 	private LoginClient loginClient;
 
 	public static final class TestStatics{
@@ -58,7 +58,7 @@ public class TestConfigurationClient extends ABaseTestCase {
 	
 	@Test
 	public void testConfigurationFetchByKey() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -79,7 +79,7 @@ public class TestConfigurationClient extends ABaseTestCase {
 
 	@Test
 	public void testConfigurationFetchAll() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -97,7 +97,7 @@ public class TestConfigurationClient extends ABaseTestCase {
 
 	@Test
 	public void testFetchAllThirdPartyLibTaskIdentifiers() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);

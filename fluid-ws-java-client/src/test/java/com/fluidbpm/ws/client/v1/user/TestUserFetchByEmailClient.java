@@ -19,7 +19,7 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by jasonbruwer on 14/12/22.
  */
-public class TestUserFetchByEmailClient extends ABaseTestCase {
+public class TestUserFetchByEmailClient extends ABaseLoggedInTestCase {
 
 	private LoginClient loginClient;
 	private UserClient userClient;
@@ -70,7 +70,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
 		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
 
 		this.loginClient = new LoginClient(BASE_URL);
-		if (!this.isConnectionValid())
+		if (this.isConnectionInValid)
 		{
 			return;
 		}
@@ -112,7 +112,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFetchUserByEmailWhereNotValidated() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		User userByEmail = null;
 		try {
@@ -132,7 +132,7 @@ public class TestUserFetchByEmailClient extends ABaseTestCase {
 	 */
 	@Test
 	public void testFetchUserByEmail() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		/*User userByEmail = this.userClient.getUserWhereEmail(
 				TestStatics.Create.EMAIL);

@@ -48,7 +48,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Log
 public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
-	private String serviceTicketHex;
 	private Form formTimesheetEntry;
 	private Form formTimesheet;
 
@@ -82,15 +81,14 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	@Before
 	@Override
 	public void init() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		// Login:
 		super.init();
-		this.serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(this.serviceTicket));
 
 		try (
-				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 		) {
 			// Create the Form Definition:
 			this.formTimesheetEntry = createFormDef(fdClient, ffClient, "JUnit Timesheet Entry", null, timesheetEntryFields());
@@ -104,10 +102,10 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 		super.destroy();
 
 		try (
-				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, this.serviceTicket);
-				FormFieldClient ffClient = new FormFieldClient(BASE_URL, this.serviceTicket);
-				FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-				UserQueryClient uqClient = new UserQueryClient(BASE_URL, this.serviceTicket)
+				FormDefinitionClient fdClient = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+				UserQueryClient uqClient = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET)
 		) {
 			// Timesheet Entry:
 			deleteAllFormData(uqClient, fdClient, ffClient, fcClient, this.formTimesheetEntry);
@@ -117,14 +115,14 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 
 	@Test
 	public void testGetTableFormsWithFormId() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		try (SQLUtilWebSocketGetTableFormsClient webSocketClient = new SQLUtilWebSocketGetTableFormsClient(
 				BASE_URL,
 				null,
-				this.serviceTicketHex,
+				ADMIN_SERVICE_TICKET_HEX,
 				TimeUnit.SECONDS.toMillis(60), true);
-			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)
 		) {
 			List<Form> createdForms = new CopyOnWriteArrayList<>();
 			ExecutorService executor = Executors.newFixedThreadPool(6);
@@ -192,19 +190,14 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	@Test
 	@Ignore
 	public void testGetAncestorFormWithSpecificId() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		//TODO need to move to Clone step logic.
-
-		String serviceTicketHex = null;
-		if (this.serviceTicket != null && !this.serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-		}
 
 		SQLUtilWebSocketGetAncestorClient webSocketClient =
 				new SQLUtilWebSocketGetAncestorClient(
 						BASE_URL,
-						null, serviceTicketHex, TimeUnit.SECONDS.toMillis(60), true, true);
+						null, ADMIN_SERVICE_TICKET_HEX, TimeUnit.SECONDS.toMillis(60), true, true);
 
 		long start = System.currentTimeMillis();
 
@@ -237,20 +230,15 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	@Test
 	@Ignore
 	public void testGetDescendantFormsWithSpecificId() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		//TODO need to move to Clone step logic.
-
-		String serviceTicketHex = null;
-		if (this.serviceTicket != null && !this.serviceTicket.isEmpty()) {
-			serviceTicketHex = UtilGlobal.encodeBase16(UtilGlobal.decodeBase64(serviceTicket));
-		}
 
 		SQLUtilWebSocketGetDescendantsClient webSocketClient =
 				new SQLUtilWebSocketGetDescendantsClient(
 						BASE_URL,
 						null,
-						serviceTicketHex,
+						ADMIN_SERVICE_TICKET_HEX,
 						TimeUnit.SECONDS.toMillis(60),
 						true,
 						true,
@@ -344,14 +332,14 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 	 */
 	@Test
 	public void testExecuteSQLWhereIdGreaterThan() {
-		if (!this.isConnectionValid()) return;
+		if (this.isConnectionInValid) return;
 
 		try (SQLUtilWebSocketExecuteSQLClient webSocketClient = new SQLUtilWebSocketExecuteSQLClient(
 				BASE_URL,
 				null,
-				this.serviceTicketHex,
+				ADMIN_SERVICE_TICKET_HEX,
 				TimeUnit.SECONDS.toMillis(10));
-			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket)
+			 FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)
 		) {
 			// Create forms:
 			List<Form> createdForms = new CopyOnWriteArrayList<>();

@@ -56,11 +56,11 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
      */
     @Test
     public void testCreateEmailFormAndSendToWorkflow() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
-        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, this.serviceTicket);
-        FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
-        FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
+        FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
         // Fluid Item:
         FluidItem toCreate = emailItem("Single Email Item");
@@ -128,15 +128,15 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
      */
     @Test(timeout = 240_000)//seconds.
     public void testSmallWorkflowAssignStepWithConcurrency() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         int itemCount = 50;
         try (
-                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
-                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, this.serviceTicket);
-                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
-                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
             // create the flow:
             final String flowName = "JUnit Assign Flow Test";
@@ -253,16 +253,16 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
     @Test(timeout = 600_000)//seconds.
     public void testWorkflowRuleExecutionWithConcurrency() {
-        if (!this.isConnectionValid()) return;
+        if (this.isConnectionInValid) return;
 
         int itemCount = 100;
         try (
-                FlowClient flowClient = new FlowClient(BASE_URL, this.serviceTicket);
-                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, this.serviceTicket);
-                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, this.serviceTicket);
-                RouteFieldClient rfClient = new RouteFieldClient(BASE_URL, this.serviceTicket);
-                FlowItemClient fiClient = new FlowItemClient(BASE_URL, this.serviceTicket);
-                FormContainerClient fcClient = new FormContainerClient(BASE_URL, this.serviceTicket);
+                FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                RouteFieldClient rfClient = new RouteFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FlowItemClient fiClient = new FlowItemClient(BASE_URL, ADMIN_SERVICE_TICKET);
+                FormContainerClient fcClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
             // create the flow:
             final String flowName = "JUnit Rule Execution Time Test";
