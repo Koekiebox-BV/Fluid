@@ -2508,6 +2508,8 @@ public class WS {
 			 */
 			public static final class Version1 {
 				public static final String ROOT = ("/test");
+				public static final String HEALTH = ("/health");
+				public static final String EXTENDED_HEALTH = ("/extended");
 				public static final String TEST = ("/");
 
 				/**
@@ -2527,6 +2529,24 @@ public class WS {
 				 */
 				public static final String testConnection() {
 					return Version.VERSION_1.concat(ROOT);
+				}
+
+				/**
+				 * Health and other server information.
+				 *
+				 * @return {@code v1/health/}
+				 */
+				public static final String healthAndServerInfo() {
+					return Version.VERSION_1.concat(HEALTH);
+				}
+
+				/**
+				 * Health and other server information.
+				 *
+				 * @return {@code v1/extended_health/}
+				 */
+				public static final String extendedHealthAndServerInfo() {
+					return healthAndServerInfo().concat(EXTENDED_HEALTH);
 				}
 			}
 		}

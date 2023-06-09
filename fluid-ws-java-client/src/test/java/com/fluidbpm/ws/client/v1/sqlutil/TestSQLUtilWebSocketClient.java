@@ -248,7 +248,6 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 		long start = System.currentTimeMillis();
 
 		int numberOfRecords = 1;
-
 		List<FormListing> formListing = webSocketClient.getDescendantsSynchronized(
 				generateLotsOfFormsFor(numberOfRecords,
 						2575));

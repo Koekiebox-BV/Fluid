@@ -907,22 +907,47 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	}
 
 	/**
-	 * Performs a HTTP Get against the connection test Web Service to
+	 * Performs an HTTP Get against the connection test Web Service to
 	 * confirm whether the connection is valid.
 	 *
 	 * @return Whether the connection is valid or not.
 	 */
 	public boolean isConnectionValid() {
-		//Init the session to get the salt...
 		try {
 			this.getJson(false, WS.Path.Test.Version1.testConnection());
 		} catch (FluidClientException flowJobExcept) {
-			//Connect problem...
 			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return false;
-
 			throw flowJobExcept;
 		}
 		return true;
+	}
+
+	/**
+	 * Performs an HTTP Get request in order to obtain server health status along with other useful information.
+	 *
+	 * @return JSONObject
+	 */
+	public JSONObject serverInfo() {
+		try {
+			return this.getJson(false, WS.Path.Test.Version1.healthAndServerInfo());
+		} catch (FluidClientException flowJobExcept) {
+			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return new JSONObject();
+			throw flowJobExcept;
+		}
+	}
+
+	/**
+	 * Performs an HTTP Get request in order to obtain server health status along with other useful information.
+	 *
+	 * @return JSONObject
+	 */
+	public JSONObject extendedServerInfo() {
+		try {
+			return this.getJson(false, WS.Path.Test.Version1.extendedHealthAndServerInfo());
+		} catch (FluidClientException flowJobExcept) {
+			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return new JSONObject();
+			throw flowJobExcept;
+		}
 	}
 
 	/**
