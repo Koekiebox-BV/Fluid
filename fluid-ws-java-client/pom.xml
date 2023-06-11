@@ -140,10 +140,20 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.1.0</version>
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<profiles>
+		<profile>
+			<id>install-no-test-docs-sign</id>
+			<properties>
+				<skipTests>true</skipTests>
+				<gpg.skip>true</gpg.skip>
+				<maven.javadoc.skip>true</maven.javadoc.skip>
+			</properties>
+		</profile>
+	</profiles>
 
 	<!--Maven Build Information-->
 	<build>
@@ -171,11 +181,6 @@
 				<configuration>
 					<source>8</source>
 					<target>8</target>
-
-					<!--compilerArgs>
-						<arg>add-modules</arg>
-						<arg>java.xml.bind</arg>
-					</compilerArgs-->
 				</configuration>
 			</plugin>
 
@@ -232,7 +237,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>

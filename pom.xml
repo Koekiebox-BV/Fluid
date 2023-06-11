@@ -39,7 +39,6 @@
 		<version.jdk.compile>1.8</version.jdk.compile>
 
 		<!--Maven Dependency Versions-->
-		<version.junit>4.13.1</version.junit>
 		<version.slf4j>1.7.22</version.slf4j>
 
 		<version.javax.websocket>1.1</version.javax.websocket>
@@ -64,15 +63,11 @@
 		<!--GlassFish Tyrus-->
 		<version.glassfish.tyrus>1.20</version.glassfish.tyrus>
 
-		<!--GlassFish Grizzly-->
-		<version.glassfish.grizzly>2.4.4</version.glassfish.grizzly>
-
 		<!--Plugins-->
 		<version.plugin.compiler>3.6.0</version.plugin.compiler>
 		<version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
 		<version.plugin.java.source>3.2.1</version.plugin.java.source>
 		<version.plugin.java.doc>3.4.1</version.plugin.java.doc>
-		<version.plugin.gpg>1.6</version.plugin.gpg>
 		<version.plugin.dependency>3.0.1</version.plugin.dependency>
 
 		<!--Redis-->
@@ -213,29 +208,21 @@
 				<groupId>org.glassfish.grizzly</groupId>
 				<artifactId>grizzly-framework</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.grizzly}</version>
+				<version>2.4.4</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.grizzly</groupId>
 				<artifactId>grizzly-http</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.grizzly}</version>
+				<version>2.4.4</version>
 			</dependency>
-
-			<!--Jackson Provider-->
-			<!--dependency>
-				<groupId>org.jboss.resteasy</groupId>
-				<artifactId>resteasy-jackson-provider</artifactId>
-				<version>${version.jboss.resteasy.jackson}</version>
-				<scope>provided</scope>
-			</dependency-->
 
 			<!--Maven GPG Plugin-->
 			<dependency>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>${version.plugin.gpg}</version>
+				<version>1.6</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -243,16 +230,21 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>${version.junit}</version>
+				<version>4.13.1</version>
 				<scope>test</scope>
 			</dependency>
 
-			<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
 				<version>1.18.26</version>
 				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.1.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -279,7 +271,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>${version.plugin.gpg}</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
@@ -298,7 +290,6 @@
 				<version>${version.plugin.java.doc}</version>
 				<configuration>
 					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-					<!--<doclint>none</doclint>-->
 				</configuration>
 			</plugin>
 		</plugins>
