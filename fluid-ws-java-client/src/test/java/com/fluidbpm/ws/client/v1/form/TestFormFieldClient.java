@@ -21,9 +21,9 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import junit.framework.TestCase;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -162,35 +162,21 @@ public class TestFormFieldClient extends ABaseLoggedInTestCase {
 		}
 	}
 
-	/**
-	 *
-	 */
 	@Before
-	public void init()
-	{
+	public void init() {
 		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-
 		this.loginClient = new LoginClient(BASE_URL);
 	}
 
-	/**
-	 *
-	 */
 	@After
 	public void destroy()
 	{
 		this.loginClient.closeAndClean();
 	}
 
-	/**
-	 *
-	 */
 	@Test
-	public void testFormField_TextPlain_CRUD()
-	{
-		if (this.isConnectionInValid) {
-			return;
-		}
+	public void testFormField_TextPlain_CRUD() {
+		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
 		TestCase.assertNotNull(appRequestToken);
@@ -241,12 +227,8 @@ public class TestFormFieldClient extends ABaseLoggedInTestCase {
 		TestCase.assertNotNull("DELETE: The 'Id' needs to be set.", deletedField.getId());
 	}
 
-	/**
-	 *
-	 */
 	@Test
-	public void testFormField_TextMasked_CRUD()
-	{
+	public void testFormField_TextMasked_CRUD() {
 		if (this.isConnectionInValid) return;
 
 		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);

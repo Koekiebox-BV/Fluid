@@ -40,15 +40,12 @@ public class ReportUserClient extends ABaseClientWS {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public ReportUserClient(
-		String endpointBaseUrlParam,
-		String serviceTicketParam
-	) {
-		super(endpointBaseUrlParam);
-		this.setServiceTicket(serviceTicketParam);
+	public ReportUserClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
@@ -71,10 +68,7 @@ public class ReportUserClient extends ABaseClientWS {
 	 *
 	 * @see UserStatsReport
 	 */
-	public UserStatsReport getLoggedInUserStats(
-		Date fromDate,
-		Date toDate
-	) {
+	public UserStatsReport getLoggedInUserStats(Date fromDate, Date toDate) {
 		User userGetInfoFor = new User();
 		userGetInfoFor.setServiceTicket(this.serviceTicket);
 		try {

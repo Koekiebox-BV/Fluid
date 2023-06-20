@@ -923,34 +923,6 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	}
 
 	/**
-	 * Performs an HTTP Get request in order to obtain server health status along with other useful information.
-	 *
-	 * @return JSONObject
-	 */
-	public JSONObject serverInfo() {
-		try {
-			return this.getJson(false, WS.Path.Test.Version1.healthAndServerInfo());
-		} catch (FluidClientException flowJobExcept) {
-			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return new JSONObject();
-			throw flowJobExcept;
-		}
-	}
-
-	/**
-	 * Performs an HTTP Get request in order to obtain server health status along with other useful information.
-	 *
-	 * @return JSONObject
-	 */
-	public JSONObject extendedServerInfo() {
-		try {
-			return this.getJson(false, WS.Path.Test.Version1.extendedHealthAndServerInfo());
-		} catch (FluidClientException flowJobExcept) {
-			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return new JSONObject();
-			throw flowJobExcept;
-		}
-	}
-
-	/**
 	 * Inspects the {@code baseDomainParam} to confirm whether
 	 * the base domain is of type {@code Error}.
 	 *

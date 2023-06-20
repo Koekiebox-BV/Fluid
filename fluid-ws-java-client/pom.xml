@@ -74,43 +74,43 @@
 		<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-client-api</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-container-grizzly-client</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.grizzly</groupId>
 			<artifactId>grizzly-framework</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.grizzly</groupId>
 			<artifactId>grizzly-http</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-client</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-core</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-spi</artifactId>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
 		<!--JUnit Testing-->

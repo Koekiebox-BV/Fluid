@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
@@ -349,6 +350,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Object getFieldValueForField(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValue();
@@ -374,18 +376,13 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Field getField(String fieldNameParam) {
-		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
-			return null;
-		}
-
-		if (this.getFormFields() == null || this.getFormFields().isEmpty()) {
-			return null;
-		}
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return null;
+		if (this.getFormFields() == null || this.getFormFields().isEmpty()) return null;
 
 		String fieldNameLower = fieldNameParam.toLowerCase().trim();
-		Field fieldWithName =
-				this.getFormFields().stream()
+		Field fieldWithName = this.getFormFields().stream()
 						.filter(itm -> itm.getFieldName() != null &&
 								fieldNameLower.equals(itm.getFieldName().toLowerCase().trim()))
 						.findFirst()
@@ -414,6 +411,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#Text
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getFieldValueAsString(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsString();
@@ -441,6 +439,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see TableField
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public TableField getFieldValueAsTableField(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsTableField();
@@ -468,6 +467,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see MultiChoice
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public MultiChoice getFieldValueAsMultiChoice(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsMultiChoice();
@@ -494,6 +494,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#DateTime
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Date getFieldValueAsDate(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsDate();
@@ -520,6 +521,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#TrueFalse
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Boolean getFieldValueAsBoolean(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsBoolean();
@@ -546,6 +548,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#Decimal
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Double getFieldValueAsDouble(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsDouble();
@@ -573,6 +576,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#Decimal
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Integer getFieldValueAsInt(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsInteger();
@@ -600,6 +604,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#Decimal
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Long getFieldValueAsLong(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsLong();
@@ -627,6 +632,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type#Decimal
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Number getFieldValueAsNumber(String fieldNameParam) {
 		Field fieldWithName = this.getField(fieldNameParam);
 		return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsNumber();
@@ -656,6 +662,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setFieldValue(String fieldNameParam, Object fieldValueParam) {
 		if (this.getFormFields() == null) this.setFormFields(new ArrayList());
 
@@ -742,6 +749,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see Field.Type
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
 		if (fieldNameParam == null) return;
 		if (this.getFormFields() == null) this.setFormFields(new ArrayList());
@@ -762,6 +770,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @return Whether the {@code Form} is of type {@code formTypeParam}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isFormType(String formTypeParam) {
 		if ((formTypeParam == null || formTypeParam.trim().isEmpty()) ||
 				(this.getFormType() == null || this.getFormType().trim().isEmpty())) return false;
@@ -779,6 +788,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
@@ -861,6 +871,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonMappingForElasticSearch() throws JSONException {
 
 		JSONObject returnVal = new JSONObject();
@@ -1021,6 +1032,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonForElasticSearch() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
@@ -1126,6 +1138,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @see JSONObject
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject convertToFlatJSONObject() {
 		JSONObject returnVal = new JSONObject();
 
@@ -1183,6 +1196,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public void populateFromElasticSearchJson(JSONObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
 		this.jsonObject = jsonObjectParam;
 		if (jsonObjectParam == null) return;
@@ -1345,6 +1359,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code getFieldName()} as upper_camel_case.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public String getFormTypeAsUpperCamel() {
 		return new UtilGlobal().toCamelUpperCase(this.getFormType());
 	}
@@ -1356,6 +1371,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public String toString() {
 		JSONObject jsonObj = this.toJsonObject();
 		if (jsonObj == null) return null;
@@ -1371,6 +1387,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public boolean equals(Object objParam) {
 		if (objParam == null || this.getId() == null) return false;
 		if (objParam instanceof Form) {
@@ -1390,6 +1407,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public int hashCode() {
 		int hash = 10000000;
 		if (this.getId() == null) {
@@ -1458,6 +1476,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code Map} with field name as key and {@code Field} as value.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public Map<String, Field> getFormFieldsAsMap() {
 		List<Field> fields = this.getFormFields();
 		Map<String, Field> returnVal = new HashMap<>();
@@ -1473,6 +1492,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * {@code System.out}.
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void printFormFields() {
 		System.out.println("\n\n*** PRINTING FORM FIELDS ***");
 		if (this.getFormFields() != null) {
@@ -1488,6 +1508,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 * @return {@code true} if all fields are empty, otherwise {@code false}
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public boolean isAllFormFieldsEmpty() {
 		if (this.getFormFields() == null || this.getFormFields().isEmpty()) return true;
 

@@ -73,11 +73,7 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 	 */
 	@Before
 	public void init() {
-		/*if (this.isConnectionInValid) return;
 
-		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-		this.loginClient = new LoginClient(BASE_URL);
-		this.serviceTicket = this.loginClient.login(USERNAME, PASSWORD).getServiceTicket();*/
 	}
 
 	/**

@@ -239,19 +239,19 @@ public class LoginClient extends ABaseClientWS {
 	 *
 	 * Please note that the actual password never travels over the wire / connection.
 	 *
-	 * @param usernameParam The users Username.
-	 * @param passwordParam The users password.
-	 * @param sessionLifespanSecondsParam The requested duration of the session in seconds.
+	 * @param username The users Username.
+	 * @param password The users password.
+	 * @param sessionLifespanSeconds The requested duration of the session in seconds.
 	 * @return Session token.
 	 *
 	 * @see AppRequestToken
 	 */
 	public AppRequestToken login(
-		String usernameParam,
-		String passwordParam,
-		Long sessionLifespanSecondsParam
+		String username,
+		String password,
+		Long sessionLifespanSeconds
 	) {
-		if (this.isEmpty(usernameParam) || this.isEmpty(passwordParam)) {
+		if (this.isEmpty(username) || this.isEmpty(password)) {
 			throw new FluidClientException(
 					"Username and Password required.",
 					FluidClientException.ErrorCode.FIELD_VALIDATE);
@@ -259,8 +259,8 @@ public class LoginClient extends ABaseClientWS {
 
 		AuthRequest authRequest = new AuthRequest();
 
-		authRequest.setUsername(usernameParam);
-		authRequest.setLifetime(sessionLifespanSecondsParam);
+		authRequest.setUsername(username);
+		authRequest.setLifetime(sessionLifespanSeconds);
 
 		//Init the session...
 		//Init the session to get the salt...
@@ -277,12 +277,12 @@ public class LoginClient extends ABaseClientWS {
 					jsonException.getMessage(),jsonException,FluidClientException.ErrorCode.JSON_PARSING);
 		}
 
-		AuthEncryptedData authEncData = this.initializeSession(passwordParam, authResponse);
+		AuthEncryptedData authEncData = this.initializeSession(password, authResponse);
 
 		//Issue the token...
 		AppRequestToken appReqToken = this.issueAppRequestToken(
 				authResponse.getServiceTicketBase64(),
-				usernameParam, authEncData);
+				username, authEncData);
 
 		appReqToken.setRoleString(authEncData.getRoleListing());
 		appReqToken.setSalt(authResponse.getSalt());
