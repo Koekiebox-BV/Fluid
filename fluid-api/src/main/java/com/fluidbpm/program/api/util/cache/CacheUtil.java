@@ -16,7 +16,20 @@
 package com.fluidbpm.program.api.util.cache;
 
 
-import static com.fluidbpm.program.api.util.UtilGlobal.FieldTypeId.*;
+import com.fluidbpm.program.api.util.ABaseUtil;
+import com.fluidbpm.program.api.util.cache.exception.FluidCacheException;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.form.Form;
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.XMemcachedClient;
+import net.rubyeye.xmemcached.exception.MemcachedException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.exceptions.JedisDataException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -24,22 +37,7 @@ import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.util.ABaseUtil;
-import com.fluidbpm.program.api.util.cache.exception.FluidCacheException;
-import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.program.api.vo.field.MultiChoice;
-import com.fluidbpm.program.api.vo.form.Form;
-
-import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.XMemcachedClient;
-import net.rubyeye.xmemcached.exception.MemcachedException;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.exceptions.JedisDataException;
+import static com.fluidbpm.program.api.util.UtilGlobal.FieldTypeId.*;
 
 /**
  * Cache Utility class used for {@code Field} value retrieval actions.
@@ -137,7 +135,9 @@ public class CacheUtil extends ABaseUtil {
 	 */
 	public enum CacheType {
 		REDIS,
-		MEMCACHED
+		MEMCACHED,
+		INTERNAL,
+		NONE
 	}
 
 	/**

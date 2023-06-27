@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.health;
 
 import com.fluidbpm.program.api.vo.health.ConnectStatus;
+import com.fluidbpm.program.api.vo.health.ExtendedServerHealth;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
@@ -63,5 +64,14 @@ public class TestHealthClient extends ABaseLoggedInTestCase {
 		TestCase.assertNotNull(connectStatus.getFluidAPIVersion());
 		TestCase.assertNotNull(connectStatus.getInternalTimeZone());
 		TestCase.assertNotNull(connectStatus.getConnectObtainDurationMillis());
+	}
+
+	@Test
+	public void testExtendedHealthAndServerInfo() {
+		if (this.isConnectionInValid) return;
+
+		HealthClient healthClient = new HealthClient(BASE_URL, ADMIN_SERVICE_TICKET);
+		ExtendedServerHealth ext = healthClient.getExtendedHealthAndServerInfo();
+		TestCase.assertNotNull(ext);
 	}
 }

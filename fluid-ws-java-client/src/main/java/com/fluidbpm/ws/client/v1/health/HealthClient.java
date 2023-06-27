@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.health;
 
 import com.fluidbpm.program.api.vo.health.ConnectStatus;
+import com.fluidbpm.program.api.vo.health.ExtendedServerHealth;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONObject;
@@ -52,5 +53,26 @@ public class HealthClient extends ABaseClientWS {
 	 */
 	public ConnectStatus getHealthAndServerInfo() {
 		return new ConnectStatus(this.getJson(false, WS.Path.Test.Version1.healthAndServerInfo()));
+	}
+
+	/**
+	 * Retrieve extended health information in regard to Fluid being able to connect and operate on external services.
+	 * These include:
+	 * - 3rd party integrations
+	 * - Elasticsearch
+	 * - Redis
+	 * - Email
+	 * - Additional data-sources
+	 * - etc.
+	 *
+	 * @return ConnectStatus information.
+	 *
+	 * @see ExtendedServerHealth
+	 */
+	public ExtendedServerHealth getExtendedHealthAndServerInfo() {
+		ExtendedServerHealth req = new ExtendedServerHealth();
+		req.setServiceTicket(this.serviceTicket);
+
+		return new ExtendedServerHealth(this.postJson(req, WS.Path.Test.Version1.extendedHealthAndServerInfo()));
 	}
 }

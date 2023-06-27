@@ -72,21 +72,16 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 	 */
 	public RoleToJobView(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
-
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Job View...
 		if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW)) {
-			this.setJobView(new JobView(this.jsonObject.getJSONObject(
-					JSONMapping.JOB_VIEW)));
+			this.setJobView(new JobView(this.jsonObject.getJSONObject(JSONMapping.JOB_VIEW)));
 		}
 
 		//Role...
 		if (!this.jsonObject.isNull(JSONMapping.ROLE)) {
-			this.setRole(new Role(this.jsonObject.getJSONObject(
-					JSONMapping.ROLE)));
+			this.setRole(new Role(this.jsonObject.getJSONObject(JSONMapping.ROLE)));
 		}
 	}
 
@@ -136,21 +131,16 @@ public class RoleToJobView extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
-
 		JSONObject returnVal = super.toJsonObject();
-
 		//Job View...
 		if (this.getJobView() != null) {
-			returnVal.put(JSONMapping.JOB_VIEW,
-					this.getJobView().toJsonObject());
+			returnVal.put(JSONMapping.JOB_VIEW, this.getJobView().toJsonObject());
 		}
 
 		//Role...
 		if (this.getRole() != null) {
-			returnVal.put(JSONMapping.ROLE,
-					this.getRole().toJsonObject());
+			returnVal.put(JSONMapping.ROLE, this.getRole().toJsonObject());
 		}
-
 		return returnVal;
 	}
 }

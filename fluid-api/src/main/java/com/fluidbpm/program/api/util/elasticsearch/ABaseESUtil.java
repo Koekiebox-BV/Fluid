@@ -82,18 +82,17 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 		 * Checks to see whether {@code indexParam} is a valid
 		 * index type.
 		 *
-		 * @param indexParam The index to check.
+		 * @param index The index to check.
 		 * @return {@code true} for valid index and {@code false} for invalid index.
 		 */
-		public static boolean isIndexValid(String indexParam) {
-			if (DOCUMENT.equals(indexParam)) {
-				return true;
-			} else if (FOLDER.equals(indexParam)) {
-				return true;
-			} else if (TABLE_RECORD.equals(indexParam)) {
-				return true;
+		public static boolean isIndexValid(String index) {
+			switch (index.toLowerCase()) {
+				case DOCUMENT:
+				case FOLDER:
+				case TABLE_RECORD:
+					return true;
+				default: return false;
 			}
-			return false;
 		}
 
 		/**
