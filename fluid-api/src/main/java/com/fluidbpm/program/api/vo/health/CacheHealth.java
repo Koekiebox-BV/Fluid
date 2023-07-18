@@ -23,7 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Connection status for a Fluid instance.
+ * Connection status for a Fluid instance cache.
  *
  * @author jasonbruwer on 2023-06-20.
  * @since 1.13
@@ -40,15 +40,13 @@ public class CacheHealth extends ABaseFluidJSONObject {
 	private Long connectObtainDurationMillis;
 
 	/**
-	 * The JSON mapping for the {@code ConnectStatus} object.
+	 * The JSON mapping for the {@code CacheHealth} object.
 	 */
 	public static class JSONMapping {
-		public static final String TIMESTAMP = "timestamp";
-		public static final String SYSTEM_HEALTH = "systemHealth";
-		public static final String DATABASE_HEALTH = "databaseHealth";
-		public static final String VERSION = "version";
-		public static final String FLUID_API_VERSION = "fluidAPIVersion";
-		public static final String INTERNAL_TIMEZONE = "internalTimeZone";
+		public static final String TYPE = "type";
+		public static final String URI = "uri";
+		public static final String CACHE_HEALTH = "cacheHealth";
+		public static final String CONNECTION_INFO = "connectionInfo";
 		public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
 	}
 
@@ -61,8 +59,21 @@ public class CacheHealth extends ABaseFluidJSONObject {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
+		if (!this.jsonObject.isNull(JSONMapping.TYPE)) {
+			this.setType(this.jsonObject.getString(JSONMapping.TYPE));
+		}
 
+		if (!this.jsonObject.isNull(JSONMapping.URI)) {
+			this.setUri(this.jsonObject.getString(JSONMapping.URI));
+		}
 
+		if (!this.jsonObject.isNull(JSONMapping.CACHE_HEALTH)) {
+			this.setCacheHealth(this.jsonObject.getEnum(Health.class, JSONMapping.CACHE_HEALTH));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
+			this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
+		}
 
 		if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
 			this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
@@ -72,7 +83,7 @@ public class CacheHealth extends ABaseFluidJSONObject {
 	/**
 	 * Conversion to {@code JSONObject} from Java Object.
 	 *
-	 * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
+	 * @return {@code JSONObject} representation of {@code CacheHealth}.
 	 * @throws JSONException If there is a problem with the JSON Body.
 	 *
 	 * @see ABaseFluidJSONObject#toJsonObject()
@@ -81,6 +92,10 @@ public class CacheHealth extends ABaseFluidJSONObject {
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
+		if (this.getType() != null) returnVal.put(JSONMapping.TYPE, this.getType());
+		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getType());
+		if (this.getCacheHealth() != null) returnVal.put(JSONMapping.CACHE_HEALTH, this.getCacheHealth());
+		if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
 
 		if (this.getConnectObtainDurationMillis() != null) {
 			returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());

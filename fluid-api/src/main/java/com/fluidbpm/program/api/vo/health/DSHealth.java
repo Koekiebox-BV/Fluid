@@ -45,12 +45,12 @@ public class DSHealth extends ABaseFluidJSONObject {
 	 * The JSON mapping for the {@code ConnectStatus} object.
 	 */
 	public static class JSONMapping {
-		public static final String TIMESTAMP = "timestamp";
-		public static final String SYSTEM_HEALTH = "systemHealth";
+		public static final String NAME = "name";
+		public static final String DRIVER = "driver";
+		public static final String URI = "uri";
+		public static final String USERNAME = "username";
 		public static final String DATABASE_HEALTH = "databaseHealth";
-		public static final String VERSION = "version";
-		public static final String FLUID_API_VERSION = "fluidAPIVersion";
-		public static final String INTERNAL_TIMEZONE = "internalTimeZone";
+		public static final String CONNECTION_INFO = "connectionInfo";
 		public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
 	}
 
@@ -63,11 +63,25 @@ public class DSHealth extends ABaseFluidJSONObject {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
+		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
+			this.setName(this.jsonObject.getString(JSONMapping.NAME));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.DRIVER)) {
+			this.setDriver(this.jsonObject.getString(JSONMapping.DRIVER));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.URI)) {
+			this.setUri(this.jsonObject.getString(JSONMapping.URI));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
+			this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
+		}
 
 		if (!this.jsonObject.isNull(JSONMapping.DATABASE_HEALTH)) {
 			this.setDatabaseHealth(this.jsonObject.getEnum(Health.class, JSONMapping.DATABASE_HEALTH));
 		}
-
 
 		if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
 			this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
@@ -85,6 +99,11 @@ public class DSHealth extends ABaseFluidJSONObject {
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
+
+		if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
+		if (this.getDriver() != null) returnVal.put(JSONMapping.DRIVER, this.getDriver());
+		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
+		if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
 
 		if (this.getDatabaseHealth() != null) {
 			returnVal.put(JSONMapping.DATABASE_HEALTH, this.getDatabaseHealth());

@@ -47,11 +47,9 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 		this.receivedMessages = 0;
 
 		//ContainerProvider.getWebSocketContainer()
-		ClientManager clMng = ClientManager.createClient(
-				GrizzlyClientContainer.class.getName());
+		ClientManager clMng = ClientManager.createClient(GrizzlyClientContainer.class.getName());
 
 		clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, String.valueOf(15000));
-
 		WebSocketContainer container = clMng;
 
 		//WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
@@ -69,11 +67,11 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	/**
 	 * Callback hook for Connection open events.
 	 *
-	 * @param userSessionParam the userSession which is opened.
+	 * @param userSession the userSession which is opened.
 	 */
 	@OnOpen
-	public void onOpen(Session userSessionParam) {
-		this.userSession = userSessionParam;
+	public void onOpen(Session userSession) {
+		this.userSession = userSession;
 		this.receivedMessages = 0;
 		this.sentMessages = 0;
 	}
@@ -81,12 +79,12 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	/**
 	 * Callback hook for Connection close events.
 	 *
-	 * @param userSessionParam The userSession which is getting closed.
-	 * @param reasonParam The reason for connection close.
+	 * @param userSession The userSession which is getting closed.
+	 * @param reason The reason for connection close.
 	 *
 	 */
 	@OnClose
-	public void onClose(Session userSessionParam, CloseReason reasonParam) {
+	public void onClose(Session userSession, CloseReason reason) {
 		this.userSession = null;
 
 		if (this.messageHandlers != null) {
@@ -133,23 +131,21 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	 */
 	public void sendMessage(ABaseFluidJSONObject aBaseFluidJSONObject) {
 		if (aBaseFluidJSONObject == null) {
-			throw new FluidClientException(
-					"No JSON Object to send.",
-					FluidClientException.ErrorCode.IO_ERROR);
+			throw new FluidClientException("No JSON Object to send.", FluidClientException.ErrorCode.IO_ERROR);
 		} else this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
 	}
 
 	/**
 	 * Send a message as text.
 	 *
-	 * @param messageToSendParam The text message to send.
+	 * @param messageToSend The text message to send.
 	 */
-	public void sendMessage(String messageToSendParam) {
-
+	public void sendMessage(String messageToSend) {
 		if (this.userSession == null) {
 			throw new FluidClientException(
 					"User Session is not set. Check if connection is open.",
-					FluidClientException.ErrorCode.IO_ERROR);
+					FluidClientException.ErrorCode.IO_ERROR
+			);
 		}
 
 		RemoteEndpoint.Async asyncRemote = null;
@@ -159,7 +155,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 					FluidClientException.ErrorCode.IO_ERROR);
 		}
 
-		asyncRemote.sendText(messageToSendParam);
+		asyncRemote.sendText(messageToSend);
 		this.sentMessages++;
 	}
 
@@ -208,7 +204,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	}
 
 	/**
-	 * Get the number of messages recieved.
+	 * Get the number of messages received.
 	 *
 	 * @return number of received messages.
 	 */
