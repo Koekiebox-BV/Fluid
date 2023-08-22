@@ -246,13 +246,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @return The Web Socket URL version of {@code webServiceURLParam}.
 	 */
 	private String getWebSocketBaseURIFrom(String webServiceURLParam) {
-		if (webServiceURLParam == null) {
-			return null;
-		}
-
-		if (webServiceURLParam.trim().length() == 0) {
-			return UtilGlobal.EMPTY;
-		}
+		if (webServiceURLParam == null) return null;
+		if (webServiceURLParam.trim().length() == 0) return UtilGlobal.EMPTY;
 
 		URI uri = URI.create(webServiceURLParam);
 		StringBuilder returnBuffer = new StringBuilder();
@@ -309,9 +304,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 */
 	@Override
 	public boolean isConnectionValid() {
-		if (this.webSocketClient == null) {
-			return false;
-		}
+		if (this.webSocketClient == null) return false;
+
 		return this.webSocketClient.isSessionOpen();
 	}
 
@@ -321,9 +315,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @return {@code Session ID} if session is open, otherwise {@code null}.
 	 */
 	public String getSessionId() {
-		if (this.webSocketClient == null) {
-			return null;
-		}
+		if (this.webSocketClient == null) return null;
 
 		return this.webSocketClient.getSessionId();
 	}
@@ -364,9 +356,8 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 
 		if (sentItemsParam != null) {
 			for (Object objSent : sentItemsParam) {
-				if (objSent == null) {
-					continue;
-				}
+				if (objSent == null) continue;
+
 				formFieldsRequestCombined.append(objSent.toString());
 				formFieldsRequestCombined.append(UtilGlobal.PIPE);
 			}

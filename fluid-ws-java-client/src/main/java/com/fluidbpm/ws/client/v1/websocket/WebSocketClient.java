@@ -3,6 +3,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import lombok.Getter;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
@@ -26,7 +27,10 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	private Session userSession = null;
 	private Map<String, RespHandler> messageHandlers;
 
-	protected int sentMessages = 0, receivedMessages = 0;
+	@Getter
+	protected int sentMessages = 0;
+	@Getter
+	protected int receivedMessages = 0;
 
 	/**
 	 * Default constructor with an endpoint.
@@ -72,6 +76,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	@OnOpen
 	public void onOpen(Session userSession) {
 		this.userSession = userSession;
+		// No session timeout:
+		this.userSession.setMaxIdleTimeout(0L);
 		this.receivedMessages = 0;
 		this.sentMessages = 0;
 	}
@@ -144,7 +150,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 		if (this.userSession == null) {
 			throw new FluidClientException(
 					"User Session is not set. Check if connection is open.",
-					FluidClientException.ErrorCode.IO_ERROR
+					FluidClientException.ErrorCode.SESSION_EXPIRED
 			);
 		}
 
@@ -192,23 +198,5 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	public String getSessionId(){
 		if (this.userSession == null) return null;
 		return this.userSession.getId();
-	}
-
-	/**
-	 * Get the number of messages sent.
-	 *
-	 * @return number of sent messages.
-	 */
-	public int getSentMessages() {
-		return this.sentMessages;
-	}
-
-	/**
-	 * Get the number of messages received.
-	 *
-	 * @return number of received messages.
-	 */
-	public int getReceivedMessages() {
-		return this.receivedMessages;
 	}
 }
