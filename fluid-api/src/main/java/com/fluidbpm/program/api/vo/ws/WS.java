@@ -3906,7 +3906,7 @@ public class WS {
 				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
 				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
 				 */
-				public static final String getExecuteNativeSQL() {
+				public static String getExecuteNativeSQL() {
 					return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_NATIVE_QUERY);
 				}
 
@@ -3921,7 +3921,7 @@ public class WS {
 				 *
 				 * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
 				 */
-				public static final String getExecuteNativeSQLWebSocket(
+				public static String getExecuteNativeSQLWebSocket(
 						String serviceTicketParam,
 						boolean compressResponseParam,
 						String compressResponseCharsetParam

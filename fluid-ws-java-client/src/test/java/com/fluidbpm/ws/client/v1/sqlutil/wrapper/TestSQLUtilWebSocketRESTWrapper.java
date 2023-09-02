@@ -144,8 +144,9 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
 			nativeSQLQuery.setSqlInputs(inputs);
 
 			SQLUtilWebSocketRESTWrapper.DISABLE_WS = false;
-			this.testMethods(wClient, nativeSQLQuery);
+			for (int i = 0;i < 50; i++) this.testMethods(wClient, nativeSQLQuery);
 			SQLUtilWebSocketRESTWrapper.DISABLE_WS = true;
+			this.testMethods(wClient, nativeSQLQuery);
 			this.testMethods(wClient, nativeSQLQuery);
 		}
 	}
