@@ -525,7 +525,9 @@ public class FormContainerClient extends ABaseClientWS {
 
 		form.setServiceTicket(this.serviceTicket);
 		form.getFormFields().stream()
-				.filter(itm -> itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice)
+				.filter(itm ->
+						(itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
+								itm.getFieldValueAsMultiChoice() != null)
 				.map(itm -> itm.getFieldValueAsMultiChoice())
 				.forEach(multiChoice -> {
 					multiChoice.setAvailableMultiChoices(null);
