@@ -872,6 +872,8 @@ public class WS {
 				public static final String READ_BY_USER_QUERY = ("/get_by_user_query");
 				public static final String READ_BY_USER_QUERIES = ("/get_by_user_queries");
 
+				public static final String AUTO_COMPLETE_EXISTING = ("/auto_complete_existing");
+
 				/**
 				 * Root for Form Field.
 				 *
@@ -995,6 +997,15 @@ public class WS {
 				 */
 				public static final String getByUserQueries() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_BY_USER_QUERIES);
+				}
+
+				/**
+				 * URL Path for Form Fields auto complete by field.
+				 *
+				 * @return {@code v1/form_field/auto_complete_existing}
+				 */
+				public static String autoCompleteExisting() {
+					return Version.VERSION_1.concat(ROOT).concat(AUTO_COMPLETE_EXISTING);
 				}
 			}
 		}

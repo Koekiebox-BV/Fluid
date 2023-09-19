@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.form;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.field.AutoComplete;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -1526,6 +1527,24 @@ public class FormFieldClient extends ABaseFieldClient {
 
 		return new UserQueryListing(this.postJson(
 				userQueryListing, WS.Path.FormField.Version1.getByUserQueries())).getListing();
+	}
+
+
+	/**
+	 * Retrieve a list of existing field values
+	 *
+	 * @param formField The field to execute the auto-complete for.
+	 * @param query The query to auto-complete for.
+	 * @param maxResults The maximum number of results to return.
+	 *
+	 * @return Form Fields for {@code userQuery}
+	 */
+	public List<String> autoCompleteBasedOnExisting(Field formField, String query, int maxResults) {
+		if (UtilGlobal.isBlank(query)) return new ArrayList<>();
+
+		AutoComplete req = new AutoComplete(formField, query, maxResults);
+		req.setServiceTicket(this.serviceTicket);
+		return new AutoComplete(this.postJson(req, WS.Path.FormField.Version1.autoCompleteExisting())).getExistingValues();
 	}
 
 	/**
