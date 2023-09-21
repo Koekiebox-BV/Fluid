@@ -61,6 +61,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private List<String> additionalSectionOptions;
 	private List<String> tableFieldsToInclude;
 	private List<String> mandatoryFields;
+	private List<String> autoCompleteTextFields;
 	private List<NewInstanceDefault> newInstanceDefaults;
 	private List<String> userToFormFieldLimitOnMultiChoice;
 
@@ -112,6 +113,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		public static final String FORM_DISPLAY_BEHAVIOUR = "formDisplayBehaviour";
 		public static final String TABLE_FIELDS_TO_INCLUDE = "tableFieldsToInclude";
 		public static final String MANDATORY_FIELDS = "mandatoryFields";
+		public static final String AUTO_COMPLETE_TEXT_FIELDS = "autoCompleteTextFields";
 		public static final String NEW_INSTANCE_DEFAULTS = "newInstanceDefaults";
 		public static final String USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE = "userToFormFieldLimitOnMultiChoice";
 
@@ -195,6 +197,11 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.MANDATORY_FIELDS))
 			this.jsonObject.getJSONArray(JSONMapping.MANDATORY_FIELDS).forEach(
 					manField -> this.getMandatoryFields().add(manField.toString()));
+
+		this.setAutoCompleteTextFields(new ArrayList<>());
+		if (!this.jsonObject.isNull(JSONMapping.AUTO_COMPLETE_TEXT_FIELDS))
+			this.jsonObject.getJSONArray(JSONMapping.AUTO_COMPLETE_TEXT_FIELDS).forEach(
+					autoCompl -> this.getAutoCompleteTextFields().add(autoCompl.toString()));
 
 		this.setNewInstanceDefaults(new ArrayList<>());
 		if (!this.jsonObject.isNull(JSONMapping.NEW_INSTANCE_DEFAULTS))
@@ -325,9 +332,15 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		}
 
 		if (this.getMandatoryFields() != null) {
-			JSONArray mandatoryFields = new JSONArray();
-			this.getMandatoryFields().forEach(manField -> mandatoryFields.put(manField));
-			returnVal.put(JSONMapping.MANDATORY_FIELDS, mandatoryFields);
+			JSONArray arr = new JSONArray();
+			this.getMandatoryFields().forEach(manField -> arr.put(manField));
+			returnVal.put(JSONMapping.MANDATORY_FIELDS, arr);
+		}
+
+		if (this.getAutoCompleteTextFields() != null) {
+			JSONArray arr = new JSONArray();
+			this.getAutoCompleteTextFields().forEach(itm -> arr.put(itm));
+			returnVal.put(JSONMapping.AUTO_COMPLETE_TEXT_FIELDS, arr);
 		}
 
 		if (this.getNewInstanceDefaults() != null) {
@@ -480,8 +493,21 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		if (this.getMandatoryFields() == null || this.getMandatoryFields().isEmpty()) return NONE;
 
 		StringBuilder returnVal = new StringBuilder();
-		this.getMandatoryFields().stream()
-				.forEach(itm -> returnVal.append(String.format("%s\n", itm)));
+		this.getMandatoryFields().forEach(itm -> returnVal.append(String.format("%s\n", itm)));
+		return returnVal.toString();
+	}
+
+	/**
+	 * Text representation for auto complete text fields.
+	 *
+	 * @return {@code String} for {@code autoCompleteTextFields}.
+	 */
+	@XmlTransient
+	public String getToStringAutoCompleteTextFields() {
+		if (this.getAutoCompleteTextFields() == null || this.getAutoCompleteTextFields().isEmpty()) return NONE;
+
+		StringBuilder returnVal = new StringBuilder();
+		this.getAutoCompleteTextFields().forEach(itm -> returnVal.append(String.format("%s\n", itm)));
 		return returnVal.toString();
 	}
 
