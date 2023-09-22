@@ -160,6 +160,39 @@ public class TestFormContainerClient extends ABaseLoggedInTestCase {
 	}
 
 	@Test
+	public void testFormContainerTextAutoComplete() {
+		if (this.isConnectionInValid) return;
+
+		FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+		FormFieldClient ffClient = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+
+		//1. Form...
+		Form toCreate = new Form(TestStatics.FORM_DEFINITION);
+		toCreate.setTitle(TestStatics.FORM_TITLE_PREFIX+new Date().toString());
+
+		List<Field> fields = new ArrayList();
+		Field fieldEmailFrom = new Field(TestStatics.FieldName.EMAIL_FROM_ADDRESS, "zapper123@zool.com");
+		fields.add(fieldEmailFrom);
+		fields.add(new Field(TestStatics.FieldName.EMAIL_TO_ADDRESS, "pateldream556@correct.com"));
+		fields.add(new Field(TestStatics.FieldName.EMAIL_SUBJECT, "This must be a subject..."));
+		toCreate.setFormFields(fields);
+
+		//Create...
+		Form createdForm = formContainerClient.createFormContainer(toCreate);
+
+		// Try and auto complete:
+		List<String> resultsForLookup = ffClient.autoCompleteBasedOnExisting(fieldEmailFrom, "zapper%", 300);
+		TestCase.assertNotNull("Lookup results for auto-complete is not set.", resultsForLookup);
+		TestCase.assertFalse("We expect some results.", resultsForLookup.isEmpty());
+
+		// Try again, but no results this time:
+		resultsForLookup = ffClient.autoCompleteBasedOnExisting(fieldEmailFrom, "boom%", 300);
+		TestCase.assertTrue("We expect NOT results.", resultsForLookup.isEmpty());
+
+		formContainerClient.deleteFormContainer(createdForm);
+	}
+
+	@Test
 	public void testCRUDFormContainerBasicWithCustomHistory() {
 		if (this.isConnectionInValid) return;
 
