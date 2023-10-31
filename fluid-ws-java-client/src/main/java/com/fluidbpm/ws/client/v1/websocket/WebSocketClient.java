@@ -149,7 +149,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	public void sendMessage(String messageToSend) {
 		if (this.userSession == null) {
 			throw new FluidClientException(
-					"User Session is not set. Check if connection is open.",
+					"User Session is not set. Verify if connection is open.",
 					FluidClientException.ErrorCode.SESSION_EXPIRED
 			);
 		}
@@ -157,7 +157,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 		RemoteEndpoint.Async asyncRemote = null;
 		if ((asyncRemote = this.userSession.getAsyncRemote()) == null) {
 			throw new FluidClientException(
-					"Remote Session is not set. Check if connection is open.",
+					"Remote Session is not set. Verify if connection is open.",
 					FluidClientException.ErrorCode.IO_ERROR);
 		}
 
@@ -175,8 +175,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 			this.userSession.close();
 		} catch (IOException e) {
 			throw new FluidClientException(
-					"Unable to close session. "+e.getMessage(),
-					e,FluidClientException.ErrorCode.IO_ERROR);
+					"Unable to close session. "+e.getMessage(), e, FluidClientException.ErrorCode.IO_ERROR);
 		}
 	}
 
