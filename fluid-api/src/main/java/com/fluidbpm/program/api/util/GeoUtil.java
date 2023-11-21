@@ -53,9 +53,9 @@ public class GeoUtil {
 			try {
 				this.json = new JSONObject(existingJson);
 			} catch (JSONException jsonErr) {
+				this.json = new JSONObject();
 				String[] existingVals = existingJson.split("\\|");
 				if (existingVals != null && existingVals.length > 1) {
-					this.json = new JSONObject();
 					this.setLatitude(Double.valueOf(existingVals[0]));
 					this.setLongitude(Double.valueOf(existingVals[1]));
 
