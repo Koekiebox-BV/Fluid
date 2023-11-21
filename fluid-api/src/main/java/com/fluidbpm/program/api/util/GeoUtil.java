@@ -60,7 +60,7 @@ public class GeoUtil {
 					this.setLongitude(Double.valueOf(existingVals[1]));
 
 					if (existingVals.length > 2) this.setAddress(existingVals[2]);
-				}
+				} else this.setAddress(existingJson);
 			}
 		}
 	}
