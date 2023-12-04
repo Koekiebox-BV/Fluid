@@ -1759,6 +1759,7 @@ public class WS {
 				public static final String READ_ALL_VIEWS_BY_LOGGED_IN_USER = ("/get_views_by_logged_in_user");
 
 				public static final String READ_ALL_VIEWS_BY_USER = ("/get_views_by_user");
+				public static final String READ_ALL_VIEWS_BY_ROLE = ("/get_views_by_role");
 
 				public static final String READ_ALL_VIEWS_BY_FLOW = ("/get_views_by_flow");
 
@@ -1864,6 +1865,15 @@ public class WS {
 				 */
 				public static final String getAllViewsByUser() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_USER);
+				}
+
+				/**
+				 * URL Path for JobViews by role.
+				 *
+				 * @return {@code v1/flow_step/get_views_by_role}
+				 */
+				public static final String getAllViewsByRole() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_VIEWS_BY_ROLE);
 				}
 
 				/**

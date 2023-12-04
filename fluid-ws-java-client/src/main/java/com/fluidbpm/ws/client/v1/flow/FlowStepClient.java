@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.flow;
 
 import com.fluidbpm.program.api.vo.flow.*;
+import com.fluidbpm.program.api.vo.role.Role;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -265,6 +266,21 @@ public class FlowStepClient extends ABaseClientWS {
 			userParam.setServiceTicket(this.serviceTicket);
 		}
 		return new JobViewListing(this.postJson(userParam, WS.Path.FlowStep.Version1.getAllViewsByUser()));
+	}
+
+	/**
+	 * Retrieves all Assignment {@link com.fluidbpm.program.api.vo.flow.JobView}s
+	 * for {@code Role}.
+	 *
+	 * @param roleParam The {@link Role} to get job views for.
+	 *
+	 * @return The JobView's that user {@code roleParam} has access to.
+	 */
+	public JobViewListing getJobViewsByRole(Role roleParam) {
+		if (this.serviceTicket != null && roleParam != null) {
+			roleParam.setServiceTicket(this.serviceTicket);
+		}
+		return new JobViewListing(this.postJson(roleParam, WS.Path.FlowStep.Version1.getAllViewsByRole()));
 	}
 
 	/**
