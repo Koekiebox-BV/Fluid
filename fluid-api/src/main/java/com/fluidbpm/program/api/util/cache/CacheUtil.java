@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import static com.fluidbpm.program.api.util.UtilGlobal.FieldTypeId.*;
 
@@ -336,13 +335,8 @@ public class CacheUtil extends ABaseUtil {
 				}
 			break;
 			case REDIS:
-				if (this.jedisCluster != null) {
-					objWithKey = this.jedisCluster.get(storageKey);
-				}
-
-				if (this.jedis != null) {
-					objWithKey = this.jedis.get(storageKey);
-				}
+				if (this.jedisCluster != null) objWithKey = this.jedisCluster.get(storageKey);
+				if (this.jedis != null) objWithKey = this.jedis.get(storageKey);
 			break;
 		}
 
@@ -368,8 +362,8 @@ public class CacheUtil extends ABaseUtil {
 				String response = null;
 				List<String> returnVal = new ArrayList<>();
 				if (this.jedisCluster != null) {
-					response = this.jedisCluster.echo(uuid);
-					returnVal.addAll(this.jedisCluster.getClusterNodes().keySet().stream().collect(Collectors.toList()));
+					response = "<-EchoOnClusterNotAvailable->";
+					returnVal.addAll(new ArrayList<>(this.jedisCluster.getClusterNodes().keySet()));
 				}
 				if (this.jedis != null) {
 					response = this.jedis.echo(uuid);

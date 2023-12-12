@@ -38,40 +38,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.jdk.compile>1.8</version.jdk.compile>
 
-		<!--Maven Dependency Versions-->
-		<version.slf4j>1.7.22</version.slf4j>
-
-		<version.javax.websocket>1.1</version.javax.websocket>
-
-		<!--Org.JSON-->
-		<version.org.json>20230227</version.org.json>
-
-		<!--JBoss Resteasy-->
-		<version.jboss.resteasy.jackson>3.1.3.Final</version.jboss.resteasy.jackson>
-
-		<!--Google-->
-		<version.google.xmemcached>2.3.1</version.google.xmemcached>
-		<version.google.guava>32.1.1-jre</version.google.guava>
-
-		<!--Apache-->
-		<version.apache.httpcomponents.httpcore>4.4.16</version.apache.httpcomponents.httpcore>
-		<version.apache.httpcomponents.httpclient>4.5.14</version.apache.httpcomponents.httpclient>
-
-		<!--ElasticSearch-->
-		<version.elasticsearch>7.7.0</version.elasticsearch>
-
-		<!--GlassFish Tyrus-->
-		<version.glassfish.tyrus>1.20</version.glassfish.tyrus>
-
 		<!--Plugins-->
 		<version.plugin.compiler>3.6.0</version.plugin.compiler>
 		<version.plugin.koekiebox.git-maven>1.1</version.plugin.koekiebox.git-maven>
 		<version.plugin.java.source>3.2.1</version.plugin.java.source>
 		<version.plugin.java.doc>3.4.1</version.plugin.java.doc>
 		<version.plugin.dependency>3.0.1</version.plugin.dependency>
-
-		<!--Redis-->
-		<version.jedis>3.2.0</version.jedis>
 	</properties>
 
 	<!--Repos-->
@@ -109,11 +81,11 @@
 				<version>${project.version}</version>
 			</dependency>
 
-			<!--JSON Library API-->
+			<!--JSON Library API https://mvnrepository.com/artifact/org.json/json -->
 			<dependency>
 				<groupId>org.json</groupId>
 				<artifactId>json</artifactId>
-				<version>${version.org.json}</version>
+				<version>20231013</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -122,23 +94,23 @@
 				<groupId>redis.clients</groupId>
 				<artifactId>jedis</artifactId>
 				<scope>provided</scope>
-				<version>${version.jedis}</version>
+				<version>5.1.0</version>
 			</dependency>
 
 			<!--Google-->
-			<!--XMemcachedClient-->
+			<!--XMemcachedClient https://mvnrepository.com/artifact/com.googlecode.xmemcached/xmemcached -->
 			<dependency>
 				<groupId>com.googlecode.xmemcached</groupId>
 				<artifactId>xmemcached</artifactId>
 				<scope>provided</scope>
-				<version>${version.google.xmemcached}</version>
+				<version>2.4.8</version>
 			</dependency>
 
 			<!--Google Guava - https://mvnrepository.com/artifact/com.google.guava/guava -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>${version.google.guava}</version>
+				<version>32.1.3-jre</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -147,23 +119,24 @@
 			<dependency>
 				<groupId>org.elasticsearch.client</groupId>
 				<artifactId>elasticsearch-rest-high-level-client</artifactId>
-				<version>${version.elasticsearch}</version>
+				<version>7.17.15</version>
 				<scope>provided</scope>
 			</dependency>
 
-			<!--HTTP Components-->
+			<!--HTTP Components https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<scope>provided</scope>
-				<version>${version.apache.httpcomponents.httpclient}</version>
+				<version>4.5.14</version>
 			</dependency>
 
+			<!--HTTP Core https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpcore</artifactId>
 				<scope>provided</scope>
-				<version>${version.apache.httpcomponents.httpcore}</version>
+				<version>4.4.16</version>
 			</dependency>
 
 			<!--WebSocket-->
@@ -171,36 +144,36 @@
 				<groupId>javax.websocket</groupId>
 				<artifactId>javax.websocket-client-api</artifactId>
 				<scope>provided</scope>
-				<version>${version.javax.websocket}</version>
+				<version>1.1</version>
 			</dependency>
 
-			<!--GlassFish Tyrus-->
+			<!--GlassFish Tyrus https://mvnrepository.com/artifact/org.glassfish.tyrus/tyrus-container-grizzly-client -->
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-container-grizzly-client</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus}</version>
+				<version>1.21</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-client</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus}</version>
+				<version>1.21</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-core</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus}</version>
+				<version>1.21</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.tyrus</groupId>
 				<artifactId>tyrus-spi</artifactId>
 				<scope>provided</scope>
-				<version>${version.glassfish.tyrus}</version>
+				<version>1.21</version>
 			</dependency>
 
 			<!--GlassFish Grizzly-->

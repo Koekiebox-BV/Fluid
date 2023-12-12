@@ -24,9 +24,8 @@ import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.IndicesClient;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.indices.*;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
-import org.elasticsearch.common.collect.ImmutableOpenMap;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.cluster.metadata.MappingMetadata;
+import org.elasticsearch.xcontent.XContentType;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -136,18 +135,9 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 			//Found index...
 			if (!mappingKey.equals(formTypeString)) continue;
 
-			//Found a match...
-			Object obj = getExistingIndex.getMappings().get(mappingKey);
-			if (obj instanceof ImmutableOpenMap) {
-				ImmutableOpenMap casted = (ImmutableOpenMap)obj;
-
-				//Type...
-				if (casted.containsKey(formTypeString) &&
-						casted.get(formTypeString) instanceof MappingMetaData) {
-					MappingMetaData mappingMetaData = (MappingMetaData)casted.get(formTypeString);
-					existingPropsToUpdate = new JSONObject(mappingMetaData.source().string());
-				}
-			}
+			// Found a match...
+			MappingMetadata casted = getExistingIndex.getMappings().get(mappingKey);
+			existingPropsToUpdate = new JSONObject(casted.source().string());
 		}
 
 		//No mapping for the type create a new one...
