@@ -3424,6 +3424,7 @@ public class WS {
 				//Read...
 				public static final String READ = ("/get_by_key");
 				public static final String READ_ALL = ("/get_all_configurations");
+				public static final String READ_ALL_BASIC = ("/get_all_basic_configurations");
 				public static final String READ_SYSTEM_MAIL_TRANSFER = ("/get_system_mail_transfer");
 
 				public static final String READ_ALL_TASK_IDENTIFIERS = ("/get_all_third_party_task_identifiers");
@@ -3458,6 +3459,15 @@ public class WS {
 				 */
 				public static final String getAllConfigurations() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
+				}
+
+				/**
+				 * URL Path for Configuration get all basic.
+				 *
+				 * @return {@code v1/configuration/get_all_basic_configurations}
+				 */
+				public static final String getAllBasicConfigurations() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BASIC);
 				}
 
 				/**

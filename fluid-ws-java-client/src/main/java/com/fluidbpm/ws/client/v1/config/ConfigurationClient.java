@@ -79,13 +79,21 @@ public class ConfigurationClient extends ABaseClientWS {
 	 */
 	public ConfigurationListing getAllConfigurations() {
 		Configuration configuration = new Configuration();
-
-		if (this.serviceTicket != null) {
-			configuration.setServiceTicket(this.serviceTicket);
-		}
-
+		configuration.setServiceTicket(this.serviceTicket);
 		return new ConfigurationListing(this.postJson(
 				configuration, WS.Path.Configuration.Version1.getAllConfigurations()));
+	}
+
+	/**
+	 * Retrieves all basic Configurations.
+	 *
+	 * @return All the Configurations related to basic information.
+	 */
+	public ConfigurationListing getAllBasicConfigurations() {
+		Configuration configuration = new Configuration();
+		configuration.setServiceTicket(this.serviceTicket);
+		return new ConfigurationListing(this.postJson(
+				configuration, WS.Path.Configuration.Version1.getAllBasicConfigurations()));
 	}
 
 	/**
