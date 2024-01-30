@@ -19,8 +19,12 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Connection status for a Fluid instance cache.
@@ -37,6 +41,7 @@ public class CacheHealth extends ABaseFluidJSONObject {
 	private String uri;
 	private Health cacheHealth;
 	private String connectionInfo;
+	private List<String> cacheConsumption;
 	private Long connectObtainDurationMillis;
 
 	/**
@@ -47,6 +52,7 @@ public class CacheHealth extends ABaseFluidJSONObject {
 		public static final String URI = "uri";
 		public static final String CACHE_HEALTH = "cacheHealth";
 		public static final String CONNECTION_INFO = "connectionInfo";
+		public static final String CACHE_CONSUMPTION = "cacheConsumption";
 		public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
 	}
 
@@ -75,6 +81,14 @@ public class CacheHealth extends ABaseFluidJSONObject {
 			this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.CACHE_CONSUMPTION)) {
+			JSONArray jsonCacheCons = this.jsonObject.getJSONArray(JSONMapping.CACHE_CONSUMPTION);
+			this.setCacheConsumption(new ArrayList<>());
+			for (int index = 0;index < jsonCacheCons.length();index++) {
+				this.getCacheConsumption().add(jsonCacheCons.getString(index));
+			}
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
 			this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
 		}
@@ -93,9 +107,14 @@ public class CacheHealth extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		if (this.getType() != null) returnVal.put(JSONMapping.TYPE, this.getType());
-		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getType());
+		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
 		if (this.getCacheHealth() != null) returnVal.put(JSONMapping.CACHE_HEALTH, this.getCacheHealth());
 		if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
+		if (this.getCacheConsumption() != null) {
+			JSONArray cacheConsumption = new JSONArray();
+			this.getCacheConsumption().forEach(cacheConsumption::put);
+			returnVal.put(JSONMapping.CACHE_CONSUMPTION, cacheConsumption);
+		}
 
 		if (this.getConnectObtainDurationMillis() != null) {
 			returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
