@@ -228,7 +228,6 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                         open = false, moved = false;
 
                 for (FormFlowHistoricData historyData : flowHistoryData) {
-
                     String logEntryType = historyData.getLogEntryType();
                     switch (logEntryType) {
                         case "Flow End": flowEnd = true; break;
@@ -242,6 +241,9 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 TestCase.assertTrue(UtilGlobal.isAllTrue(flowEnd, newStep, newRoute, usrDone, open, moved));
                 TestCase.assertNotNull(formById);
                 TestCase.assertEquals("NotInFlow", formById.getFlowState());
+                Double emailUnique = formById.getFieldValueAsDouble("Email Unique Identifier");
+                TestCase.assertNotNull(emailUnique);
+                TestCase.assertTrue(emailUnique > 0.0);
                 fcClient.deleteFormContainer(formById);
             });
 
