@@ -31,10 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents an Fluid Field for Form, User, Route and Global.
@@ -182,12 +179,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * @param fieldValue Sets Field Value.
 	 * @param fieldType Sets Field Type.
 	 */
-	public Field(
-		Long fieldId,
-		String fieldName,
-		Object fieldValue,
-		Type fieldType
-	) {
+	public Field(Long fieldId, String fieldName, Object fieldValue, Type fieldType) {
 		this(fieldId);
 		this.setFieldName(fieldName);
 		this.setTypeAsEnum(fieldType);
@@ -323,56 +315,164 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		//Field Value...
 		if (!this.jsonObject.isNull(JSONMapping.FIELD_VALUE)) {
 			Object objFromKey = this.jsonObject.get(JSONMapping.FIELD_VALUE);
-
-			if (objFromKey instanceof JSONObject) {
-				JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
-
-				//Multi Choices Selected Multi Choices...
-				if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
-						jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
-						jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)) {
-					this.setFieldValue(new MultiChoice(jsonObject));
-				} else if (Type.MultipleChoice.toString().equals(this.getFieldType()) &&
-						(jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE))) {
-					//[Payara] mapping for rest...
-					String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
-					if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
-						this.setFieldValue(new MultiChoice(new JSONObject(jsonObject.getString(MultiChoice.JSONMapping.VALUE))));
-					}
-				} else if (jsonObject.has(TableField.JSONMapping.TABLE_RECORDS)) {
-					//Table Field...
-					this.setFieldValue(new TableField(jsonObject));
-				} else if ((jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_MULTI_CHOICES) ||
-						jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES)) ||
-						jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
-					this.setFieldValue(new MultiChoice(jsonObject));
-				}
-			} else if (objFromKey instanceof Long) {
-				Long castedLong = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
-				if (this.getTypeAsEnum() != null && this.getTypeAsEnum() == Type.DateTime) {
-					this.setFieldValue(new Date(castedLong));
-				} else {
-					this.setFieldValue(castedLong);
-				}
-			} else if (objFromKey instanceof Number) {
-				try {
-					this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
-				} catch (NoSuchMethodError nsm) {
-					//For older versions of org.json library...
-					this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
-				}
-			} else if (objFromKey instanceof Boolean) {
-				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
+			String fieldType = this.getFieldType();
+			if (UtilGlobal.isBlank(fieldType)) {
+				this.setValueBasedOnObjectType(objFromKey);
 			} else {
-				String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
-				if (this.getTypeAsEnum() == Type.MultipleChoice &&
-						stringVal != null && stringVal.startsWith("{")) {
-					this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
-				} else {
-					this.setFieldValue(stringVal);
-				}
+				Type typeEnum = this.getTypeAsEnum();
+				this.setValueBasedOnFieldType(typeEnum, objFromKey);
 			}
 		}
+	}
+
+	/**
+	 * Based on the object type the value will be set.
+	 * @param objFromKey The object value.
+	 */
+	private void setValueBasedOnObjectType(Object objFromKey) {
+		if (objFromKey instanceof JSONObject) {
+			JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
+			//Multi Choices Selected Multi Choices...
+			if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
+					jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
+					jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)) {
+				this.setFieldValue(new MultiChoice(jsonObject));
+			} else if (Type.MultipleChoice.toString().equals(this.getFieldType()) &&
+					(jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE))) {
+				//[Payara] mapping for rest...
+				String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
+				if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
+					this.setFieldValue(new MultiChoice(new JSONObject(jsonObject.getString(MultiChoice.JSONMapping.VALUE))));
+				}
+			} else if (jsonObject.has(TableField.JSONMapping.TABLE_RECORDS)) {
+				//Table Field...
+				this.setFieldValue(new TableField(jsonObject));
+			} else if ((jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_MULTI_CHOICES) ||
+					jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES)) ||
+					jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
+				this.setFieldValue(new MultiChoice(jsonObject));
+			}
+		} else if (objFromKey instanceof Long) {
+			long castedLong = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
+			if (this.getTypeAsEnum() != null && this.getTypeAsEnum() == Type.DateTime) {
+				this.setFieldValue(new Date(castedLong));
+			} else this.setFieldValue(castedLong);
+		} else if (objFromKey instanceof Number) {
+			try {
+				this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
+			} catch (NoSuchMethodError nsm) {
+				//For older versions of org.json library...
+				nsm.printStackTrace();
+				this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
+			}
+		} else if (objFromKey instanceof Boolean) {
+			this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
+		} else {
+			String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
+			if (this.getTypeAsEnum() == Type.MultipleChoice && stringVal != null && stringVal.startsWith("{")) {
+				this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+			} else {
+				this.setFieldValue(stringVal);
+			}
+		}
+	}
+
+	/**
+	 * Based on the object type the value will be set.
+	 * @param objFromKey The object value.
+	 */
+	private void setValueBasedOnFieldType(Type fieldType, Object objFromKey) {
+		Objects.requireNonNull(fieldType);
+		if (objFromKey == null) {
+			this.setFieldValue(null);
+			return;
+		}
+
+		switch (fieldType) {
+			case Text:
+			case ParagraphText:
+			case TextEncrypted:
+			case Label:
+				this.setFieldValue(this.jsonObject.getString(JSONMapping.FIELD_VALUE));
+			break;
+			case TrueFalse:
+				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
+			break;
+			case DateTime:
+				this.setFieldValue(new Date(this.valueAsLongFromNumber(objFromKey)));
+			break;
+			case Decimal:
+				if (objFromKey instanceof Number) {
+					this.setFieldValueAsDouble(this.jsonObject.getDouble(JSONMapping.FIELD_VALUE));
+				} else {
+					throw new IllegalArgumentException(String.format(
+							"Decimal data type received value '%s' of type '%s'. Not allowed.",
+							objFromKey, objFromKey.getClass()
+					));
+				}
+			break;
+			case MultipleChoice:
+				if (objFromKey instanceof JSONObject) {
+					JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
+					//Multi Choices Selected Multi Choices...
+					if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
+							jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
+							jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)) {
+						this.setFieldValue(new MultiChoice(jsonObject));
+					} else if (jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE)) {
+						//[Payara] mapping for rest...
+						String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
+						if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
+							this.setFieldValue(new MultiChoice(new JSONObject(jsonObject.getString(MultiChoice.JSONMapping.VALUE))));
+						}
+					} else if ((jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_MULTI_CHOICES) ||
+							jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES)) ||
+							jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
+						this.setFieldValue(new MultiChoice(jsonObject));
+					}
+				} else {
+					String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
+					if (stringVal != null && stringVal.startsWith("{")) {
+						this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+					}
+				}
+				break;
+			case Table:
+				if (objFromKey instanceof JSONObject) {
+					JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
+					this.setFieldValue(new TableField(jsonObject));
+				} else {
+					throw new IllegalArgumentException(String.format(
+							"Table data type received value '%s' of type '%s'. Not allowed.",
+							objFromKey, objFromKey.getClass()
+					));
+				}
+			break;
+			default:
+				throw new IllegalStateException(String.format(
+						"Unsupported data type received value '%s' of data type '%s' and class type '%s'. Not allowed.",
+						objFromKey, fieldType, objFromKey.getClass()
+				));
+		}
+	}
+
+	/**
+	 * As long as {@code objFromJson} is a number, the value will be returned as long.
+	 * @param objFromJson value.
+	 * @return Long value from {@code objFromJson}.
+	 */
+	private long valueAsLongFromNumber(Object objFromJson) {
+		long returnVal = 0;
+		if (objFromJson instanceof Number) {
+			try {
+				returnVal = this.jsonObject.getNumber(JSONMapping.FIELD_VALUE).longValue();
+			} catch (NoSuchMethodError nsm) {
+				//For older versions of org.json library...
+				nsm.printStackTrace();
+				returnVal = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
+			}
+		}
+		return returnVal;
 	}
 
 	/**
