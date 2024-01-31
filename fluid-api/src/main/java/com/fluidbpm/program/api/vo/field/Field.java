@@ -23,6 +23,8 @@ import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,11 +50,22 @@ import java.util.*;
 public class Field extends ABaseFluidElasticSearchJSONObject {
 	public static final long serialVersionUID = 1L;
 
+	@Setter
+	@Getter
 	private String fieldName;
+
+	@Getter
 	private Object fieldValue;
+
+	@Setter
+	@Getter
 	private String fieldDescription;
 
+	@Setter
+	@Getter
 	private String fieldType;
+
+	@Getter
 	private String typeMetaData;
 	private DecimalMetaFormat decimalMetaFormat;
 
@@ -138,7 +151,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
-	 * The field fieldType for Elastic Search.
+	 * The field fieldType for Elasticsearch.
 	 * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}
 	 */
 	public static class ElasticSearchType {
@@ -169,6 +182,13 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 		//Object...
 		public static final String OBJECT = "object";
+	}
+
+	/**
+	 * Default constructor.
+	 */
+	public Field() {
+		super();
 	}
 
 	/**
@@ -481,60 +501,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
-	 * Default constructor.
-	 */
-	public Field() {
-		super();
-	}
-
-	/**
-	 * Gets the name of {@code this} {@code Field}.
-	 *
-	 * @return The Field Name.
-	 */
-	public String getFieldName() {
-		return this.fieldName;
-	}
-
-	/**
-	 * Sets the name of {@code this} {@code Field}.
-	 *
-	 * @param fieldNameParam The New Field Name.
-	 */
-	public void setFieldName(String fieldNameParam) {
-		this.fieldName = fieldNameParam;
-	}
-
-	/**
-	 * Gets the description of {@code this} {@code Field}.
-	 *
-	 * @return The Field Description.
-	 */
-	public String getFieldDescription() {
-		return this.fieldDescription;
-	}
-
-	/**
-	 * Sets the description of {@code this} {@code Field}.
-	 *
-	 * @param fieldDescriptionParam The Field Description.
-	 */
-	public void setFieldDescription(String fieldDescriptionParam) {
-		this.fieldDescription = fieldDescriptionParam;
-	}
-
-	/**
-	 * Gets the value of {@code this} {@code Field}.
-	 *
-	 * @return The Field Value.
-	 *
-	 * @see Type
-	 */
-	public Object getFieldValue() {
-		return this.fieldValue;
-	}
-
-	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code String}.
 	 *
 	 * @return The Field Value.
@@ -802,8 +768,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	@XmlTransient
 	@JsonIgnore
 	public boolean isAmountMinorWithCurrency() {
-		return (this.decimalMetaFormat == null) ?
-				false : this.decimalMetaFormat.isAmountMinorWithCurrency();
+		return (this.decimalMetaFormat == null) ? false : this.decimalMetaFormat.isAmountMinorWithCurrency();
 	}
 
 	/**
@@ -837,28 +802,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				this.setTypeAsEnum(Type.TrueFalse);
 			}
 		}
-	}
-
-	/**
-	 * Gets the Type of {@code this} {@code Field}.
-	 *
-	 * @return The Field Type.
-	 *
-	 * @see Type
-	 */
-	public String getFieldType() {
-		return this.fieldType;
-	}
-
-	/**
-	 * Sets the Type of {@code this} {@code Field} as {@code String}.
-	 *
-	 * @param fieldTypeParam The Field fieldType.
-	 *
-	 * @see Type
-	 */
-	public void setFieldType(String fieldTypeParam) {
-		this.fieldType = fieldTypeParam;
 	}
 
 	/**
@@ -904,34 +847,15 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * <p>
 	 * Example: Text field may be {@code Plain}, {@code Masked}, {@code Latitude and Longitude}.
 	 *
-	 * @return The Field Meta-Data.
-	 *
-	 * @see Type
-	 */
-	public String getTypeMetaData() {
-		return this.typeMetaData;
-	}
-
-	/**
-	 * <p>
-	 * Gets the Meta-Data of {@code this} {@code Field}.
-	 *
-	 * <p>
-	 * Also referred to as Field Type sub-data.
-	 * This defines the {@code Field} even further.
-	 *
-	 * <p>
-	 * Example: Text field may be {@code Plain}, {@code Masked}, {@code Latitude and Longitude}.
-	 *
 	 * In addition, the {@code decimalMetaFormat} will be created from {@code typeMetaDataParam}
 	 *
-	 * @param typeMetaDataParam The Field Meta-Data.
+	 * @param typeMetaData The Field Meta-Data.
 	 *
 	 * @see Type
 	 * @see DecimalMetaFormat#parse(String) The parsing.
 	 */
-	public void setTypeMetaData(String typeMetaDataParam) {
-		this.typeMetaData = typeMetaDataParam;
+	public void setTypeMetaData(String typeMetaData) {
+		this.typeMetaData = typeMetaData;
 		this.decimalMetaFormat = DecimalMetaFormat.parse(this.typeMetaData);
 	}
 
