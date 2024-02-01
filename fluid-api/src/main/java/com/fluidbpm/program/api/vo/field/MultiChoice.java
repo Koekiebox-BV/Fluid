@@ -81,11 +81,9 @@ public class MultiChoice extends ABaseFluidJSONObject {
 		this();
 		if (toClone == null) return;
 		this.setId(toClone.getId());
-		this.setAvailableMultiChoices(
-				toClone.getAvailableMultiChoices() == null ? null :
+		this.setAvailableMultiChoices(toClone.getAvailableMultiChoices() == null ? null :
 						new ArrayList<>(toClone.getAvailableMultiChoices()));
-		this.setSelectedMultiChoices(
-				toClone.getSelectedMultiChoices() == null ? null :
+		this.setSelectedMultiChoices(toClone.getSelectedMultiChoices() == null ? null :
 						new ArrayList<>(toClone.getSelectedMultiChoices()));
 		this.availableMultiChoicesCombined = toClone.availableMultiChoicesCombined;
 		this.selectedMultiChoicesCombined = toClone.selectedMultiChoicesCombined;
@@ -113,10 +111,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	 * @param selectedMultiChoicesParam List of Selected {@code MultiChoices}s.
 	 * @param availableMultiChoicesParam List of Available {@code MultiChoices}s.
 	 */
-	public MultiChoice(
-		List<String> selectedMultiChoicesParam,
-		List<String> availableMultiChoicesParam
-	) {
+	public MultiChoice(List<String> selectedMultiChoicesParam, List<String> availableMultiChoicesParam) {
 		this.selectedMultiChoices = selectedMultiChoicesParam;
 		this.availableMultiChoices = availableMultiChoicesParam;
 	}
@@ -234,15 +229,11 @@ public class MultiChoice extends ABaseFluidJSONObject {
 			List<String> availChoices = this.getAvailableMultiChoices();
 			returnVal.put(JSONMapping.AVAILABLE_MULTI_CHOICES,
 					new JSONArray(availChoices.toArray()));
-
 			returnVal.put(JSONMapping.AVAILABLE_CHOICES,
 					new JSONArray(availChoices.toArray()));
-
-			returnVal.put(
-					JSONMapping.AVAILABLE_CHOICES_COMBINED,
-					this.combineStringArrayWith(
-							availChoices,
-							UtilGlobal.PIPE));
+			returnVal.put(JSONMapping.AVAILABLE_CHOICES_COMBINED,
+					this.combineStringArrayWith(availChoices, UtilGlobal.PIPE)
+			);
 		}
 
 		//Selected...
@@ -252,9 +243,9 @@ public class MultiChoice extends ABaseFluidJSONObject {
 					new JSONArray(selectChoices.toArray()));
 			returnVal.put(JSONMapping.SELECTED_CHOICES,
 					new JSONArray(selectChoices.toArray()));
-			returnVal.put(JSONMapping.SELECTED_CHOICES_COMBINED, this.combineStringArrayWith(
-							selectChoices,
-							UtilGlobal.PIPE));
+			returnVal.put(JSONMapping.SELECTED_CHOICES_COMBINED,
+					this.combineStringArrayWith(selectChoices, UtilGlobal.PIPE)
+			);
 		}
 
 		return returnVal;
@@ -321,42 +312,6 @@ public class MultiChoice extends ABaseFluidJSONObject {
 
 		if (selectedMultiChoice == null) return;
 		this.selectedMultiChoices.add(selectedMultiChoice);
-	}
-
-	/**
-	 * Gets Selected MultiChoices combined Text.
-	 *
-	 * @return {@code List} of selected multi choices combined.
-	 */
-	public String getSelectedMultiChoicesCombined() {
-		return this.selectedMultiChoicesCombined;
-	}
-
-	/**
-	 * Sets Selected MultiChoices combined.
-	 *
-	 * @param selectedMultiChoicesCombinedParam combined text of multi choices.
-	 */
-	public void setSelectedMultiChoicesCombined(String selectedMultiChoicesCombinedParam) {
-		this.selectedMultiChoicesCombined = selectedMultiChoicesCombinedParam;
-	}
-
-	/**
-	 * Gets Available MultiChoices combined Text.
-	 *
-	 * @return {@code List} of available multi choices combined.
-	 */
-	public String getAvailableMultiChoicesCombined() {
-		return this.availableMultiChoicesCombined;
-	}
-
-	/**
-	 * Sets Available MultiChoices combined.
-	 *
-	 * @param availableMultiChoicesCombinedParam combined text of multi choices.
-	 */
-	public void setAvailableMultiChoicesCombined(String availableMultiChoicesCombinedParam) {
-		this.availableMultiChoicesCombined = availableMultiChoicesCombinedParam;
 	}
 
 	/**
