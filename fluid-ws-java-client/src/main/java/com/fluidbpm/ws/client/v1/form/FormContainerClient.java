@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.form;
 
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
@@ -33,7 +34,9 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Java Web Service Client for Electronic Form related actions.
@@ -196,11 +199,39 @@ public class FormContainerClient extends ABaseClientWS {
 		CustomWebAction action = new CustomWebAction();
 		action.setTaskIdentifier(customWebAction);
 		action.setServiceTicket(this.serviceTicket);
+
+		// Cache the Multi Choice Available items:
+		Map<String, List<String>> mapAvail = new HashMap<>();
+		Map<String, String> mapAvailComb = new HashMap<>();
+		form.getFormFields().stream()
+				.filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
+						itm.getFieldValueAsMultiChoice() != null)
+				.forEach(itm -> {
+					MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();
+					if (multiChoice.getAvailableMultiChoices() != null) {
+						mapAvail.put(itm.getFieldName(), multiChoice.getAvailableMultiChoices());
+					}
+					if (multiChoice.getAvailableMultiChoicesCombined() != null) {
+						mapAvailComb.put(itm.getFieldName(), multiChoice.getAvailableMultiChoicesCombined());
+					}
+				});
+
 		action.setForm(this.clearForRestCreateUpdate(form));
 		action.setIsTableRecord(isTableRecord);
 		action.setFormTableRecordBelongsTo(formContainerTableRecordBelongsTo);
 
-		return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
+		try {
+			return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
+		} finally {
+			form.getFormFields().stream()
+					.filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
+							itm.getFieldValueAsMultiChoice() != null)
+					.forEach(itm -> {
+						MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();
+						multiChoice.setAvailableMultiChoices(mapAvail.get(itm.getFieldName()));
+						multiChoice.setAvailableMultiChoicesCombined(mapAvailComb.get(itm.getFieldName()));
+					});
+		}
 	}
 
 	/**
@@ -525,10 +556,9 @@ public class FormContainerClient extends ABaseClientWS {
 
 		form.setServiceTicket(this.serviceTicket);
 		form.getFormFields().stream()
-				.filter(itm ->
-						(itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
-								itm.getFieldValueAsMultiChoice() != null)
-				.map(itm -> itm.getFieldValueAsMultiChoice())
+				.filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
+					itm.getFieldValueAsMultiChoice() != null)
+				.map(Field::getFieldValueAsMultiChoice)
 				.forEach(multiChoice -> {
 					multiChoice.setAvailableMultiChoices(null);
 					multiChoice.setAvailableMultiChoicesCombined(null);
