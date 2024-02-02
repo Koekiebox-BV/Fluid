@@ -167,7 +167,7 @@ public class FormContainerClient extends ABaseClientWS {
 			customWebAction,
 			false,
 			null,
-			this.clearForRestCreateUpdate(form)
+			form
 		);
 	}
 
@@ -208,7 +208,8 @@ public class FormContainerClient extends ABaseClientWS {
 						itm.getFieldValueAsMultiChoice() != null)
 				.forEach(itm -> {
 					MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();
-					if (multiChoice.getAvailableMultiChoices() != null) {
+					if (multiChoice.getAvailableMultiChoices() != null &&
+							!multiChoice.getAvailableMultiChoices().isEmpty()) {
 						mapAvail.put(itm.getFieldName(), multiChoice.getAvailableMultiChoices());
 					}
 					if (multiChoice.getAvailableMultiChoicesCombined() != null) {
@@ -222,7 +223,7 @@ public class FormContainerClient extends ABaseClientWS {
 
 		try {
 			return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
-		} finally {
+		} catch (Exception err) {
 			form.getFormFields().stream()
 					.filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
 							itm.getFieldValueAsMultiChoice() != null)
@@ -231,6 +232,7 @@ public class FormContainerClient extends ABaseClientWS {
 						multiChoice.setAvailableMultiChoices(mapAvail.get(itm.getFieldName()));
 						multiChoice.setAvailableMultiChoicesCombined(mapAvailComb.get(itm.getFieldName()));
 					});
+			throw err;
 		}
 	}
 
