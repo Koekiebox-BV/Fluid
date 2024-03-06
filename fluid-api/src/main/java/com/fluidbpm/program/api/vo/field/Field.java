@@ -454,6 +454,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 					String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
 					if (stringVal != null && stringVal.startsWith("{")) {
 						this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+					} else if (stringVal != null) {
+						this.setFieldValue(new MultiChoice(stringVal));
 					} else {
 						throw new IllegalArgumentException(String.format(
 								"Multi-Choice data type received value '%s' of type '%s'. Not allowed.",
