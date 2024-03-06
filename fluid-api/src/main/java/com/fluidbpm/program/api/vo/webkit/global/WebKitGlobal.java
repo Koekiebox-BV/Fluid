@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.webkit.global;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.webkit.userquery.WebKitMenuItem;
 import lombok.Getter;
@@ -51,6 +52,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	private String menuModeDefault;
 	private Boolean menuTypeDefault;
 	private String componentColors;
+	private String componentColorsHex;
 	private String profileModeDefault;
 	private String inputStyleAddition;
 	private List<WebKitMenuItem> webKitMenuItems;
@@ -67,6 +69,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		public static final String MENU_MODE_DEFAULT = "menuModeDefault";
 		public static final String MENU_TYPE_DEFAULT = "menuTypeDefault";
 		public static final String COMPONENT_COLORS = "componentColors";
+		public static final String COMPONENT_COLORS_HEX = "componentColorsHex";
 		public static final String PROFILE_MODE_DEFAULT = "profileModeDefault";
 		public static final String INPUT_STYLE_ADDITION = "inputStyleAddition";
 		public static final String WEB_KIT_MENU_ITEMS = "webKitMenuItems";
@@ -119,6 +122,12 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 
 		if (!this.jsonObject.isNull(JSONMapping.COMPONENT_COLORS)) {
 			this.setComponentColors(this.jsonObject.getString(JSONMapping.COMPONENT_COLORS));
+		}
+
+		if (!this.jsonObject.isNull(JSONMapping.COMPONENT_COLORS_HEX)) {
+			this.setComponentColorsHex(this.jsonObject.getString(JSONMapping.COMPONENT_COLORS_HEX));
+		} else {
+			this.setComponentColorsHex(this.getComponentColors());
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.PROFILE_MODE_DEFAULT)) {
@@ -182,6 +191,11 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.COMPONENT_COLORS,this.getComponentColors());
 		}
 
+		this.setComponentColorsHex(this.hexFromComponentColors());
+		if (this.getComponentColorsHex() != null) {
+			returnVal.put(JSONMapping.COMPONENT_COLORS_HEX, this.getComponentColorsHex());
+		}
+
 		if (this.getProfileModeDefault() != null) {
 			returnVal.put(JSONMapping.PROFILE_MODE_DEFAULT,this.getProfileModeDefault());
 		}
@@ -193,6 +207,29 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		}
 
 		return returnVal;
+	}
+
+	private String hexFromComponentColors() {
+		String color = this.getComponentColors();
+		if (UtilGlobal.isBlank(color)) return color;
+
+		color = color.toLowerCase();
+
+		switch (color) {
+			case "blue": return "2C84D8";
+			case "wisteria": return "A964AE";
+			case "cyan": return "23A4D4";
+			case "amber": return "DB8519";
+			case "pink": return "F5487F";
+			case "orange": return "CB623A";
+			case "victoria": return "594790";
+			case "chateau green": return "3D9462";
+			case "paradiso": return "3B9195";
+			case "chambray": return "3161BA";
+			case "tapestry": return "A2527F";
+
+			default: return color;
+		}
 	}
 
 	/**
