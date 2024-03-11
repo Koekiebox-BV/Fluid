@@ -223,7 +223,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 			case "pink": return "F5487F";
 			case "orange": return "CB623A";
 			case "victoria": return "594790";
-			case "chateau green": return "3D9462";
+			case "chateau-green": return "3D9462";
 			case "paradiso": return "3B9195";
 			case "chambray": return "3161BA";
 			case "tapestry": return "A2527F";
