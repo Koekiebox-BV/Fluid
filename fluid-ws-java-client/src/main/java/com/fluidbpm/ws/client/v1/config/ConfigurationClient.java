@@ -64,12 +64,30 @@ public class ConfigurationClient extends ABaseClientWS {
 	public Configuration getConfigurationByKey(String configurationKeyParam) {
 		Configuration configuration = new Configuration();
 		configuration.setKey(configurationKeyParam);
-		if (this.serviceTicket != null) {
-			configuration.setServiceTicket(this.serviceTicket);
-		}
+		configuration.setServiceTicket(this.serviceTicket);
 
 		return new Configuration(this.postJson(
-				configuration, WS.Path.Configuration.Version1.getByKey()));
+				configuration, WS.Path.Configuration.Version1.getByKey())
+		);
+	}
+
+
+	/**
+	 * Retrieve the company logo as Base64 configuration.
+	 */
+	public Configuration getCompanyLogo() {
+		Configuration configuration = new Configuration();
+		configuration.setServiceTicket(this.serviceTicket);
+		return new Configuration(this.postJson(configuration, WS.Path.Configuration.Version1.getCompanyLogo()));
+	}
+
+	/**
+	 * Retrieve the small company logo as Base64 configuration.
+	 */
+	public Configuration getCompanyLogoSmall() {
+		Configuration configuration = new Configuration();
+		configuration.setServiceTicket(this.serviceTicket);
+		return new Configuration(this.postJson(configuration, WS.Path.Configuration.Version1.getCompanyLogoSmall()));
 	}
 
 	/**

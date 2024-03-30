@@ -140,4 +140,17 @@ public class TestConfigurationClient extends ABaseLoggedInTestCase {
 			if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
 		}
 	}
+
+	@Test
+	public void testConfigurationCompanyLogoAndSmall() {
+		if (this.isConnectionInValid) return;
+
+		ConfigurationClient confClient = new ConfigurationClient(BASE_URL, ADMIN_SERVICE_TICKET);
+
+		Configuration compLogo = confClient.getCompanyLogo();
+		TestCase.assertNotNull("The 'Company Logo' needs to be set.", compLogo);
+
+		Configuration compLogoSmall = confClient.getCompanyLogoSmall();
+		TestCase.assertNotNull("The 'Company Logo Small' needs to be set.", compLogoSmall);
+	}
 }

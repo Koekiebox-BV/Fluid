@@ -3428,7 +3428,8 @@ public class WS {
 				public static final String READ_SYSTEM_MAIL_TRANSFER = ("/get_system_mail_transfer");
 
 				public static final String READ_ALL_TASK_IDENTIFIERS = ("/get_all_third_party_task_identifiers");
-
+				public static final String READ_COMPANY_LOGO = ("/get_company_logo");
+				public static final String READ_COMPANY_LOGO_SMALL = ("/get_company_logo_small");
 
 				//Update/Insert...
 				public static final String UPSERT = ("/upsert");
@@ -3495,6 +3496,24 @@ public class WS {
 				 */
 				public static final String configUpsert() {
 					return Version.VERSION_1.concat(ROOT).concat(UPSERT);
+				}
+
+				/**
+				 * URL Path for retrieving the company logo.
+				 *
+				 * @return {@code v1/configuration/get_company_logo}
+				 */
+				public static String getCompanyLogo() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_COMPANY_LOGO);
+				}
+
+				/**
+				 * URL Path for retrieving the small company logo.
+				 *
+				 * @return {@code v1/configuration/get_company_logo_small}
+				 */
+				public static String getCompanyLogoSmall() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_COMPANY_LOGO_SMALL);
 				}
 			}
 		}

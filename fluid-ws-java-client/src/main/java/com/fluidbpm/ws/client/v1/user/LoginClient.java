@@ -282,7 +282,9 @@ public class LoginClient extends ABaseClientWS {
 		//Issue the token...
 		AppRequestToken appReqToken = this.issueAppRequestToken(
 				authResponse.getServiceTicketBase64(),
-				username, authEncData);
+				username,
+				authEncData
+		);
 
 		appReqToken.setRoleString(authEncData.getRoleListing());
 		appReqToken.setSalt(authResponse.getSalt());
@@ -302,24 +304,24 @@ public class LoginClient extends ABaseClientWS {
 			AuthResponse authResponseParam
 	) {
 		//IV...
-		byte[] ivBytes = UtilGlobal.decodeBase64(
-				authResponseParam.getIvBase64());
+		byte[] ivBytes = UtilGlobal.decodeBase64(authResponseParam.getIvBase64());
 
 		//Seed...
-		byte[] seedBytes = UtilGlobal.decodeBase64(
-				authResponseParam.getSeedBase64());
+		byte[] seedBytes = UtilGlobal.decodeBase64(authResponseParam.getSeedBase64());
 
 		//Encrypted Data...
-		byte[] encryptedData = UtilGlobal.decodeBase64(
-				authResponseParam.getEncryptedDataBase64());
+		byte[] encryptedData = UtilGlobal.decodeBase64(authResponseParam.getEncryptedDataBase64());
 
 		//HMac from Response...
-		byte[] hMacFromResponse = UtilGlobal.decodeBase64(
-				authResponseParam.getEncryptedDataHmacBase64());
+		byte[] hMacFromResponse = UtilGlobal.decodeBase64(authResponseParam.getEncryptedDataHmacBase64());
 
 		//Local HMac...
 		byte[] localGeneratedHMac = AES256Local.generateLocalHMAC(
-				encryptedData, passwordParam, authResponseParam.getSalt(), seedBytes);
+				encryptedData,
+				passwordParam,
+				authResponseParam.getSalt(),
+				seedBytes
+		);
 
 		//Password mismatch...
 		if (!Arrays.equals(hMacFromResponse, localGeneratedHMac)) {
@@ -329,20 +331,17 @@ public class LoginClient extends ABaseClientWS {
 		}
 
 		//Decrypted Initialization Data...
-		byte[] decryptedEncryptedData =
-				AES256Local.decryptInitPacket(encryptedData,
-						passwordParam,
-						authResponseParam.getSalt(),
-						ivBytes,
-						seedBytes);
+		byte[] decryptedEncryptedData = AES256Local.decryptInitPacket(encryptedData,
+				passwordParam,
+				authResponseParam.getSalt(),
+				ivBytes,
+				seedBytes
+		);
 
 		try {
-			JSONObject jsonObj = new JSONObject(new String(decryptedEncryptedData));
-			return new AuthEncryptedData(jsonObj);
+			return new AuthEncryptedData(new JSONObject(new String(decryptedEncryptedData)));
 		} catch (JSONException jsonExcept) {
-
-			throw new FluidClientException(jsonExcept.getMessage(),
-					FluidClientException.ErrorCode.JSON_PARSING);
+			throw new FluidClientException(jsonExcept.getMessage(), FluidClientException.ErrorCode.JSON_PARSING);
 		}
 	}
 
@@ -359,23 +358,18 @@ public class LoginClient extends ABaseClientWS {
 	private AppRequestToken issueAppRequestToken(
 			String serviceTicketBase64Param,
 			String usernameParam,
-			AuthEncryptedData authEncryptDataParam)
-	{
+			AuthEncryptedData authEncryptDataParam
+	) {
 		byte[] iv = AES256Local.generateRandom(AES256Local.IV_SIZE_BYTES);
 		byte[] seed = AES256Local.generateRandom(AES256Local.SEED_SIZE_BYTES);
 
-		byte[] sessionKey = UtilGlobal.decodeBase64(
-				authEncryptDataParam.getSessionKeyBase64());
+		byte[] sessionKey = UtilGlobal.decodeBase64(authEncryptDataParam.getSessionKeyBase64());
 
 		byte[] dataToEncrypt = usernameParam.getBytes();
 
-		byte[] encryptedData = AES256Local.encrypt(
-				sessionKey,
-				dataToEncrypt,
-				iv);
+		byte[] encryptedData = AES256Local.encrypt(sessionKey, dataToEncrypt, iv);
 
-		byte[] encryptedDataHMac =
-				AES256Local.generateLocalHMACForReqToken(encryptedData, sessionKey, seed);
+		byte[] encryptedDataHMac = AES256Local.generateLocalHMACForReqToken(encryptedData, sessionKey, seed);
 
 		AppRequestToken requestToServer = new AppRequestToken();
 
