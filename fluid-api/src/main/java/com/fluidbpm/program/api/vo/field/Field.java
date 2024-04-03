@@ -36,19 +36,16 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 /**
- * Represents an Fluid Field for Form, User, Route and Global.
- *
+ * Represents a Fluid Field for Form, User, Route and Global.
  * {@code Field} can be part of Electronic Form or Form Definition in Fluid.
- *
  * @author jasonbruwer
  * @since v1.0
- *
  * @see Form
  * @see FluidItem
  * @see ABaseFluidElasticSearchJSONObject
  */
 public class Field extends ABaseFluidElasticSearchJSONObject {
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	@Setter
 	@Getter
@@ -88,7 +85,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 		public static final String TYPE_META_DATA = "typeMetaData";
 
 		/**
-		 * The JSON mapping for Elastic Search data types.
+		 * The JSON mapping for Elasticsearch data types.
 		 * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}.
 		 */
 		public static final class Elastic {
@@ -196,7 +193,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Constructor to set the Id, Field Name, Value and Type.
-	 *
 	 * @param fieldId Field Id.
 	 * @param fieldName Sets Field Name.
 	 * @param fieldValue Sets Field Value.
@@ -211,7 +207,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Sets the Id and name associated with a Field.
-	 *
 	 * @param fieldId Field Id.
 	 * @param fieldName Field Name.
 	 */
@@ -223,7 +218,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Sets the Id associated with a Field.
-	 *
 	 * @param fieldId Field Id.
 	 */
 	public Field(Long fieldId) {
@@ -243,7 +237,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Constructor to set the Field Name, Value and Type.
-	 *
 	 * @param fieldNameParam Sets Field Name.
 	 * @param fieldValueParam Sets Field Value.
 	 * @param fieldTypeParam Sets Field Type.
@@ -256,7 +249,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Constructor to set the Field Name, Value.
-	 *
 	 * @param fieldNameParam Sets Field Name.
 	 * @param fieldValueParam Sets Field Value.
 	 */
@@ -269,7 +261,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Constructor to set the Field Name and {@code MultiChoice} Value.
-	 *
 	 * @param fieldNameParam Sets Field Name.
 	 * @param multiChoiceParam Sets Field Value as {@code MultiChoice}.
 	 */
@@ -309,7 +300,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Populates local variables with {@code jsonObjectParam}.
-	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
 	public Field(JSONObject jsonObjectParam) {
@@ -384,7 +374,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			try {
 				this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
 			} catch (NoSuchMethodError nsm) {
-				//For older versions of org.json library...
 				nsm.printStackTrace();
 				this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
 			}
@@ -507,9 +496,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code String}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -521,7 +508,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Converts the {@code getFieldName} to upper_camel_case.
-	 *
 	 * @return {@code getFieldName()} as upper_camel_case.
 	 */
 	@XmlTransient
@@ -534,7 +520,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 * Extracts the field name from the field description if set.
 	 * Example of field name from display; [[Field Name]].
 	 * Example of field name from display; [[Field Name Two]].
-	 *
 	 * @return {@code getFieldName()} or 'Display Field Name' extracted from {@code getFieldDescription()}
 	 */
 	@XmlTransient
@@ -547,7 +532,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Removes the field name from the field description if set.
-	 *
 	 * @return {@code getFieldName()} or 'Display Field Name' extracted from {@code getFieldDescription()}
 	 */
 	@XmlTransient
@@ -569,9 +553,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Double}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -596,9 +578,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Long}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -616,9 +596,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Integer}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -652,9 +630,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Number}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -670,9 +646,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Boolean}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -699,9 +673,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code Date}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -729,9 +701,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code MultiChoice}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 * @see MultiChoice
 	 */
@@ -748,9 +718,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the value of {@code this} {@code Field} as a {@code TableField}.
-	 *
 	 * @return The Field Value.
-	 *
 	 * @see Type
 	 * @see TableField
 	 */
@@ -767,7 +735,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Boolean indicator whether the decimal is currency formatted.
-	 *
 	 * @return {@code true} if decimal format and {@code isAmountMinorWithCurrency}.
 	 */
 	@XmlTransient
@@ -778,9 +745,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Sets the value of {@code this} {@code Field}.
-	 *
 	 * @param fieldValueParam The New Field Value.
-	 *
 	 * @see Type
 	 */
 	public void setFieldValue(Object fieldValueParam) {
@@ -811,9 +776,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Sets the Type of {@code this} {@code Field} as {@code enum}.
-	 *
 	 * @param typeParam The Field fieldType.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -828,9 +791,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Gets the Type of {@code this} {@code Field} as {@code enum}.
-	 *
 	 * @return The Field fieldType.
-	 *
 	 * @see Type
 	 */
 	@XmlTransient
@@ -866,10 +827,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Conversion to {@code JSONObject} from Java Object.
-	 *
 	 * @return {@code JSONObject} representation of {@code Field}
 	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
@@ -928,11 +887,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
-	 * Creates the mapping object required by Elastic Search when making
+	 * Creates the mapping object required by Elasticsearch when making
 	 * use of enhanced data-types.
-	 *
 	 * See {@code https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html}.
-	 *
 	 * @return {@code JSONObject} representation of {@code Field} for
 	 * ElasticSearch mapping.
 	 * @throws JSONException If there is a problem with the JSON Body.
@@ -954,10 +911,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Conversion to {@code JSONObject} for storage in ElasticSearch.
-	 *
 	 * @return {@code JSONObject} representation of {@code Field}
 	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
@@ -1036,13 +991,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Populate the object based on the ElasticSearch JSON structure.
-	 *
 	 * @param jsonObjectParam The JSON object to populate from.
-	 * @return {@link Field} - The field to be added, if invalid a {@code null}
-	 * will be returned.
-	 *
+	 * @return {@link Field} - The field to be added, if invalid a {@code null} will be returned.
 	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@XmlTransient
@@ -1137,13 +1088,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Not allowed to call this method.
-	 *
 	 * @param jsonObjectParam The JSON object to populate from.
 	 * @param formFieldsParam The Form Fields to use.
-	 *
 	 * @throws JSONException Never.
 	 * @throws FluidElasticSearchException Always.
-	 *
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
@@ -1158,10 +1106,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
-	 * Returns the ElasticSearch equivalent data field-type from the Fluid datatype.
-	 *
-	 * @return ElasticSearch field-type.
-	 *
+	 * Returns the Elasticsearch equivalent data field-type from the Fluid datatype.
+	 * @return Elasticsearch field-type.
 	 * @see ElasticSearchType
 	 */
 	@XmlTransient
@@ -1299,7 +1245,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
 	/**
 	 * Verify whether the fieldValue is empty.
-	 *
 	 * @return {@code true} if empty, otherwise {@code false}.
 	 */
 	@XmlTransient
@@ -1331,6 +1276,28 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				return valMulti.isSelectedValuesEmpty();
 			default: return true;
 		}
+	}
+
+	/**
+	 * Return the meta-data without the custom action.
+	 * Examples:
+	 * - Plain
+	 * - Plain with Search
+	 * - Plain with Search and Scroll
+	 * - Select Many
+	 * - Select Many with Search
+	 * @return Meta-data without the custom action.
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public String getTypeMetaDataWithoutCustomAction() {
+		String typeMetaData = this.getTypeMetaData();
+		if (UtilGlobal.isBlank(typeMetaData)) return null;
+
+		int indexBracket = typeMetaData.indexOf(LEFT_SQ_BRACKET);
+		if (indexBracket < 0) return typeMetaData;
+
+		return typeMetaData.substring(0, indexBracket);
 	}
 
 	/**
@@ -1367,7 +1334,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	/**
 	 * Checks whether the provided {@code fieldParam} qualifies for
 	 * insert into Elasticsearch.
-	 *
 	 * @return Whether the Field Qualifies.
 	 */
 	private boolean doesFieldQualifyForElasticSearchInsert() {
