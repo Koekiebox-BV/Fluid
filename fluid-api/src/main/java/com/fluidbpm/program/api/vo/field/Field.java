@@ -74,6 +74,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	private static String TEMPLATE_DECIMAL_FORMAT = "###,###,###,##0.";
 	private static String DEF_DECIMAL_FORMAT = TEMPLATE_DECIMAL_FORMAT.concat("00");
 
+	private static final String LEFT_SQ_BRACKET = "[";
+	private static final String RIGHT_SQ_BRACKET = "]";
+
 	/**
 	 * The JSON mapping for the {@code Field} object.
 	 */
@@ -1331,8 +1334,39 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	}
 
 	/**
+	 * Return the action to be executed for a multi-choice field that has a custom action enabled.
+	 * Otherwise {@code null}.
+	 * @return Custom action or {@code null}
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public String getTypeMetaDataMultiChoiceCustomAction() {
+		String typeMetaData = this.getTypeMetaData();
+		if (UtilGlobal.isBlank(typeMetaData)) return null;
+
+		int indexFrom = typeMetaData.indexOf(LEFT_SQ_BRACKET);
+		if (indexFrom < 0) return null;
+
+		int indexTo = typeMetaData.lastIndexOf(RIGHT_SQ_BRACKET);
+		if (indexTo <= indexFrom) return null;
+
+		return typeMetaData.substring(indexFrom + 1, indexTo);
+	}
+
+	/**
+	 * Verify if type is multi-choice with a custom action.
+	 * @return {@code true} if a custom action, otherwise {@code false}.
+	 */
+	@XmlTransient
+	@JsonIgnore
+	public boolean isTypeMetaDataMultiChoiceCustomAction() {
+		String customAction = this.getTypeMetaDataMultiChoiceCustomAction();
+		return !UtilGlobal.isBlank(customAction);
+	}
+
+	/**
 	 * Checks whether the provided {@code fieldParam} qualifies for
-	 * insert into Elastic Search.
+	 * insert into Elasticsearch.
 	 *
 	 * @return Whether the Field Qualifies.
 	 */
