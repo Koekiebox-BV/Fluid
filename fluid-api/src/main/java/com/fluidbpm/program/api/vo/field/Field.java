@@ -443,15 +443,26 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 						this.setFieldValue(new MultiChoice(jsonObject));
 					}
 				} else {
-					String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
-					if (stringVal != null && stringVal.startsWith("{")) {
-						this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
-					} else if (stringVal != null) {
-						this.setFieldValue(new MultiChoice(stringVal));
+					Object objVal = this.jsonObject.get(JSONMapping.FIELD_VALUE);
+					if (objVal instanceof String) {
+						String stringVal = (String)objVal;
+						if (stringVal != null && stringVal.startsWith("{")) {
+							this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+						} else if (stringVal != null) {
+							this.setFieldValue(new MultiChoice(stringVal));
+						} else {
+							throw new IllegalArgumentException(String.format(
+									"Multi-Choice data type received value '%s' of type '%s'. Not allowed.",
+									stringVal, objFromKey.getClass()
+							));
+						}
+					} else if (objVal instanceof Number) {
+						Number numbVal = (Number)objVal;
+						this.setFieldValue(new MultiChoice(String.valueOf(numbVal)));
 					} else {
 						throw new IllegalArgumentException(String.format(
-								"Multi-Choice data type received value '%s' of type '%s'. Not allowed.",
-								stringVal, objFromKey.getClass()
+								"Multi-Choice data type received value '%s' of type '%s'. Unable to extract value.",
+								objVal, objFromKey.getClass()
 						));
 					}
 				}
