@@ -1337,7 +1337,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	@JsonIgnore
-	public boolean isTypeMetaDataMultiChoiceCustomAction() {
+	public boolean isTypeMetaDataMultiChoiceWithCustomAction() {
 		String customAction = this.getTypeMetaDataMultiChoiceCustomAction();
 		return !UtilGlobal.isBlank(customAction);
 	}
