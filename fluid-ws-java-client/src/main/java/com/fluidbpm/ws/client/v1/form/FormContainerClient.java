@@ -74,7 +74,29 @@ public class FormContainerClient extends ABaseClientWS {
 	public Form createFormContainer(Form form, boolean addToPersonalInventory) {
 		return new Form(this.putJson(
 			this.clearForRestCreateUpdate(form),
-			WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory))
+			WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory, false))
+		);
+	}
+
+	/**
+	 * Create a new Form Container / Electronic Forms.
+	 *
+	 * @param form The Form to create.
+	 * @param addToPersonalInventory Should the form be added to the users P/I after creation.
+	 * @param removeLockAfterCreate Should the form not be unlocked after the creation?
+	 *
+	 * @return Created Form Container / Electronic Form.
+	 *
+	 * @see Field
+	 */
+	public Form createFormContainer(
+			Form form,
+			boolean addToPersonalInventory,
+			boolean removeLockAfterCreate
+	) {
+		return new Form(this.putJson(
+				this.clearForRestCreateUpdate(form),
+				WS.Path.FormContainer.Version1.formContainerCreate(addToPersonalInventory, removeLockAfterCreate))
 		);
 	}
 

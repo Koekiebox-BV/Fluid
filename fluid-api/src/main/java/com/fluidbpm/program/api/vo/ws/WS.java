@@ -184,6 +184,7 @@ public class WS {
 					public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
 					public static final String LOCK_FOR_USER_ID = "lock_for_user_id";
 					public static final String ADD_TO_PERSONAL_INVENTORY = "add_to_personal_inventory";
+					public static final String REMOVE_LOCK_AFTER_CREATE = "remove_lock_after_create";
 
 					//Remove from Personal Inventory...
 					public static final String REMOVE_FROM_PERSONAL_INVENTORY = "remove_from_personal_inventory";
@@ -264,16 +265,24 @@ public class WS {
 				 * URL Path for Electronic Form create.
 				 *
 				 * @param addToPersonalInventory Should the item be added to the Personal Inventory after created?
+				 * @param removeLockAfterCreate Should the form not be unlocked after the creation?
 				 *
 				 * @return {@code v1/form_container/}
 				 */
-				public static final String formContainerCreate(boolean addToPersonalInventory) {
+				public static final String formContainerCreate(
+						boolean addToPersonalInventory,
+						boolean removeLockAfterCreate
+				) {
 					String returnVal = Version.VERSION_1.concat(ROOT).concat(CREATE);
 
 					returnVal += "?";
 					returnVal += QueryParam.ADD_TO_PERSONAL_INVENTORY;
 					returnVal += "=";
 					returnVal += addToPersonalInventory;
+					returnVal += "&";
+					returnVal += QueryParam.REMOVE_LOCK_AFTER_CREATE;
+					returnVal += "=";
+					returnVal += removeLockAfterCreate;
 					
 					return returnVal;
 				}
