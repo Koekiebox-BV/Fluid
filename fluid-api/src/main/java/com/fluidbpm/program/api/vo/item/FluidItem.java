@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
@@ -50,7 +51,6 @@ import java.util.Properties;
 @Getter
 @Setter
 public class FluidItem extends ABaseFluidJSONObject {
-
 	public static final long serialVersionUID = 1L;
 
 	private List<Field> userFields;
@@ -58,11 +58,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	private List<Field> globalFields;
 
 	private Form form;
-
 	private List<Attachment> attachments;
+	private List<FluidItemProperty> customProperties;
 
 	private FlowState flowState;
-
 	private String flow;
 	private String step;
 
@@ -124,6 +123,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	@Getter
 	@Setter
 	public static class FluidItemProperty extends ABaseFluidJSONObject {
+		public static final class Prop {
+			public static final String FLOW_COMPLETE_PERCENTAGE = "Flow Complete Percentage";
+		}
+
 		private String name;
 		private String value;
 
@@ -147,10 +150,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 			//Name...
 			if (!this.jsonObject.isNull(JSONMapping.NAME)) this.setName(this.jsonObject.getString(JSONMapping.NAME));
 
-
 			//Value...
 			if (!this.jsonObject.isNull(JSONMapping.VALUE)) this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
-
 		}
 
 		/**
@@ -284,27 +285,24 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FluidItem(JSONObject jsonObjectParam){
+	public FluidItem(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
-
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
 		//Custom Properties...
 		if (!this.jsonObject.isNull(JSONMapping.CUSTOM_PROPERTIES)) {
 			JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_PROPERTIES);
-			List<FluidItemProperty> fluidItemProperties = new ArrayList();
+			List<FluidItemProperty> fluidItemProperties = new ArrayList<>();
 			for (int index = 0;index < jsonPropArray.length();index++) {
-				fluidItemProperties.add(
-						new FluidItemProperty(jsonPropArray.getJSONObject(index)));
+				fluidItemProperties.add(new FluidItemProperty(jsonPropArray.getJSONObject(index)));
 			}
+			this.setCustomProperties(fluidItemProperties);
 		}
 
 		//User Fields...
 		if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
 			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
-			List<Field> assUserFields = new ArrayList();
+			List<Field> assUserFields = new ArrayList<>();
 			for (int index = 0;index < fieldsArr.length();index++) {
 				assUserFields.add(new Field(fieldsArr.getJSONObject(index)));
 			}
@@ -313,39 +311,31 @@ public class FluidItem extends ABaseFluidJSONObject {
 
 		//Route Fields...
 		if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELDS)) {
-			JSONArray fieldsArr = this.jsonObject.getJSONArray(
-					JSONMapping.ROUTE_FIELDS);
-
-			List<Field> assRouteFields = new ArrayList();
+			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.ROUTE_FIELDS);
+			List<Field> assRouteFields = new ArrayList<>();
 			for (int index = 0;index < fieldsArr.length();index++) {
 				assRouteFields.add(new Field(fieldsArr.getJSONObject(index)));
 			}
-
 			this.setRouteFields(assRouteFields);
 		}
 
 		//Global Fields...
 		if (!this.jsonObject.isNull(JSONMapping.GLOBAL_FIELDS)) {
-			JSONArray fieldsArr = this.jsonObject.getJSONArray(
-					JSONMapping.GLOBAL_FIELDS);
-
+			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.GLOBAL_FIELDS);
 			List<Field> assGlobalFields = new ArrayList();
 			for (int index = 0;index < fieldsArr.length();index++) {
 				assGlobalFields.add(new Field(fieldsArr.getJSONObject(index)));
 			}
-
 			this.setGlobalFields(assGlobalFields);
 		}
 
 		//Attachments...
 		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS)) {
 			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.ATTACHMENTS);
-
-			List<Attachment> assAttachments = new ArrayList();
+			List<Attachment> assAttachments = new ArrayList<>();
 			for (int index = 0;index < fieldsArr.length();index++) {
 				assAttachments.add(new Attachment(fieldsArr.getJSONObject(index)));
 			}
-
 			this.setAttachments(assAttachments);
 		}
 
@@ -382,22 +372,27 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
+	@XmlTransient
+	@JsonIgnore
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Flow...
-		if (this.getFlow() != null) {
-			returnVal.put(JSONMapping.FLOW, this.getFlow());
-		}
+		if (this.getFlow() != null) returnVal.put(JSONMapping.FLOW, this.getFlow());
 
 		//Step...
-		if (this.getStep() != null) {
-			returnVal.put(JSONMapping.STEP, this.getStep());
-		}
+		if (this.getStep() != null) returnVal.put(JSONMapping.STEP, this.getStep());
 
 		//Form...
-		if (this.getForm() != null) {
-			returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
+		if (this.getForm() != null) returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
+
+		//Custom Properties...
+		if (this.getCustomProperties() != null && !this.getCustomProperties().isEmpty()) {
+			JSONArray propArr = new JSONArray();
+			for (FluidItemProperty prop :this.getCustomProperties()) {
+				propArr.put(prop.toJsonObject());
+			}
+			returnVal.put(JSONMapping.CUSTOM_PROPERTIES, propArr);
 		}
 
 		//User Fields...
@@ -406,7 +401,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 			for (Field toAdd :this.getUserFields()) {
 				fieldsArr.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.USER_FIELDS, fieldsArr);
 		}
 
@@ -416,7 +410,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 			for (Field toAdd :this.getRouteFields()) {
 				fieldsArr.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.ROUTE_FIELDS, fieldsArr);
 		}
 
@@ -426,7 +419,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 			for (Field toAdd :this.getGlobalFields()) {
 				fieldsArr.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.GLOBAL_FIELDS, fieldsArr);
 		}
 
@@ -436,14 +428,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 			for (Attachment toAdd : this.getAttachments()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
-
 			returnVal.put(JSONMapping.ATTACHMENTS, jsonArray);
 		}
 
 		//Flow State...
-		if (this.getFlowState() != null) {
-			returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState().toString());
-		}
+		if (this.getFlowState() != null) returnVal.put(JSONMapping.FLOW_STATE, this.getFlowState().toString());
 
 		//Step Entered Time...
 		if (this.getStepEnteredTime() != null) {
@@ -464,6 +453,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 * @see JSONObject
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public JSONObject convertToFlatJSONObject() {
 		JSONObject returnVal = new JSONObject();
 
@@ -472,63 +462,50 @@ public class FluidItem extends ABaseFluidJSONObject {
 		returnVal.put(FlatFormJSONMapping.ID, this.getId() == null ? JSONObject.NULL : this.getId());
 
 		//Flow State...
-		returnVal.put(
-				FlatFormJSONMapping.FLOW_STATE,
-				(this.getFlowState() == null) ?
-						JSONObject.NULL : this.getFlowState().name());
+		returnVal.put(FlatFormJSONMapping.FLOW_STATE, (this.getFlowState() == null) ?
+				JSONObject.NULL : this.getFlowState().name());
 
 		//Populate the Form...
 		JSONObject formJSONObjFlat = (this.getForm() == null) ? null : this.getForm().convertToFlatJSONObject();
 
 		if (formJSONObjFlat != null) {
-			formJSONObjFlat.keySet().forEach(
-				(toAdd) -> {
-					returnVal.put(toAdd, formJSONObjFlat.get(toAdd));
-				}
-			);
+			formJSONObjFlat.keySet().forEach((toAdd) -> returnVal.put(toAdd, formJSONObjFlat.get(toAdd)));
 		}
 
 		//Fields...
 		UtilGlobal utilGlobal = new UtilGlobal();
 		//Route Fields...
 		if (this.getRouteFields() != null) {
-			this.getRouteFields().forEach(
-					(routeFieldItem) -> {
-						utilGlobal.setFlatFieldOnJSONObj(
-								FlatFormJSONMapping.ROUTE_FIELD_PREFIX,
-								FlatFormJSONMapping.ROUTE_FIELD_ID_PREFIX,
-								routeFieldItem, returnVal
-						);
-					}
-			);
+			this.getRouteFields().forEach((routeFieldItem) -> {
+				utilGlobal.setFlatFieldOnJSONObj(
+						FlatFormJSONMapping.ROUTE_FIELD_PREFIX,
+						FlatFormJSONMapping.ROUTE_FIELD_ID_PREFIX,
+						routeFieldItem, returnVal
+				);
+			});
 		}
 
 		//User Fields...
 		if (this.getUserFields() != null) {
-			this.getUserFields().forEach(
-					(userFieldItem) -> {
-						utilGlobal.setFlatFieldOnJSONObj(
-								FlatFormJSONMapping.USER_FIELD_PREFIX,
-								FlatFormJSONMapping.USER_FIELD_ID_PREFIX,
-								userFieldItem, returnVal
-						);
-					}
-			);
+			this.getUserFields().forEach((userFieldItem) -> {
+				utilGlobal.setFlatFieldOnJSONObj(
+						FlatFormJSONMapping.USER_FIELD_PREFIX,
+						FlatFormJSONMapping.USER_FIELD_ID_PREFIX,
+						userFieldItem, returnVal
+				);
+			});
 		}
 
 		//Global Fields...
 		if (this.getGlobalFields() != null) {
-			this.getGlobalFields().forEach(
-					(globalFieldItem) -> {
-						utilGlobal.setFlatFieldOnJSONObj(
-								FlatFormJSONMapping.GLOBAL_FIELD_PREFIX,
-								FlatFormJSONMapping.GLOBAL_FIELD_ID_PREFIX,
-								globalFieldItem, returnVal
-						);
-					}
-			);
+			this.getGlobalFields().forEach((globalFieldItem) -> {
+				utilGlobal.setFlatFieldOnJSONObj(
+						FlatFormJSONMapping.GLOBAL_FIELD_PREFIX,
+						FlatFormJSONMapping.GLOBAL_FIELD_ID_PREFIX,
+						globalFieldItem, returnVal
+				);
+			});
 		}
-
 		return returnVal;
 	}
 
@@ -552,11 +529,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#Text
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public String getUserFieldValueAsString(String fieldNameParam) {
-		Object obj = this.getFieldValueForField(
-				fieldNameParam, this.getUserFields());
+		Object obj = this.getFieldValueForField(fieldNameParam, this.getUserFields());
 		if (obj == null) return null;
-
 		return obj.toString();
 	}
 
@@ -580,6 +557,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Object getUserFieldValue(String fieldNameParam) {
 		return this.getFieldValueForField(fieldNameParam, this.getUserFields());
 	}
@@ -604,6 +583,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Object getRouteFieldValue(String fieldNameParam) {
 		return this.getFieldValueForField(fieldNameParam, this.getRouteFields());
 	}
@@ -628,6 +609,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Object getGlobalFieldValue(String fieldNameParam) {
 		return this.getFieldValueForField(fieldNameParam,this.getGlobalFields());
 	}
@@ -652,12 +635,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#Text
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public String getRouteFieldValueAsString(String fieldNameParam) {
 		Object obj = this.getFieldValueForField(fieldNameParam,this.getRouteFields());
-		if (obj == null) {
-			return null;
-		}
-
+		if (obj == null) return null;
 		return obj.toString();
 	}
 
@@ -681,6 +663,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#Decimal
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Double getRouteFieldValueAsDouble(String fieldNameParam) {
 		Object obj = this.getRouteFieldValue(fieldNameParam);
 		if (obj == null) {
@@ -690,7 +674,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 		} else if (obj instanceof Number) {
 			return ((Number)obj).doubleValue();
 		}
-
 		return null;
 	}
 
@@ -714,6 +697,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#TrueFalse
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Boolean getRouteFieldValueAsBoolean(String fieldNameParam) {
 		Object obj = this.getRouteFieldValue(fieldNameParam);
 		if (obj == null) {
@@ -721,7 +706,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 		} else if (obj instanceof Boolean) {
 			return ((Boolean)obj);
 		}
-
 		return null;
 	}
 
@@ -745,12 +729,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#Text
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public String getGlobalFieldValueAsString(String fieldNameParam) {
 		Object obj = this.getFieldValueForField(fieldNameParam, this.getGlobalFields());
-		if (obj == null) {
-			return null;
-		}
-
+		if (obj == null) return null;
 		return obj.toString();
 	}
 
@@ -774,6 +757,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#Decimal
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Double getGlobalFieldValueAsDouble(String fieldNameParam) {
 		Object obj = this.getFieldValueForField(fieldNameParam, this.getGlobalFields());
 		if (obj == null) {
@@ -781,7 +766,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 		} else if (obj instanceof Number) {
 			return ((Number)obj).doubleValue();
 		}
-
 		return null;
 	}
 
@@ -805,6 +789,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type#Decimal
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public Integer getGlobalFieldValueAsInt(String fieldNameParam) {
 		Object obj = this.getFieldValueForField(fieldNameParam,this.getGlobalFields());
 		if (obj == null) {
@@ -812,7 +798,6 @@ public class FluidItem extends ABaseFluidJSONObject {
 		} else if (obj instanceof Number) {
 			return ((Number)obj).intValue();
 		}
-
 		return null;
 	}
 
@@ -839,10 +824,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public void setGlobalFieldValue(String fieldNameParam, Object fieldValueParam) {
-		if (this.getGlobalFields() == null) {
-			this.setGlobalFields(new ArrayList<>());
-		}
+		if (this.getGlobalFields() == null) this.setGlobalFields(new ArrayList<>());
 		this.setFieldValue(this.getGlobalFields(), fieldNameParam, fieldValueParam, null);
 	}
 
@@ -870,10 +855,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public void setRouteFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
-		if (this.getRouteFields() == null) {
-			this.setRouteFields(new ArrayList<>());
-		}
+		if (this.getRouteFields() == null) this.setRouteFields(new ArrayList<>());
 		this.setFieldValue(this.getRouteFields(), fieldNameParam, fieldValueParam, typeParam);
 	}
 
@@ -901,10 +886,10 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field.Type
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public void setGlobalFieldValue(String fieldNameParam, Object fieldValueParam, Field.Type typeParam) {
-		if (this.getGlobalFields() == null) {
-			this.setGlobalFields(new ArrayList<>());
-		}
+		if (this.getGlobalFields() == null) this.setGlobalFields(new ArrayList<>());
 		this.setFieldValue(this.getGlobalFields(), fieldNameParam, fieldValueParam, typeParam);
 	}
 
@@ -932,17 +917,11 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see Field
 	 */
-	public Object getFieldValueForField(
-		String fieldNameParam,
-		List<Field> toGetPropertyFromParam
-	) {
-		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) {
-			return null;
-		}
-
-		if (toGetPropertyFromParam == null || toGetPropertyFromParam.isEmpty()) {
-			return null;
-		}
+	@XmlTransient
+	@JsonIgnore
+	public Object getFieldValueForField(String fieldNameParam, List<Field> toGetPropertyFromParam) {
+		if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return null;
+		if (toGetPropertyFromParam == null || toGetPropertyFromParam.isEmpty()) return null;
 
 		String fieldNameLower = fieldNameParam.toLowerCase();
 
@@ -995,82 +974,32 @@ public class FluidItem extends ABaseFluidJSONObject {
 	}
 
 	/**
-	 * Gets the attachments.
-	 *
-	 * @return {@code List<Attachment>} of attachments.
-	 *
-	 * @see Attachment
-	 */
-	public List<Attachment> getAttachments() {
-		return this.attachments;
-	}
-
-	/**
-	 * Sets the attachments.
-	 *
-	 * @param attachmentsParam {@code List<Attachment>} of attachments.
-	 */
-	public void setAttachments(List<Attachment> attachmentsParam) {
-		this.attachments = attachmentsParam;
-	}
-
-	/**
 	 * Adds {@code toAddParam} to the list of {@code Attachment}s.
 	 *
 	 * @param toAddParam {@code Attachment} to add.
 	 *
 	 * @see Attachment
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public void addAttachment(Attachment toAddParam) {
-		if (!this.containsAttachments()) {
-			this.setAttachments(new ArrayList());
-		}
-
+		if (!this.containsAttachments()) this.setAttachments(new ArrayList());
 		this.getAttachments().add(toAddParam);
 	}
 
-	/**
-	 * Gets all the {@code User} {@code Field}s.
-	 *
-	 * @return All the User Fields.
-	 *
-	 * @see Field
-	 */
-	public List<Field> getUserFields() {
-		return this.userFields;
-	}
 
 	/**
-	 * Sets all the {@code User}{@code Field}s.
+	 * Adds {@code toAddParam} to the list of {@code FluidItemProperty}s.
 	 *
-	 * @param userFieldsParam The new {@code User}{@code Field}s.
+	 * @param property {@code FluidItemProperty} to add.
 	 *
-	 * @see Field
+	 * @see FluidItemProperty
 	 */
-	public void setUserFields(List<Field> userFieldsParam) {
-		this.userFields = userFieldsParam;
-	}
-
-	/**
-	 * Gets all the {@code Route} {@code Field}s.
-	 *
-	 * @return All the Route Fields.
-	 *
-	 * @see Field
-	 */
-	public List<Field> getRouteFields() {
-		return this.routeFields;
-	}
-
-	/**
-	 * Sets all the {@code Route}{@code Field}s.
-	 *
-	 * @param routeFieldsParam The new {@code Route}{@code Field}s.
-	 *
-	 * @see Field
-	 */
-	public void setRouteFields(List<Field> routeFieldsParam) {
-		this.routeFields = routeFieldsParam;
+	@XmlTransient
+	@JsonIgnore
+	public void addCustomProperty(FluidItemProperty property) {
+		if (this.customProperties == null) this.setCustomProperties(new ArrayList());
+		this.getCustomProperties().add(property);
 	}
 
 	/**
@@ -1081,48 +1010,9 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 * @see Field
 	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setRouteFieldsArrayList(ArrayList<Field> routeFieldsParam) {
 		this.routeFields = routeFieldsParam;
-	}
-
-	/**
-	 * Gets all the {@code Global} {@code Field}s.
-	 *
-	 * @return All the Global Fields.
-	 *
-	 * @see Field
-	 */
-	public List<Field> getGlobalFields() {
-		return this.globalFields;
-	}
-
-	/**
-	 * Sets all the {@code Global}{@code Field}s.
-	 *
-	 * @param globalFieldsParam The new {@code Global}{@code Field}s.
-	 *
-	 * @see Field
-	 */
-	public void setGlobalFields(List<Field> globalFieldsParam) {
-		this.globalFields = globalFieldsParam;
-	}
-
-	/**
-	 * Gets the Form for {@code this}
-	 *
-	 * @return {@code Form} associated with the {@code FluidItem}.
-	 */
-	public Form getForm() {
-		return this.form;
-	}
-
-	/**
-	 * Sets the Form for {@code this}
-	 *
-	 * @param formParam {@code Form} associated with the {@code FluidItem}.
-	 */
-	public void setForm(Form formParam) {
-		this.form = formParam;
 	}
 
 	/**
@@ -1133,8 +1023,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 * @see FlowState
 	 */
 	public FlowState getFlowState() {
-		if (this.flowState == null &&
-				(this.getForm() != null && UtilGlobal.isNotBlank(this.getForm().getFlowState()))) {
+		if (this.flowState == null && (this.getForm() != null && UtilGlobal.isNotBlank(this.getForm().getFlowState()))) {
 			return FlowState.valueOf(this.getForm().getFlowState());
 		}
 		return this.flowState;
@@ -1147,18 +1036,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @see FlowState
 	 */
-	public void setFlowState(FlowState flowStateParam) {
-		this.flowState = flowStateParam;
-	}
-
-	/**
-	 * Sets the {@code FlowState}.
-	 *
-	 * @param flowStateParam {@code FlowState} for {@code this} {@code FluidItem}
-	 *
-	 * @see FlowState
-	 */
 	@XmlTransient
+	@JsonIgnore
 	public void setFlowStateString(String flowStateParam) {
 		this.flowState = FlowState.valueOfSafe(flowStateParam);
 	}
@@ -1168,6 +1047,8 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @return If the list of attachments is empty.
 	 */
+	@XmlTransient
+	@JsonIgnore
 	public boolean containsAttachments() {
 		return (this.attachments != null && !this.attachments.isEmpty());
 	}
@@ -1271,16 +1152,15 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
+	@JsonIgnore
 	public boolean equals(Object objParam) {
 		if (objParam == null || this.getId() == null) return false;
-
 		if (objParam instanceof FluidItem) {
 			FluidItem paramCasted = (FluidItem)objParam;
 			if (paramCasted.getId() == null) return false;
 
 			return (this.getId().equals(paramCasted.getId()));
 		}
-
 		return false;
 	}
 }

@@ -2227,6 +2227,7 @@ public class WS {
 					public static final String ALLOW_COLLABORATOR_SEND_ON = "allow_collaborator_send_on";
 					public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
 					public static final String POPULATE_FORM = "populate_form";
+					public static final String POPULATE_FLOW_PROGRESS = "populate_flow_progress";
 				}
 
 				/**
@@ -2311,12 +2312,17 @@ public class WS {
 				 *
 				 * @param populateForm Should the FlowItem form be populated (even if FlowItem is not found)
 				 * @param executeCalculatedLabels Execute the calculated label if form should be populated {@code populateForm == true}.
+				 * @param populateStepProgress Should the flow progress be populated as FluidItem properties.
 				 *
 				 * @return {@code v1/flow_item/get_by_form}
 				 */
-				public static final String getByForm(boolean populateForm, boolean executeCalculatedLabels) {
+				public static String getByForm(
+						boolean populateForm,
+						boolean executeCalculatedLabels,
+						boolean populateStepProgress
+				) {
 					return String.format(
-							"%s%s%s?%s=%s&%s=%s",
+							"%s%s%s?%s=%s&%s=%s&%s=%s",
 							Version.VERSION_1,
 							ROOT,
 							READ_BY_FORM,
@@ -2324,7 +2330,9 @@ public class WS {
 							EXECUTE_CALCULATED_LABELS,
 							executeCalculatedLabels,
 							QueryParam.POPULATE_FORM,
-							populateForm
+							populateForm,
+							QueryParam.POPULATE_FLOW_PROGRESS,
+							populateStepProgress
 					);
 				}
 
