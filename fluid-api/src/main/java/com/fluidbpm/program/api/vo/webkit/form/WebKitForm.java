@@ -201,7 +201,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		this.setAutoCompleteTextFields(new ArrayList<>());
 		if (!this.jsonObject.isNull(JSONMapping.AUTO_COMPLETE_TEXT_FIELDS))
 			this.jsonObject.getJSONArray(JSONMapping.AUTO_COMPLETE_TEXT_FIELDS).forEach(
-					autoCompl -> this.getAutoCompleteTextFields().add(autoCompl.toString()));
+					autoCompl -> this.getAutoCompleteTextFields().add(autoCompl.toString())
+			);
 
 		this.setNewInstanceDefaults(new ArrayList<>());
 		if (!this.jsonObject.isNull(JSONMapping.NEW_INSTANCE_DEFAULTS))
