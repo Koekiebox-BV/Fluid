@@ -15,6 +15,9 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,9 +33,11 @@ import com.fluidbpm.program.api.vo.field.Field;
  * @see Form
  * @see Field
  */
+@Getter
+@Setter
+@NoArgsConstructor
 public class TableRecord extends ABaseFluidJSONObject {
-
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private Form formContainer;
 	private Form parentFormContainer;
@@ -68,11 +73,7 @@ public class TableRecord extends ABaseFluidJSONObject {
 	 * @see Form
 	 * @see Field
 	 */
-	public TableRecord(
-			Form formContainerParam,
-			Form parentFormContainer,
-			Field parentFormField
-	) {
+	public TableRecord(Form formContainerParam, Form parentFormContainer, Field parentFormField) {
 		super();
 		this.setFormContainer(formContainerParam);
 		this.setParentFormContainer(parentFormContainer);
@@ -90,29 +91,19 @@ public class TableRecord extends ABaseFluidJSONObject {
 		//Form Container...
 		if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER)) {
 			this.setFormContainer(
-					new Form(
-							this.jsonObject.getJSONObject(JSONMapping.FORM_CONTAINER)));
+					new Form(this.jsonObject.getJSONObject(JSONMapping.FORM_CONTAINER)));
 		}
 
 		//Parent Form Container...
 		if (!this.jsonObject.isNull(JSONMapping.PARENT_FORM_CONTAINER)) {
 			this.setParentFormContainer(
-					new Form(
-							this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_CONTAINER)));
+					new Form(this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_CONTAINER)));
 		}
 
 		//Parent Field...
 		if (!this.jsonObject.isNull(JSONMapping.PARENT_FORM_FIELD)) {
-			this.setParentFormField(
-					new Field(this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_FIELD)));
+			this.setParentFormField(new Field(this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_FIELD)));
 		}
-	}
-
-	/**
-	 * Default constructor.
-	 */
-	public TableRecord() {
-		super();
 	}
 
 	/**
@@ -126,91 +117,18 @@ public class TableRecord extends ABaseFluidJSONObject {
 	@Override
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
-
 		//Form Container...
 		if (this.getFormContainer() != null) {
-			returnVal.put(JSONMapping.FORM_CONTAINER,
-					this.getFormContainer().toJsonObject());
+			returnVal.put(JSONMapping.FORM_CONTAINER, this.getFormContainer().toJsonObject());
 		}
-
 		//Parent Form Container...
 		if (this.getParentFormContainer() != null) {
-			returnVal.put(JSONMapping.PARENT_FORM_CONTAINER,
-					this.getParentFormContainer().toJsonObject());
+			returnVal.put(JSONMapping.PARENT_FORM_CONTAINER, this.getParentFormContainer().toJsonObject());
 		}
-
 		//Parent Form Field...
 		if (this.getParentFormField() != null) {
-			returnVal.put(JSONMapping.PARENT_FORM_FIELD,
-					this.getParentFormField().toJsonObject());
+			returnVal.put(JSONMapping.PARENT_FORM_FIELD, this.getParentFormField().toJsonObject());
 		}
-
 		return returnVal;
-	}
-
-	/**
-	 * Gets the parent electronic Form Container.
-	 *
-	 * @return The parent Form.
-	 *
-	 * @see Form
-	 */
-	public Form getParentFormContainer() {
-		return this.parentFormContainer;
-	}
-
-	/**
-	 * Sets the parent electronic Form Container.
-	 *
-	 * @param parentFormContainerParam The parent Form.
-	 *
-	 * @see Form
-	 */
-	public void setParentFormContainer(Form parentFormContainerParam) {
-		this.parentFormContainer = parentFormContainerParam;
-	}
-
-	/**
-	 * Gets the electronic Form Container.
-	 *
-	 * @return The Form.
-	 *
-	 * @see Form
-	 */
-	public Form getFormContainer() {
-		return this.formContainer;
-	}
-
-	/**
-	 * Sets the electronic Form Container.
-	 *
-	 * @param formContainerParam The Form.
-	 *
-	 * @see Form
-	 */
-	public void setFormContainer(Form formContainerParam) {
-		this.formContainer = formContainerParam;
-	}
-
-	/**
-	 * Gets the parent electronic Form Field.
-	 *
-	 * @return The parent Form Field.
-	 *
-	 * @see Field
-	 */
-	public Field getParentFormField() {
-		return parentFormField;
-	}
-
-	/**
-	 * Sets the parent electronic Form Field.
-	 *
-	 * @param parentFormFieldParam The parent Form Field.
-	 *
-	 * @see Field
-	 */
-	public void setParentFormField(Field parentFormFieldParam) {
-		this.parentFormField = parentFormFieldParam;
 	}
 }
