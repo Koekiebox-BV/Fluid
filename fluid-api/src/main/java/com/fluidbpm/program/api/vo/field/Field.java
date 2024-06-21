@@ -407,7 +407,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 			case Label:
 				Object labelFieldValue = this.jsonObject.get(JSONMapping.FIELD_VALUE);
 				if (labelFieldValue instanceof String) this.setFieldValue(labelFieldValue);
-				else if (labelFieldValue == null) this.setFieldValue(null);
+				else if (labelFieldValue instanceof JSONObject) {
+					this.setFieldValue(((JSONObject)labelFieldValue).toString(1));
+				} else if (labelFieldValue == null) this.setFieldValue(null);
 				else throw new IllegalArgumentException(String.format("Label field value '%s' is not supported.", objFromKey));
 			break;
 			case TrueFalse:
