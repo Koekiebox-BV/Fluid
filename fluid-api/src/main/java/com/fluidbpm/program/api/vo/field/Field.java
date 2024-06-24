@@ -411,10 +411,14 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 					this.setFieldValue(((JSONObject)labelFieldValue).toString(1));
 				} else if (labelFieldValue == null) this.setFieldValue(null);
 				else throw new IllegalArgumentException(String.format(
-						"Label field value '%s:%s' is not supported.", objFromKey, objFromKey.getClass().getName()));
+						"Label field value '%s:%s' is not supported.", labelFieldValue, labelFieldValue.getClass().getName()));
 			break;
 			case TrueFalse:
-				this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
+				Object boolFieldValue = this.jsonObject.get(JSONMapping.FIELD_VALUE);
+				if (boolFieldValue instanceof Boolean) this.setFieldValue(boolFieldValue);
+				else if (boolFieldValue == null) this.setFieldValue(null);
+				else throw new IllegalArgumentException(String.format(
+					"TrueFalse field value '%s:%s' is not supported.", boolFieldValue, boolFieldValue.getClass().getName()));
 			break;
 			case DateTime:
 				this.setFieldValue(new Date(this.valueAsLongFromNumber(objFromKey)));
