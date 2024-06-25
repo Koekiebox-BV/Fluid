@@ -427,14 +427,14 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 				this.setFieldValue(new Date(this.valueAsLongFromNumber(objFromKey)));
 			break;
 			case Decimal:
+				Object decimalFieldValue = this.jsonObject.get(JSONMapping.FIELD_VALUE);
 				if (objFromKey instanceof Number) {
-					this.setFieldValueAsDouble(this.jsonObject.getDouble(JSONMapping.FIELD_VALUE));
-				} else {
-					throw new IllegalArgumentException(String.format(
+					this.setFieldValueAsDouble(((Number)decimalFieldValue).doubleValue());
+				} else if (decimalFieldValue instanceof JSONObject) this.setFieldValue(0.0D);
+				else throw new IllegalArgumentException(String.format(
 							"Decimal data type received value '%s' of type '%s'. Not allowed.",
 							objFromKey, objFromKey.getClass()
 					));
-				}
 			break;
 			case MultipleChoice:
 				if (objFromKey instanceof JSONObject) {
