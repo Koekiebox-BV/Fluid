@@ -61,11 +61,8 @@ public class DecimalMetaFormat {
 	public static final DecimalMetaFormat parse(String theStringToProcessParam) {
 		if (theStringToProcessParam == null || theStringToProcessParam.isEmpty()) return new DecimalMetaFormat();
 
-		UtilGlobal ug = new UtilGlobal();
-
 		String[] initialSplit = theStringToProcessParam.split("\\_");
-		if (initialSplit == null || initialSplit.length == 0) return new DecimalMetaFormat();
-
+		if (initialSplit.length == 0) return new DecimalMetaFormat();
 		if (initialSplit.length != 5) return new DecimalMetaFormat();
 
 		// Type...
@@ -73,18 +70,18 @@ public class DecimalMetaFormat {
 
 		// Min...
 		String minString = getValueFrom(MIN, initialSplit[1]);
-		Number min = ug.toDoubleSafe(minString);
-		if (isScaleZero(min)) min = Long.valueOf(min.longValue());
+		Number min = UtilGlobal.toDoubleSafe(minString);
+		if (isScaleNaturalNumber(min)) min = min.longValue();
 
 		// Max...
 		String maxString = getValueFrom(MAX, initialSplit[2]);
-		Number max = ug.toDoubleSafe(maxString);
-		if (isScaleZero(max)) max = Long.valueOf(max.longValue());
+		Number max = UtilGlobal.toDoubleSafe(maxString);
+		if (isScaleNaturalNumber(max)) max = max.longValue();
 
 		// Step Factor...
 		String stepFactorString = getValueFrom(STEP_FACTOR,initialSplit[3]);
-		Number stepFactor = ug.toDoubleSafe(stepFactorString);
-		if (isScaleZero(stepFactor)) stepFactor = Long.valueOf(stepFactor.longValue());
+		Number stepFactor = UtilGlobal.toDoubleSafe(stepFactorString);
+		if (isScaleNaturalNumber(stepFactor)) stepFactor = stepFactor.longValue();
 
 		// Prefix...
 		String prefix = getValueFrom(PREFIX, initialSplit[4]);
@@ -152,21 +149,21 @@ public class DecimalMetaFormat {
 		return toRetrieveFromParam.substring(startIndex + 1, toRetrieveFromParam.length() - 1);
 	}
 
-	private static boolean isScaleZero(Number value) {
-		BigDecimal bd = BigDecimal.valueOf(value.doubleValue());
-		return bd.scale() == 1;
+	private static boolean isScaleNaturalNumber(Number value) {
+		long valAsLong = value.longValue();
+		double valAsDbl = value.doubleValue();
+		return (valAsDbl == valAsLong);
 	}
 
 	private static boolean isPrecisionZero(Number value) {
-		BigDecimal bd = BigDecimal.valueOf(value.doubleValue());
-		return bd.precision() == 1;
+		return BigDecimal.valueOf(value.doubleValue()).precision() == 0;
 	}
 
 	/**
 	 * @return {@code true} if precision is zero.
 	 */
-	public boolean isScaleZeroForStepFactor() {
-		return DecimalMetaFormat.isScaleZero(this.getStepFactor());
+	public boolean isScaleNaturalNumberForStepFactor() {
+		return DecimalMetaFormat.isScaleNaturalNumber(this.getStepFactor());
 	}
 
 
