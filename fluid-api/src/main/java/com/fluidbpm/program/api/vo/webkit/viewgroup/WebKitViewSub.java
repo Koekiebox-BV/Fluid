@@ -34,7 +34,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class WebKitViewSub extends ABaseFluidJSONObject {
 	/*
 	 * data_table - Table

@@ -223,7 +223,7 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 					frm.setFieldValue(itm.getFieldName(), UUID.randomUUID().toString(), itm.getTypeAsEnum());
 					break;
 				case TrueFalse:
-					frm.setFieldValue(itm.getFieldName(), new Boolean(true), itm.getTypeAsEnum());
+					frm.setFieldValue(itm.getFieldName(), Boolean.TRUE, itm.getTypeAsEnum());
 					break;
 				case MultipleChoice:
 					MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();

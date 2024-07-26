@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class WebKitMenuItem extends ABaseFluidJSONObject {
 	private String menuLabel;
 	private String menuIcon;

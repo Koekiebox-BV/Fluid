@@ -373,7 +373,7 @@ public class TestSQLUtilWebSocketClient extends ABaseLoggedInTestCase {
 
 			//Set the SQL Query as a Field...
 			formToUse.setFieldValue("SQL Query", "SELECT * FROM form_container WHERE id > ?;");
-			formToUse.getFormFields().add(new Field(1L,"id",new Long(1L), Field.Type.Decimal));
+			formToUse.getFormFields().add(new Field(1L,"id", 1L, Field.Type.Decimal));
 
 			long start = System.currentTimeMillis();
 			List<FormListing> formListing = webSocketClient.executeSQLSynchronized(formToUse);

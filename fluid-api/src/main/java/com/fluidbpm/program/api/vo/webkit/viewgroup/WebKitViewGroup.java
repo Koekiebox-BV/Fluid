@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class WebKitViewGroup extends ABaseFluidJSONObject {
 	private Long jobViewGroupId;
 	private String jobViewGroupName;

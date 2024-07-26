@@ -34,7 +34,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class WebKitUserQuery extends ABaseFluidJSONObject {
 	private UserQuery userQuery;
 	private WebKitMenuItem menuItem;

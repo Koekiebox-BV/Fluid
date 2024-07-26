@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class RowExpansion extends ABaseFluidJSONObject {
 	private boolean tableExpansionDisplayAttachments;
 	private boolean tableExpansionDisplayAncestor;

@@ -74,17 +74,17 @@ public class DecimalMetaFormat {
 		// Min...
 		String minString = getValueFrom(MIN, initialSplit[1]);
 		Number min = ug.toDoubleSafe(minString);
-		if (isPrecisionZero(min)) min = Long.valueOf(min.longValue());
+		if (isScaleZero(min)) min = Long.valueOf(min.longValue());
 
 		// Max...
 		String maxString = getValueFrom(MAX, initialSplit[2]);
 		Number max = ug.toDoubleSafe(maxString);
-		if (isPrecisionZero(max)) max = Long.valueOf(max.longValue());
+		if (isScaleZero(max)) max = Long.valueOf(max.longValue());
 
 		// Step Factor...
 		String stepFactorString = getValueFrom(STEP_FACTOR,initialSplit[3]);
 		Number stepFactor = ug.toDoubleSafe(stepFactorString);
-		if (isPrecisionZero(stepFactor)) stepFactor = Long.valueOf(stepFactor.longValue());
+		if (isScaleZero(stepFactor)) stepFactor = Long.valueOf(stepFactor.longValue());
 
 		// Prefix...
 		String prefix = getValueFrom(PREFIX, initialSplit[4]);
@@ -152,10 +152,23 @@ public class DecimalMetaFormat {
 		return toRetrieveFromParam.substring(startIndex + 1, toRetrieveFromParam.length() - 1);
 	}
 
+	private static boolean isScaleZero(Number value) {
+		BigDecimal bd = BigDecimal.valueOf(value.doubleValue());
+		return bd.scale() == 1;
+	}
+
 	private static boolean isPrecisionZero(Number value) {
-		BigDecimal bd = new BigDecimal(value.doubleValue());
+		BigDecimal bd = BigDecimal.valueOf(value.doubleValue());
 		return bd.precision() == 1;
 	}
+
+	/**
+	 * @return {@code true} if precision is zero.
+	 */
+	public boolean isScaleZeroForStepFactor() {
+		return DecimalMetaFormat.isScaleZero(this.getStepFactor());
+	}
+
 
 	/**
 	 * @return {@code true} if precision is zero.

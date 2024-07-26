@@ -82,11 +82,11 @@ public class Error extends ABaseFluidJSONObject {
         //Error Code...
         if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE)) {
             this.setErrorCode(
-                    new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
+                    Long.valueOf(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
         }
         else if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE_OTHER)) {
             this.setErrorCode(
-                    new Long(this.jsonObject.getLong(JSONMapping.ERROR_CODE_OTHER)).intValue());
+                    Long.valueOf(this.jsonObject.getLong(JSONMapping.ERROR_CODE_OTHER)).intValue());
         }
 
         //Error Message...

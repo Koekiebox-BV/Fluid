@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * @see Field
  * @see Field#setFieldValue(Object)
  */
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @Getter
 @Setter
 public class MultiChoice extends ABaseFluidJSONObject {

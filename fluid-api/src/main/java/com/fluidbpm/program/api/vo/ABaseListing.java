@@ -200,7 +200,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 
 		//Listing count...
 		if (this.getListingCount() == null) {
-			returnVal.put(JSONMapping.LISTING_COUNT, new Integer(listingCountFromListing));
+			returnVal.put(JSONMapping.LISTING_COUNT, Integer.valueOf(listingCountFromListing));
 		} else {
 			returnVal.put(JSONMapping.LISTING_COUNT, this.getListingCount());
 		}
