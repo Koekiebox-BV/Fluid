@@ -309,7 +309,7 @@ public class FormFieldClient extends ABaseFieldClient {
 	) {
 		if (formFieldParam != null && this.serviceTicket != null) formFieldParam.setServiceTicket(this.serviceTicket);
 
-		if (barcodeTypeParam == null || barcodeTypeParam.trim().isEmpty()) {
+		if (UtilGlobal.isBlank(barcodeTypeParam)) {
 			throw new FluidClientException("Barcode type cannot be empty.", FluidClientException.ErrorCode.FIELD_VALIDATE);
 		}
 
