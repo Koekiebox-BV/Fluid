@@ -84,8 +84,7 @@ public class TestExitStep extends ABaseTestFlowStep {
             FlowStep exitStep = fsClient.getFlowStepByStep(new FlowStep("Exit", this.flow));
             TestCase.assertNotNull(exitStep);
 
-            List<FlowStepRule> exitStepExitRules =
-                    fsrClient.getExitRulesByStep(exitStep).getListing();
+            List<FlowStepRule> exitStepExitRules = fsrClient.getExitRulesByStep(exitStep);
             TestCase.assertNotNull(exitStepExitRules);
             TestCase.assertEquals(1, exitStepExitRules.size());
             fsrClient.deleteFlowStepExitRule(exitStepExitRules.get(0));

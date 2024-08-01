@@ -44,313 +44,311 @@ public class FlowStepRuleClient extends ABaseClientWS {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public FlowStepRuleClient(String endpointBaseUrlParam, String serviceTicketParam) {
-		super(endpointBaseUrlParam);
-		this.setServiceTicket(serviceTicketParam);
+	public FlowStepRuleClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
 	 * Create a new Flow Step Entry rule.
 	 *
-	 * @param flowStepRuleParam Rule to create.
+	 * @param flowStepRule Rule to create.
 	 * @return Created rule.
 	 */
-	public FlowStepRule createFlowStepEntryRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule createFlowStepEntryRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.putJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleEntryCreate()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleEntryCreate())
+		);
 	}
 
 	/**
 	 * Create a new Flow Step Exit rule.
 	 *
-	 * @param flowStepRuleParam Rule to create.
+	 * @param flowStepRule Rule to create.
 	 * @return Created rule.
 	 */
-	public FlowStepRule createFlowStepExitRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
-
+	public FlowStepRule createFlowStepExitRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.putJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleExitCreate()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleExitCreate())
+		);
 	}
 
 	/**
 	 * Create a new Flow Step View rule.
 	 *
-	 * @param flowStepRuleParam Rule to create.
+	 * @param flowStepRule Rule to create.
 	 * @return Created rule.
 	 */
-	public FlowStepRule createFlowStepViewRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule createFlowStepViewRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.putJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleViewCreate()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleViewCreate()));
 	}
 
 	/**
 	 * Update an existing Flow Step Entry rule.
 	 *
-	 * @param flowStepRuleParam Rule to update.
+	 * @param flowStepRule Rule to update.
 	 * @return Updated rule.
 	 */
-	public FlowStepRule updateFlowStepEntryRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
-
+	public FlowStepRule updateFlowStepEntryRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleUpdateEntry()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleUpdateEntry())
+		);
 	}
 
 	/**
 	 * Update an existing Flow Step Exit rule.
 	 *
-	 * @param flowStepRuleParam Rule to update.
+	 * @param flowStepRule Rule to update.
 	 * @return Updated rule.
 	 */
-	public FlowStepRule updateFlowStepExitRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule updateFlowStepExitRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleUpdateExit()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleUpdateExit())
+		);
 	}
 
 	/**
 	 * Update an existing Flow Step View rule.
 	 *
-	 * @param flowStepRuleParam Rule to update.
+	 * @param flowStepRule Rule to update.
 	 * @return Updated rule.
 	 */
-	public FlowStepRule updateFlowStepViewRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule updateFlowStepViewRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleUpdateView()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleUpdateView())
+		);
 	}
 
 	/**
 	 * Compiles the {@code viewRuleSyntaxParam} text within the Fluid workflow engine.
 	 *
-	 * @param viewRuleSyntaxParam The syntax to compile.
+	 * @param viewRuleSyntax The syntax to compile.
 	 * @return Compiled rule.
 	 */
-	public FlowStepRule compileFlowStepViewRule(String viewRuleSyntaxParam) {
+	public FlowStepRule compileFlowStepViewRule(String viewRuleSyntax) {
 		FlowStepRule flowStepRule = new FlowStepRule();
-		flowStepRule.setRule(viewRuleSyntaxParam);
-
-		if (this.serviceTicket != null) flowStepRule.setServiceTicket(this.serviceTicket);
+		flowStepRule.setRule(viewRuleSyntax);
+		flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRule, WS.Path.FlowStepRule.Version1.compileViewSyntax()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.compileViewSyntax())
+		);
 	}
 
 	/**
 	 * Retrieves the exit rules by step {@code flowStepParam}.
 	 * Name or id can be provided.
 	 *
-	 * @param flowStepParam The flow step to get the exit rules for.
+	 * @param flowStep The flow step to get the exit rules for.
 	 * @return All the exit rules for the step {@code flowStepParam}.
 	 */
-	public FlowStepRuleListing getExitRulesByStep(FlowStep flowStepParam) {
-		if (flowStepParam == null) return null;
+	public List<FlowStepRule> getExitRulesByStep(FlowStep flowStep) {
+		if (flowStep == null) return null;
 
-		if (this.serviceTicket != null) flowStepParam.setServiceTicket(this.serviceTicket);
-
+		flowStep.setServiceTicket(this.serviceTicket);
 		return new FlowStepRuleListing(this.postJson(
-				flowStepParam, WS.Path.FlowStepRule.Version1.getExitRulesByStep()));
+				flowStep, WS.Path.FlowStepRule.Version1.getExitRulesByStep()
+		)).getListing();
 	}
 
 	/**
 	 * Retrieves the entry rules by step {@code flowStepParam}.
 	 * Name or id can be provided.
 	 *
-	 * @param flowStepParam The flow step to get the exit rules for.
+	 * @param flowStep The flow step to get the exit rules for.
 	 * @return All the entry rules for the step {@code flowStepParam}.
 	 */
-	public FlowStepRuleListing getEntryRulesByStep(FlowStep flowStepParam) {
-		if (flowStepParam == null) return null;
+	public List<FlowStepRule> getEntryRulesByStep(FlowStep flowStep) {
+		if (flowStep == null) return null;
 
-		if (this.serviceTicket != null) flowStepParam.setServiceTicket(this.serviceTicket);
-
+		flowStep.setServiceTicket(this.serviceTicket);
 		return new FlowStepRuleListing(this.postJson(
-				flowStepParam, WS.Path.FlowStepRule.Version1.getEntryRulesByStep()));
+				flowStep, WS.Path.FlowStepRule.Version1.getEntryRulesByStep())
+		).getListing();
 	}
 
 	/**
 	 * Compiles and Executes the {@code viewRuleSyntaxParam}
 	 * text within the Fluid workflow engine.
 	 *
-	 * @param viewRuleSyntaxParam The syntax to compile.
-	 * @param fluidItemToExecuteOnParam The item to execute the rules on.
+	 * @param viewRuleSyntax The syntax to compile.
+	 * @param fluidItemToExecuteOn The item to execute the rules on.
 	 *
 	 * @return Execution result.
 	 */
 	public FlowItemExecuteResult compileFlowStepViewRuleAndExecute(
-			String viewRuleSyntaxParam,
-			FluidItem fluidItemToExecuteOnParam
+			String viewRuleSyntax,
+			FluidItem fluidItemToExecuteOn
 	) {
 		FlowStepRule flowStepRule = new FlowStepRule();
-		flowStepRule.setRule(viewRuleSyntaxParam);
+		flowStepRule.setRule(viewRuleSyntax);
 
 		FlowItemExecutePacket toPost = new FlowItemExecutePacket();
-
-		if (this.serviceTicket != null) toPost.setServiceTicket(this.serviceTicket);
-
+		toPost.setServiceTicket(this.serviceTicket);
 		toPost.setFlowStepRule(flowStepRule);
-		toPost.setFluidItem(fluidItemToExecuteOnParam);
+		toPost.setFluidItem(fluidItemToExecuteOn);
 
 		return new FlowItemExecuteResult(this.postJson(
-				toPost, WS.Path.FlowStepRule.Version1.compileViewSyntaxAndExecute()));
+				toPost, WS.Path.FlowStepRule.Version1.compileViewSyntaxAndExecute())
+		);
 	}
 
 	/**
 	 * Compiles the {@code entryRuleSyntaxParam} text within the Fluid workflow engine.
-	 *
-	 * @param entryRuleSyntaxParam The syntax to compile.
+	 * @param entryRuleSyntax The syntax to compile.
 	 * @return Compiled rule.
 	 */
-	public FlowStepRule compileFlowStepEntryRule(String entryRuleSyntaxParam) {
+	public FlowStepRule compileFlowStepEntryRule(String entryRuleSyntax) {
 		FlowStepRule flowStepRule = new FlowStepRule();
-		flowStepRule.setRule(entryRuleSyntaxParam);
-
-		if (this.serviceTicket != null) flowStepRule.setServiceTicket(this.serviceTicket);
+		flowStepRule.setRule(entryRuleSyntax);
+		flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRule, WS.Path.FlowStepRule.Version1.compileEntrySyntax()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.compileEntrySyntax())
+		);
 	}
 
 	/**
 	 * Compiles and Executes the {@code entryRuleSyntaxParam}
 	 * text within the Fluid workflow engine.
-	 *
-	 * @param entryRuleSyntaxParam The syntax to compile.
-	 * @param fluidItemToExecuteOnParam The item to execute the rules on.
+	 * @param entryRuleSyntax The syntax to compile.
+	 * @param fluidItemToExecuteOn The item to execute the rules on.
 	 *
 	 * @return Execution result.
 	 */
 	public FlowItemExecuteResult compileFlowStepEntryRuleAndExecute(
-		String entryRuleSyntaxParam,
-		FluidItem fluidItemToExecuteOnParam
+		String entryRuleSyntax,
+		FluidItem fluidItemToExecuteOn
 	) {
 		FlowStepRule flowStepRule = new FlowStepRule();
-		flowStepRule.setRule(entryRuleSyntaxParam);
+		flowStepRule.setRule(entryRuleSyntax);
 
 		FlowItemExecutePacket toPost = new FlowItemExecutePacket();
-		if (this.serviceTicket != null) toPost.setServiceTicket(this.serviceTicket);
-
-
+		toPost.setServiceTicket(this.serviceTicket);
 		toPost.setFlowStepRule(flowStepRule);
-		toPost.setFluidItem(fluidItemToExecuteOnParam);
+		toPost.setFluidItem(fluidItemToExecuteOn);
 
 		return new FlowItemExecuteResult(this.postJson(
-				toPost, WS.Path.FlowStepRule.Version1.compileEntrySyntaxAndExecute()));
+				toPost, WS.Path.FlowStepRule.Version1.compileEntrySyntaxAndExecute())
+		);
 	}
 
 	/**
 	 * Moves an entry rule order one up from the current location.
-	 *
-	 * @param flowStepRuleParam The Rule to move up.
+	 * @param flowStepRule The Rule to move up.
 	 * @return The result after the move.
 	 */
-	public FlowStepRule moveFlowStepEntryRuleUp(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule moveFlowStepEntryRuleUp(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleMoveEntryUp()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleMoveEntryUp())
+		);
 	}
 
 	/**
 	 * Moves an entry rule order one down from the current location.
-	 *
-	 * @param flowStepRuleParam The Rule to move down.
+	 * @param flowStepRule The Rule to move down.
 	 * @return The result after the move.
 	 */
-	public FlowStepRule moveFlowStepEntryRuleDown(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule moveFlowStepEntryRuleDown(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleMoveEntryDown()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleMoveEntryDown())
+		);
 	}
 
 	/**
-	 * Deletes an Step Entry rule.
-	 *
-	 * @param flowStepRuleParam The rule to delete.
+	 * Deletes a Step Entry rule.
+	 * @param flowStepRule The rule to delete.
 	 * @return The deleted rule.
 	 */
-	public FlowStepRule deleteFlowStepEntryRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStepRule deleteFlowStepEntryRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStepRule(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteEntry()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteEntry())
+		);
 	}
 
 	/**
-	 * Deletes an Step Exit rule.
-	 *
-	 * @param flowStepRuleParam The rule to delete.
+	 * Deletes a Step Exit rule.
+	 * @param flowStepRule The rule to delete.
 	 * @return The deleted rule.
 	 */
-	public FlowStep deleteFlowStepExitRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStep deleteFlowStepExitRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStep(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteExit()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteExit())
+		);
 	}
 
 	/**
-	 * Deletes an Step View rule.
-	 *
-	 * @param flowStepRuleParam The rule to delete.
+	 * Deletes a Step View rule.
+	 * @param flowStepRule The rule to delete.
 	 * @return The deleted rule.
 	 */
-	public FlowStep deleteFlowStepViewRule(FlowStepRule flowStepRuleParam) {
-		if (flowStepRuleParam != null && this.serviceTicket != null) flowStepRuleParam.setServiceTicket(this.serviceTicket);
+	public FlowStep deleteFlowStepViewRule(FlowStepRule flowStepRule) {
+		if (flowStepRule != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		return new FlowStep(this.postJson(
-				flowStepRuleParam, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteView()));
+				flowStepRule, WS.Path.FlowStepRule.Version1.flowStepRuleDeleteView())
+		);
 	}
 
 	/**
 	 * Retrieves the next valid syntax rules for {@code inputRuleParam}.
-	 *
-	 * @param inputRuleParam The text to use as input.
+	 * @param inputRule The text to use as input.
 	 * @return Listing of valid syntax words to use.
 	 */
-	public List<String> getNextValidSyntaxWordsEntryRule(String inputRuleParam) {
-		if (inputRuleParam == null) inputRuleParam = UtilGlobal.EMPTY;
+	public List<String> getNextValidSyntaxWordsEntryRule(String inputRule) {
+		if (inputRule == null) inputRule = UtilGlobal.EMPTY;
 
 		FlowStepRule flowStepRule = new FlowStepRule();
-		flowStepRule.setRule(inputRuleParam);
+		flowStepRule.setRule(inputRule);
 
 		if (this.serviceTicket != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
-		FlowStepRule returnedObj = new FlowStepRule(this.postJson(flowStepRule, WS.Path.FlowStepRule.Version1.getNextValidEntrySyntax()));
-
+		FlowStepRule returnedObj = new FlowStepRule(this.postJson(
+				flowStepRule, WS.Path.FlowStepRule.Version1.getNextValidEntrySyntax())
+		);
 		return returnedObj.getNextValidSyntaxWords();
 	}
 
 	/**
 	 * Retrieves the next valid syntax rules for {@code inputRuleParam}.
-	 *
-	 * @param inputRuleParam The text to use as input.
+	 * @param inputRule The text to use as input.
 	 * @return Listing of valid syntax words to use.
 	 */
-	public List<String> getNextValidSyntaxWordsExitRule(String inputRuleParam) {
-		if (inputRuleParam == null) inputRuleParam = UtilGlobal.EMPTY;
+	public List<String> getNextValidSyntaxWordsExitRule(String inputRule) {
+		if (inputRule == null) inputRule = UtilGlobal.EMPTY;
 
 		FlowStepRule flowStepRule = new FlowStepRule();
-		flowStepRule.setRule(inputRuleParam);
+		flowStepRule.setRule(inputRule);
 
 		if (this.serviceTicket != null) flowStepRule.setServiceTicket(this.serviceTicket);
 
 		FlowStepRule returnedObj = new FlowStepRule(this.postJson(
-				flowStepRule, WS.Path.FlowStepRule.Version1.getNextValidExitSyntax()));
-
+				flowStepRule, WS.Path.FlowStepRule.Version1.getNextValidExitSyntax())
+		);
 		return returnedObj.getNextValidSyntaxWords();
 	}
 }

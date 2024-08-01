@@ -37,7 +37,7 @@ import static com.fluidbpm.ws.client.migrator.MigratorForm.migrateFormDefinition
  */
 public class MigratorFormField {
     @Builder
-    public static final class OptFieldMultiChoiceMigrate {
+    public static final class MigrateOptFieldMultiChoice {
         private String fieldName;
         private String fieldDescription;
         private List<String> choices;
@@ -45,26 +45,29 @@ public class MigratorFormField {
     }
 
     @Builder
-    public static final class OptFieldTableMigrate {
+    public static final class MigrateOptFieldTable {
         private String fieldName;
         private String formType;
         private String fieldAndFormDescription;
         private String[] fields;
 
+        /**Set fields as parameter list.
+         * @param fields fields to set.
+         */
         public void fieldsParam(String ... fields) {
             this.fields = fields;
         }
     }
 
     @Builder
-    public static final class OptFieldDateMigrate {
+    public static final class MigrateOptFieldDate {
         private String fieldName;
         private String fieldDescription;
         private boolean dateOnly;
     }
 
     @Builder
-    public static final class OptFieldTextMigrate {
+    public static final class MigrateOptFieldText {
         private String fieldName;
         private String fieldDescription;
         private boolean encrypted;
@@ -74,13 +77,13 @@ public class MigratorFormField {
     }
 
     @Builder
-    public static final class OptFieldLabelMigrate {
+    public static final class MigrateOptFieldLabel {
         private String fieldName;
         private String fieldDescription;
     }
 
     @Builder
-    public static final class OptFieldMigrate {
+    public static final class MigrateOptField {
         private String fieldName;
         private String fieldDescription;
     }
@@ -92,7 +95,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMigrate}
      */
     public static void migrateFieldTrueFalse(
-            FormFieldClient ffc, OptFieldMigrate opts
+            FormFieldClient ffc, MigrateOptField opts
     ) {
         try {
             Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
@@ -111,7 +114,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldLabelMigrate}
      */
     public static void migrateFieldLabel(
-            FormFieldClient ffc, OptFieldLabelMigrate opts
+            FormFieldClient ffc, MigrateOptFieldLabel opts
     ) {
         try {
             Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
@@ -130,7 +133,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMigrate}
      */
     public static void migrateFieldText(
-            FormFieldClient ffc, OptFieldTextMigrate opts
+            FormFieldClient ffc, MigrateOptFieldText opts
     ) {
         try {
             Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
@@ -163,7 +166,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldDateMigrate}
      */
     public static void migrateFieldDateTime(
-            FormFieldClient ffc, OptFieldDateMigrate opts
+            FormFieldClient ffc, MigrateOptFieldDate opts
     ) {
         try {
             Field toMigrate = new Field(opts.fieldName, null, Field.Type.DateTime);
@@ -186,7 +189,7 @@ public class MigratorFormField {
      * @return Created or updated {@code Field}
      */
     public static Field migrateFieldMultiChoicePlain(
-            FormFieldClient ffc, OptFieldMultiChoiceMigrate opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
     ) {
         try {
             Field toMigrate = new Field(opts.fieldName, null, Field.Type.Text);
@@ -211,7 +214,7 @@ public class MigratorFormField {
      * @return Migrated or updated {@code Field}
      */
     public static Field migrateFieldMultiChoiceSelectMany(
-            FormFieldClient ffc, OptFieldMultiChoiceMigrate opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
     ) {
         try {
             Field toMigrate = new Field(opts.fieldName, null, Field.Type.Text);
@@ -235,7 +238,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
     public static void migrateFieldMultiChoicePlainOptionExists(
-            FormFieldClient ffc, OptFieldMultiChoiceMigrate opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
     ) {
         List<String> choicesToEnsure = new ArrayList<>();
         if (UtilGlobal.isNotBlank(opts.choice)) choicesToEnsure.add(opts.choice);
@@ -260,7 +263,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
     public static void migrateFieldMultiChoiceSelectManyOptionExists(
-            FormFieldClient ffc, OptFieldMultiChoiceMigrate opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
     ) {
         List<String> choicesToEnsure = new ArrayList<>();
         if (UtilGlobal.isNotBlank(opts.choice)) choicesToEnsure.add(opts.choice);
@@ -286,12 +289,12 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
     public static void migrateFieldTableField(
-            FormDefinitionClient fdc, FormFieldClient ffc, OptFieldTableMigrate opts
+            FormDefinitionClient fdc, FormFieldClient ffc, MigrateOptFieldTable opts
     ) {
         try {
             migrateFormDefinition(
                     fdc,
-                    MigratorForm.OptFormMigrate.builder()
+                    MigratorForm.MigrateOptForm.builder()
                             .fields(opts.fields)
                             .formType(opts.formType)
                             .formDescription(opts.fieldAndFormDescription)

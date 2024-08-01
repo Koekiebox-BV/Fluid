@@ -32,18 +32,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class MigratorForm {
     @Builder
-    public static final class OptFormMigrate {
+    public static final class MigrateOptForm {
         private String formType;
         private String formDescription;
         private String[] fields;
-        public void fieldsParam(String... param) {
-            this.fields = param;
+
+        /**Set fields as parameter list.
+         * @param fields fields to set.
+         */
+        public void fieldsParam(String... fields) {
+            this.fields = fields;
         }
     }
 
     public static void migrateFormDefinition(
             FormDefinitionClient fdc,
-            OptFormMigrate opts
+            MigrateOptForm opts
     ) {
         Form form = new Form(opts.formType);
         List<Field> formFields = new ArrayList<>();

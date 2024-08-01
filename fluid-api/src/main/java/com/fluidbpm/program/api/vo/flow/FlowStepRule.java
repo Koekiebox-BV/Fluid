@@ -91,6 +91,22 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Constructor to set the flow, step and rule.
+	 *
+	 * @param flow The workflow the rule is part of.
+	 * @param flowStep The workflow step the rule is part of.
+	 * @param rule The rule to be executed.
+	 * @param order The order for the rule.
+	 */
+	public FlowStepRule(Flow flow, FlowStep flowStep, String rule, Number order) {
+		super();
+		this.setFlow(flow);
+		this.setFlowStep(flowStep);
+		this.setRule(rule);
+		if (order != null) this.setOrder(order.longValue());
+	}
+
+	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
 	 * @param jsonObjectParam The JSON Object.

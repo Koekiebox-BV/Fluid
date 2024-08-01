@@ -153,8 +153,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             // create the assignment flow step and update the rules:
             FlowStep introductionStep = flowStepClient.getFlowStepByStep(new FlowStep("Introduction", flow));
-            List<FlowStepRule> introductionExitRules =
-                    flowStepRuleClient.getExitRulesByStep(introductionStep).getListing();
+            List<FlowStepRule> introductionExitRules = flowStepRuleClient.getExitRulesByStep(introductionStep);
             TestCase.assertNotNull(introductionExitRules);
             TestCase.assertEquals(1, introductionExitRules.size());
             flowStepRuleClient.deleteFlowStepExitRule(introductionExitRules.get(0));
@@ -295,7 +294,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             // create the assignment flow step and update the rules:
             FlowStep introductionStep = flowStepClient.getFlowStepByStep(new FlowStep("Introduction", flow));
             List<FlowStepRule> introductionExitRules =
-                    flowStepRuleClient.getExitRulesByStep(introductionStep).getListing();
+                    flowStepRuleClient.getExitRulesByStep(introductionStep);
             TestCase.assertNotNull(introductionExitRules);
             TestCase.assertEquals(1, introductionExitRules.size());
             flowStepRuleClient.deleteFlowStepExitRule(introductionExitRules.get(0));

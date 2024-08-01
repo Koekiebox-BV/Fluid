@@ -91,7 +91,7 @@ public class TestRouteFieldsInWorkflow extends ABaseTestFlowStep {
             FlowStep introductionStep = fsClient.getFlowStepByStep(new FlowStep("Introduction", this.flow));
             TestCase.assertNotNull(introductionStep);
 
-            List<FlowStepRule> introductionExitRules = fsrClient.getExitRulesByStep(introductionStep).getListing();
+            List<FlowStepRule> introductionExitRules = fsrClient.getExitRulesByStep(introductionStep);
             TestCase.assertNotNull(introductionExitRules);
             TestCase.assertEquals(1, introductionExitRules.size());
             fsrClient.deleteFlowStepExitRule(introductionExitRules.get(0));
