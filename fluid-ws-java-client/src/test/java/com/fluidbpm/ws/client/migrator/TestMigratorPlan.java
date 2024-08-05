@@ -52,7 +52,7 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
 		if (this.isConnectionInValid) return;
 
 		MigratorPlan.MigrateOptPlan plan = MigratorPlan.MigrateOptPlan.builder()
-				//Fields:
+				// Fields:
 				.formFieldsNonTable(new MigratorField.MigrateOptField[] {
 						MigratorField.MigrateOptFieldText.builder()
 								.fieldName(Template.Field.TEXT_PLAIN)
@@ -138,8 +138,32 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
 								})
 								.build()
 				})
+				// User Queries:
+				.userQueries(new MigratorUserQuery.MigrateOptUserQuery[]{
+						MigratorUserQuery.MigrateOptUserQuery.builder()
+								.userQueryName(String.format("Fetch %s", Template.Form.FORM_DEF))
+								.userQueryDescription("Testing migration.")
+								.userQueryRules(new String[]{
+										String.format("[Form Type] = '%s'", Template.Form.FORM_DEF)
+								})
+								.userQueryResultFields(new String[]{
+										Template.Field.TEXT_PLAIN,
+										Template.Field.TEXT_ENCRYPTED,
+										Template.Field.TEXT_PARAGRAPH
+								})
+								.build()
+				})
+				// Libraries:
+				.thirdPartyLibs(new MigratorThirdPartyLib.MigrateOptThirdPartLib[]{
+						MigratorThirdPartyLib.MigrateOptThirdPartLib.builder()
+								.filename("printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar")
+								.libContentClasspath("META-INF/third-party-library/printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar")
+								.description("Third party library for testing.")
+								.build()
+				})
 				.build();
 
+		MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
 		MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
 	}
 
@@ -165,6 +189,21 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
 				.formDefs(new MigratorForm.MigrateOptRemoveForm[]{
 						MigratorForm.MigrateOptRemoveForm.builder().formName(Template.Form.FORM_DEF).build(),
 						MigratorForm.MigrateOptRemoveForm.builder().formName(Template.Form.FORM_DEF_TABLE).build()
+				})
+				.flows(new MigratorFlow.MigrateOptRemoveFlow[]{
+						MigratorFlow.MigrateOptRemoveFlow.builder()
+								.flowName(Template.Flow.NAME)
+								.build()
+				})
+				.thirdPartyLibs(new MigratorThirdPartyLib.MigrateOptRemoveThirdPartLib[]{
+						MigratorThirdPartyLib.MigrateOptRemoveThirdPartLib.builder()
+								.thirdPartyFilename("printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar")
+								.build()
+				})
+				.userQueries(new MigratorUserQuery.MigrateOptRemoveUserQuery[]{
+						MigratorUserQuery.MigrateOptRemoveUserQuery.builder()
+								.userQueryName(String.format("Fetch %s", Template.Form.FORM_DEF))
+								.build()
 				})
 				.build();
 

@@ -25,6 +25,8 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Java Web Service Client for {@code UserQuery} related actions.
  *
@@ -60,7 +62,7 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @see com.fluidbpm.program.api.vo.userquery.UserQuery
 	 */
 	public UserQuery createUserQuery(UserQuery userQueryParam) {
-		if (userQueryParam != null && this.serviceTicket != null) userQueryParam.setServiceTicket(this.serviceTicket);
+		if (userQueryParam != null) userQueryParam.setServiceTicket(this.serviceTicket);
 
 		return new UserQuery(this.putJson(userQueryParam, WS.Path.UserQuery.Version1.userQueryCreate()));
 	}
@@ -155,19 +157,17 @@ public class UserQueryClient extends ABaseClientWS {
 		}
 	}
 
-	/**
-	 * Retrieves all user query information.
-	 *
+	/**Retrieves all user query information.
 	 * @return UserQuery information.
-	 *
-	 * @see UserQueryListing
+	 * @see List<UserQuery>
 	 */
-	public UserQueryListing getAllUserQueries() {
+	public List<UserQuery> getAllUserQueries() {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 		userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 
 		try {
-			return new UserQueryListing(this.postJson(userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueries()));
+			return new UserQueryListing(this.postJson(userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueries()))
+					.getListing();
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);

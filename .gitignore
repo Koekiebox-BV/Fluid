@@ -28,3 +28,5 @@ fluid-api/src/main/java/com/fluid/GitDescribe.java
 !fluid-ws-java-client/target/site/
 # Include Maven Java API Target Resources #
 !fluid-api/target/site/
+# Include Jar for migration testing #
+!fluid-ws-java-client/src/main/resources/META-INF/third-party-library/printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar

@@ -45,6 +45,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 	private ThirdPartyLibraryTaskType thirdPartyLibraryTaskType;
 	private String taskIdentifier;
 	private List<Form> formDefinitions;
+	private Long thirdPartyLibraryId;
 
 	/**
 	 * Types of 3rd party programs.
@@ -67,6 +68,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 		public static final String THIRD_PARTY_LIBRARY_TASK_TYPE = "thirdPartyLibraryTaskType";
 		public static final String TASK_IDENTIFIER = "taskIdentifier";
 		public static final String FORM_DEFINITIONS = "formDefinitions";
+		public static final String THIRD_PARTY_LIBRARY_ID = "thirdPartyLibraryId";
 	}
 
 	/**
@@ -108,6 +110,10 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 			this.setTaskIdentifier(this.jsonObject.getString(JSONMapping.TASK_IDENTIFIER));
 		}
 
+		if (!this.jsonObject.isNull(JSONMapping.THIRD_PARTY_LIBRARY_ID)) {
+			this.setThirdPartyLibraryId(this.jsonObject.getLong(JSONMapping.THIRD_PARTY_LIBRARY_ID));
+		}
+
 		if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITIONS)) {
 			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
 			List<Form> objs = new ArrayList();
@@ -136,14 +142,11 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 	public JSONObject toJsonObject() throws JSONException {
 		JSONObject returnVal = super.toJsonObject();
 
+		if (this.getThirdPartyLibraryId() != null) returnVal.put(JSONMapping.THIRD_PARTY_LIBRARY_ID, this.getThirdPartyLibraryId());
 		if (this.getLibraryFilename() != null) returnVal.put(JSONMapping.LIBRARY_FILENAME, this.getLibraryFilename());
-
 		if (this.getLibrarySha256sum() != null) returnVal.put(JSONMapping.LIBRARY_SHA256SUM, this.getLibrarySha256sum());
-
 		if (this.getLibraryDescription() != null) returnVal.put(JSONMapping.LIBRARY_DESCRIPTION, this.getLibraryDescription());
-
 		if (this.getThirdPartyLibraryTaskType() != null) returnVal.put(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE, this.getThirdPartyLibraryTaskType());
-
 		if (this.getTaskIdentifier() != null) returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
 		
 		if (this.getFormDefinitions() != null && !this.getFormDefinitions().isEmpty()) {

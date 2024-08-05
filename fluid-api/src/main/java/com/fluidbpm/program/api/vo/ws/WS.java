@@ -3457,6 +3457,9 @@ public class WS {
 				public static final String READ_COMPANY_LOGO = ("/get_company_logo");
 				public static final String READ_COMPANY_LOGO_SMALL = ("/get_company_logo_small");
 
+				public static final String THIRD_PARTY_LIB_UPSERT = ("/third_party_library_upsert");
+				public static final String THIRD_PARTY_LIB_DELETE = ("/third_party_library_delete");
+
 				//Update/Insert...
 				public static final String UPSERT = ("/upsert");
 
@@ -3513,6 +3516,22 @@ public class WS {
 				 */
 				public static final String getAllThirdPartyTaskIdentifiers() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TASK_IDENTIFIERS);
+				}
+
+				/**
+				 * URL Path for uploading third party libraries.
+				 * @return {@code v1/configuration/third_party_library_upsert}
+				 */
+				public static final String thirdPartyTaskUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_UPSERT);
+				}
+
+				/**
+				 * URL Path for deleting third party library.
+				 * @return {@code v1/configuration/third_party_library_delete}
+				 */
+				public static final String thirdPartyTaskDelete() {
+					return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_DELETE);
 				}
 
 				/**

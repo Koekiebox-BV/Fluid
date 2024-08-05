@@ -22,6 +22,7 @@ import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepRuleClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
+import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import lombok.Builder;
 
 import java.util.Arrays;
@@ -38,6 +39,8 @@ public class MigratorPlan {
         private MigratorField.MigrateOptRemoveField[] tableFields;
         private MigratorForm.MigrateOptRemoveForm[] formDefs;
         private MigratorFlow.MigrateOptRemoveFlow[] flows;
+        private MigratorThirdPartyLib.MigrateOptRemoveThirdPartLib[] thirdPartyLibs;
+        private MigratorUserQuery.MigrateOptRemoveUserQuery[] userQueries;
     }
 
     @Builder
@@ -45,8 +48,9 @@ public class MigratorPlan {
         private MigratorField.MigrateOptField[] formFieldsNonTable;
         private MigratorField.MigrateOptFieldTable[] formFieldsTable;
         private MigratorForm.MigrateOptForm[] formDefs;
-        private MigratorThirdPartyLib.OptMigrateThirdPartLib[] thirdPartyLibs;
+        private MigratorThirdPartyLib.MigrateOptThirdPartLib[] thirdPartyLibs;
         private MigratorFlow.MigrateOptFlow[] flows;
+        private MigratorUserQuery.MigrateOptUserQuery[] userQueries;
     }
 
     /**
@@ -67,7 +71,8 @@ public class MigratorPlan {
                 FormDefinitionClient fdc = new FormDefinitionClient(url, serviceTicket);
                 FlowClient fc = new FlowClient(url, serviceTicket);
                 FlowStepClient fsc = new FlowStepClient(url, serviceTicket);
-                FlowStepRuleClient fsrc = new FlowStepRuleClient(url, serviceTicket)
+                FlowStepRuleClient fsrc = new FlowStepRuleClient(url, serviceTicket);
+                UserQueryClient uqc = new UserQueryClient(url, serviceTicket)
         ) {
             // 1. Migrate non-table fields:
             if (migratePlan.formFieldsNonTable != null) Arrays.stream(migratePlan.formFieldsNonTable).forEach(itm -> {
@@ -115,7 +120,12 @@ public class MigratorPlan {
                 MigratorThirdPartyLib.migrateThirdPartyLib(cc, itm);
             });
 
-            // 5. Migrate workflows:
+            // 5. Migrate user queries:
+            if (migratePlan.userQueries != null) Arrays.stream(migratePlan.userQueries).forEach(itm -> {
+                MigratorUserQuery.migrateUserQuery(uqc, itm);
+            });
+
+            // 6. Migrate workflows:
             if (migratePlan.flows != null) Arrays.stream(migratePlan.flows).forEach(itm -> {
                 MigratorFlow.migrateFlow(fc, fsc, fsrc, itm);
             });
@@ -138,7 +148,8 @@ public class MigratorPlan {
                 ConfigurationClient cc = new ConfigurationClient(url, serviceTicket);
                 FormFieldClient ffc = new FormFieldClient(url, serviceTicket);
                 FormDefinitionClient fdc = new FormDefinitionClient(url, serviceTicket);
-                FlowClient fc = new FlowClient(url, serviceTicket)
+                FlowClient fc = new FlowClient(url, serviceTicket);
+                UserQueryClient uqc = new UserQueryClient(url, serviceTicket)
         ) {
             if (removePlan.formDefs != null) Arrays.stream(removePlan.formDefs).forEach(itm -> {
                 MigratorForm.removeFormDefinition(fdc, itm);
@@ -146,11 +157,17 @@ public class MigratorPlan {
             if (removePlan.tableFields != null) Arrays.stream(removePlan.tableFields).forEach(itm -> {
                 MigratorField.removeField(ffc, itm);
             });
+            if (removePlan.userQueries != null) Arrays.stream(removePlan.userQueries).forEach(itm -> {
+                MigratorUserQuery.removeUserQuery(uqc, itm);
+            });
             if (removePlan.fields != null) Arrays.stream(removePlan.fields).forEach(itm -> {
                 MigratorField.removeField(ffc, itm);
             });
             if (removePlan.flows != null) Arrays.stream(removePlan.flows).forEach(itm -> {
                 MigratorFlow.removeFlow(fc, itm);
+            });
+            if (removePlan.thirdPartyLibs != null) Arrays.stream(removePlan.thirdPartyLibs).forEach(itm -> {
+                MigratorThirdPartyLib.removeLibrary(cc, itm);
             });
         }
     }

@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.config;
 
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.config.ConfigurationListing;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifierListing;
 import com.fluidbpm.program.api.vo.ws.WS;
@@ -130,6 +131,39 @@ public class ConfigurationClient extends ABaseClientWS {
 		configuration.setServiceTicket(this.serviceTicket);
 		return new Configuration(this.postJson(
 				configuration, WS.Path.Configuration.Version1.configUpsert()));
+	}
+
+	/**
+	 * Inserts a third party library if it doesn't exist,
+	 * update a configuration if it exists based on {@code id} being set.
+	 *
+	 * @param library The library to create or update.
+	 * @return stored third party library.
+	 * @see ThirdPartyLibrary
+	 */
+	public ThirdPartyLibrary upsertThirdPartyLibrary(
+			ThirdPartyLibrary library
+	) {
+		library.setServiceTicket(this.serviceTicket);
+		return new ThirdPartyLibrary(this.putJson(
+				library, WS.Path.Configuration.Version1.thirdPartyTaskUpsert())
+		);
+	}
+
+	/**
+	 * Deletes a third party library.
+	 *
+	 * @param library The library to delete.
+	 * @return deleted third party library.
+	 * @see ThirdPartyLibrary
+	 */
+	public ThirdPartyLibrary deleteThirdPartyLibrary(
+			ThirdPartyLibrary library
+	) {
+		library.setServiceTicket(this.serviceTicket);
+		return new ThirdPartyLibrary(this.postJson(
+				library, WS.Path.Configuration.Version1.thirdPartyTaskDelete())
+		);
 	}
 
 	/**
