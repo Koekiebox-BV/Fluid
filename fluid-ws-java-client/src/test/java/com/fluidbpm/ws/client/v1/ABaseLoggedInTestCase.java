@@ -165,7 +165,7 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 				false,
 				10000,
 				0
-		).getListing();
+		);
 		if (toDelete != null) {
 			toDelete.stream()
 					.map(itm -> itm.getForm())

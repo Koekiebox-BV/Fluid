@@ -18,7 +18,6 @@ package com.fluidbpm.ws.client.v1.userquery;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.item.FluidItem;
-import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -246,20 +245,18 @@ public class TestUserQueryClient extends ABaseLoggedInTestCase {
 
 			int total = 1;
 			for (int index = 0;index < total;index++) {
-				FluidItemListing itemListing =
+				List<FluidItem> itemListing =
 						userQueryClient.executeUserQuery(
 								this.userQueryToExec,
 								false,
 								-1,-1);
 
-				if (itemListing.getListingCount() > 0) {
-					for (FluidItem returnVal :itemListing.getListing()) {
-						System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
-								returnVal.getForm().getTitle() + " ]]] ***");
+				for (FluidItem returnVal : itemListing) {
+					System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
+							returnVal.getForm().getTitle() + " ]]] ***");
 
-						for (Field formField : returnVal.getForm().getFormFields()) {
-							System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
-						}
+					for (Field formField : returnVal.getForm().getFormFields()) {
+						System.out.println(formField.getFieldName() + " : "+formField.getFieldValue());
 					}
 				}
 			}
@@ -304,12 +301,10 @@ public class TestUserQueryClient extends ABaseLoggedInTestCase {
 
 		long start = System.currentTimeMillis();
 
-		FluidItemListing itemListing =
+		List<FluidItem> itemListing =
 				userQueryClient.executeUserQuery(userQueryToExec);
-
-		if (itemListing.getListingCount() > 0)
-		{
-			for (FluidItem returnVal :itemListing.getListing())
+		if (itemListing.size() > 0) {
+			for (FluidItem returnVal : itemListing)
 			{
 				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
 						returnVal.getForm().getTitle() + " ]]] ***");
@@ -322,7 +317,7 @@ public class TestUserQueryClient extends ABaseLoggedInTestCase {
 		}
 
 		long took = (System.currentTimeMillis() - start);
-		System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+
+		System.out.println("Took '"+took+"' millis for '"+itemListing.size()+
 				"' records.");
 	}
 
@@ -348,13 +343,13 @@ public class TestUserQueryClient extends ABaseLoggedInTestCase {
 
 		long start = System.currentTimeMillis();
 
-		FluidItemListing itemListing =
+		List<FluidItem> itemListing =
 				userQueryClient.executeUserQuery(userQueryToExec);
 		long took = (System.currentTimeMillis() - start);
-		System.out.println("Took '"+took+"' millis for '"+itemListing.getListingCount()+ "' records.");
+		System.out.println("Took '"+took+"' millis for '"+itemListing.size()+ "' records.");
 		
-		if (itemListing.getListingCount() > 0) {
-			for (FluidItem returnVal :itemListing.getListing()) {
+		if (itemListing.size() > 0) {
+			for (FluidItem returnVal :itemListing) {
 				System.out.println("*** [[[ " + returnVal.getForm().getFormType() + " - "+
 						returnVal.getForm().getTitle() + " ]]] ***");
 

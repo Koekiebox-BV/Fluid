@@ -15,9 +15,11 @@
 
 package com.fluidbpm.ws.client.v1.userquery;
 
+import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.userquery.UserQueryListing;
+import com.fluidbpm.program.api.vo.webkit.userquery.WebKitUserQuery;
 import com.fluidbpm.program.api.vo.webkit.userquery.WebKitUserQueryListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -91,7 +93,7 @@ public class UserQueryClient extends ABaseClientWS {
 	public UserQuery deleteUserQuery(
 		UserQuery userQueryToDeleteParam
 	) {
-		if (userQueryToDeleteParam != null && this.serviceTicket != null) userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
+		if (userQueryToDeleteParam != null) userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
 
 		return new UserQuery(this.postJson(userQueryToDeleteParam, WS.Path.UserQuery.Version1.userQueryDelete()));
 	}
@@ -108,9 +110,10 @@ public class UserQueryClient extends ABaseClientWS {
 		UserQuery userQueryToDeleteParam,
 		boolean forcefullyDeleteParam
 	) {
-		if (userQueryToDeleteParam != null && this.serviceTicket != null) userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
+		if (userQueryToDeleteParam != null) userQueryToDeleteParam.setServiceTicket(this.serviceTicket);
 
-		return new UserQuery(this.postJson(userQueryToDeleteParam, WS.Path.UserQuery.Version1.userQueryDelete(forcefullyDeleteParam)));
+		return new UserQuery(this.postJson(userQueryToDeleteParam,
+				WS.Path.UserQuery.Version1.userQueryDelete(forcefullyDeleteParam)));
 	}
 
 	/**
@@ -179,11 +182,14 @@ public class UserQueryClient extends ABaseClientWS {
 	 *
 	 * @return The complete user query config.
 	 * @see WebKitUserQueryListing
+	 * @see List<WebKitUserQuery>
 	 */
-	public WebKitUserQueryListing getUserQueryWebKit() {
+	public List<WebKitUserQuery> getUserQueryWebKit() {
 		UserQuery userQuery = new UserQuery();
 		userQuery.setServiceTicket(this.serviceTicket);
-		return new WebKitUserQueryListing(this.postJson(userQuery, WS.Path.UserQuery.Version1.getAllUserQueriesWebKit()));
+		return new WebKitUserQueryListing(
+				this.postJson(userQuery, WS.Path.UserQuery.Version1.getAllUserQueriesWebKit())
+		).getListing();
 	}
 
 	/**
@@ -192,11 +198,14 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @param listing The ViewGroupWebKit listing to upsert.
 	 * @return The complete view group config.
 	 * @see WebKitUserQueryListing
+	 * @see List<WebKitUserQuery>
 	 */
-	public WebKitUserQueryListing upsertUserQueryWebKit(WebKitUserQueryListing listing) {
+	public List<WebKitUserQuery> upsertUserQueryWebKit(WebKitUserQueryListing listing) {
 		if (listing == null) return null;
 		listing.setServiceTicket(this.serviceTicket);
-		return new WebKitUserQueryListing(this.postJson(listing, WS.Path.UserQuery.Version1.userQueryWebKitUpsert()));
+		return new WebKitUserQueryListing(
+				this.postJson(listing, WS.Path.UserQuery.Version1.userQueryWebKitUpsert())
+		).getListing();
 	}
 
 	/**
@@ -206,13 +215,14 @@ public class UserQueryClient extends ABaseClientWS {
 	 *
 	 * @see UserQueryListing
 	 */
-	public UserQueryListing getAllUserQueriesByLoggedInUser() {
+	public List<UserQuery> getAllUserQueriesByLoggedInUser() {
 		UserQuery userQueryToGetInfoFor = new UserQuery();
 		userQueryToGetInfoFor.setServiceTicket(this.serviceTicket);
 
 		try {
 			return new UserQueryListing(this.postJson(
-					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueriesByLoggedInUser()));
+					userQueryToGetInfoFor, WS.Path.UserQuery.Version1.getAllUserQueriesByLoggedInUser())
+			).getListing();
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
@@ -228,8 +238,9 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @return The UserQuery result.
 	 *
 	 * @see FluidItemListing
+	 * @see List<FluidItem>
 	 */
-	public FluidItemListing executeUserQuery(UserQuery queryToExecuteParam) {
+	public List<FluidItem> executeUserQuery(UserQuery queryToExecuteParam) {
 		return this.executeUserQuery(queryToExecuteParam, true);
 	}
 
@@ -245,7 +256,7 @@ public class UserQueryClient extends ABaseClientWS {
 	 *
 	 * @see FluidItemListing
 	 */
-	public FluidItemListing executeUserQuery(
+	public List<FluidItem> executeUserQuery(
 		UserQuery queryToExecuteParam,
 		boolean populateAncestorIdParam
 	) {
@@ -254,7 +265,8 @@ public class UserQueryClient extends ABaseClientWS {
 				populateAncestorIdParam,
 				-1,
 				-1,
-				false);
+				false
+		).getListing();
 	}
 
 	/**
@@ -270,7 +282,7 @@ public class UserQueryClient extends ABaseClientWS {
 	 *
 	 * @see FluidItemListing
 	 */
-	public FluidItemListing executeUserQuery(
+	public List<FluidItem> executeUserQuery(
 		UserQuery queryToExecuteParam,
 		boolean populateAncestorIdParam,
 		int queryLimitParam,
@@ -281,7 +293,8 @@ public class UserQueryClient extends ABaseClientWS {
 				populateAncestorIdParam,
 				queryLimitParam,
 				offsetParam,
-				false);
+				false
+		).getListing();
 	}
 
 	/**
@@ -335,8 +348,9 @@ public class UserQueryClient extends ABaseClientWS {
 	 * @return The UserQuery result.
 	 *
 	 * @see FluidItemListing
+	 * @see List<FluidItem>
 	 */
-	public FluidItemListing executeUserQuery(
+	public List<FluidItem> executeUserQuery(
 		UserQuery queryToExecuteParam,
 		boolean populateAncestorIdParam,
 		boolean executeCalculatedLabels,
@@ -353,7 +367,8 @@ public class UserQueryClient extends ABaseClientWS {
 							forceUseDatabaseParam,
 							executeCalculatedLabels,
 							queryLimitParam,
-							offsetParam)));
+							offsetParam))
+			).getListing();
 		} catch (JSONException jsonExcept) {
 			throw new FluidClientException(jsonExcept.getMessage(),
 					FluidClientException.ErrorCode.JSON_PARSING);
