@@ -35,13 +35,69 @@ import static com.fluidbpm.ws.client.migrator.MigratorForm.migrateFormDefinition
  * @see com.fluidbpm.program.api.vo.form.Form
  * @see com.fluidbpm.program.api.vo.field.Field
  */
-public class MigratorFormField {
+public class MigratorField {
+    public static abstract class MigrateOptField {
+        
+    }
+
     @Builder
-    public static final class MigrateOptFieldMultiChoice {
+    public static final class MigrateOptFieldText extends MigrateOptField {
+        private String fieldName;
+        private String fieldDescription;
+        private boolean encrypted;
+        private boolean latAndLong;
+        private boolean paragraphText;
+        private String maskedValue;
+        private BarcodeType barcodeType;
+    }
+
+    @Builder
+    public static class MigrateOptFieldMCBase {
         private String fieldName;
         private String fieldDescription;
         private List<String> choices;
         private String choice;
+    }
+
+    @Builder
+    public static final class MigrateOptFieldMultiChoicePlain extends MigrateOptField {
+        private MigrateOptFieldMCBase baseInfo;
+    }
+
+    @Builder
+    public static final class MigrateOptFieldMultiChoiceSelectMany extends MigrateOptField {
+        private MigrateOptFieldMCBase baseInfo;
+    }
+
+    @Builder
+    public static final class MigrateOptFieldDate extends MigrateOptField {
+        private String fieldName;
+        private String fieldDescription;
+        private boolean dateOnly;
+    }
+
+    @Builder
+    public static final class MigrateOptFieldDecimal extends MigrateOptField {
+        private String fieldName;
+        private String fieldDescription;
+        private boolean spinner;
+        private boolean currency;//TODO
+        private double valMin;
+        private double valMax;
+        private double valStepFactor;
+        private String prefix;
+    }
+
+    @Builder
+    public static final class MigrateOptFieldLabel extends MigrateOptField {
+        private String fieldName;
+        private String fieldDescription;
+    }
+
+    @Builder
+    public static final class MigrateOptFieldTrueFalse extends MigrateOptField {
+        private String fieldName;
+        private String fieldDescription;
     }
 
     @Builder
@@ -50,42 +106,14 @@ public class MigratorFormField {
         private String formType;
         private String fieldAndFormDescription;
         private String[] fields;
+        private boolean sumDecimals;
 
-        /**Set fields as parameter list.
-         * @param fields fields to set.
-         */
-        public void fieldsParam(String ... fields) {
-            this.fields = fields;
-        }
     }
 
     @Builder
-    public static final class MigrateOptFieldDate {
+    public static final class MigrateOptRemoveField {
+        private Long fieldId;
         private String fieldName;
-        private String fieldDescription;
-        private boolean dateOnly;
-    }
-
-    @Builder
-    public static final class MigrateOptFieldText {
-        private String fieldName;
-        private String fieldDescription;
-        private boolean encrypted;
-        private boolean latAndLong;
-        private String maskedValue;
-        private BarcodeType barcodeType;
-    }
-
-    @Builder
-    public static final class MigrateOptFieldLabel {
-        private String fieldName;
-        private String fieldDescription;
-    }
-
-    @Builder
-    public static final class MigrateOptField {
-        private String fieldName;
-        private String fieldDescription;
     }
 
     /**
@@ -95,7 +123,7 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMigrate}
      */
     public static void migrateFieldTrueFalse(
-            FormFieldClient ffc, MigrateOptField opts
+            FormFieldClient ffc, MigrateOptFieldTrueFalse opts
     ) {
         try {
             Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
@@ -151,6 +179,8 @@ public class MigratorFormField {
                 ffc.createFieldTextBarcode(toCreate, opts.barcodeType.getValue());
             } else if (opts.latAndLong) {
                 ffc.createFieldTextLatitudeAndLongitude(toCreate);
+            } else if (opts.paragraphText) {
+                ffc.createFieldParagraphTextPlain(toCreate);
             } else {
                 ffc.createFieldTextPlain(toCreate);
             }
@@ -182,6 +212,30 @@ public class MigratorFormField {
     }
 
     /**
+     * Migrate a Date field. Date field may or may not include time.
+     *
+     * @param ffc {@code FormFieldClient}
+     * @param opts {@code OptFieldDateMigrate}
+     */
+    public static void migrateFieldDecimal(
+            FormFieldClient ffc, MigrateOptFieldDecimal opts
+    ) {
+        try {
+            Field toMigrate = new Field(opts.fieldName, null, Field.Type.DateTime);
+            toMigrate.setFieldDescription(opts.fieldDescription);
+            if (opts.spinner) {
+                ffc.createFieldDecimalSpinner(toMigrate, opts.valMin, opts.valMax, opts.valStepFactor, opts.prefix);
+            } else if (opts.currency) {
+                ffc.createFieldDecimalSpinner(toMigrate, opts.valMin, opts.valMax, opts.valStepFactor, opts.prefix);
+            } else {
+                ffc.createFieldDecimalPlain(toMigrate);
+            }
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
      * Migrate a Multi-Choice field.
      * 
      * @param ffc {@code FormFieldClient}
@@ -189,20 +243,21 @@ public class MigratorFormField {
      * @return Created or updated {@code Field}
      */
     public static Field migrateFieldMultiChoicePlain(
-            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoicePlain opts
     ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
         try {
-            Field toMigrate = new Field(opts.fieldName, null, Field.Type.Text);
-            toMigrate.setFieldDescription(opts.fieldDescription);
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.Text);
+            toMigrate.setFieldDescription(base.fieldDescription);
             List<String> choices = new ArrayList<>();
 
-            if (UtilGlobal.isNotBlank(opts.choice)) choices.add(opts.choice);
-            if (opts.choices != null) choices.addAll(opts.choices);
+            if (UtilGlobal.isNotBlank(base.choice)) choices.add(base.choice);
+            if (base.choices != null) choices.addAll(base.choices);
 
             return ffc.createFieldMultiChoicePlain(toMigrate, choices);
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
-            return ffc.getFieldByName(opts.fieldName);
+            return ffc.getFieldByName(base.fieldName);
         }
     }
 
@@ -214,20 +269,21 @@ public class MigratorFormField {
      * @return Migrated or updated {@code Field}
      */
     public static Field migrateFieldMultiChoiceSelectMany(
-            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoiceSelectMany opts
     ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
         try {
-            Field toMigrate = new Field(opts.fieldName, null, Field.Type.Text);
-            toMigrate.setFieldDescription(opts.fieldDescription);
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.Text);
+            toMigrate.setFieldDescription(base.fieldDescription);
             List<String> choices = new ArrayList<>();
 
-            if (UtilGlobal.isNotBlank(opts.choice)) choices.add(opts.choice);
-            if (opts.choices != null) choices.addAll(opts.choices);
+            if (UtilGlobal.isNotBlank(base.choice)) choices.add(base.choice);
+            if (base.choices != null) choices.addAll(base.choices);
 
             return ffc.createFieldMultiChoiceSelectMany(toMigrate, choices);
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
-            return ffc.getFieldByName(opts.fieldName);
+            return ffc.getFieldByName(base.fieldName);
         }
     }
 
@@ -238,11 +294,13 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
     public static void migrateFieldMultiChoicePlainOptionExists(
-            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoicePlain opts
     ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+
         List<String> choicesToEnsure = new ArrayList<>();
-        if (UtilGlobal.isNotBlank(opts.choice)) choicesToEnsure.add(opts.choice);
-        if (opts.choices != null) choicesToEnsure.addAll(opts.choices);
+        if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
+        if (base.choices != null) choicesToEnsure.addAll(base.choices);
 
         Field field = migrateFieldMultiChoicePlain(ffc, opts);
         List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
@@ -263,11 +321,12 @@ public class MigratorFormField {
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
     public static void migrateFieldMultiChoiceSelectManyOptionExists(
-            FormFieldClient ffc, MigrateOptFieldMultiChoice opts
+            FormFieldClient ffc, MigrateOptFieldMultiChoiceSelectMany opts
     ) {
         List<String> choicesToEnsure = new ArrayList<>();
-        if (UtilGlobal.isNotBlank(opts.choice)) choicesToEnsure.add(opts.choice);
-        if (opts.choices != null) choicesToEnsure.addAll(opts.choices);
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
+        if (base.choices != null) choicesToEnsure.addAll(base.choices);
 
         Field field = migrateFieldMultiChoiceSelectMany(ffc, opts);
         List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
@@ -280,7 +339,6 @@ public class MigratorFormField {
             }
         });
     }
-
 
     /**
      * Migrate a Table field.
@@ -301,14 +359,27 @@ public class MigratorFormField {
                             .build()
             );
 
+            // Fetch the newly created or existing form definition:
+            Form formDefByName = fdc.getFormDefinitionByName(opts.formType);
+
             Field toMigrate = new Field(opts.fieldName, null, Field.Type.Table);
             toMigrate.setFieldDescription(opts.fieldAndFormDescription);
-
-            ffc.createFieldTable(toMigrate, new Form(opts.formType), false);
+            ffc.createFieldTable(toMigrate, formDefByName, opts.sumDecimals);
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
         }
     }
-    
 
+    /**
+     * Remove a field.
+     *
+     * @param ffc {@code FormFieldClient}
+     * @param opts {@code MigrateOptRemoveField}
+     */
+    public static void removeField(
+            FormFieldClient ffc, MigrateOptRemoveField opts
+    ) {
+        Field toDelete = new Field(opts.fieldId, opts.fieldName);
+        ffc.forceDeleteField(toDelete);
+    }
 }

@@ -154,6 +154,7 @@ public class ConfigurationClient extends ABaseClientWS {
 		third.setServiceTicket(this.serviceTicket);
 
 		return new ThirdPartyLibraryTaskIdentifierListing(this.postJson(
-				third, WS.Path.Configuration.Version1.getAllThirdPartyTaskIdentifiers())).getListing();
+				third, WS.Path.Configuration.Version1.getAllThirdPartyTaskIdentifiers())
+		).getListing();
 	}
 }

@@ -15,14 +15,13 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.security.*;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.ws.client.FluidClientException;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.ws.client.FluidClientException;
+import java.security.*;
 
 
 /**
@@ -280,16 +279,11 @@ public class AES256Local {
      * @return SHA256 digest.
      */
     public static byte[] sha256(final byte[] dataParam) {
-        if (dataParam == null || dataParam.length == 0) {
-            return new byte[] {};
-        }
-
+        if (dataParam == null || dataParam.length == 0) return new byte[] {};
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             return digest.digest(dataParam);
-        }
-        //
-        catch (final NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
     }

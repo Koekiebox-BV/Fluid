@@ -28,6 +28,8 @@ import lombok.Builder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Migration class for workflow related migrations.
@@ -46,15 +48,7 @@ public class MigratorFlow {
     public static final class MigrateOptFlow {
         private String flowName;
         private String flowDescription;
-
         private MigrateOptFlowStep[] flowSteps;
-
-        /**Set steps as parameter list.
-         * @param flowSteps steps to set.
-         */
-        public void fieldsParam(MigrateOptFlowStep ... flowSteps) {
-            this.flowSteps = flowSteps;
-        }
 
         /**
          * @return {code true} if steps present, otherwise {@code false}.
@@ -62,6 +56,12 @@ public class MigratorFlow {
         public boolean hasSteps() {
             return this.flowSteps != null && this.flowSteps.length > 0;
         }
+    }
+
+    @Builder
+    public static final class MigrateOptRemoveFlow {
+        private Long flowId;
+        private String flowName;
     }
 
     @Builder
@@ -75,31 +75,6 @@ public class MigratorFlow {
         private String[] flowRulesExit;
 
         private FlowStep.StepProperty[] properties;
-
-        /**Set steps as parameter list.
-         * @param rules steps to set.
-         */
-        public void flowRulesEntryParam(String ... rules) {
-            this.flowRulesEntry = rules;
-        }
-
-        /**Set steps as parameter list.
-         * @param name to add.
-         * @param value to add.
-         */
-        public MigrateOptFlowStep.MigrateOptFlowStepBuilder propertiesAdd(String name, String value) {
-            if (this.properties == null) {
-                this.properties = new FlowStep.StepProperty[1];
-                this.properties[0] = new FlowStep.StepProperty(name, value);
-                return builder();
-            }
-
-            FlowStep.StepProperty[] arrNew = new FlowStep.StepProperty[this.properties.length + 1];
-            System.arraycopy(this.properties, 0, arrNew, 0, this.properties.length);
-            arrNew[this.properties.length] = new FlowStep.StepProperty(name, value);
-            this.properties = arrNew;
-            return builder();
-        }
     }
 
     /**
@@ -129,15 +104,22 @@ public class MigratorFlow {
             FlowStep step;
             try {
                 FlowStep toCreate = new FlowStep(stepToMigrate.stepName, stepToMigrate.stepDescription);
+                toCreate.setFlow(flow);
+                if (stepToMigrate.stepType != null) {
+                    toCreate.setFlowStepType(stepToMigrate.stepType.name());
+                }
+                if (stepToMigrate.properties != null) {
+                    toCreate.setStepProperties(Stream.of(stepToMigrate.properties).collect(Collectors.toList()));
+                }
                 step = fsc.createFlowStep(toCreate);
             } catch (FluidClientException fce) {
                 if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
                 step = fsc.getFlowStepByStep(new FlowStep(stepToMigrate.stepName, flow));
             }
+            step.setFlow(flow);
 
             // Rules:
             StepType type = StepType.valueOf(step.getFlowStepType());
-
             switch (type) {
                 case Introduction:
                     mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
@@ -160,6 +142,7 @@ public class MigratorFlow {
             String ... toCreate
     ) {
         mergeRules(
+                RuleType.Exit,
                 fsrc,
                 step,
                 fsrc::deleteFlowStepExitRule,
@@ -175,6 +158,7 @@ public class MigratorFlow {
             String ... toCreate
     ) {
         mergeRules(
+                RuleType.Entry,
                 fsrc,
                 step,
                 fsrc::deleteFlowStepEntryRule,
@@ -190,6 +174,7 @@ public class MigratorFlow {
             String ... toCreate
     ) {
         mergeRules(
+                RuleType.View,
                 fsrc,
                 step,
                 fsrc::deleteFlowStepViewRule,
@@ -199,7 +184,12 @@ public class MigratorFlow {
         );
     }
 
+    public enum RuleType {
+        Entry, Exit, View
+    }
+
     private static void mergeRules(
+            RuleType ruleType,
             FlowStepRuleClient fsrc,
             FlowStep step,
             Consumer<? super FlowStepRule> actionDelete,
@@ -207,9 +197,26 @@ public class MigratorFlow {
             Consumer<? super FlowStepRule> actionCreate,
             String ... toCreate
     ) {
+        if (toCreate == null || toCreate.length == 0) return;
         List<FlowStepRule> existing;
         try {
-            existing = fsrc.getExitRulesByStep(step);
+            switch (ruleType) {
+                case Entry:
+                    existing = fsrc.getEntryRulesByStep(step);
+                break;
+                case Exit:
+                    existing = fsrc.getExitRulesByStep(step);
+                break;
+                case View:
+                    existing = fsrc.getViewRulesByStep(step);
+                    if (existing.get(0).getOrder() == 0) existing.remove(0);
+                break;
+                default:
+                    throw new FluidClientException(
+                            String.format("Rule Type '%s' is not supported", ruleType),
+                            FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+                    );
+            }
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
             existing = new ArrayList<>();
@@ -220,7 +227,7 @@ public class MigratorFlow {
                 rulesCreate = new ArrayList<>(),
                 rulesUpdate = new ArrayList<>();
         for (int ruleNr = 1; ruleNr <= toCreate.length; ruleNr++) {
-            String ruleToVerify = toCreate[ruleNr];
+            String ruleToVerify = toCreate[ruleNr - 1];
             if (UtilGlobal.isBlank(ruleToVerify)) continue;
             
             if (existing.size() < ruleNr) {
@@ -235,6 +242,8 @@ public class MigratorFlow {
                 String existingRawRule = existingToVerify.getRule();
                 if (!existingRawRule.trim().equalsIgnoreCase(ruleToVerify.trim())) {
                     existingToVerify.setRule(ruleToVerify);
+                    existingToVerify.setFlowStep(step);
+                    existingToVerify.setFlow(step.getFlow());
                     rulesUpdate.add(existingToVerify);
                 }
             }
@@ -242,7 +251,7 @@ public class MigratorFlow {
 
         // Extras to remove:
         if (existing.size() > toCreate.length) {
-            for (int iRem = toCreate.length;iRem < existing.size();iRem++) {
+            for (int iRem = toCreate.length; iRem < existing.size(); iRem++) {
                 rulesDelete.add(existing.get(iRem));
             }
         }
@@ -250,5 +259,18 @@ public class MigratorFlow {
         rulesDelete.forEach(actionDelete);
         rulesUpdate.forEach(actionUpdate);
         rulesCreate.forEach(actionCreate);
+    }
+
+    /**
+     * Remove a workflow.
+     *
+     * @param fc {@code FlowClient}
+     * @param opts {@code MigrateOptRemoveForm}
+     */
+    public static void removeFlow(
+            FlowClient fc, MigratorFlow.MigrateOptRemoveFlow opts
+    ) {
+        Flow toDelete = new Flow(opts.flowId, opts.flowName);
+        fc.forceDeleteFlow(toDelete);
     }
 }

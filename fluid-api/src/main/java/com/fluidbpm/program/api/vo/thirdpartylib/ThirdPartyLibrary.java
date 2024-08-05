@@ -16,6 +16,10 @@
 package com.fluidbpm.program.api.vo.thirdpartylib;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.common.io.BaseEncoding;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,9 +34,11 @@ import java.util.Date;
  *
  * @see ABaseFluidJSONObject
  */
+@NoArgsConstructor
+@Setter
+@Getter
 public class ThirdPartyLibrary extends ABaseFluidJSONObject {
-
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private String filename;
 	private String sha256sum;
@@ -111,85 +117,6 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 	}
 
 	/**
-	 * Default constructor.
-	 */
-	public ThirdPartyLibrary() {
-		super();
-	}
-
-	/**
-	 * Gets the name of {@code this} {@code 3rd Party Library}.
-	 *
-	 * @return The Field Name.
-	 */
-	public String getFilename() {
-		return this.filename;
-	}
-
-	/**
-	 * Sets the name of {@code this} {@code 3rd Party Library}.
-	 *
-	 * @param filenameParam The Library Filename.
-	 */
-	public void setFilename(String filenameParam) {
-		this.filename = filenameParam;
-	}
-
-	/**
-	 * Gets {@code ThirdPartyLibrary} description.
-	 *
-	 * @return A {@code ThirdPartyLibrary}s description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * Sets {@code ThirdPartyLibrary} description.
-	 *
-	 * @param descriptionParam A {@code ThirdPartyLibrary}s description.
-	 */
-	public void setDescription(String descriptionParam) {
-		this.description = descriptionParam;
-	}
-
-	/**
-	 * Gets {@code ThirdPartyLibrary} data in {@code Base-64}.
-	 *
-	 * @return A {@code ThirdPartyLibrary}s Base-64.
-	 */
-	public String getLibraryDataBase64() {
-		return this.libraryDataBase64;
-	}
-
-	/**
-	 * Sets {@code ThirdPartyLibrary} data in {@code Base-64}.
-	 *
-	 * @param libraryDataBase64Param A {@code ThirdPartyLibrary}s Base-64.
-	 */
-	public void setLibraryDataBase64(String libraryDataBase64Param) {
-		this.libraryDataBase64 = libraryDataBase64Param;
-	}
-
-	/**
-	 * Gets {@code Sha-256} of the data in {@code Hex}.
-	 *
-	 * @return A {@code Sha-256} of the data in {@code Hex}.
-	 */
-	public String getSha256sum() {
-		return this.sha256sum;
-	}
-
-	/**
-	 * Sets {@code Sha-256} of the data in {@code Hex}.
-	 *
-	 * @param sha256sumParam The {@code ThirdPartyLibrary} data SHA-256 in {@code Hex}.
-	 */
-	public void setSha256sum(String sha256sumParam) {
-		this.sha256sum = sha256sumParam;
-	}
-
-	/**
 	 * Gets if tools should be added to classpath.
 	 *
 	 * @return A {@code Sha-256} of the data in {@code Hex}.
@@ -198,49 +125,13 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 		return this.addToolsToClassPath;
 	}
 
-	/**
-	 * Sets if tools should be added to classpath.
-	 *
-	 * @param addToolsToClassPathParam The tools be added.
+	/**Set the library data.
+	 * @param libraryData Lib data to convert to B64 and set.
 	 */
-	public void setAddToolsToClassPath(Boolean addToolsToClassPathParam) {
-		this.addToolsToClassPath = addToolsToClassPathParam;
-	}
+	public void setLibraryData(byte[] libraryData) {
+		if (libraryData == null || libraryData.length == 0) return;
 
-	/**
-	 * Gets The {@code Date} the 3rd Party Lib was created.
-	 *
-	 * @return Date Created.
-	 */
-	public Date getDateCreated() {
-		return this.dateCreated;
-	}
-
-	/**
-	 * Sets The {@code Date} the 3rd Party Lib was created.
-	 *
-	 * @param dateCreatedParam Date Created.
-	 */
-	public void setDateCreated(Date dateCreatedParam) {
-		this.dateCreated = dateCreatedParam;
-	}
-
-	/**
-	 * Gets The {@code Date} the 3rd Party Lib was last updated.
-	 *
-	 * @return Date Last Updated.
-	 */
-	public Date getDateLastUpdated() {
-		return this.dateLastUpdated;
-	}
-
-	/**
-	 * Sets The {@code Date} the 3rd Party Lib was last updated.
-	 *
-	 * @param dateLastUpdatedParam Date Last Updated.
-	 */
-	public void setDateLastUpdated(Date dateLastUpdatedParam) {
-		this.dateLastUpdated = dateLastUpdatedParam;
+		this.setLibraryDataBase64(BaseEncoding.base64().encode(libraryData));
 	}
 
 	/**

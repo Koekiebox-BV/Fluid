@@ -15,23 +15,56 @@
 
 package com.fluidbpm.ws.client.migrator;
 
-import com.fluidbpm.program.api.vo.flow.Flow;
-import com.fluidbpm.program.api.vo.flow.FlowStep;
-import com.fluidbpm.program.api.vo.flow.FlowStepRule;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
+import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
+import com.fluidbpm.ws.client.v1.user.AES256Local;
+import com.google.common.io.BaseEncoding;
 import lombok.Builder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Migration class for 3rd party related migrations.
  *
- * @see Flow
- * @see FlowStep
- * @see FlowStepRule
+ * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
  */
 public class MigratorThirdPartyLib {
 
     @Builder
-    public static final class OptThirdPartyMigrate {
-        private String flowName;
-        private String flowDescription;
+    public static final class OptMigrateThirdPartLib {
+        private String filename;
+        private byte[] libContent;
+    }
+
+    /**
+     * Migrate a Table field.
+     *
+     * @param cc {@code ConfigurationClient}
+     * @param opts {@code OptFieldMultiChoiceMigrate}
+     */
+    public static void migrateThirdPartyLib(
+            ConfigurationClient cc, OptMigrateThirdPartLib opts
+    ) {
+        List<ThirdPartyLibrary> existingLibs;
+        try {
+            existingLibs = null;//TODO complete...
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
+            existingLibs = new ArrayList<>();
+        }
+
+        String sha = BaseEncoding.base16().encode(AES256Local.sha256(opts.libContent)).toLowerCase();
+
+        ThirdPartyLibrary libWithName = existingLibs.stream()
+                .filter(itm -> opts.filename.equalsIgnoreCase(itm.getFilename()))
+                .findFirst()
+                .orElse(null);
+        if (libWithName == null) {
+            // TODO create:
+        } else if (!sha.equalsIgnoreCase(libWithName.getSha256sum())) {
+            // TODO update:
+        }
     }
 }

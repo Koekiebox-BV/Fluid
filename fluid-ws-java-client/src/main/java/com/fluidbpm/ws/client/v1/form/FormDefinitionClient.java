@@ -75,12 +75,10 @@ public class FormDefinitionClient extends ABaseClientWS {
 	 * @see Form
 	 */
 	public Form createFormDefinition(Form formDefinitionParam) {
-		if (formDefinitionParam != null && this.serviceTicket != null) {
-			formDefinitionParam.setServiceTicket(this.serviceTicket);
-		}
-
+		if (formDefinitionParam != null) formDefinitionParam.setServiceTicket(this.serviceTicket);
 		return new Form(this.putJson(
-				formDefinitionParam, WS.Path.FormDefinition.Version1.formDefinitionCreate()));
+				formDefinitionParam, WS.Path.FormDefinition.Version1.formDefinitionCreate())
+		);
 	}
 
 	/**

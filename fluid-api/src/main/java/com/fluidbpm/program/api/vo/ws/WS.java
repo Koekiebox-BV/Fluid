@@ -2140,6 +2140,15 @@ public class WS {
 				}
 
 				/**
+				 * URL Path for Flow Step View {@code get_by_step} syntax.
+				 *
+				 * @return {@code v1/flow_step_rule/view/get_by_step}
+				 */
+				public static final String getViewRulesByStep() {
+					return Version.VERSION_1.concat(ROOT_VIEW).concat(READ_RULES_BY_STEP);
+				}
+
+				/**
 				 * URL Path for Flow Step View get by id.
 				 *
 				 * @return {@code v1/flow_step_rule/view/get_by_id}

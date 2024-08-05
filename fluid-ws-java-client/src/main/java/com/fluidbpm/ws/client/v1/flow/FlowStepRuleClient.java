@@ -152,11 +152,11 @@ public class FlowStepRuleClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Retrieves the exit rules by step {@code flowStepParam}.
+	 * Retrieves the exit rules by step {@code flowStep}.
 	 * Name or id can be provided.
 	 *
 	 * @param flowStep The flow step to get the exit rules for.
-	 * @return All the exit rules for the step {@code flowStepParam}.
+	 * @return All the exit rules for the step {@code flowStep}.
 	 */
 	public List<FlowStepRule> getExitRulesByStep(FlowStep flowStep) {
 		if (flowStep == null) return null;
@@ -168,11 +168,11 @@ public class FlowStepRuleClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Retrieves the entry rules by step {@code flowStepParam}.
+	 * Retrieves the entry rules by step {@code flowStep}.
 	 * Name or id can be provided.
 	 *
 	 * @param flowStep The flow step to get the exit rules for.
-	 * @return All the entry rules for the step {@code flowStepParam}.
+	 * @return All the entry rules for the step {@code flowStep}.
 	 */
 	public List<FlowStepRule> getEntryRulesByStep(FlowStep flowStep) {
 		if (flowStep == null) return null;
@@ -181,6 +181,22 @@ public class FlowStepRuleClient extends ABaseClientWS {
 		return new FlowStepRuleListing(this.postJson(
 				flowStep, WS.Path.FlowStepRule.Version1.getEntryRulesByStep())
 		).getListing();
+	}
+
+	/**
+	 * Retrieves the view rules by step {@code flowStep}.
+	 * Name or id can be provided.
+	 *
+	 * @param flowStep The flow step to get the exit rules for.
+	 * @return All the exit rules for the step {@code flowStep}.
+	 */
+	public List<FlowStepRule> getViewRulesByStep(FlowStep flowStep) {
+		if (flowStep == null) return null;
+
+		flowStep.setServiceTicket(this.serviceTicket);
+		return new FlowStepRuleListing(this.postJson(
+				flowStep, WS.Path.FlowStepRule.Version1.getViewRulesByStep()
+		)).getListing();
 	}
 
 	/**

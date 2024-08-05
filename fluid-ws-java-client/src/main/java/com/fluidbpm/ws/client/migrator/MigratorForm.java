@@ -36,13 +36,12 @@ public class MigratorForm {
         private String formType;
         private String formDescription;
         private String[] fields;
+    }
 
-        /**Set fields as parameter list.
-         * @param fields fields to set.
-         */
-        public void fieldsParam(String... fields) {
-            this.fields = fields;
-        }
+    @Builder
+    public static final class MigrateOptRemoveForm {
+        private Long formId;
+        private String formName;
     }
 
     public static void migrateFormDefinition(
@@ -89,5 +88,19 @@ public class MigratorForm {
                 }
             }
         }
+    }
+
+    /**
+     * Remove a form definition.
+     *
+     * @param fdc {@code FormDefinitionClient}
+     * @param opts {@code MigrateOptRemoveForm}
+     */
+    public static void removeFormDefinition(
+            FormDefinitionClient fdc, MigratorForm.MigrateOptRemoveForm opts
+    ) {
+        Form toDelete = new Form(opts.formName);
+        toDelete.setFormTypeId(opts.formId);
+        fdc.deleteFormDefinition(toDelete);
     }
 }
