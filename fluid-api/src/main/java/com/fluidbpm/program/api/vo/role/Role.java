@@ -19,6 +19,8 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +47,8 @@ import java.util.List;
  * @see RoleToJobView
  * @see UserQuery
  */
+@Getter
+@Setter
 public class Role extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -108,21 +112,17 @@ public class Role extends ABaseFluidJSONObject {
 	 */
 	public Role(JSONObject jsonObjectParam){
 		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+		if (this.jsonObject == null) return;
 
-		//Name...
+		//Name:
 		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
 			this.setName(this.jsonObject.getString(JSONMapping.NAME));
 		}
-
-		//Description...
+		// Description:
 		if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
 			this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
 		}
-
-		//Admin Permissions...
+		// Admin Permissions:
 		if (!this.jsonObject.isNull(JSONMapping.ADMIN_PERMISSIONS)) {
 			JSONArray adminPermissionListing =
 					this.jsonObject.getJSONArray(JSONMapping.ADMIN_PERMISSIONS);
@@ -132,8 +132,7 @@ public class Role extends ABaseFluidJSONObject {
 			}
 			this.setAdminPermissions(adminPermissionList);
 		}
-
-		//Role to Form Definitions...
+		// Role to Form Definitions:
 		if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_FORM_DEFINITIONS)) {
 			JSONArray roleToFormDefArray = this.jsonObject.getJSONArray(
 					JSONMapping.ROLE_TO_FORM_DEFINITIONS);
@@ -144,8 +143,7 @@ public class Role extends ABaseFluidJSONObject {
 			}
 			this.setRoleToFormDefinitions(roleToFormDefListing);
 		}
-
-		//Role to Form Field to Form Definitions...
+		// Role to Form Field to Form Definitions:
 		if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS)) {
 			JSONArray roleToFormDefArray = this.jsonObject.getJSONArray(
 					JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS);
@@ -156,7 +154,6 @@ public class Role extends ABaseFluidJSONObject {
 			}
 			this.setRoleToFormFieldToFormDefinitions(roleToFormDefListing);
 		}
-
 		//Role to Job Views...
 		if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_JOB_VIEWS)) {
 			JSONArray roleToJobViewDefArray = this.jsonObject.getJSONArray(
@@ -169,7 +166,6 @@ public class Role extends ABaseFluidJSONObject {
 			}
 			this.setRoleToJobViews(roleToFormDefListing);
 		}
-
 		//Role to User Queries...
 		if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_USER_QUERIES)) {
 			JSONArray userQueryArray = this.jsonObject.getJSONArray(
@@ -207,146 +203,6 @@ public class Role extends ABaseFluidJSONObject {
 		}
 
 		return returnVal;
-	}
-
-	/**
-	 * Gets {@code Role} name.
-	 *
-	 * @return A {@code Role}s name.
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Sets {@code Role} name.
-	 *
-	 * @param nameParam A {@code Role} name.
-	 */
-	public void setName(String nameParam) {
-		this.name = nameParam;
-	}
-
-	/**
-	 * Gets {@code Role} description.
-	 *
-	 * @return A {@code Role}s description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * Sets {@code Role} description.
-	 *
-	 * @param descriptionParam A {@code Role}s description.
-	 */
-	public void setDescription(String descriptionParam) {
-		this.description = descriptionParam;
-	}
-
-	/**
-	 * Gets {@code Role} associated {@code RoleToFormDefinition}s.
-	 *
-	 * @return A {@code Role}s {@code RoleToFormDefinition}s.
-	 *
-	 * @see RoleToFormDefinition
-	 */
-	public List<RoleToFormDefinition> getRoleToFormDefinitions() {
-		return this.roleToFormDefinitions;
-	}
-
-	/**
-	 * Sets {@code Role} associated {@code RoleToFormDefinition}s.
-	 *
-	 * @param roleToFormDefinitionsParam A {@code Role}s {@code RoleToFormDefinition}s.
-	 *
-	 * @see RoleToFormDefinition
-	 */
-	public void setRoleToFormDefinitions(List<RoleToFormDefinition> roleToFormDefinitionsParam) {
-		this.roleToFormDefinitions = roleToFormDefinitionsParam;
-	}
-
-	/**
-	 * Gets {@code Role} associated {@code RoleToFormFieldToFormDefinition}s.
-	 *
-	 * @return A {@code Role}s {@code RoleToFormFieldToFormDefinition}s.
-	 *
-	 * @see RoleToFormFieldToFormDefinition
-	 */
-	public List<RoleToFormFieldToFormDefinition> getRoleToFormFieldToFormDefinitions() {
-		return this.roleToFormFieldToFormDefinitions;
-	}
-
-	/**
-	 * Gets {@code Role} associated {@code RoleToFormFieldToFormDefinition}s.
-	 *
-	 * @param roleToFormFieldToFormDefinitionsParam
-	 * A {@code Role}s {@code RoleToFormFieldToFormDefinition}s.
-	 *
-	 * @see RoleToFormFieldToFormDefinition
-	 */
-	public void setRoleToFormFieldToFormDefinitions(
-			List<RoleToFormFieldToFormDefinition> roleToFormFieldToFormDefinitionsParam) {
-		this.roleToFormFieldToFormDefinitions = roleToFormFieldToFormDefinitionsParam;
-	}
-
-	/**
-	 * Gets {@code Role} Administration Permissions.
-	 *
-	 * @return A {@code Role}s Administration Permissions.
-	 */
-	public List<String> getAdminPermissions() {
-		return this.adminPermissions;
-	}
-
-	/**
-	 * Sets {@code Role} Administration Permissions.
-	 *
-	 * @param adminPermissionsParam A {@code Role}s Administration Permissions.
-	 */
-	public void setAdminPermissions(List<String> adminPermissionsParam) {
-		this.adminPermissions = adminPermissionsParam;
-	}
-
-	/**
-	 * Gets {@code Role} Job Views.
-	 *
-	 * @return A {@code Role}s Job Views.
-	 */
-	public List<RoleToJobView> getRoleToJobViews() {
-		return this.roleToJobViews;
-	}
-
-	/**
-	 * Sets {@code Role} Job Views.
-	 *
-	 * @param roleToJobViewsParam A {@code Role}s Job Views.
-	 */
-	public void setRoleToJobViews(List<RoleToJobView> roleToJobViewsParam) {
-		this.roleToJobViews = roleToJobViewsParam;
-	}
-
-	/**
-	 * Gets {@code RoleToUserQuery}s.
-	 *
-	 * @return A {@code Role}s associated {@code RoleToUserQuery}s.
-	 *
-	 * @see UserQuery
-	 */
-	public List<RoleToUserQuery> getRoleToUserQueries() {
-		return this.roleToUserQueries;
-	}
-
-	/**
-	 * Sets {@code RoleToUserQuery}s.
-	 *
-	 * @param userQueriesParam A {@code Role}s associated {@code RoleToUserQuery}s.
-	 *
-	 * @see UserQuery
-	 */
-	public void setRoleToUserQueries(List<RoleToUserQuery> userQueriesParam) {
-		this.roleToUserQueries = userQueriesParam;
 	}
 
 	/**

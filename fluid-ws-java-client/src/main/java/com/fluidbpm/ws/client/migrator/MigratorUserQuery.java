@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.migrator;
 
 import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
@@ -27,9 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Migration class for 3rd party related migrations.
- *
- * @see ThirdPartyLibrary
+ * Migration class for user query related migrations.
+ * @see UserQuery
+ * @see UserQueryClient
  */
 public class MigratorUserQuery {
 
@@ -47,9 +46,7 @@ public class MigratorUserQuery {
         private String userQueryName;
     }
 
-    /**
-     * Migrate a third party library.
-     *
+    /**Migrate a user query.
      * @param uqc {@code UserQueryClient}
      * @param opts {@code OptMigrateUserQuery}
      */
@@ -73,11 +70,9 @@ public class MigratorUserQuery {
         }
     }
 
-    /**
-     * Remove a workflow.
-     *
+    /**Remove a user query.
      * @param uqc {@code UserQueryClient}
-     * @param opts {@code MigrateOptRemoveThirdPartLib}
+     * @param opts {@code MigrateOptRemoveUserQuery}
      */
     public static void removeUserQuery(
             UserQueryClient uqc, MigrateOptRemoveUserQuery opts

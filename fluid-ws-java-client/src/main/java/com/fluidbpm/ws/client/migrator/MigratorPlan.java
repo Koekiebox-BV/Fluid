@@ -22,6 +22,7 @@ import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepRuleClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
+import com.fluidbpm.ws.client.v1.role.RoleClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import lombok.Builder;
 
@@ -41,6 +42,7 @@ public class MigratorPlan {
         private MigratorFlow.MigrateOptRemoveFlow[] flows;
         private MigratorThirdPartyLib.MigrateOptRemoveThirdPartLib[] thirdPartyLibs;
         private MigratorUserQuery.MigrateOptRemoveUserQuery[] userQueries;
+        private MigratorRoleAndPermissions.MigrateOptRemoveRole[] roles;
     }
 
     @Builder
@@ -51,6 +53,7 @@ public class MigratorPlan {
         private MigratorThirdPartyLib.MigrateOptThirdPartLib[] thirdPartyLibs;
         private MigratorFlow.MigrateOptFlow[] flows;
         private MigratorUserQuery.MigrateOptUserQuery[] userQueries;
+        private MigratorRoleAndPermissions.MigrateOptRole[] roles;
     }
 
     /**
@@ -72,7 +75,8 @@ public class MigratorPlan {
                 FlowClient fc = new FlowClient(url, serviceTicket);
                 FlowStepClient fsc = new FlowStepClient(url, serviceTicket);
                 FlowStepRuleClient fsrc = new FlowStepRuleClient(url, serviceTicket);
-                UserQueryClient uqc = new UserQueryClient(url, serviceTicket)
+                UserQueryClient uqc = new UserQueryClient(url, serviceTicket);
+                RoleClient rc = new RoleClient(url, serviceTicket)
         ) {
             // 1. Migrate non-table fields:
             if (migratePlan.formFieldsNonTable != null) Arrays.stream(migratePlan.formFieldsNonTable).forEach(itm -> {
@@ -129,6 +133,11 @@ public class MigratorPlan {
             if (migratePlan.flows != null) Arrays.stream(migratePlan.flows).forEach(itm -> {
                 MigratorFlow.migrateFlow(fc, fsc, fsrc, itm);
             });
+
+            // 7. Migrate roles and permissions:
+            if (migratePlan.roles != null) Arrays.stream(migratePlan.roles).forEach(itm -> {
+                MigratorRoleAndPermissions.migrateRole(rc, itm);
+            });
         }
     }
 
@@ -149,7 +158,8 @@ public class MigratorPlan {
                 FormFieldClient ffc = new FormFieldClient(url, serviceTicket);
                 FormDefinitionClient fdc = new FormDefinitionClient(url, serviceTicket);
                 FlowClient fc = new FlowClient(url, serviceTicket);
-                UserQueryClient uqc = new UserQueryClient(url, serviceTicket)
+                UserQueryClient uqc = new UserQueryClient(url, serviceTicket);
+                RoleClient rc = new RoleClient(url, serviceTicket)
         ) {
             if (removePlan.formDefs != null) Arrays.stream(removePlan.formDefs).forEach(itm -> {
                 MigratorForm.removeFormDefinition(fdc, itm);
@@ -168,6 +178,9 @@ public class MigratorPlan {
             });
             if (removePlan.thirdPartyLibs != null) Arrays.stream(removePlan.thirdPartyLibs).forEach(itm -> {
                 MigratorThirdPartyLib.removeLibrary(cc, itm);
+            });
+            if (removePlan.roles != null) Arrays.stream(removePlan.roles).forEach(itm -> {
+                MigratorRoleAndPermissions.removeRole(rc, itm);
             });
         }
     }
