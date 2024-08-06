@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.util.sql.syntax;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -116,20 +118,14 @@ public interface ISyntax {
 		 * Checks whether stored procedure is
 		 * part of the Fluid Stored Procedure mapping.
 		 *
-		 * @param aliasParam Stored Procedure.
+		 * @param alias Stored Procedure.
 		 * @return Whether stored procedure is part of {@code this} mapping.
 		 */
-		public static boolean isStoredProcedureMapping(String aliasParam) {
-			if (aliasParam == null || aliasParam.trim().isEmpty()) {
-				return false;
+		public static boolean isStoredProcedureMapping(String alias) {
+			if (UtilGlobal.isBlank(alias)) return false;
+			for (String aliasIter :  allAliases()) {
+				if (aliasIter.equals(alias)) return true;
 			}
-
-			for (String alias :  allAliases()) {
-				if (alias.equals(aliasParam)) {
-					return true;
-				}
-			}
-
 			return false;
 		}
 
@@ -164,44 +160,44 @@ public interface ISyntax {
 		/**
 		 * Gets the parameter count for Stored Procedure {@code aliasParam}.
 		 *
-		 * @param aliasParam The Stored Procedure.
+		 * @param alias The Stored Procedure.
 		 *
 		 * @return Number of parameters for Stored Procedure {@code aliasParam}.
 		 */
-		public static int getParamCountForAlias(String aliasParam) {
-			if (Form.GetFormContainersTableFieldFormContainers.equals(aliasParam)) {//Forms...
+		public static int getParamCountForAlias(String alias) {
+			if (Form.GetFormContainersTableFieldFormContainers.equals(alias)) {//Forms...
 				return 1;
-			} else if (Form.GetFormContainersChildFormContainers.equals(aliasParam)) {
+			} else if (Form.GetFormContainersChildFormContainers.equals(alias)) {
 				return 1;
-			} else if (Form.GetFormContainersChildFormContainersWithStates.equals(aliasParam)) {
+			} else if (Form.GetFormContainersChildFormContainersWithStates.equals(alias)) {
 				return 1;
-			} else if (Form.GetFormContainersParentFormContainer.equals(aliasParam)) {
+			} else if (Form.GetFormContainersParentFormContainer.equals(alias)) {
 				return 1;
-			} else if (Form.GetFormContainerInfo.equals(aliasParam)) {
+			} else if (Form.GetFormContainerInfo.equals(alias)) {
 				return 1;
-			} else if (Field.GetFormFieldsForFormContainer.equals(aliasParam)) {//Fields...
+			} else if (Field.GetFormFieldsForFormContainer.equals(alias)) {//Fields...
 				return 1;
-			} else if (Field.GetFormFieldsForFormDefinition.equals(aliasParam)) {
+			} else if (Field.GetFormFieldsForFormDefinition.equals(alias)) {
 				return 1;
-			} else if (Field.GetFormDefinitionForFormContainer.equals(aliasParam)) {//Form Definition by Container...
+			} else if (Field.GetFormDefinitionForFormContainer.equals(alias)) {//Form Definition by Container...
 				return 1;
-			} else if (Field.GetFormFieldValue_1_Text.equals(aliasParam)) {//Specific Values...
+			} else if (Field.GetFormFieldValue_1_Text.equals(alias)) {//Specific Values...
 				return 3;
-			} else if (Field.GetFormFieldValue_2_TrueFalse.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_2_TrueFalse.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldValue_3_ParagraphText.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_3_ParagraphText.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldValue_4_MultiChoice.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_4_MultiChoice.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldMultipleValue_4_MultiChoice.equals(aliasParam)) {
+			} else if (Field.GetFormFieldMultipleValue_4_MultiChoice.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldValue_5_DateTime.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_5_DateTime.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldValue_6_Decimal.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_6_Decimal.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldValue_7_TableField.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_7_TableField.equals(alias)) {
 				return 3;
-			} else if (Field.GetFormFieldValue_8_TextEncrypted.equals(aliasParam)) {
+			} else if (Field.GetFormFieldValue_8_TextEncrypted.equals(alias)) {
 				return 3;
 			}
 

@@ -15,13 +15,13 @@
 
 package com.fluidbpm.program.api.util.sql;
 
-import java.io.Closeable;
-import java.sql.*;
-
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
+
+import java.io.Closeable;
+import java.sql.*;
 
 /**
  * Base class used for SQL Type operations in Fluid.
@@ -41,10 +41,12 @@ public abstract class ABaseSQLUtil extends ABaseUtil implements Closeable {
 	/**
 	 * The type of SQL Database engine.
 	 */
-	public static enum SQLServerType {
+	public enum SQLServerType {
 		Unknown(UtilGlobal.EMPTY),
 		MySQL("mysql"),
-		MicrosoftSQL("microsoft sql server");
+		MicrosoftSQL("microsoft sql server"),
+		PostgreSQL("postgresql"),
+		;
 
 		private String productName;
 
@@ -65,18 +67,12 @@ public abstract class ABaseSQLUtil extends ABaseUtil implements Closeable {
 		 * @return {@code enum} for SQL Type.
 		 */
 		public static SQLServerType getSQLTypeFromProductName(String productNameParam) {
-			if (productNameParam == null || productNameParam.trim().isEmpty()) {
-				return SQLServerType.Unknown;
-			}
+			if (productNameParam == null || productNameParam.trim().isEmpty()) return SQLServerType.Unknown;
 
 			String paramLower = productNameParam.toLowerCase();
-
 			for (SQLServerType sqlType : SQLServerType.values()) {
-				if (sqlType.productName.equals(paramLower)) {
-					return sqlType;
-				}
+				if (sqlType.productName.equals(paramLower)) return sqlType;
 			}
-
 			return SQLServerType.Unknown;
 		}
 	}
@@ -98,7 +94,8 @@ public abstract class ABaseSQLUtil extends ABaseUtil implements Closeable {
 	 * @param cacheUtilParam The Cache utility for use.
 	 */
 	public ABaseSQLUtil(
-			Connection connectionParam, CacheUtil cacheUtilParam) {
+			Connection connectionParam, CacheUtil cacheUtilParam
+	) {
 		super(cacheUtilParam);
 		this.connection = connectionParam;
 	}
@@ -115,15 +112,9 @@ public abstract class ABaseSQLUtil extends ABaseUtil implements Closeable {
 	 * Close the SQL Connection.
 	 */
 	public void closeConnection() {
-		if (this.connection == null) {
-			return;
-		}
-
+		if (this.connection == null) return;
 		try {
-			if (this.connection.isClosed()) {
-				return;
-			}
-
+			if (this.connection.isClosed()) return;
 			this.connection.close();
 		} catch (SQLException sqlExcept) {
 			throw new FluidSQLException(sqlExcept);
@@ -137,12 +128,9 @@ public abstract class ABaseSQLUtil extends ABaseUtil implements Closeable {
 	 */
 	public SQLServerType getSQLTypeFromConnection() {
 		try {
-			if (this.databaseMetaData == null){
-				this.databaseMetaData = this.getConnection().getMetaData();
-			}
+			if (this.databaseMetaData == null) this.databaseMetaData = this.getConnection().getMetaData();
 
-			return SQLServerType.getSQLTypeFromProductName(
-					this.databaseMetaData.getDatabaseProductName());
+			return SQLServerType.getSQLTypeFromProductName(this.databaseMetaData.getDatabaseProductName());
 		} catch (SQLException sqlExcept) {
 			//Unable to retrieve the product name.
 			throw new FluidSQLException(sqlExcept);

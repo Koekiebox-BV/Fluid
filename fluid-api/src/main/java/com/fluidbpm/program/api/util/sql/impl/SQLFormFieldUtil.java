@@ -150,7 +150,8 @@ public class SQLFormFieldUtil extends ABaseSQLUtil {
 
 			ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
 					this.getSQLTypeFromConnection(),
-					ISyntax.ProcedureMapping.Field.GetFormFieldsForFormContainer);
+					ISyntax.ProcedureMapping.Field.GetFormFieldsForFormContainer
+			);
 
 			preparedStatement = this.getConnection().prepareStatement(syntax.getPreparedStatement());
 

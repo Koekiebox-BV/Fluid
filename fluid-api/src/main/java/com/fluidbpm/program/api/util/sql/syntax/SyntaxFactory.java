@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.exception.FluidSQLException;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluidbpm.program.api.util.sql.syntax.impl.StoredProcedureSyntax;
+import com.fluidbpm.program.api.util.sql.syntax.impl.StoredProcedureSyntaxPostgreSQL;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -56,84 +57,87 @@ public class SyntaxFactory {
 	 * @return single instance of {@code this}.
 	 */
 	public static SyntaxFactory getInstance() {
-		if (SyntaxFactory.syntaxFactory == null) {
-			SyntaxFactory.syntaxFactory = new SyntaxFactory();
-		}
-
+		if (SyntaxFactory.syntaxFactory == null) SyntaxFactory.syntaxFactory = new SyntaxFactory();
 		return SyntaxFactory.syntaxFactory;
 	}
 
 	/**
 	 * Returns the {@code ISyntax} from the {@code sqlTypeParam} and {@code aliasParam}.
 	 *
-	 * @param sqlTypeParam The type of SQL DB engine.
-	 * @param aliasParam The alias or stored procedure.
+	 * @param sqlType The type of SQL DB engine.
+	 * @param alias The alias or stored procedure.
 	 *
 	 * @return implementation of {@code ISyntax}.
 	 *
 	 * @see ISyntax
 	 * @see com.fluidbpm.program.api.util.sql.ABaseSQLUtil.SQLServerType
 	 */
-	public ISyntax getSyntaxFor(
-			ABaseSQLUtil.SQLServerType sqlTypeParam,
-			String aliasParam) {
-
-		if (ISyntax.ProcedureMapping.isStoredProcedureMapping(aliasParam)) {
-			return new StoredProcedureSyntax(
-					aliasParam, ISyntax.ProcedureMapping.getParamCountForAlias(aliasParam));
+	public ISyntax getSyntaxFor(ABaseSQLUtil.SQLServerType sqlType, String alias) {
+		if (ISyntax.ProcedureMapping.isStoredProcedureMapping(alias)) {
+			if (sqlType == ABaseSQLUtil.SQLServerType.PostgreSQL) {
+				return new StoredProcedureSyntaxPostgreSQL(
+						alias, ISyntax.ProcedureMapping.getParamCountForAlias(alias)
+				);
+			} else {
+				return new StoredProcedureSyntax(
+						alias, ISyntax.ProcedureMapping.getParamCountForAlias(alias)
+				);
+			}
 		}
 
-		throw new FluidSQLException(new SQLException("Unable to find Syntax for alias '"+
-				aliasParam+"' and SQL Type '"+sqlTypeParam+"'."));
+		throw new FluidSQLException(new SQLException(
+				String.format(
+						"Unable to find Syntax for alias '%s' and SQL Type '%s'.", alias, sqlType
+				)));
 	}
 
 	/**
 	 * Returns the {@code ISyntax} from the {@code sqlTypeParam} and {@code formFieldMappingParam}.
 	 *
-	 * @param sqlTypeParam The type of SQL DB engine.
-	 * @param formFieldMappingParam The Form Field mapping.
+	 * @param sqlType The type of SQL DB engine.
+	 * @param formFieldMapping The Form Field mapping.
 	 * @return implementation of {@code ISyntax}.
 	 *
 	 * @see ISyntax
 	 * @see com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil.FormFieldMapping
 	 */
 	public ISyntax getFieldValueSyntaxFor(
-		ABaseSQLUtil.SQLServerType sqlTypeParam,
-		SQLFormFieldUtil.FormFieldMapping formFieldMappingParam
+		ABaseSQLUtil.SQLServerType sqlType,
+		SQLFormFieldUtil.FormFieldMapping formFieldMapping
 	) {
-		Long dataType = formFieldMappingParam.dataType;
+		Long dataType = formFieldMapping.dataType;
 		if (dataType == null) return null;
 
 		switch (dataType.intValue()) {
 			case UtilGlobal.FieldTypeId._1_TEXT:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_1_Text);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_1_Text);
 			case UtilGlobal.FieldTypeId._2_TRUE_FALSE:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_2_TrueFalse);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_2_TrueFalse);
 			case UtilGlobal.FieldTypeId._3_PARAGRAPH_TEXT:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_3_ParagraphText);
 			case UtilGlobal.FieldTypeId._4_MULTI_CHOICE:
-				if (this.isPlain(formFieldMappingParam.metaData)) {
+				if (this.isPlain(formFieldMapping.metaData)) {
 					return this.getSyntaxFor(
-							sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_4_MultiChoice);
-				} else if (this.isSelectMany(formFieldMappingParam.metaData)) {
+							sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_4_MultiChoice);
+				} else if (this.isSelectMany(formFieldMapping.metaData)) {
 					return this.getSyntaxFor(
-							sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldMultipleValue_4_MultiChoice);
+							sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldMultipleValue_4_MultiChoice);
 				} else {
 					throw new FluidSQLException(
 							new SQLException("Data Type '"+
 									dataType
 									+"' does not support '"+
-									formFieldMappingParam.metaData+"'."));
+									formFieldMapping.metaData+"'."));
 				}
 
 			case UtilGlobal.FieldTypeId._5_DATE_TIME:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_5_DateTime);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_5_DateTime);
 			case UtilGlobal.FieldTypeId._6_DECIMAL:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_6_Decimal);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_6_Decimal);
 			case UtilGlobal.FieldTypeId._7_TABLE_FIELD:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField);
 			case UtilGlobal.FieldTypeId._8_TEXT_ENCRYPTED:
-				return this.getSyntaxFor(sqlTypeParam, ISyntax.ProcedureMapping.Field.GetFormFieldValue_8_TextEncrypted);
+				return this.getSyntaxFor(sqlType, ISyntax.ProcedureMapping.Field.GetFormFieldValue_8_TextEncrypted);
 			case UtilGlobal.FieldTypeId._9_LABEL:
 				return null;
 			default:

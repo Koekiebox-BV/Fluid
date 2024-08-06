@@ -1,7 +1,7 @@
 /*
  * Koekiebox CONFIDENTIAL
  *
- * [2012] - [2017] Koekiebox (Pty) Ltd
+ * [2012] - [2024] Koekiebox (Pty) Ltd
  * All Rights Reserved.
  *
  * NOTICE: All information contained herein is, and remains the property
@@ -15,18 +15,18 @@
 
 package com.fluidbpm.program.api.util.sql.syntax.impl;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 
 /**
- * Syntax implementation for Stored Procedures.
+ * Syntax implementation for PostgreSQL Stored Procedures.
  *
  * @author jasonbruwer
- * @since v1.0
+ * @since v1.13
  *
  * @see ISyntax
  */
-public class StoredProcedureSyntax implements ISyntax {
-	private String returnVal = null;
+public class StoredProcedureSyntaxPostgreSQL extends StoredProcedureSyntax {
 
 	/**
 	 * Sets the Stored Procedure name and number of parameters.
@@ -34,19 +34,8 @@ public class StoredProcedureSyntax implements ISyntax {
 	 * @param storedProcedureName The stored procedure.
 	 * @param numberOfParams The number of parameters.
 	 */
-	public StoredProcedureSyntax(String storedProcedureName, int numberOfParams) {
-		super();
-		String assignment = String.format("{CALL %s(", storedProcedureName);
-
-		if (numberOfParams > 0) {
-			for (int counter = 0;counter < numberOfParams;counter++) {
-				assignment += "?";
-				assignment += ",";
-			}
-			assignment = (assignment.substring(0,assignment.length() -1));
-		}
-		assignment += ")}";
-		this.returnVal = assignment;
+	public StoredProcedureSyntaxPostgreSQL(String storedProcedureName, int numberOfParams) {
+		super(storedProcedureName, numberOfParams);
 	}
 
 	/**
@@ -58,6 +47,8 @@ public class StoredProcedureSyntax implements ISyntax {
 	 */
 	@Override
 	public String getPreparedStatement() {
-		return this.returnVal;
+		String returnVal = super.getPreparedStatement();
+		if (UtilGlobal.isNotBlank(returnVal)) return returnVal.toUpperCase();
+		return returnVal;
 	}
 }
