@@ -146,8 +146,9 @@ public class TestSendToFlowWebSocketClient extends ABaseTestFlowStep {
             fsrClient.createFlowStepExitRule(
                     new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Gender TO '[%s]'", "Male"))
             );
+            int ageValue = (int)(Math.random()* 90);
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", (int)(Math.random()* 90)))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", ageValue))
             );
             fsrClient.createFlowStepExitRule(
                     new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Is Director TO '%s'", "true"))
@@ -260,8 +261,8 @@ public class TestSendToFlowWebSocketClient extends ABaseTestFlowStep {
                 TestCase.assertEquals(employeeSecret, form.getFieldValueAsString("JUnit Employee Secret"));
                 TestCase.assertEquals("Male", form.getFieldValueAsMultiChoice("JUnit Employee Gender").getSelectedMultiChoice());
                 TestCase.assertEquals(Boolean.TRUE, form.getFieldValueAsBoolean("JUnit Employee Is Director"));
-                TestCase.assertNotNull(form.getFieldValueAsString("JUnit Employee Bio"));
-                TestCase.assertNotNull(form.getFieldValueAsDouble("JUnit Employee Age"));
+                TestCase.assertNotNull("'JUnit Employee Bio' field value is null!", form.getFieldValueAsString("JUnit Employee Bio"));
+                TestCase.assertNotNull("'JUnit Employee Age' field value is null! Expected: "+ageValue, form.getFieldValueAsDouble("JUnit Employee Age"));
 
                 long timeTakenMillis = (end.getTime() - start.getTime());
                 long avgTimePerRule = (timeTakenMillis / ruleIndex);
