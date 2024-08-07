@@ -61,38 +61,35 @@ public class MigratorForm {
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
 
-            Form tablFieldForm = fdc.getFormDefinitionByName(opts.formType);
-            List<Field> existingFields = tablFieldForm.getFormFields();
-            if (existingFields != null) {
-                AtomicBoolean updateRequired = new AtomicBoolean(false);
-                List<Field> toPushToServer = new ArrayList<>(existingFields);
+            Form existingForm = fdc.getFormDefinitionByName(opts.formType);
+            List<Field> existingFields = existingForm.getFormFields();
 
-                existingFields.stream()
-                        .map(Field::getFieldName)
-                        .filter(existing -> {
-                            if (existing == null) return false;
-                            return formFields.stream()
-                                    .filter(itm -> existing.equalsIgnoreCase(itm.getFieldName()))
-                                    .findFirst()
-                                    .orElse(null) == null;
-                        }).forEach(nonExist -> {
-                            toPushToServer.add(new Field(nonExist));
-                            updateRequired.set(true);
-                        });
+            if (existingFields == null) return;
 
-                if (updateRequired.get()) {
-                    form.setFormFields(toPushToServer);
+            AtomicBoolean updateRequired = new AtomicBoolean(false);
+            List<Field> toPushToServer = new ArrayList<>(existingFields);
 
-                    // Push new fields to Fluid.
-                    fdc.updateFormDefinition(form);
-                }
+            existingFields.stream()
+                    .map(Field::getFieldName)
+                    .filter(existing -> {
+                        if (existing == null) return false;
+                        return formFields.stream()
+                                .filter(itm -> existing.equalsIgnoreCase(itm.getFieldName()))
+                                .findFirst()
+                                .orElse(null) == null;
+                    }).forEach(nonExist -> {
+                        toPushToServer.add(new Field(nonExist));
+                        updateRequired.set(true);
+                    });
+            if (updateRequired.get()) {
+                // Push new fields:
+                form.setFormFields(toPushToServer);
+                fdc.updateFormDefinition(form);
             }
         }
     }
 
-    /**
-     * Remove a form definition.
-     *
+    /**Remove a form definition.
      * @param fdc {@code FormDefinitionClient}
      * @param opts {@code MigrateOptRemoveForm}
      */

@@ -63,11 +63,7 @@ public class MigratorPlan {
      * @param serviceTicket The configuration session service ticket.
      * @param migratePlan The plan to migrate.
      */
-    public static void migrate(
-            String url,
-            String serviceTicket,
-            MigrateOptPlan migratePlan
-    ) {
+    public static void migrate(String url, String serviceTicket, MigrateOptPlan migratePlan) {
         try (
                 ConfigurationClient cc = new ConfigurationClient(url, serviceTicket);
                 FormFieldClient ffc = new FormFieldClient(url, serviceTicket);
@@ -161,6 +157,9 @@ public class MigratorPlan {
                 UserQueryClient uqc = new UserQueryClient(url, serviceTicket);
                 RoleClient rc = new RoleClient(url, serviceTicket)
         ) {
+            if (removePlan.roles != null) Arrays.stream(removePlan.roles).forEach(itm -> {
+                MigratorRoleAndPermissions.removeRole(rc, itm);
+            });
             if (removePlan.formDefs != null) Arrays.stream(removePlan.formDefs).forEach(itm -> {
                 MigratorForm.removeFormDefinition(fdc, itm);
             });
@@ -178,9 +177,6 @@ public class MigratorPlan {
             });
             if (removePlan.thirdPartyLibs != null) Arrays.stream(removePlan.thirdPartyLibs).forEach(itm -> {
                 MigratorThirdPartyLib.removeLibrary(cc, itm);
-            });
-            if (removePlan.roles != null) Arrays.stream(removePlan.roles).forEach(itm -> {
-                MigratorRoleAndPermissions.removeRole(rc, itm);
             });
         }
     }

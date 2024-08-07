@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -45,217 +46,216 @@ import java.util.List;
 @Getter
 @Setter
 public class UserQuery extends ABaseListing<FluidItem> {
-	public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
 
-	private String name;
-	private String description;
+    private String name;
+    private String description;
 
-	private List<String> rules;
+    private List<String> rules;
 
-	private List<Field> inputs;
+    private List<Field> inputs;
 
-	private Date dateCreated;
-	private Date dateLastUpdated;
+    private Date dateCreated;
+    private Date dateLastUpdated;
 
-	private static final String LEFT_SQ_BRACKET = "[";
-	private static final String RIGHT_SQ_BRACKET = "]";
-	private static final String INPUT_VALUE = "INPUT_VALUE";
+    private static final String LEFT_SQ_BRACKET = "[";
+    private static final String RIGHT_SQ_BRACKET = "]";
+    private static final String INPUT_VALUE = "INPUT_VALUE";
 
-	/**
-	 * The JSON mapping for the {@code UserQuery} object.
-	 */
-	public static class JSONMapping {
-		public static final String NAME = "name";
-		public static final String DESCRIPTION = "description";
-		public static final String INPUTS = "inputs";
-		public static final String RULES = "rules";
+    /**
+     * The JSON mapping for the {@code UserQuery} object.
+     */
+    public static class JSONMapping {
+        public static final String NAME = "name";
+        public static final String DESCRIPTION = "description";
+        public static final String INPUTS = "inputs";
+        public static final String RULES = "rules";
 
-		public static final String DATE_CREATED = "dateCreated";
-		public static final String DATE_LAST_UPDATED = "dateLastUpdated";
-	}
+        public static final String DATE_CREATED = "dateCreated";
+        public static final String DATE_LAST_UPDATED = "dateLastUpdated";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public UserQuery() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public UserQuery() {
+        super();
+    }
 
-	/**
-	 * Sets the Id associated with a 'User Query'.
-	 *
-	 * @param userQueryId UserQuery Id.
-	 */
-	public UserQuery(Long userQueryId) {
-		super();
-		this.setId(userQueryId);
-	}
+    /**
+     * Sets the Id associated with a 'User Query'.
+     *
+     * @param userQueryId UserQuery Id.
+     */
+    public UserQuery(Long userQueryId) {
+        super();
+        this.setId(userQueryId);
+    }
 
-	/**
-	 * Sets the Id and name associated with a 'User Query'.
-	 *
-	 * @param userQueryId UserQuery Id.
-	 * @param name UserQuery Name.
-	 */
-	public UserQuery(Long userQueryId, String name) {
-		super();
-		this.setId(userQueryId);
-		this.setName(name);
-	}
+    /**
+     * Sets the Id and name associated with a 'User Query'.
+     *
+     * @param userQueryId UserQuery Id.
+     * @param name UserQuery Name.
+     */
+    public UserQuery(Long userQueryId, String name) {
+        super();
+        this.setId(userQueryId);
+        this.setName(name);
+    }
 
-	/**
-	 * Easy access to execute user query.
-	 * @param name Name of query to execute.
-	 * @param inputs Input values for query.
-	 */
-	public UserQuery(String name, List<Field> inputs) {
-		super();
-		this.setName(name);
-		this.setInputs(inputs);
-	}
+    /**
+     * Easy access to execute user query.
+     * @param name Name of query to execute.
+     * @param inputs Input values for query.
+     */
+    public UserQuery(String name, List<Field> inputs) {
+        super();
+        this.setName(name);
+        this.setInputs(inputs);
+    }
 
-	/**
-	 * Easy access to execute user query.
-	 * @param name Name of query to execute.
-	 * @param inputs Input values for query.
-	 */
-	public UserQuery(String name, Field ... inputs) {
-		super();
-		this.setName(name);
-		List<Field> inputsList = new ArrayList<>();
-		if (inputs != null && inputs.length > 0) {
-			for (Field toAdd : inputs) inputsList.add(toAdd);
-		}
-		this.setInputs(inputsList);
-	}
+    /**
+     * Easy access to execute user query.
+     * @param name Name of query to execute.
+     * @param inputs Input values for query.
+     */
+    public UserQuery(String name, Field ... inputs) {
+        super();
+        this.setName(name);
+        List<Field> inputsList = new ArrayList<>();
+        if (inputs != null) inputsList.addAll(Arrays.asList(inputs));
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public UserQuery(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) return;
+        this.setInputs(inputsList);
+    }
 
-		//Name...
-		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-			this.setName(this.jsonObject.getString(JSONMapping.NAME));
-		}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public UserQuery(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-		//Description...
-		if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-			this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
-		}
+        //Name...
+        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
+            this.setName(this.jsonObject.getString(JSONMapping.NAME));
+        }
 
-		//Inputs...
-		if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
-			JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
-			List<Field> assFields = new ArrayList();
-			for (int index = 0;index < fieldsArr.length();index++) {
-				assFields.add(new Field(fieldsArr.getJSONObject(index)));
-			}
-			this.setInputs(assFields);
-		}
+        //Description...
+        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
+            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
+        }
 
-		//Rules...
-		if (!this.jsonObject.isNull(JSONMapping.RULES)) {
-			JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
-			List<String> rules = new ArrayList();
-			for (int index = 0;index < rulesArr.length();index++) {
-				rules.add(rulesArr.getString(index));
-			}
-			this.setRules(rules);
-		}
+        //Inputs...
+        if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
+            List<Field> assFields = new ArrayList();
+            for (int index = 0;index < fieldsArr.length();index++) {
+                assFields.add(new Field(fieldsArr.getJSONObject(index)));
+            }
+            this.setInputs(assFields);
+        }
 
-		//Date Created...
-		this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
+        //Rules...
+        if (!this.jsonObject.isNull(JSONMapping.RULES)) {
+            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
+            List<String> rules = new ArrayList();
+            for (int index = 0;index < rulesArr.length();index++) {
+                rules.add(rulesArr.getString(index));
+            }
+            this.setRules(rules);
+        }
 
-		//Date Last Updated...
-		this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
-	}
+        //Date Created...
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code UserQuery}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
+        //Date Last Updated...
+        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
+    }
 
-		JSONObject returnVal = super.toJsonObject();
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code UserQuery}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
 
-		//Name...
-		if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
+        JSONObject returnVal = super.toJsonObject();
 
-		//Description...
-		if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
+        //Name...
+        if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
 
-		//Inputs...
-		if (this.getInputs() != null) {
-			JSONArray jsonArray = new JSONArray();
-			for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
-			returnVal.put(JSONMapping.INPUTS, jsonArray);
-		}
+        //Description...
+        if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
 
-		//Rules...
-		if (this.getRules() != null) {
-			JSONArray jsonArray = new JSONArray();
-			for (String toAdd : this.getRules()) jsonArray.put(toAdd);
-			returnVal.put(JSONMapping.RULES, jsonArray);
-		}
+        //Inputs...
+        if (this.getInputs() != null) {
+            JSONArray jsonArray = new JSONArray();
+            for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
+            returnVal.put(JSONMapping.INPUTS, jsonArray);
+        }
 
-		//Date Created...
-		if (this.getDateCreated() != null)
-			returnVal.put(JSONMapping.DATE_CREATED,
-					this.getDateAsObjectFromJson(this.getDateCreated()));
+        //Rules...
+        if (this.getRules() != null) {
+            JSONArray jsonArray = new JSONArray();
+            for (String toAdd : this.getRules()) jsonArray.put(toAdd);
+            returnVal.put(JSONMapping.RULES, jsonArray);
+        }
 
-		//Date Last Updated...
-		if (this.getDateLastUpdated() != null)
-			returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-					this.getDateAsObjectFromJson(this.getDateLastUpdated()));
+        //Date Created...
+        if (this.getDateCreated() != null)
+            returnVal.put(JSONMapping.DATE_CREATED,
+                    this.getDateAsObjectFromJson(this.getDateCreated()));
 
-		return returnVal;
-	}
+        //Date Last Updated...
+        if (this.getDateLastUpdated() != null)
+            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsObjectFromJson(this.getDateLastUpdated()));
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code T}.
-	 * @return new instance of {@code FluidItem}.
-	 */
-	@Override
-	@XmlTransient
-	@JsonIgnore
-	public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new FluidItem(jsonObjectParam);
-	}
+        return returnVal;
+    }
 
-	/**
-	 * Extract the field names where the value of the rule is of type {@code INPUT_VALUE}.
-	 * @return List of {@code FormField} names.
-	 */
-	@XmlTransient
-	@JsonIgnore
-	public List<String> getRuleFieldNamesWhereTypeInput() {
-		if (this.getRules() == null || this.getRules().isEmpty()) return new ArrayList<>();
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code T}.
+     * @return new instance of {@code FluidItem}.
+     */
+    @Override
+    @XmlTransient
+    @JsonIgnore
+    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new FluidItem(jsonObjectParam);
+    }
 
-		List<String> formFieldNamesWhereValueTypeInput = new ArrayList<>();
+    /**
+     * Extract the field names where the value of the rule is of type {@code INPUT_VALUE}.
+     * @return List of {@code FormField} names.
+     */
+    @XmlTransient
+    @JsonIgnore
+    public List<String> getRuleFieldNamesWhereTypeInput() {
+        if (this.getRules() == null || this.getRules().isEmpty()) return new ArrayList<>();
 
-		for (String rule : this.getRules()) {
-			int firstIndexOfBracket = rule.indexOf(LEFT_SQ_BRACKET);
-			int lastIndexOfBracket =rule.indexOf(RIGHT_SQ_BRACKET);
+        List<String> formFieldNamesWhereValueTypeInput = new ArrayList<>();
 
-			String formFieldName = rule.substring(firstIndexOfBracket,lastIndexOfBracket+1);
-			String[] wordsInRule = rule.split(UtilGlobal.REG_EX_SPACE);
-			if (wordsInRule == null || wordsInRule.length == 0) continue;
+        for (String rule : this.getRules()) {
+            int firstIndexOfBracket = rule.indexOf(LEFT_SQ_BRACKET);
+            int lastIndexOfBracket =rule.indexOf(RIGHT_SQ_BRACKET);
 
-			String lastVal = wordsInRule[wordsInRule.length - 1].toUpperCase().trim();
-			if (INPUT_VALUE.equals(lastVal)) formFieldNamesWhereValueTypeInput.add(formFieldName);
-		}
-		return formFieldNamesWhereValueTypeInput;
-	}
+            String formFieldName = rule.substring(firstIndexOfBracket,lastIndexOfBracket+1);
+            String[] wordsInRule = rule.split(UtilGlobal.REG_EX_SPACE);
+            if (wordsInRule == null || wordsInRule.length == 0) continue;
+
+            String lastVal = wordsInRule[wordsInRule.length - 1].toUpperCase().trim();
+            if (INPUT_VALUE.equals(lastVal)) formFieldNamesWhereValueTypeInput.add(formFieldName);
+        }
+        return formFieldNamesWhereValueTypeInput;
+    }
 }
