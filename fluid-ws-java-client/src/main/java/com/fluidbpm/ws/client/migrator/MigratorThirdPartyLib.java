@@ -23,6 +23,7 @@ import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.user.AES256Local;
 import com.google.common.io.BaseEncoding;
 import lombok.Builder;
+import lombok.Data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.util.List;
 public class MigratorThirdPartyLib {
 
     @Builder
+    @Data
     public static final class MigrateOptThirdPartLib {
         private String filename;
         private String description;

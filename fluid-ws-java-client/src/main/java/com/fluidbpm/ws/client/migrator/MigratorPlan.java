@@ -25,6 +25,7 @@ import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import com.fluidbpm.ws.client.v1.role.RoleClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.Arrays;
 
@@ -46,6 +47,7 @@ public class MigratorPlan {
     }
 
     @Builder
+    @Data
     public static final class MigrateOptPlan {
         private MigratorField.MigrateOptField[] formFieldsNonTable;
         private MigratorField.MigrateOptFieldTable[] formFieldsTable;

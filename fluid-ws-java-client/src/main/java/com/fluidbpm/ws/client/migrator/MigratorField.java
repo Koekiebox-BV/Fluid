@@ -23,6 +23,8 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +39,12 @@ import static com.fluidbpm.ws.client.migrator.MigratorForm.migrateFormDefinition
  */
 public class MigratorField {
     public static abstract class MigrateOptField {
-        
+        // Don nothing.
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldText extends MigrateOptField {
         private String fieldName;
         private String fieldDescription;
@@ -52,6 +56,7 @@ public class MigratorField {
     }
 
     @Builder
+    @Data
     public static class MigrateOptFieldMCBase {
         private String fieldName;
         private String fieldDescription;
@@ -60,16 +65,22 @@ public class MigratorField {
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldMultiChoicePlain extends MigrateOptField {
         private MigrateOptFieldMCBase baseInfo;
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldMultiChoiceSelectMany extends MigrateOptField {
         private MigrateOptFieldMCBase baseInfo;
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldDate extends MigrateOptField {
         private String fieldName;
         private String fieldDescription;
@@ -77,6 +88,8 @@ public class MigratorField {
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldDecimal extends MigrateOptField {
         private String fieldName;
         private String fieldDescription;
@@ -89,18 +102,23 @@ public class MigratorField {
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldLabel extends MigrateOptField {
         private String fieldName;
         private String fieldDescription;
     }
 
     @Builder
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static final class MigrateOptFieldTrueFalse extends MigrateOptField {
         private String fieldName;
         private String fieldDescription;
     }
 
     @Builder
+    @Data
     public static final class MigrateOptFieldTable {
         private String fieldName;
         private String formType;

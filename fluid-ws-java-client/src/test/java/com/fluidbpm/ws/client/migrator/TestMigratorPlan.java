@@ -223,6 +223,14 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                 .build();
 
         MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
+
+        plan.getRoles()[0].setAllowUpdate(true);
+        plan.getRoles()[0].setAdminPermissions(new String[] {
+                "edit_sys_forms",
+                "print_forms",
+                "execute_sql_util",
+                "logout"
+        });
         MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
     }
 

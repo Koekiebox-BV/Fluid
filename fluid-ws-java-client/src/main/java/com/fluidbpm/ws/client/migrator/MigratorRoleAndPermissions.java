@@ -24,6 +24,7 @@ import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.role.RoleClient;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 public class MigratorRoleAndPermissions {
     @Builder
+    @Data
     public static final class MigrateOptRole {
         private String roleName;
         private String roleDescription;
@@ -46,6 +48,7 @@ public class MigratorRoleAndPermissions {
     }
 
     @Builder
+    @Data
     public static final class MigrateOptRoleFormDef {
         private String[] canCreate;
         private String[] attachmentsCreateUpdate;
@@ -95,6 +98,7 @@ public class MigratorRoleAndPermissions {
     }
 
     @Builder
+    @Data
     public static final class MigrateOptRoleFormField {
         private String formDef;
         private String[] fieldsModifyAndView;
@@ -141,6 +145,7 @@ public class MigratorRoleAndPermissions {
     }
 
     @Builder
+    @Data
     public static final class MigrateOptRoleView {
         private String flow;
         private String step;
@@ -253,11 +258,15 @@ public class MigratorRoleAndPermissions {
 
             Role existing = rc.getRoleByName(opts.roleName);
 
+            existing.setDescription(opts.roleDescription);
             existing.setAdminPermissions(adminPermissions);
+            existing.setAdminPermissions(adminPermissions);
+            existing.setRoleToFormDefinitions(roleToFormDef);
+            existing.setRoleToFormFieldToFormDefinitions(formFields);
+            existing.setRoleToUserQueries(userQueries);
+            existing.setRoleToJobViews(jobViews);
 
-            //TODO overwrite with what is in the param.
-
-            //TODO rc.updateRole(existing);
+            rc.updateRole(existing);
         }
     }
 

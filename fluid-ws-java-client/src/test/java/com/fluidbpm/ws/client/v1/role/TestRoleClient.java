@@ -335,13 +335,11 @@ public class TestRoleClient extends ABaseLoggedInTestCase {
 				"RoleToUserQuery 'Id' not set.", firstRTUQ.getId());
 
 		//2. FETCH...
-		RoleListing roleListing = roleClient.getAllRoles();
+		List<Role> roles = roleClient.getAllRoles();
 
-		TestCase.assertNotNull(roleListing);
-		TestCase.assertTrue("Role listing must be greater than '0'.",
-				roleListing.getListingCount() > 0);
-		TestCase.assertNotNull("Role Listing must be set.",roleListing.getListing());
-		TestCase.assertNotNull("Role must be set.",roleListing.getListing().get(0));
+		TestCase.assertNotNull(roles);
+		TestCase.assertTrue("Role listing must be greater than '0'.", roles.size() > 0);
+		TestCase.assertNotNull("Role must be set.",roles.get(0));
 
 		//Get by Id
 		Role role = roleClient.getRoleById(roleToCreate.getId());
@@ -356,10 +354,8 @@ public class TestRoleClient extends ABaseLoggedInTestCase {
 		roleToUpdate.setRoleToFormFieldToFormDefinitions(new ArrayList<RoleToFormFieldToFormDefinition>());
 		roleToUpdate.setRoleToFormDefinitions(new ArrayList<RoleToFormDefinition>());
 		JobView secondJobView = jobViewListing.getListing().get(1);
-		roleToUpdate.setRoleToJobViews(TestStatics.toRoleToJobView(
-				firstJobView,secondJobView));
-		roleToUpdate.setRoleToUserQueries(TestStatics.toRoleToUserQuery(
-				userQueryFirst,userQuerySecond));
+		roleToUpdate.setRoleToJobViews(TestStatics.toRoleToJobView(firstJobView,secondJobView));
+		roleToUpdate.setRoleToUserQueries(TestStatics.toRoleToUserQuery(userQueryFirst,userQuerySecond));
 
 		roleToUpdate = roleClient.updateRole(roleToUpdate);
 

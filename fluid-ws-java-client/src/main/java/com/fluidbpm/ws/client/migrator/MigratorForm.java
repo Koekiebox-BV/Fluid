@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class MigratorForm {
     @Builder
+    @Data
     public static final class MigrateOptForm {
         private String formType;
         private String formDescription;

@@ -24,6 +24,7 @@ import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepRuleClient;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +40,12 @@ import java.util.stream.Stream;
  * @see com.fluidbpm.program.api.vo.flow.FlowStepRule
  */
 public class MigratorFlow {
-
     public enum StepType {
         Introduction, Exit, Assignment, MailCapture, SendMail, JavaProgram, ItemClone
     }
 
     @Builder
+    @Data
     public static final class MigrateOptFlow {
         private String flowName;
         private String flowDescription;
@@ -59,12 +60,7 @@ public class MigratorFlow {
     }
 
     @Builder
-    public static final class MigrateOptRemoveFlow {
-        private Long flowId;
-        private String flowName;
-    }
-
-    @Builder
+    @Data
     public static final class MigrateOptFlowStep {
         private String stepName;
         private String stepDescription;
@@ -75,6 +71,12 @@ public class MigratorFlow {
         private String[] flowRulesExit;
 
         private FlowStep.StepProperty[] properties;
+    }
+
+    @Builder
+    public static final class MigrateOptRemoveFlow {
+        private Long flowId;
+        private String flowName;
     }
 
     /**
