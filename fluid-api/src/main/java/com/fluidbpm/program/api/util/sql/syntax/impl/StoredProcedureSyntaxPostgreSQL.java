@@ -19,14 +19,15 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 
 /**
- * Syntax implementation for PostgreSQL Stored Procedures.
- *
+ * Syntax implementation for PostgreSQL Stored Procedures / Functions.
  * @author jasonbruwer
  * @since v1.13
  *
  * @see ISyntax
  */
 public class StoredProcedureSyntaxPostgreSQL extends StoredProcedureSyntax {
+	public static final String SP_CALL_TAG = "{call";
+	public static final String FUNC_SELECT = "SELECT * FROM ";
 
 	/**
 	 * Sets the Stored Procedure name and number of parameters.
@@ -48,7 +49,14 @@ public class StoredProcedureSyntaxPostgreSQL extends StoredProcedureSyntax {
 	@Override
 	public String getPreparedStatement() {
 		String returnVal = super.getPreparedStatement();
-		if (UtilGlobal.isNotBlank(returnVal)) return returnVal.toUpperCase();
+		if (UtilGlobal.isBlank(returnVal)) return returnVal;
+
+		if (returnVal.toLowerCase().startsWith(SP_CALL_TAG)) {
+			return String.format(
+					"%s%s", FUNC_SELECT,
+					returnVal.substring(SP_CALL_TAG.length(), returnVal.length() - 1)
+			);
+		}
 		return returnVal;
 	}
 }

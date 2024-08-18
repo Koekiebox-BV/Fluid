@@ -61,6 +61,7 @@ public class MigratorField {
         private String fieldName;
         private String fieldDescription;
         private List<String> choices;
+        private String[] choicesArr;
         private String choice;
     }
 
@@ -271,6 +272,7 @@ public class MigratorField {
 
             if (UtilGlobal.isNotBlank(base.choice)) choices.add(base.choice);
             if (base.choices != null) choices.addAll(base.choices);
+            if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choices.add(choiceItm);
 
             return ffc.createFieldMultiChoicePlain(toMigrate, choices);
         } catch (FluidClientException fce) {
@@ -297,6 +299,7 @@ public class MigratorField {
 
             if (UtilGlobal.isNotBlank(base.choice)) choices.add(base.choice);
             if (base.choices != null) choices.addAll(base.choices);
+            if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choices.add(choiceItm);
 
             return ffc.createFieldMultiChoiceSelectMany(toMigrate, choices);
         } catch (FluidClientException fce) {
@@ -319,6 +322,7 @@ public class MigratorField {
         List<String> choicesToEnsure = new ArrayList<>();
         if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
         if (base.choices != null) choicesToEnsure.addAll(base.choices);
+        if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choicesToEnsure.add(choiceItm);
 
         Field field = migrateFieldMultiChoicePlain(ffc, opts);
         List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
@@ -345,6 +349,7 @@ public class MigratorField {
         MigrateOptFieldMCBase base = opts.baseInfo;
         if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
         if (base.choices != null) choicesToEnsure.addAll(base.choices);
+        if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choicesToEnsure.add(choiceItm);
 
         Field field = migrateFieldMultiChoiceSelectMany(ffc, opts);
         List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?

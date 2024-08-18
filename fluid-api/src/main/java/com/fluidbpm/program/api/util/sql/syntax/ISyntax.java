@@ -25,7 +25,6 @@ import java.sql.PreparedStatement;
  *
  * @author jasonbruwer
  * @since v1.0
- *
  * @see Connection
  * @see javax.sql.DataSource
  * @see PreparedStatement
@@ -34,7 +33,6 @@ import java.sql.PreparedStatement;
  * @see com.fluidbpm.program.api.util.sql.syntax.impl.StoredProcedureSyntax
  */
 public interface ISyntax {
-
 	/**
 	 * Mapping of the Fluid internally used Stored Procedures.
 	 */
@@ -51,7 +49,6 @@ public interface ISyntax {
 
 		/**
 		 * Stored Procedures for Form.
-		 *
 		 * @see com.fluidbpm.program.api.vo.form.Form
 		 */
 		public static final class Form {
@@ -72,7 +69,6 @@ public interface ISyntax {
 
 		/**
 		 * Stored Procedures for Field.
-		 *
 		 * @see com.fluidbpm.program.api.vo.field.Field
 		 */
 		public static final class Field {
@@ -117,25 +113,21 @@ public interface ISyntax {
 		/**
 		 * Checks whether stored procedure is
 		 * part of the Fluid Stored Procedure mapping.
-		 *
 		 * @param alias Stored Procedure.
 		 * @return Whether stored procedure is part of {@code this} mapping.
 		 */
 		public static boolean isStoredProcedureMapping(String alias) {
 			if (UtilGlobal.isBlank(alias)) return false;
-			for (String aliasIter :  allAliases()) {
-				if (aliasIter.equals(alias)) return true;
-			}
+			for (String aliasIter : allAliases()) if (aliasIter.equals(alias)) return true;
 			return false;
 		}
 
 		/**
 		 * List of Stored Procedures.
-		 *
 		 * @return Stored Procedure names.
 		 */
 		public static String[] allAliases() {
-			return new String[]{
+			return new String[] {
 					FormDefinition.GetFormDefinitions,
 					Form.GetFormContainersTableFieldFormContainers,
 					Form.GetFormContainersChildFormContainers,
@@ -159,9 +151,7 @@ public interface ISyntax {
 
 		/**
 		 * Gets the parameter count for Stored Procedure {@code aliasParam}.
-		 *
 		 * @param alias The Stored Procedure.
-		 *
 		 * @return Number of parameters for Stored Procedure {@code aliasParam}.
 		 */
 		public static int getParamCountForAlias(String alias) {
@@ -200,16 +190,13 @@ public interface ISyntax {
 			} else if (Field.GetFormFieldValue_8_TextEncrypted.equals(alias)) {
 				return 3;
 			}
-
 			return 0;
 		}
 	}
 
 	/**
 	 * Gets the SQL Prepared Statement to execute against the DBMS engine.
-	 *
 	 * @return Complete SQL Prepared statement.
-	 *
 	 * @see PreparedStatement
 	 */
 	public abstract String getPreparedStatement();
