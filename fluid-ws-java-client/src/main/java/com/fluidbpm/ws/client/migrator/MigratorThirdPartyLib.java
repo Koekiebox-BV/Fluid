@@ -48,6 +48,7 @@ public class MigratorThirdPartyLib {
         private String libContentClasspath;
         private String libContentFilepath;
         private byte[] libContent;
+        private boolean allowUpdate;
     }
 
     @Builder
@@ -74,11 +75,9 @@ public class MigratorThirdPartyLib {
         }
 
         byte[] content = opts.libContent;
-        if ((content == null || content.length == 0) &&
-                UtilGlobal.isNotBlank(opts.libContentClasspath)) {
-            content = getContentForPath(opts.libContentClasspath);
-        } else if ((content == null || content.length == 0) &&
-                UtilGlobal.isNotBlank(opts.libContentFilepath)) {
+        if ((content == null || content.length == 0) && UtilGlobal.isNotBlank(opts.libContentClasspath)) {
+            content = getContentForClassPath(opts.libContentClasspath);
+        } else if ((content == null || content.length == 0) && UtilGlobal.isNotBlank(opts.libContentFilepath)) {
             content = getContentForFilepath(opts.libContentFilepath);
         }
 
@@ -97,6 +96,8 @@ public class MigratorThirdPartyLib {
         ThirdPartyLibrary libToCreateUpdate = new ThirdPartyLibrary();
         if (libWithName != null && !sha.equalsIgnoreCase(libWithName.getLibrarySha256sum())) {
             libToCreateUpdate.setId(libWithName.getThirdPartyLibraryId());
+
+            if (!opts.allowUpdate) return;// Ensure we allow the update.
         } else if (libWithName != null && sha.equalsIgnoreCase(libWithName.getLibrarySha256sum())) {
             return;// Already exists.
         }
@@ -112,11 +113,11 @@ public class MigratorThirdPartyLib {
      * @return {@code byte[]} from {@code path}
      * @throws FluidClientException when there is an I/O issue.
      */
-    public static byte[] getContentForPath(String path) throws FluidClientException {
+    public static byte[] getContentForClassPath(String path) throws FluidClientException {
         if (path == null || path.isEmpty()) throw new FluidClientException(
                 "Path to content in package is not set!", FluidClientException.ErrorCode.IO_ERROR
         );
-        try (InputStream inputStream = MigratorThirdPartyLib.class.getClassLoader().getResourceAsStream(path);) {
+        try (InputStream inputStream = MigratorThirdPartyLib.class.getClassLoader().getResourceAsStream(path)) {
             if (inputStream == null) throw new FluidClientException(
                     String.format("Unable to find '%s'.", path),
                     FluidClientException.ErrorCode.IO_ERROR
