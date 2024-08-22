@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.config;
 import com.fluidbpm.program.api.vo.config.GlobalFieldListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
@@ -44,7 +45,6 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
-	 *
 	 * @param endpointBaseUrl URL to base endpoint.
 	 * @param serviceTicket The Server issued Service Ticket.
 	 */
@@ -55,7 +55,6 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 	/**
 	 * Create a new Multi Choice field.
-	 *
 	 * @param globalField Field to Create.
 	 * @param multiChoiceValues The available multi choice values.
 	 * @return Created Field.
@@ -69,13 +68,44 @@ public class GlobalFieldClient extends ABaseFieldClient {
 			globalField.setTypeMetaData(FieldMetaData.MultiChoice.PLAIN);
 			globalField.setFieldValue(new MultiChoice(multiChoiceValues));
 		}
-
 		return new Field(this.putJson(globalField, globalFieldCreate()));
 	}
 
 	/**
+	 * Create a new Plain Text field.
+	 * @param globalField Field to Create.
+	 * @return Created Field.
+	 */
+	public Field createFieldTextPlain(Field globalField) {
+		if (globalField != null) {
+			globalField.setServiceTicket(this.serviceTicket);
+			globalField.setTypeAsEnum(Field.Type.Text);
+			globalField.setTypeMetaData(FieldMetaData.Text.PLAIN);
+		}
+		return new Field(this.putJson(
+				globalField, WS.Path.GlobalField.Version1.globalFieldCreate())
+		);
+	}
+
+	/**
+	 * Create a new Paragraph Text field.
+	 * @param globalField Field to Create.
+	 * @return Created Field.
+	 */
+	public Field createFieldParagraphTextPlain(Field globalField) {
+		if (globalField != null) {
+			globalField.setServiceTicket(this.serviceTicket);
+			globalField.setTypeAsEnum(Field.Type.ParagraphText);
+			globalField.setTypeMetaData(FieldMetaData.ParagraphText.PLAIN);
+		}
+
+		return new Field(this.putJson(
+				globalField, WS.Path.FormField.Version1.formFieldCreate())
+		);
+	}
+
+	/**
 	 * Update an existing Multi Choice field.
-	 *
 	 * @param globalField Field to Update.
 	 * @param multiChoiceValues New available Multi-choices.
 	 * @return Updated Field.
@@ -114,7 +144,6 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 	/**
 	 * Update an existing Global field value.
-	 *
 	 * @param globalFieldValue Field to Update.
 	 * @return Updated Field.
 	 */
@@ -127,7 +156,6 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 	/**
 	 * Retrieves field value by {@code fieldNameParam}.
-	 *
 	 * @param fieldName The field name.
 	 * @return Field by primary key.
 	 */
@@ -138,7 +166,6 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 	/**
 	 * Retrieves field value by {@code fieldIdParam}.
-	 *
 	 * @param fieldId The field id.
 	 * @return Field value by Global field primary key.
 	 */
@@ -164,9 +191,7 @@ public class GlobalFieldClient extends ABaseFieldClient {
 
 	/**
 	 * Retrieve all the Global field values.
-	 *
 	 * @return Global Fields in the destination system.
-	 *
 	 * @see GlobalFieldListing
 	 * @see Field
 	 */
@@ -181,18 +206,14 @@ public class GlobalFieldClient extends ABaseFieldClient {
 		return new GlobalFieldListing(this.postJson(field, Version1.getAllValues())).getListing();
 	}
 
-
 	/**
 	 * Retrieve all the Global fields.
-	 *
 	 * @return Global Fields in the destination system.
-	 *
 	 * @see GlobalFieldListing
 	 * @see Field
 	 */
 	public List<Field> getAllGlobalFields() {
 		Field field = new Field();
-
 		//Set for Payara server...
 		field.setFieldValue(new MultiChoice());
 		field.setServiceTicket(this.serviceTicket);

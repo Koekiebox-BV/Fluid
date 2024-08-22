@@ -20,13 +20,17 @@ import com.fluidbpm.program.api.vo.field.BarcodeType;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.config.GlobalFieldClient;
+import com.fluidbpm.ws.client.v1.flow.RouteFieldClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
+import com.fluidbpm.ws.client.v1.user.UserFieldClient;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.fluidbpm.ws.client.migrator.MigratorForm.migrateFormDefinition;
@@ -136,6 +140,111 @@ public class MigratorField {
     }
 
     /**
+     * Migrate user field.
+     * @param ufc {@code UserFieldClient}
+     * @param itm {@code MigratorField.MigrateOptField}
+     */
+    public static void migrateUserField(
+            UserFieldClient ufc, MigratorField.MigrateOptField itm
+    ) {
+        if (itm instanceof MigratorField.MigrateOptFieldText) {
+            MigratorField.migrateFieldText(ufc, (MigratorField.MigrateOptFieldText) itm);
+        } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoicePlain) {
+            MigratorField.migrateFieldMultiChoicePlainOptionExists(
+                    ufc, (MigratorField.MigrateOptFieldMultiChoicePlain) itm
+            );
+        } else {
+            throw new FluidClientException(
+                    String.format("User: Type '%s' is not supported.", itm),
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+            );
+        }
+    }
+
+    /**
+     * Migrate route field.
+     * @param rfc {@code RouteFieldClient}
+     * @param itm {@code MigratorField.MigrateOptField}
+     */
+    public static void migrateRouteField(
+            RouteFieldClient rfc, MigratorField.MigrateOptField itm
+    ) {
+        if (itm instanceof MigratorField.MigrateOptFieldText) {
+            MigratorField.migrateFieldText(rfc, (MigratorField.MigrateOptFieldText) itm);
+        } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoicePlain) {
+            MigratorField.migrateFieldMultiChoicePlainOptionExists(
+                    rfc, (MigratorField.MigrateOptFieldMultiChoicePlain) itm
+            );
+        } else {
+            throw new FluidClientException(
+                    String.format("User: Type '%s' is not supported.", itm),
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+            );
+        }
+    }
+
+    /**
+     * Migrate global field.
+     * @param gfc {@code GlobalFieldClient}
+     * @param itm {@code MigratorField.MigrateOptField}
+     */
+    public static void migrateGlobalField(
+            GlobalFieldClient gfc, MigratorField.MigrateOptField itm
+    ) {
+        if (itm instanceof MigratorField.MigrateOptFieldText) {
+            MigratorField.migrateFieldText(gfc, (MigratorField.MigrateOptFieldText)itm);
+        } else {
+            throw new FluidClientException(
+                    String.format("Global: Type '%s' is not supported.", itm),
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+            );
+        }
+    }
+
+
+    /**
+     * Migrate form field.
+     * @param ffc {@code FormFieldClient}
+     * @param itm {@code MigratorField.MigrateOptField}
+     */
+    public static void migrateFormField(
+            FormFieldClient ffc, MigratorField.MigrateOptField itm
+    ) {
+        if (itm instanceof MigratorField.MigrateOptFieldText) {
+            MigratorField.migrateFieldText(ffc, (MigratorField.MigrateOptFieldText)itm);
+        } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoicePlain) {
+            MigratorField.migrateFieldMultiChoicePlainOptionExists(
+                    ffc, (MigratorField.MigrateOptFieldMultiChoicePlain)itm
+            );
+        } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoiceSelectMany) {
+            MigratorField.migrateFieldMultiChoiceSelectManyOptionExists(
+                    ffc, (MigratorField.MigrateOptFieldMultiChoiceSelectMany)itm
+            );
+        } else if (itm instanceof MigratorField.MigrateOptFieldDecimal) {
+            MigratorField.migrateFieldDecimal(
+                    ffc, (MigratorField.MigrateOptFieldDecimal)itm
+            );
+        } else if (itm instanceof MigratorField.MigrateOptFieldDate) {
+            MigratorField.migrateFieldDateTime(
+                    ffc, (MigratorField.MigrateOptFieldDate)itm
+            );
+        } else if (itm instanceof MigratorField.MigrateOptFieldTrueFalse) {
+            MigratorField.migrateFieldTrueFalse(
+                    ffc, (MigratorField.MigrateOptFieldTrueFalse)itm
+            );
+        } else if (itm instanceof MigratorField.MigrateOptFieldLabel) {
+            MigratorField.migrateFieldLabel(
+                    ffc, (MigratorField.MigrateOptFieldLabel)itm
+            );
+        } else {
+            throw new FluidClientException(
+                    String.format("Form: Type '%s' is not supported.", itm),
+                    FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+            );
+        }
+    }
+
+    /**
      * Migrate a True/False field.
      *
      * @param ffc {@code FormFieldClient}
@@ -175,13 +284,10 @@ public class MigratorField {
 
     /**
      * Migrate a Text plain field.
-     *
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldMigrate}
      */
-    public static void migrateFieldText(
-            FormFieldClient ffc, MigrateOptFieldText opts
-    ) {
+    public static void migrateFieldText(FormFieldClient ffc, MigrateOptFieldText opts) {
         try {
             Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
             toCreate.setFieldDescription(opts.fieldDescription);
@@ -209,8 +315,64 @@ public class MigratorField {
     }
 
     /**
+     * Migrate a Text plain field.
+     * @param ufc {@code UserFieldClient}
+     * @param opts {@code OptFieldMigrate}
+     */
+    public static void migrateFieldText(UserFieldClient ufc, MigrateOptFieldText opts) {
+        try {
+            Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
+            toCreate.setFieldDescription(opts.fieldDescription);
+            if (opts.paragraphText) {
+                ufc.createFieldParagraphTextPlain(toCreate);
+            } else {
+                ufc.createFieldTextPlain(toCreate);
+            }
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
+     * Migrate a Text plain field.
+     * @param rfc {@code RouteFieldClient}
+     * @param opts {@code OptFieldMigrate}
+     */
+    public static void migrateFieldText(RouteFieldClient rfc, MigrateOptFieldText opts) {
+        try {
+            Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
+            toCreate.setFieldDescription(opts.fieldDescription);
+            if (opts.paragraphText) {
+                rfc.createFieldParagraphTextPlain(toCreate);
+            } else {
+                rfc.createFieldTextPlain(toCreate);
+            }
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
+     * Migrate a Text plain field.
+     * @param gfc {@code GlobalFieldClient}
+     * @param opts {@code OptFieldMigrate}
+     */
+    public static void migrateFieldText(GlobalFieldClient gfc, MigrateOptFieldText opts) {
+        try {
+            Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
+            toCreate.setFieldDescription(opts.fieldDescription);
+            if (opts.paragraphText) {
+                gfc.createFieldParagraphTextPlain(toCreate);
+            } else {
+                gfc.createFieldTextPlain(toCreate);
+            }
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
      * Migrate a Date field. Date field may or may not include time.
-     *
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldDateMigrate}
      */
@@ -266,18 +428,100 @@ public class MigratorField {
     ) {
         MigrateOptFieldMCBase base = opts.baseInfo;
         try {
-            Field toMigrate = new Field(base.fieldName, null, Field.Type.Text);
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.MultipleChoice);
             toMigrate.setFieldDescription(base.fieldDescription);
-            List<String> choices = new ArrayList<>();
-
-            if (UtilGlobal.isNotBlank(base.choice)) choices.add(base.choice);
-            if (base.choices != null) choices.addAll(base.choices);
-            if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choices.add(choiceItm);
+            List<String> choices = choicesAsListCombined(base);
 
             return ffc.createFieldMultiChoicePlain(toMigrate, choices);
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
             return ffc.getFieldByName(base.fieldName);
+        }
+    }
+
+    /**
+     * Migrate a Multi-Choice field. Also ensures that provided option exists.
+     * @param rfc {@code RouteFieldClient}
+     * @param opts {@code OptFieldMultiChoiceMigrate}
+     */
+    public static void migrateFieldMultiChoicePlainOptionExists(
+            RouteFieldClient rfc, MigrateOptFieldMultiChoicePlain opts
+    ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        List<String> choicesToEnsure = choicesAsListCombined(base);
+        Field field = migrateFieldMultiChoicePlain(rfc, opts);
+        List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
+                new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
+
+        choicesToEnsure.forEach(choice -> {
+            if (!available.contains(choice)) {
+                available.add(choice);
+                rfc.updateFieldMultiChoicePlain(field, available);
+            }
+        });
+    }
+
+    /**
+     * Migrate a Multi-Choice field. Also ensures that provided option exists.
+     * @param ufc {@code UserFieldClient}
+     * @param opts {@code OptFieldMultiChoiceMigrate}
+     */
+    public static void migrateFieldMultiChoicePlainOptionExists(
+            UserFieldClient ufc, MigrateOptFieldMultiChoicePlain opts
+    ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        List<String> choicesToEnsure = choicesAsListCombined(base);
+        Field field = migrateFieldMultiChoicePlain(ufc, opts);
+        List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
+                new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
+
+        choicesToEnsure.forEach(choice -> {
+            if (!available.contains(choice)) {
+                available.add(choice);
+                ufc.updateFieldMultiChoicePlain(field, available);
+            }
+        });
+    }
+
+    /**
+     * Migrate a Multi-Choice field.
+     * @param ufc {@code UserFieldClient}
+     * @param opts {@code OptFieldMultiChoiceCreate}
+     * @return Created or updated {@code Field}
+     */
+    public static Field migrateFieldMultiChoicePlain(
+            UserFieldClient ufc, MigrateOptFieldMultiChoicePlain opts
+    ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        try {
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.MultipleChoice);
+            toMigrate.setFieldDescription(base.fieldDescription);
+            List<String> choices = choicesAsListCombined(base);
+            return ufc.createFieldMultiChoicePlain(toMigrate, choices);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+            return ufc.getFieldByName(base.fieldName);
+        }
+    }
+
+    /**
+     * Migrate a Multi-Choice field.
+     * @param rfc {@code RouteFieldClient}
+     * @param opts {@code OptFieldMultiChoiceCreate}
+     * @return Created or updated {@code Field}
+     */
+    public static Field migrateFieldMultiChoicePlain(
+            RouteFieldClient rfc, MigrateOptFieldMultiChoicePlain opts
+    ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        try {
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.MultipleChoice);
+            toMigrate.setFieldDescription(base.fieldDescription);
+            List<String> choices = choicesAsListCombined(base);
+            return rfc.createFieldMultiChoicePlain(toMigrate, choices);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+            return rfc.getFieldByName(base.fieldName);
         }
     }
 
@@ -293,13 +537,9 @@ public class MigratorField {
     ) {
         MigrateOptFieldMCBase base = opts.baseInfo;
         try {
-            Field toMigrate = new Field(base.fieldName, null, Field.Type.Text);
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.MultipleChoice);
             toMigrate.setFieldDescription(base.fieldDescription);
-            List<String> choices = new ArrayList<>();
-
-            if (UtilGlobal.isNotBlank(base.choice)) choices.add(base.choice);
-            if (base.choices != null) choices.addAll(base.choices);
-            if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choices.add(choiceItm);
+            List<String> choices = choicesAsListCombined(base);
 
             return ffc.createFieldMultiChoiceSelectMany(toMigrate, choices);
         } catch (FluidClientException fce) {
@@ -319,11 +559,7 @@ public class MigratorField {
     ) {
         MigrateOptFieldMCBase base = opts.baseInfo;
 
-        List<String> choicesToEnsure = new ArrayList<>();
-        if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
-        if (base.choices != null) choicesToEnsure.addAll(base.choices);
-        if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choicesToEnsure.add(choiceItm);
-
+        List<String> choicesToEnsure = choicesAsListCombined(base);
         Field field = migrateFieldMultiChoicePlain(ffc, opts);
         List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
         new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
@@ -345,11 +581,8 @@ public class MigratorField {
     public static void migrateFieldMultiChoiceSelectManyOptionExists(
             FormFieldClient ffc, MigrateOptFieldMultiChoiceSelectMany opts
     ) {
-        List<String> choicesToEnsure = new ArrayList<>();
         MigrateOptFieldMCBase base = opts.baseInfo;
-        if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
-        if (base.choices != null) choicesToEnsure.addAll(base.choices);
-        if (base.choicesArr != null) for (String choiceItm : base.choicesArr) choicesToEnsure.add(choiceItm);
+        List<String> choicesToEnsure = choicesAsListCombined(base);
 
         Field field = migrateFieldMultiChoiceSelectMany(ffc, opts);
         List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
@@ -402,7 +635,14 @@ public class MigratorField {
     public static void removeField(
             FormFieldClient ffc, MigrateOptRemoveField opts
     ) {
-        Field toDelete = new Field(opts.fieldId, opts.fieldName);
-        ffc.forceDeleteField(toDelete);
+        ffc.forceDeleteField(new Field(opts.fieldId, opts.fieldName));
+    }
+
+    private static List<String> choicesAsListCombined(MigrateOptFieldMCBase base) {
+        List<String> choicesToEnsure = new ArrayList<>();
+        if (UtilGlobal.isNotBlank(base.choice)) choicesToEnsure.add(base.choice);
+        if (base.choices != null) choicesToEnsure.addAll(base.choices);
+        if (base.choicesArr != null) choicesToEnsure.addAll(Arrays.asList(base.choicesArr));
+        return choicesToEnsure;
     }
 }

@@ -17,12 +17,15 @@ package com.fluidbpm.ws.client.migrator;
 
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
+import com.fluidbpm.ws.client.v1.config.GlobalFieldClient;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepRuleClient;
+import com.fluidbpm.ws.client.v1.flow.RouteFieldClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import com.fluidbpm.ws.client.v1.role.RoleClient;
+import com.fluidbpm.ws.client.v1.user.UserFieldClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import lombok.Builder;
 import lombok.Data;
@@ -52,6 +55,9 @@ public class MigratorPlan {
         private MigratorField.MigrateOptField[] formFieldsNonTable;
         private MigratorField.MigrateOptFieldTable[] formFieldsTable;
         private MigratorForm.MigrateOptForm[] formDefs;
+        private MigratorField.MigrateOptField[] userFields;
+        private MigratorField.MigrateOptField[] routeFields;
+        private MigratorField.MigrateOptField[] globalFields;
         private MigratorThirdPartyLib.MigrateOptThirdPartLib[] thirdPartyLibs;
         private MigratorFlow.MigrateOptFlow[] flows;
         private MigratorUserQuery.MigrateOptUserQuery[] userQueries;
@@ -69,6 +75,9 @@ public class MigratorPlan {
         try (
                 ConfigurationClient cc = new ConfigurationClient(url, serviceTicket);
                 FormFieldClient ffc = new FormFieldClient(url, serviceTicket);
+                UserFieldClient ufc = new UserFieldClient(url, serviceTicket);
+                RouteFieldClient rfc = new RouteFieldClient(url, serviceTicket);
+                GlobalFieldClient gfc = new GlobalFieldClient(url, serviceTicket);
                 FormDefinitionClient fdc = new FormDefinitionClient(url, serviceTicket);
                 FlowClient fc = new FlowClient(url, serviceTicket);
                 FlowStepClient fsc = new FlowStepClient(url, serviceTicket);
@@ -78,33 +87,7 @@ public class MigratorPlan {
         ) {
             // 1. Migrate non-table fields:
             if (migratePlan.formFieldsNonTable != null) Arrays.stream(migratePlan.formFieldsNonTable).forEach(itm -> {
-                if (itm instanceof MigratorField.MigrateOptFieldText) {
-                    MigratorField.migrateFieldText(ffc, (MigratorField.MigrateOptFieldText)itm);
-                } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoicePlain) {
-                    MigratorField.migrateFieldMultiChoicePlainOptionExists(
-                            ffc, (MigratorField.MigrateOptFieldMultiChoicePlain)itm
-                    );
-                } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoiceSelectMany) {
-                    MigratorField.migrateFieldMultiChoiceSelectManyOptionExists(
-                            ffc, (MigratorField.MigrateOptFieldMultiChoiceSelectMany)itm
-                    );
-                } else if (itm instanceof MigratorField.MigrateOptFieldDecimal) {
-                    MigratorField.migrateFieldDecimal(
-                            ffc, (MigratorField.MigrateOptFieldDecimal)itm
-                    );
-                } else if (itm instanceof MigratorField.MigrateOptFieldDate) {
-                    MigratorField.migrateFieldDateTime(
-                            ffc, (MigratorField.MigrateOptFieldDate)itm
-                    );
-                } else if (itm instanceof MigratorField.MigrateOptFieldTrueFalse) {
-                    MigratorField.migrateFieldTrueFalse(
-                            ffc, (MigratorField.MigrateOptFieldTrueFalse)itm
-                    );
-                } else if (itm instanceof MigratorField.MigrateOptFieldLabel) {
-                    MigratorField.migrateFieldLabel(
-                            ffc, (MigratorField.MigrateOptFieldLabel)itm
-                    );
-                }
+                MigratorField.migrateFormField(ffc, itm);
             });
 
             // 2. Migrate table fields:
@@ -117,22 +100,33 @@ public class MigratorPlan {
                 MigratorForm.migrateFormDefinition(fdc, itm);
             });
 
-            // 4. Migrate libs:
+            // 4. Migrate other fields:
+            if (migratePlan.userFields != null) Arrays.stream(migratePlan.userFields).forEach(itm -> {
+                MigratorField.migrateUserField(ufc, itm);
+            });
+            if (migratePlan.routeFields != null) Arrays.stream(migratePlan.routeFields).forEach(itm -> {
+                MigratorField.migrateRouteField(rfc, itm);
+            });
+            if (migratePlan.globalFields != null) Arrays.stream(migratePlan.globalFields).forEach(itm -> {
+                MigratorField.migrateGlobalField(gfc, itm);
+            });
+
+            // 5. Migrate libs:
             if (migratePlan.thirdPartyLibs != null) Arrays.stream(migratePlan.thirdPartyLibs).forEach(itm -> {
                 MigratorThirdPartyLib.migrateThirdPartyLib(cc, itm);
             });
 
-            // 5. Migrate user queries:
+            // 6. Migrate user queries:
             if (migratePlan.userQueries != null) Arrays.stream(migratePlan.userQueries).forEach(itm -> {
                 MigratorUserQuery.migrateUserQuery(uqc, itm);
             });
 
-            // 6. Migrate workflows:
+            // 7. Migrate workflows:
             if (migratePlan.flows != null) Arrays.stream(migratePlan.flows).forEach(itm -> {
                 MigratorFlow.migrateFlow(fc, fsc, fsrc, itm);
             });
 
-            // 7. Migrate roles and permissions:
+            // 8. Migrate roles and permissions:
             if (migratePlan.roles != null) Arrays.stream(migratePlan.roles).forEach(itm -> {
                 MigratorRoleAndPermissions.migrateRole(rc, itm);
             });
