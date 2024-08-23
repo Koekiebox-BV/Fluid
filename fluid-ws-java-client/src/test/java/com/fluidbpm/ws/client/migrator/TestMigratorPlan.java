@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.migrator;
 
+import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import org.junit.After;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
 
     @Test
     public void testMigratePlan() {
-        if (this.isConnectionInValid) return;
+        if (isConnectionInValid) return;
 
         MigratorPlan.MigrateOptPlan plan = MigratorPlan.MigrateOptPlan.builder()
                 // Fields:
@@ -140,8 +141,22 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                                                                 UUID.randomUUID(),
                                                                 Template.Field.TEXT_PLAIN
                                                         ),
+                                                        String.format("ROUTE TO '%s' IF(FORM.%s EQUAL 'cool')",
+                                                                "Print The Value",
+                                                                Template.Field.TEXT_PLAIN
+                                                        ),
                                                         String.format("ROUTE TO '%s'", Template.Flow.Step.EXIT)
                                                 })
+                                                .build(),
+                                        // Program:
+                                        MigratorFlow.MigrateOptFlowStep.builder()
+                                                .stepName("Print The Value")
+                                                .stepType(MigratorFlow.StepType.JavaProgram)
+                                                .stepDescription("Print the values from the form.")
+                                                .properties(new FlowStep.StepProperty[]{
+                                                        new FlowStep.StepProperty(FlowStep.StepProperty.PropName.TaskIdentifier, "Print Form Values")
+                                                })
+                                                .flowRulesExit(new String[] {"ROUTE TO 'Exit'"})
                                                 .build()
                                 })
                                 .build()
@@ -164,8 +179,8 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                 // Libraries:
                 .thirdPartyLibs(new MigratorThirdPartyLib.MigrateOptThirdPartLib[]{
                         MigratorThirdPartyLib.MigrateOptThirdPartLib.builder()
-                                .filename("printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar")
                                 .libContentClasspath("META-INF/third-party-library/printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar")
+                                .filename("printformfieldsflowprogram-1.0-SNAPSHOT-jar-with-dependencies.jar")
                                 .description("Third party library for testing.")
                                 .build()
                 })
@@ -241,7 +256,7 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
     @After
     @Override
     public void destroy() {
-        if (this.isConnectionInValid) return;
+        if (isConnectionInValid) return;
 
         MigratorPlan.MigrateOptRemovePlan remPlan = MigratorPlan.MigrateOptRemovePlan.builder()
                 .fields(new MigratorField.MigrateOptRemoveField[] {

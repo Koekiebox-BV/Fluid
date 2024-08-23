@@ -134,6 +134,14 @@ public class MigratorFlow {
                 case Exit:
                     mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
                 break;
+                case JavaProgram:
+                    mergeEntryRules(fsrc, step, stepToMigrate.flowRulesEntry);
+                    mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
+                break;
+                default: throw new FluidClientException(
+                        String.format("Step type '%s' is not supported.", type),
+                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+                );
             }
         }
     }
@@ -215,7 +223,7 @@ public class MigratorFlow {
                 break;
                 default:
                     throw new FluidClientException(
-                            String.format("Rule Type '%s' is not supported", ruleType),
+                            String.format("Rule Type '%s' is not supported.", ruleType),
                             FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
                     );
             }
