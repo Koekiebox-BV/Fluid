@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.migrator;
 
 import com.fluidbpm.program.api.vo.flow.FlowStep;
+import com.fluidbpm.program.api.vo.role.AdminPermission;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import org.junit.After;
 import org.junit.Test;
@@ -106,6 +107,7 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                                         Template.Field.TEXT_LAT_LONG,
                                         Template.Field.TABLE,
                                 })
+                                .associatedFlows(new String[]{Template.Flow.NAME})
                                 .build()
                 })
                 // Workflows:
@@ -189,10 +191,10 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                         MigratorRoleAndPermissions.MigrateOptRole.builder()
                                 .roleName("Role Numbre Uno")
                                 .roleDescription("The first Role to have been created.")
-                                .adminPermissions(new String[] {
-                                        "login",
-                                        "change_own_password",
-                                        "view_flow_monitor"
+                                .adminPermissions(new AdminPermission[] {
+                                        AdminPermission.login,
+                                        AdminPermission.change_own_password,
+                                        AdminPermission.view_flow_monitor
                                 })
                                 .views(new MigratorRoleAndPermissions.MigrateOptRoleView[]{
                                         MigratorRoleAndPermissions.MigrateOptRoleView.builder()
@@ -211,7 +213,7 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                                                 new String[]{Template.Form.FORM_DEF},//Can Create
                                                 new String[]{Template.Form.FORM_DEF},// Attachment Create+Update
                                                 new String[]{Template.Form.FORM_DEF},// Attachment View
-                                                new MigratorRoleAndPermissions.MigrateOptRoleFormField[]{
+                                                new MigratorRoleAndPermissions.MigrateOptRoleFormField[] {
                                                         MigratorRoleAndPermissions.MigrateOptRoleFormField.builder()
                                                                 .formDef(Template.Form.FORM_DEF)
                                                                 .fieldsModifyAndView(new String[]{
@@ -240,11 +242,11 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
         MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
 
         plan.getRoles()[0].setAllowUpdate(true);
-        plan.getRoles()[0].setAdminPermissions(new String[] {
-                "edit_sys_forms",
-                "print_forms",
-                "execute_sql_util",
-                "logout"
+        plan.getRoles()[0].setAdminPermissions(new AdminPermission[] {
+                AdminPermission.edit_sys_forms,
+                AdminPermission.print_forms,
+                AdminPermission.execute_sql_util,
+                AdminPermission.logout
         });
         MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
     }

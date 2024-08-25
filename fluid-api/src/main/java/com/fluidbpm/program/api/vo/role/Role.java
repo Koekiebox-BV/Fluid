@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class Role extends ABaseFluidJSONObject {
 
 	public static final long serialVersionUID = 1L;
@@ -76,13 +78,6 @@ public class Role extends ABaseFluidJSONObject {
 				"roleToFormFieldToFormDefinitions";
 		public static final String ROLE_TO_JOB_VIEWS = "roleToJobViews";
 		public static final String ROLE_TO_USER_QUERIES = "roleToUserQueries";
-	}
-
-	/**
-	 * Default constructor.
-	 */
-	public Role() {
-		super();
 	}
 
 	/**

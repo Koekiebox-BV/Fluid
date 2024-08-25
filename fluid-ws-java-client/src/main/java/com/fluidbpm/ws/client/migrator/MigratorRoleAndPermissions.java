@@ -40,7 +40,7 @@ public class MigratorRoleAndPermissions {
     public static final class MigrateOptRole {
         private String roleName;
         private String roleDescription;
-        private String[] adminPermissions;
+        private AdminPermission[] adminPermissions;
         private String[] userQueries;
         private MigrateOptRoleView[] views;
         private MigrateOptRoleFormDef roleToFormDef;
@@ -171,9 +171,8 @@ public class MigratorRoleAndPermissions {
         try {
             // Admin Permissions:
             if (opts.adminPermissions != null) {
-                for (String permission : opts.adminPermissions) {
-                    if (UtilGlobal.isBlank(permission)) continue;
-                    adminPermissions.add(permission);
+                for (AdminPermission permission : opts.adminPermissions) {
+                    adminPermissions.add(permission.name());
                 }
             }
 

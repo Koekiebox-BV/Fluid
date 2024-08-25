@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.migrator;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.config.GlobalFieldClient;
@@ -31,6 +32,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Migration class for form migrations.
@@ -96,7 +99,12 @@ public class MigratorPlan {
             });
 
             // 3. Migrate form definitions:
+            Map<String, String[]> formDefToAssociatedFlows = new HashMap<>();
             if (migratePlan.formDefs != null) Arrays.stream(migratePlan.formDefs).forEach(itm -> {
+                if (itm.getAssociatedFlows() != null && UtilGlobal.isNotBlank(itm.getFormType())) {
+                    formDefToAssociatedFlows.put(itm.getFormType(), itm.getAssociatedFlows());
+                    itm.setAssociatedFlows(null);
+                }
                 MigratorForm.migrateFormDefinition(fdc, itm);
             });
 
@@ -126,7 +134,21 @@ public class MigratorPlan {
                 MigratorFlow.migrateFlow(fc, fsc, fsrc, itm);
             });
 
-            // 8. Migrate roles and permissions:
+            // 8. Set the Associated Flows after flows are created:
+            if (!formDefToAssociatedFlows.isEmpty()) {
+                formDefToAssociatedFlows.forEach((formDefName, assFlows) -> {
+                    MigratorForm.MigrateOptForm formDefItm = Arrays.stream(migratePlan.formDefs)
+                            .filter(itm -> itm.getFormType().equals(formDefName))
+                            .findFirst()
+                            .orElse(null);
+                    if (formDefItm != null) {
+                        formDefItm.setAssociatedFlows(assFlows);
+                        MigratorForm.migrateFormDefinition(fdc, formDefItm);
+                    }
+                });
+            }
+
+            // 9. Migrate roles and permissions:
             if (migratePlan.roles != null) Arrays.stream(migratePlan.roles).forEach(itm -> {
                 MigratorRoleAndPermissions.migrateRole(rc, itm);
             });

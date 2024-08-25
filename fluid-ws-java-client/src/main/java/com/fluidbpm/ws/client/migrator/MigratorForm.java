@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.migrator;
 
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
@@ -38,6 +39,7 @@ public class MigratorForm {
         private String formType;
         private String formDescription;
         private String[] fields;
+        private String[] associatedFlows;
     }
 
     @Builder
@@ -46,17 +48,19 @@ public class MigratorForm {
         private String formName;
     }
 
-    public static void migrateFormDefinition(
-            FormDefinitionClient fdc,
-            MigrateOptForm opts
-    ) {
+    public static void migrateFormDefinition(FormDefinitionClient fdc, MigrateOptForm opts) {
         Form form = new Form(opts.formType);
-        List<Field> formFields = new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
         if (opts.fields != null) {
-            for (String fieldToIncl : opts.fields) formFields.add(new Field(fieldToIncl));
+            for (String fieldToIncl : opts.fields) fields.add(new Field(fieldToIncl));
         }
-        form.setFormFields(formFields);
+        form.setFormFields(fields);
         form.setFormDescription(opts.formDescription);
+        List<Flow> flows = new ArrayList<>();
+        if (opts.associatedFlows != null) {
+            for (String flowToAss : opts.associatedFlows) flows.add(new Flow(flowToAss));
+        }
+        form.setAssociatedFlows(flows);
 
         try {
             fdc.createFormDefinition(form);
@@ -64,30 +68,42 @@ public class MigratorForm {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
 
             Form existingForm = fdc.getFormDefinitionByName(opts.formType);
-            List<Field> existingFields = existingForm.getFormFields();
+            form.setId(existingForm.getId());
+            form.setFormTypeId(existingForm.getFormTypeId());
+            form.setFormType(existingForm.getFormType());
 
-            if (existingFields == null) return;
-
+            List<Field> existingFields = existingForm.getFormFields() == null ?
+                    new ArrayList<>() : existingForm.getFormFields();
             AtomicBoolean updateRequired = new AtomicBoolean(false);
-            List<Field> toPushToServer = new ArrayList<>(existingFields);
+            List<Field> toPushToServerFields = new ArrayList<>(existingFields);
+            fields.forEach(itm -> {
+                String existingExists = existingFields.stream()
+                        .map(Field::getFieldName)
+                        .filter(existing -> existing.equalsIgnoreCase(itm.getFieldName()))
+                        .findFirst().orElse(null);
+                if (existingExists == null) {
+                    toPushToServerFields.add(itm);
+                    updateRequired.set(true);
+                }
+            });
+            form.setFormFields(toPushToServerFields);
 
-            existingFields.stream()
-                    .map(Field::getFieldName)
-                    .filter(existing -> {
-                        if (existing == null) return false;
-                        return formFields.stream()
-                                .filter(itm -> existing.equalsIgnoreCase(itm.getFieldName()))
-                                .findFirst()
-                                .orElse(null) == null;
-                    }).forEach(nonExist -> {
-                        toPushToServer.add(new Field(nonExist));
-                        updateRequired.set(true);
-                    });
-            if (updateRequired.get()) {
-                // Push new fields:
-                form.setFormFields(toPushToServer);
-                fdc.updateFormDefinition(form);
-            }
+            List<Flow> existingFlows = existingForm.getAssociatedFlows() == null ?
+                    new ArrayList<>() : existingForm.getAssociatedFlows();
+            List<Flow> toPushToServerFlows = new ArrayList<>(existingFlows);
+            flows.forEach(itm -> {
+                String existingExists = existingFlows.stream()
+                        .map(Flow::getName)
+                        .filter(existing -> existing.equalsIgnoreCase(itm.getName()))
+                        .findFirst().orElse(null);
+                if (existingExists == null) {
+                    toPushToServerFlows.add(itm);
+                    updateRequired.set(true);
+                }
+            });
+            form.setAssociatedFlows(toPushToServerFlows);
+
+            if (updateRequired.get()) fdc.updateFormDefinition(form);
         }
     }
 
