@@ -34,6 +34,10 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
             public static final String TABLE = "Migrate Table Field";
         }
 
+        private static class FieldUser {
+            public static final String NATIONALITIES = "Nationalities";
+        }
+
         private static class Form {
             public static final String FORM_DEF = "Migrate Form Def";
             public static final String FORM_DEF_TABLE = Field.TABLE;
@@ -186,6 +190,22 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                                 .description("Third party library for testing.")
                                 .build()
                 })
+                .userFields(
+                        new MigratorField.MigrateOptField[]{
+                                MigratorField.MigrateOptFieldMultiChoiceSelectMany.builder()
+                                        .baseInfo(MigratorField.MigrateOptFieldMCBase.builder()
+                                                .fieldName(Template.FieldUser.NATIONALITIES)
+                                                .fieldDescription("Fintech associated with a user.")
+                                                .choicesArr(new String[]{
+                                                        "South African",
+                                                        "Italian",
+                                                        "Dutch",
+                                                        "Indian"
+                                                })
+                                                .build())
+                                        .build()
+                        }
+                )
                 // Roles:
                 .roles(new MigratorRoleAndPermissions.MigrateOptRole[]{
                         MigratorRoleAndPermissions.MigrateOptRole.builder()
@@ -248,6 +268,13 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                 AdminPermission.execute_sql_util,
                 AdminPermission.logout
         });
+
+        MigratorField.MigrateOptFieldMultiChoiceSelectMany manyNat =
+                (MigratorField.MigrateOptFieldMultiChoiceSelectMany)plan.getUserFields()[0];
+        manyNat.getBaseInfo().setChoicesArr(new String[]{
+                "Japanese"
+        });
+
         MigratorPlan.migrate(BASE_URL, ADMIN_SERVICE_TICKET, plan);
     }
 
@@ -266,6 +293,9 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                         MigratorField.MigrateOptRemoveField.builder().fieldName(Template.Field.TEXT_ENCRYPTED).build(),
                         MigratorField.MigrateOptRemoveField.builder().fieldName(Template.Field.TEXT_PARAGRAPH).build(),
                         MigratorField.MigrateOptRemoveField.builder().fieldName(Template.Field.TEXT_LAT_LONG).build(),
+                })
+                .userFields(new MigratorField.MigrateOptRemoveField[] {
+                        MigratorField.MigrateOptRemoveField.builder().fieldName(Template.FieldUser.NATIONALITIES).build()
                 })
                 .tableFields(new MigratorField.MigrateOptRemoveField[] {
                         MigratorField.MigrateOptRemoveField.builder().fieldName(Template.Field.TABLE).build(),

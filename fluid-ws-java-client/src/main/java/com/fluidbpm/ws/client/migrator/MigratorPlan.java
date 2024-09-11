@@ -44,6 +44,7 @@ public class MigratorPlan {
     @Builder
     public static final class MigrateOptRemovePlan {
         private MigratorField.MigrateOptRemoveField[] fields;
+        private MigratorField.MigrateOptRemoveField[] userFields;
         private MigratorField.MigrateOptRemoveField[] tableFields;
         private MigratorForm.MigrateOptRemoveForm[] formDefs;
         private MigratorFlow.MigrateOptRemoveFlow[] flows;
@@ -170,6 +171,7 @@ public class MigratorPlan {
         try (
                 ConfigurationClient cc = new ConfigurationClient(url, serviceTicket);
                 FormFieldClient ffc = new FormFieldClient(url, serviceTicket);
+                UserFieldClient ufc = new UserFieldClient(url, serviceTicket);
                 FormDefinitionClient fdc = new FormDefinitionClient(url, serviceTicket);
                 FlowClient fc = new FlowClient(url, serviceTicket);
                 UserQueryClient uqc = new UserQueryClient(url, serviceTicket);
@@ -195,6 +197,9 @@ public class MigratorPlan {
             });
             if (removePlan.thirdPartyLibs != null) Arrays.stream(removePlan.thirdPartyLibs).forEach(itm -> {
                 MigratorThirdPartyLib.removeLibrary(cc, itm);
+            });
+            if (removePlan.userFields != null) Arrays.stream(removePlan.userFields).forEach(itm -> {
+                MigratorField.removeField(ufc, itm);
             });
         }
     }

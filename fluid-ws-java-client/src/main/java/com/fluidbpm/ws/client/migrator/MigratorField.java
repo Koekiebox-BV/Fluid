@@ -130,7 +130,6 @@ public class MigratorField {
         private String fieldAndFormDescription;
         private String[] fields;
         private boolean sumDecimals;
-
     }
 
     @Builder
@@ -152,6 +151,10 @@ public class MigratorField {
         } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoicePlain) {
             MigratorField.migrateFieldMultiChoicePlainOptionExists(
                     ufc, (MigratorField.MigrateOptFieldMultiChoicePlain) itm
+            );
+        } else if (itm instanceof MigratorField.MigrateOptFieldMultiChoiceSelectMany) {
+            MigratorField.migrateFieldMultiChoiceSelectManyOptionExists(
+                    ufc, (MigratorField.MigrateOptFieldMultiChoiceSelectMany) itm
             );
         } else {
             throw new FluidClientException(
@@ -177,7 +180,7 @@ public class MigratorField {
             );
         } else {
             throw new FluidClientException(
-                    String.format("User: Type '%s' is not supported.", itm),
+                    String.format("Route: Type '%s' is not supported.", itm),
                     FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
             );
         }
@@ -525,9 +528,7 @@ public class MigratorField {
         }
     }
 
-    /**
-     * Migrate a Multi-Choice field.
-     *
+    /**Migrate a Multi-Choice field.
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldMultiChoiceMigrate}
      * @return Migrated or updated {@code Field}
@@ -548,9 +549,27 @@ public class MigratorField {
         }
     }
 
-    /**
-     * Migrate a Multi-Choice field. Also ensures that provided option exists.
-     *
+    /**Migrate a Multi-Choice field.
+     * @param ufc {@code UserFieldClient}
+     * @param opts {@code OptFieldMultiChoiceMigrate}
+     * @return Migrated or updated {@code Field}
+     */
+    public static Field migrateFieldMultiChoiceSelectMany(
+            UserFieldClient ufc, MigrateOptFieldMultiChoiceSelectMany opts
+    ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        try {
+            Field toMigrate = new Field(base.fieldName, null, Field.Type.MultipleChoice);
+            toMigrate.setFieldDescription(base.fieldDescription);
+            List<String> choices = choicesAsListCombined(base);
+            return ufc.createFieldMultiChoiceSelectMany(toMigrate, choices);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+            return ufc.getFieldByName(base.fieldName);
+        }
+    }
+
+    /**Migrate a Multi-Choice field. Also ensures that provided option exists.
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
@@ -572,9 +591,7 @@ public class MigratorField {
         });
     }
 
-    /**
-     * Migrate a Multi-Choice field. Also ensures that provided option exists.
-     *
+    /**Migrate a Multi-Choice field. Also ensures that provided option exists.
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
@@ -596,9 +613,29 @@ public class MigratorField {
         });
     }
 
-    /**
-     * Migrate a Table field.
-     *
+    /**Migrate a Multi-Choice field. Also ensures that provided option exists.
+     * @param ufc {@code UserFieldClient}
+     * @param opts {@code OptFieldMultiChoiceMigrate}
+     */
+    public static void migrateFieldMultiChoiceSelectManyOptionExists(
+            UserFieldClient ufc, MigrateOptFieldMultiChoiceSelectMany opts
+    ) {
+        MigrateOptFieldMCBase base = opts.baseInfo;
+        List<String> choicesToEnsure = choicesAsListCombined(base);
+
+        Field field = migrateFieldMultiChoiceSelectMany(ufc, opts);
+        List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
+                new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
+
+        choicesToEnsure.forEach(choice -> {
+            if (!available.contains(choice)) {
+                available.add(choice);
+                ufc.updateFieldMultiChoicePlain(field, available);
+            }
+        });
+    }
+
+    /**Migrate a Table field.
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldMultiChoiceMigrate}
      */
@@ -626,9 +663,17 @@ public class MigratorField {
         }
     }
 
-    /**
-     * Remove a field.
-     *
+    /**Remove a field.
+     * @param ufc {@code UserFieldClient}
+     * @param opts {@code MigrateOptRemoveField}
+     */
+    public static void removeField(
+            UserFieldClient ufc, MigrateOptRemoveField opts
+    ) {
+        ufc.forceDeleteField(new Field(opts.fieldId, opts.fieldName));
+    }
+
+    /**Remove a field.
      * @param ffc {@code FormFieldClient}
      * @param opts {@code MigrateOptRemoveField}
      */
