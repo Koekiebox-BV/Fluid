@@ -131,6 +131,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 		GET,
 		POST,
 		PUT,
+		PATCH,
 		DELETE
 	}
 
@@ -422,6 +423,33 @@ public abstract class ABaseClientWS implements AutoCloseable {
 				checkConnectionValidParam,
 				baseDomainParam,
 				ContentType.APPLICATION_JSON,
+				postfixUrlParam);
+	}
+
+	/**
+	 * Performs an HTTP-PATCH request with {@code postfixUrlParam}.
+	 *
+	 * @param headerNameValuesParam Send http headers list.
+	 * @param checkConnectionValidParam Check if connection to base endpoint is valid.
+	 * @param stringParam The Text to submit.
+	 * @param postfixUrlParam URL mapping after the Base endpoint.
+	 * @param contentTypeParam The Mime / Content type to submit as.
+	 * @return Return body as JSON string.
+	 *
+	 * @see JSONObject
+	 * @see ABaseFluidJSONObject
+	 */
+	protected String patchJson(List<HeaderNameValue> headerNameValuesParam,
+							   boolean checkConnectionValidParam,
+							   String stringParam,
+							   ContentType contentTypeParam,
+							   String postfixUrlParam) {
+		return executeTxtReceiveTxt(
+				HttpMethod.PATCH,
+				headerNameValuesParam,
+		 		checkConnectionValidParam,
+				stringParam,
+				contentTypeParam,
 				postfixUrlParam);
 	}
 
@@ -755,6 +783,14 @@ public abstract class ABaseClientWS implements AutoCloseable {
 				} else {
 					uriRequest = new HttpPut(this.endpointUrl.concat(postfixUrlParam));
 					uriRequest.setHeader(CONTENT_TYPE_HEADER, contentTypeParam.toString());
+				}
+			} else if (httpMethodParam == HttpMethod.PATCH) {
+				if (contentTypeParam == ContentType.APPLICATION_JSON) {
+					RequestBuilder builder = RequestBuilder.patch().setUri(
+							this.endpointUrl.concat(postfixUrlParam)
+					);
+					builder = this.addParamsToBuildFromString(builder, stringParam);
+					uriRequest = builder.build();
 				}
 			} else if (httpMethodParam == HttpMethod.DELETE) {
 				//DELETE...
