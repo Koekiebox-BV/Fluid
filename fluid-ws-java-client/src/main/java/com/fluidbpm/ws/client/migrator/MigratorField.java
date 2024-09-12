@@ -608,7 +608,7 @@ public class MigratorField {
         choicesToEnsure.forEach(choice -> {
             if (!available.contains(choice)) {
                 available.add(choice);
-                ffc.updateFieldMultiChoicePlain(field, available);
+                ffc.updateFieldMultiChoiceSelectMany(field, available);
             }
         });
     }
@@ -630,7 +630,7 @@ public class MigratorField {
         choicesToEnsure.forEach(choice -> {
             if (!available.contains(choice)) {
                 available.add(choice);
-                ufc.updateFieldMultiChoicePlain(field, available);
+                ufc.updateFieldMultiChoiceSelectMany(field, available);
             }
         });
     }
