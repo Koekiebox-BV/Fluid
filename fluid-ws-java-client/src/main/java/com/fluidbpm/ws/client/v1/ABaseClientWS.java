@@ -786,11 +786,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 				}
 			} else if (httpMethodParam == HttpMethod.PATCH) {
 				if (contentTypeParam == ContentType.APPLICATION_JSON) {
-					RequestBuilder builder = RequestBuilder.patch().setUri(
-							this.endpointUrl.concat(postfixUrlParam)
-					);
-					builder = this.addParamsToBuildFromString(builder, stringParam);
-					uriRequest = builder.build();
+					uriRequest = new HttpPatch(this.endpointUrl.concat(postfixUrlParam));
 				}
 			} else if (httpMethodParam == HttpMethod.DELETE) {
 				//DELETE...
