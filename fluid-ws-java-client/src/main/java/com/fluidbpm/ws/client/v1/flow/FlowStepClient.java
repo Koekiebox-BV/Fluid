@@ -50,59 +50,49 @@ public class FlowStepClient extends ABaseClientWS {
 	/**
 	 * Constructor that sets the Service Ticket from authentication.
 	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param serviceTicketParam The Server issued Service Ticket.
+	 * @param endpointBaseUrl URL to base endpoint.
+	 * @param serviceTicket The Server issued Service Ticket.
 	 */
-	public FlowStepClient(
-		String endpointBaseUrlParam, String serviceTicketParam
-	) {
-		super(endpointBaseUrlParam);
+	public FlowStepClient(String endpointBaseUrl, String serviceTicket) {
+		super(endpointBaseUrl);
 
-		this.setServiceTicket(serviceTicketParam);
+		this.setServiceTicket(serviceTicket);
 	}
 
 	/**
 	 * Creates a new Flow Step.
 	 *
-	 * @param flowStepParam The step to create.
+	 * @param flowStep The step to create.
 	 * @return The created step.
 	 */
-	public FlowStep createFlowStep(FlowStep flowStepParam) {
-		if (flowStepParam != null && this.serviceTicket != null) {
-			flowStepParam.setServiceTicket(this.serviceTicket);
-		}
-
-		return new FlowStep(this.putJson(flowStepParam, WS.Path.FlowStep.Version1.flowStepCreate()));
+	public FlowStep createFlowStep(FlowStep flowStep) {
+		if (flowStep != null) flowStep.setServiceTicket(this.serviceTicket);
+		return new FlowStep(this.putJson(flowStep, WS.Path.FlowStep.Version1.flowStepCreate()));
 	}
 
 	/**
 	 * Updates an existing Flow Step.
 	 *
-	 * @param flowStepParam The updated Flow Step values.
+	 * @param flowStep The updated Flow Step values.
 	 * @return The updated Step.
 	 */
-	public FlowStep updateFlowStep(FlowStep flowStepParam) {
-		if (flowStepParam != null && this.serviceTicket != null) {
-			flowStepParam.setServiceTicket(this.serviceTicket);
-		}
-
-		return new FlowStep(this.postJson(flowStepParam, WS.Path.FlowStep.Version1.flowStepUpdate()));
+	public FlowStep updateFlowStep(FlowStep flowStep) {
+		if (flowStep != null) flowStep.setServiceTicket(this.serviceTicket);
+		return new FlowStep(this.postJson(flowStep, WS.Path.FlowStep.Version1.flowStepUpdate()));
 	}
 
 	/**
 	 * Retrieves an existing Flow Step via Primary key.
 	 *
-	 * @param flowStepIdParam The Flow Step Primary Key.
-	 * @param flowStepTypeParam The type of step.
+	 * @param flowStepId The Flow Step Primary Key.
+	 * @param flowStepType The type of step.
 	 * @return The Step retrieved by Primary key.
 	 *
 	 * @see com.fluidbpm.program.api.vo.flow.FlowStep.StepType
 	 */
-	public FlowStep getFlowStepById(
-		Long flowStepIdParam, String flowStepTypeParam
-	) {
-		FlowStep flowStep = new FlowStep(flowStepIdParam);
-		flowStep.setFlowStepType(flowStepTypeParam);
+	public FlowStep getFlowStepById(Long flowStepId, String flowStepType) {
+		FlowStep flowStep = new FlowStep(flowStepId);
+		flowStep.setFlowStepType(flowStepType);
 		flowStep.setServiceTicket(this.serviceTicket);
 
 		return new FlowStep(this.postJson(flowStep, WS.Path.FlowStep.Version1.getById()));

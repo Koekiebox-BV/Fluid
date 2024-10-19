@@ -258,6 +258,18 @@ public class FlowStep extends ABaseFluidJSONObject {
 	}
 
 	/**
+	 * Flow Step name and flow constructor.
+	 *
+	 * @param flowStepName Flow Step Name.
+	 * @param flowStepDescription Flow Step description.
+	 * @param flow Flow Step workflow.
+	 */
+	public FlowStep(String flowStepName, String flowStepDescription, Flow flow) {
+		this(flowStepName, flowStepDescription);
+		this.setFlow(flow);
+	}
+
+	/**
 	 * Populates local variables with {@code jsonObjectParam}.
 	 *
 	 * @param jsonObjectParam The JSON Object.

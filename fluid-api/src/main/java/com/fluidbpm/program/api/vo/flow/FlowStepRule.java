@@ -41,7 +41,6 @@ import java.util.List;
 @Getter
 @Setter
 public class FlowStepRule extends ABaseFluidJSONObject {
-
 	public static final long serialVersionUID = 1L;
 
 	private Long order;
