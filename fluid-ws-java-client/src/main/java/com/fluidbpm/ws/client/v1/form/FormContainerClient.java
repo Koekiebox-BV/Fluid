@@ -217,17 +217,16 @@ public class FormContainerClient extends ABaseClientWS {
     ) {
         if (customWebAction == null || customWebAction.trim().isEmpty()) {
             throw new FluidClientException(
-                    "Custom Web Action is mandatory.",
-                    FluidClientException.ErrorCode.FIELD_VALIDATE
+                    "Custom Web Action is mandatory.", FluidClientException.ErrorCode.FIELD_VALIDATE
             );
         }
 
         if (form == null) {
             throw new FluidClientException(
-                    "Form is mandatory.",
-                    FluidClientException.ErrorCode.FIELD_VALIDATE
+                    "Form is mandatory.", FluidClientException.ErrorCode.FIELD_VALIDATE
             );
         }
+        boolean formFieldsSet = form.getFormFields() != null;
 
         CustomWebAction action = new CustomWebAction();
         action.setTaskIdentifier(customWebAction);
@@ -236,7 +235,7 @@ public class FormContainerClient extends ABaseClientWS {
         // Cache the Multi Choice Available items:
         Map<String, List<String>> mapAvail = new HashMap<>();
         Map<String, String> mapAvailComb = new HashMap<>();
-        if (form.getFormFields() != null) {
+        if (formFieldsSet) {
             form.getFormFields().stream()
                     .filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
                             itm.getFieldValueAsMultiChoice() != null)
@@ -259,14 +258,16 @@ public class FormContainerClient extends ABaseClientWS {
         try {
             return new CustomWebAction(this.postJson(action, WS.Path.FormContainer.Version1.executeCustomWebAction()));
         } catch (Exception err) {
-            form.getFormFields().stream()
-                    .filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
-                            itm.getFieldValueAsMultiChoice() != null)
-                    .forEach(itm -> {
-                        MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();
-                        multiChoice.setAvailableMultiChoices(mapAvail.get(itm.getFieldName()));
-                        multiChoice.setAvailableMultiChoicesCombined(mapAvailComb.get(itm.getFieldName()));
-                    });
+            if (formFieldsSet) {
+                form.getFormFields().stream()
+                        .filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
+                                itm.getFieldValueAsMultiChoice() != null)
+                        .forEach(itm -> {
+                            MultiChoice multiChoice = itm.getFieldValueAsMultiChoice();
+                            multiChoice.setAvailableMultiChoices(mapAvail.get(itm.getFieldName()));
+                            multiChoice.setAvailableMultiChoicesCombined(mapAvailComb.get(itm.getFieldName()));
+                        });
+            }
             throw err;
         }
     }
