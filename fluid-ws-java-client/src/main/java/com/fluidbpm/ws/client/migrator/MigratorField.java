@@ -453,9 +453,9 @@ public class MigratorField {
         MigrateOptFieldMCBase base = opts.baseInfo;
         List<String> choicesToEnsure = choicesAsListCombined(base);
         Field field = migrateFieldMultiChoicePlain(rfc, opts);
-        List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
-                new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
-
+        List<String> available = (field.getFieldValueAsMultiChoice() == null ||
+                field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null)
+                ? new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
         choicesToEnsure.forEach(choice -> {
             if (!available.contains(choice)) {
                 available.add(choice);
@@ -475,9 +475,9 @@ public class MigratorField {
         MigrateOptFieldMCBase base = opts.baseInfo;
         List<String> choicesToEnsure = choicesAsListCombined(base);
         Field field = migrateFieldMultiChoicePlain(ufc, opts);
-        List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
-                new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
-
+        List<String> available = (field.getFieldValueAsMultiChoice() == null ||
+                field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null)
+                ? new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
         choicesToEnsure.forEach(choice -> {
             if (!available.contains(choice)) {
                 available.add(choice);
@@ -580,9 +580,9 @@ public class MigratorField {
 
         List<String> choicesToEnsure = choicesAsListCombined(base);
         Field field = migrateFieldMultiChoicePlain(ffc, opts);
-        List<String> available = field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null ?
-        new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
-
+        List<String> available = (field.getFieldValueAsMultiChoice() == null ||
+                field.getFieldValueAsMultiChoice().getAvailableMultiChoices() == null)
+                ? new ArrayList<>() : field.getFieldValueAsMultiChoice().getAvailableMultiChoices();
         choicesToEnsure.forEach(choice -> {
             if (!available.contains(choice)) {
                 available.add(choice);
