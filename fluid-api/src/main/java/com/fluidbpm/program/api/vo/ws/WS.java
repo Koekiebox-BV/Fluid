@@ -1043,10 +1043,10 @@ public class WS {
 				public static final String READ_VALUE_BY = ("/get_value_by");
 				public static final String READ_ALL_VALUES = ("/get_all_values");
 				public static final String READ_ALL = ("/get_all");
+				public static final String READ_BY_NAME = ("/get_by_name");
 
 				/**
 				 * Root for Global Field.
-				 *
 				 * @return {@code /global_field}
 				 */
 				@Override
@@ -1056,7 +1056,6 @@ public class WS {
 
 				/**
 				 * URL Path for Global Field Value update.
-				 *
 				 * @return {@code v1/global_field/update_value}
 				 */
 				public static final String globalFieldUpdateValue() {
@@ -1065,7 +1064,6 @@ public class WS {
 
 				/**
 				 * URL Path for Global Field value, get by name or id.
-				 *
 				 * @return {@code v1/global_field/get_value_by}
 				 */
 				public static final String getValueBy() {
@@ -1074,7 +1072,6 @@ public class WS {
 
 				/**
 				 * URL Path for retrieving all Global Field values.
-				 *
 				 * @return {@code v1/global_field/get_all_values}
 				 */
 				public static final String getAllValues() {
@@ -1083,7 +1080,6 @@ public class WS {
 
 				/**
 				 * URL Path for retrieving all Global Fields.
-				 *
 				 * @return {@code v1/global_field/get_all}
 				 */
 				public static final String getAllFields() {
@@ -1092,7 +1088,6 @@ public class WS {
 
 				/**
 				 * URL Path for Global Field create.
-				 *
 				 * @return {@code /v1/global_field/}
 				 */
 				public static final String globalFieldCreate() {
@@ -1101,11 +1096,18 @@ public class WS {
 
 				/**
 				 * URL Path for Global Field update.
-				 *
 				 * @return {@code v1/global_field/update}
 				 */
 				public static final String globalFieldUpdate() {
 					return Version.VERSION_1.concat(ROOT).concat(UPDATE);
+				}
+
+				/**
+				 * URL Path for Global Field get by name.
+				 * @return {@code v1/global_field/get_by_name}
+				 */
+				public static final String getByName() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_BY_NAME);
 				}
 			}
 		}

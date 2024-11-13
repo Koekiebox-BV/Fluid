@@ -494,25 +494,19 @@ public class UserFieldClient extends ABaseFieldClient {
     }
 
     /**
-     * Retrieves field information by {@code fieldIdParam}.
-     *
-     * @param fieldNameParam The field name.
-     * @return Field Definition by primary key.
+     * Retrieves field information by {@code fieldName}.
+     * @param fieldName The field name.
+     * @return Field by name.
      */
-    public Field getFieldByName(String fieldNameParam) {
+    public Field getFieldByName(String fieldName) {
         Field field = new Field();
-        field.setFieldName(fieldNameParam);
+        field.setFieldName(fieldName);
 
         //Set for Payara server...
         field.setFieldValue(new MultiChoice());
+        field.setServiceTicket(this.serviceTicket);
 
-        if (this.serviceTicket != null)
-        {
-            field.setServiceTicket(this.serviceTicket);
-        }
-
-        return new Field(this.postJson(
-                field, WS.Path.UserField.Version1.getByName()));
+        return new Field(this.postJson(field, WS.Path.UserField.Version1.getByName()));
     }
 
     /**
@@ -522,10 +516,7 @@ public class UserFieldClient extends ABaseFieldClient {
      * @return Deleted Field.
      */
     public Field deleteField(Field fieldParam) {
-        if (fieldParam != null && this.serviceTicket != null) {
-            fieldParam.setServiceTicket(this.serviceTicket);
-        }
-
+        if (fieldParam != null) fieldParam.setServiceTicket(this.serviceTicket);
         return new Field(this.postJson(fieldParam, WS.Path.UserField.Version1.userFieldDelete()));
     }
 

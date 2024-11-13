@@ -169,6 +169,22 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	}
 
 	/**
+	 * Retrieves field by {@code fieldName}.
+	 * @param fieldName The field name.
+	 * @return Field by name.
+	 */
+	public Field getFieldByName(String fieldName) {
+		Field field = new Field();
+		field.setFieldName(fieldName);
+
+		//Set for Payara server...
+		field.setFieldValue(new MultiChoice());
+		field.setServiceTicket(this.serviceTicket);
+
+		return new Field(this.postJson(field, WS.Path.GlobalField.Version1.getByName()));
+	}
+
+	/**
 	 * Retrieves field value by {@code fieldNameParam}.
 	 * @param fieldName The field name.
 	 * @return Field by primary key.
@@ -183,8 +199,7 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	 * @param fieldId The field id.
 	 * @return Field value by Global field primary key.
 	 */
-	public Field getFieldValueByFieldId(Long fieldId)
-	{
+	public Field getFieldValueByFieldId(Long fieldId) {
 		return this.getFieldValueBy(new Field(fieldId));
 	}
 
