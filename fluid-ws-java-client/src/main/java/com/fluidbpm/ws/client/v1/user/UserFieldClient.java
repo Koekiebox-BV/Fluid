@@ -71,23 +71,16 @@ public class UserFieldClient extends ABaseFieldClient {
 
     /**
      * Create a new True False field.
-     *
-     * @param formFieldParam Field to Create.
+     * @param formField Field to Create.
      * @return Created Field.
      */
-    public Field createFieldTrueFalse(Field formFieldParam)
-    {
-        if (formFieldParam != null && this.serviceTicket != null) {
-            formFieldParam.setServiceTicket(this.serviceTicket);
+    public Field createFieldTrueFalse(Field formField) {
+        if (formField != null) {
+            formField.setServiceTicket(this.serviceTicket);
+            formField.setTypeAsEnum(Field.Type.TrueFalse);
+            formField.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
         }
-
-        if (formFieldParam != null) {
-            formFieldParam.setTypeAsEnum(Field.Type.TrueFalse);
-            formFieldParam.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
-        }
-
-        return new Field(this.putJson(
-                formFieldParam, WS.Path.UserField.Version1.userFieldCreate()));
+        return new Field(this.putJson(formField, WS.Path.UserField.Version1.userFieldCreate()));
     }
 
     /**

@@ -196,6 +196,9 @@ public class MigratorField {
     ) {
         if (itm instanceof MigratorField.MigrateOptFieldText) {
             MigratorField.migrateFieldText(gfc, (MigratorField.MigrateOptFieldText)itm);
+        } else if (itm instanceof MigratorField.MigrateOptFieldTrueFalse) {
+            MigratorField.migrateFieldTrueFalse(gfc, (MigratorField.MigrateOptFieldTrueFalse)itm
+            );
         } else {
             throw new FluidClientException(
                     String.format("Global: Type '%s' is not supported.", itm),
@@ -253,14 +256,26 @@ public class MigratorField {
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldMigrate}
      */
-    public static void migrateFieldTrueFalse(
-            FormFieldClient ffc, MigrateOptFieldTrueFalse opts
-    ) {
+    public static void migrateFieldTrueFalse(FormFieldClient ffc, MigrateOptFieldTrueFalse opts) {
         try {
-            Field toCreate = new Field(opts.fieldName, null, Field.Type.Text);
+            Field toCreate = new Field(opts.fieldName, null, Field.Type.TrueFalse);
             toCreate.setFieldDescription(opts.fieldDescription);
-
             ffc.createFieldTrueFalse(toCreate);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
+     * Migrate a TrueFalse field.
+     * @param gfc {@code GlobalFieldClient}
+     * @param opts {@code OptFieldMigrate}
+     */
+    public static void migrateFieldTrueFalse(GlobalFieldClient gfc, MigrateOptFieldTrueFalse opts) {
+        try {
+            Field toCreate = new Field(opts.fieldName, null, Field.Type.TrueFalse);
+            toCreate.setFieldDescription(opts.fieldDescription);
+            gfc.createFieldTrueFalse(toCreate);
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
         }

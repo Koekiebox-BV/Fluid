@@ -88,6 +88,20 @@ public class GlobalFieldClient extends ABaseFieldClient {
 	}
 
 	/**
+	 * Create a new True False field.
+	 * @param globalField Field to Create.
+	 * @return Created Field.
+	 */
+	public Field createFieldTrueFalse(Field globalField) {
+		if (globalField != null) {
+			globalField.setServiceTicket(this.serviceTicket);
+			globalField.setTypeAsEnum(Field.Type.TrueFalse);
+			globalField.setTypeMetaData(FieldMetaData.TrueFalse.TRUE_FALSE);
+		}
+		return new Field(this.putJson(globalField, WS.Path.GlobalField.Version1.globalFieldCreate()));
+	}
+
+	/**
 	 * Create a new Paragraph Text field.
 	 * @param globalField Field to Create.
 	 * @return Created Field.
