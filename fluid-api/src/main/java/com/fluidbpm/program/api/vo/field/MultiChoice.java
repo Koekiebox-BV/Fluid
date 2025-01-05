@@ -317,28 +317,25 @@ public class MultiChoice extends ABaseFluidJSONObject {
 	/**
 	 * Combine {@code listToCombineParam} into a single {@code String}.
 	 *
-	 * @param listToCombineParam To combine.
-	 * @param separatorCharsParam The char used to separate with.
+	 * @param listToCombine To combine.
+	 * @param separatorChars The char used to separate with.
 	 *
 	 * @return The combined text value.
 	 */
 	@XmlTransient
 	@JsonIgnore
-	public String combineStringArrayWith(List<String> listToCombineParam, String separatorCharsParam) {
+	public String combineStringArrayWith(List<String> listToCombine, String separatorChars) {
 		String returnValue = UtilGlobal.EMPTY;
-
-		int lengthOfSepChars = (separatorCharsParam == null) ? 0 : separatorCharsParam.length();
-		if (listToCombineParam != null && !listToCombineParam.isEmpty()) {
+		int lengthOfSepChars = (separatorChars == null) ? 0 : separatorChars.length();
+		if (listToCombine != null && !listToCombine.isEmpty()) {
 			StringBuffer concatBuffer = new StringBuffer();
-			for (String toAdd : listToCombineParam) {
+			for (String toAdd : listToCombine) {
 				concatBuffer.append(toAdd);
-				concatBuffer.append(separatorCharsParam);
+				concatBuffer.append(separatorChars);
 			}
-
 			String concatString = concatBuffer.toString();
 			returnValue = concatString.substring(0, concatString.length() - lengthOfSepChars);
 		}
-
 		return returnValue;
 	}
 
