@@ -131,7 +131,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 			public static final String MailTemplateSubject = "MailTemplateSubject";
 			public static final String MailTemplateBodyType = "MailTemplateBodyType";
 			public static final String MailTemplateBodyContent = "MailTemplateBodyContent";
-			public static final String MailToSyntax = "MailToSyntax";
+			public static final String RecipientSyntax = "RecipientSyntax";
 			public static final String MailTransfer = "MailTransfer";
 			public static final String IncludeAttachments = "IncludeAttachments";
 
