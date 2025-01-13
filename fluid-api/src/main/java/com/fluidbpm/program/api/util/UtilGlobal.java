@@ -766,4 +766,19 @@ public class UtilGlobal {
 
 		return true;
 	}
+
+	/**
+	 * Check whether a value has a {@code boolean} value of {@code true}.
+	 *
+	 * @param txt The value to test.
+	 * @return {@code true} if yes/1/true, otherwise {@code false}
+	 */
+	public static boolean isValYesNoTrue(String txt) {
+		txt = txt.trim().toLowerCase();
+		return UtilGlobal.isAnyTrue(
+				"true".equals(txt),
+				"1".equals(txt),
+				"yes".equals(txt)
+		);
+	}
 }
