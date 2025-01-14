@@ -138,8 +138,12 @@ public class MigratorFlow {
                     mergeEntryRules(fsrc, step, stepToMigrate.flowRulesEntry);
                     mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
                 break;
+                case SendMail:
+                    mergeEntryRules(fsrc, step, stepToMigrate.flowRulesEntry);
+                    mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
+                break;
                 default: throw new FluidClientException(
-                        String.format("Step type '%s' is not supported.", type),
+                        String.format("Migration-Flow: Step type '%s' is not supported.", type),
                         FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
                 );
             }
