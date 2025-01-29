@@ -66,6 +66,7 @@ public class MigratorPlan {
         private MigratorFlow.MigrateOptFlow[] flows;
         private MigratorUserQuery.MigrateOptUserQuery[] userQueries;
         private MigratorRoleAndPermissions.MigrateOptRole[] roles;
+        private MigratorConfig.MigrateOptConfig config;
     }
 
     /**
@@ -153,6 +154,9 @@ public class MigratorPlan {
             if (migratePlan.roles != null) Arrays.stream(migratePlan.roles).forEach(itm -> {
                 MigratorRoleAndPermissions.migrateRole(rc, itm);
             });
+
+            // 10. Migrate remaining configurations:
+            if (migratePlan.config != null) MigratorConfig.migrateConfiguration(cc, migratePlan.config);
         }
     }
 

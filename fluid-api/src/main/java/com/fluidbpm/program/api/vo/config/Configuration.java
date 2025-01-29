@@ -16,6 +16,8 @@
 package com.fluidbpm.program.api.vo.config;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,12 +31,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @see ABaseFluidJSONObject
  */
+@Getter
+@Setter
 @XmlRootElement
 public class Configuration extends ABaseFluidJSONObject {
 	public static final long serialVersionUID = 1L;
 
 	private String key;
 	private String value;
+
+	public enum Key {
+		PrimeFacesTheme,
+		WhiteLabel
+	}
 
 	/**
 	 * The JSON mapping for the {@code Configuration} object.
@@ -80,10 +89,7 @@ public class Configuration extends ABaseFluidJSONObject {
 	public Configuration(JSONObject jsonObjectParam) {
 		super(jsonObjectParam);
 
-		if (this.jsonObject == null) {
-			return;
-		}
-
+		if (this.jsonObject == null) return;
 		//Key...
 		if (!this.jsonObject.isNull(JSONMapping.KEY)) {
 			this.setKey(this.jsonObject.getString(JSONMapping.KEY));
@@ -93,42 +99,6 @@ public class Configuration extends ABaseFluidJSONObject {
 		if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
 			this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
 		}
-	}
-
-	/**
-	 * Gets the key of the Config.
-	 *
-	 * @return Config value.
-	 */
-	public String getKey() {
-		return this.key;
-	}
-
-	/**
-	 * Sets the Key of the Config.
-	 *
-	 * @param keyParam Config value.
-	 */
-	public void setKey(String keyParam) {
-		this.key = keyParam;
-	}
-
-	/**
-	 * Gets the value of the Config.
-	 *
-	 * @return Flow name.
-	 */
-	public String getValue() {
-		return this.value;
-	}
-
-	/**
-	 * Sets the Value of the Config.
-	 *
-	 * @param valueParam Config value.
-	 */
-	public void setValue(String valueParam) {
-		this.value = valueParam;
 	}
 
 	/**
@@ -144,14 +114,10 @@ public class Configuration extends ABaseFluidJSONObject {
 		JSONObject returnVal = super.toJsonObject();
 
 		//Key...
-		if (this.getKey() != null) {
-			returnVal.put(JSONMapping.KEY,this.getKey());
-		}
+		if (this.getKey() != null) returnVal.put(JSONMapping.KEY,this.getKey());
 
 		//Value...
-		if (this.getValue() != null) {
-			returnVal.put(JSONMapping.VALUE, this.getValue());
-		}
+		if (this.getValue() != null) returnVal.put(JSONMapping.VALUE, this.getValue());
 
 		return returnVal;
 	}
