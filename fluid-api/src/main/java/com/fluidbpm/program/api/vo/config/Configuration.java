@@ -42,7 +42,9 @@ public class Configuration extends ABaseFluidJSONObject {
 
 	public enum Key {
 		PrimeFacesTheme,
-		WhiteLabel
+		WhiteLabel,
+		WebKit,
+		WebKitPersonalInventory
 	}
 
 	/**

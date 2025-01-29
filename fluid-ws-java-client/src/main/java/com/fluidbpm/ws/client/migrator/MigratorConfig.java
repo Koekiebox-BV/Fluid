@@ -17,10 +17,13 @@ package com.fluidbpm.ws.client.migrator;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.config.Configuration;
+import com.fluidbpm.program.api.vo.webkit.global.WebKitGlobal;
+import com.fluidbpm.program.api.vo.webkit.global.WebKitPersonalInventory;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import lombok.Builder;
 import lombok.Data;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,6 +42,8 @@ public class MigratorConfig {
     public static final class MigrateOptConfig {
         private String theme;
         private String privateLabel;
+        private WebKitGlobal webKitGlobal;
+        private WebKitPersonalInventory webKitPersonalInventory;
 
         private String companyLogoClasspath;
         private String companyLogoFilepath;
@@ -81,19 +86,32 @@ public class MigratorConfig {
         }
         
         // Theme:
-        if (UtilGlobal.isNotBlank(opts.theme)) {
-            cc.upsertConfiguration(
-                    Configuration.Key.PrimeFacesTheme.name(),
-                    opts.theme
-            );
-        }
-
+        setConfigIfNotBlank(cc, Configuration.Key.PrimeFacesTheme, opts.theme);
         // Label:
-        if (UtilGlobal.isNotBlank(opts.privateLabel)) {
-            cc.upsertConfiguration(
-                    Configuration.Key.WhiteLabel.name(),
-                    opts.privateLabel
-            );
+        setConfigIfNotBlank(cc, Configuration.Key.WhiteLabel, opts.privateLabel);
+        // WebKit:
+        if (opts.webKitGlobal != null) {
+            JSONObject wkGlobalJson = opts.webKitGlobal.toJsonObject();
+            if (!wkGlobalJson.isEmpty()) {
+                setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkGlobalJson.toString());
+            }
+        }
+        // WebKit: PI
+        if (opts.webKitPersonalInventory != null) {
+            JSONObject wkPIJson = opts.webKitPersonalInventory.toJsonObject();
+            if (!wkPIJson.isEmpty()) {
+                setConfigIfNotBlank(cc, Configuration.Key.WebKitPersonalInventory, wkPIJson.toString());
+            }
+        }
+    }
+
+    private static void setConfigIfNotBlank(
+            ConfigurationClient cc,
+            Configuration.Key key,
+            String value
+    ) {
+        if (UtilGlobal.isNotBlank(value)) {
+            cc.upsertConfiguration(key.name(), value);
         }
     }
 
