@@ -22,6 +22,7 @@ import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifierListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.google.common.io.BaseEncoding;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -89,6 +90,28 @@ public class ConfigurationClient extends ABaseClientWS {
 		Configuration configuration = new Configuration();
 		configuration.setServiceTicket(this.serviceTicket);
 		return new Configuration(this.postJson(configuration, WS.Path.Configuration.Version1.getCompanyLogoSmall()));
+	}
+
+	/**
+	 * Load the small company logo.
+	 * @param logoData The bytes for the logo.
+	 */
+	public Configuration loadCompanyLogoSmall(byte[] logoData) {
+		Configuration configuration = new Configuration();
+		configuration.setServiceTicket(this.serviceTicket);
+		configuration.setValue(BaseEncoding.base64().encode(logoData));
+		return new Configuration(this.putJson(configuration, WS.Path.Configuration.Version1.getCompanyLogoSmall()));
+	}
+
+	/**
+	 * Load the large company logo.
+	 * @param logoData The bytes for the logo.
+	 */
+	public Configuration loadCompanyLogo(byte[] logoData) {
+		Configuration configuration = new Configuration();
+		configuration.setServiceTicket(this.serviceTicket);
+		configuration.setValue(BaseEncoding.base64().encode(logoData));
+		return new Configuration(this.putJson(configuration, WS.Path.Configuration.Version1.getCompanyLogo()));
 	}
 
 	/**

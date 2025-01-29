@@ -281,9 +281,7 @@ public class MigratorFlow {
      * @param fc {@code FlowClient}
      * @param opts {@code MigrateOptRemoveForm}
      */
-    public static void removeFlow(
-            FlowClient fc, MigratorFlow.MigrateOptRemoveFlow opts
-    ) {
+    public static void removeFlow(FlowClient fc, MigratorFlow.MigrateOptRemoveFlow opts) {
         Flow toDelete = new Flow(opts.flowId, opts.flowName);
         fc.forceDeleteFlow(toDelete);
     }

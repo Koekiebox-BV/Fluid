@@ -159,7 +159,8 @@ public class TestMigratorPlan extends ABaseLoggedInTestCase {
                                                 .stepName("Print The Value")
                                                 .stepType(MigratorFlow.StepType.JavaProgram)
                                                 .stepDescription("Print the values from the form.")
-                                                .properties(new FlowStep.StepProperty[]{
+                                                .properties(new FlowStep.StepProperty[] {
+                                                        new FlowStep.StepProperty(FlowStep.StepProperty.PropName.AutoCreateCustomRunnerType, "Internal Custom Runner"),
                                                         new FlowStep.StepProperty(FlowStep.StepProperty.PropName.TaskIdentifier, "Print Form Values")
                                                 })
                                                 .flowRulesExit(new String[] {"ROUTE TO 'Exit'"})

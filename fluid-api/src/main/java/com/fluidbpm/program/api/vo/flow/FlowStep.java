@@ -141,6 +141,11 @@ public class FlowStep extends ABaseFluidJSONObject {
 			//Java Program...
 			public static final String TaskIdentifier = "TaskIdentifier";
 			public static final String ProgramNameValueProperties = "ProgramNameValueProperties";
+			/**
+			 * The following two values are allowed:
+			 * - Internal Custom Runner
+			 * - External Custom Runner
+			 */
 			public static final String AutoCreateCustomRunnerType = "AutoCreateCustomRunnerType";
 
 			//Clone Item...

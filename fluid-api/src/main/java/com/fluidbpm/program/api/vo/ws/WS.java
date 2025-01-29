@@ -3459,11 +3459,13 @@ public class WS {
 				public static final String READ_COMPANY_LOGO = ("/get_company_logo");
 				public static final String READ_COMPANY_LOGO_SMALL = ("/get_company_logo_small");
 
-				public static final String THIRD_PARTY_LIB_UPSERT = ("/third_party_library_upsert");
-				public static final String THIRD_PARTY_LIB_DELETE = ("/third_party_library_delete");
+				public static final String THIRD_PARTY_LIB_UPSERT = "/third_party_library_upsert";
+				public static final String THIRD_PARTY_LIB_DELETE = "/third_party_library_delete";
 
 				//Update/Insert...
-				public static final String UPSERT = ("/upsert");
+				public static final String UPSERT = "/upsert";
+				public static final String UPSERT_LOGO_SMALL = "/upsert_logo_small";
+				public static final String UPSERT_LOGO_LARGE = "/upsert_logo_large";
 
 				/**
 				 * Root for Configuration.
@@ -3480,7 +3482,7 @@ public class WS {
 				 *
 				 * @return {@code v1/configuration/get_by_key}
 				 */
-				public static final String getByKey() {
+				public static String getByKey() {
 					return Version.VERSION_1.concat(ROOT).concat(READ);
 				}
 
@@ -3489,7 +3491,7 @@ public class WS {
 				 *
 				 * @return {@code v1/configuration/get_all_configurations}
 				 */
-				public static final String getAllConfigurations() {
+				public static String getAllConfigurations() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL);
 				}
 
@@ -3498,7 +3500,7 @@ public class WS {
 				 *
 				 * @return {@code v1/configuration/get_all_basic_configurations}
 				 */
-				public static final String getAllBasicConfigurations() {
+				public static String getAllBasicConfigurations() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_BASIC);
 				}
 
@@ -3507,7 +3509,7 @@ public class WS {
 				 *
 				 * @return {@code v1/configuration/get_system_mail_transfer}
 				 */
-				public static final String getSystemMailTransfer() {
+				public static String getSystemMailTransfer() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_SYSTEM_MAIL_TRANSFER);
 				}
 
@@ -3516,7 +3518,7 @@ public class WS {
 				 *
 				 * @return {@code v1/configuration/get_all_third_party_task_identifiers}
 				 */
-				public static final String getAllThirdPartyTaskIdentifiers() {
+				public static String getAllThirdPartyTaskIdentifiers() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_ALL_TASK_IDENTIFIERS);
 				}
 
@@ -3524,7 +3526,7 @@ public class WS {
 				 * URL Path for uploading third party libraries.
 				 * @return {@code v1/configuration/third_party_library_upsert}
 				 */
-				public static final String thirdPartyTaskUpsert() {
+				public static String thirdPartyTaskUpsert() {
 					return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_UPSERT);
 				}
 
@@ -3532,7 +3534,7 @@ public class WS {
 				 * URL Path for deleting third party library.
 				 * @return {@code v1/configuration/third_party_library_delete}
 				 */
-				public static final String thirdPartyTaskDelete() {
+				public static String thirdPartyTaskDelete() {
 					return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_DELETE);
 				}
 
@@ -3541,7 +3543,7 @@ public class WS {
 				 *
 				 * @return {@code /v1/configuration/upsert}
 				 */
-				public static final String configUpsert() {
+				public static String configUpsert() {
 					return Version.VERSION_1.concat(ROOT).concat(UPSERT);
 				}
 
@@ -3561,6 +3563,22 @@ public class WS {
 				 */
 				public static String getCompanyLogoSmall() {
 					return Version.VERSION_1.concat(ROOT).concat(READ_COMPANY_LOGO_SMALL);
+				}
+
+				/**
+				 * URL Path for setting the small company logo.
+				 * @return {@code v1/configuration/upsert_logo_small}
+				 */
+				public static String upsertCompanyLogoSmall() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_LOGO_SMALL);
+				}
+
+				/**
+				 * URL Path for setting the large company logo.
+				 * @return {@code v1/configuration/upsert_logo_large}
+				 */
+				public static String upsertCompanyLogoLarge() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_LOGO_LARGE);
 				}
 			}
 		}
