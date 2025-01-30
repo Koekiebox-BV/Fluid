@@ -47,8 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Log
 public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
     private String prevConfMemory;
-
-    private static String CONFIG_KEY_MEM = "MemoryCacheType";
+    private static String CONFIG_KEY_MEM = Configuration.Key.MemoryCacheType.name();
 
     /**
      * Initialize.

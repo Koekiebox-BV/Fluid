@@ -60,12 +60,12 @@ public class ConfigurationClient extends ABaseClientWS {
 	/**
 	 * Retrieves a Configuration by Key.
 	 *
-	 * @param configurationKeyParam The Flow key.
+	 * @param configurationKey The Flow key.
 	 * @return The Configuration.
 	 */
-	public Configuration getConfigurationByKey(String configurationKeyParam) {
+	public Configuration getConfigurationByKey(String configurationKey) {
 		Configuration configuration = new Configuration();
-		configuration.setKey(configurationKeyParam);
+		configuration.setKey(configurationKey);
 		configuration.setServiceTicket(this.serviceTicket);
 
 		return new Configuration(this.postJson(
@@ -100,7 +100,7 @@ public class ConfigurationClient extends ABaseClientWS {
 		Configuration configuration = new Configuration();
 		configuration.setServiceTicket(this.serviceTicket);
 		configuration.setValue(BaseEncoding.base64().encode(logoData));
-		return new Configuration(this.putJson(configuration, WS.Path.Configuration.Version1.getCompanyLogoSmall()));
+		return new Configuration(this.putJson(configuration, WS.Path.Configuration.Version1.upsertCompanyLogoSmall()));
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class ConfigurationClient extends ABaseClientWS {
 		Configuration configuration = new Configuration();
 		configuration.setServiceTicket(this.serviceTicket);
 		configuration.setValue(BaseEncoding.base64().encode(logoData));
-		return new Configuration(this.putJson(configuration, WS.Path.Configuration.Version1.getCompanyLogo()));
+		return new Configuration(this.putJson(configuration, WS.Path.Configuration.Version1.upsertCompanyLogoLarge()));
 	}
 
 	/**

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 
 /**
  * Migration class for configuration related migrations.
@@ -88,17 +89,39 @@ public class MigratorConfig {
         setConfigIfNotBlank(cc, Configuration.Key.WhiteLabel, opts.privateLabel);
         // WebKit:
         if (opts.webKitGlobal != null) {
+            Configuration existing = cc.getConfigurationByKey(Configuration.Key.WebKit.name());
             JSONObject wkGlobalJson = opts.webKitGlobal.toJsonObject();
-            if (!wkGlobalJson.isEmpty()) {
-                setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkGlobalJson.toString());
-            }
+            JSONObject existingJson;
+            if (existing == null) existingJson = new JSONObject();
+            else existingJson = new JSONObject(existing.getValue());
+
+            copyJSONFieldsNotSet(existingJson, wkGlobalJson);
+
+            if (!wkGlobalJson.isEmpty()) setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkGlobalJson.toString());
         }
         // WebKit: PI
         if (opts.webKitPersonalInventory != null) {
+            Configuration existing = cc.getConfigurationByKey(Configuration.Key.WebKitPersonalInventory.name());
             JSONObject wkPIJson = opts.webKitPersonalInventory.toJsonObject();
-            if (!wkPIJson.isEmpty()) {
-                setConfigIfNotBlank(cc, Configuration.Key.WebKitPersonalInventory, wkPIJson.toString());
-            }
+            JSONObject existingJson;
+            if (existing == null) existingJson = new JSONObject();
+            else existingJson = new JSONObject(existing.getValue());
+
+            copyJSONFieldsNotSet(existingJson, wkPIJson);
+
+            if (!wkPIJson.isEmpty()) setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkPIJson.toString());
+        }
+    }
+
+    private static void copyJSONFieldsNotSet(
+            JSONObject source, JSONObject target
+    ) {
+        Iterator<String> keys = source.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (target.has(key)) continue;
+
+            target.put(key, source.get(key));
         }
     }
 

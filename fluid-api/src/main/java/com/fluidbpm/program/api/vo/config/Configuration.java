@@ -41,6 +41,7 @@ public class Configuration extends ABaseFluidJSONObject {
 	private String value;
 
 	public enum Key {
+		MemoryCacheType,
 		PrimeFacesTheme,
 		WhiteLabel,
 		WebKit,
