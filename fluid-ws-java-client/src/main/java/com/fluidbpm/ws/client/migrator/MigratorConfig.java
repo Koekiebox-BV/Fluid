@@ -40,7 +40,6 @@ public class MigratorConfig {
     @Builder
     @Data
     public static final class MigrateOptConfig {
-        private String theme;
         private String privateLabel;
         private WebKitGlobal webKitGlobal;
         private WebKitPersonalInventory webKitPersonalInventory;
@@ -84,9 +83,7 @@ public class MigratorConfig {
         if (compLogoContent != null && compLogoContent.length > 0) {
             cc.loadCompanyLogoSmall(compLogoContent);
         }
-        
-        // Theme:
-        setConfigIfNotBlank(cc, Configuration.Key.PrimeFacesTheme, opts.theme);
+
         // Label:
         setConfigIfNotBlank(cc, Configuration.Key.WhiteLabel, opts.privateLabel);
         // WebKit:
