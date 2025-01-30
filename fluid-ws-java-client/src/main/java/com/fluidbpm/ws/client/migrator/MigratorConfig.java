@@ -74,7 +74,7 @@ public class MigratorConfig {
         }
 
         // Company Logo Small:
-        compLogoContent = opts.companyLogoContent;
+        compLogoContent = opts.companyLogoSmallContent;
         if ((compLogoContent == null || compLogoContent.length == 0) && UtilGlobal.isNotBlank(opts.companyLogoSmallClasspath)) {
             compLogoContent = getContentForClassPath(opts.companyLogoSmallClasspath);
         } else if ((compLogoContent == null || compLogoContent.length == 0) && UtilGlobal.isNotBlank(opts.companyLogoSmallFilepath)) {
