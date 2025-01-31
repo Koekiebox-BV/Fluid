@@ -940,6 +940,15 @@ public abstract class ABaseClientWS implements AutoCloseable {
 
 	/**
 	 * Performs an HTTP Get against the connection test Web Service to
+	 * confirm whether the connection is invalid.
+	 * @return {@code true} if connection is invalid.
+	 */
+	public boolean isConnectionInValid() {
+		return !isConnectionValid();
+	}
+
+	/**
+	 * Performs an HTTP Get against the connection test Web Service to
 	 * confirm whether the connection is valid.
 	 *
 	 * @return Whether the connection is valid or not.
@@ -948,8 +957,13 @@ public abstract class ABaseClientWS implements AutoCloseable {
 		try {
 			this.getJson(false, WS.Path.Test.Version1.testConnection());
 		} catch (FluidClientException flowJobExcept) {
-			if (flowJobExcept.getErrorCode() == FluidClientException.ErrorCode.CONNECT_ERROR) return false;
-			throw flowJobExcept;
+			switch (flowJobExcept.getErrorCode()) {
+				case FluidClientException.ErrorCode.CONNECT_ERROR:
+				case FluidClientException.ErrorCode.IO_ERROR:
+					return false;
+				default:
+					throw flowJobExcept;
+			}
 		}
 		return true;
 	}
