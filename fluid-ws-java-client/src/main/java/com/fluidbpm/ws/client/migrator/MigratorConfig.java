@@ -89,7 +89,7 @@ public class MigratorConfig {
         setConfigIfNotBlank(cc, Configuration.Key.WhiteLabel, opts.privateLabel);
         // WebKit:
         if (opts.webKitGlobal != null) {
-            Configuration existing = cc.getConfigurationByKey(Configuration.Key.WebKit.name());
+            Configuration existing = getConfigurationSafe(cc, Configuration.Key.WebKit);
             JSONObject wkGlobalJson = opts.webKitGlobal.toJsonObject();
             JSONObject existingJson;
             if (existing == null) existingJson = new JSONObject();
@@ -101,7 +101,7 @@ public class MigratorConfig {
         }
         // WebKit: PI
         if (opts.webKitPersonalInventory != null) {
-            Configuration existing = cc.getConfigurationByKey(Configuration.Key.WebKitPersonalInventory.name());
+            Configuration existing = getConfigurationSafe(cc, Configuration.Key.WebKitPersonalInventory);
             JSONObject wkPIJson = opts.webKitPersonalInventory.toJsonObject();
             JSONObject existingJson;
             if (existing == null) existingJson = new JSONObject();
@@ -132,6 +132,20 @@ public class MigratorConfig {
     ) {
         if (UtilGlobal.isNotBlank(value)) {
             cc.upsertConfiguration(key.name(), value);
+        }
+    }
+
+    private static Configuration getConfigurationSafe(ConfigurationClient cc, Configuration.Key key) {
+        try {
+            return cc.getConfigurationByKey(key.name());
+        } catch (FluidClientException fce) {
+            switch (fce.getErrorCode()) {
+                case FluidClientException.ErrorCode.NO_RESULT:
+                case FluidClientException.ErrorCode.FIELD_VALIDATE:
+                    return null;
+                default:
+                    throw fce;
+            }
         }
     }
 
