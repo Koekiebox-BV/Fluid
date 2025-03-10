@@ -1413,6 +1413,25 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * @return {@code true} if instance is {@code MultiChoice}.
+     * @see MultiChoice
+     */
+    @XmlTransient
+    @JsonIgnore
+    public boolean isValueInstanceTypeMultiChoice() {
+        return (this.fieldValue instanceof MultiChoice);
+    }
+
+    /**
+     * @return {@code true} if instance is {@code String}.
+     */
+    @XmlTransient
+    @JsonIgnore
+    public boolean isValueInstanceTypeString() {
+        return (this.fieldValue instanceof String);
+    }
+
+    /**
      * Checks whether the provided {@code fieldParam} qualifies for
      * insert into Elasticsearch.
      *
