@@ -823,4 +823,21 @@ public class UtilGlobal {
         returnVal.setFormFields(toListSafe(formFields));
         return returnVal;
     }
+
+    /**
+     * Copies fields from the source JSON object to the target JSON object only if the fields
+     * are not already present in the target. Fields already existing in the target are not overwritten.
+     *
+     * @param source the JSONObject containing the source data fields to be copied
+     * @param target the JSONObject to which the fields should be copied, if not already set
+     */
+    public static void copyJSONFieldsNotSet(JSONObject source, JSONObject target) {
+        Iterator<String> keys = source.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (target.has(key)) continue;
+
+            target.put(key, source.get(key));
+        }
+    }
 }

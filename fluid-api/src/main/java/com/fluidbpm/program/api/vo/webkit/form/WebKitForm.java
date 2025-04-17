@@ -49,7 +49,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	//Attachment...
 	private int attachmentSize = 300;
 	private String attachmentDisplayLocation;//tab / bottom / top / none
-	private String attachmentDisplayType = "grid";//galleria / list / grid
+	private String attachmentDisplayType = AttachmentDisplayType.GRID;//galleria / list / grid
 
 	private int displayWidth = 900;
 	private Integer displayHeight;
@@ -89,6 +89,33 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	public static final class InputLayout {
 		public static final String VERTICAL = "vertical";
 		public static final String ADVANCED = "advanced";
+	}
+
+	/**
+	 * The type of FormDisplayBehaviour.
+	 */
+	public static final class FormDisplayBehaviour {
+		public static final String DIALOG = "dialog";
+		public static final String WORKSPACE = "workspace";
+	}
+
+	/**
+	 * The type of AttachmentDisplayLocation.
+	 */
+	public static final class AttachmentDisplayLocation {
+		public static final String TAB = "tab";
+		public static final String BOTTOM = "bottom";
+		public static final String TOP = "top";
+		public static final String NONE = "none";
+	}
+
+	/**
+	 * The type of AttachmentDisplayType.
+	 */
+	public static final class AttachmentDisplayType {
+		public static final String GALLERIA = "galleria";
+		public static final String LIST = "list";
+		public static final String GRID = "grid";
 	}
 
 	/**

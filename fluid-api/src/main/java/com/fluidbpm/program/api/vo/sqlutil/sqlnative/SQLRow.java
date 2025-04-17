@@ -15,15 +15,21 @@
 
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import javax.xml.bind.annotation.XmlTransient;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -37,103 +43,110 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @author jasonbruwer on 2018-03-13
  * @since v1.8
  */
+@NoArgsConstructor
 public class SQLRow extends ABaseFluidJSONObject {
 
-	public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
 
-	private List<SQLColumn> sqlColumns;
+    @Getter
+    @Setter
+    private List<SQLColumn> sqlColumns;
 
-	/**
-	 * The JSON mapping for the {@code SQLRow} object.
-	 */
-	public static class JSONMapping {
+    /**
+     * The JSON mapping for the {@code SQLRow} object.
+     */
+    public static class JSONMapping {
+        public static final String SQL_COLUMNS = "sqlColumns";
+    }
 
-		public static final String SQL_COLUMNS = "sqlColumns";
-	}
+    /**
+     * Constructs a new {@code SQLRow} object with the provided list of {@code SQLColumn}s.
+     *
+     * @param sqlColumns The list of {@code SQLColumn} objects representing the columns of the row.
+     */
+    public SQLRow(List<SQLColumn> sqlColumns) {
+        this.setSqlColumns(sqlColumns);
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public SQLRow() {
-		super();
-	}
+    /**
+     * Retrieves a specific {@code SQLColumn} from the list of columns associated
+     * with this {@code SQLRow}, based on the provided column name.
+     *
+     * @param name The name of the column to retrieve. This is case-insensitive.
+     *             If {@code null}, the method will return {@code null}.
+     * @return The {@code SQLColumn} with the specified name, or {@code null} if
+     *         no column with the specified name exists or if the column list is
+     *         {@code null}.
+     */
+    @JsonIgnore
+    @XmlTransient
+    public Optional<SQLColumn> getColumnWithName(String name) {
+        if (UtilGlobal.isBlank(name) || this.sqlColumns == null) return Optional.empty();
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public SQLRow(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
+        return this.sqlColumns.stream()
+                .filter(itm -> name.equalsIgnoreCase(itm.getColumnName()))
+                .findFirst();
+    }
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+    /**
+     * Adds a new {@code SQLColumn} to the list of columns associated with this {@code SQLRow}.
+     * If the column list is {@code null}, a new list is initialized before adding the column.
+     *
+     * @param column The {@code SQLColumn} object to be added. If {@code null}, no action is taken.
+     */
+    @JsonIgnore
+    @XmlTransient
+    public void upsertColumn(SQLColumn column) {
+        if (column == null) return;
+        if (this.sqlColumns == null) this.sqlColumns = new ArrayList<>();
 
-		//SQL Columns...
-		if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
+        Optional<SQLColumn> existing = this.getColumnWithName(column.getColumnName());
+        if (existing.isPresent()) {
+            this.sqlColumns.remove(existing.orElse(null));
+        } else this.sqlColumns.add(column);
+    }
 
-			JSONArray rulesArr = this.jsonObject.getJSONArray(
-					JSONMapping.SQL_COLUMNS);
 
-			List<SQLColumn> sqlColumns = new ArrayList();
-			for (int index = 0;index < rulesArr.length();index++)
-			{
-				sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
-			}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public SQLRow(JSONObject jsonObjectParam){
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-			this.setSqlColumns(sqlColumns);
-		}
-		else{
-			this.setSqlColumns(null);
-		}
-	}
+        //SQL Columns...
+        if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
+            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.SQL_COLUMNS);
+            List<SQLColumn> sqlColumns = new ArrayList();
+            for (int index = 0;index < rulesArr.length();index++) {
+                sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
+            }
+            this.setSqlColumns(sqlColumns);
+        } else this.setSqlColumns(null);
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code UserQuery}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code UserQuery}
+     * @throws JSONException If there is a problem with the JSON Body.
+     *
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
+        //SQL Columns...
+        if (this.getSqlColumns() != null) {
+            JSONArray jsonArray = new JSONArray();
+            for (SQLColumn toAdd : this.getSqlColumns()) {
+                jsonArray.put(toAdd.toJsonObject());
+            }
+            returnVal.put(JSONMapping.SQL_COLUMNS, jsonArray);
+        }
 
-		JSONObject returnVal = super.toJsonObject();
-
-		//SQL Columns...
-		if (this.getSqlColumns() != null)
-		{
-			JSONArray jsonArray = new JSONArray();
-
-			for (SQLColumn toAdd : this.getSqlColumns())
-			{
-				jsonArray.put(toAdd.toJsonObject());
-			}
-
-			returnVal.put(JSONMapping.SQL_COLUMNS, jsonArray);
-		}
-
-		return returnVal;
-	}
-
-	/**
-	 * Get the SQL columns.
-	 *
-	 * @return The SQL columns.
-	 */
-	public List<SQLColumn> getSqlColumns() {
-		return this.sqlColumns;
-	}
-
-	/**
-	 * Set the SQL columns.
-	 *
-	 * @param sqlInputsParam The SQL columns.
-	 */
-	public void setSqlColumns(List<SQLColumn> sqlInputsParam) {
-		this.sqlColumns = sqlInputsParam;
-	}
+        return returnVal;
+    }
 }

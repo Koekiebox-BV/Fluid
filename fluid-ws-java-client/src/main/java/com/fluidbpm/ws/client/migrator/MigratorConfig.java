@@ -30,7 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Iterator;
+
+import static com.fluidbpm.program.api.util.UtilGlobal.copyJSONFieldsNotSet;
 
 /**
  * Migration class for configuration related migrations.
@@ -113,26 +114,12 @@ public class MigratorConfig {
         }
     }
 
-    private static void copyJSONFieldsNotSet(
-            JSONObject source, JSONObject target
-    ) {
-        Iterator<String> keys = source.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            if (target.has(key)) continue;
-
-            target.put(key, source.get(key));
-        }
-    }
-
     private static void setConfigIfNotBlank(
             ConfigurationClient cc,
             Configuration.Key key,
             String value
     ) {
-        if (UtilGlobal.isNotBlank(value)) {
-            cc.upsertConfiguration(key.name(), value);
-        }
+        if (UtilGlobal.isNotBlank(value)) cc.upsertConfiguration(key.name(), value);
     }
 
     private static Configuration getConfigurationSafe(ConfigurationClient cc, Configuration.Key key) {

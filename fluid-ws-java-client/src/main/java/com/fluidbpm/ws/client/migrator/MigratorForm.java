@@ -15,13 +15,16 @@
 
 package com.fluidbpm.ws.client.migrator;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.webkit.form.WebKitForm;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import lombok.Builder;
 import lombok.Data;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,12 @@ public class MigratorForm {
         private String formDescription;
         private String[] fields;
         private String[] associatedFlows;
+        private boolean allowWebKitUpdate;
+        private WebKitForm webKitForm;
+
+        public boolean isWebkitFormSet() {
+            return this.webKitForm != null;
+        }
     }
 
     @Builder
@@ -62,8 +71,10 @@ public class MigratorForm {
         }
         form.setAssociatedFlows(flows);
 
+        boolean isCreate = false;
         try {
             fdc.createFormDefinition(form);
+            isCreate = true;
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
 
@@ -105,6 +116,30 @@ public class MigratorForm {
 
             if (updateRequired.get()) fdc.updateFormDefinition(form);
         }
+
+        if (!opts.isWebkitFormSet()) return;
+        else if (!isCreate && !opts.allowWebKitUpdate) return;
+
+        // WebKit is set, and updates are allowed, or this is a create:
+        WebKitForm existingWk = fdc.getFormWebKit(form.getFormType(), form.getFormTypeId());
+        JSONObject existingJsonObj = existingWk.toJsonObject();
+        JSONObject newJsonObj = opts.webKitForm.toJsonObject();
+
+        // Copy all the new fields:
+        UtilGlobal.copyJSONFieldsNotSet(newJsonObj, existingJsonObj);
+
+        existingJsonObj.keySet()
+                .stream()
+                .filter(newJsonObj::has)
+                .forEach(keyMatchedAtExisting -> {
+                    existingJsonObj.put(keyMatchedAtExisting, newJsonObj.get(keyMatchedAtExisting));
+                });
+
+        Form newForm = new Form(form.getFormTypeId());
+        newForm.setFormType(form.getFormType());
+        newForm.setFormDescription(form.getFormDescription());
+
+        fdc.upsertFormWebKit(new WebKitForm(existingJsonObj, newForm));
     }
 
     /**Remove a form definition.
