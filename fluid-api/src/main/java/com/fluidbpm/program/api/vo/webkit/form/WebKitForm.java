@@ -80,6 +80,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	private boolean enableFormFieldHistory;
 
 	public static final String EMAIL_FORM_TYPE = "Email";
+	public static final int DIALOG_WIDTH_MIN_AUTO = 19;
+	public static final int DIALOG_HEIGHT_MIN_AUTO = 1;
 
 	private static final String NONE = "[None]";
 	
