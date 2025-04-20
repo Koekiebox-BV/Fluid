@@ -1597,10 +1597,12 @@ public class WS {
 				//Update...
 				public static final String UPDATE = ("/update");
 				public static final String UPSERT_VIEW_GROUPS_WEB_KIT = ("/upsert_view_groups_web_kit");
+				public static final String UPSERT_VIEW_GROUP_WEB_KIT = ("/upsert_view_group_web_kit");
 
 				//Read...
 				public static final String READ = ("/get_by_id");
-				public static final String READ_VIEW_GROUP_WEB_KIT = ("/get_view_group_web_kit");
+				public static final String READ_VIEW_GROUPS_WEB_KIT = ("/get_view_groups_web_kit");
+				public static final String READ_VIEW_GROUP_WEB_KIT_BY = ("/get_view_group_web_kit_by");
 				public static final String READ_BY_NAME = ("/get_by_name");
 				public static final String READ_ALL = ("/get_all_flows");
 
@@ -1659,11 +1661,18 @@ public class WS {
 
 				/**
 				 * URL Path for upserting the Group View web kit.
-				 *
 				 * @return {@code v1/flow/upsert_view_groups_web_kit}
 				 */
-				public static final String flowViewGroupUpsert() {
+				public static final String flowViewGroupsUpsert() {
 					return Version.VERSION_1.concat(ROOT).concat(UPSERT_VIEW_GROUPS_WEB_KIT);
+				}
+
+				/**
+				 * URL Path for upserting the Group View web kit.
+				 * @return {@code v1/flow/upsert_view_group_web_kit}
+				 */
+				public static final String flowViewGroupUpsert() {
+					return Version.VERSION_1.concat(ROOT).concat(UPSERT_VIEW_GROUP_WEB_KIT);
 				}
 
 				/**
@@ -1685,12 +1694,20 @@ public class WS {
 				}
 
 				/**
-				 * URL Path for Flow get by name.
-				 *
-				 * @return {@code v1/flow/get_view_group_web_kit}
+				 * URL Path for WebKit get all.
+				 * @return {@code v1/flow/get_view_groups_web_kit}
 				 */
-				public static final String getJobViewGroupWebKit() {
-					return Version.VERSION_1.concat(ROOT).concat(READ_VIEW_GROUP_WEB_KIT);
+				public static final String getJobViewGroupsWebKit() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_VIEW_GROUPS_WEB_KIT);
+				}
+
+
+				/**
+				 * URL Path for WebKit get by.
+				 * @return {@code v1/flow/get_view_group_web_kit_by}
+				 */
+				public static final String getJobViewGroupWebKitBy() {
+					return Version.VERSION_1.concat(ROOT).concat(READ_VIEW_GROUP_WEB_KIT_BY);
 				}
 
 				/**

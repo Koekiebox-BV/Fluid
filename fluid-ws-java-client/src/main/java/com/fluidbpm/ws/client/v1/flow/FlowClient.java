@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.flow;
 
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.flow.FlowListing;
+import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroup;
 import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroupListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
@@ -109,28 +110,51 @@ public class FlowClient extends ABaseClientWS {
 
 	/**
 	 * Retrieve the Flow View Group configuration.
-	 *
 	 * @return The complete view group config.
 	 * @see WebKitViewGroupListing
 	 */
-	public WebKitViewGroupListing getViewGroupWebKit() {
+	public WebKitViewGroupListing getViewGroupsWebKit() {
 		Flow flow = new Flow();
 		flow.setServiceTicket(this.serviceTicket);
-		return new WebKitViewGroupListing(this.postJson(flow, WS.Path.Flow.Version1.getJobViewGroupWebKit()));
+		return new WebKitViewGroupListing(this.postJson(flow, WS.Path.Flow.Version1.getJobViewGroupsWebKit()));
+	}
+
+	/**
+	 * Retrieve the Flow View Group configuration by name.
+	 * @return The view group config by name.
+	 * @see WebKitViewGroupListing
+	 */
+	public WebKitViewGroup getViewGroupWebKitByName(String name) {
+		WebKitViewGroup flow = new WebKitViewGroup();
+		flow.setServiceTicket(this.serviceTicket);
+		flow.setJobViewGroupName(name);
+		return new WebKitViewGroup(this.postJson(flow, WS.Path.Flow.Version1.getJobViewGroupWebKitBy()));
 	}
 
 	/**
 	 * Update and insert the Flow View Group configuration.
-	 *
 	 * @param listing The ViewGroupWebKit listing to upsert.
 	 * @return The complete view group config.
 	 * @see WebKitViewGroupListing
 	 */
-	public WebKitViewGroupListing upsertViewGroupWebKit(WebKitViewGroupListing listing) {
+	public WebKitViewGroupListing upsertViewGroupsWebKit(WebKitViewGroupListing listing) {
 		if (listing == null) return null;
 
 		listing.setServiceTicket(this.serviceTicket);
-		return new WebKitViewGroupListing(this.postJson(listing, WS.Path.Flow.Version1.flowViewGroupUpsert()));
+		return new WebKitViewGroupListing(this.postJson(listing, WS.Path.Flow.Version1.flowViewGroupsUpsert()));
+	}
+
+	/**
+	 * Update and insert the Flow View Group configuration.
+	 * @param wkViewGrp The ViewGroupWebKit to upsert.
+	 * @return The complete view group config.
+	 * @see WebKitViewGroupListing
+	 */
+	public WebKitViewGroup upsertViewGroupsWebKit(WebKitViewGroup wkViewGrp) {
+		if (wkViewGrp == null) return null;
+
+		wkViewGrp.setServiceTicket(this.serviceTicket);
+		return new WebKitViewGroup(this.postJson(wkViewGrp, WS.Path.Flow.Version1.flowViewGroupUpsert()));
 	}
 
 	/**
