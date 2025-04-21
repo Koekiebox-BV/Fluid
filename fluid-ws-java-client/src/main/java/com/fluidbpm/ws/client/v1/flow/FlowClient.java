@@ -113,10 +113,10 @@ public class FlowClient extends ABaseClientWS {
 	 * @return The complete view group config.
 	 * @see WebKitViewGroupListing
 	 */
-	public WebKitViewGroupListing getViewGroupsWebKit() {
+	public List<WebKitViewGroup> getViewGroupsWebKit() {
 		Flow flow = new Flow();
 		flow.setServiceTicket(this.serviceTicket);
-		return new WebKitViewGroupListing(this.postJson(flow, WS.Path.Flow.Version1.getJobViewGroupsWebKit()));
+		return new WebKitViewGroupListing(this.postJson(flow, WS.Path.Flow.Version1.getJobViewGroupsWebKit())).getListing();
 	}
 
 	/**
@@ -137,11 +137,11 @@ public class FlowClient extends ABaseClientWS {
 	 * @return The complete view group config.
 	 * @see WebKitViewGroupListing
 	 */
-	public WebKitViewGroupListing upsertViewGroupsWebKit(WebKitViewGroupListing listing) {
+	public List<WebKitViewGroup> upsertViewGroupsWebKit(WebKitViewGroupListing listing) {
 		if (listing == null) return null;
 
 		listing.setServiceTicket(this.serviceTicket);
-		return new WebKitViewGroupListing(this.postJson(listing, WS.Path.Flow.Version1.flowViewGroupsUpsert()));
+		return new WebKitViewGroupListing(this.postJson(listing, WS.Path.Flow.Version1.flowViewGroupsUpsert())).getListing();
 	}
 
 	/**
