@@ -150,7 +150,7 @@ public class FlowClient extends ABaseClientWS {
 	 * @return The complete view group config.
 	 * @see WebKitViewGroupListing
 	 */
-	public WebKitViewGroup upsertViewGroupsWebKit(WebKitViewGroup wkViewGrp) {
+	public WebKitViewGroup upsertViewGroupWebKit(WebKitViewGroup wkViewGrp) {
 		if (wkViewGrp == null) return null;
 
 		wkViewGrp.setServiceTicket(this.serviceTicket);
