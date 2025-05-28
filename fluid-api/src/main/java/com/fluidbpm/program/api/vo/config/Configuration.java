@@ -45,7 +45,8 @@ public class Configuration extends ABaseFluidJSONObject {
 		PrimeFacesTheme,
 		WhiteLabel,
 		WebKit,
-		WebKitPersonalInventory
+		WebKitPersonalInventory,
+		CustomPermissionMapping
 	}
 
 	/**

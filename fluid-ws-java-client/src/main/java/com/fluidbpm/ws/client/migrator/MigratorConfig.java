@@ -17,12 +17,14 @@ package com.fluidbpm.ws.client.migrator;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.config.Configuration;
+import com.fluidbpm.program.api.vo.role.ICustomPermission;
 import com.fluidbpm.program.api.vo.webkit.global.WebKitGlobal;
 import com.fluidbpm.program.api.vo.webkit.global.WebKitPersonalInventory;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import lombok.Builder;
 import lombok.Data;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -38,6 +40,7 @@ import static com.fluidbpm.program.api.util.UtilGlobal.copyJSONFieldsNotSet;
  * @see com.fluidbpm.program.api.vo.config.Configuration
  */
 public class MigratorConfig {
+    private static final String CONF_PERM_NAME = "name";
 
     @Builder
     @Data
@@ -53,6 +56,7 @@ public class MigratorConfig {
         private String companyLogoSmallClasspath;
         private String companyLogoSmallFilepath;
         private byte[] companyLogoSmallContent;
+        private ICustomPermission[] customPermissions;
     }
 
     /**
@@ -111,6 +115,28 @@ public class MigratorConfig {
             copyJSONFieldsNotSet(existingJson, wkPIJson);
 
             if (!wkPIJson.isEmpty()) setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkPIJson.toString());
+        }
+
+        // Custom Permissions:
+        if (opts.customPermissions != null) {
+            Configuration existing = getConfigurationSafe(cc, Configuration.Key.CustomPermissionMapping);
+            boolean update = false;
+            if (existing != null && UtilGlobal.isNotBlank(existing.getValue())) {
+                JSONArray array = new JSONArray(existing.getValue());
+                for (ICustomPermission perm : opts.customPermissions) {
+                    int index = perm.ordinal();
+                    String permValFromEnum = perm.getPermission();
+                    JSONObject permJson = array.getJSONObject(index);
+                    String perValue = permJson.optString(CONF_PERM_NAME);
+                    if (!perValue.equals(permValFromEnum)) update = true;
+
+                    permJson.put(CONF_PERM_NAME, permValFromEnum);
+                }
+
+                if (update) {
+                    setConfigIfNotBlank(cc, Configuration.Key.CustomPermissionMapping, array.toString());
+                }
+            }
         }
     }
 
