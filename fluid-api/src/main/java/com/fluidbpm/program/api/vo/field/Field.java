@@ -243,39 +243,39 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     /**
      * Constructor to set the Field Name, Value and Type.
      *
-     * @param fieldNameParam  Sets Field Name.
-     * @param fieldValueParam Sets Field Value.
-     * @param fieldTypeParam  Sets Field Type.
+     * @param fieldName  Sets Field Name.
+     * @param fieldValue Sets Field Value.
+     * @param fieldType  Sets Field Type.
      */
-    public Field(String fieldNameParam, Object fieldValueParam, Type fieldTypeParam) {
-        this.setFieldName(fieldNameParam);
-        this.setTypeAsEnum(fieldTypeParam);
-        this.setFieldValue(fieldValueParam);
+    public Field(String fieldName, Object fieldValue, Type fieldType) {
+        this.setFieldName(fieldName);
+        this.setTypeAsEnum(fieldType);
+        this.setFieldValue(fieldValue);
     }
 
     /**
      * Constructor to set the Field Name, Value.
      *
-     * @param fieldNameParam  Sets Field Name.
-     * @param fieldValueParam Sets Field Value.
+     * @param fieldName  Sets Field Name.
+     * @param fieldValue Sets Field Value.
      */
-    public Field(String fieldNameParam, Object fieldValueParam) {
-        this.setFieldName(fieldNameParam);
+    public Field(String fieldName, Object fieldValue) {
+        this.setFieldName(fieldName);
         this.fieldType = null;
         this.typeMetaData = null;
-        this.setFieldValue(fieldValueParam);
+        this.setFieldValue(fieldValue);
     }
 
     /**
      * Constructor to set the Field Name and {@code MultiChoice} Value.
      *
-     * @param fieldNameParam   Sets Field Name.
-     * @param multiChoiceParam Sets Field Value as {@code MultiChoice}.
+     * @param fieldName   Sets Field Name.
+     * @param multiChoice Sets Field Value as {@code MultiChoice}.
      */
-    public Field(String fieldNameParam, MultiChoice multiChoiceParam) {
-        this.setFieldName(fieldNameParam);
+    public Field(String fieldName, MultiChoice multiChoice) {
+        this.setFieldName(fieldName);
         this.setTypeAsEnum(Field.Type.MultipleChoice);
-        this.setFieldValue(multiChoiceParam);
+        this.setFieldValue(multiChoice);
     }
 
     protected Field(Field toClone) {
@@ -835,6 +835,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 //Boolean...
                 this.setTypeAsEnum(Type.TrueFalse);
             }
+        } else if (this.getTypeAsEnum() == Type.MultipleChoice && fieldValue instanceof String) {
+            this.fieldValue = new MultiChoice((String) fieldValue);
         }
     }
 
