@@ -799,12 +799,17 @@ public class UtilGlobal {
      * @param fieldVal Sets Field Value.
      * @param type Sets Field Type.
      */
-    public static Field newField(
-            String fieldName,
-            Object fieldVal,
-            Field.Type type
-    ) {
+    public static Field newField(String fieldName, Object fieldVal, Field.Type type) {
         return new Field(fieldName, fieldVal, type);
+    }
+
+    /**
+     * New instance of field from args.
+     * @param fieldName Sets Field Name.
+     * @param multiChoice Sets Field Value as Multichoice.
+     */
+    public static Field newField(String fieldName, MultiChoice multiChoice) {
+        return new Field(fieldName, multiChoice);
     }
 
     /**
