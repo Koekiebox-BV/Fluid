@@ -15,11 +15,10 @@
 
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fluidbpm.program.api.vo.ABaseListing;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseListing;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -33,7 +32,6 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  */
 public class SQLResultSet extends ABaseListing<SQLRow> {
-
 	public static final long serialVersionUID = 1L;
 
 	/**

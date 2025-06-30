@@ -500,7 +500,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 		}
 	}
 
-
 	/**
 	 * Executes all the sql queries {@code nativeSQLQueriesParam}.
 	 *
@@ -535,6 +534,27 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 			return returnVal;
 		}
 	}
+
+	/**
+	 * Executes all the sql queries {@code nativeSQLQueriesParam}.
+	 *
+	 * @param nativeSQLQueries The queries to execute.
+	 *
+	 * @return Each fo the ResultSets for {@code nativeSQLQueriesParam}.
+	 *
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
+	 */
+	public List<SQLResultSet> executeNativeSQLUpdate(NativeSQLQuery ... nativeSQLQueries) {
+		List<SQLResultSet> returnVal = new ArrayList<>();
+		for (NativeSQLQuery sqlToExec : nativeSQLQueries) {
+			SQLResultSet resultSet = this.sqlUtilClient.executeSQL(sqlToExec);
+			returnVal.add(resultSet);
+		}
+		return returnVal;
+	}
+
 
 	/**
 	 * Init and retrieve {@code SQLUtilWebSocketExecuteNativeSQLClient}.

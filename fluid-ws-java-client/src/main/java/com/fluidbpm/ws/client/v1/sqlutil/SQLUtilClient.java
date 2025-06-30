@@ -222,10 +222,35 @@ public class SQLUtilClient extends ABaseClientWS {
 		if (sqlQuery != null) sqlQuery.setServiceTicket(this.serviceTicket);
 
 		try {
-			SQLResultSet resultSet = new SQLResultSet(
+			return new SQLResultSet(
 					this.postJson(sqlQuery, WS.Path.SQLUtil.Version1.getExecuteNativeSQL())
 			);
-			return resultSet;
+		} catch (JSONException e) {
+			throw new FluidClientException(e.getMessage(), e,
+					FluidClientException.ErrorCode.JSON_PARSING);
+		}
+	}
+
+	/**
+	 * Executes the sql query {@code sqlQueryParam} and returns
+	 * the result as {@code SQLResultSet}
+	 *
+	 * @param sqlQuery The native SQL query to execute.
+	 *
+	 * @return The ResultSet in the form of {@code SQLResultSet}.
+	 *
+	 * @see SQLResultSet
+	 * @see NativeSQLQuery
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
+	 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
+	 */
+	public SQLResultSet executeSQLUpdate(NativeSQLQuery sqlQuery) {
+		if (sqlQuery != null) sqlQuery.setServiceTicket(this.serviceTicket);
+
+		try {
+			return new SQLResultSet(
+					this.postJson(sqlQuery, WS.Path.SQLUtil.Version1.getExecuteNativeSQLUpdate())
+			);
 		} catch (JSONException e) {
 			throw new FluidClientException(e.getMessage(), e,
 					FluidClientException.ErrorCode.JSON_PARSING);

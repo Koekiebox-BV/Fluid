@@ -3818,6 +3818,7 @@ public class WS {
 
 				//Native SQL
 				public static final String SQL_UTIL_NATIVE_QUERY = ("/native/execute_query");
+				public static final String SQL_UTIL_NATIVE_UPDATE = ("/native/execute_update");
 
 				/**
 				 * Mapping for frequently used HTTP parameters.
@@ -4046,7 +4047,6 @@ public class WS {
 
 				/**
 				 * URL Path for executing native SQL queries.
-				 *
 				 * @return {@code v1/sql_util/native/execute_query}
 				 *
 				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery
@@ -4056,6 +4056,19 @@ public class WS {
 				 */
 				public static String getExecuteNativeSQL() {
 					return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_NATIVE_QUERY);
+				}
+
+				/**
+				 * URL Path for executing native SQL update query.
+				 * @return {@code v1/sql_util/native/execute_update}
+				 *
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn
+				 * @see com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLRow
+				 */
+				public static String getExecuteNativeSQLUpdate() {
+					return Version.VERSION_1.concat(ROOT).concat(SQL_UTIL_NATIVE_UPDATE);
 				}
 
 				/**
