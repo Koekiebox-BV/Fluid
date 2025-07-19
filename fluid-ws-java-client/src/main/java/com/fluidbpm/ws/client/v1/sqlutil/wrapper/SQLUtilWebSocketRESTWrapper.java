@@ -549,7 +549,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 	public List<SQLResultSet> executeNativeSQLUpdate(NativeSQLQuery ... nativeSQLQueries) {
 		List<SQLResultSet> returnVal = new ArrayList<>();
 		for (NativeSQLQuery sqlToExec : nativeSQLQueries) {
-			SQLResultSet resultSet = this.sqlUtilClient.executeSQL(sqlToExec);
+			SQLResultSet resultSet = this.sqlUtilClient.executeSQLUpdate(sqlToExec);
 			returnVal.add(resultSet);
 		}
 		return returnVal;
