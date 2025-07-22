@@ -690,11 +690,7 @@ public class UtilGlobal {
      * @param defaultVal The default value.
      * @return The value.
      */
-    public static String getProperty(
-        Properties existing,
-        String name,
-        String defaultVal
-    ) {
+    public static String getProperty(Properties existing, String name, String defaultVal) {
         //From provided properties...
         if (existing != null) {
             String val = existing.getProperty(name);
