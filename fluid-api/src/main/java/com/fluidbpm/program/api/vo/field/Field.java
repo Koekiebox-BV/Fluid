@@ -803,6 +803,31 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Sets the value of the field and returns the updated Field object.
+     *
+     * @param fieldValue the value to be set for the field
+     * @return the updated Field object after setting the value
+     */
+    @XmlTransient
+    @JsonIgnore
+    public Field setFieldValueAndReturn(Object fieldValue) {
+        this.setFieldValue(fieldValue);
+        return this;
+    }
+
+    /**
+     * Sets the Type of {@code this} {@code Field} as {@code enum}.
+     * @param type The Field fieldType.
+     * @see Type
+     */
+    @XmlTransient
+    @JsonIgnore
+    public Field setTypeAsEnumAndReturn(Type type) {
+        this.setTypeAsEnum(type);
+        return this;
+    }
+
+    /**
      * Sets the value of {@code this} {@code Field}.
      *
      * @param fieldValue The New Field Value.
