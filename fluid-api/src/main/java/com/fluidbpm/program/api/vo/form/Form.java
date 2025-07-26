@@ -89,6 +89,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	private Long ancestorId;
 	private List<Long> descendantIds;
 	private Long tableFieldParentId;
+	private String tableFieldParentName;
 	private String ancestorLabel;
 	private String descendantsLabel;
 	private Boolean numberInputs;
@@ -121,6 +122,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Fields used for Search engine indexing...
 		public static final String TABLE_FIELD_PARENT_ID = "tableFieldParentId";
+		public static final String TABLE_FIELD_PARENT_NAME = "tableFieldParentName";
 		public static final String ANCESTOR_ID = "ancestorId";
 		public static final String DESCENDANT_IDS = "descendantIds";
 
@@ -287,8 +289,13 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (this.jsonObject.isNull(JSONMapping.TABLE_FIELD_PARENT_ID)) {
 			this.setTableFieldParentId(null);
 		} else {
-			this.setTableFieldParentId(this.jsonObject.getLong(
-					JSONMapping.TABLE_FIELD_PARENT_ID));
+			this.setTableFieldParentId(this.jsonObject.getLong(JSONMapping.TABLE_FIELD_PARENT_ID));
+		}
+		//Table Field Parent Name...
+		if (this.jsonObject.isNull(JSONMapping.TABLE_FIELD_PARENT_NAME)) {
+			this.setTableFieldParentName(null);
+		} else {
+			this.setTableFieldParentName(this.jsonObject.getString(JSONMapping.TABLE_FIELD_PARENT_NAME));
 		}
 
 		//Descendant Ids...
@@ -848,6 +855,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		//Table Field Parent Id...
 		if (this.getTableFieldParentId() != null) returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, this.getTableFieldParentId());
 
+		//Table Field Parent Name...
+		if (this.getTableFieldParentName() != null) returnVal.put(JSONMapping.TABLE_FIELD_PARENT_NAME, this.getTableFieldParentName());
+
 		//Descendant Ids...
 		if (this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
 			JSONArray array = new JSONArray();
@@ -1116,6 +1126,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			returnVal.put(JSONMapping.TABLE_FIELD_PARENT_ID, this.getTableFieldParentId());
 		}
 
+		if (this.getTableFieldParentName() != null) {
+			returnVal.put(JSONMapping.TABLE_FIELD_PARENT_NAME, this.getTableFieldParentName());
+		}
+
 		//Descendant Ids...
 		if (this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
 			JSONArray array = new JSONArray();
@@ -1321,8 +1335,14 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (jsonObjectParam.isNull(JSONMapping.TABLE_FIELD_PARENT_ID)) {
 			this.setTableFieldParentId(null);
 		} else {
-			this.setTableFieldParentId(jsonObjectParam.getLong(
-					JSONMapping.TABLE_FIELD_PARENT_ID));
+			this.setTableFieldParentId(jsonObjectParam.getLong(JSONMapping.TABLE_FIELD_PARENT_ID));
+		}
+
+		//Table Field Parent Name...
+		if (jsonObjectParam.isNull(JSONMapping.TABLE_FIELD_PARENT_NAME)) {
+			this.setTableFieldParentName(null);
+		} else {
+			this.setTableFieldParentName(jsonObjectParam.getString(JSONMapping.TABLE_FIELD_PARENT_NAME));
 		}
 
 		//Descendant Ids...

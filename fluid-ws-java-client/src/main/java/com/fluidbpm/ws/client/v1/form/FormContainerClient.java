@@ -150,7 +150,8 @@ public class FormContainerClient extends ABaseClientWS {
 
         return new TableRecord(this.putJson(
                 tableRecord,
-                WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreate()));
+                WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreate())
+        );
     }
 
     /**
