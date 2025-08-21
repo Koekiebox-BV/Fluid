@@ -143,7 +143,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 		 *
 		 * @param jsonObjectParam The JSON Object.
 		 */
-		public FluidItemProperty(JSONObject jsonObjectParam) {
+		public FluidItemProperty(JsonObject jsonObjectParam) {
 			super(jsonObjectParam);
 			if (this.jsonObject == null) return;
 
@@ -285,7 +285,7 @@ public class FluidItem extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FluidItem(JSONObject jsonObjectParam) {
+	public FluidItem(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

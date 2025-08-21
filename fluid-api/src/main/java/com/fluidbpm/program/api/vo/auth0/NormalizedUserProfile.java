@@ -115,7 +115,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 		 *
 		 * @param jsonObjectParam The JSON Object.
 		 */
-		public Identity(JSONObject jsonObjectParam) {
+		public Identity(JsonObject jsonObjectParam) {
 			super(jsonObjectParam);
 
 			if (this.jsonObject == null)
@@ -300,7 +300,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public NormalizedUserProfile(JSONObject jsonObjectParam) {
+	public NormalizedUserProfile(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null)

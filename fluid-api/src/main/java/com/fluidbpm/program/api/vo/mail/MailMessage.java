@@ -73,7 +73,7 @@ public class MailMessage extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessage(JSONObject jsonObjectParam) {
+    public MailMessage(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null)

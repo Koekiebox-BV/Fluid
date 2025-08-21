@@ -134,7 +134,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserQuery(JSONObject jsonObjectParam) {
+    public UserQuery(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
@@ -230,7 +230,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     @Override
     @XmlTransient
     @JsonIgnore
-    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new FluidItem(jsonObjectParam);
     }
 

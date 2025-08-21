@@ -46,7 +46,7 @@ public class SQLResultSet extends ABaseListing<SQLRow> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public SQLResultSet(JSONObject jsonObjectParam){
+	public SQLResultSet(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -58,7 +58,7 @@ public class SQLResultSet extends ABaseListing<SQLRow> {
 	 */
 	@Override
 	@XmlTransient
-	public SQLRow getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public SQLRow getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new SQLRow(jsonObjectParam);
 	}
 }

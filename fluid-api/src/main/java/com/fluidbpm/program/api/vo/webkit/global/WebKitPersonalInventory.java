@@ -93,7 +93,7 @@ public class WebKitPersonalInventory extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitPersonalInventory(JSONObject jsonObjectParam) {
+	public WebKitPersonalInventory(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

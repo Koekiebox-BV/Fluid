@@ -94,7 +94,7 @@ public class UserNotification extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public UserNotification(JSONObject jsonObjectParam){
+	public UserNotification(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null)

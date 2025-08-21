@@ -44,7 +44,7 @@ public abstract class ABaseFluidJSONReportObject extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public ABaseFluidJSONReportObject(JSONObject jsonObjectParam) {
+	public ABaseFluidJSONReportObject(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 	}
 }

@@ -90,7 +90,7 @@ public class Configuration extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public Configuration(JSONObject jsonObjectParam) {
+	public Configuration(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;

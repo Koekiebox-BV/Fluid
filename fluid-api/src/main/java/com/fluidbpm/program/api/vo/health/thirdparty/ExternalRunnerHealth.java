@@ -69,7 +69,7 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ExternalRunnerHealth(JSONObject jsonObjectParam) {
+    public ExternalRunnerHealth(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) return;

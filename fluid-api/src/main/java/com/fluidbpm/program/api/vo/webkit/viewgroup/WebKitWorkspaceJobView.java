@@ -57,7 +57,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitWorkspaceJobView(JSONObject jsonObjectParam) {
+	public WebKitWorkspaceJobView(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

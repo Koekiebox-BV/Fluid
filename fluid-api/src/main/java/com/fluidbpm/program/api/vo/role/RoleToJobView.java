@@ -69,7 +69,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RoleToJobView(JSONObject jsonObjectParam){
+    public RoleToJobView(JsonObject jsonObjectParam){
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 

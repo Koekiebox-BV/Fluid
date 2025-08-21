@@ -49,7 +49,7 @@ public class GlobalFieldListing extends ABaseListing<Field> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public GlobalFieldListing(JSONObject jsonObjectParam){
+	public GlobalFieldListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -61,7 +61,7 @@ public class GlobalFieldListing extends ABaseListing<Field> {
 	 */
 	@Override
 	@XmlTransient
-	public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Field(jsonObjectParam);
 	}
 }

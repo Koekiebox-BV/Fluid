@@ -48,7 +48,7 @@ public class UserNotificationListing extends ABaseListing<UserNotification> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserNotificationListing(JSONObject jsonObjectParam){
+    public UserNotificationListing(JsonObject jsonObjectParam){
         super(jsonObjectParam);
     }
 
@@ -60,7 +60,7 @@ public class UserNotificationListing extends ABaseListing<UserNotification> {
      */
     @Override
     @XmlTransient
-    public UserNotification getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public UserNotification getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new UserNotification(jsonObjectParam);
     }
 }

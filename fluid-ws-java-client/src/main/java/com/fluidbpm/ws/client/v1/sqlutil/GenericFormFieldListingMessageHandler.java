@@ -65,7 +65,7 @@ public class GenericFormFieldListingMessageHandler extends AGenericListMessageHa
 	 * @return new {@code FormFieldListing}.
 	 */
 	@Override
-	public FormFieldListing getNewInstanceBy(JSONObject jsonObjectParam) {
+	public FormFieldListing getNewInstanceBy(JsonObject jsonObjectParam) {
 		return new FormFieldListing(jsonObjectParam);
 	}
 }

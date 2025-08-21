@@ -64,7 +64,7 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public SystemUpHourMin(JSONObject jsonObjectParam) {
+	public SystemUpHourMin(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

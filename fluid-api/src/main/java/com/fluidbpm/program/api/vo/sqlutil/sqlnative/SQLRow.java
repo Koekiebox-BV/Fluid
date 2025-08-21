@@ -112,7 +112,7 @@ public class SQLRow extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLRow(JSONObject jsonObjectParam){
+    public SQLRow(JsonObject jsonObjectParam){
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 

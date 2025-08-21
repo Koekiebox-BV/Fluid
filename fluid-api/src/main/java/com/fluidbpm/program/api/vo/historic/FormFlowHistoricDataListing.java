@@ -48,7 +48,7 @@ public class FormFlowHistoricDataListing extends ABaseListing<FormFlowHistoricDa
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormFlowHistoricDataListing(JSONObject jsonObjectParam){
+	public FormFlowHistoricDataListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class FormFlowHistoricDataListing extends ABaseListing<FormFlowHistoricDa
 	 */
 	@Override
 	@XmlTransient
-	public FormFlowHistoricData getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public FormFlowHistoricData getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new FormFlowHistoricData(jsonObjectParam);
 	}
 }

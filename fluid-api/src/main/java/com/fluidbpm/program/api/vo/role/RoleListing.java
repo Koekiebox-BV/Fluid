@@ -47,7 +47,7 @@ public class RoleListing extends ABaseListing<Role> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public RoleListing(JSONObject jsonObjectParam){
+	public RoleListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -59,7 +59,7 @@ public class RoleListing extends ABaseListing<Role> {
 	 */
 	@Override
 	@XmlTransient
-	public Role getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Role getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Role(jsonObjectParam);
 	}
 }

@@ -245,7 +245,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public Form getNewInstanceBy(JSONObject jsonObjectParam) {
+		public Form getNewInstanceBy(JsonObject jsonObjectParam) {
 			return new Form(jsonObjectParam);
 		}
 	}

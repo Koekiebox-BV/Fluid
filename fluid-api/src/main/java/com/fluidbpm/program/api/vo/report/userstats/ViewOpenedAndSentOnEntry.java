@@ -63,7 +63,7 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public ViewOpenedAndSentOnEntry(JSONObject jsonObjectParam) {
+	public ViewOpenedAndSentOnEntry(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

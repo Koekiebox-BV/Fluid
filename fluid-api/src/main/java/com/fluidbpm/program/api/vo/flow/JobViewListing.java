@@ -48,7 +48,7 @@ public class JobViewListing extends ABaseListing<JobView> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public JobViewListing(JSONObject jsonObjectParam){
+	public JobViewListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class JobViewListing extends ABaseListing<JobView> {
 	 */
 	@Override
 	@XmlTransient
-	public JobView getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public JobView getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new JobView(jsonObjectParam);
 	}
 }

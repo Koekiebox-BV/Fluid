@@ -47,7 +47,7 @@ public class FlowListing extends ABaseListing<Flow> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FlowListing(JSONObject jsonObjectParam){
+	public FlowListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -59,7 +59,7 @@ public class FlowListing extends ABaseListing<Flow> {
 	 */
 	@Override
 	@XmlTransient
-	public Flow getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Flow getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Flow(jsonObjectParam);
 	}
 }

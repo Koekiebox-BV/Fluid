@@ -64,7 +64,7 @@ public class LicenseRequest extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public LicenseRequest(JSONObject jsonObjectParam) {
+	public LicenseRequest(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) {

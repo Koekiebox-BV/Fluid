@@ -48,7 +48,7 @@ public class FlowStepListing extends ABaseListing<FlowStep> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FlowStepListing(JSONObject jsonObjectParam){
+	public FlowStepListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class FlowStepListing extends ABaseListing<FlowStep> {
 	 */
 	@Override
 	@XmlTransient
-	public FlowStep getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public FlowStep getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new FlowStep(jsonObjectParam);
 	}
 }

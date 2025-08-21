@@ -193,7 +193,7 @@ public class WebSocketFormContainerCreateClient extends
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public Form getNewInstanceBy(JSONObject jsonObjectParam) {
+		public Form getNewInstanceBy(JsonObject jsonObjectParam) {
 			this.returnedForm = new Form(jsonObjectParam);
 			return this.returnedForm;
 		}

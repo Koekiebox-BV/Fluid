@@ -20,7 +20,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -88,28 +87,15 @@ public class AutoComplete extends ABaseFluidJSONObject {
         if (this.jsonObject == null) return;
 
         //Query...
-
-        if (!this.jsonObject.isNull(JSONMapping.QUERY)) {
-            this.setQuery(this.jsonObject.getString(JSONMapping.QUERY));
-        }
-
-        //Max results...
-        if (!this.jsonObject.isNull(JSONMapping.MAX_RESULTS)) {
-            this.setMaxResults(this.jsonObject.getInt(JSONMapping.MAX_RESULTS));
-        }
-
-        //Form Field...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_FIELD)) {
-            this.setFormField(new Field(this.jsonObject.getJSONObject(JSONMapping.FORM_FIELD)));
-        }
+        this.setQuery(this.getAsStringNullSafe(this.jsonObject, JSONMapping.QUERY));
+        this.setMaxResults(this.getAsIntegerNullSafe(this.jsonObject, JSONMapping.MAX_RESULTS));
+        this.setFormField(new Field(this.jsonObject.getAsJsonObject(JSONMapping.FORM_FIELD)));
 
         //Result...
-        if (!this.jsonObject.isNull(JSONMapping.EXISTING_VALUES)) {
-            JsonArray array = this.jsonObject.getJSONArray(JSONMapping.EXISTING_VALUES);
-            List<String> results = new ArrayList();
-            for (int index = 0; index < array.length(); index++) {
-                results.add(array.getString(index));
-            }
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.EXISTING_VALUES)) {
+            JsonArray array = this.jsonObject.getAsJsonArray(JSONMapping.EXISTING_VALUES);
+            List<String> results = new ArrayList<>();
+            array.forEach(el -> results.add(el.getAsString()));
             this.setExistingValues(results);
         }
     }

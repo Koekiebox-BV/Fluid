@@ -62,7 +62,7 @@ public class WebKitMenuItem extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitMenuItem(JSONObject jsonObjectParam) {
+	public WebKitMenuItem(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

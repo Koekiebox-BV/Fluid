@@ -68,7 +68,7 @@ public class PunchCardEntry extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public PunchCardEntry(JSONObject jsonObjectParam) {
+	public PunchCardEntry(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

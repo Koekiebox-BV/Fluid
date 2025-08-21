@@ -51,7 +51,7 @@ public class FormFieldListing extends ABaseListing<Field> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormFieldListing(JSONObject jsonObjectParam){
+	public FormFieldListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -63,7 +63,7 @@ public class FormFieldListing extends ABaseListing<Field> {
 	 */
 	@Override
 	@XmlTransient
-	public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Field(jsonObjectParam);
 	}
 }

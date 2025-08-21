@@ -65,7 +65,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public CreateUpdateLockUnlockEntry(JSONObject jsonObjectParam) {
+	public CreateUpdateLockUnlockEntry(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

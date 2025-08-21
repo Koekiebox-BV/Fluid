@@ -112,7 +112,7 @@ public class Flow extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public Flow(JSONObject jsonObjectParam) {
+	public Flow(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;

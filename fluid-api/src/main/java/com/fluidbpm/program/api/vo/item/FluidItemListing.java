@@ -48,7 +48,7 @@ public class FluidItemListing extends ABaseListing<FluidItem> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FluidItemListing(JSONObject jsonObjectParam){
+	public FluidItemListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class FluidItemListing extends ABaseListing<FluidItem> {
 	 */
 	@Override
 	@XmlTransient
-	public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new FluidItem(jsonObjectParam);
 	}
 }

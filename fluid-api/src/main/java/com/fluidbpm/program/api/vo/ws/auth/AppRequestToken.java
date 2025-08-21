@@ -75,7 +75,7 @@ public class AppRequestToken extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AppRequestToken(JSONObject jsonObjectParam){
+    public AppRequestToken(JsonObject jsonObjectParam){
         super(jsonObjectParam);
 
         //Encrypted Data Base64

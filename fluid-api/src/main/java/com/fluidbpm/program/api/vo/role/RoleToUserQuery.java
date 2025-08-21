@@ -71,7 +71,7 @@ public class RoleToUserQuery extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public RoleToUserQuery(JSONObject jsonObjectParam){
+	public RoleToUserQuery(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null)

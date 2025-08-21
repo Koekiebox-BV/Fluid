@@ -110,7 +110,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FlowStepRule(JSONObject jsonObjectParam) {
+	public FlowStepRule(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;

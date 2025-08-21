@@ -64,7 +64,7 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public SystemUptimeReport(JSONObject jsonObjectParam) {
+	public SystemUptimeReport(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) {

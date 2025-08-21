@@ -157,7 +157,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitViewGroup(JSONObject jsonObjectParam) {
+	public WebKitViewGroup(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

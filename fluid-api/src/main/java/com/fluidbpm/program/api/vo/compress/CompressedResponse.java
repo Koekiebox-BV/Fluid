@@ -63,7 +63,7 @@ public class CompressedResponse extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public CompressedResponse(JSONObject jsonObjectParam) {
+	public CompressedResponse(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) {

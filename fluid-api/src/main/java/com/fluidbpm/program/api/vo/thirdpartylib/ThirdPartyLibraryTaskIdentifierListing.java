@@ -46,7 +46,7 @@ public class ThirdPartyLibraryTaskIdentifierListing extends ABaseListing<ThirdPa
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public ThirdPartyLibraryTaskIdentifierListing(JSONObject jsonObjectParam){
+	public ThirdPartyLibraryTaskIdentifierListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -58,7 +58,7 @@ public class ThirdPartyLibraryTaskIdentifierListing extends ABaseListing<ThirdPa
 	 */
 	@Override
 	@XmlTransient
-	public ThirdPartyLibraryTaskIdentifier getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public ThirdPartyLibraryTaskIdentifier getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new ThirdPartyLibraryTaskIdentifier(jsonObjectParam);
 	}
 }

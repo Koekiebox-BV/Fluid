@@ -71,7 +71,7 @@ public class AccessToken extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public AccessToken(JSONObject jsonObjectParam){
+	public AccessToken(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

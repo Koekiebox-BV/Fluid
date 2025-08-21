@@ -78,7 +78,7 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public ThirdPartyLibrary(JSONObject jsonObjectParam) {
+	public ThirdPartyLibrary(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		//Filename...

@@ -63,7 +63,7 @@ public class SystemUpYearDay extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public SystemUpYearDay(JSONObject jsonObjectParam) {
+	public SystemUpYearDay(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

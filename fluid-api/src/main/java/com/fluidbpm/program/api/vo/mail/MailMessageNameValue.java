@@ -78,7 +78,7 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessageNameValue(JSONObject jsonObjectParam) {
+    public MailMessageNameValue(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) {

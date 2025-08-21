@@ -270,7 +270,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @see ABaseFluidJSONObject
 	 * @see JSONObject
 	 */
-	public abstract T getNewInstanceBy(JSONObject jsonObjectParam);
+	public abstract T getNewInstanceBy(JsonObject jsonObjectParam);
 
 	/**
 	 * Gets the size of the return value.

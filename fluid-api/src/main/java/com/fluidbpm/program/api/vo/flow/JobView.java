@@ -92,7 +92,7 @@ public class JobView extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public JobView(JSONObject jsonObjectParam){
+	public JobView(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) {

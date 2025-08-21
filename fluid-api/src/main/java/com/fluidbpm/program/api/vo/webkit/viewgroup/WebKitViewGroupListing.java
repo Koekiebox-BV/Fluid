@@ -46,7 +46,7 @@ public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitViewGroupListing(JSONObject jsonObjectParam){
+	public WebKitViewGroupListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -58,7 +58,7 @@ public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
 	 */
 	@Override
 	@XmlTransient
-	public WebKitViewGroup getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public WebKitViewGroup getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new WebKitViewGroup(jsonObjectParam);
 	}
 }

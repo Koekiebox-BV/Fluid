@@ -84,7 +84,7 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public NativeSQLQuery(JSONObject jsonObjectParam){
+	public NativeSQLQuery(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null)

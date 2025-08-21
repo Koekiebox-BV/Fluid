@@ -78,7 +78,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public UserStatsReport(JSONObject jsonObjectParam) {
+	public UserStatsReport(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) {

@@ -76,7 +76,7 @@ public class Error extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Error(JSONObject jsonObjectParam) {
+    public Error(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         //Error Code...

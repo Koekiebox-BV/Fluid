@@ -48,7 +48,7 @@ public class UserQueryListing extends ABaseListing<UserQuery> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserQueryListing(JSONObject jsonObjectParam){
+    public UserQueryListing(JsonObject jsonObjectParam){
         super(jsonObjectParam);
     }
 
@@ -60,7 +60,7 @@ public class UserQueryListing extends ABaseListing<UserQuery> {
      */
     @Override
     @XmlTransient
-    public UserQuery getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public UserQuery getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new UserQuery(jsonObjectParam);
     }
 }

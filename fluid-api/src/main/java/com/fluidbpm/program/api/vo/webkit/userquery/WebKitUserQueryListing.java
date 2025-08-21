@@ -46,7 +46,7 @@ public class WebKitUserQueryListing extends ABaseListing<WebKitUserQuery> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitUserQueryListing(JSONObject jsonObjectParam){
+	public WebKitUserQueryListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -58,7 +58,7 @@ public class WebKitUserQueryListing extends ABaseListing<WebKitUserQuery> {
 	 */
 	@Override
 	@XmlTransient
-	public WebKitUserQuery getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public WebKitUserQuery getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new WebKitUserQuery(jsonObjectParam);
 	}
 }

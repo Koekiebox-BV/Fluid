@@ -99,7 +99,7 @@ public class FluidTemplate extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FluidTemplate(JSONObject jsonObjectParam) {
+	public FluidTemplate(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		//Template Name...

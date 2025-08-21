@@ -71,7 +71,7 @@ public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormFieldToFormDefinition(JSONObject jsonObjectParam){
+	public FormFieldToFormDefinition(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) {

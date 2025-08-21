@@ -84,7 +84,7 @@ public class Collaboration extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public Collaboration(JSONObject jsonObjectParam) {
+	public Collaboration(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		//Form Container...

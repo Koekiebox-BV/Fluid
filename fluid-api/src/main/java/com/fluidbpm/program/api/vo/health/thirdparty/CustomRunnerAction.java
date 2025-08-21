@@ -61,7 +61,7 @@ public class CustomRunnerAction extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public CustomRunnerAction(JSONObject jsonObjectParam) {
+    public CustomRunnerAction(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) return;

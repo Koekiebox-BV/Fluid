@@ -48,7 +48,7 @@ public class ConfigurationListing extends ABaseListing<Configuration> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public ConfigurationListing(JSONObject jsonObjectParam){
+	public ConfigurationListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class ConfigurationListing extends ABaseListing<Configuration> {
 	 */
 	@Override
 	@XmlTransient
-	public Configuration getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Configuration getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Configuration(jsonObjectParam);
 	}
 }

@@ -85,7 +85,7 @@ public class TableRecord extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public TableRecord(JSONObject jsonObjectParam) {
+	public TableRecord(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		//Form Container...

@@ -190,7 +190,7 @@ public class WebSocketTableRecordCreateClient extends
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public TableRecord getNewInstanceBy(JSONObject jsonObjectParam) {
+		public TableRecord getNewInstanceBy(JsonObject jsonObjectParam) {
 
 			this.returnedTableRecord = new TableRecord(jsonObjectParam);
 

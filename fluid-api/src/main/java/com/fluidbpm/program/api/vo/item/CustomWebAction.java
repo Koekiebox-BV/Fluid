@@ -79,7 +79,7 @@ public class CustomWebAction extends ABaseFluidJSONObject {
 	 * Populates local variables with {@code jsonObjectParam}.
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public CustomWebAction(JSONObject jsonObjectParam) {
+	public CustomWebAction(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

@@ -48,7 +48,7 @@ public class AttachmentListing extends ABaseListing<Attachment> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public AttachmentListing(JSONObject jsonObjectParam){
+	public AttachmentListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class AttachmentListing extends ABaseListing<Attachment> {
 	 */
 	@Override
 	@XmlTransient
-	public Attachment getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Attachment getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Attachment(jsonObjectParam);
 	}
 }

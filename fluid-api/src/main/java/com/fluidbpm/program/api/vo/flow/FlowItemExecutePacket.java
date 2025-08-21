@@ -63,7 +63,7 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FlowItemExecutePacket(JSONObject jsonObjectParam) {
+	public FlowItemExecutePacket(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null)

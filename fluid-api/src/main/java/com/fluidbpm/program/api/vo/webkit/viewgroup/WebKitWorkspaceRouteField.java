@@ -63,7 +63,7 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitWorkspaceRouteField(JSONObject jsonObjectParam) {
+	public WebKitWorkspaceRouteField(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

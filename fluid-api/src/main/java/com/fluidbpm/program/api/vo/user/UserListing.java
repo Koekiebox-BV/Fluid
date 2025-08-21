@@ -48,7 +48,7 @@ public class UserListing extends ABaseListing<User> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserListing(JSONObject jsonObjectParam){
+    public UserListing(JsonObject jsonObjectParam){
         super(jsonObjectParam);
     }
 
@@ -60,7 +60,7 @@ public class UserListing extends ABaseListing<User> {
      */
     @Override
     @XmlTransient
-    public User getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public User getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new User(jsonObjectParam);
     }
 }

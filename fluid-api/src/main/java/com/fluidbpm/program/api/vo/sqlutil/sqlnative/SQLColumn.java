@@ -89,7 +89,7 @@ public class SQLColumn extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLColumn(JSONObject jsonObjectParam){
+    public SQLColumn(JsonObject jsonObjectParam){
         super(jsonObjectParam);
 
         if (this.jsonObject == null)

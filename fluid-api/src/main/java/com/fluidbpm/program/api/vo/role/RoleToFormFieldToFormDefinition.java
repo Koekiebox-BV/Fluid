@@ -76,7 +76,7 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public RoleToFormFieldToFormDefinition(JSONObject jsonObjectParam){
+	public RoleToFormFieldToFormDefinition(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

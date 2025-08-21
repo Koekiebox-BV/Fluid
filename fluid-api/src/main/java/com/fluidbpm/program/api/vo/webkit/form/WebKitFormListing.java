@@ -46,7 +46,7 @@ public class WebKitFormListing extends ABaseListing<WebKitForm> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitFormListing(JSONObject jsonObjectParam){
+	public WebKitFormListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -58,7 +58,7 @@ public class WebKitFormListing extends ABaseListing<WebKitForm> {
 	 */
 	@Override
 	@XmlTransient
-	public WebKitForm getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public WebKitForm getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new WebKitForm(jsonObjectParam);
 	}
 }

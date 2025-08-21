@@ -63,7 +63,7 @@ public class FormEntryTypeStats extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormEntryTypeStats(JSONObject jsonObjectParam) {
+	public FormEntryTypeStats(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

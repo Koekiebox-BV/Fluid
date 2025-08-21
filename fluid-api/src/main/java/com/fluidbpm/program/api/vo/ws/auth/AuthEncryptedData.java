@@ -62,7 +62,7 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AuthEncryptedData(JSONObject jsonObjectParam) {
+    public AuthEncryptedData(JsonObject jsonObjectParam) {
         super();
 
         //Role Listing...

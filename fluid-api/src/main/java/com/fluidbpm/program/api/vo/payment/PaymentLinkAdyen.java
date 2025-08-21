@@ -69,7 +69,7 @@ public class PaymentLinkAdyen extends ABaseFluidJSONObject {
 	 * Populates local variables with {@code jsonObjectParam}.
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public PaymentLinkAdyen(JSONObject jsonObjectParam) {
+	public PaymentLinkAdyen(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

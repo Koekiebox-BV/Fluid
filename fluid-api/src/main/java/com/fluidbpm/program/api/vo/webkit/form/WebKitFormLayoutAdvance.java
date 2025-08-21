@@ -57,7 +57,7 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitFormLayoutAdvance(JSONObject jsonObjectParam) {
+	public WebKitFormLayoutAdvance(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

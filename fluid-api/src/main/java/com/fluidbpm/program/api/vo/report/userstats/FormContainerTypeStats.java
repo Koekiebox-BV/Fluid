@@ -75,7 +75,7 @@ public class FormContainerTypeStats extends ABaseFluidJSONReportObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormContainerTypeStats(JSONObject jsonObjectParam) {
+	public FormContainerTypeStats(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) {
 			return;

@@ -99,7 +99,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FlowItemExecuteResult(JSONObject jsonObjectParam) {
+	public FlowItemExecuteResult(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;

@@ -48,7 +48,7 @@ public class CollaborationListing extends ABaseListing<Collaboration> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public CollaborationListing(JSONObject jsonObjectParam){
+	public CollaborationListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -60,7 +60,7 @@ public class CollaborationListing extends ABaseListing<Collaboration> {
 	 */
 	@Override
 	@XmlTransient
-	public Collaboration getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Collaboration getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Collaboration(jsonObjectParam);
 	}
 }

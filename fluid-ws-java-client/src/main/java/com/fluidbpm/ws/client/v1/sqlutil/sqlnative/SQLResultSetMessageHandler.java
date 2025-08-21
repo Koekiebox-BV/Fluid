@@ -37,7 +37,7 @@ public class SQLResultSetMessageHandler extends AGenericListMessageHandler<SQLRe
 	 * @return new {@code SQLResultSet}.
 	 */
 	@Override
-	public SQLResultSet getNewInstanceBy(JSONObject jsonObjectParam) {
+	public SQLResultSet getNewInstanceBy(JsonObject jsonObjectParam) {
 		return new SQLResultSet(jsonObjectParam);
 	}
 }

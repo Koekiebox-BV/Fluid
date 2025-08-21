@@ -124,7 +124,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitViewSub(JSONObject jsonObjectParam) {
+	public WebKitViewSub(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

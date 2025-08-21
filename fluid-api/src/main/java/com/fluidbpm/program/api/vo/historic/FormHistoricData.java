@@ -157,7 +157,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormHistoricData(JSONObject jsonObjectParam) {
+	public FormHistoricData(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;

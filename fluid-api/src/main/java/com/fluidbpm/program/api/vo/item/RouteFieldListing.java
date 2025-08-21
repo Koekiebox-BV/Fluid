@@ -50,7 +50,7 @@ public class RouteFieldListing extends ABaseListing<Field> {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public RouteFieldListing(JSONObject jsonObjectParam){
+	public RouteFieldListing(JsonObject jsonObjectParam){
 		super(jsonObjectParam);
 	}
 
@@ -62,7 +62,7 @@ public class RouteFieldListing extends ABaseListing<Field> {
 	 */
 	@Override
 	@XmlTransient
-	public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+	public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
 		return new Field(jsonObjectParam);
 	}
 }

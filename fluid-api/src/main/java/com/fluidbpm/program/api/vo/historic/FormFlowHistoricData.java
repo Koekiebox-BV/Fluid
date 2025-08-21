@@ -79,7 +79,7 @@ public class FormFlowHistoricData extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FormFlowHistoricData(JSONObject jsonObjectParam) {
+	public FormFlowHistoricData(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

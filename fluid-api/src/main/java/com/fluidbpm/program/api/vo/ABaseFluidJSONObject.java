@@ -164,6 +164,22 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     }
 
     /**
+     * Safely retrieves the integer value of the specified property from a given JSON object.
+     * Returns null if the property does not exist or its value is null.
+     *
+     * @param jsonObject The JSON object containing the property to retrieve.
+     * @param propertyName The name of the property to retrieve.
+     * @return The integer value of the specified property, or null if the property does not exist or its value is null.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected Integer getAsIntegerNullSafe(JsonObject jsonObject, String propertyName) {
+        JsonElement jsonElement = jsonObject.get(propertyName);
+        if (jsonElement == null || jsonElement.isJsonNull()) return null;
+        return jsonElement.getAsInt();
+    }
+
+    /**
      * Checks if the specified property in the given JSON object is a numeric value.
      *
      * @param jsonObject The JSON object containing the property to check.

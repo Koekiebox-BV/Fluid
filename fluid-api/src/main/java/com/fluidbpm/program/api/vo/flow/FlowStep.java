@@ -173,7 +173,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 		 *
 		 * @param jsonObjectParam The JSON Object.
 		 */
-		public StepProperty(JSONObject jsonObjectParam) {
+		public StepProperty(JsonObject jsonObjectParam) {
 			super(jsonObjectParam);
 
 			if (this.jsonObject == null) return;
@@ -281,7 +281,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public FlowStep(JSONObject jsonObjectParam) {
+	public FlowStep(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;

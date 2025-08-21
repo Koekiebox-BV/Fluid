@@ -80,7 +80,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public WebKitGlobal(JSONObject jsonObjectParam) {
+	public WebKitGlobal(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 		if (this.jsonObject == null) return;
 

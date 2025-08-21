@@ -50,7 +50,7 @@ public class GenericFormHistoryListingMessageHandler extends AGenericListMessage
 	 * @return new {@code FormFieldListing}.
 	 */
 	@Override
-	public FormHistoricDataListing getNewInstanceBy(JSONObject jsonObjectParam) {
+	public FormHistoricDataListing getNewInstanceBy(JsonObject jsonObjectParam) {
 		return new FormHistoricDataListing(jsonObjectParam);
 	}
 }

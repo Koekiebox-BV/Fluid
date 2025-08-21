@@ -64,7 +64,7 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ServiceTicket(JSONObject jsonObjectParam) {
+    public ServiceTicket(JsonObject jsonObjectParam) {
         super();
 
         //Client...

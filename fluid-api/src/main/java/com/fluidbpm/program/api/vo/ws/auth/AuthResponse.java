@@ -71,7 +71,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AuthResponse(JSONObject jsonObjectParam) {
+    public AuthResponse(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         //Salt...

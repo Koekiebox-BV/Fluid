@@ -180,7 +180,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public Form(JSONObject jsonObjectParam) {
+	public Form(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null) return;
@@ -1212,7 +1212,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public void populateFromElasticSearchJson(JSONObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
+	public void populateFromElasticSearchJson(JsonObject jsonObjectParam, List<Field> formFieldsParam) throws JSONException {
 		this.jsonObject = jsonObjectParam;
 		if (jsonObjectParam == null) return;
 

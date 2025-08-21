@@ -86,7 +86,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public ThirdPartyLibraryTaskIdentifier(JSONObject jsonObjectParam) {
+	public ThirdPartyLibraryTaskIdentifier(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (!this.jsonObject.isNull(JSONMapping.LIBRARY_FILENAME)) {

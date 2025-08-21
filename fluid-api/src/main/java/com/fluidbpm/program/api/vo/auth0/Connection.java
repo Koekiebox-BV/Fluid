@@ -112,7 +112,7 @@ public class Connection extends ABaseFluidJSONObject {
 		 *
 		 * @param jsonObjectParam The JSON Object.
 		 */
-		public Client(JSONObject jsonObjectParam) {
+		public Client(JsonObject jsonObjectParam) {
 			super(jsonObjectParam);
 
 			if (this.jsonObject == null)
@@ -297,7 +297,7 @@ public class Connection extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObjectParam The JSON Object.
 	 */
-	public Connection(JSONObject jsonObjectParam) {
+	public Connection(JsonObject jsonObjectParam) {
 		super(jsonObjectParam);
 
 		if (this.jsonObject == null)

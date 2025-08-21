@@ -230,7 +230,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	 */
 	@XmlTransient
 	@JsonIgnore
-	public abstract T getObjectFromJSONObject(JSONObject jsonObjectParam);
+	public abstract T getObjectFromJSONObject(JsonObject jsonObjectParam);
 
 	/**
 	 * Returns whether the listing is empty.

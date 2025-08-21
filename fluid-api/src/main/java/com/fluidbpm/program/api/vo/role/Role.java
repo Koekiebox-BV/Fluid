@@ -105,7 +105,7 @@ public class Role extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Role(JSONObject jsonObjectParam){
+    public Role(JsonObject jsonObjectParam){
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 

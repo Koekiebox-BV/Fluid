@@ -1066,7 +1066,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      */
     @XmlTransient
     @JsonIgnore
-    public Field populateFromElasticSearchJson(JSONObject jsonObjectParam) throws JSONException {
+    public Field populateFromElasticSearchJson(JsonObject jsonObjectParam) throws JSONException {
         if (this.getFieldNameAsUpperCamel() == null) return null;
 
         String fieldIdAsString = this.getFieldNameAsUpperCamel();
@@ -1169,7 +1169,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             List<Field> formFieldsParam
     ) throws JSONException {
         throw new FluidElasticSearchException(
-                "Method not implemented. Make use of 'populateFromElasticSearchJson(JSONObject jsonObjectParam)' method.");
+                "Method not implemented. Make use of 'populateFromElasticSearchJson(JsonObject jsonObjectParam)' method.");
     }
 
     /**
