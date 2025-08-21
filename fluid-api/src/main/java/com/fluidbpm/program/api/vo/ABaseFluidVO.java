@@ -15,10 +15,12 @@
 
 package com.fluidbpm.program.api.vo;
 
-import java.io.Serializable;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.user.User;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -34,6 +36,8 @@ import com.fluidbpm.program.api.vo.user.User;
  * @see User
  * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
  */
+@Getter
+@Setter
 public class ABaseFluidVO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -62,46 +66,6 @@ public class ABaseFluidVO implements Serializable {
 	}
 
 	/**
-	 * Gets the Id associated with any Fluid entity.
-	 *
-	 * @return Id associated with {@code this} entity.
-	 */
-	public Long getId() {
-		return this.id;
-	}
-
-	/**
-	 * Sets the Id associated with any Fluid entity.
-	 *
-	 * @param idParam Id associated with {@code this} entity.
-	 */
-	public void setId(Long idParam) {
-		this.id = idParam;
-	}
-
-	/**
-	 * Gets the Service Ticket associated with the Fluid session.
-	 *
-	 * @return Service Ticket of Fluid session.
-	 *
-	 * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
-	 */
-	public String getServiceTicket() {
-		return this.serviceTicket;
-	}
-
-	/**
-	 * Gets the Request UUID associated with a request.
-	 *
-	 * @return String - Request UUID
-	 *
-	 * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
-	 */
-	public String getRequestUuid() {
-		return this.requestUuid;
-	}
-
-	/**
 	 * Gets the Service Ticket associated with the Fluid session as HEX.
 	 *
 	 * @return Service Ticket of Fluid session in Hex format.
@@ -109,16 +73,9 @@ public class ABaseFluidVO implements Serializable {
 	 * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
 	 */
 	public String getServiceTicketAsHexUpper() {
-
 		String serviceTicket = this.getServiceTicket();
-		if (serviceTicket == null) {
-			return null;
-		}
-
-		if (serviceTicket.isEmpty()) {
-			return serviceTicket;
-		}
-
+		if (serviceTicket == null) return null;
+		if (serviceTicket.isEmpty()) return serviceTicket;
 		byte[] base64Bytes = UtilGlobal.decodeBase64(serviceTicket);
 		return this.bytesToHex(base64Bytes);
 	}
@@ -132,85 +89,15 @@ public class ABaseFluidVO implements Serializable {
 	 * @return String with upper case HEX.
 	 */
 	private String bytesToHex(byte[] bytesToConvert) {
-
-		if (bytesToConvert == null) {
-			return null;
-		}
-
-		if (bytesToConvert.length == 0) {
-			return UtilGlobal.EMPTY;
-		}
+        if (bytesToConvert == null) return null;
+        else if (bytesToConvert.length == 0) return UtilGlobal.EMPTY;
 
 		char[] hexChars = new char[bytesToConvert.length * 2];
-
 		for ( int index = 0; index < bytesToConvert.length; index++ ) {
 			int andWith127 = (bytesToConvert[index] & 0xFF);
 			hexChars[index * 2] = HEX_ARRAY[andWith127 >>> 4];
 			hexChars[index * 2 + 1] = HEX_ARRAY[andWith127 & 0x0F];
 		}
-
 		return new String(hexChars);
-	}
-
-	/**
-	 * Sets the Service Ticket associated with the Fluid session.
-	 *
-	 * @param serviceTicketParam Service Ticket of Fluid session.
-	 *
-	 * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
-	 */
-	public void setServiceTicket(String serviceTicketParam) {
-		this.serviceTicket = serviceTicketParam;
-	}
-
-	/**
-	 * Sets the Request UUID associated with the request.
-	 *
-	 * @param requestUuidParam Universaly Unique Identifier.
-	 */
-	public void setRequestUuid(String requestUuidParam) {
-		this.requestUuid = requestUuidParam;
-	}
-
-	/**
-	 * Sets the Echo message for tracking async messages.
-	 *
-	 * @return Echo message.
-	 */
-	public String getEcho() {
-		return this.echo;
-	}
-
-	/**
-	 * Sets the Echo message for tracking async messages.
-	 *
-	 * @param echoParam Echo message.
-	 */
-	public void setEcho(String echoParam) {
-		this.echo = echoParam;
-	}
-
-	/**
-	 * Gets the {@code User} associated with the session.
-	 *
-	 * @return The Logged in user associated with the session.
-	 *
-	 * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
-	 * @see User
-	 */
-	public User getLoggedInUserFromTicket() {
-		return this.loggedInUserFromTicket;
-	}
-
-	/**
-	 * Sets the {@code User} associated with the session.
-	 *
-	 * @param loggedInUserFromTicket The Logged in user associated with the session.
-	 *
-	 * @see com.fluidbpm.program.api.vo.ws.auth.ServiceTicket
-	 * @see User
-	 */
-	public void setLoggedInUserFromTicket(User loggedInUserFromTicket) {
-		this.loggedInUserFromTicket = loggedInUserFromTicket;
 	}
 }

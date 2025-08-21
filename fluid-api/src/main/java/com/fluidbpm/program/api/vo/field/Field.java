@@ -21,8 +21,11 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.FluidJSONException;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -51,6 +54,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
     @Setter
     @Getter
+    @SerializedName(JSONMapping.FIELD_NAME)
     private String fieldName;
 
     @Getter
@@ -927,56 +931,42 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-
-        //Field Name...
-        if (this.getFieldName() != null) returnVal.put(JSONMapping.FIELD_NAME, this.getFieldName());
-
-        //Field Description...
-        if (this.getFieldDescription() != null)
-            returnVal.put(JSONMapping.FIELD_DESCRIPTION, this.getFieldDescription());
-
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
+        returnVal.addProperty(JSONMapping.FIELD_NAME, this.getFieldName());
+        returnVal.addProperty(JSONMapping.FIELD_DESCRIPTION, this.getFieldDescription());
+        
         //Field Value...
         if (this.getFieldValue() != null) {
             //Text...
             if (this.getFieldValue() instanceof String) {
-                returnVal.put(JSONMapping.FIELD_VALUE, this.getFieldValue());
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, this.getFieldValueAsString());
             } else if (this.getFieldValue() instanceof Number) {
                 //Decimal...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((Number) this.getFieldValue()).doubleValue());
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, ((Number) this.getFieldValue()).doubleValue());
             } else if (this.getFieldValue() instanceof Boolean) {
                 //True False...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        (Boolean) this.getFieldValue());
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, (Boolean) this.getFieldValue());
             } else if (this.getFieldValue() instanceof Date) {
                 //Date Time...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        this.getDateAsObjectFromJson((Date) this.getFieldValue()));
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, this.getDateAsLongFromJson((Date) this.getFieldValue()));
             } else if (this.getFieldValue() instanceof MultiChoice) {
                 //Multi Choice...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((MultiChoice) this.getFieldValue()).toJsonObject());
+                returnVal.add(JSONMapping.FIELD_VALUE, ((MultiChoice) this.getFieldValue()).toJsonObject());
             } else if (this.getFieldValue() instanceof TableField) {
                 //Table Field...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((TableField) this.getFieldValue()).toJsonObject());
+                returnVal.add(JSONMapping.FIELD_VALUE, ((TableField) this.getFieldValue()).toJsonObject());
             } else {
-                returnVal.put(JSONMapping.FIELD_VALUE, this.getFieldValue());
+                throw new FluidJSONException(
+                        String.format("Object value '%s' of type '%s' is not supported.",
+                                this.getFieldValue(),
+                                this.getFieldValue().getClass().getName()
+                        )
+                );
             }
         }
-
-        //Type...
-        if (this.getFieldType() != null) {
-            returnVal.put(JSONMapping.FIELD_TYPE, this.getFieldType());
-        }
-
-        //Type Meta Data...
-        if (this.getTypeMetaData() != null) {
-            returnVal.put(JSONMapping.TYPE_META_DATA, this.getTypeMetaData());
-        }
-
+        returnVal.addProperty(JSONMapping.FIELD_TYPE, this.getFieldType());
+        returnVal.addProperty(JSONMapping.TYPE_META_DATA, this.getTypeMetaData());
         return returnVal;
     }
 

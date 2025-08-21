@@ -24,6 +24,7 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.user.User;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -796,8 +797,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
 		//Form Type...
 		if (this.getFormType() != null) returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());

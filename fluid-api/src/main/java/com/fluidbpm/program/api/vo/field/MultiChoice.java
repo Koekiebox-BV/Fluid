@@ -18,6 +18,7 @@ package com.fluidbpm.program.api.vo.field;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -229,8 +230,8 @@ public class MultiChoice extends ABaseFluidJSONObject {
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Available...
         if (this.getAvailableMultiChoices() != null) {

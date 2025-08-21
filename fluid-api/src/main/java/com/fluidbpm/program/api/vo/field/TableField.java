@@ -18,6 +18,8 @@ package com.fluidbpm.program.api.vo.field;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONArray;
@@ -31,145 +33,139 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *     Represents a {@code Form} Table Field.
- *     Table fields have the ability to store other {@code Field}s inside itself.
- *     This allows for a much richer Electronic Form.
+ * Represents a {@code Form} Table Field.
+ * Table fields have the ability to store other {@code Field}s inside itself.
+ * This allows for a much richer Electronic Form.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see Field
  * @see com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil
+ * @since v1.0
  */
 @Getter
 @Setter
 public class TableField extends ABaseFluidJSONObject {
-	public static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
 
-	private List<Form> tableRecords;
-	private Boolean sumDecimals;
+    private List<Form> tableRecords;
+    private Boolean sumDecimals;
 
-	/**
-	 * The JSON mapping for the {@code TableField} object.
-	 */
-	public static class JSONMapping {
-		public static final String TABLE_RECORDS = "tableRecords";
-		public static final String SUM_DECIMALS = "sumDecimals";
-	}
+    /**
+     * The JSON mapping for the {@code TableField} object.
+     */
+    public static class JSONMapping {
+        public static final String TABLE_RECORDS = "tableRecords";
+        public static final String SUM_DECIMALS = "sumDecimals";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public TableField() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public TableField() {
+        super();
+    }
 
-	/**
-	 * Constructor to create {@code TableField} with records.
-	 *
-	 * @param tableRecordsParam The records to create.
-	 */
-	public TableField(List<Form> tableRecordsParam) {
-		super();
-		this.setTableRecords(tableRecordsParam);
-	}
+    /**
+     * Constructor to create {@code TableField} with records.
+     *
+     * @param tableRecordsParam The records to create.
+     */
+    public TableField(List<Form> tableRecordsParam) {
+        super();
+        this.setTableRecords(tableRecordsParam);
+    }
 
-	/**
-	 * Constructor to create {@code TableField} with records.
-	 *
-	 * @param toClone The records to clone.
-	 */
-	public TableField(TableField toClone) {
-		this();
-		if (toClone == null) return;
-		this.setId(toClone.getId());
-		this.sumDecimals = toClone.sumDecimals;
-		if (toClone.getTableRecords() == null) this.tableRecords = null;
-		else {
-			this.setTableRecords(toClone.getTableRecords().stream()
-					.map(itm -> new Form(itm.getId()))
-					.collect(Collectors.toList()));
-		}
-	}
+    /**
+     * Constructor to create {@code TableField} with records.
+     *
+     * @param toClone The records to clone.
+     */
+    public TableField(TableField toClone) {
+        this();
+        if (toClone == null) return;
+        this.setId(toClone.getId());
+        this.sumDecimals = toClone.sumDecimals;
+        if (toClone.getTableRecords() == null) this.tableRecords = null;
+        else {
+            this.setTableRecords(toClone.getTableRecords().stream()
+                    .map(itm -> new Form(itm.getId()))
+                    .collect(Collectors.toList()));
+        }
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public TableField(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public TableField(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-		//Sum Decimals...
-		if (!this.jsonObject.isNull(JSONMapping.SUM_DECIMALS)) {
-			this.setSumDecimals(this.jsonObject.getBoolean(JSONMapping.SUM_DECIMALS));
-		}
+        //Sum Decimals...
+        this.setSumDecimals(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.SUM_DECIMALS));
 
-		//Table Field Records...
-		if (!this.jsonObject.isNull(JSONMapping.TABLE_RECORDS)) {
-			JSONArray formsArr = this.jsonObject.getJSONArray(JSONMapping.TABLE_RECORDS);
-			List<Form> assForms = new ArrayList();
-			for (int index = 0;index < formsArr.length();index++) {
-				assForms.add(new Form(formsArr.getJSONObject(index)));
-			}
-			this.setTableRecords(assForms);
-		}
-	}
+        //Table Field Records...
+        if (!this.jsonObject.isNull(JSONMapping.TABLE_RECORDS)) {
+            JSONArray formsArr = this.jsonObject.getJSONArray(JSONMapping.TABLE_RECORDS);
+            List<Form> assForms = new ArrayList();
+            for (int index = 0; index < formsArr.length(); index++) {
+                assForms.add(new Form(formsArr.getJSONObject(index)));
+            }
+            this.setTableRecords(assForms);
+        }
+    }
 
-	@XmlTransient
-	public boolean isTableRecordsEmpty() {
-		return (this.getTableRecords() == null || this.getTableRecords().isEmpty());
-	}
+    @XmlTransient
+    public boolean isTableRecordsEmpty() {
+        return (this.getTableRecords() == null || this.getTableRecords().isEmpty());
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code TableField}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code TableField}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
-		//Sum Decimals...
-		if (this.getSumDecimals() != null) {
-			returnVal.put(JSONMapping.SUM_DECIMALS, this.getSumDecimals());
-		}
+        //Sum Decimals...
+        returnVal.addProperty(JSONMapping.SUM_DECIMALS, this.getSumDecimals());
 
-		//Table Field Records...
-		if (this.getTableRecords() != null && !this.getTableRecords().isEmpty()) {
-			JSONArray assoFormsArr = new JSONArray();
-
-			for (Form toAdd : this.getTableRecords()) assoFormsArr.put(toAdd.toJsonObject());
-
-			returnVal.put(JSONMapping.TABLE_RECORDS, assoFormsArr);
-		}
-		return returnVal;
-	}
+        //Table Field Records...
+        if (this.getTableRecords() != null && !this.getTableRecords().isEmpty()) {
+            JsonArray assoFormsArr = new JsonArray();
+            for (Form toAdd : this.getTableRecords()) {
+                assoFormsArr.add(toAdd.toJsonObject());
+            }
+            returnVal.add(JSONMapping.TABLE_RECORDS, assoFormsArr);
+        }
+        return returnVal;
+    }
 
 
-	/**
-	 * @return Cloned object from {@code this}
-	 */
-	@XmlTransient
-	@Override
-	public TableField clone() {
-		return new TableField(this);
-	}
+    /**
+     * @return Cloned object from {@code this}
+     */
+    @XmlTransient
+    @Override
+    public TableField clone() {
+        return new TableField(this);
+    }
 
-	/**
-	 * String value for a table field.
-	 *
-	 * @return JSON text from the table field.
-	 */
-	@Override
-	public String toString() {
-		JSONObject jsonObject = this.toJsonObject();
-		if (jsonObject != null) return jsonObject.toString();
-		return UtilGlobal.EMPTY;
-	}
+    /**
+     * String value for a table field.
+     *
+     * @return JSON text from the table field.
+     */
+    @Override
+    public String toString() {
+        JSONObject jsonObject = this.toJsonObject();
+        if (jsonObject != null) return jsonObject.toString();
+        return UtilGlobal.EMPTY;
+    }
 }
