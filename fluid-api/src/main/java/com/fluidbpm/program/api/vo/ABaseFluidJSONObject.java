@@ -17,10 +17,7 @@ package com.fluidbpm.program.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.text.ParseException;
@@ -181,6 +178,21 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     }
 
     /**
+     * Checks whether the specified property in the given JSON object
+     * is a boolean type.
+     *
+     * @param jsonObject The JSON object containing the property to check.
+     * @param propertyName The name of the property to verify.
+     * @return {@code true} if the property exists and its value is a boolean; {@code false} otherwise.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected boolean isPropertyBoolean(JsonObject jsonObject, String propertyName) {
+        JsonElement jsonElement = jsonObject.get(propertyName);
+        return jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isBoolean();
+    }
+
+    /**
      * Checks if the given property in the provided JSON object is a string type.
      *
      * @param jsonObject The JSON object containing the property to check.
@@ -194,6 +206,19 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
         return jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString();
     }
 
+    /**
+     * Converts a JSON-formatted string into a {@code JsonObject}.
+     *
+     * @param value The JSON string to be converted into a {@code JsonObject}.
+     * @return The parsed {@code JsonObject} representation of the input string.
+     *         If the input string is invalid or not properly formatted JSON,
+     *         an exception may be thrown during parsing.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected JsonObject stringAsJsonObject(String value) {
+        return JsonParser.parseString(value).getAsJsonObject();
+    }
 
     /**
      * <p>

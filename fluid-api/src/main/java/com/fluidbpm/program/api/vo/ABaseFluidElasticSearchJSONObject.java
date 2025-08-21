@@ -19,8 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
 import com.fluidbpm.program.api.vo.field.Field;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import java.util.List;
  *
  * @author jasonbruwer
  * @see ABaseFluidVO
- * @see JSONObject
+ * @see JsonObject
  * @since v1.0
  */
 public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONObject {
@@ -51,7 +50,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ABaseFluidElasticSearchJSONObject(JSONObject jsonObjectParam) {
+    public ABaseFluidElasticSearchJSONObject(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,12 +58,11 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
      * Conversion to {@code JSONObject} for storage in ElasticSearch.
      *
      * @return {@code JSONObject} representation of {@code subclass-type}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
-    public abstract JSONObject toJsonForElasticSearch() throws JSONException;
+    public abstract JsonObject toJsonForElasticSearch();
 
     /**
      * The JSON mapping for ElasticSearch and its field definitions.
@@ -72,27 +70,25 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
      * data-types more effective.
      *
      * @return {@code JSONObject} representation of {@code Form} definition.
-     * @throws JSONException If there is a problem with constructing the mapping.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
-    public abstract JSONObject toJsonMappingForElasticSearch() throws JSONException;
+    public abstract JsonObject toJsonMappingForElasticSearch();
 
     /**
      * Populate the object based on the ElasticSearch JSON structure.
      *
      * @param jsonObjectParam The JSON object to populate from.
      * @param formFieldsParam The Form Fields to use.
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
     public abstract void populateFromElasticSearchJson(
-            JSONObject jsonObjectParam,
+            JsonObject jsonObjectParam,
             List<Field> formFieldsParam
-    ) throws JSONException;
+    );
 
     /**
      * Convert the {@code SQLFormFieldUtil.FormFieldMapping} to {@code Field}.

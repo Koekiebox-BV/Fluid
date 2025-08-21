@@ -149,7 +149,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MultiChoice(JSONObject jsonObjectParam) {
+    public MultiChoice(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 

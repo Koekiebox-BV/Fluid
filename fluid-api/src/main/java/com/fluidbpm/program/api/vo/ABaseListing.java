@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +68,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public ABaseListing(JSONObject jsonObject){
+	public ABaseListing(JsonObject jsonObject){
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
