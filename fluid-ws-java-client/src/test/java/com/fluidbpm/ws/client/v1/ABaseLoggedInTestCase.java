@@ -250,7 +250,7 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 		//2. Attachments...
 		List<Attachment> attachments = new ArrayList();
 
-		JSONObject jsonObject = new JSONObject();
+		JsonObject jsonObject = new JSONObject();
 		try {
 			JSONObject jsonMemberObject = new JSONObject();
 			jsonMemberObject.put("firstname","Piet"+identifier);

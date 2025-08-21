@@ -192,7 +192,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
 
 		if (!this.jsonObject.isNull(JSONMapping.JOB_VIEWS)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.JOB_VIEWS);
+			JsonArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.JOB_VIEWS);
 			List<WebKitWorkspaceJobView> objs = new ArrayList();
 			for (int index = 0; index < jsonArray.length(); index++) {
 				objs.add(new WebKitWorkspaceJobView(jsonArray.getJSONObject(index)));
@@ -201,7 +201,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELDS)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.ROUTE_FIELDS);
+			JsonArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.ROUTE_FIELDS);
 			List<WebKitWorkspaceRouteField> objs = new ArrayList();
 			for (int index = 0; index < jsonArray.length(); index++) {
 				objs.add(new WebKitWorkspaceRouteField(jsonArray.getJSONObject(index)));
@@ -218,8 +218,8 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getLabel() != null) returnVal.put(JSONMapping.LABEL,this.getLabel());
 		if (this.getIcon() != null) returnVal.put(JSONMapping.ICON,this.getIcon());
@@ -243,13 +243,13 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
 		if (this.getListingMode() != null) returnVal.put(JSONMapping.LISTING_MODE, this.getListingMode());
 
 		if (this.getJobViews() != null && !this.getJobViews().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (WebKitWorkspaceJobView toAdd :this.getJobViews()) jsonArray.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.JOB_VIEWS, jsonArray);
 		}
 
 		if (this.getRouteFields() != null && !this.getRouteFields().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (WebKitWorkspaceRouteField toAdd : this.getRouteFields()) jsonArray.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.ROUTE_FIELDS, jsonArray);
 		}

@@ -87,8 +87,8 @@ public class PaymentLinkAdyen extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 		if (this.getPaymentLink() != null) {
 			returnVal.put(JSONMapping.PAYMENT_LINK, this.getPaymentLink());
 		}
@@ -101,7 +101,7 @@ public class PaymentLinkAdyen extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public String toString() {
-		JSONObject jsonObject = this.toJsonObject();
+		JsonObject jsonObject = this.toJsonObject();
 		if (jsonObject != null) return jsonObject.toString();
 		return UtilGlobal.EMPTY;
 	}

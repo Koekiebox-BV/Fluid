@@ -414,13 +414,13 @@ public class CacheUtil extends ABaseUtil {
 			case _4_MULTI_CHOICE:
 				MultiChoice multiChoice = new MultiChoice();
 				List<String> availChoices = new ArrayList<>(), selectedChoices = new ArrayList<>();
-				JSONArray jsonAvailChoices = jsonObjFromSrc.optJSONArray(JSONStruct.AVAILABLE_CHOICES);
+				JsonArray jsonAvailChoices = jsonObjFromSrc.optJSONArray(JSONStruct.AVAILABLE_CHOICES);
 				if (jsonAvailChoices != null) {
 					for (int index = 0; index < jsonAvailChoices.length(); index++) {
 						availChoices.add(jsonAvailChoices.getString(index));
 					}
 				}
-				JSONArray jsonSelectedChoices = jsonObjFromSrc.optJSONArray(JSONStruct.SELECTED_CHOICES);
+				JsonArray jsonSelectedChoices = jsonObjFromSrc.optJSONArray(JSONStruct.SELECTED_CHOICES);
 				if (jsonSelectedChoices != null) {
 					for (int index = 0; index < jsonSelectedChoices.length(); index++) {
 						selectedChoices.add(jsonSelectedChoices.getString(index));
@@ -440,7 +440,7 @@ public class CacheUtil extends ABaseUtil {
 			break;
 			case _7_TABLE_FIELD:
 				List<Form> listOfForms = new ArrayList<>();
-				JSONArray jsonFormIds = jsonObjFromSrc.optJSONArray(JSONStruct.FORM_CONTAINERS);
+				JsonArray jsonFormIds = jsonObjFromSrc.optJSONArray(JSONStruct.FORM_CONTAINERS);
 				if (jsonFormIds != null) {
 					for (int index = 0; index < jsonFormIds.length(); index++) {
 						listOfForms.add(new Form(jsonFormIds.getLong(index)));

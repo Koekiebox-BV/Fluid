@@ -115,8 +115,8 @@ public class TableRecord extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 		//Form Container...
 		if (this.getFormContainer() != null) {
 			returnVal.put(JSONMapping.FORM_CONTAINER, this.getFormContainer().toJsonObject());

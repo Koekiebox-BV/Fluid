@@ -60,7 +60,7 @@ public class NewInstanceDefault extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public NewInstanceDefault(JSONObject jsonObject) {
+	public NewInstanceDefault(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -80,8 +80,8 @@ public class NewInstanceDefault extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		returnVal.put(FIELD, this.getField());
 		returnVal.put(DEFAULT, this.getDefaultVal());

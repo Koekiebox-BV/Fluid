@@ -277,9 +277,9 @@ public class AppRequestToken extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() throws JSONException {
 
-        JSONObject returnVal = super.toJsonObject();
+        JsonObject returnVal = super.toJsonObject();
 
         //Encrypted Data Base 64...
         if (this.getEncryptedDataBase64() != null) {

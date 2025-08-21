@@ -82,7 +82,7 @@ public class SystemUpYearDay extends ABaseFluidJSONReportObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.SYSTEM_UP_HOUR_MINS)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.SYSTEM_UP_HOUR_MINS);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.SYSTEM_UP_HOUR_MINS);
 			List<SystemUpHourMin> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new SystemUpHourMin(listingArray.getJSONObject(index)));
@@ -100,14 +100,14 @@ public class SystemUpYearDay extends ABaseFluidJSONReportObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		returnVal.put(JSONMapping.YEAR, this.getYear());
 		returnVal.put(JSONMapping.DAY, this.getDay());
 
 		if (this.getSystemUpHourMins() != null && !this.getSystemUpHourMins().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (SystemUpHourMin toAdd : this.getSystemUpHourMins()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}

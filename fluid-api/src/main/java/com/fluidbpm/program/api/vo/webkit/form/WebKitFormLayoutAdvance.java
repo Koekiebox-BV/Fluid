@@ -89,8 +89,8 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getField() != null) {
 			Field reducedField = new Field(this.getField().getId(), this.getField().getFieldName());

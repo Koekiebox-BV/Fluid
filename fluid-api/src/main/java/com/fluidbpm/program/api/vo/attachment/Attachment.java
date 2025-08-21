@@ -383,8 +383,8 @@ public class Attachment extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@JsonIgnore
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 		//Attachment Data...
 		if (this.getAttachmentDataBase64() != null) {
 			returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());

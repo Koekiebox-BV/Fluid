@@ -75,7 +75,7 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public ExtendedServerHealth(JSONObject jsonObject) {
+	public ExtendedServerHealth(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -83,7 +83,7 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
 		this.setTimestampHealthEnd(this.getDateFieldValueFromFieldWithName(JSONMapping.TIMESTAMP_END));
 
 		if (!this.jsonObject.isNull(JSONMapping.DS_HEALTH)) {
-			JSONArray arr = this.jsonObject.getJSONArray(JSONMapping.DS_HEALTH);
+			JsonArray arr = this.jsonObject.getJSONArray(JSONMapping.DS_HEALTH);
 			List<DSHealth> listOfItems = new ArrayList();
 			for (int index = 0; index < arr.length(); index++) {
 				listOfItems.add(new DSHealth(arr.getJSONObject(index)));
@@ -104,7 +104,7 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.SMTP_HEALTH)) {
-			JSONArray arr = this.jsonObject.getJSONArray(JSONMapping.SMTP_HEALTH);
+			JsonArray arr = this.jsonObject.getJSONArray(JSONMapping.SMTP_HEALTH);
 			/*List<SmtpDSHealth> listOfItems = new ArrayList();
 			for (int index = 0; index < arr.length(); index++) {
 				listOfItems.add(new DSHealth(arr.getJSONObject(index)));
@@ -122,8 +122,8 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getTimestampHealthStart() != null) {
 			returnVal.put(JSONMapping.TIMESTAMP_START, this.getDateAsObjectFromJson(this.getTimestampHealthStart()));
@@ -132,7 +132,7 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.TIMESTAMP_END, this.getDateAsObjectFromJson(this.getTimestampHealthEnd()));
 		}
 		if (this.getDsHealth() != null) {
-			JSONArray arr = new JSONArray();
+			JsonArray arr = new JsonArray();
 			this.getDsHealth().forEach(itm -> arr.put(itm.toJsonObject()));
 			returnVal.put(JSONMapping.DS_HEALTH, arr);
 		}
@@ -146,7 +146,7 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
 			returnVal.put(JSONMapping.EXT_RUNNER_HEALTH, this.getExternalRunnerHealth().toJsonObject());
 		}
 		if (this.getSmtpHealth() != null) {
-			JSONArray arr = new JSONArray();
+			JsonArray arr = new JsonArray();
 			this.getSmtpHealth().forEach(itm -> arr.put(itm.toJsonObject()));
 			returnVal.put(JSONMapping.SMTP_HEALTH, arr);
 		}

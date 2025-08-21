@@ -157,7 +157,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Fluid Items...
 		if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEMS)) {
-			JSONArray fluidItemsArr = this.jsonObject.getJSONArray(JSONMapping.FLUID_ITEMS);
+			JsonArray fluidItemsArr = this.jsonObject.getJSONArray(JSONMapping.FLUID_ITEMS);
 			List<FluidItem> listOfItems = new ArrayList();
 			for (int index = 0;index < fluidItemsArr.length();index++) {
 				listOfItems.add(new FluidItem(fluidItemsArr.getJSONObject(index)));
@@ -168,7 +168,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Execute Users...
 		if (!this.jsonObject.isNull(JSONMapping.EXECUTE_USERS)) {
-			JSONArray executeUsersArr = this.jsonObject.getJSONArray(JSONMapping.EXECUTE_USERS);
+			JsonArray executeUsersArr = this.jsonObject.getJSONArray(JSONMapping.EXECUTE_USERS);
 			List<User> listOfItems = new ArrayList();
 			for (int index = 0;index < executeUsersArr.length();index++) {
 				listOfItems.add(new User(executeUsersArr.getJSONObject(index)));
@@ -178,7 +178,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Mail Messages to send...
 		if (!this.jsonObject.isNull(JSONMapping.MAIL_MESSAGES_TO_SEND)) {
-			JSONArray mailMessagesToSendArr = this.jsonObject.getJSONArray(JSONMapping.MAIL_MESSAGES_TO_SEND);
+			JsonArray mailMessagesToSendArr = this.jsonObject.getJSONArray(JSONMapping.MAIL_MESSAGES_TO_SEND);
 			List<MailMessage> listOfItems = new ArrayList();
 			for (int index = 0;index < mailMessagesToSendArr.length();index++) {
 				listOfItems.add(new MailMessage(mailMessagesToSendArr.getJSONObject(index)));
@@ -196,8 +196,8 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Fluid Item...
 		if (this.getFluidItem() != null) {
@@ -251,7 +251,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Fluid Items...
 		if (this.getFluidItems() != null && !this.getFluidItems().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (FluidItem item : this.getFluidItems()) {
 				jsonArray.put(item.toJsonObject());
 			}
@@ -260,7 +260,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Execute Users...
 		if (this.getExecuteUsers() != null && !this.getExecuteUsers().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (User item : this.getExecuteUsers()) {
 				jsonArray.put(item.toJsonObject());
 			}
@@ -269,7 +269,7 @@ public class FlowItemExecuteResult extends ABaseFluidJSONObject {
 
 		//Mail Messages To Send...
 		if (this.getMailMessagesToSend() != null && !this.getMailMessagesToSend().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (MailMessage item : this.getMailMessagesToSend()) {
 				jsonArray.put(item.toJsonObject());
 			}

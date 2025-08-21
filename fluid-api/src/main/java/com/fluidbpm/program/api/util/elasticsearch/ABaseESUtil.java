@@ -401,7 +401,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 				this.printInfoOnSourceFromES(searchHit);
 
 				Form formFromSource = new Form();
-				JSONObject jsonObject = new JSONObject(source);
+				JsonObject jsonObject = new JSONObject(source);
 				List<Field> fieldsForForm = null;
 				//Is Form Type available...
 				if (jsonObject.has(Form.JSONMapping.FORM_TYPE_ID)) {

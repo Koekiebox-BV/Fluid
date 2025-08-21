@@ -253,9 +253,9 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 		 * @see ABaseFluidJSONObject#toJsonObject()
 		 */
 		@Override
-		public JSONObject toJsonObject() throws JSONException {
+		public JsonObject toJsonObject() throws JSONException {
 
-			JSONObject returnVal = super.toJsonObject();
+			JsonObject returnVal = super.toJsonObject();
 
 			//Access Token...
 			if (this.getAccessToken() != null)
@@ -358,7 +358,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 
 			this.identities = new ArrayList<Identity>();
 
-			JSONArray identityListing = this.jsonObject.getJSONArray(JSONMapping.IDENTITIES);
+			JsonArray identityListing = this.jsonObject.getJSONArray(JSONMapping.IDENTITIES);
 
 			for (int index = 0;index < identityListing.length();index++)
 			{
@@ -582,9 +582,9 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
+	public JsonObject toJsonObject() throws JSONException {
 
-		JSONObject returnVal = super.toJsonObject();
+		JsonObject returnVal = super.toJsonObject();
 
 		//User Id...
 		if (this.getUserId() != null)
@@ -640,7 +640,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
 		//Identities...
 		if (this.getIdentities() != null && !this.getIdentities().isEmpty())
 		{
-			JSONArray identitiesArr = new JSONArray();
+			JsonArray identitiesArr = new JsonArray();
 			for (Identity toAdd :this.getIdentities())
 			{
 				identitiesArr.put(toAdd.toJsonObject());

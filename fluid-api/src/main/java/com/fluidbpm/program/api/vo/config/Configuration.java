@@ -114,8 +114,8 @@ public class Configuration extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Key...
 		if (this.getKey() != null) returnVal.put(JSONMapping.KEY,this.getKey());

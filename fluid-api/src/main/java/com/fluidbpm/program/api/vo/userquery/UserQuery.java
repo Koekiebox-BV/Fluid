@@ -150,7 +150,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         //Inputs...
         if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
-            JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
+            JsonArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
             List<Field> assFields = new ArrayList();
             for (int index = 0;index < fieldsArr.length();index++) {
                 assFields.add(new Field(fieldsArr.getJSONObject(index)));
@@ -160,7 +160,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         //Rules...
         if (!this.jsonObject.isNull(JSONMapping.RULES)) {
-            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
+            JsonArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
             List<String> rules = new ArrayList();
             for (int index = 0;index < rulesArr.length();index++) {
                 rules.add(rulesArr.getString(index));
@@ -184,9 +184,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() throws JSONException {
 
-        JSONObject returnVal = super.toJsonObject();
+        JsonObject returnVal = super.toJsonObject();
 
         //Name...
         if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
@@ -196,14 +196,14 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         //Inputs...
         if (this.getInputs() != null) {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
             for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
             returnVal.put(JSONMapping.INPUTS, jsonArray);
         }
 
         //Rules...
         if (this.getRules() != null) {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
             for (String toAdd : this.getRules()) jsonArray.put(toAdd);
             returnVal.put(JSONMapping.RULES, jsonArray);
         }

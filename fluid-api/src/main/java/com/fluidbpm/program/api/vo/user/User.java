@@ -159,7 +159,7 @@ public class User extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public User(JSONObject jsonObject){
+	public User(JsonObject jsonObject){
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -234,7 +234,7 @@ public class User extends ABaseFluidJSONObject {
 
 		//Roles...
 		if (!this.jsonObject.isNull(JSONMapping.ROLES)) {
-			JSONArray roleListing = this.jsonObject.getJSONArray(JSONMapping.ROLES);
+			JsonArray roleListing = this.jsonObject.getJSONArray(JSONMapping.ROLES);
 			List<Role> roleListingList = new ArrayList();
 			for (int index = 0;index < roleListing.length();index++) {
 				roleListingList.add(new Role(roleListing.getJSONObject(index)));
@@ -244,7 +244,7 @@ public class User extends ABaseFluidJSONObject {
 
 		//Email Addresses...
 		if (!this.jsonObject.isNull(JSONMapping.EMAIL_ADDRESSES)) {
-			JSONArray emailListing = this.jsonObject.getJSONArray(JSONMapping.EMAIL_ADDRESSES);
+			JsonArray emailListing = this.jsonObject.getJSONArray(JSONMapping.EMAIL_ADDRESSES);
 			List<String> emailAddressList = new ArrayList();
 			for (int index = 0;index < emailListing.length();index++) {
 				emailAddressList.add(emailListing.getString(index));
@@ -254,7 +254,7 @@ public class User extends ABaseFluidJSONObject {
 
 		//User Fields...
 		if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
-			JSONArray userFieldListing = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
+			JsonArray userFieldListing = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
 			List<Field> userFieldListingList = new ArrayList();
 			for (int index = 0;index < userFieldListing.length();index++) {
 				userFieldListingList.add(new Field(userFieldListing.getJSONObject(index)));
@@ -319,9 +319,9 @@ public class User extends ABaseFluidJSONObject {
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject toJsonObject() throws JSONException {
+	public JsonObject toJsonObject() throws JSONException {
 
-		JSONObject returnVal = super.toJsonObject();
+		JsonObject returnVal = super.toJsonObject();
 
 		//Active...
 		returnVal.put(JSONMapping.ACTIVE, this.isActive());
@@ -397,7 +397,7 @@ public class User extends ABaseFluidJSONObject {
 
 		//Roles...
 		if (this.getRoles() != null && !this.getRoles().isEmpty()) {
-			JSONArray rolesArr = new JSONArray();
+			JsonArray rolesArr = new JsonArray();
 			for (Role toAdd :this.getRoles()) {
 				rolesArr.put(toAdd.toJsonObject());
 			}
@@ -406,7 +406,7 @@ public class User extends ABaseFluidJSONObject {
 
 		//Email Addresses...
 		if (this.getEmailAddresses() != null && !this.getEmailAddresses().isEmpty()) {
-			JSONArray emailArr = new JSONArray();
+			JsonArray emailArr = new JsonArray();
 			for (String toAdd :this.getEmailAddresses()) {
 				emailArr.put(toAdd);
 			}
@@ -415,7 +415,7 @@ public class User extends ABaseFluidJSONObject {
 
 		//User Fields...
 		if (this.getUserFields() != null && !this.getUserFields().isEmpty()) {
-			JSONArray userFieldsArr = new JSONArray();
+			JsonArray userFieldsArr = new JsonArray();
 			for (Field toAdd :this.getUserFields()) {
 				userFieldsArr.put(toAdd.toJsonObject());
 			}

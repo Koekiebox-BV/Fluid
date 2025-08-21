@@ -60,7 +60,7 @@ public class ESHealth extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public ESHealth(JSONObject jsonObject) {
+	public ESHealth(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -81,8 +81,8 @@ public class ESHealth extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 
 		if (this.getConnectObtainDurationMillis() != null) {

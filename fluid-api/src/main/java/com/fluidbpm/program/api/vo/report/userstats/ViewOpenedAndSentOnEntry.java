@@ -124,8 +124,8 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getViewName() != null) {
 			returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());

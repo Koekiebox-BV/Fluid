@@ -136,7 +136,7 @@ public class Flow extends ABaseFluidJSONObject {
 		//Flow Steps...
 		if (!this.jsonObject.isNull(JSONMapping.FLOW_STEPS)) {
 
-			JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.FLOW_STEPS);
+			JsonArray entryRules = this.jsonObject.getJSONArray(JSONMapping.FLOW_STEPS);
 
 			List<FlowStep> listOfFlowSteps = new ArrayList();
 			for (int index = 0;index < entryRules.length();index++) {
@@ -156,8 +156,8 @@ public class Flow extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Name...
 		if (this.getName() != null) {
@@ -171,7 +171,7 @@ public class Flow extends ABaseFluidJSONObject {
 
 		//Flow Steps...
 		if (this.getFlowSteps() != null && !this.getFlowSteps().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (FlowStep rule : this.getFlowSteps()) {
 				jsonArray.put(rule.toJsonObject());
 			}

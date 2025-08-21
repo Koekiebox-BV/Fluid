@@ -182,7 +182,7 @@ public class WebSocketSendToFlowClient extends
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public FluidItem getNewInstanceBy(JSONObject jsonObject) {
+		public FluidItem getNewInstanceBy(JsonObject jsonObject) {
 			this.returnedFluidItem = new FluidItem(jsonObject);
 			return this.returnedFluidItem;
 		}

@@ -155,7 +155,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 
         //Available Multiple Choices...
         if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_MULTI_CHOICES)) {
-            JSONArray arrayOfString =
+            JsonArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_MULTI_CHOICES);
 
             this.availableMultiChoices = new ArrayList();
@@ -163,7 +163,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
                 this.availableMultiChoices.add(arrayOfString.getString(index));
             }
         } else if (!this.jsonObject.isNull(JSONMapping.AVAILABLE_CHOICES)) {
-            JSONArray arrayOfString =
+            JsonArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.AVAILABLE_CHOICES);
             this.availableMultiChoices = new ArrayList();
             for (int index = 0;index < arrayOfString.length();index++) {
@@ -189,7 +189,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
 
         //Selected Multiple Choices...
         if (!this.jsonObject.isNull(JSONMapping.SELECTED_MULTI_CHOICES)) {
-            JSONArray arrayOfString =
+            JsonArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.SELECTED_MULTI_CHOICES);
             this.selectedMultiChoices = new ArrayList();
 
@@ -197,7 +197,7 @@ public class MultiChoice extends ABaseFluidJSONObject {
                 this.selectedMultiChoices.add(arrayOfString.getString(index));
 
         } else if (!this.jsonObject.isNull(JSONMapping.SELECTED_CHOICES)) {
-            JSONArray arrayOfString =
+            JsonArray arrayOfString =
                     this.jsonObject.getJSONArray(JSONMapping.SELECTED_CHOICES);
 
             this.selectedMultiChoices = new ArrayList();

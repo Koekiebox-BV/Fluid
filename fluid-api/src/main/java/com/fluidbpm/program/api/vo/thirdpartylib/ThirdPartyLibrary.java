@@ -144,8 +144,8 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Filename...
 		if (this.getFilename() != null) {

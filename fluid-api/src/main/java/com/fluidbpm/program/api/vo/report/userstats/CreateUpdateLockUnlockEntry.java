@@ -73,7 +73,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 		this.setEntryDay(this.getDateFieldValueFromFieldWithName(JSONMapping.ENTRY_DAY));
 
 		if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_TYPE_STATS)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.FORM_CONTAINER_TYPE_STATS);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.FORM_CONTAINER_TYPE_STATS);
 			List<FormContainerTypeStats> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new FormContainerTypeStats(listingArray.getJSONObject(index)));
@@ -82,7 +82,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.FORM_ENTRY_TYPE_STATS)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.FORM_ENTRY_TYPE_STATS);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.FORM_ENTRY_TYPE_STATS);
 			List<FormEntryTypeStats> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new FormEntryTypeStats(listingArray.getJSONObject(index)));
@@ -100,8 +100,8 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getEntryDay() != null) {
 			returnVal.put(JSONMapping.ENTRY_DAY,
@@ -109,7 +109,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 		}
 
 		if (this.getFormContainerTypeStats() != null && !this.getFormContainerTypeStats().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (FormContainerTypeStats toAdd : this.getFormContainerTypeStats()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
@@ -117,7 +117,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
 		}
 
 		if (this.getFormEntryTypeStats() != null && !this.getFormEntryTypeStats().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (FormEntryTypeStats toAdd : this.getFormEntryTypeStats()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}

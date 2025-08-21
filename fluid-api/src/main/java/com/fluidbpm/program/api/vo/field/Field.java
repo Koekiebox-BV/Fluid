@@ -1098,7 +1098,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 break;
             case MultipleChoice:
                 if (formFieldValue instanceof JSONArray) {
-                    JSONArray casted = (JSONArray) formFieldValue;
+                    JsonArray casted = (JSONArray) formFieldValue;
                     List<String> selectedChoices = new ArrayList<>();
                     for (int index = 0; index < casted.length(); index++) {
                         selectedChoices.add(casted.get(index).toString());
@@ -1116,7 +1116,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
                 //When array already...
                 if (formFieldValue instanceof JSONArray) {
-                    JSONArray casted = (JSONArray) formFieldValue;
+                    JsonArray casted = (JSONArray) formFieldValue;
                     for (int index = 0; index < casted.length(); index++) {
                         Object obAtIndex = casted.get(index);
                         if (obAtIndex instanceof Number) tableRecords.add(new Form(((Number) obAtIndex).longValue()));

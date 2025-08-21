@@ -72,7 +72,7 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.UPTIME_ENTRIES)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.UPTIME_ENTRIES);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.UPTIME_ENTRIES);
 			List<SystemUpYearDay> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new SystemUpYearDay(listingArray.getJSONObject(index)));
@@ -95,11 +95,11 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getUptimeEntries() != null && !this.getUptimeEntries().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (SystemUpYearDay toAdd : this.getUptimeEntries()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}

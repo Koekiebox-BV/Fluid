@@ -112,7 +112,7 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 		//Inputs...
 		if (!this.jsonObject.isNull(JSONMapping.SQL_INPUTS)) {
 
-			JSONArray rulesArr = this.jsonObject.getJSONArray(
+			JsonArray rulesArr = this.jsonObject.getJSONArray(
 					JSONMapping.SQL_INPUTS);
 
 			List<SQLColumn> inputs = new ArrayList();
@@ -135,9 +135,9 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
+	public JsonObject toJsonObject() throws JSONException {
 
-		JSONObject returnVal = super.toJsonObject();
+		JsonObject returnVal = super.toJsonObject();
 
 		//Datasource Name...
 		if (this.getDatasourceName() != null) {
@@ -159,7 +159,7 @@ public class NativeSQLQuery extends ABaseFluidJSONObject {
 
 		//Inputs...
 		if (this.getSqlInputs() != null) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 
 			for (SQLColumn toAdd : this.getSqlInputs()) {
 				jsonArray.put(toAdd.toJsonObject());

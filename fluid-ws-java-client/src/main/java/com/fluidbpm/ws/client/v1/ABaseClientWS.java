@@ -247,7 +247,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 *
 	 * @see JSONObject
 	 */
-	public JSONObject getJson(String postfixUrlParam) {
+	public JsonObject getJson(String postfixUrlParam) {
 		return this.getJson(
 				false,
 				postfixUrlParam);
@@ -265,7 +265,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 *
 	 * @see JSONObject
 	 */
-	public JSONObject getJson(
+	public JsonObject getJson(
 		String postfixUrlParam,
 		List<HeaderNameValue> headerNameValuesParam
 	) {
@@ -286,7 +286,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 *
 	 * @see JSONObject
 	 */
-	public JSONObject getJson(
+	public JsonObject getJson(
 		boolean checkConnectionValidParam,
 		String postfixUrlParam
 	) {
@@ -305,7 +305,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 *
 	 * @see JSONObject
 	 */
-	public JSONObject getJson(
+	public JsonObject getJson(
 		boolean checkConnectionValidParam,
 		String postfixUrlParam,
 		List<HeaderNameValue> headerNameValuesParam
@@ -367,7 +367,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @see JSONObject
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject postJson(ABaseFluidJSONObject baseDomainParam, String postfixUrlParam) {
+	protected JsonObject postJson(ABaseFluidJSONObject baseDomainParam, String postfixUrlParam) {
 		//No need to check connection...
 		return this.postJson(false, baseDomainParam, postfixUrlParam);
 	}
@@ -385,7 +385,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @see JSONObject
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject postJson(
+	protected JsonObject postJson(
 			List<HeaderNameValue> headerNameValuesParam,
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
@@ -412,7 +412,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @see JSONObject
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject postJson(
+	protected JsonObject postJson(
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
 			String postfixUrlParam
@@ -463,7 +463,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 *
 	 * @see JSONObject
 	 */
-	protected JSONObject deleteJson(
+	protected JsonObject deleteJson(
 			ABaseFluidJSONObject baseDomainParam,
 			String postfixUrlParam
 	) {
@@ -482,7 +482,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 *
 	 * @see JSONObject
 	 */
-	protected JSONObject deleteJson(
+	protected JsonObject deleteJson(
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
 			String postfixUrlParam
@@ -505,7 +505,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @param postfixUrlParam URL mapping after the Base endpoint.
 	 * @return Return body as JSON.
 	 */
-	protected JSONObject postForm(
+	protected JsonObject postForm(
 			boolean checkConnectionValidParam,
 			List<FormNameValue> formNameValuesParam,
 			String postfixUrlParam
@@ -527,7 +527,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @param postfixUrlParam URL mapping after the Base endpoint.
 	 * @return Return body as JSON.
 	 */
-	protected JSONObject putJson(
+	protected JsonObject putJson(
 			boolean checkConnectionValidParam,
 			ABaseFluidJSONObject baseDomainParam,
 			String postfixUrlParam
@@ -548,7 +548,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @param postfixUrlParam URL mapping after the Base endpoint.
 	 * @return Return body as JSON.
 	 */
-	protected JSONObject putJson(
+	protected JsonObject putJson(
 			ABaseFluidJSONObject baseDomainParam,
 			String postfixUrlParam
 	) {
@@ -572,7 +572,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @see ContentType
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject executeJson(
+	protected JsonObject executeJson(
 			HttpMethod httpMethodParam,
 			List<HeaderNameValue> headerNameValuesParam,
 			boolean checkConnectionValidParam,
@@ -612,7 +612,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @see ContentType
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject executeForm(
+	protected JsonObject executeForm(
 			HttpMethod httpMethodParam,
 			List<HeaderNameValue> headerNameValuesParam,
 			boolean checkConnectionValidParam,
@@ -670,7 +670,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
 	 * @see ContentType
 	 * @see ABaseFluidJSONObject
 	 */
-	protected JSONObject executeString(
+	protected JsonObject executeString(
 		HttpMethod httpMethodParam,
 		List<HeaderNameValue> headerNameValuesParam,
 		boolean checkConnectionValidParam,

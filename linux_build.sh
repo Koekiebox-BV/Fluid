@@ -2,7 +2,7 @@
 mvn clean && mvn clean install -U -Dgpg.skip
 
 #PROPERTIES
-#export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_191.jdk/Contents/Home
+export JAVA_HOME=/Users/jasonbruwer/Library/Java/JavaVirtualMachines/corretto-1.8.0_382/Contents/Home
 
 export WORKSPACE_HOME='/Users/jasonbruwer/GDrive/Workspace'
 export WF_HOME='/Users/jasonbruwer/Applications/wildfly-20.0.1.Final'

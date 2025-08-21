@@ -95,7 +95,7 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() throws JSONException {
 
         JSONObject returnVal = new JSONObject();
 

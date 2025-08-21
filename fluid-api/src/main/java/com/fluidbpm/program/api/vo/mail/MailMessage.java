@@ -98,7 +98,7 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Recipients...
         if (!this.jsonObject.isNull(JSONMapping.RECIPIENTS)) {
 
-            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(
+            JsonArray fluidItemsArr = this.jsonObject.getJSONArray(
                             JSONMapping.RECIPIENTS);
 
             String[] listOfItems = new String[fluidItemsArr.length()];
@@ -113,7 +113,7 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Attachments...
         if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS)) {
 
-            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(
+            JsonArray fluidItemsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ATTACHMENTS);
 
             List<MailMessageAttachment> listOfItems = new ArrayList();
@@ -129,7 +129,7 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Name Values...
         if (!this.jsonObject.isNull(JSONMapping.NAME_VALUES)) {
 
-            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(
+            JsonArray fluidItemsArr = this.jsonObject.getJSONArray(
                     JSONMapping.NAME_VALUES);
 
             List<MailMessageNameValue> listOfItems = new ArrayList();
@@ -152,9 +152,9 @@ public class MailMessage extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException
+    public JsonObject toJsonObject() throws JSONException
     {
-        JSONObject returnVal = super.toJsonObject();
+        JsonObject returnVal = super.toJsonObject();
 
         //Mail Template...
         if (this.getMailTemplate() != null)
@@ -171,7 +171,7 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Recipients...
         if (this.getRecipients() != null && this.getRecipients().length > 0)
         {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
 
             for (String item : this.getRecipients())
             {
@@ -184,7 +184,7 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Attachments...
         if (this.getAttachments() != null && !this.getAttachments().isEmpty())
         {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
 
             for (MailMessageAttachment item : this.getAttachments())
             {
@@ -198,7 +198,7 @@ public class MailMessage extends ABaseFluidJSONObject {
         if (this.getNameValues() != null &&
                 !this.getNameValues().isEmpty())
         {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
 
             for (MailMessageNameValue item : this.getNameValues())
             {

@@ -98,8 +98,8 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		returnVal.put(JSONMapping.HOUR, this.getHour());
 		returnVal.put(JSONMapping.MINUTE, this.getMinute());

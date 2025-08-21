@@ -111,7 +111,7 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
 
         //Custom Runner Actions...
         if (!this.jsonObject.isNull(JSONMapping.CUSTOM_RUNNER_ACTIONS)) {
-            JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_RUNNER_ACTIONS);
+            JsonArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_RUNNER_ACTIONS);
             List<CustomRunnerAction> customerRunnerActions = new ArrayList();
             for (int index = 0;index < jsonPropArray.length();index++) {
                 customerRunnerActions.add(new CustomRunnerAction(jsonPropArray.getJSONObject(index)));
@@ -130,8 +130,8 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         //Fluid API Version...
         if (this.getFluidAPIVersion() != null) {
             returnVal.put(JSONMapping.FLUID_API_VERSION, this.getFluidAPIVersion());
@@ -157,7 +157,7 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
 
         //Custom Runner Actions...
         if (this.getCustomRunnerActions() != null && !this.getCustomRunnerActions().isEmpty()) {
-            JSONArray customRunnersArr = new JSONArray();
+            JsonArray customRunnersArr = new JsonArray();
             for (CustomRunnerAction toAdd :this.getCustomRunnerActions()) {
                 customRunnersArr.put(toAdd.toJsonObject());
             }

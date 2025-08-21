@@ -558,14 +558,14 @@ public class UtilGlobal {
      *
      * @param list The list to convert to JSON Array.
      * @param <T> The type of {@code ABaseFluidJSONObject}
-     * @return JSONArray from {@code list}
+     * @return JsonArray from {@code list}
      * @see ABaseFluidJSONObject
      * @see JSONArray
      */
-    public static <T extends ABaseFluidJSONObject> JSONArray toJSONArray(List<T> list) {
+    public static <T extends ABaseFluidJSONObject> JsonArray toJSONArray(List<T> list) {
         if (list == null) return null;
 
-        JSONArray jsonArray = new JSONArray();
+        JsonArray jsonArray = new JsonArray();
 
         for (T toAdd :list) jsonArray.put(toAdd.toJsonObject());
 
@@ -651,7 +651,7 @@ public class UtilGlobal {
         JSONObject jsonObj = new JSONObject(signature);
         if (!jsonObj.has(JSON_LINES)) throw new UtilException("Signature does not have any lines.", UtilException.ErrorCode.GENERAL);
 
-        JSONArray jsonArr = jsonObj.getJSONArray(JSON_LINES);
+        JsonArray jsonArr = jsonObj.getJSONArray(JSON_LINES);
 
         final List<String> paths = new ArrayList<>();
         jsonArr.forEach(line -> paths.add(toSvgPath(line)));
@@ -668,9 +668,9 @@ public class UtilGlobal {
         StringBuilder sb = new StringBuilder("<path d=\"");
 
         if (line instanceof JSONArray) {
-            JSONArray lineCasted = (JSONArray)line;
+            JsonArray lineCasted = (JSONArray)line;
             for (int index = 0; index < lineCasted.length(); index++) {
-                JSONArray coords = lineCasted.getJSONArray(index);
+                JsonArray coords = lineCasted.getJSONArray(index);
                 sb.append(String.format("%s%s %s ",
                         (index == 0 ? "M" : "L"),
                         coords.getDouble(0),
@@ -829,10 +829,10 @@ public class UtilGlobal {
      * Copies fields from the source JSON object to the target JSON object only if the fields
      * are not already present in the target. Fields already existing in the target are not overwritten.
      *
-     * @param source the JSONObject containing the source data fields to be copied
-     * @param target the JSONObject to which the fields should be copied, if not already set
+     * @param source the JsonObject containing the source data fields to be copied
+     * @param target the JsonObject to which the fields should be copied, if not already set
      */
-    public static void copyJSONFieldsNotSet(JSONObject source, JSONObject target) {
+    public static void copyJSONFieldsNotSet(JSONObject source, JsonObject target) {
         Iterator<String> keys = source.keys();
         while (keys.hasNext()) {
             String key = keys.next();

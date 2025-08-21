@@ -242,7 +242,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.WEB_KIT_VIEW_SUBS)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_VIEW_SUBS);
+			JsonArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_VIEW_SUBS);
 			List<WebKitViewSub> objs = new ArrayList();
 			for (int index = 0;index < jsonArray.length();index++) {
 				objs.add(new WebKitViewSub(jsonArray.getJSONObject(index)));
@@ -269,8 +269,8 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 		returnVal.put(JSONMapping.ENABLE_RENDER_EMPTY_TABLE, this.isEnableRenderEmptyTable());
 		returnVal.put(JSONMapping.ENABLE_BULK_EDIT, this.isEnableBulkEdit());
 		returnVal.put(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.getAttachmentThumbnailSize());
@@ -308,7 +308,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
 		}
 
 		if (this.getWebKitViewSubs() != null && !this.getWebKitViewSubs().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (WebKitViewSub toAdd : this.getWebKitViewSubs()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}

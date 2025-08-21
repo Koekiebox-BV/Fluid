@@ -89,7 +89,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 	 * @see JSONObject
 	 */
 	public Object doesHandlerQualifyForProcessing(String message) {
-		JSONObject jsonObject = null;
+		JsonObject jsonObject = null;
 		try {
 			jsonObject = new JSONObject(message);
 		} catch (JSONException jsonExcept) {
@@ -134,7 +134,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidJSONObject>
 			}
 		} else {
 			//No Error...
-			JSONObject jsonObject = (JSONObject)objectToProcess;
+			JsonObject jsonObject = (JSONObject)objectToProcess;
 
 			//Uncompress the compressed response...
 			if (this.compressedResponse) {

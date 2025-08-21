@@ -141,7 +141,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	 *
 	 * @see UserQuery
 	 */
-	public WebKitUserQuery(JSONObject jsonObject, UserQuery userQuery) {
+	public WebKitUserQuery(JsonObject jsonObject, UserQuery userQuery) {
 		this(jsonObject);
 		this.setUserQuery(userQuery);
 	}
@@ -151,7 +151,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public WebKitUserQuery(JSONObject jsonObject) {
+	public WebKitUserQuery(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -221,8 +221,8 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 		returnVal.put(JSONMapping.ENABLE_FOR_TOP_BAR, this.isEnableForTopBar());
 		returnVal.put(JSONMapping.ENABLE_CALCULATED_LABELS, this.isEnableCalculatedLabels());
 		returnVal.put(JSONMapping.QUERY_INPUT_LAYOUT_STYLE, this.getQueryInputLayoutStyle());

@@ -61,7 +61,7 @@ public class CacheHealth extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public CacheHealth(JSONObject jsonObject) {
+	public CacheHealth(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -82,7 +82,7 @@ public class CacheHealth extends ABaseFluidJSONObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.CACHE_CONSUMPTION)) {
-			JSONArray jsonCacheCons = this.jsonObject.getJSONArray(JSONMapping.CACHE_CONSUMPTION);
+			JsonArray jsonCacheCons = this.jsonObject.getJSONArray(JSONMapping.CACHE_CONSUMPTION);
 			this.setCacheConsumption(new ArrayList<>());
 			for (int index = 0;index < jsonCacheCons.length();index++) {
 				this.getCacheConsumption().add(jsonCacheCons.getString(index));
@@ -103,15 +103,15 @@ public class CacheHealth extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getType() != null) returnVal.put(JSONMapping.TYPE, this.getType());
 		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
 		if (this.getCacheHealth() != null) returnVal.put(JSONMapping.CACHE_HEALTH, this.getCacheHealth());
 		if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
 		if (this.getCacheConsumption() != null) {
-			JSONArray cacheConsumption = new JSONArray();
+			JsonArray cacheConsumption = new JsonArray();
 			this.getCacheConsumption().forEach(cacheConsumption::put);
 			returnVal.put(JSONMapping.CACHE_CONSUMPTION, cacheConsumption);
 		}

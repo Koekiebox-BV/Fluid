@@ -24,7 +24,7 @@ import org.json.JSONObject;
  * @since 1.12
  */
 public class GeoUtil {
-	private JSONObject json;
+	private JsonObject json;
 
 	/**
 	 * Mapping field names for the JSON address based field.

@@ -149,7 +149,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	/**
 	 * Send the {@code baseFluidJSONObjectParam} via Web Socket.
 	 *
-	 * @param baseFluidJSONObjectParam The JSONObject to send.
+	 * @param baseFluidJSONObjectParam The JsonObject to send.
 	 * @param requestIdParam The unique request id.
 	 *
 	 * @see org.json.JSONObject

@@ -137,8 +137,8 @@ public class WebKitPersonalInventory extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		returnVal.put(JSONMapping.PERSONAL_INVENTORY_ENABLED, this.isPersonalInventoryEnabled());
 		returnVal.put(JSONMapping.COLLABORATION_ENABLED, this.isCollaborationEnabled());

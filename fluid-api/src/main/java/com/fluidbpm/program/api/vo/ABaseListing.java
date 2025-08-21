@@ -76,7 +76,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 		int listingArrCount = 0;
 		List<T> listing = new ArrayList();
 		if (!this.jsonObject.isNull(JSONMapping.LISTING)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.LISTING);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.LISTING);
 			listingArrCount = listingArray.length();
 			for (int index = 0;index < listingArrCount;index++) {
 				listing.add(this.getObjectFromJSONObject(listingArray.getJSONObject(index)));
@@ -185,13 +185,13 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Listing...
 		int listingCountFromListing = 0;
 		if (this.getListing() != null && !this.getListing().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			listingCountFromListing = this.getListing().size();
 			for (T toAdd :this.getListing()) {
 				jsonArray.put(toAdd.toJsonObject());

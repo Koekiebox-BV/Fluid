@@ -260,7 +260,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Associated Flows...
 		if (!this.jsonObject.isNull(JSONMapping.ASSOCIATED_FLOWS)) {
-			JSONArray associatedJobsArr = this.jsonObject.getJSONArray(JSONMapping.ASSOCIATED_FLOWS);
+			JsonArray associatedJobsArr = this.jsonObject.getJSONArray(JSONMapping.ASSOCIATED_FLOWS);
 
 			List<Flow> assFlowsObj = new ArrayList<>();
 			for (int index = 0;index < associatedJobsArr.length();index++) {
@@ -271,7 +271,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Form Fields...
 		if (!this.jsonObject.isNull(JSONMapping.FORM_FIELDS)) {
-			JSONArray formFieldsArr = this.jsonObject.getJSONArray(JSONMapping.FORM_FIELDS);
+			JsonArray formFieldsArr = this.jsonObject.getJSONArray(JSONMapping.FORM_FIELDS);
 			List<Field> assFormFields = new ArrayList<>();
 			for (int index = 0;index < formFieldsArr.length();index++) {
 				assFormFields.add(new Field(formFieldsArr.getJSONObject(index)));
@@ -303,7 +303,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 		if (this.jsonObject.isNull(JSONMapping.DESCENDANT_IDS)) {
 			this.setDescendantIds(null);
 		} else {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(
+			JsonArray jsonArray = this.jsonObject.getJSONArray(
 					JSONMapping.DESCENDANT_IDS);
 			List<Long> descendantIds = new ArrayList<>();
 			for (int index = 0;index < jsonArray.length();index++) {
@@ -838,14 +838,14 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Form Fields...
 		if (this.getFormFields() != null && !this.getFormFields().isEmpty()) {
-			JSONArray formFieldsArr = new JSONArray();
+			JsonArray formFieldsArr = new JsonArray();
 			for (Field toAdd :this.getFormFields()) formFieldsArr.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.FORM_FIELDS, formFieldsArr);
 		}
 
 		//Associated Flows...
 		if (this.getAssociatedFlows() != null && !this.getAssociatedFlows().isEmpty()) {
-			JSONArray assoJobsArr = new JSONArray();
+			JsonArray assoJobsArr = new JsonArray();
 			for (Flow toAdd :this.getAssociatedFlows()) assoJobsArr.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.ASSOCIATED_FLOWS, assoJobsArr);
 		}
@@ -861,7 +861,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Descendant Ids...
 		if (this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
-			JSONArray array = new JSONArray();
+			JsonArray array = new JsonArray();
 			for (Long formId : this.getDescendantIds()) array.put(formId);
 			returnVal.put(JSONMapping.DESCENDANT_IDS, array);
 		}
@@ -883,7 +883,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject toJsonMappingForElasticSearch() throws JSONException {
+	public JsonObject toJsonMappingForElasticSearch() throws JSONException {
 
 		JSONObject returnVal = new JSONObject();
 
@@ -1044,8 +1044,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject toJsonForElasticSearch() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonForElasticSearch() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Form Type...
 		if (this.getFormType() != null) returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
@@ -1133,7 +1133,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 
 		//Descendant Ids...
 		if (this.getDescendantIds() != null && !this.getDescendantIds().isEmpty()) {
-			JSONArray array = new JSONArray();
+			JsonArray array = new JsonArray();
 			for (Long formId : this.getDescendantIds()) array.put(formId);
 
 			returnVal.put(JSONMapping.DESCENDANT_IDS, array);
@@ -1154,7 +1154,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 	 */
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject convertToFlatJSONObject() {
+	public JsonObject convertToFlatJSONObject() {
 		JSONObject returnVal = new JSONObject();
 
 		//Id...
@@ -1356,7 +1356,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
 			List<Long> descendantIds = new ArrayList();
 			//Array...
 			if (objectDescendantIds instanceof JSONArray) {
-				JSONArray jsonArray = (JSONArray) objectDescendantIds;
+				JsonArray jsonArray = (JSONArray) objectDescendantIds;
 
 				for (int index = 0;index < jsonArray.length();index++) {
 					descendantIds.add(jsonArray.getLong(index));

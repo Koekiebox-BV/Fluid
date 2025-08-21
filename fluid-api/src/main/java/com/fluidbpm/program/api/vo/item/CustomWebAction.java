@@ -114,8 +114,8 @@ public class CustomWebAction extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 		if (this.getTaskIdentifier() != null) {
 			returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
 		}
@@ -140,7 +140,7 @@ public class CustomWebAction extends ABaseFluidJSONObject {
 	 */
 	@Override
 	public String toString() {
-		JSONObject jsonObject = this.toJsonObject();
+		JsonObject jsonObject = this.toJsonObject();
 		if (jsonObject != null) return jsonObject.toString();
 		return UtilGlobal.EMPTY;
 	}

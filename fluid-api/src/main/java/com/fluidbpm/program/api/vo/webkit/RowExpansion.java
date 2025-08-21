@@ -148,8 +148,8 @@ public class RowExpansion extends ABaseFluidJSONObject {
 	 * @see org.json.JSONObject
 	 */
 	@Override
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR, this.isTableExpansionDisplayAncestor());
 		returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS, this.isTableExpansionDisplayAttachments());

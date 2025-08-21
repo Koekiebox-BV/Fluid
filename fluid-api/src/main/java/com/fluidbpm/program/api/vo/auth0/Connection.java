@@ -250,9 +250,9 @@ public class Connection extends ABaseFluidJSONObject {
 		 * @see ABaseFluidJSONObject#toJsonObject()
 		 */
 		@Override
-		public JSONObject toJsonObject() throws JSONException {
+		public JsonObject toJsonObject() throws JSONException {
 
-			JSONObject returnVal = super.toJsonObject();
+			JsonObject returnVal = super.toJsonObject();
 
 			//Access Token...
 			if (this.getAccessToken() != null)
@@ -355,7 +355,7 @@ public class Connection extends ABaseFluidJSONObject {
 
 			this.identities = new ArrayList<Client>();
 
-			JSONArray identityListing = this.jsonObject.getJSONArray(JSONMapping.IDENTITIES);
+			JsonArray identityListing = this.jsonObject.getJSONArray(JSONMapping.IDENTITIES);
 
 			for (int index = 0;index < identityListing.length();index++)
 			{
@@ -579,9 +579,9 @@ public class Connection extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
+	public JsonObject toJsonObject() throws JSONException {
 
-		JSONObject returnVal = super.toJsonObject();
+		JsonObject returnVal = super.toJsonObject();
 
 		//User Id...
 		if (this.getUserId() != null)
@@ -637,7 +637,7 @@ public class Connection extends ABaseFluidJSONObject {
 		//Identities...
 		if (this.getIdentities() != null && !this.getIdentities().isEmpty())
 		{
-			JSONArray identitiesArr = new JSONArray();
+			JsonArray identitiesArr = new JsonArray();
 			for (Client toAdd :this.getIdentities())
 			{
 				identitiesArr.put(toAdd.toJsonObject());

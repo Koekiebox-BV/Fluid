@@ -83,7 +83,7 @@ public class CustomRunnerAction extends ABaseFluidJSONObject {
 
         //Form Definitions...
         if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITIONS)) {
-            JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
+            JsonArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
             List<String> formDefinitions = new ArrayList();
             for (int index = 0;index < jsonPropArray.length();index++) {
                 formDefinitions.add(jsonPropArray.getString(index));
@@ -101,8 +101,8 @@ public class CustomRunnerAction extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Action Identifier...
         if (this.getActionIdentifier() != null) {
@@ -121,7 +121,7 @@ public class CustomRunnerAction extends ABaseFluidJSONObject {
 
         //Form Definitions...
         if (this.getFormDefinitions() != null && !this.getFormDefinitions().isEmpty()) {
-            JSONArray formDeffsArr = new JSONArray();
+            JsonArray formDeffsArr = new JsonArray();
             for (String toAdd :this.getFormDefinitions()) formDeffsArr.put(toAdd);
             returnVal.put(JSONMapping.FORM_DEFINITIONS, formDeffsArr);
         }

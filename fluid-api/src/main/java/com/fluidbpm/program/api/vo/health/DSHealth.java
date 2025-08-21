@@ -59,7 +59,7 @@ public class DSHealth extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public DSHealth(JSONObject jsonObject) {
+	public DSHealth(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -97,8 +97,8 @@ public class DSHealth extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
 		if (this.getDriver() != null) returnVal.put(JSONMapping.DRIVER, this.getDriver());

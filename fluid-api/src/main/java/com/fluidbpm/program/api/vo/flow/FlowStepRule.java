@@ -142,7 +142,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 
 		//Next Valid Syntax Words...
 		if (!this.jsonObject.isNull(JSONMapping.NEXT_VALID_SYNTAX_WORDS)) {
-			JSONArray listOfValidWordsArray =
+			JsonArray listOfValidWordsArray =
 					this.jsonObject.getJSONArray(JSONMapping.NEXT_VALID_SYNTAX_WORDS);
 			List<String> validWordsString = new ArrayList<String>();
 
@@ -163,8 +163,8 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Order...
 		if (this.getOrder() != null) {
@@ -194,7 +194,7 @@ public class FlowStepRule extends ABaseFluidJSONObject {
 
 		//Next Valid Syntax Words...
 		if (this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty()) {
-			JSONArray jsonArrayOfValidWords = new JSONArray();
+			JsonArray jsonArrayOfValidWords = new JsonArray();
 			for (String validWord : this.getNextValidSyntaxWords()) {
 				jsonArrayOfValidWords.put(validWord);
 			}

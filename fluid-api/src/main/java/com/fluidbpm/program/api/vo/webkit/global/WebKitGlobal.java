@@ -135,7 +135,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.WEB_KIT_MENU_ITEMS)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_MENU_ITEMS);
+			JsonArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_MENU_ITEMS);
 			List<WebKitMenuItem> objs = new ArrayList();
 			for (int index = 0;index < jsonArray.length();index++) {
 				objs.add(new WebKitMenuItem(jsonArray.getJSONObject(index)));
@@ -152,8 +152,8 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getLayoutMode() != null) {
 			returnVal.put(JSONMapping.LAYOUT_MODE,this.getLayoutMode());
@@ -201,7 +201,7 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
 		}
 
 		if (this.getWebKitMenuItems() != null && !this.getWebKitMenuItems().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (WebKitMenuItem toAdd : this.getWebKitMenuItems()) jsonArray.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.WEB_KIT_MENU_ITEMS, jsonArray);
 		}

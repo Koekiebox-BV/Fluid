@@ -207,7 +207,7 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         //2. Attachments...
         List<Attachment> attachments = new ArrayList<Attachment>();
 
-        JSONObject jsonObject = new JSONObject();
+        JsonObject jsonObject = new JSONObject();
         try {
             JSONObject jsonMemberObject = new JSONObject();
 

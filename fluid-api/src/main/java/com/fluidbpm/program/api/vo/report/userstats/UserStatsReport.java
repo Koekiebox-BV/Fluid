@@ -110,7 +110,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.PUNCH_CARD_ENTRIES)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.PUNCH_CARD_ENTRIES);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.PUNCH_CARD_ENTRIES);
 			List<PunchCardEntry> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new PunchCardEntry(listingArray.getJSONObject(index)));
@@ -119,7 +119,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES);
 			List<ViewOpenedAndSentOnEntry> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new ViewOpenedAndSentOnEntry(listingArray.getJSONObject(index)));
@@ -128,7 +128,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES)) {
-			JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES);
+			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES);
 			List<CreateUpdateLockUnlockEntry> listing = new ArrayList();
 			for (int index = 0;index < listingArray.length();index++) {
 				listing.add(new CreateUpdateLockUnlockEntry(listingArray.getJSONObject(index)));
@@ -146,8 +146,8 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		returnVal.put(JSONMapping.NUMBER_OF_LOGINS, this.getNumberOfLogins());
 		returnVal.put(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE, this.getNumberOfLoginsPrevCycle());
@@ -155,7 +155,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		returnVal.put(JSONMapping.PI_LOCKED_COUNT, this.getPiLockedCount());
 
 		if (this.getPunchCardEntries() != null && !this.getPunchCardEntries().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (PunchCardEntry toAdd :this.getPunchCardEntries()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
@@ -163,7 +163,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		}
 
 		if (this.getViewOpenedAndSentOnEntries() != null && !this.getViewOpenedAndSentOnEntries().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (ViewOpenedAndSentOnEntry toAdd : this.getViewOpenedAndSentOnEntries()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}
@@ -171,7 +171,7 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
 		}
 
 		if (this.getCreateUpdateLockUnlockEntries() != null && !this.getCreateUpdateLockUnlockEntries().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (CreateUpdateLockUnlockEntry toAdd : this.getCreateUpdateLockUnlockEntries()) {
 				jsonArray.put(toAdd.toJsonObject());
 			}

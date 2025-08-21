@@ -94,8 +94,8 @@ public class WebKitMenuItem extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getMenuId() != null) {
 			returnVal.put(JSONMapping.MENU_ID, this.getMenuId());

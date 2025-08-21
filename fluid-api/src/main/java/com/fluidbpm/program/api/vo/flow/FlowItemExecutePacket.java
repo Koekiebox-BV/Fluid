@@ -95,9 +95,9 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException
+	public JsonObject toJsonObject() throws JSONException
 	{
-		JSONObject returnVal = super.toJsonObject();
+		JsonObject returnVal = super.toJsonObject();
 
 		//Fluid Item...
 		if (this.getFluidItem() != null)

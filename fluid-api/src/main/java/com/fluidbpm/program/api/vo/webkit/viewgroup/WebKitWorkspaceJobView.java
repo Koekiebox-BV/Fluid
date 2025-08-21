@@ -90,8 +90,8 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
 	@Override
 	@XmlTransient
 	@JsonIgnore
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 		if (this.getJobView() != null) {
 			JobView reducedView = new JobView(this.getJobView().getId());
 			returnVal.put(JSONMapping.JOB_VIEW, reducedView.toJsonObject());

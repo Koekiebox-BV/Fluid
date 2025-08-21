@@ -109,9 +109,9 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException
+    public JsonObject toJsonObject() throws JSONException
     {
-        JSONObject returnVal = super.toJsonObject();
+        JsonObject returnVal = super.toJsonObject();
 
         //Name...
         if (this.getName() != null)

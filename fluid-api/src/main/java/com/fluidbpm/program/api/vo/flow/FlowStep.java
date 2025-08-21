@@ -198,8 +198,8 @@ public class FlowStep extends ABaseFluidJSONObject {
 		 * @see ABaseFluidJSONObject#toJsonObject()
 		 */
 		@Override
-		public JSONObject toJsonObject() throws JSONException {
-			JSONObject returnVal = super.toJsonObject();
+		public JsonObject toJsonObject() throws JSONException {
+			JsonObject returnVal = super.toJsonObject();
 
 			//Name...
 			if (this.getName() != null) {
@@ -324,7 +324,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 		//Entry Rules...
 		if (!this.jsonObject.isNull(JSONMapping.ENTRY_RULES)) {
 
-			JSONArray entryRules = this.jsonObject.getJSONArray(JSONMapping.ENTRY_RULES);
+			JsonArray entryRules = this.jsonObject.getJSONArray(JSONMapping.ENTRY_RULES);
 
 			List<FlowStepRule> listOfRules = new ArrayList();
 			for (int index = 0;index < entryRules.length();index++)
@@ -338,7 +338,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 		//Exit Rules...
 		if (!this.jsonObject.isNull(JSONMapping.EXIT_RULES)) {
 
-			JSONArray exitRules = this.jsonObject.getJSONArray(JSONMapping.EXIT_RULES);
+			JsonArray exitRules = this.jsonObject.getJSONArray(JSONMapping.EXIT_RULES);
 
 			List<FlowStepRule> listOfRules = new ArrayList();
 			for (int index = 0;index < exitRules.length();index++)
@@ -352,7 +352,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 		//View Rules...
 		if (!this.jsonObject.isNull(JSONMapping.VIEW_RULES)) {
 
-			JSONArray viewRules = this.jsonObject.getJSONArray(JSONMapping.VIEW_RULES);
+			JsonArray viewRules = this.jsonObject.getJSONArray(JSONMapping.VIEW_RULES);
 
 			List<FlowStepRule> listOfRules = new ArrayList();
 			for (int index = 0;index < viewRules.length();index++)
@@ -365,7 +365,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
 		//Step Properties...
 		if (!this.jsonObject.isNull(JSONMapping.STEP_PROPERTIES)) {
-			JSONArray stepProperties = this.jsonObject.getJSONArray(JSONMapping.STEP_PROPERTIES);
+			JsonArray stepProperties = this.jsonObject.getJSONArray(JSONMapping.STEP_PROPERTIES);
 
 			List<StepProperty> listOfStepProps = new ArrayList();
 			for (int index = 0;index < stepProperties.length();index++)
@@ -431,8 +431,8 @@ public class FlowStep extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		//Name...
 		if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
@@ -466,21 +466,21 @@ public class FlowStep extends ABaseFluidJSONObject {
 
 		//Entry Rules...
 		if (this.getEntryRules() != null && !this.getEntryRules().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (FlowStepRule rule : this.getEntryRules()) jsonArray.put(rule.toJsonObject());
 			returnVal.put(JSONMapping.ENTRY_RULES, jsonArray);
 		}
 
 		//Exit Rules...
 		if (this.getExitRules() != null && !this.getExitRules().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (FlowStepRule rule : this.getExitRules()) jsonArray.put(rule.toJsonObject());
 			returnVal.put(JSONMapping.EXIT_RULES, jsonArray);
 		}
 
 		//View Rules...
 		if (this.getViewRules() != null && !this.getViewRules().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 
 			for (FlowStepRule rule : this.getViewRules()) jsonArray.put(rule.toJsonObject());
 
@@ -489,7 +489,7 @@ public class FlowStep extends ABaseFluidJSONObject {
 
 		//Step Properties...
 		if (this.getStepProperties() != null && !this.getStepProperties().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 
 			for (StepProperty stepProperty : this.getStepProperties()) {
 				jsonArray.put(stepProperty.toJsonObject());

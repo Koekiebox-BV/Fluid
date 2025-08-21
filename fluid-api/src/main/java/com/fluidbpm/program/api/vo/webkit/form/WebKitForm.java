@@ -179,7 +179,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public WebKitForm(JSONObject jsonObject) {
+	public WebKitForm(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -281,7 +281,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 
 		this.setLayoutAdvances(new ArrayList<>());
 		if (!this.jsonObject.isNull(JSONMapping.LAYOUT_ADVANCES)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.LAYOUT_ADVANCES);
+			JsonArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.LAYOUT_ADVANCES);
 			List<WebKitFormLayoutAdvance> objs = new ArrayList();
 			for (int index = 0; index < jsonArray.length(); index++) {
 				objs.add(new WebKitFormLayoutAdvance(jsonArray.getJSONObject(index)));
@@ -295,7 +295,7 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 * @param jsonObject The WebKit JSONObject.
 	 * @param form The Fluid {@code Form}.
 	 */
-	public WebKitForm(JSONObject jsonObject, Form form) {
+	public WebKitForm(JsonObject jsonObject, Form form) {
 		this(jsonObject);
 		this.setForm(form);
 	}
@@ -313,8 +313,8 @@ public class WebKitForm extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getForm() != null) {
 			if (this.jsonIncludeAll) {
@@ -350,31 +350,31 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		else returnVal.put(JSONMapping.CREATE_NEW_INSTANCE_GROUP, this.getCreateNewInstanceGroup());
 
 		if (this.getVisibleSections() != null) {
-			JSONArray visSections = new JSONArray();
+			JsonArray visSections = new JsonArray();
 			this.getVisibleSections().forEach(section -> visSections.put(section));
 			returnVal.put(JSONMapping.VISIBLE_SECTIONS, visSections);
 		}
 
 		if (this.getTableFieldsToInclude() != null) {
-			JSONArray tabFields = new JSONArray();
+			JsonArray tabFields = new JsonArray();
 			this.getTableFieldsToInclude().forEach(tblField -> tabFields.put(tblField));
 			returnVal.put(JSONMapping.TABLE_FIELDS_TO_INCLUDE, tabFields);
 		}
 
 		if (this.getMandatoryFields() != null) {
-			JSONArray arr = new JSONArray();
+			JsonArray arr = new JsonArray();
 			this.getMandatoryFields().forEach(manField -> arr.put(manField));
 			returnVal.put(JSONMapping.MANDATORY_FIELDS, arr);
 		}
 
 		if (this.getAutoCompleteTextFields() != null) {
-			JSONArray arr = new JSONArray();
+			JsonArray arr = new JsonArray();
 			this.getAutoCompleteTextFields().forEach(itm -> arr.put(itm));
 			returnVal.put(JSONMapping.AUTO_COMPLETE_TEXT_FIELDS, arr);
 		}
 
 		if (this.getNewInstanceDefaults() != null) {
-			JSONArray newInstDef = new JSONArray();
+			JsonArray newInstDef = new JsonArray();
 			this.getNewInstanceDefaults()
 					.stream()
 					.filter(itm -> UtilGlobal.isNotBlank(itm.getDefaultVal()))
@@ -383,12 +383,12 @@ public class WebKitForm extends ABaseFluidJSONObject {
 		}
 
 		if (this.getUserToFormFieldLimitOnMultiChoice() != null) {
-			JSONArray userToFormFields = new JSONArray();
+			JsonArray userToFormFields = new JsonArray();
 			this.getUserToFormFieldLimitOnMultiChoice().forEach(manField -> userToFormFields.put(manField));
 			returnVal.put(JSONMapping.USER_TO_FORM_FIELD_LIMIT_ON_MULTI_CHOICE, userToFormFields);
 		}
 
-		JSONArray arrAdvances = new JSONArray();
+		JsonArray arrAdvances = new JsonArray();
 		if (this.getLayoutAdvances() != null) {
 			for (WebKitFormLayoutAdvance toAdd : this.getLayoutAdvances()) arrAdvances.put(toAdd.toJsonObject());
 		}

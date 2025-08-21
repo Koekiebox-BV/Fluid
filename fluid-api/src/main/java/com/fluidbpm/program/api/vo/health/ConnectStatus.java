@@ -63,7 +63,7 @@ public class ConnectStatus extends ABaseFluidJSONObject {
 	 *
 	 * @param jsonObject The JSON Object.
 	 */
-	public ConnectStatus(JSONObject jsonObject) {
+	public ConnectStatus(JsonObject jsonObject) {
 		super(jsonObject);
 		if (this.jsonObject == null) return;
 
@@ -107,8 +107,8 @@ public class ConnectStatus extends ABaseFluidJSONObject {
 	 * @see ABaseFluidJSONObject#toJsonObject()
 	 */
 	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getTimestamp() != null) {
 			returnVal.put(JSONMapping.TIMESTAMP, this.getDateAsObjectFromJson(this.getTimestamp()));

@@ -108,7 +108,7 @@ public class TableField extends ABaseFluidJSONObject {
 
         //Table Field Records...
         if (!this.jsonObject.isNull(JSONMapping.TABLE_RECORDS)) {
-            JSONArray formsArr = this.jsonObject.getJSONArray(JSONMapping.TABLE_RECORDS);
+            JsonArray formsArr = this.jsonObject.getJSONArray(JSONMapping.TABLE_RECORDS);
             List<Form> assForms = new ArrayList();
             for (int index = 0; index < formsArr.length(); index++) {
                 assForms.add(new Form(formsArr.getJSONObject(index)));
@@ -164,7 +164,7 @@ public class TableField extends ABaseFluidJSONObject {
      */
     @Override
     public String toString() {
-        JSONObject jsonObject = this.toJsonObject();
+        JsonObject jsonObject = this.toJsonObject();
         if (jsonObject != null) return jsonObject.toString();
         return UtilGlobal.EMPTY;
     }

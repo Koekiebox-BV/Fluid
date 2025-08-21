@@ -118,7 +118,7 @@ public class SQLRow extends ABaseFluidJSONObject {
 
         //SQL Columns...
         if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
-            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.SQL_COLUMNS);
+            JsonArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.SQL_COLUMNS);
             List<SQLColumn> sqlColumns = new ArrayList();
             for (int index = 0;index < rulesArr.length();index++) {
                 sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
@@ -136,11 +136,11 @@ public class SQLRow extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         //SQL Columns...
         if (this.getSqlColumns() != null) {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
             for (SQLColumn toAdd : this.getSqlColumns()) {
                 jsonArray.put(toAdd.toJsonObject());
             }

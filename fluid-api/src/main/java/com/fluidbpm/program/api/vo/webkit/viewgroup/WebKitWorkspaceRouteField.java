@@ -105,8 +105,8 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getRouteField() != null) {
 			Field reducedField = new Field(this.getRouteField().getId());

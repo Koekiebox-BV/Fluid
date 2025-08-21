@@ -115,7 +115,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 		}
 
 		if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITIONS)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
+			JsonArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
 			List<Form> objs = new ArrayList();
 			for (int index = 0;index < jsonArray.length();index++) objs.add(new Form(jsonArray.getJSONObject(index)));
 			this.setFormDefinitions(objs);
@@ -139,8 +139,8 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 	 */
 	@Override
 	@XmlTransient
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+	public JsonObject toJsonObject() throws JSONException {
+		JsonObject returnVal = super.toJsonObject();
 
 		if (this.getThirdPartyLibraryId() != null) returnVal.put(JSONMapping.THIRD_PARTY_LIBRARY_ID, this.getThirdPartyLibraryId());
 		if (this.getLibraryFilename() != null) returnVal.put(JSONMapping.LIBRARY_FILENAME, this.getLibraryFilename());
@@ -150,7 +150,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
 		if (this.getTaskIdentifier() != null) returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
 		
 		if (this.getFormDefinitions() != null && !this.getFormDefinitions().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
+			JsonArray jsonArray = new JsonArray();
 			for (Form toAdd : this.getFormDefinitions()) jsonArray.put(toAdd.toJsonObject());
 			returnVal.put(JSONMapping.FORM_DEFINITIONS, jsonArray);
 		}

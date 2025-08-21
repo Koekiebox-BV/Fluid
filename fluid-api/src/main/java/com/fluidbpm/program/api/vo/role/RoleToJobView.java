@@ -129,8 +129,8 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         //Job View...
         if (this.getJobView() != null) {
             returnVal.put(JSONMapping.JOB_VIEW, this.getJobView().toJsonObject());

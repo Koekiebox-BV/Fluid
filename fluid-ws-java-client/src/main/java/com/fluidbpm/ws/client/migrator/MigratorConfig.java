@@ -122,7 +122,7 @@ public class MigratorConfig {
             Configuration existing = getConfigurationSafe(cc, Configuration.Key.CustomPermissionMapping);
             boolean update = false;
             if (existing != null && UtilGlobal.isNotBlank(existing.getValue())) {
-                JSONArray array = new JSONArray(existing.getValue());
+                JsonArray array = new JSONArray(existing.getValue());
                 for (ICustomPermission perm : opts.customPermissions) {
                     int index = perm.ordinal();
                     String permValFromEnum = perm.getPermission();
