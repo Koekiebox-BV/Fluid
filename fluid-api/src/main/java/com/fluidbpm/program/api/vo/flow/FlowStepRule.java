@@ -15,15 +15,14 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
@@ -33,13 +32,13 @@ import java.util.List;
  * @author jasonbruwer
  * @see Flow
  * @see FlowStep
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.0
  */
 @NoArgsConstructor
 @Getter
 @Setter
-public class FlowStepRule extends ABaseFluidJSONObject {
+public class FlowStepRule extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private Long order;
@@ -109,96 +108,35 @@ public class FlowStepRule extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FlowStepRule(JSONObject jsonObjectParam) {
+    public FlowStepRule(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
-        //Order...
-        if (!this.jsonObject.isNull(JSONMapping.ORDER)) {
-            this.setOrder(this.jsonObject.getLong(JSONMapping.ORDER));
-        }
-
-        //Rule...
-        if (!this.jsonObject.isNull(JSONMapping.RULE)) {
-            this.setRule(this.jsonObject.getString(JSONMapping.RULE));
-        }
-
-        //Current Typed Syntax...
-        if (!this.jsonObject.isNull(JSONMapping.CURRENT_TYPED_SYNTAX)) {
-            this.setCurrentTypedSyntax(this.jsonObject.getString(JSONMapping.CURRENT_TYPED_SYNTAX));
-        }
-
-        //Flow...
-        if (!this.jsonObject.isNull(JSONMapping.FLOW)) {
-            this.setFlow(new Flow(this.jsonObject.getJSONObject(JSONMapping.FLOW)));
-        }
-
-        //Flow Step...
-        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP)) {
-            this.setFlowStep(new FlowStep(this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP)));
-        }
-
-        //Next Valid Syntax Words...
-        if (!this.jsonObject.isNull(JSONMapping.NEXT_VALID_SYNTAX_WORDS)) {
-            JSONArray listOfValidWordsArray =
-                    this.jsonObject.getJSONArray(JSONMapping.NEXT_VALID_SYNTAX_WORDS);
-            List<String> validWordsString = new ArrayList<String>();
-
-            for (int index = 0; index < listOfValidWordsArray.length(); index++) {
-                validWordsString.add(listOfValidWordsArray.getString(index));
-            }
-
-            this.setNextValidSyntaxWords(validWordsString);
-        }
+        this.setOrder(this.getAsLongNullSafe(this.jsonObject, JSONMapping.ORDER));
+        this.setRule(this.getAsStringNullSafe(this.jsonObject, JSONMapping.RULE));
+        this.setCurrentTypedSyntax(this.getAsStringNullSafe(this.jsonObject, JSONMapping.CURRENT_TYPED_SYNTAX));
+        this.setFlow(this.extractObject(this.jsonObject, JSONMapping.FLOW, Flow::new));
+        this.setFlowStep(this.extractObject(this.jsonObject, JSONMapping.FLOW_STEP, FlowStep::new));
+        this.setNextValidSyntaxWords(this.extractStrings(this.jsonObject, JSONMapping.NEXT_VALID_SYNTAX_WORDS));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FlowStepRule}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code FlowStepRule}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-
-        //Order...
-        if (this.getOrder() != null) {
-            returnVal.put(JSONMapping.ORDER, this.getOrder());
-        }
-
-        //Rule...
-        if (this.getRule() != null) {
-            returnVal.put(JSONMapping.RULE, this.getRule());
-        }
-
-        //Current Typed Syntax...
-        if (this.getCurrentTypedSyntax() != null) {
-            returnVal.put(JSONMapping.CURRENT_TYPED_SYNTAX,
-                    this.getCurrentTypedSyntax());
-        }
-
-        //Flow...
-        if (this.getFlow() != null) {
-            returnVal.put(JSONMapping.FLOW, this.getFlow().toJsonObject());
-        }
-
-        //Flow Step...
-        if (this.getFlowStep() != null) {
-            returnVal.put(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
-        }
-
-        //Next Valid Syntax Words...
-        if (this.getNextValidSyntaxWords() != null && !this.getNextValidSyntaxWords().isEmpty()) {
-            JSONArray jsonArrayOfValidWords = new JSONArray();
-            for (String validWord : this.getNextValidSyntaxWords()) {
-                jsonArrayOfValidWords.put(validWord);
-            }
-            returnVal.put(JSONMapping.NEXT_VALID_SYNTAX_WORDS, jsonArrayOfValidWords);
-        }
-
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        returnVal.addProperty(JSONMapping.ORDER, this.getOrder());
+        returnVal.addProperty(JSONMapping.RULE, this.getRule());
+        returnVal.addProperty(JSONMapping.CURRENT_TYPED_SYNTAX, this.getCurrentTypedSyntax());
+        returnVal.add(JSONMapping.FLOW, this.getFlow().toJsonObject());
+        returnVal.add(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
+        returnVal.add(JSONMapping.NEXT_VALID_SYNTAX_WORDS, this.toJsonArray(this.getNextValidSyntaxWords()));
         return returnVal;
     }
 }
