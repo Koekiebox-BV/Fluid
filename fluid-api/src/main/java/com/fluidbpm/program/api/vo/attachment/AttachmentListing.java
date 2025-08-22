@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api.vo.attachment;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @see ABaseListing
  * @since v1.8
  */
-public class AttachmentListing extends ABaseListing<Attachment> {
+public class AttachmentListing extends ABaseGSONListing<Attachment> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -45,7 +46,7 @@ public class AttachmentListing extends ABaseListing<Attachment> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AttachmentListing(JSONObject jsonObjectParam) {
+    public AttachmentListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -57,7 +58,7 @@ public class AttachmentListing extends ABaseListing<Attachment> {
      */
     @Override
     @XmlTransient
-    public Attachment getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public Attachment getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new Attachment(jsonObjectParam);
     }
 }

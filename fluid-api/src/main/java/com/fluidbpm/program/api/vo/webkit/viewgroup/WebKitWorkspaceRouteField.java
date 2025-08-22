@@ -68,7 +68,7 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
         if (this.jsonObject == null) return;
 
         if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELD)) {
-            this.setRouteField(new Field(this.jsonObject.getJSONObject(JSONMapping.ROUTE_FIELD)));
+            this.setRouteField(this.fieldFromLclJsonObject(JSONMapping.ROUTE_FIELD));
         }
 
         if (!this.jsonObject.isNull(JSONMapping.FIELD_ORDER)) {

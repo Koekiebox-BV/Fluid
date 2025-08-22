@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.item;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -33,8 +33,7 @@ import com.fluidbpm.program.api.vo.field.Field;
  * @see ABaseListing
  * @since v1.8
  */
-public class RouteFieldListing extends ABaseListing<Field> {
-
+public class RouteFieldListing extends ABaseGSONListing<Field> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -49,7 +48,7 @@ public class RouteFieldListing extends ABaseListing<Field> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RouteFieldListing(JSONObject jsonObjectParam) {
+    public RouteFieldListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -61,7 +60,7 @@ public class RouteFieldListing extends ABaseListing<Field> {
      */
     @Override
     @XmlTransient
-    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new Field(jsonObjectParam);
     }
 }

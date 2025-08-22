@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api.vo.thirdpartylib;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @see ABaseListing
  * @since v1.11
  */
-public class ThirdPartyLibraryTaskIdentifierListing extends ABaseListing<ThirdPartyLibraryTaskIdentifier> {
+public class ThirdPartyLibraryTaskIdentifierListing extends ABaseGSONListing<ThirdPartyLibraryTaskIdentifier> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -45,7 +46,7 @@ public class ThirdPartyLibraryTaskIdentifierListing extends ABaseListing<ThirdPa
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ThirdPartyLibraryTaskIdentifierListing(JSONObject jsonObjectParam) {
+    public ThirdPartyLibraryTaskIdentifierListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -57,7 +58,7 @@ public class ThirdPartyLibraryTaskIdentifierListing extends ABaseListing<ThirdPa
      */
     @Override
     @XmlTransient
-    public ThirdPartyLibraryTaskIdentifier getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public ThirdPartyLibraryTaskIdentifier getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new ThirdPartyLibraryTaskIdentifier(jsonObjectParam);
     }
 }

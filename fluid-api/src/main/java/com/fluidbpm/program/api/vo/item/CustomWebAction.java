@@ -16,8 +16,10 @@
 package com.fluidbpm.program.api.vo.item;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
@@ -34,7 +36,7 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
-public class CustomWebAction extends ABaseFluidJSONObject {
+public class CustomWebAction extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private Form form;
@@ -79,7 +81,7 @@ public class CustomWebAction extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public CustomWebAction(JSONObject jsonObjectParam) {
+    public CustomWebAction(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
@@ -113,8 +115,8 @@ public class CustomWebAction extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         if (this.getTaskIdentifier() != null) {
             returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
         }

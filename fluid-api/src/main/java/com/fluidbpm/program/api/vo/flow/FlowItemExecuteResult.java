@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.mail.MailMessage;
@@ -40,8 +41,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class FlowItemExecuteResult extends ABaseFluidJSONObject {
-
+public class FlowItemExecuteResult extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private FlowStepRule flowStepRule;

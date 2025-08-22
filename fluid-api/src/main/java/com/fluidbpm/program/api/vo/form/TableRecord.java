@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +37,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TableRecord extends ABaseFluidJSONObject {
+public class TableRecord extends ABaseGSONListing {
     private static final long serialVersionUID = 1L;
 
     private Form formContainer;
@@ -112,8 +114,8 @@ public class TableRecord extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         //Form Container...
         if (this.getFormContainer() != null) {
             returnVal.put(JSONMapping.FORM_CONTAINER, this.getFormContainer().toJsonObject());

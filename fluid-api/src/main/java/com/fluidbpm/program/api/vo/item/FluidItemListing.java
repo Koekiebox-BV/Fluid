@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.vo.item;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -31,8 +31,7 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  * @since v1.1
  */
-public class FluidItemListing extends ABaseListing<FluidItem> {
-
+public class FluidItemListing extends ABaseGSONListing<FluidItem> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -47,7 +46,7 @@ public class FluidItemListing extends ABaseListing<FluidItem> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FluidItemListing(JSONObject jsonObjectParam) {
+    public FluidItemListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,7 +58,7 @@ public class FluidItemListing extends ABaseListing<FluidItem> {
      */
     @Override
     @XmlTransient
-    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new FluidItem(jsonObjectParam);
     }
 }

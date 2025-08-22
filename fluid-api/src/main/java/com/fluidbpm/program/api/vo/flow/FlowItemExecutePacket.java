@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +36,7 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
  * @see FlowStepRule
  * @since v1.0
  */
-public class FlowItemExecutePacket extends ABaseFluidJSONObject {
+public class FlowItemExecutePacket extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
     private FlowStepRule flowStepRule;
     private FluidItem fluidItem;
@@ -69,16 +70,12 @@ public class FlowItemExecutePacket extends ABaseFluidJSONObject {
 
         //Fluid Item...
         if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
-
-            this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(
-                    JSONMapping.FLUID_ITEM)));
+            this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(JSONMapping.FLUID_ITEM)));
         }
 
         //Flow Step Rule...
         if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
-
-            this.setFlowStepRule(new FlowStepRule(
-                    this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP_RULE)));
+            this.setFlowStepRule(new FlowStepRule(this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP_RULE)));
         }
     }
 

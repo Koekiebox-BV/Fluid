@@ -101,7 +101,7 @@ public class PaymentLinkAdyen extends ABaseFluidJSONObject {
      */
     @Override
     public String toString() {
-        JsonObject jsonObject = this.toJsonObject();
+        JSONObject jsonObject = this.toJsonObject();
         if (jsonObject != null) return jsonObject.toString();
         return UtilGlobal.EMPTY;
     }

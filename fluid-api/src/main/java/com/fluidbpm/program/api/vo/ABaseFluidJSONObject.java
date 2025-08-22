@@ -17,8 +17,10 @@ package com.fluidbpm.program.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
+import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -299,7 +301,6 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
 
     /**
      * Extracts and constructs a {@code User} object from a specified field in the local JSON object.
-     *
      * @param fieldName The name of the JSON field containing user data.
      * @return A {@code User} object populated with data from the specified JSON field.
      */
@@ -311,5 +312,38 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
                 user.optLong(ABaseFluidGSONObject.JSONMapping.ID),
                 user.optString(User.JSONMapping.USERNAME)
         );
+    }
+
+    /**
+     * Extracts and constructs a {@code UserQuery} object from the specified field in the local JSON object.
+     *
+     * @param fieldName The name of the JSON field containing user query data.
+     * @return A {@code UserQuery} object populated with data from the specified JSON field.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected UserQuery userQueryFromLclJsonObject(String fieldName) {
+        JSONObject userQuery = this.jsonObject.getJSONObject(fieldName);
+        return new UserQuery(
+                userQuery.optLong(ABaseFluidGSONObject.JSONMapping.ID),
+                userQuery.optString(UserQuery.JSONMapping.NAME)
+        );
+    }
+
+    /**
+     * Constructs a {@code JobView} object from the specified field name in the local JSON object.
+     *
+     * @param fieldName The name of the JSON field containing {@code JobView} data.
+     * @return A {@code JobView} object populated with data from the specified JSON field.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected JobView jobViewFromLclJsonObject(String fieldName) {
+        JSONObject userQuery = this.jsonObject.getJSONObject(fieldName);
+        JobView rtrVal = new JobView(
+                userQuery.optLong(ABaseFluidGSONObject.JSONMapping.ID)
+        );
+        rtrVal.setViewName(userQuery.optString(JobView.JSONMapping.VIEW_NAME));
+        return rtrVal;
     }
 }

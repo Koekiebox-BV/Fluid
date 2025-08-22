@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.vo.user;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -31,7 +31,7 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  * @since v1.1
  */
-public class UserListing extends ABaseListing<User> {
+public class UserListing extends ABaseGSONListing<User> {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class UserListing extends ABaseListing<User> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserListing(JSONObject jsonObjectParam) {
+    public UserListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,7 +59,7 @@ public class UserListing extends ABaseListing<User> {
      */
     @Override
     @XmlTransient
-    public User getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public User getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new User(jsonObjectParam);
     }
 }

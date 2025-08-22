@@ -160,7 +160,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
         else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
 
         if (!this.jsonObject.isNull(JSONMapping.USER_QUERY))
-            this.setUserQuery(new UserQuery(this.jsonObject.getJSONObject(JSONMapping.USER_QUERY)));
+            this.setUserQuery(this.userQueryFromLclJsonObject(JSONMapping.USER_QUERY));
 
         if (!this.jsonObject.isNull(JSONMapping.MENU_ITEM))
             this.setMenuItem(new WebKitMenuItem(this.jsonObject.getJSONObject(JSONMapping.MENU_ITEM)));

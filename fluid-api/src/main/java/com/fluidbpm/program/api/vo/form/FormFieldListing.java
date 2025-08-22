@@ -15,11 +15,12 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -35,7 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
-public class FormFieldListing extends ABaseListing<Field> {
+public class FormFieldListing extends ABaseGSONListing<Field> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -50,7 +51,7 @@ public class FormFieldListing extends ABaseListing<Field> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormFieldListing(JSONObject jsonObjectParam) {
+    public FormFieldListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -62,7 +63,7 @@ public class FormFieldListing extends ABaseListing<Field> {
      */
     @Override
     @XmlTransient
-    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new Field(jsonObjectParam);
     }
 }
