@@ -26,17 +26,16 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
  * Fluid representation of a Email message attachment.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see Attachment
  * @see MailMessage
  * @see MailMessageNameValue
  * @see Attachment
  * @see ABaseFluidVO
+ * @since v1.0
  */
 public class MailMessageAttachment extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String attachmentPath;
     private String attachmentDataBase64;
@@ -44,12 +43,11 @@ public class MailMessageAttachment extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code MailMessageAttachment} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String ATTACHMENT_PATH = "attachmentPath";
         public static final String ATTACHMENT_DATA_BASE64 = "attachmentDataBase64";
     }
-    
+
     /**
      * Default constructor.
      */
@@ -73,7 +71,7 @@ public class MailMessageAttachment extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessageAttachment(JsonObject jsonObjectParam) {
+    public MailMessageAttachment(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) {
@@ -102,31 +100,27 @@ public class MailMessageAttachment extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code MailMessageAttachment}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException
-    {
-        JsonObject returnVal = super.toJsonObject();
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
         //Attachment Path...
-        if (this.getAttachmentPath() != null)
-        {
+        if (this.getAttachmentPath() != null) {
             returnVal.put(JSONMapping.ATTACHMENT_PATH,
                     this.getAttachmentPath());
         }
 
         //Attachment Data Base64...
-        if (this.getAttachmentDataBase64() != null)
-        {
+        if (this.getAttachmentDataBase64() != null) {
             returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
                     this.getAttachmentDataBase64());
         }
 
         return returnVal;
     }
-    
+
     /**
      * Gets the path to the attachment.
      *

@@ -15,52 +15,49 @@
 
 package com.fluidbpm.program.api.vo.config;
 
-import javax.xml.bind.annotation.XmlTransient;
-
+import com.fluidbpm.program.api.vo.ABaseListing;
 import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseListing;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Configuration}s.
+ * Represents a {@code List} of {@code Configuration}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Configuration
  * @see ABaseListing
+ * @since v1.1
  */
 public class ConfigurationListing extends ABaseListing<Configuration> {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    /**
+     * Default constructor.
+     */
+    public ConfigurationListing() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public ConfigurationListing() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public ConfigurationListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public ConfigurationListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
-
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Configuration} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Configuration}.
-	 * @return New {@code Configuration} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Configuration getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new Configuration(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Configuration} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Configuration}.
+     * @return New {@code Configuration} instance.
+     */
+    @Override
+    @XmlTransient
+    public Configuration getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new Configuration(jsonObjectParam);
+    }
 }

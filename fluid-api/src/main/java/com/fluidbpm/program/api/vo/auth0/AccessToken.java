@@ -23,103 +23,99 @@ import org.json.JSONObject;
 
 /**
  * An Auth0 Access Token used by Fluid.
- *
+ * <p>
  * See more at: https://auth0.com/
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see NormalizedUserProfile
  * @see AccessTokenRequest
  * @see ABaseFluidJSONObject
+ * @since v1.0
  */
 public class AccessToken extends ABaseFluidJSONObject {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    @Getter
+    @Setter
+    private String accessToken;
 
-	@Getter
-	@Setter
-	private String accessToken;
+    @Getter
+    @Setter
+    private String idToken;
 
-	@Getter
-	@Setter
-	private String idToken;
+    @Getter
+    @Setter
+    private String tokenType;
 
-	@Getter
-	@Setter
-	private String tokenType;
+    /**
+     * The JSON mapping for the {@code AccessToken} object.
+     */
+    public static class JSONMapping {
+        public static final String ACCESS_TOKEN = "access_token";
+        public static final String ID_TOKEN = "id_token";
+        public static final String TOKEN_TYPE = "token_type";
+    }
 
-	/**
-	 * The JSON mapping for the {@code AccessToken} object.
-	 */
-	public static class JSONMapping
-	{
-		public static final String ACCESS_TOKEN = "access_token";
-		public static final String ID_TOKEN = "id_token";
-		public static final String TOKEN_TYPE = "token_type";
-	}
+    /**
+     * Default constructor.
+     */
+    public AccessToken() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public AccessToken() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public AccessToken(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) {
+            return;
+        }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public AccessToken(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+        //Access Token...
+        if (!this.jsonObject.isNull(JSONMapping.ACCESS_TOKEN)) {
+            this.setAccessToken(this.jsonObject.getString(JSONMapping.ACCESS_TOKEN));
+        }
 
-		//Access Token...
-		if (!this.jsonObject.isNull(JSONMapping.ACCESS_TOKEN)) {
-			this.setAccessToken(this.jsonObject.getString(JSONMapping.ACCESS_TOKEN));
-		}
+        //Id Token...
+        if (!this.jsonObject.isNull(JSONMapping.ID_TOKEN)) {
+            this.setIdToken(this.jsonObject.getString(JSONMapping.ID_TOKEN));
+        }
 
-		//Id Token...
-		if (!this.jsonObject.isNull(JSONMapping.ID_TOKEN)) {
-			this.setIdToken(this.jsonObject.getString(JSONMapping.ID_TOKEN));
-		}
+        //Token Type...
+        if (!this.jsonObject.isNull(JSONMapping.TOKEN_TYPE)) {
+            this.setTokenType(this.jsonObject.getString(JSONMapping.TOKEN_TYPE));
+        }
+    }
 
-		//Token Type...
-		if (!this.jsonObject.isNull(JSONMapping.TOKEN_TYPE)) {
-			this.setTokenType(this.jsonObject.getString(JSONMapping.TOKEN_TYPE));
-		}
-	}
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code AccessToken}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code AccessToken}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-		JsonObject returnVal = super.toJsonObject();
+        //Access Token...
+        if (this.getAccessToken() != null) {
+            returnVal.put(JSONMapping.ACCESS_TOKEN, this.getAccessToken());
+        }
 
-		//Access Token...
-		if (this.getAccessToken() != null) {
-			returnVal.put(JSONMapping.ACCESS_TOKEN,this.getAccessToken());
-		}
+        //Id Token...
+        if (this.getIdToken() != null) {
+            returnVal.put(JSONMapping.ID_TOKEN, this.getIdToken());
+        }
 
-		//Id Token...
-		if (this.getIdToken() != null) {
-			returnVal.put(JSONMapping.ID_TOKEN,this.getIdToken());
-		}
+        //Token Type...
+        if (this.getTokenType() != null) {
+            returnVal.put(JSONMapping.TOKEN_TYPE, this.getTokenType());
+        }
 
-		//Token Type...
-		if (this.getTokenType() != null) {
-			returnVal.put(JSONMapping.TOKEN_TYPE,this.getTokenType());
-		}
-
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

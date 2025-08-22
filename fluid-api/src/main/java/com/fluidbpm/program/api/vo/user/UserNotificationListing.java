@@ -23,18 +23,17 @@ import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code UserNotification}s.
+ * Represents a {@code List} of {@code UserNotification}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.8
- *
  * @see UserNotification
  * @see ABaseListing
+ * @since v1.8
  */
 public class UserNotificationListing extends ABaseListing<UserNotification> {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
@@ -48,7 +47,7 @@ public class UserNotificationListing extends ABaseListing<UserNotification> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserNotificationListing(JsonObject jsonObjectParam){
+    public UserNotificationListing(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -60,7 +59,7 @@ public class UserNotificationListing extends ABaseListing<UserNotification> {
      */
     @Override
     @XmlTransient
-    public UserNotification getObjectFromJSONObject(JsonObject jsonObjectParam) {
+    public UserNotification getObjectFromJSONObject(JSONObject jsonObjectParam) {
         return new UserNotification(jsonObjectParam);
     }
 }

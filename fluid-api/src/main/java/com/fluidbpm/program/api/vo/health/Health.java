@@ -25,7 +25,7 @@ package com.fluidbpm.program.api.vo.health;
  * @since 1.13
  */
 public enum Health {
-	Unhealthy,
-	Healthy,
-	Degraded
+    Unhealthy,
+    Healthy,
+    Degraded
 }

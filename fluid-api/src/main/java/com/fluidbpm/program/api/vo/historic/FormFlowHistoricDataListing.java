@@ -23,44 +23,43 @@ import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code FormFlowHistoricData}s.
+ * Represents a {@code List} of {@code FormFlowHistoricData}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.8
- *
  * @see FormFlowHistoricData
  * @see ABaseListing
+ * @since v1.8
  */
 public class FormFlowHistoricDataListing extends ABaseListing<FormFlowHistoricData> {
 
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FormFlowHistoricDataListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FormFlowHistoricDataListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FormFlowHistoricDataListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FormFlowHistoricDataListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code FormFlowHistoricData} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code FormFlowHistoricData}.
-	 * @return New {@code FormFlowHistoricData} instance.
-	 */
-	@Override
-	@XmlTransient
-	public FormFlowHistoricData getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new FormFlowHistoricData(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code FormFlowHistoricData} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code FormFlowHistoricData}.
+     * @return New {@code FormFlowHistoricData} instance.
+     */
+    @Override
+    @XmlTransient
+    public FormFlowHistoricData getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new FormFlowHistoricData(jsonObjectParam);
+    }
 }

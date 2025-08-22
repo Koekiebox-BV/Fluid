@@ -24,22 +24,21 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
 
 /**
  * Fluid Mail Message Name and Value.
- *
+ * <p>
  * Email Template {{name}} values gets replaced with the
  * {@code MailMessageNameValue}.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see Attachment
  * @see MailMessage
  * @see MailMessageAttachment
  * @see Attachment
  * @see ABaseFluidVO
+ * @since v1.0
  */
 public class MailMessageNameValue extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String value;
@@ -47,15 +46,14 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code MailMessageNameValue} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String NAME = "name";
         public static final String VALUE = "value";
     }
 
     /**
      * Default constructor.
-	 */
+     */
     public MailMessageNameValue() {
         super();
     }
@@ -63,7 +61,7 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
     /**
      * Sets the name and value used against the template.
      *
-     * @param nameParam The Name of the value to replace.
+     * @param nameParam  The Name of the value to replace.
      * @param valueParam The replacement value.
      */
     public MailMessageNameValue(String nameParam, String valueParam) {
@@ -72,13 +70,13 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
         this.setName(nameParam);
         this.setValue(valueParam);
     }
-    
+
     /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessageNameValue(JsonObject jsonObjectParam) {
+    public MailMessageNameValue(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) {
@@ -105,23 +103,19 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code MailMessageNameValue}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException
-    {
-        JsonObject returnVal = super.toJsonObject();
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if (this.getName() != null)
-        {
+        if (this.getName() != null) {
             returnVal.put(JSONMapping.NAME, this.getName());
         }
 
         //Value...
-        if (this.getValue() != null)
-        {
+        if (this.getValue() != null) {
             returnVal.put(JSONMapping.VALUE, this.getValue());
         }
 

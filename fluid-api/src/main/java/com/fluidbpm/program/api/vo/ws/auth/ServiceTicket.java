@@ -24,15 +24,14 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * Status of a previously issued authentication token.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseFluidJSONObject
  * @see TokenStatus
  * @see AppRequestToken
+ * @since v1.0
  */
 public class ServiceTicket extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String principalClient;
     private Long ticketExpires;
@@ -64,7 +63,7 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ServiceTicket(JsonObject jsonObjectParam) {
+    public ServiceTicket(JSONObject jsonObjectParam) {
         super();
 
         //Client...
@@ -95,7 +94,7 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
         JSONObject returnVal = new JSONObject();
 
@@ -109,6 +108,7 @@ public class ServiceTicket extends ABaseFluidJSONObject {
 
     /**
      * Gets the Principal Client.
+     *
      * @return {@code String} representation of the client.
      */
     public String getPrincipalClient() {

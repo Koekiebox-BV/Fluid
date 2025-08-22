@@ -26,16 +26,15 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * would be set on the Fluid BPM Core.
  * </p>
  *
+ * @author jasonbruwer on 2018-03-12
  * @see java.sql.SQLType
  * @see java.sql.PreparedStatement
  * @see java.sql.ResultSet
- *
- * @author jasonbruwer on 2018-03-12
  * @since v1.8
  */
 public class SQLColumn extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String columnName;
     private Integer columnIndex;
@@ -46,8 +45,7 @@ public class SQLColumn extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for the {@code Input} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String COLUMN_NAME = "columnName";
         public static final String COLUMN_INDEX = "columnIndex";
         public static final String SQL_TYPE = "sqlType";
@@ -64,11 +62,10 @@ public class SQLColumn extends ABaseFluidJSONObject {
     /**
      * Sets all the values for the column.
      *
-     * @param columnNameParam The column name.
+     * @param columnNameParam  The column name.
      * @param columnIndexParam The column index.
-     * @param sqlTypeParam The SQL Type. See {@code java.sql.Types}
-     * @param sqlValueParam The value of the param at index {@code columnIndexParam}.
-     *
+     * @param sqlTypeParam     The SQL Type. See {@code java.sql.Types}
+     * @param sqlValueParam    The value of the param at index {@code columnIndexParam}.
      * @see java.sql.Types
      */
     public SQLColumn(
@@ -89,11 +86,10 @@ public class SQLColumn extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLColumn(JsonObject jsonObjectParam){
+    public SQLColumn(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if (this.jsonObject == null)
-        {
+        if (this.jsonObject == null) {
             return;
         }
 
@@ -104,17 +100,17 @@ public class SQLColumn extends ABaseFluidJSONObject {
                     this.jsonObject.getString(
                             JSONMapping.COLUMN_NAME));
         }
-        
+
         //Index...
         if (!this.jsonObject.isNull(JSONMapping.COLUMN_INDEX)) {
-            
+
             this.setColumnIndex(
                     this.jsonObject.getInt(JSONMapping.COLUMN_INDEX));
         }
 
         //SQL Type...
         if (!this.jsonObject.isNull(JSONMapping.SQL_TYPE)) {
-            
+
             this.setSqlType(
                     this.jsonObject.getInt(JSONMapping.SQL_TYPE));
         }
@@ -131,38 +127,33 @@ public class SQLColumn extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
-        JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if (this.getColumnName() != null)
-        {
+        if (this.getColumnName() != null) {
             returnVal.put(JSONMapping.COLUMN_NAME,
                     this.getColumnName());
         }
-        
+
         //Index...
-        if (this.getColumnIndex() != null)
-        {
+        if (this.getColumnIndex() != null) {
             returnVal.put(JSONMapping.COLUMN_INDEX,
                     this.getColumnIndex());
         }
 
         //SQL Type...
-        if (this.getSqlType() != null)
-        {
+        if (this.getSqlType() != null) {
             returnVal.put(
-                    JSONMapping.SQL_TYPE,this.getSqlType());
+                    JSONMapping.SQL_TYPE, this.getSqlType());
         }
 
         //SQL Value...
-        if (this.getSqlValue() != null)
-        {
+        if (this.getSqlValue() != null) {
             returnVal.put(JSONMapping.SQL_VALUE,
                     this.getSqlValue());
         }
@@ -193,7 +184,6 @@ public class SQLColumn extends ABaseFluidJSONObject {
      * The first parameter is 1.
      *
      * @return The SQL parameter index.
-     *
      * @see java.sql.PreparedStatement#setObject(int, Object)
      */
     public Integer getColumnIndex() {
@@ -205,18 +195,16 @@ public class SQLColumn extends ABaseFluidJSONObject {
      * The first parameter is 1.
      *
      * @param indexParam The SQL parameter index.
-     *
      * @see java.sql.PreparedStatement#setObject(int, Object)
      */
     public void setColumnIndex(Integer indexParam) {
         this.columnIndex = indexParam;
     }
-    
+
     /**
      * Get the SQL Type as {@code int}.
      *
      * @return The SQL Type.
-     *
      * @see java.sql.Types
      */
     public Integer getSqlType() {
@@ -227,7 +215,6 @@ public class SQLColumn extends ABaseFluidJSONObject {
      * Set the SQL Type as {@code Integer}.
      *
      * @param sqlTypeParam The SQL Type.
-     *
      * @see java.sql.Types
      */
     public void setSqlType(Integer sqlTypeParam) {
@@ -239,8 +226,7 @@ public class SQLColumn extends ABaseFluidJSONObject {
      * The type will be converted at time of use.
      *
      * @return The value of the parameter.
-     *
-     * @see java.sql.PreparedStatement#setObject(int, Object) 
+     * @see java.sql.PreparedStatement#setObject(int, Object)
      */
     public Object getSqlValue() {
         return this.sqlValue;
@@ -251,7 +237,6 @@ public class SQLColumn extends ABaseFluidJSONObject {
      * The type will be converted at time of use.
      *
      * @param paramValueParam The value of the parameter.
-     *
      * @see java.sql.PreparedStatement#setObject(int, Object)
      */
     public void setSqlValue(Object paramValueParam) {

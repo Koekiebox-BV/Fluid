@@ -23,44 +23,43 @@ import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code FlowStepRule}s.
+ * Represents a {@code List} of {@code FlowStepRule}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.6
- *
  * @see FlowStepRule
  * @see ABaseListing
+ * @since v1.6
  */
 public class FlowStepRuleListing extends ABaseListing<FlowStepRule> {
 
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FlowStepRuleListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FlowStepRuleListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FlowStepRuleListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FlowStepRuleListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code JobView} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code JobView}.
-	 * @return New {@code JobView} instance.
-	 */
-	@Override
-	@XmlTransient
-	public FlowStepRule getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new FlowStepRule(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code JobView} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code JobView}.
+     * @return New {@code JobView} instance.
+     */
+    @Override
+    @XmlTransient
+    public FlowStepRule getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new FlowStepRule(jsonObjectParam);
+    }
 }

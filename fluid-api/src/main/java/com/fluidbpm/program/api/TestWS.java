@@ -22,5 +22,5 @@ package com.fluidbpm.program.api;
  * @since 1.0
  */
 public class TestWS {
-	
+
 }

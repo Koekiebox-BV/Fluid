@@ -25,123 +25,123 @@ import org.json.JSONObject;
 
 /**
  * <p>
- *     Represents a {@code CustomWebAction} for executing custom web actions on the host.
+ * Represents a {@code CustomWebAction} for executing custom web actions on the host.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.11
- *
  * @see Form
+ * @since v1.11
  */
 @Getter
 @Setter
 public class CustomWebAction extends ABaseFluidJSONObject {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Form form;
-	private String taskIdentifier;
-	private Boolean isTableRecord;
-	private Long formTableRecordBelongsTo;
+    private Form form;
+    private String taskIdentifier;
+    private Boolean isTableRecord;
+    private Long formTableRecordBelongsTo;
 
-	private Long executionTimeMillis;
+    private Long executionTimeMillis;
 
-	/**
-	 * The JSON mapping for the {@code CustomWebAction} object.
-	 */
-	public static class JSONMapping {
-		public static final String FORM = "form";
-		public static final String TASK_IDENTIFIER = "taskIdentifier";
-		public static final String IS_TABLE_RECORD = "isTableRecord";
-		public static final String FORM_TABLE_RECORD_BELONGS_TO = "formTableRecordBelongsTo";
-		public static final String EXECUTION_TIME_MILLIS = "executionTimeMillis";
-	}
+    /**
+     * The JSON mapping for the {@code CustomWebAction} object.
+     */
+    public static class JSONMapping {
+        public static final String FORM = "form";
+        public static final String TASK_IDENTIFIER = "taskIdentifier";
+        public static final String IS_TABLE_RECORD = "isTableRecord";
+        public static final String FORM_TABLE_RECORD_BELONGS_TO = "formTableRecordBelongsTo";
+        public static final String EXECUTION_TIME_MILLIS = "executionTimeMillis";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public CustomWebAction() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public CustomWebAction() {
+        super();
+    }
 
-	/**
-	 * Constructor to create {@code CustomWebAction} with records.
-	 *
-	 * @param form The Form item to apply on custom action.
-	 * @param taskIdentifier The unique task identifier to execute
-	 */
-	public CustomWebAction(Form form, String taskIdentifier) {
-		super();
-		this.setForm(form);
-		this.setTaskIdentifier(taskIdentifier);
-	}
+    /**
+     * Constructor to create {@code CustomWebAction} with records.
+     *
+     * @param form           The Form item to apply on custom action.
+     * @param taskIdentifier The unique task identifier to execute
+     */
+    public CustomWebAction(Form form, String taskIdentifier) {
+        super();
+        this.setForm(form);
+        this.setTaskIdentifier(taskIdentifier);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public CustomWebAction(JsonObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public CustomWebAction(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-		if (!this.jsonObject.isNull(JSONMapping.TASK_IDENTIFIER)) {
-			this.setTaskIdentifier(this.jsonObject.getString(JSONMapping.TASK_IDENTIFIER));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.TASK_IDENTIFIER)) {
+            this.setTaskIdentifier(this.jsonObject.getString(JSONMapping.TASK_IDENTIFIER));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.EXECUTION_TIME_MILLIS)) {
-			this.setExecutionTimeMillis(this.jsonObject.getLong(JSONMapping.EXECUTION_TIME_MILLIS));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.EXECUTION_TIME_MILLIS)) {
+            this.setExecutionTimeMillis(this.jsonObject.getLong(JSONMapping.EXECUTION_TIME_MILLIS));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.IS_TABLE_RECORD)) {
-			this.setIsTableRecord(this.jsonObject.getBoolean(JSONMapping.IS_TABLE_RECORD));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.IS_TABLE_RECORD)) {
+            this.setIsTableRecord(this.jsonObject.getBoolean(JSONMapping.IS_TABLE_RECORD));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO)) {
-			this.setFormTableRecordBelongsTo(this.jsonObject.getLong(
-					JSONMapping.FORM_TABLE_RECORD_BELONGS_TO));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO)) {
+            this.setFormTableRecordBelongsTo(this.jsonObject.getLong(
+                    JSONMapping.FORM_TABLE_RECORD_BELONGS_TO));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.FORM)) {
-			this.setForm(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM)));
-		}
-	}
+        if (!this.jsonObject.isNull(JSONMapping.FORM)) {
+            this.setForm(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM)));
+        }
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code CustomWebAction}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-		JsonObject returnVal = super.toJsonObject();
-		if (this.getTaskIdentifier() != null) {
-			returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
-		}
-		if (this.getExecutionTimeMillis() != null) {
-			returnVal.put(JSONMapping.EXECUTION_TIME_MILLIS, this.getExecutionTimeMillis());
-		}
-		if (this.getIsTableRecord() != null) {
-			returnVal.put(JSONMapping.IS_TABLE_RECORD, this.getIsTableRecord());
-		}
-		if (this.getFormTableRecordBelongsTo() != null) {
-			returnVal.put(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO, this.getFormTableRecordBelongsTo());
-		}
-		if (this.getForm() != null) {
-			returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
-		}
-		return returnVal;
-	}
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code CustomWebAction}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
+        if (this.getTaskIdentifier() != null) {
+            returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
+        }
+        if (this.getExecutionTimeMillis() != null) {
+            returnVal.put(JSONMapping.EXECUTION_TIME_MILLIS, this.getExecutionTimeMillis());
+        }
+        if (this.getIsTableRecord() != null) {
+            returnVal.put(JSONMapping.IS_TABLE_RECORD, this.getIsTableRecord());
+        }
+        if (this.getFormTableRecordBelongsTo() != null) {
+            returnVal.put(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO, this.getFormTableRecordBelongsTo());
+        }
+        if (this.getForm() != null) {
+            returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
+        }
+        return returnVal;
+    }
 
-	/**
-	 * String value for a table field.
-	 * @return JSON text from the table field.
-	 */
-	@Override
-	public String toString() {
-		JsonObject jsonObject = this.toJsonObject();
-		if (jsonObject != null) return jsonObject.toString();
-		return UtilGlobal.EMPTY;
-	}
+    /**
+     * String value for a table field.
+     *
+     * @return JSON text from the table field.
+     */
+    @Override
+    public String toString() {
+        JsonObject jsonObject = this.toJsonObject();
+        if (jsonObject != null) return jsonObject.toString();
+        return UtilGlobal.EMPTY;
+    }
 }

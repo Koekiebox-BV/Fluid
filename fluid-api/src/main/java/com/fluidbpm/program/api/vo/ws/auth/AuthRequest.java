@@ -24,17 +24,16 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * Request object for authorization.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseFluidJSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthResponse
  * @see AuthEncryptedData
+ * @since v1.0
  */
 public class AuthRequest extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String username;
     private Long lifetime;
@@ -67,7 +66,7 @@ public class AuthRequest extends ABaseFluidJSONObject {
 
     /**
      * Gets requested lifetime of the user session in seconds.
-     *
+     * <p>
      * The provided lifetime is not guaranteed.
      *
      * @return Lifetime of the session.
@@ -78,7 +77,7 @@ public class AuthRequest extends ABaseFluidJSONObject {
 
     /**
      * Sets requested lifetime of the user session in seconds.
-     *
+     * <p>
      * The provided {@code lifetimeParam} is not guaranteed.
      *
      * @param lifetimeParam The duration of the session in seconds.
@@ -92,13 +91,12 @@ public class AuthRequest extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code AuthRequest}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
-        JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
 
         //Username...
         if (this.getUsername() != null) {

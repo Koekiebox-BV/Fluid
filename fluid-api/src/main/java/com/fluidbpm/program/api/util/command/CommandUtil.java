@@ -30,165 +30,160 @@ import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
 
 /**
  * Utility class used for executing command line operations.
- *
+ * <p>
  * See more at: https://auth0.com/
  *
  * @author jasonbruwer
- * @since v1.6
- *
  * @see NormalizedUserProfile
  * @see AccessTokenRequest
  * @see ABaseFluidJSONObject
+ * @since v1.6
  */
 public class CommandUtil {
 
-	public static final String FLUID_CLI = "fluid-cli";
+    public static final String FLUID_CLI = "fluid-cli";
 
 
-	/**
-	 * Result value object when a command line operation is finish.
-	 */
-	public static final class CommandResult {
-		private int exitCode;
-		private String[] resultLines;
+    /**
+     * Result value object when a command line operation is finish.
+     */
+    public static final class CommandResult {
+        private int exitCode;
+        private String[] resultLines;
 
-		/**
-		 * Sets the exit code and result lines.
-		 *
-		 * @param exitCodeParam The exit code.
-		 * @param resultLinesParam The result lines.
-		 */
-		private CommandResult(int exitCodeParam, String[] resultLinesParam) {
-			this.exitCode = exitCodeParam;
-			this.resultLines = resultLinesParam;
-		}
+        /**
+         * Sets the exit code and result lines.
+         *
+         * @param exitCodeParam    The exit code.
+         * @param resultLinesParam The result lines.
+         */
+        private CommandResult(int exitCodeParam, String[] resultLinesParam) {
+            this.exitCode = exitCodeParam;
+            this.resultLines = resultLinesParam;
+        }
 
-		/**
-		 * Gets the exit code.
-		 *
-		 * @return Exit Code.
-		 */
-		public int getExitCode() {
-			return this.exitCode;
-		}
+        /**
+         * Gets the exit code.
+         *
+         * @return Exit Code.
+         */
+        public int getExitCode() {
+            return this.exitCode;
+        }
 
-		/**
-		 * Gets the result lines.
-		 *
-		 * @return Result lines.
-		 */
-		public String[] getResultLines() {
-			return this.resultLines;
-		}
+        /**
+         * Gets the result lines.
+         *
+         * @return Result lines.
+         */
+        public String[] getResultLines() {
+            return this.resultLines;
+        }
 
-		/**
-		 * Returns the {@code String[]} result lines
-		 * as a single {@code String}.
-		 *
-		 * @return Result as a {@code String}.
-		 */
-		@Override
-		public String toString() {
+        /**
+         * Returns the {@code String[]} result lines
+         * as a single {@code String}.
+         *
+         * @return Result as a {@code String}.
+         */
+        @Override
+        public String toString() {
 
-			if (this.resultLines == null) {
-				return null;
-			}
+            if (this.resultLines == null) {
+                return null;
+            }
 
-			StringBuilder stringBuilder = new StringBuilder();
-			for (String line : this.resultLines) {
-				stringBuilder.append(line);
-				stringBuilder.append("\n");
-			}
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String line : this.resultLines) {
+                stringBuilder.append(line);
+                stringBuilder.append("\n");
+            }
 
-			return stringBuilder.toString();
-		}
-	}
+            return stringBuilder.toString();
+        }
+    }
 
-	/**
-	 * Executes the {@code commandParams} and returns the result.
-	 *
-	 * @param commandParams The command and parameters to execute.
-	 * @return The result of the execution.
-	 *
-	 * @throws IOException If execution of the command fails.
-	 *
-	 * @see CommandResult
-	 */
-	public CommandResult executeCommand(String... commandParams) throws IOException {
+    /**
+     * Executes the {@code commandParams} and returns the result.
+     *
+     * @param commandParams The command and parameters to execute.
+     * @return The result of the execution.
+     * @throws IOException If execution of the command fails.
+     * @see CommandResult
+     */
+    public CommandResult executeCommand(String... commandParams) throws IOException {
 
-		if (commandParams == null || commandParams.length == 0) {
-			throw new IOException("Unable to execute command. No commands provided.");
-		}
+        if (commandParams == null || commandParams.length == 0) {
+            throw new IOException("Unable to execute command. No commands provided.");
+        }
 
-		List<String> returnedLines = new ArrayList();
+        List<String> returnedLines = new ArrayList();
 
-		Charset charset = Charset.forName(ENCODING_UTF_8);
+        Charset charset = Charset.forName(ENCODING_UTF_8);
 
-		try {
-			Process process = null;
-			//One param...
-			if (commandParams.length == 1) {
-				process = Runtime.getRuntime().exec(commandParams[0]);
-			}
-			//More params...
-			else {
-				process = Runtime.getRuntime().exec(commandParams);
-			}
+        try {
+            Process process = null;
+            //One param...
+            if (commandParams.length == 1) {
+                process = Runtime.getRuntime().exec(commandParams[0]);
+            }
+            //More params...
+            else {
+                process = Runtime.getRuntime().exec(commandParams);
+            }
 
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(
-							process.getInputStream(), charset));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(
+                            process.getInputStream(), charset));
 
-			String readLine = null;
-			while ((readLine = reader.readLine()) != null) {
-				returnedLines.add(readLine);
-			}
+            String readLine = null;
+            while ((readLine = reader.readLine()) != null) {
+                returnedLines.add(readLine);
+            }
 
-			BufferedReader errorReader = new BufferedReader(
-					new InputStreamReader(process.getErrorStream(),charset));
+            BufferedReader errorReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream(), charset));
 
-			while ((readLine = errorReader.readLine()) != null) {
-				returnedLines.add(readLine);
-			}
+            while ((readLine = errorReader.readLine()) != null) {
+                returnedLines.add(readLine);
+            }
 
-			int exitValue = -1000;
-			try {
-				exitValue = process.waitFor();
-			} catch (InterruptedException e) {
-				String commandString = (commandParams == null || commandParams.length == 0) ?
-						"<unknown>" : commandParams[0];
+            int exitValue = -1000;
+            try {
+                exitValue = process.waitFor();
+            } catch (InterruptedException e) {
+                String commandString = (commandParams == null || commandParams.length == 0) ?
+                        "<unknown>" : commandParams[0];
 
-				throw new IOException("Unable to wait for command [" + commandString +
-						"] to exit. " + e.getMessage(), e);
-			}
+                throw new IOException("Unable to wait for command [" + commandString +
+                        "] to exit. " + e.getMessage(), e);
+            }
 
-			String[] rtnArr = {};
-			return new CommandResult(exitValue, returnedLines.toArray(rtnArr));
-		} catch (IOException ioExeption) {
-			//IO Problem...
-			String commandString = (commandParams == null || commandParams.length == 0) ?
-					"<unknown>" : commandParams[0];
+            String[] rtnArr = {};
+            return new CommandResult(exitValue, returnedLines.toArray(rtnArr));
+        } catch (IOException ioExeption) {
+            //IO Problem...
+            String commandString = (commandParams == null || commandParams.length == 0) ?
+                    "<unknown>" : commandParams[0];
 
-			throw new IOException("Unable to execute command/s [" + commandString + "]. " + ioExeption.getMessage(), ioExeption);
-		}
-	}
+            throw new IOException("Unable to execute command/s [" + commandString + "]. " + ioExeption.getMessage(), ioExeption);
+        }
+    }
 
-	/**
-	 * Executes the {@code objectCommandParam} and returns the result.
-	 *
-	 * @param objectCommandParam The command to execute.
-	 * @return The result of the execution.
-	 *
-	 * @see CommandUtil#executeCommand(String...)
-	 *
-	 * @throws Exception If anything goes wrong during execution.
-	 */
-	public CommandResult executeCommand(String objectCommandParam) throws Exception {
-		if (objectCommandParam == null) {
-			return new CommandResult(333, new String[] {
-					"No Object Command provided. 'null' not allowed." });
-		}
+    /**
+     * Executes the {@code objectCommandParam} and returns the result.
+     *
+     * @param objectCommandParam The command to execute.
+     * @return The result of the execution.
+     * @throws Exception If anything goes wrong during execution.
+     * @see CommandUtil#executeCommand(String...)
+     */
+    public CommandResult executeCommand(String objectCommandParam) throws Exception {
+        if (objectCommandParam == null) {
+            return new CommandResult(333, new String[]{
+                    "No Object Command provided. 'null' not allowed."});
+        }
 
-		return this.executeCommand(new String[] { objectCommandParam });
-	}
+        return this.executeCommand(new String[]{objectCommandParam});
+    }
 }

@@ -23,15 +23,14 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * Status of a previously issued authentication token.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseFluidJSONObject
  * @see ServiceTicket
  * @see AppRequestToken
+ * @since v1.0
  */
 public class TokenStatus extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private Long expirationTime;
     private String tokenMessage;
@@ -85,10 +84,8 @@ public class TokenStatus extends ABaseFluidJSONObject {
      *
      * @return Whether the ticket has expired.
      */
-    public boolean isExpired()
-    {
-        if (this.getExpirationTime() == null)
-        {
+    public boolean isExpired() {
+        if (this.getExpirationTime() == null) {
             return true;
         }
 

@@ -24,18 +24,17 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * Authorization encrypted data.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseFluidJSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthRequest
  * @see AuthResponse
  * @see AuthEncryptedData
+ * @since v1.0
  */
 public class AuthEncryptedData extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String sessionKeyBase64;
     private Long ticketExpires;
@@ -62,7 +61,7 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AuthEncryptedData(JsonObject jsonObjectParam) {
+    public AuthEncryptedData(JSONObject jsonObjectParam) {
         super();
 
         //Role Listing...
@@ -142,7 +141,7 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
      * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
         JSONObject returnVal = new JSONObject();
 

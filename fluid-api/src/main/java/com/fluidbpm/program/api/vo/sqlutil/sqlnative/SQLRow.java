@@ -36,17 +36,16 @@ import java.util.Optional;
  * The same as a SQL {@code ResultSet} row.
  * </p>
  *
+ * @author jasonbruwer on 2018-03-13
  * @see PreparedStatement
  * @see java.sql.Connection#prepareCall(String)
  * @see java.sql.ResultSet
- *
- * @author jasonbruwer on 2018-03-13
  * @since v1.8
  */
 @NoArgsConstructor
 public class SQLRow extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Getter
     @Setter
@@ -75,8 +74,8 @@ public class SQLRow extends ABaseFluidJSONObject {
      * @param name The name of the column to retrieve. This is case-insensitive.
      *             If {@code null}, the method will return {@code null}.
      * @return The {@code SQLColumn} with the specified name, or {@code null} if
-     *         no column with the specified name exists or if the column list is
-     *         {@code null}.
+     * no column with the specified name exists or if the column list is
+     * {@code null}.
      */
     @JsonIgnore
     @XmlTransient
@@ -112,15 +111,15 @@ public class SQLRow extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLRow(JsonObject jsonObjectParam){
+    public SQLRow(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
         //SQL Columns...
         if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
-            JsonArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.SQL_COLUMNS);
+            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.SQL_COLUMNS);
             List<SQLColumn> sqlColumns = new ArrayList();
-            for (int index = 0;index < rulesArr.length();index++) {
+            for (int index = 0; index < rulesArr.length(); index++) {
                 sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
             }
             this.setSqlColumns(sqlColumns);
@@ -132,15 +131,14 @@ public class SQLRow extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
-        JsonObject returnVal = super.toJsonObject();
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
         //SQL Columns...
         if (this.getSqlColumns() != null) {
-            JsonArray jsonArray = new JsonArray();
+            JSONArray jsonArray = new JSONArray();
             for (SQLColumn toAdd : this.getSqlColumns()) {
                 jsonArray.put(toAdd.toJsonObject());
             }

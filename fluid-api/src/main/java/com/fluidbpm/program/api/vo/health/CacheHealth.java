@@ -30,96 +30,95 @@ import java.util.List;
  * Connection status for a Fluid instance cache.
  *
  * @author jasonbruwer on 2023-06-20.
- * @since 1.13
  * @see ABaseFluidJSONObject
+ * @since 1.13
  */
 @Getter
 @Setter
 @NoArgsConstructor
 public class CacheHealth extends ABaseFluidJSONObject {
-	private String type;
-	private String uri;
-	private Health cacheHealth;
-	private String connectionInfo;
-	private List<String> cacheConsumption;
-	private Long connectObtainDurationMillis;
+    private String type;
+    private String uri;
+    private Health cacheHealth;
+    private String connectionInfo;
+    private List<String> cacheConsumption;
+    private Long connectObtainDurationMillis;
 
-	/**
-	 * The JSON mapping for the {@code CacheHealth} object.
-	 */
-	public static class JSONMapping {
-		public static final String TYPE = "type";
-		public static final String URI = "uri";
-		public static final String CACHE_HEALTH = "cacheHealth";
-		public static final String CONNECTION_INFO = "connectionInfo";
-		public static final String CACHE_CONSUMPTION = "cacheConsumption";
-		public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
-	}
+    /**
+     * The JSON mapping for the {@code CacheHealth} object.
+     */
+    public static class JSONMapping {
+        public static final String TYPE = "type";
+        public static final String URI = "uri";
+        public static final String CACHE_HEALTH = "cacheHealth";
+        public static final String CONNECTION_INFO = "connectionInfo";
+        public static final String CACHE_CONSUMPTION = "cacheConsumption";
+        public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObject The JSON Object.
-	 */
-	public CacheHealth(JsonObject jsonObject) {
-		super(jsonObject);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObject The JSON Object.
+     */
+    public CacheHealth(JSONObject jsonObject) {
+        super(jsonObject);
+        if (this.jsonObject == null) return;
 
-		if (!this.jsonObject.isNull(JSONMapping.TYPE)) {
-			this.setType(this.jsonObject.getString(JSONMapping.TYPE));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.TYPE)) {
+            this.setType(this.jsonObject.getString(JSONMapping.TYPE));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.URI)) {
-			this.setUri(this.jsonObject.getString(JSONMapping.URI));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.URI)) {
+            this.setUri(this.jsonObject.getString(JSONMapping.URI));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.CACHE_HEALTH)) {
-			this.setCacheHealth(this.jsonObject.getEnum(Health.class, JSONMapping.CACHE_HEALTH));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.CACHE_HEALTH)) {
+            this.setCacheHealth(this.jsonObject.getEnum(Health.class, JSONMapping.CACHE_HEALTH));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
-			this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
-		}
+        if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
+            this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.CACHE_CONSUMPTION)) {
-			JsonArray jsonCacheCons = this.jsonObject.getJSONArray(JSONMapping.CACHE_CONSUMPTION);
-			this.setCacheConsumption(new ArrayList<>());
-			for (int index = 0;index < jsonCacheCons.length();index++) {
-				this.getCacheConsumption().add(jsonCacheCons.getString(index));
-			}
-		}
+        if (!this.jsonObject.isNull(JSONMapping.CACHE_CONSUMPTION)) {
+            JSONArray jsonCacheCons = this.jsonObject.getJSONArray(JSONMapping.CACHE_CONSUMPTION);
+            this.setCacheConsumption(new ArrayList<>());
+            for (int index = 0; index < jsonCacheCons.length(); index++) {
+                this.getCacheConsumption().add(jsonCacheCons.getString(index));
+            }
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-			this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-		}
-	}
+        if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
+            this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
+        }
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code CacheHealth}.
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-		JsonObject returnVal = super.toJsonObject();
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code CacheHealth}.
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
-		if (this.getType() != null) returnVal.put(JSONMapping.TYPE, this.getType());
-		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
-		if (this.getCacheHealth() != null) returnVal.put(JSONMapping.CACHE_HEALTH, this.getCacheHealth());
-		if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
-		if (this.getCacheConsumption() != null) {
-			JsonArray cacheConsumption = new JsonArray();
-			this.getCacheConsumption().forEach(cacheConsumption::put);
-			returnVal.put(JSONMapping.CACHE_CONSUMPTION, cacheConsumption);
-		}
+        if (this.getType() != null) returnVal.put(JSONMapping.TYPE, this.getType());
+        if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
+        if (this.getCacheHealth() != null) returnVal.put(JSONMapping.CACHE_HEALTH, this.getCacheHealth());
+        if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
+        if (this.getCacheConsumption() != null) {
+            JSONArray cacheConsumption = new JSONArray();
+            this.getCacheConsumption().forEach(cacheConsumption::put);
+            returnVal.put(JSONMapping.CACHE_CONSUMPTION, cacheConsumption);
+        }
 
-		if (this.getConnectObtainDurationMillis() != null) {
-			returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-		}
+        if (this.getConnectObtainDurationMillis() != null) {
+            returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
+        }
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

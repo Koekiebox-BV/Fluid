@@ -22,43 +22,42 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code WebKitForm}s.
+ * Represents a {@code List} of {@code WebKitForm}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see WebKitForm
  * @see ABaseListing
+ * @since v1.1
  */
 public class WebKitFormListing extends ABaseListing<WebKitForm> {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public WebKitFormListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public WebKitFormListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public WebKitFormListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public WebKitFormListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code WebKitForm} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code WebKitForm}.
-	 * @return New {@code WebKitForm} instance.
-	 */
-	@Override
-	@XmlTransient
-	public WebKitForm getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new WebKitForm(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code WebKitForm} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code WebKitForm}.
+     * @return New {@code WebKitForm} instance.
+     */
+    @Override
+    @XmlTransient
+    public WebKitForm getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new WebKitForm(jsonObjectParam);
+    }
 }

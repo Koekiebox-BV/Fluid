@@ -35,9 +35,9 @@ import java.util.List;
 
 /**
  * <p>
- *     Represents a Query that can be executed via the
- *     API. The {@code UserQuery}s are configured from the
- *     Administration.
+ * Represents a Query that can be executed via the
+ * API. The {@code UserQuery}s are configured from the
+ * Administration.
  * </p>
  *
  * @author jasonbruwer
@@ -46,7 +46,7 @@ import java.util.List;
 @Getter
 @Setter
 public class UserQuery extends ABaseListing<FluidItem> {
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String description;
@@ -96,7 +96,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
      * Sets the Id and name associated with a 'User Query'.
      *
      * @param userQueryId UserQuery Id.
-     * @param name UserQuery Name.
+     * @param name        UserQuery Name.
      */
     public UserQuery(Long userQueryId, String name) {
         super();
@@ -106,7 +106,8 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
     /**
      * Easy access to execute user query.
-     * @param name Name of query to execute.
+     *
+     * @param name   Name of query to execute.
      * @param inputs Input values for query.
      */
     public UserQuery(String name, List<Field> inputs) {
@@ -117,10 +118,11 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
     /**
      * Easy access to execute user query.
-     * @param name Name of query to execute.
+     *
+     * @param name   Name of query to execute.
      * @param inputs Input values for query.
      */
-    public UserQuery(String name, Field ... inputs) {
+    public UserQuery(String name, Field... inputs) {
         super();
         this.setName(name);
         List<Field> inputsList = new ArrayList<>();
@@ -134,7 +136,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserQuery(JsonObject jsonObjectParam) {
+    public UserQuery(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
@@ -150,9 +152,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         //Inputs...
         if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
-            JsonArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
+            JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
             List<Field> assFields = new ArrayList();
-            for (int index = 0;index < fieldsArr.length();index++) {
+            for (int index = 0; index < fieldsArr.length(); index++) {
                 assFields.add(new Field(fieldsArr.getJSONObject(index)));
             }
             this.setInputs(assFields);
@@ -160,9 +162,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         //Rules...
         if (!this.jsonObject.isNull(JSONMapping.RULES)) {
-            JsonArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
+            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
             List<String> rules = new ArrayList();
-            for (int index = 0;index < rulesArr.length();index++) {
+            for (int index = 0; index < rulesArr.length(); index++) {
                 rules.add(rulesArr.getString(index));
             }
             this.setRules(rules);
@@ -180,30 +182,29 @@ public class UserQuery extends ABaseListing<FluidItem> {
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
-        JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
 
         //Name...
-        if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
+        if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
 
         //Description...
-        if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
+        if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
 
         //Inputs...
         if (this.getInputs() != null) {
-            JsonArray jsonArray = new JsonArray();
+            JSONArray jsonArray = new JSONArray();
             for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
             returnVal.put(JSONMapping.INPUTS, jsonArray);
         }
 
         //Rules...
         if (this.getRules() != null) {
-            JsonArray jsonArray = new JsonArray();
+            JSONArray jsonArray = new JSONArray();
             for (String toAdd : this.getRules()) jsonArray.put(toAdd);
             returnVal.put(JSONMapping.RULES, jsonArray);
         }
@@ -230,12 +231,13 @@ public class UserQuery extends ABaseListing<FluidItem> {
     @Override
     @XmlTransient
     @JsonIgnore
-    public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
+    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
         return new FluidItem(jsonObjectParam);
     }
 
     /**
      * Extract the field names where the value of the rule is of type {@code INPUT_VALUE}.
+     *
      * @return List of {@code FormField} names.
      */
     @XmlTransient
@@ -247,9 +249,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         for (String rule : this.getRules()) {
             int firstIndexOfBracket = rule.indexOf(LEFT_SQ_BRACKET);
-            int lastIndexOfBracket =rule.indexOf(RIGHT_SQ_BRACKET);
+            int lastIndexOfBracket = rule.indexOf(RIGHT_SQ_BRACKET);
 
-            String formFieldName = rule.substring(firstIndexOfBracket,lastIndexOfBracket+1);
+            String formFieldName = rule.substring(firstIndexOfBracket, lastIndexOfBracket + 1);
             String[] wordsInRule = rule.split(UtilGlobal.REG_EX_SPACE);
             if (wordsInRule == null || wordsInRule.length == 0) continue;
 

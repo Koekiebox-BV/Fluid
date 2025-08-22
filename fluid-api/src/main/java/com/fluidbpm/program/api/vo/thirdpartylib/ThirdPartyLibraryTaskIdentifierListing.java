@@ -22,43 +22,42 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code ThirdPartyLibraryTaskIdentifier}s.
+ * Represents a {@code List} of {@code ThirdPartyLibraryTaskIdentifier}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.11
- *
  * @see ThirdPartyLibraryTaskIdentifier
  * @see ABaseListing
+ * @since v1.11
  */
 public class ThirdPartyLibraryTaskIdentifierListing extends ABaseListing<ThirdPartyLibraryTaskIdentifier> {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public ThirdPartyLibraryTaskIdentifierListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public ThirdPartyLibraryTaskIdentifierListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public ThirdPartyLibraryTaskIdentifierListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public ThirdPartyLibraryTaskIdentifierListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code ThirdPartyLibraryTaskIdentifier} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code ThirdPartyLibraryTaskIdentifier}.
-	 * @return New {@code ThirdPartyLibraryTaskIdentifier} instance.
-	 */
-	@Override
-	@XmlTransient
-	public ThirdPartyLibraryTaskIdentifier getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new ThirdPartyLibraryTaskIdentifier(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code ThirdPartyLibraryTaskIdentifier} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code ThirdPartyLibraryTaskIdentifier}.
+     * @return New {@code ThirdPartyLibraryTaskIdentifier} instance.
+     */
+    @Override
+    @XmlTransient
+    public ThirdPartyLibraryTaskIdentifier getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new ThirdPartyLibraryTaskIdentifier(jsonObjectParam);
+    }
 }

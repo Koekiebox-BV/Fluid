@@ -20,43 +20,42 @@ import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 
 /**
  * Syntax implementation for PostgreSQL Stored Procedures / Functions.
- * @author jasonbruwer
- * @since v1.13
  *
+ * @author jasonbruwer
  * @see ISyntax
+ * @since v1.13
  */
 public class StoredProcedureSyntaxPostgreSQL extends StoredProcedureSyntax {
-	public static final String SP_CALL_TAG = "{call";
-	public static final String FUNC_SELECT = "SELECT * FROM ";
+    public static final String SP_CALL_TAG = "{call";
+    public static final String FUNC_SELECT = "SELECT * FROM ";
 
-	/**
-	 * Sets the Stored Procedure name and number of parameters.
-	 *
-	 * @param storedProcedureName The stored procedure.
-	 * @param numberOfParams The number of parameters.
-	 */
-	public StoredProcedureSyntaxPostgreSQL(String storedProcedureName, int numberOfParams) {
-		super(storedProcedureName, numberOfParams);
-	}
+    /**
+     * Sets the Stored Procedure name and number of parameters.
+     *
+     * @param storedProcedureName The stored procedure.
+     * @param numberOfParams      The number of parameters.
+     */
+    public StoredProcedureSyntaxPostgreSQL(String storedProcedureName, int numberOfParams) {
+        super(storedProcedureName, numberOfParams);
+    }
 
-	/**
-	 * Implementation call for executing the stored procedure.
-	 *
-	 * @return SQL to Execute with Java {@code PreparedStatement}.
-	 *
-	 * @see java.sql.PreparedStatement
-	 */
-	@Override
-	public String getPreparedStatement() {
-		String returnVal = super.getPreparedStatement();
-		if (UtilGlobal.isBlank(returnVal)) return returnVal;
+    /**
+     * Implementation call for executing the stored procedure.
+     *
+     * @return SQL to Execute with Java {@code PreparedStatement}.
+     * @see java.sql.PreparedStatement
+     */
+    @Override
+    public String getPreparedStatement() {
+        String returnVal = super.getPreparedStatement();
+        if (UtilGlobal.isBlank(returnVal)) return returnVal;
 
-		if (returnVal.toLowerCase().startsWith(SP_CALL_TAG)) {
-			return String.format(
-					"%s%s", FUNC_SELECT,
-					returnVal.substring(SP_CALL_TAG.length(), returnVal.length() - 1)
-			);
-		}
-		return returnVal;
-	}
+        if (returnVal.toLowerCase().startsWith(SP_CALL_TAG)) {
+            return String.format(
+                    "%s%s", FUNC_SELECT,
+                    returnVal.substring(SP_CALL_TAG.length(), returnVal.length() - 1)
+            );
+        }
+        return returnVal;
+    }
 }

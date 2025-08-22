@@ -25,45 +25,44 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Field}s.
+ * Represents a {@code List} of {@code Field}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Field
  * @see ABaseListing
+ * @since v1.1
  */
 @Getter
 @Setter
 public class FormFieldListing extends ABaseListing<Field> {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FormFieldListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FormFieldListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FormFieldListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FormFieldListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Field} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Field}.
-	 * @return New {@code Field} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new Field(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Field} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Field}.
+     * @return New {@code Field} instance.
+     */
+    @Override
+    @XmlTransient
+    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new Field(jsonObjectParam);
+    }
 }

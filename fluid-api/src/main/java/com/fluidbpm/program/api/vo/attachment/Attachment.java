@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.vo.attachment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -45,9 +46,8 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class Attachment extends ABaseFluidJSONObject {
-    public static final long serialVersionUID = 1L;
-
+public class Attachment extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
     private String version;
     private String name;
     private String path;
@@ -226,8 +226,8 @@ public class Attachment extends ABaseFluidJSONObject {
      */
     @Override
     @JsonIgnore
-    public JsonObject toJsonObject() throws JSONException {
-        JsonObject returnVal = super.toJsonObject();
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
         //Attachment Data...
         if (this.getAttachmentDataBase64() != null) {
             returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());

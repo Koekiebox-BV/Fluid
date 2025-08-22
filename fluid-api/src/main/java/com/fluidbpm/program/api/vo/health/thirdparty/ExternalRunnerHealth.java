@@ -38,7 +38,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ExternalRunnerHealth extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String fluidAPIVersion;
     private Long timestamp;
@@ -69,7 +69,7 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ExternalRunnerHealth(JsonObject jsonObjectParam) {
+    public ExternalRunnerHealth(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) return;
@@ -111,9 +111,9 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
 
         //Custom Runner Actions...
         if (!this.jsonObject.isNull(JSONMapping.CUSTOM_RUNNER_ACTIONS)) {
-            JsonArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_RUNNER_ACTIONS);
+            JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_RUNNER_ACTIONS);
             List<CustomRunnerAction> customerRunnerActions = new ArrayList();
-            for (int index = 0;index < jsonPropArray.length();index++) {
+            for (int index = 0; index < jsonPropArray.length(); index++) {
                 customerRunnerActions.add(new CustomRunnerAction(jsonPropArray.getJSONObject(index)));
             }
 
@@ -126,12 +126,11 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code FlowItemExecutePacket}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
-        JsonObject returnVal = super.toJsonObject();
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
         //Fluid API Version...
         if (this.getFluidAPIVersion() != null) {
             returnVal.put(JSONMapping.FLUID_API_VERSION, this.getFluidAPIVersion());
@@ -157,8 +156,8 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
 
         //Custom Runner Actions...
         if (this.getCustomRunnerActions() != null && !this.getCustomRunnerActions().isEmpty()) {
-            JsonArray customRunnersArr = new JsonArray();
-            for (CustomRunnerAction toAdd :this.getCustomRunnerActions()) {
+            JSONArray customRunnersArr = new JSONArray();
+            for (CustomRunnerAction toAdd : this.getCustomRunnerActions()) {
                 customRunnersArr.put(toAdd.toJsonObject());
             }
             returnVal.put(JSONMapping.CUSTOM_RUNNER_ACTIONS, customRunnersArr);

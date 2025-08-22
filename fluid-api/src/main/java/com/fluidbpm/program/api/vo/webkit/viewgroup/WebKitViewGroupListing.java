@@ -22,43 +22,42 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code WebKitViewGroup}s.
+ * Represents a {@code List} of {@code WebKitViewGroup}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see WebKitViewGroup
  * @see ABaseListing
+ * @since v1.1
  */
 public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public WebKitViewGroupListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public WebKitViewGroupListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public WebKitViewGroupListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public WebKitViewGroupListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code WebKitViewGroup} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code WebKitViewGroup}.
-	 * @return New {@code WebKitViewGroup} instance.
-	 */
-	@Override
-	@XmlTransient
-	public WebKitViewGroup getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new WebKitViewGroup(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code WebKitViewGroup} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code WebKitViewGroup}.
+     * @return New {@code WebKitViewGroup} instance.
+     */
+    @Override
+    @XmlTransient
+    public WebKitViewGroup getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new WebKitViewGroup(jsonObjectParam);
+    }
 }

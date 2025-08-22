@@ -27,114 +27,112 @@ import org.json.JSONObject;
  * User statistics.
  *
  * @author jasonbruwer on 2020-08-20
- * @since v1.11
- * 
  * @see ABaseFluidJSONObject
+ * @since v1.11
  */
 @Getter
 @Setter
 public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String viewName;
-	private int viewClicks;
-	private int openedFromViewCounts;
-	private int sentOn;
+    private String viewName;
+    private int viewClicks;
+    private int openedFromViewCounts;
+    private int sentOn;
 
-	/**
-	 * The JSON mapping for the {@code UserStatsReport} object.
-	 */
-	public static class JSONMapping {
-		public static final String VIEW_NAME = "viewName";
-		public static final String VIEW_CLICKS = "viewClicks";
-		public static final String OPENED_FROM_VIEW_COUNTS = "openedFromViewCounts";
-		public static final String SENT_ON = "sentOn";
-	}
+    /**
+     * The JSON mapping for the {@code UserStatsReport} object.
+     */
+    public static class JSONMapping {
+        public static final String VIEW_NAME = "viewName";
+        public static final String VIEW_CLICKS = "viewClicks";
+        public static final String OPENED_FROM_VIEW_COUNTS = "openedFromViewCounts";
+        public static final String SENT_ON = "sentOn";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public ViewOpenedAndSentOnEntry() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public ViewOpenedAndSentOnEntry() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public ViewOpenedAndSentOnEntry(JsonObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public ViewOpenedAndSentOnEntry(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) {
+            return;
+        }
 
-		if (this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
-			this.setViewName(null);
-		} else {
-			this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
-		}
+        if (this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
+            this.setViewName(null);
+        } else {
+            this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
+        }
 
-		if (this.jsonObject.isNull(JSONMapping.VIEW_CLICKS)) {
-			this.setViewClicks(0);
-		} else {
-			this.setViewClicks(this.jsonObject.getInt(JSONMapping.VIEW_CLICKS));
-		}
+        if (this.jsonObject.isNull(JSONMapping.VIEW_CLICKS)) {
+            this.setViewClicks(0);
+        } else {
+            this.setViewClicks(this.jsonObject.getInt(JSONMapping.VIEW_CLICKS));
+        }
 
-		if (this.jsonObject.isNull(JSONMapping.OPENED_FROM_VIEW_COUNTS)) {
-			this.setOpenedFromViewCounts(0);
-		} else {
-			this.setOpenedFromViewCounts(this.jsonObject.getInt(JSONMapping.OPENED_FROM_VIEW_COUNTS));
-		}
+        if (this.jsonObject.isNull(JSONMapping.OPENED_FROM_VIEW_COUNTS)) {
+            this.setOpenedFromViewCounts(0);
+        } else {
+            this.setOpenedFromViewCounts(this.jsonObject.getInt(JSONMapping.OPENED_FROM_VIEW_COUNTS));
+        }
 
-		if (this.jsonObject.isNull(JSONMapping.SENT_ON)) {
-			this.setSentOn(0);
-		} else {
-			this.setSentOn(this.jsonObject.getInt(JSONMapping.SENT_ON));
-		}
-	}
+        if (this.jsonObject.isNull(JSONMapping.SENT_ON)) {
+            this.setSentOn(0);
+        } else {
+            this.setSentOn(this.jsonObject.getInt(JSONMapping.SENT_ON));
+        }
+    }
 
 
-	/**
-	 * @return percentage of completeness as {@code int}.
-	 */
-	public int getPercentageOfComplete() {
-		if (this.sentOn < 1 || this.openedFromViewCounts < 1) {
-			return 0;
-		}
+    /**
+     * @return percentage of completeness as {@code int}.
+     */
+    public int getPercentageOfComplete() {
+        if (this.sentOn < 1 || this.openedFromViewCounts < 1) {
+            return 0;
+        }
 
-		float decimal = ((float)this.sentOn / (float)this.openedFromViewCounts);
-		if (decimal == 1) {
-			return 100;
-		}
+        float decimal = ((float) this.sentOn / (float) this.openedFromViewCounts);
+        if (decimal == 1) {
+            return 100;
+        }
 
-		String stringVal = Float.toString(decimal).substring(2);
-		if (stringVal.length() > 1) {
-			return UtilGlobal.toIntSafe(stringVal.substring(0,2));
-		}
-		return UtilGlobal.toIntSafe(stringVal.substring(0,1).concat(UtilGlobal.ZERO));
-	}
+        String stringVal = Float.toString(decimal).substring(2);
+        if (stringVal.length() > 1) {
+            return UtilGlobal.toIntSafe(stringVal.substring(0, 2));
+        }
+        return UtilGlobal.toIntSafe(stringVal.substring(0, 1).concat(UtilGlobal.ZERO));
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code ViewOpenedAndSentOnEntry}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-		JsonObject returnVal = super.toJsonObject();
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code ViewOpenedAndSentOnEntry}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
-		if (this.getViewName() != null) {
-			returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
-		}
+        if (this.getViewName() != null) {
+            returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
+        }
 
-		returnVal.put(JSONMapping.VIEW_CLICKS, this.getViewClicks());
-		returnVal.put(JSONMapping.OPENED_FROM_VIEW_COUNTS, this.getOpenedFromViewCounts());
-		returnVal.put(JSONMapping.SENT_ON, this.getSentOn());
+        returnVal.put(JSONMapping.VIEW_CLICKS, this.getViewClicks());
+        returnVal.put(JSONMapping.OPENED_FROM_VIEW_COUNTS, this.getOpenedFromViewCounts());
+        returnVal.put(JSONMapping.SENT_ON, this.getSentOn());
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

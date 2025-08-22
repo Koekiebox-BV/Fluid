@@ -30,29 +30,27 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
  * Fluid representation of a Email message.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see Attachment
  * @see MailMessageAttachment
  * @see MailMessageNameValue
  * @see ABaseFluidVO
+ * @since v1.0
  */
 public class MailMessage extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private List<MailMessageAttachment> attachments;
     private List<MailMessageNameValue> nameValues;
     private String[] recipients;
-    
+
     private String mailTemplate;
     private String mailSMTPServer;
 
     /**
      * The JSON mapping for the {@code MailMessage} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String ATTACHMENTS = "attachments";
         public static final String NAME_VALUES = "nameValues";
 
@@ -73,11 +71,10 @@ public class MailMessage extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessage(JsonObject jsonObjectParam) {
+    public MailMessage(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
-        if (this.jsonObject == null)
-        {
+        if (this.jsonObject == null) {
             return;
         }
 
@@ -98,12 +95,11 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Recipients...
         if (!this.jsonObject.isNull(JSONMapping.RECIPIENTS)) {
 
-            JsonArray fluidItemsArr = this.jsonObject.getJSONArray(
-                            JSONMapping.RECIPIENTS);
+            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(
+                    JSONMapping.RECIPIENTS);
 
             String[] listOfItems = new String[fluidItemsArr.length()];
-            for (int index = 0;index < fluidItemsArr.length();index++)
-            {
+            for (int index = 0; index < fluidItemsArr.length(); index++) {
                 listOfItems[index] = fluidItemsArr.getString(index);
             }
 
@@ -113,12 +109,11 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Attachments...
         if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS)) {
 
-            JsonArray fluidItemsArr = this.jsonObject.getJSONArray(
+            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(
                     JSONMapping.ATTACHMENTS);
 
             List<MailMessageAttachment> listOfItems = new ArrayList();
-            for (int index = 0;index < fluidItemsArr.length();index++)
-            {
+            for (int index = 0; index < fluidItemsArr.length(); index++) {
                 listOfItems.add(new MailMessageAttachment(
                         fluidItemsArr.getJSONObject(index)));
             }
@@ -129,12 +124,11 @@ public class MailMessage extends ABaseFluidJSONObject {
         //Name Values...
         if (!this.jsonObject.isNull(JSONMapping.NAME_VALUES)) {
 
-            JsonArray fluidItemsArr = this.jsonObject.getJSONArray(
+            JSONArray fluidItemsArr = this.jsonObject.getJSONArray(
                     JSONMapping.NAME_VALUES);
 
             List<MailMessageNameValue> listOfItems = new ArrayList();
-            for (int index = 0;index < fluidItemsArr.length();index++)
-            {
+            for (int index = 0; index < fluidItemsArr.length(); index++) {
                 listOfItems.add(new MailMessageNameValue(
                         fluidItemsArr.getJSONObject(index)));
             }
@@ -148,33 +142,27 @@ public class MailMessage extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code MailMessage}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException
-    {
-        JsonObject returnVal = super.toJsonObject();
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
         //Mail Template...
-        if (this.getMailTemplate() != null)
-        {
+        if (this.getMailTemplate() != null) {
             returnVal.put(JSONMapping.MAIL_TEMPLATE, this.getMailTemplate());
         }
 
         //Mail SMTP Server...
-        if (this.getMailSMTPServer() != null)
-        {
+        if (this.getMailSMTPServer() != null) {
             returnVal.put(JSONMapping.MAIL_SMTP_SERVER, this.getMailSMTPServer());
         }
 
         //Recipients...
-        if (this.getRecipients() != null && this.getRecipients().length > 0)
-        {
-            JsonArray jsonArray = new JsonArray();
+        if (this.getRecipients() != null && this.getRecipients().length > 0) {
+            JSONArray jsonArray = new JSONArray();
 
-            for (String item : this.getRecipients())
-            {
+            for (String item : this.getRecipients()) {
                 jsonArray.put(item);
             }
 
@@ -182,12 +170,10 @@ public class MailMessage extends ABaseFluidJSONObject {
         }
 
         //Attachments...
-        if (this.getAttachments() != null && !this.getAttachments().isEmpty())
-        {
-            JsonArray jsonArray = new JsonArray();
+        if (this.getAttachments() != null && !this.getAttachments().isEmpty()) {
+            JSONArray jsonArray = new JSONArray();
 
-            for (MailMessageAttachment item : this.getAttachments())
-            {
+            for (MailMessageAttachment item : this.getAttachments()) {
                 jsonArray.put(item.toJsonObject());
             }
 
@@ -196,12 +182,10 @@ public class MailMessage extends ABaseFluidJSONObject {
 
         //Name Values...
         if (this.getNameValues() != null &&
-                !this.getNameValues().isEmpty())
-        {
-            JsonArray jsonArray = new JsonArray();
+                !this.getNameValues().isEmpty()) {
+            JSONArray jsonArray = new JSONArray();
 
-            for (MailMessageNameValue item : this.getNameValues())
-            {
+            for (MailMessageNameValue item : this.getNameValues()) {
                 jsonArray.put(item.toJsonObject());
             }
 

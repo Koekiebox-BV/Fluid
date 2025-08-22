@@ -15,6 +15,9 @@
 
 package com.fluidbpm.program.api.vo.role;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,18 +25,19 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * <p>
- *     Represents what Views a {@code Role} has access to.
+ * Represents what Views a {@code Role} has access to.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Form
  * @see Role
+ * @since v1.1
  */
-public class RoleToJobView extends ABaseFluidJSONObject {
+public class RoleToJobView extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private JobView jobView;
@@ -69,7 +73,7 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RoleToJobView(JsonObject jsonObjectParam){
+    public RoleToJobView(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
@@ -125,12 +129,13 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code RoleToJobView}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
+    @JsonIgnore
     public JsonObject toJsonObject() throws JSONException {
-        JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
         //Job View...
         if (this.getJobView() != null) {
             returnVal.put(JSONMapping.JOB_VIEW, this.getJobView().toJsonObject());

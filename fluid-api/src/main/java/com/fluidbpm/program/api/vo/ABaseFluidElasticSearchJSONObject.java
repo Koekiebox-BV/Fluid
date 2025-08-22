@@ -35,8 +35,8 @@ import java.util.List;
  * @see JsonObject
  * @since v1.0
  */
-public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONObject {
-    public static final long serialVersionUID = 1L;
+public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
@@ -55,9 +55,9 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
     }
 
     /**
-     * Conversion to {@code JSONObject} for storage in ElasticSearch.
+     * Conversion to {@code JsonObject} for storage in ElasticSearch.
      *
-     * @return {@code JSONObject} representation of {@code subclass-type}
+     * @return {@code JsonObject} representation of {@code subclass-type}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
@@ -69,7 +69,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
      * The JSON mapping is crucial in defining the correct types to make storage of
      * data-types more effective.
      *
-     * @return {@code JSONObject} representation of {@code Form} definition.
+     * @return {@code JsonObject} representation of {@code Form} definition.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
@@ -79,16 +79,13 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
     /**
      * Populate the object based on the ElasticSearch JSON structure.
      *
-     * @param jsonObjectParam The JSON object to populate from.
-     * @param formFieldsParam The Form Fields to use.
+     * @param jsonObject The JSON object to populate from.
+     * @param formFields The Form Fields to use.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
-    public abstract void populateFromElasticSearchJson(
-            JsonObject jsonObjectParam,
-            List<Field> formFieldsParam
-    );
+    public abstract void populateFromElasticSearchJson(JsonObject jsonObject, List<Field> formFields);
 
     /**
      * Convert the {@code SQLFormFieldUtil.FormFieldMapping} to {@code Field}.
@@ -101,7 +98,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidJSONOb
     public List<Field> convertTo(List<SQLFormFieldUtil.FormFieldMapping> formFieldMappingsParam) {
         if (formFieldMappingsParam == null) return null;
 
-        List<Field> returnVal = new ArrayList();
+        List<Field> returnVal = new ArrayList<>();
 
         for (SQLFormFieldUtil.FormFieldMapping mappingToConvert : formFieldMappingsParam)
             returnVal.add(this.convertTo(mappingToConvert));

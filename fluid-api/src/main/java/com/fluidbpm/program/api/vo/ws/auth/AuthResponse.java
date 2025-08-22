@@ -24,17 +24,16 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * Response to an authorization request.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseFluidJSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthRequest
  * @see AuthEncryptedData
+ * @since v1.0
  */
 public class AuthResponse extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private String salt;
 
@@ -71,7 +70,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AuthResponse(JsonObject jsonObjectParam) {
+    public AuthResponse(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         //Salt...
@@ -179,7 +178,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
 
     /**
      * Gets the seed in Base-64 format.
-     *
+     * <p>
      * https://en.wikipedia.org/wiki/SEED
      *
      * @return Seed in Base-64 format.
@@ -190,7 +189,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
 
     /**
      * Sets the seed in Base-64 format.
-     *
+     * <p>
      * https://en.wikipedia.org/wiki/SEED
      *
      * @param seedBase64 Seed in Base-64 format.
@@ -222,13 +221,12 @@ public class AuthResponse extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code AuthResponse}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
-        JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
 
         //Salt...
         if (this.getSalt() != null) {

@@ -16,9 +16,10 @@
 package com.fluidbpm.program.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,12 +33,12 @@ import java.util.List;
  * </p>
  *
  * @author jasonbruwer
- * @see JSONObject
- * @since v1.1
+ * @see JsonObject
+ * @since v1.13
  */
 @Getter
 @Setter
-public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABaseFluidJSONObject {
+public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private List<T> listing;
@@ -51,7 +52,6 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
      */
     public static class JSONMapping {
         public static final String LISTING = "listing";
-
         public static final String LISTING_COUNT = "listingCount";
         public static final String LISTING_INDEX = "listingIndex";
         public static final String LISTING_PAGE = "listingPage";
@@ -60,7 +60,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
     /**
      * Default constructor.
      */
-    public ABaseListing() {
+    public ABaseGSONListing() {
         super();
     }
 
@@ -69,37 +69,34 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
      *
      * @param jsonObject The JSON Object.
      */
-    public ABaseListing(JSONObject jsonObject) {
+    public ABaseGSONListing(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
         //Listing...
         int listingArrCount = 0;
-        List<T> listing = new ArrayList();
-        if (!this.jsonObject.isNull(JSONMapping.LISTING)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.LISTING);
-            listingArrCount = listingArray.length();
-            for (int index = 0; index < listingArrCount; index++) {
-                listing.add(this.getObjectFromJSONObject(listingArray.getJSONObject(index)));
-            }
+        List<T> listing = new ArrayList<>();
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.LISTING)) {
+            JsonArray listingArray = this.jsonObject.getAsJsonArray(JSONMapping.LISTING);
+            listingArray.forEach(itm -> listing.add(this.getObjectFromJSONObject(itm.getAsJsonObject())));
         }
         this.setListing(listing);
 
         //Listing Count...
-        if (this.jsonObject.isNull(JSONMapping.LISTING_COUNT)) {
+        if (this.isPropertyNull(this.jsonObject, JSONMapping.LISTING_COUNT)) {
             this.setListingCount(listingArrCount);
         } else {
-            this.setListingCount(this.jsonObject.getInt(JSONMapping.LISTING_COUNT));
+            this.setListingCount(this.jsonObject.get(JSONMapping.LISTING_COUNT).getAsInt());
         }
 
         //Listing Index...
-        if (!this.jsonObject.isNull(JSONMapping.LISTING_INDEX)) {
-            this.setListingIndex(this.jsonObject.getInt(JSONMapping.LISTING_INDEX));
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.LISTING_INDEX)) {
+            this.setListingIndex(this.jsonObject.get(JSONMapping.LISTING_INDEX).getAsInt());
         }
 
         //Listing Page...
-        if (!this.jsonObject.isNull(JSONMapping.LISTING_PAGE)) {
-            this.setListingPage(this.jsonObject.getInt(JSONMapping.LISTING_PAGE));
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.LISTING_PAGE)) {
+            this.setListingPage(this.jsonObject.get(JSONMapping.LISTING_PAGE).getAsInt());
         }
     }
 
@@ -113,32 +110,34 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Listing...
         int listingCountFromListing = 0;
         if (this.getListing() != null && !this.getListing().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
+            JsonArray jsonArray = new JsonArray();
             listingCountFromListing = this.getListing().size();
-            for (T toAdd : this.getListing()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.LISTING, jsonArray);
+            for (T toAdd : this.getListing()) jsonArray.add(toAdd.toJsonObject());
+            returnVal.add(JSONMapping.LISTING, jsonArray);
         }
 
         //Listing count...
         if (this.getListingCount() == null) {
-            returnVal.put(JSONMapping.LISTING_COUNT, Integer.valueOf(listingCountFromListing));
+            returnVal.addProperty(JSONMapping.LISTING_COUNT, listingCountFromListing);
         } else {
-            returnVal.put(JSONMapping.LISTING_COUNT, this.getListingCount());
+            returnVal.addProperty(JSONMapping.LISTING_COUNT, this.getListingCount());
         }
 
         //Listing index...
-        if (this.getListingIndex() != null) returnVal.put(JSONMapping.LISTING_INDEX, this.getListingIndex());
-        //Listing page...
-        if (this.getListingPage() != null) returnVal.put(JSONMapping.LISTING_PAGE, this.getListingPage());
+        if (this.getListingIndex() != null) {
+            returnVal.addProperty(JSONMapping.LISTING_INDEX, this.getListingIndex());
+        }
 
+        //Listing page...
+        if (this.getListingPage() != null) {
+            returnVal.addProperty(JSONMapping.LISTING_PAGE, this.getListingPage());
+        }
         return returnVal;
     }
 
@@ -152,7 +151,7 @@ public abstract class ABaseListing<T extends ABaseFluidJSONObject> extends ABase
      */
     @XmlTransient
     @JsonIgnore
-    public abstract T getObjectFromJSONObject(JSONObject jsonObjectParam);
+    public abstract T getObjectFromJSONObject(JsonObject jsonObjectParam);
 
     /**
      * Returns whether the listing is empty.

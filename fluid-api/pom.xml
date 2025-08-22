@@ -49,10 +49,17 @@
 
     <!--Dependencies-->
     <dependencies>
-        <!--JSON Library-->
+        <!--GSON Library-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--JSON Library-->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
             <scope>compile</scope>
         </dependency>
 

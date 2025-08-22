@@ -22,322 +22,320 @@ import org.json.JSONObject;
 
 /**
  * <p>
- *     Represents a {@code JobView}.
+ * Represents a {@code JobView}.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
  * @version v1.8
- *
  * @see com.fluidbpm.program.api.vo.role.RoleToJobView
+ * @since v1.1
  */
 public class JobView extends ABaseFluidJSONObject {
 
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String rule;
-	private String viewName;
-	private String viewGroupName;
-	private String viewStepName;
-	private String viewFlowName;
+    private String rule;
+    private String viewName;
+    private String viewGroupName;
+    private String viewStepName;
+    private String viewFlowName;
 
-	private Integer viewPriority;
-	private Long viewOrder;
-	private String viewType;
+    private Integer viewPriority;
+    private Long viewOrder;
+    private String viewType;
 
-	/**
-	 * The JSON mapping for the {@code RoleToJobView} object.
-	 */
-	public static class JSONMapping {
-		public static final String RULE = "rule";
-		public static final String VIEW_NAME = "viewName";
-		public static final String VIEW_GROUP_NAME = "viewGroupName";
-		public static final String VIEW_STEP_NAME = "viewStepName";
-		public static final String VIEW_FLOW_NAME = "viewFlowName";
+    /**
+     * The JSON mapping for the {@code RoleToJobView} object.
+     */
+    public static class JSONMapping {
+        public static final String RULE = "rule";
+        public static final String VIEW_NAME = "viewName";
+        public static final String VIEW_GROUP_NAME = "viewGroupName";
+        public static final String VIEW_STEP_NAME = "viewStepName";
+        public static final String VIEW_FLOW_NAME = "viewFlowName";
 
-		public static final String VIEW_PRIORITY = "viewPriority";
-		public static final String VIEW_ORDER = "viewOrder";
-		public static final String VIEW_TYPE = "viewType";
-	}
+        public static final String VIEW_PRIORITY = "viewPriority";
+        public static final String VIEW_ORDER = "viewOrder";
+        public static final String VIEW_TYPE = "viewType";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public JobView() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public JobView() {
+        super();
+    }
 
-	/**
-	 * Sets the Id associated with a 'Job View'.
-	 *
-	 * @param jobViewIdParam RoleToJobView Id.
-	 */
-	public JobView(Long jobViewIdParam) {
-		super();
-		this.setId(jobViewIdParam);
-	}
+    /**
+     * Sets the Id associated with a 'Job View'.
+     *
+     * @param jobViewIdParam RoleToJobView Id.
+     */
+    public JobView(Long jobViewIdParam) {
+        super();
+        this.setId(jobViewIdParam);
+    }
 
-	/**
-	 * Sets the Name associated with a 'Job View'.
-	 *
-	 * @param jobViewName Job View name.
-	 */
-	public JobView(String jobViewName) {
-		super();
-		this.setViewName(jobViewName);
-	}
+    /**
+     * Sets the Name associated with a 'Job View'.
+     *
+     * @param jobViewName Job View name.
+     */
+    public JobView(String jobViewName) {
+        super();
+        this.setViewName(jobViewName);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public JobView(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public JobView(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
 
-		if (this.jsonObject == null) {
-			return;
-		}
+        if (this.jsonObject == null) {
+            return;
+        }
 
-		//Rule...
-		if (!this.jsonObject.isNull(JSONMapping.RULE)) {
-			this.setRule(this.jsonObject.getString(JSONMapping.RULE));
-		}
+        //Rule...
+        if (!this.jsonObject.isNull(JSONMapping.RULE)) {
+            this.setRule(this.jsonObject.getString(JSONMapping.RULE));
+        }
 
-		//View Name...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
-			this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
-		}
+        //View Name...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
+            this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
+        }
 
-		//View Group...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_GROUP_NAME)) {
-			this.setViewGroupName(this.jsonObject.getString(JSONMapping.VIEW_GROUP_NAME));
-		}
+        //View Group...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_GROUP_NAME)) {
+            this.setViewGroupName(this.jsonObject.getString(JSONMapping.VIEW_GROUP_NAME));
+        }
 
-		//View Flow...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_FLOW_NAME)) {
-			this.setViewFlowName(this.jsonObject.getString(JSONMapping.VIEW_FLOW_NAME));
-		}
+        //View Flow...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_FLOW_NAME)) {
+            this.setViewFlowName(this.jsonObject.getString(JSONMapping.VIEW_FLOW_NAME));
+        }
 
-		//View Step...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_STEP_NAME)) {
-			this.setViewStepName(this.jsonObject.getString(JSONMapping.VIEW_STEP_NAME));
-		}
+        //View Step...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_STEP_NAME)) {
+            this.setViewStepName(this.jsonObject.getString(JSONMapping.VIEW_STEP_NAME));
+        }
 
-		//View Priority...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_PRIORITY)) {
-			this.setViewPriority(this.jsonObject.getInt(JSONMapping.VIEW_PRIORITY));
-		}
+        //View Priority...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_PRIORITY)) {
+            this.setViewPriority(this.jsonObject.getInt(JSONMapping.VIEW_PRIORITY));
+        }
 
-		//View Order...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_ORDER)) {
-			this.setViewOrder(this.jsonObject.getLong(JSONMapping.VIEW_ORDER));
-		}
+        //View Order...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_ORDER)) {
+            this.setViewOrder(this.jsonObject.getLong(JSONMapping.VIEW_ORDER));
+        }
 
-		//View Type...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW_TYPE)) {
-			this.setViewType(this.jsonObject.getString(JSONMapping.VIEW_TYPE));
-		}
-	}
+        //View Type...
+        if (!this.jsonObject.isNull(JSONMapping.VIEW_TYPE)) {
+            this.setViewType(this.jsonObject.getString(JSONMapping.VIEW_TYPE));
+        }
+    }
 
-	/**
-	 * Gets the Rule for the View.
-	 *
-	 * @return View Rule.
-	 */
-	public String getRule() {
-		return this.rule;
-	}
+    /**
+     * Gets the Rule for the View.
+     *
+     * @return View Rule.
+     */
+    public String getRule() {
+        return this.rule;
+    }
 
-	/**
-	 * Sets the Rule for the View.
-	 *
-	 * @param ruleParam View Rule.
-	 */
-	public void setRule(String ruleParam) {
-		this.rule = ruleParam;
-	}
+    /**
+     * Sets the Rule for the View.
+     *
+     * @param ruleParam View Rule.
+     */
+    public void setRule(String ruleParam) {
+        this.rule = ruleParam;
+    }
 
-	/**
-	 * Gets the Name of the View.
-	 *
-	 * @return View Name.
-	 */
-	public String getViewName() {
-		return this.viewName;
-	}
+    /**
+     * Gets the Name of the View.
+     *
+     * @return View Name.
+     */
+    public String getViewName() {
+        return this.viewName;
+    }
 
-	/**
-	 * Sets the Name of the View.
-	 *
-	 * @param viewNameParam View Name.
-	 */
-	public void setViewName(String viewNameParam) {
-		this.viewName = viewNameParam;
-	}
+    /**
+     * Sets the Name of the View.
+     *
+     * @param viewNameParam View Name.
+     */
+    public void setViewName(String viewNameParam) {
+        this.viewName = viewNameParam;
+    }
 
-	/**
-	 * Gets the Name of the View Group.
-	 *
-	 * @return View Name.
-	 */
-	public String getViewGroupName() {
-		return (this.viewGroupName == null) ? UtilGlobal.EMPTY : this.viewGroupName;
-	}
+    /**
+     * Gets the Name of the View Group.
+     *
+     * @return View Name.
+     */
+    public String getViewGroupName() {
+        return (this.viewGroupName == null) ? UtilGlobal.EMPTY : this.viewGroupName;
+    }
 
-	/**
-	 * Sets the Group Name of the View.
-	 *
-	 * @param viewGroupNameParam View Name.
-	 */
-	public void setViewGroupName(String viewGroupNameParam) {
-		this.viewGroupName = viewGroupNameParam;
-	}
+    /**
+     * Sets the Group Name of the View.
+     *
+     * @param viewGroupNameParam View Name.
+     */
+    public void setViewGroupName(String viewGroupNameParam) {
+        this.viewGroupName = viewGroupNameParam;
+    }
 
-	/**
-	 * Gets the Step of the View.
-	 *
-	 * @return View Step Name.
-	 */
-	public String getViewStepName() {
-		return this.viewStepName;
-	}
+    /**
+     * Gets the Step of the View.
+     *
+     * @return View Step Name.
+     */
+    public String getViewStepName() {
+        return this.viewStepName;
+    }
 
-	/**
-	 * Sets the Step of the View.
-	 *
-	 * @param viewStepNameParam View Name.
-	 */
-	public void setViewStepName(String viewStepNameParam) {
-		this.viewStepName = viewStepNameParam;
-	}
+    /**
+     * Sets the Step of the View.
+     *
+     * @param viewStepNameParam View Name.
+     */
+    public void setViewStepName(String viewStepNameParam) {
+        this.viewStepName = viewStepNameParam;
+    }
 
-	/**
-	 * Gets the Flow of the View.
-	 *
-	 * @return View Flow Name.
-	 */
-	public String getViewFlowName() {
-		return this.viewFlowName;
-	}
+    /**
+     * Gets the Flow of the View.
+     *
+     * @return View Flow Name.
+     */
+    public String getViewFlowName() {
+        return this.viewFlowName;
+    }
 
-	/**
-	 * Sets the Flow of the View.
-	 *
-	 * @param viewFlowNameParam View Flow.
-	 */
-	public void setViewFlowName(String viewFlowNameParam) {
-		this.viewFlowName = viewFlowNameParam;
-	}
+    /**
+     * Sets the Flow of the View.
+     *
+     * @param viewFlowNameParam View Flow.
+     */
+    public void setViewFlowName(String viewFlowNameParam) {
+        this.viewFlowName = viewFlowNameParam;
+    }
 
-	/**
-	 * Gets the Type of the View.
-	 *
-	 * @return Type Name.
-	 */
-	public String getViewType() {
-		return this.viewType;
-	}
+    /**
+     * Gets the Type of the View.
+     *
+     * @return Type Name.
+     */
+    public String getViewType() {
+        return this.viewType;
+    }
 
-	/**
-	 * Sets the Type of the View.
-	 *
-	 * @param viewTypeParam Type Name.
-	 */
-	public void setViewType(String viewTypeParam) {
-		this.viewType = viewTypeParam;
-	}
+    /**
+     * Sets the Type of the View.
+     *
+     * @param viewTypeParam Type Name.
+     */
+    public void setViewType(String viewTypeParam) {
+        this.viewType = viewTypeParam;
+    }
 
-	/**
-	 * Gets the priority in the Group for the View.
-	 *
-	 * @return View Priority.
-	 */
-	public Integer getViewPriority() {
-		return (this.viewPriority == null) ? 0 : this.viewPriority;
-	}
+    /**
+     * Gets the priority in the Group for the View.
+     *
+     * @return View Priority.
+     */
+    public Integer getViewPriority() {
+        return (this.viewPriority == null) ? 0 : this.viewPriority;
+    }
 
-	/**
-	 * Sets the priority in the Group for the View.
-	 *
-	 * @param viewPriorityParam View Priority.
-	 */
-	public void setViewPriority(Integer viewPriorityParam) {
-		this.viewPriority = viewPriorityParam;
-	}
+    /**
+     * Sets the priority in the Group for the View.
+     *
+     * @param viewPriorityParam View Priority.
+     */
+    public void setViewPriority(Integer viewPriorityParam) {
+        this.viewPriority = viewPriorityParam;
+    }
 
 
-	/**
-	 * Gets the priority in the Group for the View.
-	 *
-	 * @return View Order.
-	 */
-	public Long getViewOrder() {
-		return this.viewOrder;
-	}
+    /**
+     * Gets the priority in the Group for the View.
+     *
+     * @return View Order.
+     */
+    public Long getViewOrder() {
+        return this.viewOrder;
+    }
 
-	/**
-	 * Sets the priority in the Group for the View.
-	 *
-	 * @param viewPriorityParam View Priority.
-	 */
-	public void setViewOrder(Long viewPriorityParam) {
-		this.viewOrder = viewPriorityParam;
-	}
+    /**
+     * Sets the priority in the Group for the View.
+     *
+     * @param viewPriorityParam View Priority.
+     */
+    public void setViewOrder(Long viewPriorityParam) {
+        this.viewOrder = viewPriorityParam;
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code RoleToJobView}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code RoleToJobView}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
 
-		JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
 
-		//Rule...
-		if (this.getRule() != null) {
-			returnVal.put(JSONMapping.RULE, this.getRule());
-		}
+        //Rule...
+        if (this.getRule() != null) {
+            returnVal.put(JSONMapping.RULE, this.getRule());
+        }
 
-		//View Name...
-		if (this.getViewName() != null) {
-			returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
-		}
+        //View Name...
+        if (this.getViewName() != null) {
+            returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
+        }
 
-		//View Group Name...
-		if (this.getViewGroupName() != null) {
-			returnVal.put(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
-		}
+        //View Group Name...
+        if (this.getViewGroupName() != null) {
+            returnVal.put(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
+        }
 
-		//View Flow Name...
-		if (this.getViewGroupName() != null) {
-			returnVal.put(JSONMapping.VIEW_FLOW_NAME, this.getViewFlowName());
-		}
+        //View Flow Name...
+        if (this.getViewGroupName() != null) {
+            returnVal.put(JSONMapping.VIEW_FLOW_NAME, this.getViewFlowName());
+        }
 
-		//View Step Name...
-		if (this.getViewGroupName() != null) {
-			returnVal.put(JSONMapping.VIEW_STEP_NAME, this.getViewStepName());
-		}
+        //View Step Name...
+        if (this.getViewGroupName() != null) {
+            returnVal.put(JSONMapping.VIEW_STEP_NAME, this.getViewStepName());
+        }
 
-		//View Priority...
-		if (this.getViewPriority() != null) {
-			returnVal.put(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
-		}
+        //View Priority...
+        if (this.getViewPriority() != null) {
+            returnVal.put(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
+        }
 
-		//View Order...
-		if (this.getViewOrder() != null) {
-			returnVal.put(JSONMapping.VIEW_ORDER, this.getViewOrder());
-		}
+        //View Order...
+        if (this.getViewOrder() != null) {
+            returnVal.put(JSONMapping.VIEW_ORDER, this.getViewOrder());
+        }
 
-		//View Type...
-		if (this.getViewType() != null) {
-			returnVal.put(JSONMapping.VIEW_TYPE, this.getViewType());
-		}
+        //View Type...
+        if (this.getViewType() != null) {
+            returnVal.put(JSONMapping.VIEW_TYPE, this.getViewType());
+        }
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

@@ -23,20 +23,19 @@ import java.sql.SQLException;
  * Exception class related to JSON Exceptions exclusively.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see UtilException
  * @see SQLException
+ * @since v1.0
  */
 public class FluidJSONException extends UtilException {
 
-	/**
-	 * Constructor used to wrap a traditional {@code SQLException}
-	 * into an {@code FluidSQLException}.
-	 *
-	 * @param error Java JSON Exception.
-	 */
-	public FluidJSONException(String error) {
-		super(String.format("JSON Problem: %s", error), ErrorCode.JSON);
-	}
+    /**
+     * Constructor used to wrap a traditional {@code SQLException}
+     * into an {@code FluidSQLException}.
+     *
+     * @param error Java JSON Exception.
+     */
+    public FluidJSONException(String error) {
+        super(String.format("JSON Problem: %s", error), ErrorCode.JSON);
+    }
 }

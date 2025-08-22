@@ -22,21 +22,20 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * <p>
- *     The Mapping object used for any errors thrown
- *     from the Fluid Web Service.
- *
- *     A check may be added to check whether {@code errorCode}
- *     is present.
+ * The Mapping object used for any errors thrown
+ * from the Fluid Web Service.
+ * <p>
+ * A check may be added to check whether {@code errorCode}
+ * is present.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseFluidJSONObject
  * @see WS
+ * @since v1.0
  */
 public class Error extends ABaseFluidJSONObject {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private int errorCode;
     private String errorMessage;
@@ -44,8 +43,7 @@ public class Error extends ABaseFluidJSONObject {
     /**
      * The JSON mapping for {@code this} {@code Error} object.
      */
-    public static class JSONMapping
-    {
+    public static class JSONMapping {
         public static final String ERROR_CODE = "errorCode";
         public static final String ERROR_MESSAGE = "errorMessage";
 
@@ -63,7 +61,7 @@ public class Error extends ABaseFluidJSONObject {
     /**
      * Sets the Error Code and Message.
      *
-     * @param errorCode Error Code.
+     * @param errorCode    Error Code.
      * @param errorMessage Error Message.
      */
     public Error(int errorCode, String errorMessage) {
@@ -76,15 +74,14 @@ public class Error extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Error(JsonObject jsonObjectParam) {
+    public Error(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
 
         //Error Code...
         if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE)) {
             this.setErrorCode(
                     Long.valueOf(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
-        }
-        else if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE_OTHER)) {
+        } else if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE_OTHER)) {
             this.setErrorCode(
                     Long.valueOf(this.jsonObject.getLong(JSONMapping.ERROR_CODE_OTHER)).intValue());
         }
@@ -92,8 +89,7 @@ public class Error extends ABaseFluidJSONObject {
         //Error Message...
         if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE)) {
             this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE));
-        }
-        else if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE_OTHER)) {
+        } else if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE_OTHER)) {
             this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE_OTHER));
         }
     }
@@ -142,22 +138,20 @@ public class Error extends ABaseFluidJSONObject {
      *
      * @return {@code JSONObject} representation of {@code ABaseFluidJSONObject}
      * @throws JSONException If there is a problem with the JSON Body.
-     *
      * @see org.json.JSONObject
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JSONObject toJsonObject() throws JSONException {
 
-        JsonObject returnVal = super.toJsonObject();
+        JSONObject returnVal = super.toJsonObject();
 
         returnVal.put(JSONMapping.ERROR_CODE, this.getErrorCode());
         returnVal.put(JSONMapping.ERROR_CODE_OTHER, this.getErrorCode());
 
         //Error Message...
-        if (this.getErrorMessage() != null)
-        {
-            returnVal.put(JSONMapping.ERROR_MESSAGE,this.getErrorMessage());
-            returnVal.put(JSONMapping.ERROR_MESSAGE_OTHER,this.getErrorMessage());
+        if (this.getErrorMessage() != null) {
+            returnVal.put(JSONMapping.ERROR_MESSAGE, this.getErrorMessage());
+            returnVal.put(JSONMapping.ERROR_MESSAGE_OTHER, this.getErrorMessage());
         }
 
         return returnVal;

@@ -31,85 +31,83 @@ import java.util.List;
  * System uptime data.
  *
  * @author jasonbruwer on 2020-08-20
- * @since v1.11
- * 
  * @see ABaseFluidJSONObject
+ * @since v1.11
  */
 @Getter
 @Setter
 public class SystemUptimeReport extends ABaseFluidJSONReportObject {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	//yyyy-DDD-kk-mm
-	private List<SystemUpYearDay> uptimeEntries;
-	private CompressedResponse compressedResponse;
+    //yyyy-DDD-kk-mm
+    private List<SystemUpYearDay> uptimeEntries;
+    private CompressedResponse compressedResponse;
 
-	/**
-	 * The JSON mapping for the {@code SystemUptimeReport} object.
-	 */
-	public static class JSONMapping {
-		public static final String UPTIME_ENTRIES = "uptimeEntries";
-		public static final String COMPRESSED_RESPONSE = "compressedResponse";
-	}
+    /**
+     * The JSON mapping for the {@code SystemUptimeReport} object.
+     */
+    public static class JSONMapping {
+        public static final String UPTIME_ENTRIES = "uptimeEntries";
+        public static final String COMPRESSED_RESPONSE = "compressedResponse";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public SystemUptimeReport() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public SystemUptimeReport() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public SystemUptimeReport(JsonObject jsonObjectParam) {
-		super(jsonObjectParam);
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public SystemUptimeReport(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
 
-		if (this.jsonObject == null) {
-			return;
-		}
+        if (this.jsonObject == null) {
+            return;
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.UPTIME_ENTRIES)) {
-			JsonArray listingArray = this.jsonObject.getJSONArray(JSONMapping.UPTIME_ENTRIES);
-			List<SystemUpYearDay> listing = new ArrayList();
-			for (int index = 0;index < listingArray.length();index++) {
-				listing.add(new SystemUpYearDay(listingArray.getJSONObject(index)));
-			}
-			this.setUptimeEntries(listing);
-		}
+        if (!this.jsonObject.isNull(JSONMapping.UPTIME_ENTRIES)) {
+            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.UPTIME_ENTRIES);
+            List<SystemUpYearDay> listing = new ArrayList();
+            for (int index = 0; index < listingArray.length(); index++) {
+                listing.add(new SystemUpYearDay(listingArray.getJSONObject(index)));
+            }
+            this.setUptimeEntries(listing);
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.COMPRESSED_RESPONSE)) {
-			this.setCompressedResponse(new CompressedResponse(
-					this.jsonObject.getJSONObject(JSONMapping.COMPRESSED_RESPONSE)));
-		}
-	}
+        if (!this.jsonObject.isNull(JSONMapping.COMPRESSED_RESPONSE)) {
+            this.setCompressedResponse(new CompressedResponse(
+                    this.jsonObject.getJSONObject(JSONMapping.COMPRESSED_RESPONSE)));
+        }
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code SystemUptimeReport}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-		JsonObject returnVal = super.toJsonObject();
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code SystemUptimeReport}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
-		if (this.getUptimeEntries() != null && !this.getUptimeEntries().isEmpty()) {
-			JsonArray jsonArray = new JsonArray();
-			for (SystemUpYearDay toAdd : this.getUptimeEntries()) {
-				jsonArray.put(toAdd.toJsonObject());
-			}
-			returnVal.put(JSONMapping.UPTIME_ENTRIES, jsonArray);
-		}
+        if (this.getUptimeEntries() != null && !this.getUptimeEntries().isEmpty()) {
+            JSONArray jsonArray = new JSONArray();
+            for (SystemUpYearDay toAdd : this.getUptimeEntries()) {
+                jsonArray.put(toAdd.toJsonObject());
+            }
+            returnVal.put(JSONMapping.UPTIME_ENTRIES, jsonArray);
+        }
 
-		if (this.getCompressedResponse() != null) {
-			returnVal.put(JSONMapping.COMPRESSED_RESPONSE, this.getCompressedResponse().toJsonObject());
-		}
+        if (this.getCompressedResponse() != null) {
+            returnVal.put(JSONMapping.COMPRESSED_RESPONSE, this.getCompressedResponse().toJsonObject());
+        }
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

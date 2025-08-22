@@ -22,6 +22,8 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.common.io.BaseEncoding;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -138,7 +140,7 @@ public class UtilGlobal {
                         Character.toLowerCase(original[0])));
 
         boolean nextTitleCase = false;
-        for (int index = 1;index < original.length;index++) {
+        for (int index = 1; index < original.length; index++) {
             char c = original[index];
             if (Character.isSpaceChar(c)) {
                 nextTitleCase = true;
@@ -157,7 +159,6 @@ public class UtilGlobal {
      * Convert the {@code toParseParam} to a double.
      *
      * @param toParseParam The {@code String} value to convert to {@code double}.
-     *
      * @return {@code toParseParam} converted to a {@code double}.
      */
     public static final double toDoubleSafe(String toParseParam) {
@@ -174,18 +175,17 @@ public class UtilGlobal {
      * Convert the {@code toParseParam} to a double.
      *
      * @param toParseParam The {@code String} value to convert to {@code double}.
-     *
      * @return {@code toParseParam} converted to a {@code double}.
      */
     public final String toGoeSafe(String toParseParam) {
         if (toParseParam == null || toParseParam.trim().isEmpty()) return ZERO;
 
         try {
-            for (char charToCheck : toParseParam.toCharArray()){
+            for (char charToCheck : toParseParam.toCharArray()) {
                 if (!Character.isDigit(charToCheck) && '.' != charToCheck) return ZERO;
             }
 
-            if (toParseParam.length() > 12) return toParseParam.substring(0,12);
+            if (toParseParam.length() > 12) return toParseParam.substring(0, 12);
 
             return toParseParam;
         } catch (NumberFormatException e) {
@@ -237,7 +237,7 @@ public class UtilGlobal {
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
             data[i / 2] = (byte) ((Character.digit(stringParam.charAt(i), 16) << 4)
-                    + Character.digit(stringParam.charAt(i+1), 16));
+                    + Character.digit(stringParam.charAt(i + 1), 16));
         }
         return data;
     }
@@ -268,8 +268,8 @@ public class UtilGlobal {
      * ArrayUtils.addAll([], [])         = []
      * </pre>
      *
-     * @param array1  the first array whose elements are added to the new array.
-     * @param array2  the second array whose elements are added to the new array.
+     * @param array1 the first array whose elements are added to the new array.
+     * @param array2 the second array whose elements are added to the new array.
      * @return The new byte[] array.
      * @since 2.1
      */
@@ -289,7 +289,7 @@ public class UtilGlobal {
      *
      * <p>This method returns {@code null} for a {@code null} input array.</p>
      *
-     * @param array  the array to clone, may be {@code null}
+     * @param array the array to clone, may be {@code null}
      * @return the cloned array, {@code null} if {@code null} input
      */
     public static byte[] clone(final byte[] array) {
@@ -299,25 +299,24 @@ public class UtilGlobal {
 
     /**
      * Sets the flat value on the {@code objectToSetFieldOnParam} JSON object.
-     *
+     * <p>
      * If the {@code fieldToExtractFromParam} is not provided, nothing will be set.
-     *
+     * <p>
      * If {@code fieldNamePrefixParam} or {@code fieldNameIdPrefixParam} is not set, an
      * {@link NullPointerException} will be thrown.
      *
-     * @param fieldNamePrefixParam The prefix field name.
-     * @param fieldNameIdPrefixParam The prefix field name for id.
+     * @param fieldNamePrefixParam    The prefix field name.
+     * @param fieldNameIdPrefixParam  The prefix field name for id.
      * @param fieldToExtractFromParam The field to extract the value from.
      * @param objectToSetFieldOnParam The JSON object to set the field value on.
-     *
      * @see JSONObject
      * @see Field
      */
     public void setFlatFieldOnJSONObj(
-        String fieldNamePrefixParam,
-        String fieldNameIdPrefixParam,
-        Field fieldToExtractFromParam,
-        JSONObject objectToSetFieldOnParam
+            String fieldNamePrefixParam,
+            String fieldNameIdPrefixParam,
+            Field fieldToExtractFromParam,
+            JsonObject objectToSetFieldOnParam
     ) {
         if (fieldToExtractFromParam == null) return;
 
@@ -327,13 +326,11 @@ public class UtilGlobal {
         String completeFieldName = fieldNamePrefixParam.concat(fieldName);
         String completeFieldNameId = fieldNameIdPrefixParam.concat(fieldName);
 
-        objectToSetFieldOnParam.put(completeFieldNameId, fieldToExtractFromParam.getId());
+        objectToSetFieldOnParam.addProperty(completeFieldNameId, fieldToExtractFromParam.getId());
         Object fieldValue = fieldToExtractFromParam.getFieldValue();
 
         if (fieldValue == null) {
-            objectToSetFieldOnParam.put(
-                    completeFieldName,
-                    JSONObject.NULL);
+            objectToSetFieldOnParam.add(completeFieldName, JsonNull.INSTANCE);
         } else if (fieldValue instanceof TableField) {
             //Table field...
             return;
@@ -342,7 +339,7 @@ public class UtilGlobal {
             MultiChoice multiChoice = (MultiChoice) fieldValue;
             //Nothing provided...
             if (multiChoice.getSelectedMultiChoices() == null || multiChoice.getSelectedMultiChoices().isEmpty()) {
-                objectToSetFieldOnParam.put(completeFieldName, JSONObject.NULL);
+                objectToSetFieldOnParam.add(completeFieldName, JsonNull.INSTANCE);
                 return;
             }
 
@@ -357,7 +354,7 @@ public class UtilGlobal {
                 selectVal = selectVal.substring(0, selectVal.length() - 2);
             }
 
-            objectToSetFieldOnParam.put(completeFieldName, selectVal);
+            objectToSetFieldOnParam.addProperty(completeFieldName, selectVal);
         } else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) || fieldValue instanceof String) {
             //Other valid types...
             if ((fieldValue instanceof String) && Field.LATITUDE_AND_LONGITUDE.equals(fieldToExtractFromParam.getTypeMetaData())) {
@@ -365,10 +362,10 @@ public class UtilGlobal {
                 fieldValue = String.format("%s,%s", geo.getLatitude(), geo.getLongitude());
             }
 
-            objectToSetFieldOnParam.put(completeFieldName, fieldValue);
+            objectToSetFieldOnParam.addProperty(completeFieldName, fieldValue);
         } else if (fieldValue instanceof Date) {
             //Date...
-            objectToSetFieldOnParam.put(completeFieldName, ((Date)fieldValue).getTime());
+            objectToSetFieldOnParam.addProperty(completeFieldName, ((Date) fieldValue).getTime());
         }
     }
 
@@ -388,12 +385,9 @@ public class UtilGlobal {
      * @param toCheckForNull Objects to check for {@code null}
      * @return {@code true} if all objects in {@code toCheckForNullParam} is {@code null}
      */
-    public static final boolean isAllNull(Object ... toCheckForNull) {
-        if (toCheckForNull == null || toCheckForNull.length == 0) return true;
-
-        for (Object toCheck : toCheckForNull)
-            if (toCheck != null) return false;
-
+    public static final boolean isAllNull(Object... toCheckForNull) {
+        if (toCheckForNull == null) return true;
+        for (Object toCheck : toCheckForNull) if (toCheck != null) return false;
         return true;
     }
 
@@ -404,7 +398,7 @@ public class UtilGlobal {
      * @param stringsToCheck The list of Strings to verify of being empty.
      * @return {@code true} if any of the String's in {@code stringsToCheck} is {@code null} or empty.
      */
-    public static final boolean isBlank(String ... stringsToCheck) {
+    public static final boolean isBlank(String... stringsToCheck) {
         if (stringsToCheck == null || stringsToCheck.length == 0) return true;
         for (String toCheck : stringsToCheck) if (toCheck == null || toCheck.trim().isEmpty()) return true;
         return false;
@@ -417,7 +411,7 @@ public class UtilGlobal {
      * @param stringsToCheck The list of Strings to verify of NOT being empty.
      * @return {@code true} if any of the String's in {@code stringsToCheck} is NOT {@code null} or empty.
      */
-    public static final boolean isNotBlank(String ... stringsToCheck) {
+    public static final boolean isNotBlank(String... stringsToCheck) {
         if (stringsToCheck == null || stringsToCheck.length == 0) return false;
         for (String toCheck : stringsToCheck) if (toCheck == null || toCheck.trim().isEmpty()) return false;
         return true;
@@ -427,9 +421,8 @@ public class UtilGlobal {
      * Convert String date {@code dateInStringParam} to {@code Date} applying format {@code formatParam}.
      *
      * @param dateInString The date in String format to parse.
-     * @param format The format to apply.
+     * @param format       The format to apply.
      * @return {@code Date} object from {@code dateInString}
-     *
      * @see Date
      */
     public static Date fromStringToDateSafe(String dateInString, String format) {
@@ -495,15 +488,13 @@ public class UtilGlobal {
      * Uncompress the raw {@code compressedBytesParam}.
      *
      * @param compressedBytes The compressed bytes to uncompress.
-     * @param charset The character set yo use.
-     *
+     * @param charset         The character set yo use.
      * @return Uncompressed bytes.
-     *
      * @throws IOException - If there is an issue during the un-compression.
      */
     public static byte[] uncompress(
-        byte[] compressedBytes,
-        Charset charset
+            byte[] compressedBytes,
+            Charset charset
     ) throws IOException {
         byte[] buffer = new byte[1024];
         byte[] returnVal = null;
@@ -519,7 +510,7 @@ public class UtilGlobal {
 
         //get the zipped file list entry
         ZipEntry ze = zis.getNextEntry();
-        if (ze == null){
+        if (ze == null) {
             return returnVal;
         }
         int len;
@@ -557,17 +548,17 @@ public class UtilGlobal {
      * Convert the {@code list} to {@code JSONArray}
      *
      * @param list The list to convert to JSON Array.
-     * @param <T> The type of {@code ABaseFluidJSONObject}
-     * @return JsonArray from {@code list}
+     * @param <T>  The type of {@code ABaseFluidJSONObject}
+     * @return JSONArray from {@code list}
      * @see ABaseFluidJSONObject
      * @see JSONArray
      */
-    public static <T extends ABaseFluidJSONObject> JsonArray toJSONArray(List<T> list) {
+    public static <T extends ABaseFluidJSONObject> JSONArray toJSONArray(List<T> list) {
         if (list == null) return null;
 
-        JsonArray jsonArray = new JsonArray();
+        JSONArray jsonArray = new JSONArray();
 
-        for (T toAdd :list) jsonArray.put(toAdd.toJsonObject());
+        for (T toAdd : list) jsonArray.put(toAdd.toJsonObject());
 
         return jsonArray;
     }
@@ -576,11 +567,11 @@ public class UtilGlobal {
      * Write the contents of {@code inputStream} to {@code outFile}.
      *
      * @param inputStream The input-stream of content to write.
-     * @param outFile The file to write content to.
+     * @param outFile     The file to write content to.
      * @throws IOException Any IO errors
      */
     public static void writeStreamToFile(InputStream inputStream, File outFile) throws IOException {
-        try (OutputStream fos = new FileOutputStream(outFile,false)) {
+        try (OutputStream fos = new FileOutputStream(outFile, false)) {
             int readByte = -1;
             while ((readByte = inputStream.read()) != -1) {
                 fos.write(readByte);
@@ -604,6 +595,7 @@ public class UtilGlobal {
 
     /**
      * Retrieve the value of the {@code FLUID_WS_URL} property.
+     *
      * @param existing Existing properties to attempt to retrieve from.
      * @return property value for {@code FLUID_WS_URL}
      */
@@ -616,6 +608,7 @@ public class UtilGlobal {
 
     /**
      * Retrieve the value of the {@code CONFIG_USER} property.
+     *
      * @param existing Existing properties to attempt to retrieve from.
      * @return property value for {@code CONFIG_USER}
      */
@@ -628,6 +621,7 @@ public class UtilGlobal {
 
     /**
      * Retrieve the value of the {@code CONFIG_USER_PASSWORD} property.
+     *
      * @param existing Existing properties to attempt to retrieve from.
      * @return property value for {@code CONFIG_USER_PASSWORD}
      */
@@ -642,16 +636,17 @@ public class UtilGlobal {
      * Creates an SVG XML image from {@code signature}.
      *
      * @param signature The signature JSON data.
-     * @param width The width of the image.
-     * @param height The height of the image.
+     * @param width     The width of the image.
+     * @param height    The height of the image.
      * @return SVG data as text.
      */
     public static String toSvg(String signature, int width, int height) {
 
         JSONObject jsonObj = new JSONObject(signature);
-        if (!jsonObj.has(JSON_LINES)) throw new UtilException("Signature does not have any lines.", UtilException.ErrorCode.GENERAL);
+        if (!jsonObj.has(JSON_LINES))
+            throw new UtilException("Signature does not have any lines.", UtilException.ErrorCode.GENERAL);
 
-        JsonArray jsonArr = jsonObj.getJSONArray(JSON_LINES);
+        JSONArray jsonArr = jsonObj.getJSONArray(JSON_LINES);
 
         final List<String> paths = new ArrayList<>();
         jsonArr.forEach(line -> paths.add(toSvgPath(line)));
@@ -668,9 +663,9 @@ public class UtilGlobal {
         StringBuilder sb = new StringBuilder("<path d=\"");
 
         if (line instanceof JSONArray) {
-            JsonArray lineCasted = (JSONArray)line;
+            JSONArray lineCasted = (JSONArray) line;
             for (int index = 0; index < lineCasted.length(); index++) {
-                JsonArray coords = lineCasted.getJSONArray(index);
+                JSONArray coords = lineCasted.getJSONArray(index);
                 sb.append(String.format("%s%s %s ",
                         (index == 0 ? "M" : "L"),
                         coords.getDouble(0),
@@ -685,8 +680,8 @@ public class UtilGlobal {
     /**
      * Retrieve environment or system property.
      *
-     * @param existing Existing properties.
-     * @param name The name of the property to fetch.
+     * @param existing   Existing properties.
+     * @param name       The name of the property to fetch.
      * @param defaultVal The default value.
      * @return The value.
      */
@@ -722,9 +717,9 @@ public class UtilGlobal {
      * Tracing will only be enabled if {@code ENABLE_TRACE=true}
      *
      * @param template Template to apply.
-     * @param params The params to parse to {@code template}
+     * @param params   The params to parse to {@code template}
      */
-    public static void sysOut(String template, Object ... params) {
+    public static void sysOut(String template, Object... params) {
         if (enableTrace == null) {
             enableTrace = toBooleanSafe(
                     UtilGlobal.getProperty(System.getProperties(),
@@ -742,7 +737,7 @@ public class UtilGlobal {
      * @param booleansToCheck The boolean values to check.
      * @return {@code true} If any one of the elements for {@code booleansToCheck} is {@code true}.
      */
-    public static final boolean isAnyTrue(boolean ... booleansToCheck) {
+    public static final boolean isAnyTrue(boolean... booleansToCheck) {
         if (booleansToCheck == null || booleansToCheck.length == 0) return false;
 
         for (boolean toCheck : booleansToCheck) if (toCheck) return true;
@@ -756,7 +751,7 @@ public class UtilGlobal {
      * @param booleansToCheck The boolean values to check.
      * @return {@code true} If ALL of the elements for {@code booleansToCheck} is {@code true}.
      */
-    public static final boolean isAllTrue(boolean ... booleansToCheck) {
+    public static final boolean isAllTrue(boolean... booleansToCheck) {
         if (booleansToCheck == null || booleansToCheck.length == 0) return false;
 
         for (boolean toCheck : booleansToCheck) if (!toCheck) return false;
@@ -766,6 +761,7 @@ public class UtilGlobal {
 
     /**
      * Check whether a value has a {@code boolean} value of {@code true}.
+     *
      * @param txt The value to test.
      * @return {@code true} if yes/1/true, otherwise {@code false}
      */
@@ -780,9 +776,10 @@ public class UtilGlobal {
 
     /**
      * Convert {@code Object} array into list.
+     *
      * @param objs Array to be converted to list.
+     * @param <T>  Type.
      * @return Arraylist from {@code objs}
-     * @param <T> Type.
      */
     @SafeVarargs
     public static <T> List<T> toListSafe(T... objs) {
@@ -791,9 +788,10 @@ public class UtilGlobal {
 
     /**
      * New instance of field from args.
+     *
      * @param fieldName Sets Field Name.
-     * @param fieldVal Sets Field Value.
-     * @param type Sets Field Type.
+     * @param fieldVal  Sets Field Value.
+     * @param type      Sets Field Type.
      */
     public static Field newField(String fieldName, Object fieldVal, Field.Type type) {
         return new Field(fieldName, fieldVal, type);
@@ -801,7 +799,8 @@ public class UtilGlobal {
 
     /**
      * New instance of field from args.
-     * @param fieldName Sets Field Name.
+     *
+     * @param fieldName   Sets Field Name.
      * @param multiChoice Sets Field Value as Multichoice.
      */
     public static Field newField(String fieldName, MultiChoice multiChoice) {
@@ -810,15 +809,15 @@ public class UtilGlobal {
 
     /**
      *
-     * @param formType The Form Definition.
-     * @param formTitle The Form instance Title.
+     * @param formType   The Form Definition.
+     * @param formTitle  The Form instance Title.
      * @param formFields The fields for the form instance.
      * @return new instance of {@code Form}
      */
     public static Form newForm(
             String formType,
             String formTitle,
-            Field ... formFields
+            Field... formFields
     ) {
         Form returnVal = new Form(formType, formTitle);
         returnVal.setFormFields(toListSafe(formFields));
@@ -829,10 +828,10 @@ public class UtilGlobal {
      * Copies fields from the source JSON object to the target JSON object only if the fields
      * are not already present in the target. Fields already existing in the target are not overwritten.
      *
-     * @param source the JsonObject containing the source data fields to be copied
-     * @param target the JsonObject to which the fields should be copied, if not already set
+     * @param source the JSONObject containing the source data fields to be copied
+     * @param target the JSONObject to which the fields should be copied, if not already set
      */
-    public static void copyJSONFieldsNotSet(JSONObject source, JsonObject target) {
+    public static void copyJSONFieldsNotSet(JSONObject source, JSONObject target) {
         Iterator<String> keys = source.keys();
         while (keys.hasNext()) {
             String key = keys.next();

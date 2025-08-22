@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.field;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class AutoComplete extends ABaseFluidJSONObject {
+public class AutoComplete extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private Field formField;
@@ -104,11 +104,10 @@ public class AutoComplete extends ABaseFluidJSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AutoComplete}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
         //Query...

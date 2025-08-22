@@ -15,26 +15,24 @@
 
 package com.fluidbpm.program.api.vo.field;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * <p>
  * Represents a {@code Form} Table Field.
- * Table fields have the ability to store other {@code Field}s inside itself.
+ * Table fields can store other {@code Field}s inside itself.
  * This allows for a much richer Electronic Form.
  * </p>
  *
@@ -45,9 +43,8 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
-public class TableField extends ABaseFluidJSONObject {
-    public static final long serialVersionUID = 1L;
-
+public class TableField extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
     private List<Form> tableRecords;
     private Boolean sumDecimals;
 
@@ -107,17 +104,11 @@ public class TableField extends ABaseFluidJSONObject {
         this.setSumDecimals(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.SUM_DECIMALS));
 
         //Table Field Records...
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_RECORDS)) {
-            JsonArray formsArr = this.jsonObject.getJSONArray(JSONMapping.TABLE_RECORDS);
-            List<Form> assForms = new ArrayList();
-            for (int index = 0; index < formsArr.length(); index++) {
-                assForms.add(new Form(formsArr.getJSONObject(index)));
-            }
-            this.setTableRecords(assForms);
-        }
+        this.setTableRecords(this.extractObjects(this.jsonObject, JSONMapping.TABLE_RECORDS, Form::new));
     }
 
     @XmlTransient
+    @JsonIgnore
     public boolean isTableRecordsEmpty() {
         return (this.getTableRecords() == null || this.getTableRecords().isEmpty());
     }
@@ -130,20 +121,12 @@ public class TableField extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
+    @JsonIgnore
     public JsonObject toJsonObject() throws JSONException {
         JsonObject returnVal = super.toJsonObject();
-
-        //Sum Decimals...
         returnVal.addProperty(JSONMapping.SUM_DECIMALS, this.getSumDecimals());
-
-        //Table Field Records...
-        if (this.getTableRecords() != null && !this.getTableRecords().isEmpty()) {
-            JsonArray assoFormsArr = new JsonArray();
-            for (Form toAdd : this.getTableRecords()) {
-                assoFormsArr.add(toAdd.toJsonObject());
-            }
-            returnVal.add(JSONMapping.TABLE_RECORDS, assoFormsArr);
-        }
+        returnVal.add(JSONMapping.TABLE_RECORDS, this.toJsonObjArray(this.getTableRecords()));
         return returnVal;
     }
 
@@ -152,6 +135,7 @@ public class TableField extends ABaseFluidJSONObject {
      * @return Cloned object from {@code this}
      */
     @XmlTransient
+    @JsonIgnore
     @Override
     public TableField clone() {
         return new TableField(this);

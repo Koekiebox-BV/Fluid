@@ -15,51 +15,50 @@
 
 package com.fluidbpm.program.api.vo.role;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Role}s.
+ * Represents a {@code List} of {@code Role}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Role
  * @see ABaseListing
+ * @since v1.1
  */
-public class RoleListing extends ABaseListing<Role> {
-    public static final long serialVersionUID = 1L;
+public class RoleListing extends ABaseGSONListing<Role> {
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public RoleListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public RoleListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public RoleListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public RoleListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Role} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Role}.
-	 * @return New {@code Role} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Role getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new Role(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Role} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Role}.
+     * @return New {@code Role} instance.
+     */
+    @Override
+    @XmlTransient
+    public Role getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new Role(jsonObjectParam);
+    }
 }

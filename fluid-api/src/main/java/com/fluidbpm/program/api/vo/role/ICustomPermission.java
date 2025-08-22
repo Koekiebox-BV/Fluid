@@ -24,6 +24,7 @@ package com.fluidbpm.program.api.vo.role;
 public interface ICustomPermission {
     /**
      * Retrieves the permission as a string.
+     *
      * @return the permission associated with the implementing entity.
      */
     String getPermission();
@@ -32,6 +33,7 @@ public interface ICustomPermission {
      * Retrieves the ordinal value associated with the implementing entity.
      * The ordinal is typically used to indicate the position or sequence
      * of the entity, often within an enumeration or ordered context.
+     *
      * @return the ordinal value of the entity.
      */
     int ordinal();

@@ -20,31 +20,30 @@ import org.json.JSONObject;
 
 /**
  * <p>
- *     The Base class for any sub-class that wants to make use of the
- *     JSON based message format used by the Fluid RESTful Web Service for reports.
+ * The Base class for any sub-class that wants to make use of the
+ * JSON based message format used by the Fluid RESTful Web Service for reports.
  *
  * @author jasonbruwer
- * @since v1.11
- *
  * @see ABaseFluidJSONObject
  * @see JSONObject
+ * @since v1.11
  */
 public abstract class ABaseFluidJSONReportObject extends ABaseFluidJSONObject {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public ABaseFluidJSONReportObject() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public ABaseFluidJSONReportObject() {
+        super();
+    }
 
-	/**
-	 * Populates local variables Id and Service Ticket with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public ABaseFluidJSONReportObject(JsonObject jsonObjectParam) {
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables Id and Service Ticket with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public ABaseFluidJSONReportObject(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 }

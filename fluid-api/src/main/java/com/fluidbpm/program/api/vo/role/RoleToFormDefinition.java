@@ -15,221 +15,195 @@
 
 package com.fluidbpm.program.api.vo.role;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONException;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents what a {@code Role} permits a {@code User} to do
- *     with a {@code Form} Definition type.
+ * Represents what a {@code Role} permits a {@code User} to do
+ * with a {@code Form} Definition type.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Form
  * @see Role
+ * @since v1.1
  */
-public class RoleToFormDefinition extends ABaseFluidJSONObject {
+public class RoleToFormDefinition extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    @Getter
+    @Setter
+    private Form formDefinition;
 
-	private Form formDefinition;
+    private Boolean canCreate;
+    private Boolean attachmentsCreateUpdate;
+    private Boolean attachmentsView;
 
-	private Boolean canCreate;
-	private Boolean attachmentsCreateUpdate;
-	private Boolean attachmentsView;
+    /**
+     * The JSON mapping for the {@code RoleToFormDefinition} object.
+     */
+    public static class JSONMapping {
+        public static final String FORM_DEFINITION = "formDefinition";
 
-	/**
-	 * The JSON mapping for the {@code RoleToFormDefinition} object.
-	 */
-	public static class JSONMapping
-	{
-		public static final String FORM_DEFINITION = "formDefinition";
+        public static final String CAN_CREATE = "canCreate";
+        public static final String ATTACHMENTS_CREATE_UPDATE = "attachmentsCreateUpdate";
+        public static final String ATTACHMENTS_VIEW = "attachmentsView";
+    }
 
-		public static final String CAN_CREATE = "canCreate";
-		public static final String ATTACHMENTS_CREATE_UPDATE = "attachmentsCreateUpdate";
-		public static final String ATTACHMENTS_VIEW = "attachmentsView";
-	}
+    /**
+     * Default constructor.
+     */
+    public RoleToFormDefinition() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public RoleToFormDefinition() {
-		super();
-	}
+    /**
+     * Sets the Id associated with a 'Role To Form Definition'.
+     *
+     * @param roleToFormDefinitionIdParam RoleToFormDefinition Id.
+     */
+    public RoleToFormDefinition(Long roleToFormDefinitionIdParam) {
+        super();
 
-	/**
-	 * Sets the Id associated with a 'Role To Form Definition'.
-	 *
-	 * @param roleToFormDefinitionIdParam RoleToFormDefinition Id.
-	 */
-	public RoleToFormDefinition(Long roleToFormDefinitionIdParam) {
-		super();
+        this.setId(roleToFormDefinitionIdParam);
+    }
 
-		this.setId(roleToFormDefinitionIdParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public RoleToFormDefinition(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public RoleToFormDefinition(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
+        //Form Definition...
+        if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITION)) {
+            this.setFormDefinition(new Form(this.jsonObject.getJSONObject(
+                    JSONMapping.FORM_DEFINITION)));
+        }
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+        //Can Create...
+        if (!this.jsonObject.isNull(JSONMapping.CAN_CREATE)) {
+            this.setCanCreate(this.jsonObject.getBoolean(JSONMapping.CAN_CREATE));
+        }
 
-		//Form Definition...
-		if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITION)) {
-			this.setFormDefinition(new Form(this.jsonObject.getJSONObject(
-					JSONMapping.FORM_DEFINITION)));
-		}
+        //Attachment View...
+        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS_VIEW)) {
+            this.setAttachmentsView(
+                    this.jsonObject.getBoolean(JSONMapping.ATTACHMENTS_VIEW));
+        }
 
-		//Can Create...
-		if (!this.jsonObject.isNull(JSONMapping.CAN_CREATE)) {
-			this.setCanCreate(this.jsonObject.getBoolean(JSONMapping.CAN_CREATE));
-		}
+        //Attachment Create and Modification...
+        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS_CREATE_UPDATE)) {
+            this.setAttachmentsCreateUpdate(
+                    this.jsonObject.getBoolean(JSONMapping.ATTACHMENTS_CREATE_UPDATE));
+        }
+    }
 
-		//Attachment View...
-		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS_VIEW)) {
-			this.setAttachmentsView(
-					this.jsonObject.getBoolean(JSONMapping.ATTACHMENTS_VIEW));
-		}
+    /**
+     * Gets whether the {@code Role} allow for {@code Form} creation.
+     *
+     * @return Does the {@code Role} allow for {@code Form} creation.
+     */
+    public Boolean isCanCreate() {
+        return this.canCreate;
+    }
 
-		//Attachment Create and Modification...
-		if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS_CREATE_UPDATE)) {
-			this.setAttachmentsCreateUpdate(
-					this.jsonObject.getBoolean(JSONMapping.ATTACHMENTS_CREATE_UPDATE));
-		}
-	}
+    /**
+     * Sets whether the {@code Role} allow for {@code Form} creation.
+     *
+     * @param canCreateParam Does the {@code Role} allow for {@code Form} creation.
+     */
+    public void setCanCreate(Boolean canCreateParam) {
+        this.canCreate = canCreateParam;
+    }
 
-	/**
-	 * Gets the {@code Form} Definition associated with the
-	 * {@code Role} to Form Definition permission.
-	 *
-	 * @return {@code Form} Definition.
-	 */
-	public Form getFormDefinition() {
-		return this.formDefinition;
-	}
+    /**
+     * Gets whether the {@code Role} allow for creating or modifying
+     * {@code Form} attachments.
+     *
+     * @return Does the {@code Role} allow for {@code Form} attachment create
+     * or modification.
+     */
+    public Boolean isAttachmentsCreateUpdate() {
+        return this.attachmentsCreateUpdate;
+    }
 
-	/**
-	 * Sets the {@code Form} Definition associated with the
-	 * {@code Role} to Form Definition permission.
-	 *
-	 * @param formDefinitionParam {@code Form} Definition.
-	 */
-	public void setFormDefinition(Form formDefinitionParam) {
-		this.formDefinition = formDefinitionParam;
-	}
+    /**
+     * Sets whether the {@code Role} allow for {@code Form} attachment
+     * creation or modification.
+     *
+     * @param attachmentsCreateUpdateParam Does the {@code Role} allow for {@code Form} attachment
+     *                                     creation or modification.
+     */
+    public void setAttachmentsCreateUpdate(Boolean attachmentsCreateUpdateParam) {
+        this.attachmentsCreateUpdate = attachmentsCreateUpdateParam;
+    }
 
-	/**
-	 * Gets whether the {@code Role} allow for {@code Form} creation.
-	 *
-	 * @return Does the {@code Role} allow for {@code Form} creation.
-	 */
-	public Boolean isCanCreate() {
-		return this.canCreate;
-	}
+    /**
+     * Gets whether the {@code Role} allow for viewing {@code Form} attachments.
+     *
+     * @return Does the {@code Role} allow for {@code Form} attachment view.
+     */
+    public Boolean isAttachmentsView() {
+        return this.attachmentsView;
+    }
 
-	/**
-	 * Sets whether the {@code Role} allow for {@code Form} creation.
-	 *
-	 * @param canCreateParam Does the {@code Role} allow for {@code Form} creation.
-	 */
-	public void setCanCreate(Boolean canCreateParam) {
-		this.canCreate = canCreateParam;
-	}
+    /**
+     * Sets whether the {@code Role} allow for {@code Form} attachment viewing.
+     *
+     * @param attachmentsViewParam Does the {@code Role} allow for
+     *                             {@code Form} attachment viewing.
+     */
+    public void setAttachmentsView(Boolean attachmentsViewParam) {
+        this.attachmentsView = attachmentsViewParam;
+    }
 
-	/**
-	 * Gets whether the {@code Role} allow for creating or modifying
-	 * {@code Form} attachments.
-	 *
-	 * @return Does the {@code Role} allow for {@code Form} attachment create
-	 * or modification.
-	 */
-	public Boolean isAttachmentsCreateUpdate() {
-		return this.attachmentsCreateUpdate;
-	}
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
-	/**
-	 * Sets whether the {@code Role} allow for {@code Form} attachment
-	 * creation or modification.
-	 *
-	 * @param attachmentsCreateUpdateParam Does the {@code Role} allow for {@code Form} attachment
-	 *                                     creation or modification.
-	 */
-	public void setAttachmentsCreateUpdate(Boolean attachmentsCreateUpdateParam) {
-		this.attachmentsCreateUpdate = attachmentsCreateUpdateParam;
-	}
+        //Can Create...
+        if (this.isCanCreate() != null) {
+            returnVal.put(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
+        }
 
-	/**
-	 * Gets whether the {@code Role} allow for viewing {@code Form} attachments.
-	 *
-	 * @return Does the {@code Role} allow for {@code Form} attachment view.
-	 */
-	public Boolean isAttachmentsView() {
-		return this.attachmentsView;
-	}
+        //Attachment can View...
+        if (this.isAttachmentsView() != null) {
+            returnVal.put(JSONMapping.ATTACHMENTS_VIEW,
+                    this.isAttachmentsView().booleanValue());
+        }
 
-	/**
-	 * Sets whether the {@code Role} allow for {@code Form} attachment viewing.
-	 *
-	 * @param attachmentsViewParam Does the {@code Role} allow for
-	 * {@code Form} attachment viewing.
-	 */
-	public void setAttachmentsView(Boolean attachmentsViewParam) {
-		this.attachmentsView = attachmentsViewParam;
-	}
+        //Attachment can Create or Modify...
+        if (this.isAttachmentsCreateUpdate() != null) {
+            returnVal.put(JSONMapping.ATTACHMENTS_CREATE_UPDATE,
+                    this.isAttachmentsCreateUpdate().booleanValue());
+        }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-
-		JsonObject returnVal = super.toJsonObject();
-
-		//Can Create...
-		if (this.isCanCreate() != null)
-		{
-			returnVal.put(JSONMapping.CAN_CREATE,
-					this.isCanCreate().booleanValue());
-		}
-
-		//Attachment can View...
-		if (this.isAttachmentsView() != null)
-		{
-			returnVal.put(JSONMapping.ATTACHMENTS_VIEW,
-					this.isAttachmentsView().booleanValue());
-		}
-
-		//Attachment can Create or Modify...
-		if (this.isAttachmentsCreateUpdate() != null)
-		{
-			returnVal.put(JSONMapping.ATTACHMENTS_CREATE_UPDATE,
-					this.isAttachmentsCreateUpdate().booleanValue());
-		}
-
-		//Form Definition...
-		if (this.getFormDefinition() != null)
-		{
-			returnVal.put(JSONMapping.FORM_DEFINITION,
-					this.getFormDefinition().toJsonObject());
-		}
-
-		return returnVal;
-	}
+        //Form Definition...
+        if (this.getFormDefinition() != null) {
+            returnVal.put(JSONMapping.FORM_DEFINITION,
+                    this.getFormDefinition().toJsonObject());
+        }
+        return returnVal;
+    }
 }

@@ -23,44 +23,43 @@ import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code FlowStep}s.
+ * Represents a {@code List} of {@code FlowStep}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.4 2016-02-10
- *
  * @see FlowStep
  * @see ABaseListing
+ * @since v1.4 2016-02-10
  */
 public class FlowStepListing extends ABaseListing<FlowStep> {
 
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FlowStepListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FlowStepListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FlowStepListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FlowStepListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code FlowStep} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code FlowStep}.
-	 * @return New {@code FlowStep} instance.
-	 */
-	@Override
-	@XmlTransient
-	public FlowStep getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new FlowStep(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code FlowStep} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code FlowStep}.
+     * @return New {@code FlowStep} instance.
+     */
+    @Override
+    @XmlTransient
+    public FlowStep getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new FlowStep(jsonObjectParam);
+    }
 }

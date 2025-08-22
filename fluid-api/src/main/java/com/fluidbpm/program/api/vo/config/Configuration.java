@@ -27,102 +27,101 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Fluid configurations.
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see ABaseFluidJSONObject
+ * @since v1.1
  */
 @Getter
 @Setter
 @XmlRootElement
 public class Configuration extends ABaseFluidJSONObject {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String key;
-	private String value;
+    private String key;
+    private String value;
 
-	public enum Key {
-		MemoryCacheType,
-		PrimeFacesTheme,
-		WhiteLabel,
-		WebKit,
-		WebKitPersonalInventory,
-		CustomPermissionMapping
-	}
+    public enum Key {
+        MemoryCacheType,
+        PrimeFacesTheme,
+        WhiteLabel,
+        WebKit,
+        WebKitPersonalInventory,
+        CustomPermissionMapping
+    }
 
-	/**
-	 * The JSON mapping for the {@code Configuration} object.
-	 */
-	public static class JSONMapping {
-		public static final String KEY = "key";
-		public static final String VALUE = "value";
-	}
+    /**
+     * The JSON mapping for the {@code Configuration} object.
+     */
+    public static class JSONMapping {
+        public static final String KEY = "key";
+        public static final String VALUE = "value";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public Configuration() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public Configuration() {
+        super();
+    }
 
-	/**
-	 * Sets the key and value.
-	 * @param configKey The config key.
-	 * @param configValue The value of the config.
-	 */
-	public Configuration(String configKey, String configValue) {
-		super();
-		this.setKey(configKey);
-		this.setValue(configValue);
-	}
+    /**
+     * Sets the key and value.
+     *
+     * @param configKey   The config key.
+     * @param configValue The value of the config.
+     */
+    public Configuration(String configKey, String configValue) {
+        super();
+        this.setKey(configKey);
+        this.setValue(configValue);
+    }
 
-	/**
-	 * The unique Flow identifier.
-	 *
-	 * @param flowIdParam The Flow primary key.
-	 */
-	public Configuration(Long flowIdParam) {
-		super();
-		this.setId(flowIdParam);
-	}
+    /**
+     * The unique Flow identifier.
+     *
+     * @param flowIdParam The Flow primary key.
+     */
+    public Configuration(Long flowIdParam) {
+        super();
+        this.setId(flowIdParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public Configuration(JsonObject jsonObjectParam) {
-		super(jsonObjectParam);
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public Configuration(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
 
-		if (this.jsonObject == null) return;
-		//Key...
-		if (!this.jsonObject.isNull(JSONMapping.KEY)) {
-			this.setKey(this.jsonObject.getString(JSONMapping.KEY));
-		}
+        if (this.jsonObject == null) return;
+        //Key...
+        if (!this.jsonObject.isNull(JSONMapping.KEY)) {
+            this.setKey(this.jsonObject.getString(JSONMapping.KEY));
+        }
 
-		//Value...
-		if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
-			this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
-		}
-	}
+        //Value...
+        if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
+            this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
+        }
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code Flow}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JsonObject toJsonObject() throws JSONException {
-		JsonObject returnVal = super.toJsonObject();
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code Flow}
+     * @throws JSONException If there is a problem with the JSON Body.
+     * @see ABaseFluidJSONObject#toJsonObject()
+     */
+    @Override
+    public JSONObject toJsonObject() throws JSONException {
+        JSONObject returnVal = super.toJsonObject();
 
-		//Key...
-		if (this.getKey() != null) returnVal.put(JSONMapping.KEY,this.getKey());
+        //Key...
+        if (this.getKey() != null) returnVal.put(JSONMapping.KEY, this.getKey());
 
-		//Value...
-		if (this.getValue() != null) returnVal.put(JSONMapping.VALUE, this.getValue());
+        //Value...
+        if (this.getValue() != null) returnVal.put(JSONMapping.VALUE, this.getValue());
 
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

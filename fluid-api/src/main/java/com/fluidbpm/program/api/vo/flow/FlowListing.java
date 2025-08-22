@@ -23,43 +23,42 @@ import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Flow}s.
+ * Represents a {@code List} of {@code Flow}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.4 2016-02-10
- *
  * @see Flow
  * @see ABaseListing
+ * @since v1.4 2016-02-10
  */
 public class FlowListing extends ABaseListing<Flow> {
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FlowListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FlowListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FlowListing(JsonObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FlowListing(JSONObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Flow} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Flow}.
-	 * @return New {@code Flow} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Flow getObjectFromJSONObject(JsonObject jsonObjectParam) {
-		return new Flow(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Flow} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Flow}.
+     * @return New {@code Flow} instance.
+     */
+    @Override
+    @XmlTransient
+    public Flow getObjectFromJSONObject(JSONObject jsonObjectParam) {
+        return new Flow(jsonObjectParam);
+    }
 }

@@ -23,18 +23,17 @@ import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code User}s.
+ * Represents a {@code List} of {@code User}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see User
  * @see ABaseListing
+ * @since v1.1
  */
 public class UserListing extends ABaseListing<User> {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
@@ -48,7 +47,7 @@ public class UserListing extends ABaseListing<User> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserListing(JsonObject jsonObjectParam){
+    public UserListing(JSONObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -60,7 +59,7 @@ public class UserListing extends ABaseListing<User> {
      */
     @Override
     @XmlTransient
-    public User getObjectFromJSONObject(JsonObject jsonObjectParam) {
+    public User getObjectFromJSONObject(JSONObject jsonObjectParam) {
         return new User(jsonObjectParam);
     }
 }
