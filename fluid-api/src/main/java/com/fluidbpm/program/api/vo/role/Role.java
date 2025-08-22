@@ -151,15 +151,55 @@ public class Role extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        returnVal.addProperty(JSONMapping.NAME, this.getName());
-        returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
-        returnVal.add(JSONMapping.ADMIN_PERMISSIONS, this.toJsonArray(this.getAdminPermissions()));
-        returnVal.add(JSONMapping.CUSTOM_PERMISSIONS, this.toJsonArray(this.getCustomPermissions()));
-        returnVal.add(JSONMapping.ROLE_TO_FORM_DEFINITIONS, this.toJsonObjArray(this.getRoleToFormDefinitions()));
-        returnVal.add(JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS, this.toJsonObjArray(this.getRoleToFormFieldToFormDefinitions()));
-        returnVal.add(JSONMapping.ROLE_TO_JOB_VIEWS, this.toJsonObjArray(this.getRoleToJobViews()));
-        returnVal.add(JSONMapping.ROLE_TO_USER_QUERIES, this.toJsonObjArray(this.getRoleToUserQueries()));
+        if (this.getName() != null) {
+            returnVal.addProperty(JSONMapping.NAME, this.getName());
+        }
         
+        if (this.getDescription() != null) {
+            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
+        }
+        
+        if (this.getAdminPermissions() != null) {
+            returnVal.add(
+                    JSONMapping.ADMIN_PERMISSIONS,
+                    this.toJsonArray(this.getAdminPermissions())
+            );
+        }
+        
+        if (this.getCustomPermissions() != null) {
+            returnVal.add(
+                    JSONMapping.CUSTOM_PERMISSIONS,
+                    this.toJsonArray(this.getCustomPermissions())
+            );
+        }
+        
+        if (this.getRoleToFormDefinitions() != null) {
+            returnVal.add(
+                    JSONMapping.ROLE_TO_FORM_DEFINITIONS,
+                    this.toJsonObjArray(this.getRoleToFormDefinitions())
+            );
+        }
+        
+        if (this.getRoleToFormFieldToFormDefinitions() != null) {
+            returnVal.add(
+                    JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS,
+                    this.toJsonObjArray(this.getRoleToFormFieldToFormDefinitions())
+            );
+        }
+        
+        if (this.getRoleToJobViews() != null) {
+            returnVal.add(
+                    JSONMapping.ROLE_TO_JOB_VIEWS,
+                    this.toJsonObjArray(this.getRoleToJobViews())
+            );
+        }
+        
+        if (this.getRoleToUserQueries() != null) {
+            returnVal.add(
+                    JSONMapping.ROLE_TO_USER_QUERIES,
+                    this.toJsonObjArray(this.getRoleToUserQueries())
+            );
+        }
         return returnVal;
     }
 }

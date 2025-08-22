@@ -15,12 +15,15 @@
 
 package com.fluidbpm.program.api.vo.role;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -33,7 +36,9 @@ import com.fluidbpm.program.api.vo.form.Form;
  * @see Role
  * @since v1.1
  */
-public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
+@Getter
+@Setter
+public class FormFieldToFormDefinition extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
     private Form formDefinition;
     private Field formField;
@@ -70,63 +75,18 @@ public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormFieldToFormDefinition(JSONObject jsonObjectParam) {
+    public FormFieldToFormDefinition(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
         //Form Definition...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITION)) {
-            this.setFormDefinition(new Form(this.jsonObject.getJSONObject(
-                    JSONMapping.FORM_DEFINITION)));
-        }
+        this.setFormDefinition(this.extractObject(this.jsonObject, JSONMapping.FORM_DEFINITION, Form::new));
 
         //Can Create...
-        if (!this.jsonObject.isNull(JSONMapping.CAN_CREATE)) {
-            this.setCanCreate(this.jsonObject.getBoolean(JSONMapping.CAN_CREATE));
-        }
-    }
+        this.setCanCreate(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_CREATE));
 
-    /**
-     * Gets the {@code Form} Definition associated with the
-     * {@code Role} to Form Definition permission.
-     *
-     * @return {@code Form} Definition.
-     */
-    public Form getFormDefinition() {
-        return this.formDefinition;
-    }
-
-    /**
-     * Sets the {@code Form} Definition associated with the
-     * {@code Role} to Form Definition permission.
-     *
-     * @param formDefinitionParam {@code Form} Definition.
-     */
-    public void setFormDefinition(Form formDefinitionParam) {
-        this.formDefinition = formDefinitionParam;
-    }
-
-    /**
-     * Gets the {@code Form} Field associated with the
-     * {@code Field} to Form Definition permission.
-     *
-     * @return {@code Field}.
-     */
-    public Field getFormField() {
-        return this.formField;
-    }
-
-    /**
-     * Sets the {@code Field} associated with the
-     * {@code Form} to Form Definition permission.
-     *
-     * @param formFieldParam {@code Form} Definition.
-     */
-    public void setFormField(Field formFieldParam) {
-        this.formField = formFieldParam;
+        //Form Field...
+        this.setFormField(this.extractObject(this.jsonObject, JSONMapping.FORM_FIELD, Field::new));
     }
 
     /**
@@ -139,37 +99,30 @@ public class FormFieldToFormDefinition extends ABaseFluidJSONObject {
     }
 
     /**
-     * Sets whether the {@code Role} allow for {@code Form} creation.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @param canCreateParam Does the {@code Role} allow for {@code Form} creation.
-     */
-    public void setCanCreate(Boolean canCreateParam) {
-        this.canCreate = canCreateParam;
-    }
-
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code RoleToFormDefinition}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        
         //Can Create...
         if (this.isCanCreate() != null) {
-            returnVal.put(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
+            returnVal.addProperty(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
         }
 
         //Form Definition...
         if (this.getFormDefinition() != null) {
-            returnVal.put(JSONMapping.FORM_DEFINITION, this.getFormDefinition().toJsonObject());
+            returnVal.add(JSONMapping.FORM_DEFINITION, this.getFormDefinition().toJsonObject());
         }
 
         //Field...
         if (this.getFormField() != null) {
-            returnVal.put(JSONMapping.FORM_FIELD, this.getFormField().toJsonObject());
+            returnVal.add(JSONMapping.FORM_FIELD, this.getFormField().toJsonObject());
         }
 
         return returnVal;

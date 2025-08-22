@@ -22,7 +22,6 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -87,27 +86,14 @@ public class RoleToFormDefinition extends ABaseFluidGSONObject {
         if (this.jsonObject == null) return;
 
         //Form Definition...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITION)) {
-            this.setFormDefinition(new Form(this.jsonObject.getJSONObject(
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.FORM_DEFINITION)) {
+            this.setFormDefinition(new Form(this.jsonObject.getAsJsonObject(
                     JSONMapping.FORM_DEFINITION)));
         }
 
-        //Can Create...
-        if (!this.jsonObject.isNull(JSONMapping.CAN_CREATE)) {
-            this.setCanCreate(this.jsonObject.getBoolean(JSONMapping.CAN_CREATE));
-        }
-
-        //Attachment View...
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS_VIEW)) {
-            this.setAttachmentsView(
-                    this.jsonObject.getBoolean(JSONMapping.ATTACHMENTS_VIEW));
-        }
-
-        //Attachment Create and Modification...
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENTS_CREATE_UPDATE)) {
-            this.setAttachmentsCreateUpdate(
-                    this.jsonObject.getBoolean(JSONMapping.ATTACHMENTS_CREATE_UPDATE));
-        }
+        this.setCanCreate(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_CREATE));
+        this.setAttachmentsView(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.ATTACHMENTS_VIEW));
+        this.setAttachmentsCreateUpdate(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.ATTACHMENTS_CREATE_UPDATE));
     }
 
     /**
@@ -173,36 +159,25 @@ public class RoleToFormDefinition extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-
         //Can Create...
         if (this.isCanCreate() != null) {
-            returnVal.put(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
+            returnVal.addProperty(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
         }
-
-        //Attachment can View...
         if (this.isAttachmentsView() != null) {
-            returnVal.put(JSONMapping.ATTACHMENTS_VIEW,
-                    this.isAttachmentsView().booleanValue());
+            returnVal.addProperty(JSONMapping.ATTACHMENTS_VIEW, this.isAttachmentsView().booleanValue());
         }
-
-        //Attachment can Create or Modify...
         if (this.isAttachmentsCreateUpdate() != null) {
-            returnVal.put(JSONMapping.ATTACHMENTS_CREATE_UPDATE,
-                    this.isAttachmentsCreateUpdate().booleanValue());
+            returnVal.addProperty(JSONMapping.ATTACHMENTS_CREATE_UPDATE, this.isAttachmentsCreateUpdate().booleanValue());
         }
-
-        //Form Definition...
         if (this.getFormDefinition() != null) {
-            returnVal.put(JSONMapping.FORM_DEFINITION,
-                    this.getFormDefinition().toJsonObject());
+            returnVal.add(JSONMapping.FORM_DEFINITION, this.getFormDefinition().toJsonObject());
         }
         return returnVal;
     }

@@ -17,15 +17,11 @@ package com.fluidbpm.program.api.vo.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.program.api.vo.form.Form;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -85,27 +81,14 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidGSONObject {
      */
     public RoleToFormFieldToFormDefinition(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
         //Form Definition...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_FIELD_TO_FORM_DEFINITION)) {
-            this.setFormFieldToFormDefinition(
-                    new FormFieldToFormDefinition(this.jsonObject.getJSONObject(
-                            JSONMapping.FORM_FIELD_TO_FORM_DEFINITION)));
-        }
-
-        //Can View...
-        if (!this.jsonObject.isNull(JSONMapping.CAN_VIEW)) {
-            this.setCanView(this.jsonObject.getBoolean(JSONMapping.CAN_VIEW));
-        }
-
-        //Can Create and Modify...
-        if (!this.jsonObject.isNull(JSONMapping.CAN_CREATE_AND_MODIFY)) {
-            this.setCanCreateAndModify(this.jsonObject.getBoolean(
-                    JSONMapping.CAN_CREATE_AND_MODIFY));
-        }
+        this.setFormFieldToFormDefinition(
+                this.extractObject(this.jsonObject, JSONMapping.FORM_FIELD_TO_FORM_DEFINITION, FormFieldToFormDefinition::new)
+        );
+        this.setCanView(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_VIEW));
+        this.setCanCreateAndModify(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_CREATE_AND_MODIFY));
     }
 
     /**
@@ -161,36 +144,36 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidGSONObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code RoleToFormFieldToFormDefinition}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code RoleToFormFieldToFormDefinition}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         //Can Create...
         if (this.isCanCreateAndModify() != null) {
-            returnVal.put(JSONMapping.CAN_CREATE_AND_MODIFY,
-                    this.isCanCreateAndModify().booleanValue());
+            returnVal.addProperty(JSONMapping.CAN_CREATE_AND_MODIFY,
+                    this.isCanCreateAndModify().booleanValue()
+            );
         }
 
         //Can View...
         if (this.isCanView() != null) {
-            returnVal.put(JSONMapping.CAN_VIEW,
-                    this.isCanView().booleanValue());
+            returnVal.addProperty(JSONMapping.CAN_VIEW, this.isCanView().booleanValue());
         }
 
         //Form Definition...
         if (this.getFormFieldToFormDefinition() != null) {
-            returnVal.put(JSONMapping.FORM_FIELD_TO_FORM_DEFINITION,
-                    this.getFormFieldToFormDefinition().toJsonObject());
+            returnVal.add(
+                    JSONMapping.FORM_FIELD_TO_FORM_DEFINITION,
+                    this.getFormFieldToFormDefinition().toJsonObject()
+            );
         }
-
         return returnVal;
     }
 }
