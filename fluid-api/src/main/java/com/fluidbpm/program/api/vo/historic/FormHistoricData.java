@@ -15,14 +15,15 @@
 
 package com.fluidbpm.program.api.vo.historic;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -36,8 +37,7 @@ import java.util.Date;
  * @see FormHistoricDataListing
  * @since v1.8 2018-01-26
  */
-public class FormHistoricData extends ABaseFluidJSONObject {
-
+public class FormHistoricData extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     @Getter
@@ -142,10 +142,7 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      * @param fluidFormAuditData The {@code Form} audit data.
      * @param auditDate          The date the audit needs to be logged as.
      */
-    public FormHistoricData(
-            Form fluidFormAuditData,
-            Date auditDate
-    ) {
+    public FormHistoricData(Form fluidFormAuditData, Date auditDate) {
         this();
         this.setFormForAuditCreate(fluidFormAuditData);
         this.setDate(auditDate);
@@ -156,68 +153,23 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormHistoricData(JSONObject jsonObjectParam) {
+    public FormHistoricData(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
-        //Date...
         this.setDate(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE));
+        this.setDateAndFieldName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DATE_AND_FIELD_NAME));
+        this.setFormContainerFieldValuesJSON(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON));
+        this.setLogEntryType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LOG_ENTRY_TYPE));
+        this.setDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCRIPTION));
+        this.setHistoricEntryType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.HISTORIC_ENTRY_TYPE));
+        this.setUser(this.extractObject(this.jsonObject, JSONMapping.USER, User::new));
+        this.setFormForAuditCreate(this.extractObject(this.jsonObject, JSONMapping.FORM_FOR_AUDIT_CREATE, Form::new));
+        this.setField(this.extractObject(this.jsonObject, JSONMapping.FIELD, Field::new));
 
-        //Date and Time Field Name...
-        if (!this.jsonObject.isNull(JSONMapping.DATE_AND_FIELD_NAME)) {
-            this.setDateAndFieldName(this.jsonObject.getString(JSONMapping.DATE_AND_FIELD_NAME));
-        }
-
-        //Form Container Field values JSON...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON)) {
-            this.setFormContainerFieldValuesJSON(this.jsonObject.getString(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON));
-        }
-
-        //Log Entry Type...
-        if (!this.jsonObject.isNull(JSONMapping.LOG_ENTRY_TYPE)) {
-            this.setLogEntryType(this.jsonObject.getString(JSONMapping.LOG_ENTRY_TYPE));
-        }
-
-        //Description...
-        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
-        }
-
-        //Historic Entry Type...
-        if (!this.jsonObject.isNull(JSONMapping.HISTORIC_ENTRY_TYPE)) {
-            this.setHistoricEntryType(this.jsonObject.getString(JSONMapping.HISTORIC_ENTRY_TYPE));
-        }
-
-        //User...
-        if (!this.jsonObject.isNull(JSONMapping.USER)) {
-            this.setUser(new User(this.jsonObject.getJSONObject(JSONMapping.USER)));
-        }
-
-        //Form for Audit Create...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_FOR_AUDIT_CREATE)) {
-            this.setFormForAuditCreate(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM_FOR_AUDIT_CREATE)));
-        }
-
-        //Field...
-        if (!this.jsonObject.isNull(JSONMapping.FIELD)) {
-            this.setField(new Field(this.jsonObject.getJSONObject(JSONMapping.FIELD)));
-        }
-
-        //Field Different from Previous...
-        if (!this.jsonObject.isNull(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS)) {
-            this.setIsFieldDifferentFromPrevious(this.jsonObject.getBoolean(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
-        }
-
-        //Field Type Signature...
-        if (!this.jsonObject.isNull(JSONMapping.IS_FIELD_TYPE_SIGNATURE)) {
-            this.setIsFieldTypeSignature(this.jsonObject.getBoolean(JSONMapping.IS_FIELD_TYPE_SIGNATURE));
-        }
-
-        //Escape Text...
-        if (!this.jsonObject.isNull(JSONMapping.IS_ESCAPE_TEXT)) {
-            this.setIsEscapeText(this.jsonObject.getBoolean(JSONMapping.IS_ESCAPE_TEXT));
-        }
+        this.setIsFieldDifferentFromPrevious(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
+        this.setIsFieldTypeSignature(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.IS_FIELD_TYPE_SIGNATURE));
+        this.setIsEscapeText(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.IS_ESCAPE_TEXT));
     }
 
     /**
@@ -228,69 +180,68 @@ public class FormHistoricData extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Date...
         if (this.getDate() != null) {
-            returnVal.put(JSONMapping.DATE, this.getDateAsObjectFromJson(this.getDate()));
+            returnVal.addProperty(JSONMapping.DATE, this.getDateAsLongFromJson(this.getDate()));
         }
 
         //Date and Time Field Name...
         if (this.getDateAndFieldName() != null) {
-            returnVal.put(JSONMapping.DATE_AND_FIELD_NAME, this.getDateAndFieldName());
+            returnVal.addProperty(JSONMapping.DATE_AND_FIELD_NAME, this.getDateAndFieldName());
         }
 
         //Form Container Field Values JSON...
         if (this.getFormContainerFieldValuesJSON() != null) {
-            returnVal.put(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON, this.getFormContainerFieldValuesJSON());
+            returnVal.addProperty(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON, this.getFormContainerFieldValuesJSON());
         }
 
         //Log Entry Type...
         if (this.getLogEntryType() != null) {
-            returnVal.put(JSONMapping.LOG_ENTRY_TYPE, this.getLogEntryType());
+            returnVal.addProperty(JSONMapping.LOG_ENTRY_TYPE, this.getLogEntryType());
         }
 
         //Description...
         if (this.getDescription() != null) {
-            returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
+            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
         }
 
         //Historic Entry Type...
         if (this.getHistoricEntryType() != null) {
-            returnVal.put(JSONMapping.HISTORIC_ENTRY_TYPE, this.getHistoricEntryType());
+            returnVal.addProperty(JSONMapping.HISTORIC_ENTRY_TYPE, this.getHistoricEntryType());
         }
 
         //User...
         if (this.getUser() != null) {
-            returnVal.put(JSONMapping.USER, this.getUser().toJsonObject());
+            returnVal.add(JSONMapping.USER, this.getUser().toJsonObject());
         }
 
         //Field...
         if (this.getField() != null) {
-            returnVal.put(JSONMapping.FIELD, this.getField().toJsonObject());
+            returnVal.add(JSONMapping.FIELD, this.getField().toJsonObject());
         }
 
         //Different from Previous...
         if (this.getIsFieldDifferentFromPrevious() != null) {
-            returnVal.put(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS, this.getIsFieldDifferentFromPrevious());
+            returnVal.addProperty(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS, this.getIsFieldDifferentFromPrevious());
         }
 
         //Field type Signature...
         if (this.getIsFieldTypeSignature() != null) {
-            returnVal.put(JSONMapping.IS_FIELD_TYPE_SIGNATURE, this.getIsFieldTypeSignature());
+            returnVal.addProperty(JSONMapping.IS_FIELD_TYPE_SIGNATURE, this.getIsFieldTypeSignature());
         }
 
         //Escape Text...
         if (this.getIsEscapeText() != null) {
-            returnVal.put(JSONMapping.IS_ESCAPE_TEXT, this.getIsEscapeText());
+            returnVal.addProperty(JSONMapping.IS_ESCAPE_TEXT, this.getIsEscapeText());
         }
 
         //Form for Audit Create...
         if (this.getFormForAuditCreate() != null) {
-            returnVal.put(JSONMapping.FORM_FOR_AUDIT_CREATE, this.getFormForAuditCreate().toJsonObject());
+            returnVal.add(JSONMapping.FORM_FOR_AUDIT_CREATE, this.getFormForAuditCreate().toJsonObject());
         }
-
         return returnVal;
     }
 }

@@ -184,9 +184,9 @@ public class WebKitForm extends ABaseFluidJSONObject {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.FORM))
-            this.setForm(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM)));
-
+        if (!this.jsonObject.isNull(JSONMapping.FORM)) {
+            this.setForm(this.formFromLclJsonObject(JSONMapping.FORM));
+        }
         if (!this.jsonObject.isNull(JSONMapping.INPUT_LAYOUT))
             this.setInputLayout(this.jsonObject.getString(JSONMapping.INPUT_LAYOUT));
 

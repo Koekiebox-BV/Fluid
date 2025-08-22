@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.vo.historic;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -31,8 +31,7 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  * @since v1.8
  */
-public class FormFlowHistoricDataListing extends ABaseListing<FormFlowHistoricData> {
-
+public class FormFlowHistoricDataListing extends ABaseGSONListing<FormFlowHistoricData> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -47,7 +46,7 @@ public class FormFlowHistoricDataListing extends ABaseListing<FormFlowHistoricDa
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormFlowHistoricDataListing(JSONObject jsonObjectParam) {
+    public FormFlowHistoricDataListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,7 +58,7 @@ public class FormFlowHistoricDataListing extends ABaseListing<FormFlowHistoricDa
      */
     @Override
     @XmlTransient
-    public FormFlowHistoricData getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public FormFlowHistoricData getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new FormFlowHistoricData(jsonObjectParam);
     }
 }

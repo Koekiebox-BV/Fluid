@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -31,8 +31,7 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  * @since v1.1
  */
-public class JobViewListing extends ABaseListing<JobView> {
-
+public class JobViewListing extends ABaseGSONListing<JobView> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -47,7 +46,7 @@ public class JobViewListing extends ABaseListing<JobView> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public JobViewListing(JSONObject jsonObjectParam) {
+    public JobViewListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,7 +58,7 @@ public class JobViewListing extends ABaseListing<JobView> {
      */
     @Override
     @XmlTransient
-    public JobView getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public JobView getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new JobView(jsonObjectParam);
     }
 }

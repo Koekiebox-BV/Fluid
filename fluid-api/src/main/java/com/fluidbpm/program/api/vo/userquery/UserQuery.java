@@ -18,14 +18,12 @@ package com.fluidbpm.program.api.vo.userquery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ABaseListing;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class UserQuery extends ABaseListing<FluidItem> {
+public class UserQuery extends ABaseGSONListing<FluidItem> {
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -136,44 +134,15 @@ public class UserQuery extends ABaseListing<FluidItem> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserQuery(JSONObject jsonObjectParam) {
+    public UserQuery(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
-        }
-
-        //Description...
-        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
-        }
-
-        //Inputs...
-        if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
-            JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
-            List<Field> assFields = new ArrayList();
-            for (int index = 0; index < fieldsArr.length(); index++) {
-                assFields.add(new Field(fieldsArr.getJSONObject(index)));
-            }
-            this.setInputs(assFields);
-        }
-
-        //Rules...
-        if (!this.jsonObject.isNull(JSONMapping.RULES)) {
-            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
-            List<String> rules = new ArrayList();
-            for (int index = 0; index < rulesArr.length(); index++) {
-                rules.add(rulesArr.getString(index));
-            }
-            this.setRules(rules);
-        }
-
-        //Date Created...
+        this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
+        this.setDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCRIPTION));
+        this.setInputs(this.extractObjects(this.jsonObject, JSONMapping.INPUTS, Field::new));
+        this.setRules(this.extractStrings(this.jsonObject, JSONMapping.RULES));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
-
-        //Date Last Updated...
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
     }
 
@@ -181,43 +150,46 @@ public class UserQuery extends ABaseListing<FluidItem> {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         //Name...
-        if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
+        if (this.getName() != null) {
+            returnVal.addProperty(JSONMapping.NAME, this.getName());
+        }
 
         //Description...
-        if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
+        if (this.getDescription() != null) {
+            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
+        }
 
         //Inputs...
         if (this.getInputs() != null) {
-            JSONArray jsonArray = new JSONArray();
-            for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
-            returnVal.put(JSONMapping.INPUTS, jsonArray);
+            returnVal.add(JSONMapping.INPUTS, this.toJsonObjArray(this.getInputs()));
         }
 
         //Rules...
         if (this.getRules() != null) {
-            JSONArray jsonArray = new JSONArray();
-            for (String toAdd : this.getRules()) jsonArray.put(toAdd);
-            returnVal.put(JSONMapping.RULES, jsonArray);
+            returnVal.add(JSONMapping.RULES, this.toJsonArray(this.getRules()));
         }
 
         //Date Created...
         if (this.getDateCreated() != null)
-            returnVal.put(JSONMapping.DATE_CREATED,
-                    this.getDateAsObjectFromJson(this.getDateCreated()));
+            returnVal.addProperty(
+                    JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated())
+            );
 
         //Date Last Updated...
-        if (this.getDateLastUpdated() != null)
-            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateAsObjectFromJson(this.getDateLastUpdated()));
+        if (this.getDateLastUpdated() != null) {
+            returnVal.addProperty(
+                    JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated())
+            );
+        }
 
         return returnVal;
     }
@@ -231,7 +203,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
     @Override
     @XmlTransient
     @JsonIgnore
-    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new FluidItem(jsonObjectParam);
     }
 

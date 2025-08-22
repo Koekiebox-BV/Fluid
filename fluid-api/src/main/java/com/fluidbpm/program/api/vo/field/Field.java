@@ -1027,7 +1027,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 returnVal.add(fieldIdAsString, array);
             }
         } else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) || fieldValue instanceof String) {
-            //Other valid types...
             if ((fieldValue instanceof String) && LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
                 GeoUtil geo = new GeoUtil(fieldValue.toString());
                 returnVal.addProperty(fieldIdAsString, String.format("%s,%s", geo.getLatitude(), geo.getLongitude()));
@@ -1035,7 +1034,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 returnVal.addProperty(fieldIdAsString, (String) fieldValue);
             } else if (fieldValue instanceof Boolean) {
                 returnVal.addProperty(fieldIdAsString, (Boolean) fieldValue);
-            } else if (fieldValue instanceof Number) {
+            } else {
                 returnVal.addProperty(fieldIdAsString, (Number) fieldValue);
             }
         } else if (fieldValue instanceof Date) {

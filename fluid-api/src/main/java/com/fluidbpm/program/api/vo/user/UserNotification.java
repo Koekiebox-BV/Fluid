@@ -100,8 +100,7 @@ public class UserNotification extends ABaseFluidJSONObject {
 
         //User...
         if (!this.jsonObject.isNull(JSONMapping.USER)) {
-            this.setUser(new User(this.jsonObject.getJSONObject(
-                    JSONMapping.USER)));
+            this.setUser(this.userFromLclJsonObject(JSONMapping.USER));
         }
 
         //Date Created...

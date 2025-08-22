@@ -26,7 +26,6 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
@@ -150,51 +149,14 @@ public class Attachment extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
-        }
-
-        //Path...
-        if (!this.jsonObject.isNull(JSONMapping.PATH)) {
-            this.setPath(this.jsonObject.getString(JSONMapping.PATH));
-        }
-
-        //Version...
-        if (!this.jsonObject.isNull(JSONMapping.VERSION)) {
-            this.setVersion(this.jsonObject.getString(JSONMapping.VERSION));
-        }
-
-        //Content Type...
-        if (!this.jsonObject.isNull(JSONMapping.CONTENT_TYPE)) {
-            this.setContentType(this.jsonObject.getString(JSONMapping.CONTENT_TYPE));
-        }
-
-        //Form Id...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_ID)) {
-            this.setFormId(this.jsonObject.getLong(JSONMapping.FORM_ID));
-        }
-
-        //Date Created...
-        if (!this.jsonObject.isNull(JSONMapping.DATE_CREATED)) {
-            Object obj = this.jsonObject.get(JSONMapping.DATE_CREATED);
-            if (obj instanceof Number) {
-                this.setDateCreated(new Date(((Number) obj).longValue()));
-            }
-        }
-
-        //Date Last Updated...
-        if (!this.jsonObject.isNull(JSONMapping.DATE_LAST_UPDATED)) {
-            Object obj = this.jsonObject.get(JSONMapping.DATE_LAST_UPDATED);
-            if (obj instanceof Number) {
-                this.setDateLastUpdated(new Date(((Number) obj).longValue()));
-            }
-        }
-
-        //Attachment Data...
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_DATA_BASE64)) {
-            this.setAttachmentDataBase64(this.jsonObject.getString(JSONMapping.ATTACHMENT_DATA_BASE64));
-        }
+        this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
+        this.setPath(this.getAsStringNullSafe(this.jsonObject, JSONMapping.PATH));
+        this.setVersion(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VERSION));
+        this.setContentType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.CONTENT_TYPE));
+        this.setFormId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.FORM_ID));
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
+        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
+        this.setAttachmentDataBase64(this.getAsStringNullSafe(this.jsonObject, JSONMapping.ATTACHMENT_DATA_BASE64));
     }
 
     /**
@@ -226,48 +188,53 @@ public class Attachment extends ABaseFluidGSONObject {
      */
     @Override
     @JsonIgnore
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         //Attachment Data...
         if (this.getAttachmentDataBase64() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
+            returnVal.addProperty(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
         }
 
         //Content Type...
         if (this.getContentType() != null) {
-            returnVal.put(JSONMapping.CONTENT_TYPE, this.getContentType());
+            returnVal.addProperty(JSONMapping.CONTENT_TYPE, this.getContentType());
         }
 
         //Form Id...
         if (this.getFormId() != null) {
-            returnVal.put(JSONMapping.FORM_ID, this.getFormId());
+            returnVal.addProperty(JSONMapping.FORM_ID, this.getFormId());
         }
 
         //Name...
         if (this.getName() != null) {
-            returnVal.put(JSONMapping.NAME, this.getName());
+            returnVal.addProperty(JSONMapping.NAME, this.getName());
         }
 
         //Path...
         if (this.getPath() != null) {
-            returnVal.put(JSONMapping.PATH, this.getPath());
+            returnVal.addProperty(JSONMapping.PATH, this.getPath());
         }
 
         //Version...
         if (this.getVersion() != null) {
-            returnVal.put(JSONMapping.VERSION, this.getVersion());
+            returnVal.addProperty(JSONMapping.VERSION, this.getVersion());
         }
 
         //Date Created...
         if (this.getDateCreated() != null) {
-            returnVal.put(JSONMapping.DATE_CREATED, this.getDateCreated().getTime());
+            returnVal.addProperty(
+                    JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated())
+            );
         }
 
         //Date Last Updated...
         if (this.getDateLastUpdated() != null) {
-            returnVal.put(JSONMapping.DATE_LAST_UPDATED, this.getDateLastUpdated().getTime());
+            returnVal.addProperty(
+                    JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated())
+            );
         }
-
         return returnVal;
     }
 
@@ -314,6 +281,7 @@ public class Attachment extends ABaseFluidGSONObject {
     @JsonIgnore
     public boolean isFileTypeMSWord() {
         String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
+        if (UtilGlobal.isBlank(contentTypeLower)) return false;
         switch (contentTypeLower) {
             case "application/msword":
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
@@ -333,6 +301,7 @@ public class Attachment extends ABaseFluidGSONObject {
     @JsonIgnore
     public boolean isFileTypeMSExcel() {
         String contentTypeLower = this.getContentType() == null ? null : this.getContentType().trim().toLowerCase();
+        if (UtilGlobal.isBlank(contentTypeLower)) return false;
         switch (contentTypeLower) {
             case "application/vnd.ms-excel":
             case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
@@ -394,5 +363,4 @@ public class Attachment extends ABaseFluidGSONObject {
         if (indexOf > -1) return this.getName().substring(indexOf);
         return null;
     }
-
 }

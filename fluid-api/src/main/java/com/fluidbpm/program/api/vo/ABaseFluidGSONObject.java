@@ -108,8 +108,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
                     this.setId(null);
                 }
             } else {
-                throw new IllegalArgumentException(
-                        "Unable to parse Field '" + JSONMapping.ID + "'.");
+                throw new IllegalArgumentException("Unable to parse Field '" + JSONMapping.ID + "'.");
             }
         }
 

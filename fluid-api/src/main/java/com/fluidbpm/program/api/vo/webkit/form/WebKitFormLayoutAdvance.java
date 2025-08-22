@@ -65,8 +65,9 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
         if (!this.jsonObject.isNull(JSONMapping.COLUMN_SPAN))
             this.setColSpan(this.jsonObject.getInt(JSONMapping.COLUMN_SPAN));
 
-        if (!this.jsonObject.isNull(JSONMapping.FIELD))
-            this.setField(new Field(this.jsonObject.getJSONObject(JSONMapping.FIELD)));
+        if (!this.jsonObject.isNull(JSONMapping.FIELD)) {
+            this.setField(this.fieldFromLclJsonObject(JSONMapping.FIELD));
+        }
     }
 
     /**

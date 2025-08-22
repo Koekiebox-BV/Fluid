@@ -23,7 +23,6 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -41,7 +40,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Setter
 public class RoleToUserQuery extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
-
     private UserQuery userQuery;
     private Role role;
 
@@ -78,20 +76,10 @@ public class RoleToUserQuery extends ABaseFluidGSONObject {
      */
     public RoleToUserQuery(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
-        //User Query...
-        if (!this.jsonObject.isNull(JSONMapping.USER_QUERY)) {
-            this.setUserQuery(new UserQuery(this.jsonObject.getJSONObject(
-                    JSONMapping.USER_QUERY)));
-        }
-
-        //Role...
-        if (!this.jsonObject.isNull(JSONMapping.ROLE)) {
-            this.setRole(new Role(this.jsonObject.getJSONObject(
-                    JSONMapping.ROLE)));
-        }
+        this.setRole(this.extractObject(this.jsonObject, JSONMapping.ROLE, Role::new));
+        this.setUserQuery(this.extractObject(this.jsonObject, JSONMapping.USER_QUERY, UserQuery::new));
     }
 
     /**
@@ -104,19 +92,17 @@ public class RoleToUserQuery extends ABaseFluidGSONObject {
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         //User Query...
         if (this.getUserQuery() != null) {
-            returnVal.put(JSONMapping.USER_QUERY,
-                    this.getUserQuery().toJsonObject());
+            returnVal.add(JSONMapping.USER_QUERY, this.getUserQuery().toJsonObject());
         }
 
         //Role...
         if (this.getRole() != null) {
-            returnVal.put(JSONMapping.ROLE,
-                    this.getRole().toJsonObject());
+            returnVal.add(JSONMapping.ROLE, this.getRole().toJsonObject());
         }
 
         return returnVal;

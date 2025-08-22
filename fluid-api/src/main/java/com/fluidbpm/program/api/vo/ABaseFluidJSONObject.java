@@ -16,6 +16,9 @@
 package com.fluidbpm.program.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.user.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -260,5 +263,53 @@ public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
     public String toString() {
         JSONObject jsonObject = this.toJsonObject();
         return (jsonObject == null) ? null : jsonObject.toString(JSON_INDENT_FACTOR);
+    }
+
+    /**
+     * Constructs a {@code Field} object from the specified field name in the JSON object.
+     *
+     * @param fieldName The name of the JSON field to retrieve and map to a {@code Field} object.
+     * @return A {@code Field} object containing data from the JSON field specified by {@code fieldName}.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected Field fieldFromLclJsonObject(String fieldName) {
+        JSONObject fieldObject = this.jsonObject.getJSONObject(fieldName);
+        return new Field(
+                fieldObject.optLong(ABaseFluidJSONObject.JSONMapping.ID),
+                fieldObject.optString(Field.JSONMapping.FIELD_NAME)
+        );
+    }
+
+    /**
+     * Creates and populates a {@code Form} object using data extracted from the local JSON object.
+     *
+     * @param fieldName The name of the form to be retrieved from the JSON object.
+     * @return A {@code Form} object populated with data from the JSON object.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected Form formFromLclJsonObject(String fieldName) {
+        JSONObject form = this.jsonObject.getJSONObject(fieldName);
+        Form frm = new Form(form.optLong(ABaseFluidGSONObject.JSONMapping.ID));
+        frm.setFormTypeId(form.optLong(Form.JSONMapping.FORM_TYPE_ID));
+        frm.setFormType(form.optString(Form.JSONMapping.FORM_TYPE));
+        return frm;
+    }
+
+    /**
+     * Extracts and constructs a {@code User} object from a specified field in the local JSON object.
+     *
+     * @param fieldName The name of the JSON field containing user data.
+     * @return A {@code User} object populated with data from the specified JSON field.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected User userFromLclJsonObject(String fieldName) {
+        JSONObject user = this.jsonObject.getJSONObject(fieldName);
+        return new User(
+                user.optLong(ABaseFluidGSONObject.JSONMapping.ID),
+                user.optString(User.JSONMapping.USERNAME)
+        );
     }
 }

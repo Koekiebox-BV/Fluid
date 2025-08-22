@@ -328,7 +328,6 @@ public class UtilGlobal {
 
         objectToSetFieldOnParam.addProperty(completeFieldNameId, fieldToExtractFromParam.getId());
         Object fieldValue = fieldToExtractFromParam.getFieldValue();
-
         if (fieldValue == null) {
             objectToSetFieldOnParam.add(completeFieldName, JsonNull.INSTANCE);
         } else if (fieldValue instanceof TableField) {
@@ -350,19 +349,24 @@ public class UtilGlobal {
             });
 
             String selectVal = builder.toString();
-            if (selectVal != null && !selectVal.trim().isEmpty()) {
+            if (UtilGlobal.isNotBlank(selectVal)) {
                 selectVal = selectVal.substring(0, selectVal.length() - 2);
             }
-
             objectToSetFieldOnParam.addProperty(completeFieldName, selectVal);
-        } else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) || fieldValue instanceof String) {
-            //Other valid types...
+        } else if (
+                (fieldValue instanceof Number || fieldValue instanceof Boolean)
+                        || fieldValue instanceof String
+        ) {
             if ((fieldValue instanceof String) && Field.LATITUDE_AND_LONGITUDE.equals(fieldToExtractFromParam.getTypeMetaData())) {
                 GeoUtil geo = new GeoUtil(fieldValue.toString());
-                fieldValue = String.format("%s,%s", geo.getLatitude(), geo.getLongitude());
+                objectToSetFieldOnParam.addProperty(completeFieldName, String.format("%s,%s", geo.getLatitude(), geo.getLongitude()));
+            } else if (fieldValue instanceof String) {
+                objectToSetFieldOnParam.addProperty(completeFieldName, (String) fieldValue);
+            } else if (fieldValue instanceof Boolean) {
+                objectToSetFieldOnParam.addProperty(completeFieldName, (Boolean) fieldValue);
+            } else {
+                objectToSetFieldOnParam.addProperty(completeFieldName, (Number) fieldValue);
             }
-
-            objectToSetFieldOnParam.addProperty(completeFieldName, fieldValue);
         } else if (fieldValue instanceof Date) {
             //Date...
             objectToSetFieldOnParam.addProperty(completeFieldName, ((Date) fieldValue).getTime());

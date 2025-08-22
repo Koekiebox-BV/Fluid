@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.vo.userquery;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -31,7 +31,7 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  * @see ABaseListing
  * @since v1.1
  */
-public class UserQueryListing extends ABaseListing<UserQuery> {
+public class UserQueryListing extends ABaseGSONListing<UserQuery> {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class UserQueryListing extends ABaseListing<UserQuery> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserQueryListing(JSONObject jsonObjectParam) {
+    public UserQueryListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,7 +59,7 @@ public class UserQueryListing extends ABaseListing<UserQuery> {
      */
     @Override
     @XmlTransient
-    public UserQuery getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public UserQuery getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new UserQuery(jsonObjectParam);
     }
 }

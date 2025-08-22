@@ -87,8 +87,7 @@ public class Collaboration extends ABaseFluidJSONObject {
 
         //Form Container...
         if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER)) {
-            this.setFormContainer(
-                    new Form(this.jsonObject.getJSONObject(JSONMapping.FORM_CONTAINER)));
+            this.setFormContainer(this.formFromLclJsonObject(JSONMapping.FORM_CONTAINER));
         }
 
         //From User...
