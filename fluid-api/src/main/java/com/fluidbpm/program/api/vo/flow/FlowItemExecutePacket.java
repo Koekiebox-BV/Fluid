@@ -16,10 +16,8 @@
 package com.fluidbpm.program.api.vo.flow;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
@@ -61,45 +59,32 @@ public class FlowItemExecutePacket extends ABaseFluidGSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FlowItemExecutePacket(JSONObject jsonObjectParam) {
+    public FlowItemExecutePacket(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
-
-        //Fluid Item...
-        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
-            this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(JSONMapping.FLUID_ITEM)));
-        }
-
-        //Flow Step Rule...
-        if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
-            this.setFlowStepRule(new FlowStepRule(this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP_RULE)));
-        }
+        this.setFluidItem(this.extractObject(JSONMapping.FLUID_ITEM, FluidItem::new));
+        this.setFlowStepRule(this.extractObject(JSONMapping.FLOW_STEP_RULE, FlowStepRule::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FlowItemExecutePacket}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code FlowItemExecutePacket}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         //Fluid Item...
         if (this.getFluidItem() != null) {
-            returnVal.put(JSONMapping.FLUID_ITEM,
-                    this.getFluidItem().toJsonObject());
+            returnVal.add(JSONMapping.FLUID_ITEM, this.getFluidItem().toJsonObject());
         }
 
         //Flow Step Rule...
         if (this.getFlowStepRule() != null) {
-            returnVal.put(JSONMapping.FLOW_STEP_RULE,
-                    this.getFlowStepRule().toJsonObject());
+            returnVal.add(JSONMapping.FLOW_STEP_RULE, this.getFlowStepRule().toJsonObject());
         }
 
         return returnVal;

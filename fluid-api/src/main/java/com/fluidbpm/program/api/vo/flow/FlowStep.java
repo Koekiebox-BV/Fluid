@@ -176,8 +176,8 @@ public class FlowStep extends ABaseFluidGSONObject {
             super(jsonObjectParam);
             if (this.jsonObject == null) return;
 
-            this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
-            this.setValue(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VALUE));
+            this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+            this.setValue(this.getAsStringNullSafe(JSONMapping.VALUE));
         }
 
         /**
@@ -267,17 +267,17 @@ public class FlowStep extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
-        this.setDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCRIPTION));
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
-        this.setFlow(this.extractObject(this.jsonObject, JSONMapping.FLOW, Flow::new));
-        this.setFlowStepType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FLOW_STEP_TYPE));
-        this.setFlowStepParentId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.FLOW_STEP_PARENT_ID));
-        this.setEntryRules(this.extractObjects(this.jsonObject, JSONMapping.ENTRY_RULES, FlowStepRule::new));
-        this.setExitRules(this.extractObjects(this.jsonObject, JSONMapping.EXIT_RULES, FlowStepRule::new));
-        this.setViewRules(this.extractObjects(this.jsonObject, JSONMapping.VIEW_RULES, FlowStepRule::new));
-        this.setStepProperties(this.extractObjects(this.jsonObject, JSONMapping.STEP_PROPERTIES, StepProperty::new));
+        this.setFlow(this.extractObject(JSONMapping.FLOW, Flow::new));
+        this.setFlowStepType(this.getAsStringNullSafe(JSONMapping.FLOW_STEP_TYPE));
+        this.setFlowStepParentId(this.getAsLongNullSafe(JSONMapping.FLOW_STEP_PARENT_ID));
+        this.setEntryRules(this.extractObjects(JSONMapping.ENTRY_RULES, FlowStepRule::new));
+        this.setExitRules(this.extractObjects(JSONMapping.EXIT_RULES, FlowStepRule::new));
+        this.setViewRules(this.extractObjects(JSONMapping.VIEW_RULES, FlowStepRule::new));
+        this.setStepProperties(this.extractObjects(JSONMapping.STEP_PROPERTIES, StepProperty::new));
     }
 
     /**

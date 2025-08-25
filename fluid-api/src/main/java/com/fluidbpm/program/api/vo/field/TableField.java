@@ -65,7 +65,6 @@ public class TableField extends ABaseFluidGSONObject {
 
     /**
      * Constructor to create {@code TableField} with records.
-     *
      * @param tableRecordsParam The records to create.
      */
     public TableField(List<Form> tableRecordsParam) {
@@ -75,7 +74,6 @@ public class TableField extends ABaseFluidGSONObject {
 
     /**
      * Constructor to create {@code TableField} with records.
-     *
      * @param toClone The records to clone.
      */
     public TableField(TableField toClone) {
@@ -93,20 +91,20 @@ public class TableField extends ABaseFluidGSONObject {
 
     /**
      * Populates local variables with {@code jsonObjectParam}.
-     *
      * @param jsonObjectParam The JSON Object.
      */
     public TableField(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Sum Decimals...
-        this.setSumDecimals(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.SUM_DECIMALS));
-
-        //Table Field Records...
-        this.setTableRecords(this.extractObjects(this.jsonObject, JSONMapping.TABLE_RECORDS, Form::new));
+        this.setSumDecimals(this.getAsBooleanNullSafe(JSONMapping.SUM_DECIMALS));
+        this.setTableRecords(this.extractObjects(JSONMapping.TABLE_RECORDS, Form::new));
     }
 
+    /**
+     * Checks if the tableRecords list is empty or null.
+     * @return {@code true} if the tableRecords list is null or empty, {@code false} otherwise.
+     */
     @XmlTransient
     @JsonIgnore
     public boolean isTableRecordsEmpty() {
@@ -125,8 +123,8 @@ public class TableField extends ABaseFluidGSONObject {
     @JsonIgnore
     public JsonObject toJsonObject() throws JSONException {
         JsonObject returnVal = super.toJsonObject();
-        returnVal.addProperty(JSONMapping.SUM_DECIMALS, this.getSumDecimals());
-        returnVal.add(JSONMapping.TABLE_RECORDS, this.toJsonObjArray(this.getTableRecords()));
+        this.setAsProperty(JSONMapping.SUM_DECIMALS, returnVal, this.getSumDecimals());
+        this.setAsObjArray(JSONMapping.TABLE_RECORDS, returnVal, this::getTableRecords);
         return returnVal;
     }
 

@@ -154,9 +154,9 @@ public class MultiChoice extends ABaseFluidGSONObject {
 
         //Available Multiple Choices...
         if (this.isPropertyNotNull(this.jsonObject, JSONMapping.AVAILABLE_MULTI_CHOICES)) {
-            this.setAvailableMultiChoices(this.extractStrings(this.jsonObject, JSONMapping.AVAILABLE_MULTI_CHOICES));
+            this.setAvailableMultiChoices(this.extractStrings(JSONMapping.AVAILABLE_MULTI_CHOICES));
         } else if (this.isPropertyNotNull(this.jsonObject, JSONMapping.AVAILABLE_CHOICES)) {
-            this.setAvailableMultiChoices(this.extractStrings(this.jsonObject, JSONMapping.AVAILABLE_CHOICES));
+            this.setAvailableMultiChoices(this.extractStrings(JSONMapping.AVAILABLE_CHOICES));
         } else if (this.isPropertyNotNull(this.jsonObject, JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
             String combinedAvailChoices = this.jsonObject.get(JSONMapping.AVAILABLE_CHOICES_COMBINED).getAsString();
             if (combinedAvailChoices != null && !combinedAvailChoices.isEmpty()) {
@@ -173,9 +173,9 @@ public class MultiChoice extends ABaseFluidGSONObject {
 
         //Selected Multiple Choices...
         if (this.isPropertyNotNull(this.jsonObject, JSONMapping.SELECTED_MULTI_CHOICES)) {
-            this.setSelectedMultiChoices(this.extractStrings(this.jsonObject, JSONMapping.SELECTED_MULTI_CHOICES));
+            this.setSelectedMultiChoices(this.extractStrings(JSONMapping.SELECTED_MULTI_CHOICES));
         } else if (this.isPropertyNotNull(this.jsonObject, JSONMapping.SELECTED_CHOICES)) {
-            this.setSelectedMultiChoices(this.extractStrings(this.jsonObject, JSONMapping.SELECTED_CHOICES));
+            this.setSelectedMultiChoices(this.extractStrings(JSONMapping.SELECTED_CHOICES));
         } else if (this.isPropertyNotNull(this.jsonObject, JSONMapping.SELECTED_CHOICES_COMBINED)) {
             String combinedAvailChoices = this.jsonObject.get(JSONMapping.SELECTED_CHOICES_COMBINED).getAsString();
             if (combinedAvailChoices != null && !combinedAvailChoices.isEmpty()) {

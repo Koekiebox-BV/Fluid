@@ -79,14 +79,9 @@ public class FormFieldToFormDefinition extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Form Definition...
-        this.setFormDefinition(this.extractObject(this.jsonObject, JSONMapping.FORM_DEFINITION, Form::new));
-
-        //Can Create...
-        this.setCanCreate(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_CREATE));
-
-        //Form Field...
-        this.setFormField(this.extractObject(this.jsonObject, JSONMapping.FORM_FIELD, Field::new));
+        this.setFormDefinition(this.extractObject(JSONMapping.FORM_DEFINITION, Form::new));
+        this.setCanCreate(this.getAsBooleanNullSafe(JSONMapping.CAN_CREATE));
+        this.setFormField(this.extractObject(JSONMapping.FORM_FIELD, Field::new));
     }
 
     /**
@@ -109,22 +104,9 @@ public class FormFieldToFormDefinition extends ABaseFluidGSONObject {
     @JsonIgnore
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        
-        //Can Create...
-        if (this.isCanCreate() != null) {
-            returnVal.addProperty(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
-        }
-
-        //Form Definition...
-        if (this.getFormDefinition() != null) {
-            returnVal.add(JSONMapping.FORM_DEFINITION, this.getFormDefinition().toJsonObject());
-        }
-
-        //Field...
-        if (this.getFormField() != null) {
-            returnVal.add(JSONMapping.FORM_FIELD, this.getFormField().toJsonObject());
-        }
-
+        this.setAsProperty(JSONMapping.CAN_CREATE, returnVal, this.isCanCreate());
+        this.setAsObj(JSONMapping.FORM_DEFINITION, returnVal, this::getFormDefinition);
+        this.setAsObj(JSONMapping.FORM_FIELD, returnVal, this::getFormField);
         return returnVal;
     }
 }

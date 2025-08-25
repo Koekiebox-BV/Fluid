@@ -15,12 +15,14 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User statistics for form entry types.
@@ -31,11 +33,10 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
-public class FormEntryTypeStats extends ABaseFluidJSONReportObject {
+public class FormEntryTypeStats extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private String formContainerType;
-
     private int countDocument;
     private int countFolder;
     private int countTableRecord;
@@ -62,56 +63,32 @@ public class FormEntryTypeStats extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormEntryTypeStats(JSONObject jsonObjectParam) {
+    public FormEntryTypeStats(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_TYPE)) {
-            this.setFormContainerType(null);
-        } else {
-            this.setFormContainerType(this.jsonObject.getString(JSONMapping.FORM_CONTAINER_TYPE));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_DOCUMENT)) {
-            this.setCountDocument(0);
-        } else {
-            this.setCountDocument(this.jsonObject.getInt(JSONMapping.COUNT_DOCUMENT));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_FOLDER)) {
-            this.setCountFolder(0);
-        } else {
-            this.setCountFolder(this.jsonObject.getInt(JSONMapping.COUNT_FOLDER));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_TABLE_RECORD)) {
-            this.setCountTableRecord(0);
-        } else {
-            this.setCountTableRecord(this.jsonObject.getInt(JSONMapping.COUNT_TABLE_RECORD));
-        }
-
+        this.setFormContainerType(this.getAsStringNullSafe(JSONMapping.FORM_CONTAINER_TYPE));
+        this.setCountDocument(this.getAsIntegerNullSafe(JSONMapping.COUNT_DOCUMENT) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_DOCUMENT));
+        this.setCountFolder(this.getAsIntegerNullSafe(JSONMapping.COUNT_FOLDER) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_FOLDER));
+        this.setCountTableRecord(this.getAsIntegerNullSafe(JSONMapping.COUNT_TABLE_RECORD) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_TABLE_RECORD));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code PunchCardEntry}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code FormEntryTypeStats}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getFormContainerType() != null) {
-            returnVal.put(JSONMapping.FORM_CONTAINER_TYPE, this.getFormContainerType());
-        }
-
-        returnVal.put(JSONMapping.COUNT_DOCUMENT, this.getCountDocument());
-        returnVal.put(JSONMapping.COUNT_FOLDER, this.getCountFolder());
-        returnVal.put(JSONMapping.COUNT_TABLE_RECORD, this.getCountTableRecord());
+        this.setAsProperty(JSONMapping.FORM_CONTAINER_TYPE, returnVal, this.getFormContainerType());
+        this.setAsProperty(JSONMapping.COUNT_DOCUMENT, returnVal, this.getCountDocument());
+        this.setAsProperty(JSONMapping.COUNT_FOLDER, returnVal, this.getCountFolder());
+        this.setAsProperty(JSONMapping.COUNT_TABLE_RECORD, returnVal, this.getCountTableRecord());
 
         return returnVal;
     }

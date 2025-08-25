@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api.vo.webkit.userquery;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @see ABaseListing
  * @since v1.1
  */
-public class WebKitUserQueryListing extends ABaseListing<WebKitUserQuery> {
+public class WebKitUserQueryListing extends ABaseGSONListing<WebKitUserQuery> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -45,7 +46,7 @@ public class WebKitUserQueryListing extends ABaseListing<WebKitUserQuery> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitUserQueryListing(JSONObject jsonObjectParam) {
+    public WebKitUserQueryListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -57,7 +58,7 @@ public class WebKitUserQueryListing extends ABaseListing<WebKitUserQuery> {
      */
     @Override
     @XmlTransient
-    public WebKitUserQuery getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public WebKitUserQuery getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new WebKitUserQuery(jsonObjectParam);
     }
 }

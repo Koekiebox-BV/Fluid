@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * <p>
@@ -89,7 +90,6 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      */
     public ABaseFluidGSONObject(JsonObject jsonObjectParam) {
         this();
-
         this.jsonObject = jsonObjectParam;
         if (this.jsonObject == null) return;
 
@@ -112,9 +112,9 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
             }
         }
 
-        this.setServiceTicket(this.getAsStringNullSafe(this.jsonObject, JSONMapping.SERVICE_TICKET));
-        this.setRequestUuid(this.getAsStringNullSafe(this.jsonObject, JSONMapping.REQUEST_UUID));
-        this.setEcho(this.getAsStringNullSafe(this.jsonObject, JSONMapping.ECHO));
+        this.setServiceTicket(this.getAsStringNullSafe(JSONMapping.SERVICE_TICKET));
+        this.setRequestUuid(this.getAsStringNullSafe(JSONMapping.REQUEST_UUID));
+        this.setEcho(this.getAsStringNullSafe(JSONMapping.ECHO));
     }
 
     @XmlTransient
@@ -134,15 +134,13 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     /**
      * Safely retrieves the string value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
-     *
-     * @param jsonObject   The JSON object containing the property.
      * @param propertyName The name of the property to retrieve.
      * @return The string value of the specified property, or null if the property does not exist or its value is null.
      */
     @XmlTransient
     @JsonIgnore
-    protected String getAsStringNullSafe(JsonObject jsonObject, String propertyName) {
-        JsonElement jsonElement = jsonObject.get(propertyName);
+    protected String getAsStringNullSafe(String propertyName) {
+        JsonElement jsonElement = this.jsonObject.get(propertyName);
         if (jsonElement == null || jsonElement.isJsonNull()) return null;
         return jsonElement.getAsString();
     }
@@ -151,14 +149,13 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Safely retrieves the boolean value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
      *
-     * @param jsonObject   The JSON object containing the property to retrieve.
      * @param propertyName The name of the property to retrieve.
      * @return The boolean value of the specified property, or null if the property does not exist or its value is null.
      */
     @XmlTransient
     @JsonIgnore
-    protected Boolean getAsBooleanNullSafe(JsonObject jsonObject, String propertyName) {
-        JsonElement jsonElement = jsonObject.get(propertyName);
+    protected Boolean getAsBooleanNullSafe(String propertyName) {
+        JsonElement jsonElement = this.jsonObject.get(propertyName);
         if (jsonElement == null || jsonElement.isJsonNull()) return null;
         return jsonElement.getAsBoolean();
     }
@@ -167,14 +164,13 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Safely retrieves the integer value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
      *
-     * @param jsonObject   The JSON object containing the property to retrieve.
      * @param propertyName The name of the property to retrieve.
      * @return The integer value of the specified property, or null if the property does not exist or its value is null.
      */
     @XmlTransient
     @JsonIgnore
-    protected Integer getAsIntegerNullSafe(JsonObject jsonObject, String propertyName) {
-        JsonElement jsonElement = jsonObject.get(propertyName);
+    protected Integer getAsIntegerNullSafe(String propertyName) {
+        JsonElement jsonElement = this.jsonObject.get(propertyName);
         if (jsonElement == null || jsonElement.isJsonNull()) return null;
         return jsonElement.getAsInt();
     }
@@ -183,15 +179,14 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Safely retrieves the float value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
      *
-     * @param jsonObject   The JSON object containing the property to retrieve.
      * @param propertyName The name of the property to retrieve.
      * @return The float value of the specified property, or null if the property does not exist
      * or its value is null.
      */
     @XmlTransient
     @JsonIgnore
-    protected Float getAsFloatNullSafe(JsonObject jsonObject, String propertyName) {
-        JsonElement jsonElement = jsonObject.get(propertyName);
+    protected Float getAsFloatNullSafe(String propertyName) {
+        JsonElement jsonElement = this.jsonObject.get(propertyName);
         if (jsonElement == null || jsonElement.isJsonNull()) return null;
         return jsonElement.getAsFloat();
     }
@@ -200,14 +195,13 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Safely retrieves the long value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
      *
-     * @param jsonObject   The JSON object containing the property to retrieve.
      * @param propertyName The name of the property to retrieve.
      * @return The long value of the specified property, or null if the property does not exist or its value is null.
      */
     @XmlTransient
     @JsonIgnore
-    protected Long getAsLongNullSafe(JsonObject jsonObject, String propertyName) {
-        JsonElement jsonElement = jsonObject.get(propertyName);
+    protected Long getAsLongNullSafe(String propertyName) {
+        JsonElement jsonElement = this.jsonObject.get(propertyName);
         if (jsonElement == null || jsonElement.isJsonNull()) return null;
         return jsonElement.getAsLong();
     }
@@ -282,10 +276,10 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     @JsonIgnore
     public JsonObject toJsonObject() {
         JsonObject returnVal = new JsonObject();
-        if (this.getId() != null) returnVal.addProperty(JSONMapping.ID, this.getId());
-        if (this.getServiceTicket() != null) returnVal.addProperty(JSONMapping.SERVICE_TICKET, this.getServiceTicket());
-        if (this.getRequestUuid() != null) returnVal.addProperty(JSONMapping.REQUEST_UUID, this.getRequestUuid());
-        if (this.getEcho() != null) returnVal.addProperty(JSONMapping.ECHO, this.getEcho());
+        this.setAsProperty(JSONMapping.ID, returnVal, this.getId());
+        this.setAsProperty(JSONMapping.SERVICE_TICKET, returnVal, this.getServiceTicket());
+        this.setAsProperty(JSONMapping.REQUEST_UUID, returnVal, this.getRequestUuid());
+        this.setAsProperty(JSONMapping.ECHO, returnVal, this.getEcho());
         return returnVal;
     }
 
@@ -382,7 +376,6 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * and returns a list of the resulting objects.
      *
      * @param <T>       The type of objects to be extracted. Must extend {@code ABaseFluidGSONObject}.
-     * @param object    The {@code JsonObject} containing the JSON data.
      * @param fieldName The name of the field in the {@code JsonObject} that represents
      *                  the array of objects to extract.
      * @param factory   A function that converts a {@code JsonObject} representing an element
@@ -392,14 +385,10 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      */
     @XmlTransient
     @JsonIgnore
-    protected <T extends ABaseFluidGSONObject> List<T> extractObjects(
-            JsonObject object,
-            String fieldName,
-            Function<JsonObject, T> factory
-    ) {
+    protected <T extends ABaseFluidGSONObject> List<T> extractObjects(String fieldName, Function<JsonObject, T> factory) {
         List<T> list = new ArrayList<>();
-        if (this.isPropertyNull(object, fieldName) || !object.isJsonArray()) return list;
-        JsonArray listing = object.getAsJsonArray(fieldName);
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonArray()) return list;
+        JsonArray listing = this.jsonObject.getAsJsonArray(fieldName);
         listing.forEach(itm -> list.add(factory.apply(itm.getAsJsonObject())));
         return list;
     }
@@ -408,35 +397,29 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Extracts and constructs an object of type T from the specified JSON object and field name
      * using the provided factory function.
      *
-     * @param object the JSON object containing the data
      * @param fieldName the name of the field to extract from the JSON object
      * @param factory a function that takes a JsonObject and produces an object of type T
      * @return the constructed object of type T, or null if the field is null or the JSON object is invalid
      */
     @XmlTransient
     @JsonIgnore
-    protected <T extends ABaseFluidGSONObject> T extractObject(
-            JsonObject object,
-            String fieldName,
-            Function<JsonObject, T> factory
-    ) {
-        if (this.isPropertyNull(object, fieldName) || !object.isJsonObject()) return null;
-        return factory.apply(object.get(fieldName).getAsJsonObject());
+    protected <T extends ABaseFluidGSONObject> T extractObject(String fieldName, Function<JsonObject, T> factory) {
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonObject()) return null;
+        return factory.apply(this.jsonObject.get(fieldName).getAsJsonObject());
     }
 
     /**
      * Extracts a list of string values from the specified field of a JSON object.
      *
-     * @param object    the JSON object containing the target field
      * @param fieldName the name of the field to extract string values from
      * @return a list of strings extracted from the specified field, or an empty list if the field is not a JSON array
      */
     @XmlTransient
     @JsonIgnore
-    protected List<String> extractStrings(JsonObject object, String fieldName) {
+    protected List<String> extractStrings(String fieldName) {
         List<String> list = new ArrayList<>();
-        if (this.isPropertyNull(object, fieldName) || !object.isJsonArray()) return list;
-        JsonArray listing = object.getAsJsonArray(fieldName);
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonArray()) return list;
+        JsonArray listing = this.jsonObject.getAsJsonArray(fieldName);
         listing.forEach(itm -> list.add(itm.getAsString()));
         return list;
     }
@@ -445,17 +428,15 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     /**
      * Extracts a list of long values from a specified field in a JsonObject.
      * If the field is null or not a JSON array, an empty list is returned.
-     *
-     * @param object    the JsonObject to extract data from
      * @param fieldName the name of the field to retrieve the values from
      * @return a List of Long values extracted from the specified field, or an empty list if the field is null or not a JSON array
      */
     @XmlTransient
     @JsonIgnore
-    protected List<Long> extractLongs(JsonObject object, String fieldName) {
+    protected List<Long> extractLongs(String fieldName) {
         List<Long> list = new ArrayList<>();
-        if (this.isPropertyNull(object, fieldName) || !object.isJsonArray()) return list;
-        JsonArray listing = object.getAsJsonArray(fieldName);
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonArray()) return list;
+        JsonArray listing = this.jsonObject.getAsJsonArray(fieldName);
         listing.forEach(itm -> list.add(itm.getAsLong()));
         return list;
     }
@@ -472,6 +453,21 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
         JsonArray jsonArray = new JsonArray();
         if (list == null) return jsonArray;
         list.forEach(jsonArray::add);
+        return jsonArray;
+    }
+
+    /**
+     * Converts a list of strings into a JsonArray.
+     *
+     * @param list the list of strings to be converted into a JsonArray
+     * @return a JsonArray containing the elements of the input list
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected JsonArray toJsonArray(String[] list) {
+        JsonArray jsonArray = new JsonArray();
+        if (list == null) return jsonArray;
+        for (String item : list) jsonArray.add(item);
         return jsonArray;
     }
 
@@ -503,6 +499,147 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
         if (list == null) return jsonArray;
         list.forEach(itm -> jsonArray.add(itm.toJsonObject()));
         return jsonArray;
+    }
+
+    /**
+     * Populates a JSON object field with an array representation of objects
+     * derived from a provided factory and returns the size of the object list.
+     *
+     * @param fieldName the name of the field in the JSON object to populate with the array
+     * @param jsonObject the JSON object to which the array will be added
+     * @param factory a supplier for obtaining a list of objects extending ABaseFluidGSONObject
+     * @return the number of objects in the created list, or 0 if the list is null or empty
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected <T extends ABaseFluidGSONObject> int setAsObjArray(String fieldName, JsonObject jsonObject, Supplier<List<T>> factory) {
+        List<T> objs = factory.get();
+        if (objs == null || objs.isEmpty()) return 0;
+        jsonObject.add(fieldName, this.toJsonObjArray(objs));
+        return objs.size();
+    }
+
+    /**
+     * Populates the given JSON object with a new entry using the specified field name
+     * and an object created by the provided factory. Converts the object to a JSON
+     * representation before adding it.
+     *
+     * @param <T>          A type that extends ABaseFluidGSONObject.
+     * @param fieldName    The name of the field to be added to the JSON object.
+     * @param jsonObject   The JSON object to which the field and its value will be added.
+     * @param factory      A supplier that provides an instance of the object to be added
+     *                     to the JSON object.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected <T extends ABaseFluidGSONObject> void setAsObj(String fieldName, JsonObject jsonObject, Supplier<T> factory) {
+        T objs = factory.get();
+        if (objs == null) return;
+        jsonObject.add(fieldName, objs.toJsonObject());
+    }
+
+    /**
+     * Sets the provided list of strings as a JSON array in the given JSON object under the specified field name.
+     * If the list is null or empty, no changes are made to the JSON object.
+     *
+     * @param fieldName  the name of the JSON field to which the array will be added
+     * @param jsonObject the target JSON object where the field will be added
+     * @param data       the list of strings to be converted into a JSON array and added to the JSON object
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsStringArray(String fieldName, JsonObject jsonObject, List<String> data) {
+        if (data == null || data.isEmpty()) return;
+        jsonObject.add(fieldName, this.toJsonArray(data));
+    }
+
+    /**
+     * Sets the provided string array as a JSON array in the specified JSON object
+     * under the given field name. If the data array is null, the method performs no operation.
+     *
+     * @param fieldName the name of the field under which the string array will be added
+     *                  to the JSON object
+     * @param jsonObject the JSON object where the string array will be added
+     * @param data the string array to be converted and added to the JSON object
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsStringArray(String fieldName, JsonObject jsonObject, String[] data) {
+        if (data == null) return;
+        jsonObject.add(fieldName, this.toJsonArray(data));
+    }
+
+    /**
+     * Sets the specified field of a JsonObject as a JSON array of long values.
+     *
+     * @param fieldName the name of the field to be set in the JsonObject
+     * @param jsonObject the JsonObject to update
+     * @param data the list of long values to be converted and added as a JSON array
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsLongArray(String fieldName, JsonObject jsonObject, List<Long> data) {
+        if (data == null || data.isEmpty()) return;
+        jsonObject.add(fieldName, this.toJsonLongArray(data));
+    }
+
+    /**
+     * Assigns a property to a given JSON object with the specified field name and value.
+     * If the value is null, no action will be performed.
+     *
+     * @param fieldName the name of the field to set in the JSON object
+     * @param jsonObject the target JSON object where the property will be added
+     * @param value the value to assign to the specified field in the JSON object
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsProperty(String fieldName, JsonObject jsonObject, String value) {
+        if (value == null) return;
+        jsonObject.addProperty(fieldName, value);
+    }
+
+    /**
+     * Sets the given field name as a property in the specified JSON object with the provided numeric value.
+     * If the value is null, the method does nothing.
+     *
+     * @param fieldName the name of the field to be added to the JSON object
+     * @param jsonObject the JSON object to which the field and value are added
+     * @param value the numeric value to be set for the given field name
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsProperty(String fieldName, JsonObject jsonObject, Number value) {
+        if (value == null) return;
+        jsonObject.addProperty(fieldName, value);
+    }
+
+    /**
+     * Sets a property in the given JsonObject with a specified field name and boolean value
+     * if the value is not null.
+     *
+     * @param fieldName the name of the field to be added to the JsonObject
+     * @param jsonObject the JsonObject to which the property will be added
+     * @param value the boolean value to be set as the property; if null, no action is taken
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsProperty(String fieldName, JsonObject jsonObject, Boolean value) {
+        if (value == null) return;
+        jsonObject.addProperty(fieldName, value);
+    }
+
+    /**
+     * Sets a given Enum value as a property in the provided JSON object.
+     *
+     * @param fieldName the name of the field to be set in the JSON object
+     * @param jsonObject the JSON object where the field will be added
+     * @param value the Enum value to be added as a property; if null, no action will be taken
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsProperty(String fieldName, JsonObject jsonObject, IEnum value) {
+        if (value == null) return;
+        jsonObject.addProperty(fieldName, value.toString());
     }
 
     /**

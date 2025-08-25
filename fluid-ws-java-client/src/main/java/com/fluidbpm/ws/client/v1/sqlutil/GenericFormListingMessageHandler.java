@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
+import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.form.FormListing;

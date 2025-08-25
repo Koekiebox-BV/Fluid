@@ -24,8 +24,8 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -398,7 +398,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                 this.printInfoOnSourceFromES(searchHit);
 
                 Form formFromSource = new Form();
-                JsonObject jsonObject = new Gson().fromJson(source, JsonObject.class);
+                JsonObject jsonObject = JsonParser.parseString(source).getAsJsonObject();
                 List<Field> fieldsForForm = null;
                 //Is Form Type available...
                 if (jsonObject.has(Form.JSONMapping.FORM_TYPE_ID)) {
@@ -470,7 +470,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
                 this.printInfoOnSourceFromES(searchHit);
 
                 Form formFromSource = new Form();
-                formFromSource.populateFromElasticSearchJson(new Gson().fromJson(source, JsonObject.class), null);
+                formFromSource.populateFromElasticSearchJson(JsonParser.parseString(source).getAsJsonObject(), null);
                 returnVal.add(formFromSource);
             }
         }
@@ -534,7 +534,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
 
                 this.printInfoOnSourceFromES(searchHit);
                 Form formFromSource = new Form();
-                formFromSource.populateFromElasticSearchJson(new Gson().fromJson(source, JsonObject.class), fieldsParam);
+                formFromSource.populateFromElasticSearchJson(JsonParser.parseString(source).getAsJsonObject(), fieldsParam);
 
                 returnVal.add(formFromSource);
             }

@@ -15,21 +15,20 @@
 
 package com.fluidbpm.program.api.vo.template;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.flow.Flow;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
 import com.fluidbpm.program.api.vo.webkit.form.WebKitForm;
 import com.fluidbpm.program.api.vo.webkit.userquery.WebKitUserQuery;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
@@ -52,10 +51,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FluidTemplate extends ABaseFluidJSONObject {
-
+public class FluidTemplate extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
-
     private String templateName;
     private String templateDescription;
     private String templateComment;
@@ -96,184 +93,43 @@ public class FluidTemplate extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FluidTemplate(JSONObject jsonObjectParam) {
+    public FluidTemplate(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Template Name...
-        if (!this.jsonObject.isNull(JSONMapping.TEMPLATE_NAME)) {
-            this.setTemplateName(this.jsonObject.getString(JSONMapping.TEMPLATE_NAME));
-        }
+        this.setTemplateName(this.getAsStringNullSafe(JSONMapping.TEMPLATE_NAME));
+        this.setTemplateDescription(this.getAsStringNullSafe(JSONMapping.TEMPLATE_DESCRIPTION));
+        this.setTemplateComment(this.getAsStringNullSafe(JSONMapping.TEMPLATE_COMMENT));
 
-        //Template Description...
-        if (!this.jsonObject.isNull(JSONMapping.TEMPLATE_DESCRIPTION)) {
-            this.setTemplateDescription(this.jsonObject.getString(JSONMapping.TEMPLATE_DESCRIPTION));
-        }
-
-        //Template Comment...
-        if (!this.jsonObject.isNull(JSONMapping.TEMPLATE_COMMENT)) {
-            this.setTemplateComment(this.jsonObject.getString(JSONMapping.TEMPLATE_COMMENT));
-        }
-
-        //Forms and Fields...
-        if (!this.jsonObject.isNull(JSONMapping.FORMS_AND_FIELDS)) {
-            JSONArray formsAndFields = this.jsonObject.getJSONArray(JSONMapping.FORMS_AND_FIELDS);
-            List<WebKitForm> listOfForms = new ArrayList();
-            for (int index = 0; index < formsAndFields.length(); index++) {
-                listOfForms.add(new WebKitForm(formsAndFields.getJSONObject(index)));
-            }
-            this.setFormsAndFields(listOfForms);
-        }
-
-        //User Queries...
-        if (!this.jsonObject.isNull(JSONMapping.USER_QUERIES)) {
-            JSONArray userQueries = this.jsonObject.getJSONArray(JSONMapping.USER_QUERIES);
-            List<WebKitUserQuery> listOfUserQueries = new ArrayList();
-            for (int index = 0; index < userQueries.length(); index++) {
-                listOfUserQueries.add(new WebKitUserQuery(userQueries.getJSONObject(index)));
-            }
-            this.setUserQueries(listOfUserQueries);
-        }
-
-        //Flows...
-        if (!this.jsonObject.isNull(JSONMapping.FLOWS)) {
-            JSONArray flows = this.jsonObject.getJSONArray(JSONMapping.FLOWS);
-            List<Flow> listOfFlows = new ArrayList();
-            for (int index = 0; index < flows.length(); index++) {
-                listOfFlows.add(new Flow(flows.getJSONObject(index)));
-            }
-            this.setFlows(listOfFlows);
-        }
-
-        //Third Party Libraries...
-        if (!this.jsonObject.isNull(JSONMapping.THIRD_PARTY_LIBRARIES)) {
-            JSONArray thirdPartyLibs = this.jsonObject.getJSONArray(JSONMapping.THIRD_PARTY_LIBRARIES);
-
-            List<ThirdPartyLibrary> listOfThirdPartyLibs = new ArrayList();
-            for (int index = 0; index < thirdPartyLibs.length(); index++) {
-                listOfThirdPartyLibs.add(new ThirdPartyLibrary(thirdPartyLibs.getJSONObject(index)));
-            }
-            this.setThirdPartyLibraries(listOfThirdPartyLibs);
-        }
-
-        //User Fields...
-        if (!this.jsonObject.isNull(JSONMapping.USER_FIELDS)) {
-            JSONArray userFields = this.jsonObject.getJSONArray(JSONMapping.USER_FIELDS);
-            List<Field> listOfFields = new ArrayList();
-            for (int index = 0; index < userFields.length(); index++) {
-                listOfFields.add(new Field(userFields.getJSONObject(index)));
-            }
-            this.setUserFields(listOfFields);
-        }
-
-        //Route Fields...
-        if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELDS)) {
-            JSONArray routeFields = this.jsonObject.getJSONArray(JSONMapping.ROUTE_FIELDS);
-            List<Field> listOfFields = new ArrayList();
-            for (int index = 0; index < routeFields.length(); index++) {
-                listOfFields.add(new Field(routeFields.getJSONObject(index)));
-            }
-            this.setRouteFields(listOfFields);
-        }
-
-        //Global Fields...
-        if (!this.jsonObject.isNull(JSONMapping.GLOBAL_FIELDS)) {
-            JSONArray globalFields = this.jsonObject.getJSONArray(JSONMapping.GLOBAL_FIELDS);
-            List<Field> listOfFields = new ArrayList();
-            for (int index = 0; index < globalFields.length(); index++) {
-                listOfFields.add(new Field(globalFields.getJSONObject(index)));
-            }
-            this.setGlobalFields(listOfFields);
-        }
+        this.setFormsAndFields(this.extractObjects(JSONMapping.FORMS_AND_FIELDS, WebKitForm::new));
+        this.setUserQueries(this.extractObjects(JSONMapping.USER_QUERIES, WebKitUserQuery::new));
+        this.setFlows(this.extractObjects(JSONMapping.FLOWS, Flow::new));
+        this.setThirdPartyLibraries(this.extractObjects(JSONMapping.THIRD_PARTY_LIBRARIES, ThirdPartyLibrary::new));
+        this.setUserFields(this.extractObjects(JSONMapping.USER_FIELDS, Field::new));
+        this.setRouteFields(this.extractObjects(JSONMapping.ROUTE_FIELDS, Field::new));
+        this.setGlobalFields(this.extractObjects(JSONMapping.GLOBAL_FIELDS, Field::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FluidTemplate}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code FluidTemplate}
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = new JSONObject();
-
-        //Template Name...
-        if (this.getTemplateName() != null) {
-            returnVal.put(JSONMapping.TEMPLATE_NAME, this.getTemplateName());
-        }
-
-        //Template Description...
-        if (this.getTemplateDescription() != null) {
-            returnVal.put(JSONMapping.TEMPLATE_DESCRIPTION, this.getTemplateDescription());
-        }
-
-        //Template Comment...
-        if (this.getTemplateComment() != null) {
-            returnVal.put(JSONMapping.TEMPLATE_COMMENT, this.getTemplateComment());
-        }
-
-        //Forms and Fields...
-        if (this.getFormsAndFields() != null && !this.getFormsAndFields().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (WebKitForm form : this.getFormsAndFields()) {
-                jsonArray.put(form.toJsonObject());
-            }
-            returnVal.put(JSONMapping.FORMS_AND_FIELDS, jsonArray);
-        }
-
-        //User Queries...
-        if (this.getUserQueries() != null && !this.getUserQueries().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (WebKitUserQuery userQuery : this.getUserQueries()) {
-                jsonArray.put(userQuery.toJsonObject());
-            }
-            returnVal.put(JSONMapping.USER_QUERIES, jsonArray);
-        }
-
-        //Flows...
-        if (this.getFlows() != null && !this.getFlows().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (Flow flow : this.getFlows()) {
-                jsonArray.put(flow.toJsonObject());
-            }
-            returnVal.put(JSONMapping.FLOWS, jsonArray);
-        }
-
-        //Third Party Libraries...
-        if (this.getThirdPartyLibraries() != null && !this.getThirdPartyLibraries().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (ThirdPartyLibrary thirdPartyLibrary : this.getThirdPartyLibraries()) {
-                jsonArray.put(thirdPartyLibrary.toJsonObject());
-            }
-            returnVal.put(JSONMapping.THIRD_PARTY_LIBRARIES, jsonArray);
-        }
-
-        //User Fields...
-        if (this.getUserFields() != null && !this.getUserFields().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (Field field : this.getUserFields()) {
-                jsonArray.put(field.toJsonObject());
-            }
-            returnVal.put(JSONMapping.USER_FIELDS, jsonArray);
-        }
-
-        //Route Fields...
-        if (this.getRouteFields() != null && !this.getRouteFields().isEmpty()) {
-            JSONArray fieldsArr = new JSONArray();
-            for (Field toAdd : this.getRouteFields()) {
-                fieldsArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.ROUTE_FIELDS, fieldsArr);
-        }
-
-        //Global Fields...
-        if (this.getGlobalFields() != null && !this.getGlobalFields().isEmpty()) {
-            JSONArray fieldsArr = new JSONArray();
-            for (Field toAdd : this.getGlobalFields()) {
-                fieldsArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.GLOBAL_FIELDS, fieldsArr);
-        }
-
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.TEMPLATE_NAME, returnVal, this.getTemplateName());
+        this.setAsProperty(JSONMapping.TEMPLATE_DESCRIPTION, returnVal, this.getTemplateDescription());
+        this.setAsProperty(JSONMapping.TEMPLATE_COMMENT, returnVal, this.getTemplateComment());
+        this.setAsObjArray(JSONMapping.FORMS_AND_FIELDS, returnVal, this::getFormsAndFields);
+        this.setAsObjArray(JSONMapping.USER_QUERIES, returnVal, this::getUserQueries);
+        this.setAsObjArray(JSONMapping.FLOWS, returnVal, this::getFlows);
+        this.setAsObjArray(JSONMapping.THIRD_PARTY_LIBRARIES, returnVal, this::getThirdPartyLibraries);
+        this.setAsObjArray(JSONMapping.USER_FIELDS, returnVal, this::getUserFields);
+        this.setAsObjArray(JSONMapping.ROUTE_FIELDS, returnVal, this::getRouteFields);
+        this.setAsObjArray(JSONMapping.GLOBAL_FIELDS, returnVal, this::getGlobalFields);
         return returnVal;
     }
 }

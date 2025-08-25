@@ -1,6 +1,6 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 import lombok.Getter;
@@ -135,7 +135,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 	 *
 	 * @param aBaseFluidJSONObject The JSON Object to send.
 	 */
-	public void sendMessage(ABaseFluidJSONObject aBaseFluidJSONObject) {
+	public void sendMessage(ABaseFluidGSONObject aBaseFluidJSONObject) {
 		if (aBaseFluidJSONObject == null) {
 			throw new FluidClientException("No JSON Object to send.", FluidClientException.ErrorCode.IO_ERROR);
 		} else this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());

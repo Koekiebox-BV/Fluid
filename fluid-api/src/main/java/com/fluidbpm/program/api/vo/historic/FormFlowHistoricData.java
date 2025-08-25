@@ -87,14 +87,14 @@ public class FormFlowHistoricData extends ABaseFluidGSONObject {
         if (this.jsonObject == null) return;
 
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
-        this.setRuleExecuted(this.getAsStringNullSafe(this.jsonObject, JSONMapping.RULE_EXECUTED));
-        this.setRuleExecutedResult(this.getAsStringNullSafe(this.jsonObject, JSONMapping.RULE_EXECUTED_RESULT));
-        this.setFlowRuleOrder(this.getAsLongNullSafe(this.jsonObject, JSONMapping.FLOW_RULE_ORDER));
-        this.setLogEntryType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LOG_ENTRY_TYPE));
-        this.setUser(this.extractObject(this.jsonObject, JSONMapping.USER, User::new));
-        this.setFlowStep(this.extractObject(this.jsonObject, JSONMapping.FLOW_STEP, FlowStep::new));
-        this.setForm(this.extractObject(this.jsonObject, JSONMapping.FORM, Form::new));
-        this.setJobView(this.getAsStringNullSafe(this.jsonObject, JSONMapping.JOB_VIEW));
+        this.setRuleExecuted(this.getAsStringNullSafe(JSONMapping.RULE_EXECUTED));
+        this.setRuleExecutedResult(this.getAsStringNullSafe(JSONMapping.RULE_EXECUTED_RESULT));
+        this.setFlowRuleOrder(this.getAsLongNullSafe(JSONMapping.FLOW_RULE_ORDER));
+        this.setLogEntryType(this.getAsStringNullSafe(JSONMapping.LOG_ENTRY_TYPE));
+        this.setUser(this.extractObject(JSONMapping.USER, User::new));
+        this.setFlowStep(this.extractObject(JSONMapping.FLOW_STEP, FlowStep::new));
+        this.setForm(this.extractObject(JSONMapping.FORM, Form::new));
+        this.setJobView(this.getAsStringNullSafe(JSONMapping.JOB_VIEW));
     }
 
     /**

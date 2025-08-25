@@ -15,12 +15,14 @@
 
 package com.fluidbpm.program.api.vo.report.system;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User statistics.
@@ -31,7 +33,7 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
-public class SystemUpHourMin extends ABaseFluidJSONReportObject {
+public class SystemUpHourMin extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private int hour;
@@ -63,46 +65,42 @@ public class SystemUpHourMin extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SystemUpHourMin(JSONObject jsonObjectParam) {
+    public SystemUpHourMin(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) {
             return;
         }
 
-        if (this.jsonObject.isNull(JSONMapping.HOUR)) {
-            this.setHour(0);
-        } else {
-            this.setHour(this.jsonObject.getInt(JSONMapping.HOUR));
-        }
+        Integer hourVal = this.getAsIntegerNullSafe(JSONMapping.HOUR);
+        this.setHour(hourVal != null ? hourVal : 0);
 
-        if (this.jsonObject.isNull(JSONMapping.MINUTE)) {
-            this.setMinute(0);
+        Integer minuteVal = this.getAsIntegerNullSafe(JSONMapping.MINUTE);
+        this.setMinute(minuteVal != null ? minuteVal : 0);
+        
+        String stateStr = this.getAsStringNullSafe(JSONMapping.STATE);
+        if (stateStr != null && !stateStr.isEmpty()) {
+            this.setState(State.valueOf(stateStr));
         } else {
-            this.setMinute(this.jsonObject.getInt(JSONMapping.MINUTE));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.STATE)) {
             this.setState(State.Unknown);
-        } else {
-            this.setState(State.valueOf(this.jsonObject.getString(JSONMapping.STATE)));
         }
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code SystemUpHourMin}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code SystemUpHourMin}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        returnVal.put(JSONMapping.HOUR, this.getHour());
-        returnVal.put(JSONMapping.MINUTE, this.getMinute());
+        this.setAsProperty(JSONMapping.HOUR, returnVal, this.getHour());
+        this.setAsProperty(JSONMapping.MINUTE, returnVal, this.getMinute());
         if (this.getState() != null) {
-            returnVal.put(JSONMapping.STATE, this.getState());
+            this.setAsProperty(JSONMapping.STATE, returnVal, this.getState().toString());
         }
 
         return returnVal;

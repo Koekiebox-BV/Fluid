@@ -97,14 +97,14 @@ public class JobView extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setRule(this.getAsStringNullSafe(this.jsonObject, JSONMapping.RULE));
-        this.setViewName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VIEW_NAME));
-        this.setViewGroupName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VIEW_GROUP_NAME));
-        this.setViewFlowName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VIEW_FLOW_NAME));
-        this.setViewStepName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VIEW_STEP_NAME));
-        this.setViewPriority(this.getAsIntegerNullSafe(this.jsonObject, JSONMapping.VIEW_PRIORITY));
-        this.setViewOrder(this.getAsLongNullSafe(this.jsonObject, JSONMapping.VIEW_ORDER));
-        this.setViewType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VIEW_TYPE));
+        this.setRule(this.getAsStringNullSafe(JSONMapping.RULE));
+        this.setViewName(this.getAsStringNullSafe(JSONMapping.VIEW_NAME));
+        this.setViewGroupName(this.getAsStringNullSafe(JSONMapping.VIEW_GROUP_NAME));
+        this.setViewFlowName(this.getAsStringNullSafe(JSONMapping.VIEW_FLOW_NAME));
+        this.setViewStepName(this.getAsStringNullSafe(JSONMapping.VIEW_STEP_NAME));
+        this.setViewPriority(this.getAsIntegerNullSafe(JSONMapping.VIEW_PRIORITY));
+        this.setViewOrder(this.getAsLongNullSafe(JSONMapping.VIEW_ORDER));
+        this.setViewType(this.getAsStringNullSafe(JSONMapping.VIEW_TYPE));
     }
 
     /**
@@ -133,46 +133,14 @@ public class JobView extends ABaseFluidGSONObject {
     @Override
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-
-        //Rule...
-        if (this.getRule() != null) {
-            returnVal.addProperty(JSONMapping.RULE, this.getRule());
-        }
-
-        //View Name...
-        if (this.getViewName() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_NAME, this.getViewName());
-        }
-
-        //View Group Name...
-        if (this.getViewGroupName() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_GROUP_NAME, this.getViewGroupName());
-        }
-
-        //View Flow Name...
-        if (this.getViewGroupName() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_FLOW_NAME, this.getViewFlowName());
-        }
-
-        //View Step Name...
-        if (this.getViewGroupName() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_STEP_NAME, this.getViewStepName());
-        }
-
-        //View Priority...
-        if (this.getViewPriority() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_PRIORITY, this.getViewPriority());
-        }
-
-        //View Order...
-        if (this.getViewOrder() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_ORDER, this.getViewOrder());
-        }
-
-        //View Type...
-        if (this.getViewType() != null) {
-            returnVal.addProperty(JSONMapping.VIEW_TYPE, this.getViewType());
-        }
+        this.setAsProperty(JSONMapping.RULE, returnVal, this.getRule());
+        this.setAsProperty(JSONMapping.VIEW_NAME, returnVal, this.getViewName());
+        this.setAsProperty(JSONMapping.VIEW_GROUP_NAME, returnVal, this.getViewGroupName());
+        this.setAsProperty(JSONMapping.VIEW_FLOW_NAME, returnVal, this.getViewFlowName());
+        this.setAsProperty(JSONMapping.VIEW_STEP_NAME, returnVal, this.getViewStepName());
+        this.setAsProperty(JSONMapping.VIEW_PRIORITY, returnVal, this.getViewPriority());
+        this.setAsProperty(JSONMapping.VIEW_ORDER, returnVal, this.getViewOrder());
+        this.setAsProperty(JSONMapping.VIEW_TYPE, returnVal, this.getViewType());
         return returnVal;
     }
 }

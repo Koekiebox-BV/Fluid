@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @see ABaseListing
  * @since v1.1
  */
-public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
+public class WebKitViewGroupListing extends ABaseGSONListing<WebKitViewGroup> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -45,7 +46,7 @@ public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitViewGroupListing(JSONObject jsonObjectParam) {
+    public WebKitViewGroupListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -57,7 +58,7 @@ public class WebKitViewGroupListing extends ABaseListing<WebKitViewGroup> {
      */
     @Override
     @XmlTransient
-    public WebKitViewGroup getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public WebKitViewGroup getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new WebKitViewGroup(jsonObjectParam);
     }
 }

@@ -22,9 +22,9 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.webkit.form.WebKitForm;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
+import com.google.gson.JsonObject;
 import lombok.Builder;
 import lombok.Data;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,8 +122,8 @@ public class MigratorForm {
 
         // WebKit is set, and updates are allowed, or this is a create:
         WebKitForm existingWk = fdc.getFormWebKit(form.getFormType(), form.getFormTypeId());
-        JSONObject existingJsonObj = existingWk.toJsonObject();
-        JSONObject newJsonObj = opts.webKitForm.toJsonObject();
+        JsonObject existingJsonObj = existingWk.toJsonObject();
+        JsonObject newJsonObj = opts.webKitForm.toJsonObject();
 
         // Copy all the new fields:
         UtilGlobal.copyJSONFieldsNotSet(newJsonObj, existingJsonObj);
@@ -132,7 +132,7 @@ public class MigratorForm {
                 .stream()
                 .filter(newJsonObj::has)
                 .forEach(keyMatchedAtExisting -> {
-                    existingJsonObj.put(keyMatchedAtExisting, newJsonObj.get(keyMatchedAtExisting));
+                    existingJsonObj.add(keyMatchedAtExisting, newJsonObj.get(keyMatchedAtExisting));
                 });
 
         Form newForm = new Form(form.getFormTypeId());

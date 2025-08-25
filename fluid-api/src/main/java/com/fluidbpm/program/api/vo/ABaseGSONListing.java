@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +40,6 @@ public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends A
     private static final long serialVersionUID = 1L;
 
     private List<T> listing;
-
     private Integer listingCount;
     private Integer listingIndex;
     private Integer listingPage;
@@ -66,38 +63,21 @@ public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends A
 
     /**
      * Populates local variables with {@code jsonObjectParam}.
-     *
      * @param jsonObject The JSON Object.
      */
     public ABaseGSONListing(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        //Listing...
-        int listingArrCount = 0;
-        List<T> listing = new ArrayList<>();
-        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.LISTING)) {
-            JsonArray listingArray = this.jsonObject.getAsJsonArray(JSONMapping.LISTING);
-            listingArray.forEach(itm -> listing.add(this.getObjectFromJSONObject(itm.getAsJsonObject())));
-        }
-        this.setListing(listing);
-
-        //Listing Count...
+        this.setListing(this.extractObjects(JSONMapping.LISTING, this::getObjectFromJSONObject));
         if (this.isPropertyNull(this.jsonObject, JSONMapping.LISTING_COUNT)) {
-            this.setListingCount(listingArrCount);
+            this.setListingCount(this.getListing().size());
         } else {
             this.setListingCount(this.jsonObject.get(JSONMapping.LISTING_COUNT).getAsInt());
         }
 
-        //Listing Index...
-        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.LISTING_INDEX)) {
-            this.setListingIndex(this.jsonObject.get(JSONMapping.LISTING_INDEX).getAsInt());
-        }
-
-        //Listing Page...
-        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.LISTING_PAGE)) {
-            this.setListingPage(this.jsonObject.get(JSONMapping.LISTING_PAGE).getAsInt());
-        }
+        this.setListingIndex(this.getAsIntegerNullSafe(JSONMapping.LISTING_INDEX));
+        this.setListingPage(this.getAsIntegerNullSafe(JSONMapping.LISTING_PAGE));
     }
 
     /**
@@ -112,32 +92,11 @@ public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends A
     @JsonIgnore
     public JsonObject toJsonObject() throws JSONException {
         JsonObject returnVal = super.toJsonObject();
-
-        //Listing...
-        int listingCountFromListing = 0;
-        if (this.getListing() != null && !this.getListing().isEmpty()) {
-            JsonArray jsonArray = new JsonArray();
-            listingCountFromListing = this.getListing().size();
-            for (T toAdd : this.getListing()) jsonArray.add(toAdd.toJsonObject());
-            returnVal.add(JSONMapping.LISTING, jsonArray);
-        }
-
-        //Listing count...
-        if (this.getListingCount() == null) {
-            returnVal.addProperty(JSONMapping.LISTING_COUNT, listingCountFromListing);
-        } else {
-            returnVal.addProperty(JSONMapping.LISTING_COUNT, this.getListingCount());
-        }
-
-        //Listing index...
-        if (this.getListingIndex() != null) {
-            returnVal.addProperty(JSONMapping.LISTING_INDEX, this.getListingIndex());
-        }
-
-        //Listing page...
-        if (this.getListingPage() != null) {
-            returnVal.addProperty(JSONMapping.LISTING_PAGE, this.getListingPage());
-        }
+        int listingCountFromListing = this.setAsObjArray(JSONMapping.LISTING, returnVal, this::getListing);
+        this.setAsProperty(JSONMapping.LISTING_COUNT, returnVal, this.getListingCount() == null
+                ? listingCountFromListing : this.getListingCount());
+        this.setAsProperty(JSONMapping.LISTING_INDEX, returnVal, this.getListingIndex());
+        this.setAsProperty(JSONMapping.LISTING_PAGE, returnVal, this.getListingPage());
         return returnVal;
     }
 

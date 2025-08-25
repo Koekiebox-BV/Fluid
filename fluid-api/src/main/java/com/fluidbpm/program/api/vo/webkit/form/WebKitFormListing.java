@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api.vo.webkit.form;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -30,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @see ABaseListing
  * @since v1.1
  */
-public class WebKitFormListing extends ABaseListing<WebKitForm> {
+public class WebKitFormListing extends ABaseGSONListing<WebKitForm> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -45,7 +46,7 @@ public class WebKitFormListing extends ABaseListing<WebKitForm> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitFormListing(JSONObject jsonObjectParam) {
+    public WebKitFormListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -57,7 +58,7 @@ public class WebKitFormListing extends ABaseListing<WebKitForm> {
      */
     @Override
     @XmlTransient
-    public WebKitForm getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public WebKitForm getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new WebKitForm(jsonObjectParam);
     }
 }

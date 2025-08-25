@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class WebKitViewGroup extends ABaseFluidJSONObject {
+public class WebKitViewGroup extends ABaseFluidGSONObject {
     private Long jobViewGroupId;
     private String jobViewGroupName;
     private String jobViewGroupIcon;
@@ -150,7 +150,7 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
     }
 
     public WebKitViewGroup() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -158,98 +158,35 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitViewGroup(JSONObject jsonObjectParam) {
+    public WebKitViewGroup(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW_GROUP_ID)) {
-            this.setJobViewGroupId(this.jsonObject.getLong(JSONMapping.JOB_VIEW_GROUP_ID));
-        }
+        this.setJobViewGroupId(this.getAsLongNullSafe(JSONMapping.JOB_VIEW_GROUP_ID));
+        this.setJobViewGroupName(this.getAsStringNullSafe(JSONMapping.JOB_VIEW_GROUP_NAME));
+        this.setJobViewGroupIcon(this.getAsStringNullSafe(JSONMapping.JOB_VIEW_GROUP_ICON));
+        this.setTableGenerateMode(this.getAsStringNullSafe(JSONMapping.TABLE_GENERATE_MODE));
+        this.setAttachmentColumnLabel(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LABEL));
+        this.setAttachmentColumnLayout(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LAYOUT));
 
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW_GROUP_NAME)) {
-            this.setJobViewGroupName(this.jsonObject.getString(JSONMapping.JOB_VIEW_GROUP_NAME));
-        }
+        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
+        this.setAttachmentPreviewSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_PREVIEW_SIZE));
+        this.setAttachmentColumnMaxImageCount(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT));
 
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW_GROUP_ICON)) {
-            this.setJobViewGroupIcon(this.jsonObject.getString(JSONMapping.JOB_VIEW_GROUP_ICON));
-        }
+        this.setEnableRenderEmptyTable(this.getAsBooleanNullSafe(JSONMapping.ENABLE_RENDER_EMPTY_TABLE));
+        this.setEnableBulkEdit(this.getAsBooleanNullSafe(JSONMapping.ENABLE_BULK_EDIT));
 
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_GENERATE_MODE)) {
-            this.setTableGenerateMode(this.jsonObject.getString(JSONMapping.TABLE_GENERATE_MODE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_COLUMN_LABEL)) {
-            this.setAttachmentColumnLabel(this.jsonObject.getString(JSONMapping.ATTACHMENT_COLUMN_LABEL));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE)) {
-            this.setAttachmentThumbnailSize(this.jsonObject.getInt(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_PREVIEW_SIZE)) {
-            this.setAttachmentPreviewSize(this.jsonObject.getInt(JSONMapping.ATTACHMENT_PREVIEW_SIZE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT)) {
-            this.setAttachmentColumnMaxImageCount(this.jsonObject.getInt(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_COLUMN_LAYOUT)) {
-            this.setAttachmentColumnLayout(this.jsonObject.getString(JSONMapping.ATTACHMENT_COLUMN_LAYOUT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ENABLE_RENDER_EMPTY_TABLE)) {
-            this.setEnableRenderEmptyTable(this.jsonObject.getBoolean(JSONMapping.ENABLE_RENDER_EMPTY_TABLE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ENABLE_BULK_EDIT)) {
-            this.setEnableBulkEdit(this.jsonObject.getBoolean(JSONMapping.ENABLE_BULK_EDIT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.GROUP_ORDER)) {
-            this.setGroupOrder(this.jsonObject.getInt(JSONMapping.GROUP_ORDER));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_MAX_COUNT_PER_PAGE)) {
-            this.setTableMaxCountPerPage(this.jsonObject.getInt(JSONMapping.TABLE_MAX_COUNT_PER_PAGE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_BULK_UPDATE)) {
-            this.setShowButtonBulkUpdate(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_BULK_UPDATE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_EXPORT)) {
-            this.setShowButtonExport(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_EXPORT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_SEND_ON)) {
-            this.setShowButtonSendOn(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_SEND_ON));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_DELETE)) {
-            this.setShowButtonDelete(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_DELETE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_LOCK)) {
-            this.setShowButtonLock(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_LOCK));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_BUTTON_ADD_TO_PI)) {
-            this.setShowButtonAddToPI(this.jsonObject.getBoolean(JSONMapping.SHOW_BUTTON_ADD_TO_PI));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT)) {
-            this.setOpenWorkItemInMainLayout(this.jsonObject.getBoolean(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.WEB_KIT_VIEW_SUBS)) {
-            JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_VIEW_SUBS);
-            List<WebKitViewSub> objs = new ArrayList();
-            for (int index = 0; index < jsonArray.length(); index++) {
-                objs.add(new WebKitViewSub(jsonArray.getJSONObject(index)));
-            }
-            this.setWebKitViewSubs(objs);
-        }
+        this.setGroupOrder(this.getAsIntegerNullSafe(JSONMapping.GROUP_ORDER));
+        this.setTableMaxCountPerPage(this.getAsIntegerNullSafe(JSONMapping.TABLE_MAX_COUNT_PER_PAGE));
+        this.setShowButtonBulkUpdate(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_BULK_UPDATE));
+        this.setShowButtonExport(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_EXPORT));
+        this.setShowButtonSendOn(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_SEND_ON));
+        this.setShowButtonDelete(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_DELETE));
+        this.setShowButtonLock(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_LOCK));
+        this.setShowButtonAddToPI(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_ADD_TO_PI));
+        this.setOpenWorkItemInMainLayout(this.getAsBooleanNullSafe(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT));
+        
+        this.setWebKitViewSubs(this.extractObjects(JSONMapping.WEB_KIT_VIEW_SUBS, WebKitViewSub::new));
     }
 
     /**
@@ -266,58 +203,39 @@ public class WebKitViewGroup extends ABaseFluidJSONObject {
      * Returns the local JSON object.
      * Only set through constructor.
      *
-     * @return The local set {@code JSONObject} object.
+     * @return The local set {@code JsonObject} object.
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
-        returnVal.put(JSONMapping.ENABLE_RENDER_EMPTY_TABLE, this.isEnableRenderEmptyTable());
-        returnVal.put(JSONMapping.ENABLE_BULK_EDIT, this.isEnableBulkEdit());
-        returnVal.put(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.getAttachmentThumbnailSize());
-        returnVal.put(JSONMapping.ATTACHMENT_PREVIEW_SIZE, this.getAttachmentPreviewSize());
-        returnVal.put(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, this.getAttachmentColumnMaxImageCount());
-        returnVal.put(JSONMapping.GROUP_ORDER, this.getGroupOrder());
-
-        returnVal.put(JSONMapping.SHOW_BUTTON_BULK_UPDATE, this.isShowButtonBulkUpdate());
-        returnVal.put(JSONMapping.SHOW_BUTTON_EXPORT, this.isShowButtonExport());
-        returnVal.put(JSONMapping.SHOW_BUTTON_SEND_ON, this.isShowButtonSendOn());
-        returnVal.put(JSONMapping.SHOW_BUTTON_DELETE, this.isShowButtonDelete());
-        returnVal.put(JSONMapping.SHOW_BUTTON_LOCK, this.isShowButtonLock());
-        returnVal.put(JSONMapping.SHOW_BUTTON_ADD_TO_PI, this.isShowButtonAddToPI());
-
-        if (this.getJobViewGroupId() != null) {
-            returnVal.put(JSONMapping.JOB_VIEW_GROUP_ID, this.getJobViewGroupId());
-        }
-        if (this.getJobViewGroupName() != null) {
-            returnVal.put(JSONMapping.JOB_VIEW_GROUP_NAME, this.getJobViewGroupName());
-        }
-        if (this.getJobViewGroupIcon() != null) {
-            returnVal.put(JSONMapping.JOB_VIEW_GROUP_ICON, this.getJobViewGroupIcon());
-        }
-        if (this.getTableGenerateMode() != null) {
-            returnVal.put(JSONMapping.TABLE_GENERATE_MODE, this.getTableGenerateMode());
-        }
-        if (this.getAttachmentColumnLabel() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_COLUMN_LABEL, this.getAttachmentColumnLabel());
-        }
-        if (this.getAttachmentColumnLayout() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_COLUMN_LAYOUT, this.getAttachmentColumnLayout());
-        }
-        if (this.getTableMaxCountPerPage() != null) {
-            returnVal.put(JSONMapping.TABLE_MAX_COUNT_PER_PAGE, this.getTableMaxCountPerPage());
-        }
-
-        if (this.getWebKitViewSubs() != null && !this.getWebKitViewSubs().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (WebKitViewSub toAdd : this.getWebKitViewSubs()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.WEB_KIT_VIEW_SUBS, jsonArray);
-        }
-
-        returnVal.put(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT, this.isOpenWorkItemInMainLayout());
-
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        
+        this.setAsProperty(JSONMapping.ENABLE_RENDER_EMPTY_TABLE, returnVal, this.isEnableRenderEmptyTable());
+        this.setAsProperty(JSONMapping.ENABLE_BULK_EDIT, returnVal, this.isEnableBulkEdit());
+        this.setAsProperty(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, returnVal, this.getAttachmentThumbnailSize());
+        this.setAsProperty(JSONMapping.ATTACHMENT_PREVIEW_SIZE, returnVal, this.getAttachmentPreviewSize());
+        this.setAsProperty(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, returnVal, this.getAttachmentColumnMaxImageCount());
+        this.setAsProperty(JSONMapping.GROUP_ORDER, returnVal, this.getGroupOrder());
+        
+        this.setAsProperty(JSONMapping.SHOW_BUTTON_BULK_UPDATE, returnVal, this.isShowButtonBulkUpdate());
+        this.setAsProperty(JSONMapping.SHOW_BUTTON_EXPORT, returnVal, this.isShowButtonExport());
+        this.setAsProperty(JSONMapping.SHOW_BUTTON_SEND_ON, returnVal, this.isShowButtonSendOn());
+        this.setAsProperty(JSONMapping.SHOW_BUTTON_DELETE, returnVal, this.isShowButtonDelete());
+        this.setAsProperty(JSONMapping.SHOW_BUTTON_LOCK, returnVal, this.isShowButtonLock());
+        this.setAsProperty(JSONMapping.SHOW_BUTTON_ADD_TO_PI, returnVal, this.isShowButtonAddToPI());
+        
+        this.setAsProperty(JSONMapping.JOB_VIEW_GROUP_ID, returnVal, this.getJobViewGroupId());
+        this.setAsProperty(JSONMapping.JOB_VIEW_GROUP_NAME, returnVal, this.getJobViewGroupName());
+        this.setAsProperty(JSONMapping.JOB_VIEW_GROUP_ICON, returnVal, this.getJobViewGroupIcon());
+        this.setAsProperty(JSONMapping.TABLE_GENERATE_MODE, returnVal, this.getTableGenerateMode());
+        this.setAsProperty(JSONMapping.ATTACHMENT_COLUMN_LABEL, returnVal, this.getAttachmentColumnLabel());
+        this.setAsProperty(JSONMapping.ATTACHMENT_COLUMN_LAYOUT, returnVal, this.getAttachmentColumnLayout());
+        this.setAsProperty(JSONMapping.TABLE_MAX_COUNT_PER_PAGE, returnVal, this.getTableMaxCountPerPage());
+        
+        this.setAsObjArray(JSONMapping.WEB_KIT_VIEW_SUBS, returnVal, this::getWebKitViewSubs);
+        this.setAsProperty(JSONMapping.OPEN_WORK_ITEM_IN_MAIN_LAYOUT, returnVal, this.isOpenWorkItemInMainLayout());
+        
         return returnVal;
     }
 

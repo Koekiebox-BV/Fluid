@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.webkit.userquery;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class WebKitMenuItem extends ABaseFluidJSONObject {
+public class WebKitMenuItem extends ABaseFluidGSONObject {
     private String menuLabel;
     private String menuIcon;
     private String menuId;
@@ -49,7 +49,7 @@ public class WebKitMenuItem extends ABaseFluidJSONObject {
     }
 
     public WebKitMenuItem() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     public WebKitMenuItem(String menuId) {
@@ -62,28 +62,14 @@ public class WebKitMenuItem extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitMenuItem(JSONObject jsonObjectParam) {
+    public WebKitMenuItem(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.MENU_ID)) {
-            this.setMenuId(this.jsonObject.getString(JSONMapping.MENU_ID));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.PARENT_MENU_ID)) {
-            this.setParentMenuId(this.jsonObject.getString(JSONMapping.PARENT_MENU_ID));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_LABEL)) {
-            this.setMenuLabel(this.jsonObject.getString(JSONMapping.MENU_LABEL));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_ICON)) {
-            this.setMenuIcon(this.jsonObject.getString(JSONMapping.MENU_ICON));
-        }
-
+        this.setMenuId(this.getAsStringNullSafe(JSONMapping.MENU_ID));
+        this.setParentMenuId(this.getAsStringNullSafe(JSONMapping.PARENT_MENU_ID));
+        this.setMenuLabel(this.getAsStringNullSafe(JSONMapping.MENU_LABEL));
+        this.setMenuIcon(this.getAsStringNullSafe(JSONMapping.MENU_ICON));
     }
 
     /**
@@ -94,25 +80,12 @@ public class WebKitMenuItem extends ABaseFluidJSONObject {
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
-
-        if (this.getMenuId() != null) {
-            returnVal.put(JSONMapping.MENU_ID, this.getMenuId());
-        }
-
-        if (this.getParentMenuId() != null) {
-            returnVal.put(JSONMapping.PARENT_MENU_ID, this.getParentMenuId());
-        }
-
-        if (this.getMenuLabel() != null) {
-            returnVal.put(JSONMapping.MENU_LABEL, this.getMenuLabel());
-        }
-
-        if (this.getMenuIcon() != null) {
-            returnVal.put(JSONMapping.MENU_ICON, this.getMenuIcon());
-        }
-
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.MENU_ID, returnVal, this.getMenuId());
+        this.setAsProperty(JSONMapping.PARENT_MENU_ID, returnVal, this.getParentMenuId());
+        this.setAsProperty(JSONMapping.MENU_LABEL, returnVal, this.getMenuLabel());
+        this.setAsProperty(JSONMapping.MENU_ICON, returnVal, this.getMenuIcon());
         return returnVal;
     }
 

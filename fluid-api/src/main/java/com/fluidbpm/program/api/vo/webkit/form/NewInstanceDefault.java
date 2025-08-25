@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.vo.webkit.form;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
-public class NewInstanceDefault extends ABaseFluidJSONObject {
+public class NewInstanceDefault extends ABaseFluidGSONObject {
     public static final String FIELD = "field";
     public static final String DEFAULT = "defaultVal";
 
@@ -39,7 +39,7 @@ public class NewInstanceDefault extends ABaseFluidJSONObject {
      * Default.
      */
     public NewInstanceDefault() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
 
@@ -60,12 +60,12 @@ public class NewInstanceDefault extends ABaseFluidJSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public NewInstanceDefault(JSONObject jsonObject) {
+    public NewInstanceDefault(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(FIELD)) this.setField(this.jsonObject.getString(FIELD));
-        if (!this.jsonObject.isNull(DEFAULT)) this.setDefaultVal(this.jsonObject.getString(DEFAULT));
+        this.setField(this.getAsStringNullSafe(FIELD));
+        this.setDefaultVal(this.getAsStringNullSafe(DEFAULT));
     }
 
     /**
@@ -80,12 +80,10 @@ public class NewInstanceDefault extends ABaseFluidJSONObject {
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
-
-        returnVal.put(FIELD, this.getField());
-        returnVal.put(DEFAULT, this.getDefaultVal());
-
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(FIELD, returnVal, this.getField());
+        this.setAsProperty(DEFAULT, returnVal, this.getDefaultVal());
         return returnVal;
     }
 }

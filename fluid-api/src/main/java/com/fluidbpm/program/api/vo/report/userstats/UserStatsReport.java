@@ -15,15 +15,14 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class UserStatsReport extends ABaseFluidJSONReportObject {
+public class UserStatsReport extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private List<PunchCardEntry> punchCardEntries;
@@ -77,104 +76,40 @@ public class UserStatsReport extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserStatsReport(JSONObject jsonObjectParam) {
+    public UserStatsReport(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
+        this.setNumberOfLogins(this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS));
+        this.setNumberOfLoginsPrevCycle(this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE));
+        this.setPiCount(this.getAsIntegerNullSafe(JSONMapping.PI_COUNT) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.PI_COUNT));
+        this.setPiLockedCount(this.getAsIntegerNullSafe(JSONMapping.PI_LOCKED_COUNT) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.PI_LOCKED_COUNT));
 
-        if (this.jsonObject.isNull(JSONMapping.NUMBER_OF_LOGINS)) {
-            this.setNumberOfLogins(0);
-        } else {
-            this.setNumberOfLogins(this.jsonObject.getInt(JSONMapping.NUMBER_OF_LOGINS));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE)) {
-            this.setNumberOfLoginsPrevCycle(0);
-        } else {
-            this.setNumberOfLoginsPrevCycle(this.jsonObject.getInt(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.PI_COUNT)) {
-            this.setPiCount(0);
-        } else {
-            this.setPiCount(this.jsonObject.getInt(JSONMapping.PI_COUNT));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.PI_LOCKED_COUNT)) {
-            this.setPiLockedCount(0);
-        } else {
-            this.setPiLockedCount(this.jsonObject.getInt(JSONMapping.PI_LOCKED_COUNT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.PUNCH_CARD_ENTRIES)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.PUNCH_CARD_ENTRIES);
-            List<PunchCardEntry> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new PunchCardEntry(listingArray.getJSONObject(index)));
-            }
-            this.setPunchCardEntries(listing);
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES);
-            List<ViewOpenedAndSentOnEntry> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new ViewOpenedAndSentOnEntry(listingArray.getJSONObject(index)));
-            }
-            this.setViewOpenedAndSentOnEntries(listing);
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES);
-            List<CreateUpdateLockUnlockEntry> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new CreateUpdateLockUnlockEntry(listingArray.getJSONObject(index)));
-            }
-            this.setCreateUpdateLockUnlockEntries(listing);
-        }
+        this.setPunchCardEntries(this.extractObjects(JSONMapping.PUNCH_CARD_ENTRIES, PunchCardEntry::new));
+        this.setViewOpenedAndSentOnEntries(this.extractObjects(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES, ViewOpenedAndSentOnEntry::new));
+        this.setCreateUpdateLockUnlockEntries(this.extractObjects(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES, CreateUpdateLockUnlockEntry::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code UserStatsReport}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code UserStatsReport}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        returnVal.put(JSONMapping.NUMBER_OF_LOGINS, this.getNumberOfLogins());
-        returnVal.put(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE, this.getNumberOfLoginsPrevCycle());
-        returnVal.put(JSONMapping.PI_COUNT, this.getPiCount());
-        returnVal.put(JSONMapping.PI_LOCKED_COUNT, this.getPiLockedCount());
+        this.setAsProperty(JSONMapping.NUMBER_OF_LOGINS, returnVal, this.getNumberOfLogins());
+        this.setAsProperty(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE, returnVal, this.getNumberOfLoginsPrevCycle());
+        this.setAsProperty(JSONMapping.PI_COUNT, returnVal, this.getPiCount());
+        this.setAsProperty(JSONMapping.PI_LOCKED_COUNT, returnVal, this.getPiLockedCount());
 
-        if (this.getPunchCardEntries() != null && !this.getPunchCardEntries().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (PunchCardEntry toAdd : this.getPunchCardEntries()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.PUNCH_CARD_ENTRIES, jsonArray);
-        }
-
-        if (this.getViewOpenedAndSentOnEntries() != null && !this.getViewOpenedAndSentOnEntries().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (ViewOpenedAndSentOnEntry toAdd : this.getViewOpenedAndSentOnEntries()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES, jsonArray);
-        }
-
-        if (this.getCreateUpdateLockUnlockEntries() != null && !this.getCreateUpdateLockUnlockEntries().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (CreateUpdateLockUnlockEntry toAdd : this.getCreateUpdateLockUnlockEntries()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES, jsonArray);
-        }
+        this.setAsObjArray(JSONMapping.PUNCH_CARD_ENTRIES, returnVal, this::getPunchCardEntries);
+        this.setAsObjArray(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES, returnVal, this::getViewOpenedAndSentOnEntries);
+        this.setAsObjArray(JSONMapping.CREATE_UPDATE_LOCK_UNLOCK_ENTRIES, returnVal, this::getCreateUpdateLockUnlockEntries);
 
         return returnVal;
     }

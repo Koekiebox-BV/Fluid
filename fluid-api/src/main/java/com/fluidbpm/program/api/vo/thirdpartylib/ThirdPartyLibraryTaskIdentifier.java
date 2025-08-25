@@ -17,6 +17,7 @@ package com.fluidbpm.program.api.vo.thirdpartylib;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.IEnum;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -47,7 +48,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidGSONObject {
     /**
      * Types of 3rd party programs.
      */
-    public enum ThirdPartyLibraryTaskType {
+    public enum ThirdPartyLibraryTaskType implements IEnum {
         CustomProgram,
         CustomWebAction,
         CustomScheduledAction,
@@ -87,19 +88,17 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setLibraryFilename(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LIBRARY_FILENAME));
-        this.setLibrarySha256sum(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LIBRARY_SHA256SUM));
-        this.setLibraryDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LIBRARY_DESCRIPTION));
-        this.setTaskIdentifier(this.getAsStringNullSafe(this.jsonObject, JSONMapping.TASK_IDENTIFIER));
-        this.setThirdPartyLibraryId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.THIRD_PARTY_LIBRARY_ID));
+        this.setLibraryFilename(this.getAsStringNullSafe(JSONMapping.LIBRARY_FILENAME));
+        this.setLibrarySha256sum(this.getAsStringNullSafe(JSONMapping.LIBRARY_SHA256SUM));
+        this.setLibraryDescription(this.getAsStringNullSafe(JSONMapping.LIBRARY_DESCRIPTION));
+        this.setTaskIdentifier(this.getAsStringNullSafe(JSONMapping.TASK_IDENTIFIER));
+        this.setThirdPartyLibraryId(this.getAsLongNullSafe(JSONMapping.THIRD_PARTY_LIBRARY_ID));
 
-        // Handle enum conversion
-        String taskTypeStr = this.getAsStringNullSafe(this.jsonObject, JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE);
+        String taskTypeStr = this.getAsStringNullSafe(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE);
         if (taskTypeStr != null && !taskTypeStr.isEmpty()) {
             this.setThirdPartyLibraryTaskType(ThirdPartyLibraryTaskType.valueOf(taskTypeStr));
         }
-
-        this.setFormDefinitions(this.extractObjects(this.jsonObject, JSONMapping.FORM_DEFINITIONS, Form::new));
+        this.setFormDefinitions(this.extractObjects(JSONMapping.FORM_DEFINITIONS, Form::new));
     }
 
     /**
@@ -119,6 +118,14 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidGSONObject {
     @XmlTransient
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
+
+        this.setAsProperty(JSONMapping.THIRD_PARTY_LIBRARY_ID, returnVal, this.getThirdPartyLibraryId());
+        this.setAsProperty(JSONMapping.LIBRARY_FILENAME, returnVal, this.getLibraryFilename());
+        this.setAsProperty(JSONMapping.LIBRARY_SHA256SUM, returnVal, this.getLibrarySha256sum());
+        this.setAsProperty(JSONMapping.LIBRARY_DESCRIPTION, returnVal, this.getLibraryDescription());
+        this.setAsProperty(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE, returnVal, this.getThirdPartyLibraryTaskType());
+        this.setAsProperty(JSONMapping.TASK_IDENTIFIER, returnVal, this.getTaskIdentifier());
+        this.setAsObjArray(JSONMapping.FORM_DEFINITIONS, returnVal, this::getFormDefinitions);
 
         if (this.getThirdPartyLibraryId() != null)
             returnVal.addProperty(JSONMapping.THIRD_PARTY_LIBRARY_ID, this.getThirdPartyLibraryId());

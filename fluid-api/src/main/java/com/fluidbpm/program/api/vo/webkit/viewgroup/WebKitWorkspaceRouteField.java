@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -32,9 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
+public class WebKitWorkspaceRouteField extends ABaseFluidGSONObject {
     private Field routeField;
-
     private int fieldOrder;
     private boolean grouped;
     private String cssStyle;
@@ -55,7 +54,7 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
     }
 
     public WebKitWorkspaceRouteField() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -63,29 +62,15 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitWorkspaceRouteField(JSONObject jsonObjectParam) {
+    public WebKitWorkspaceRouteField(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELD)) {
-            this.setRouteField(this.fieldFromLclJsonObject(JSONMapping.ROUTE_FIELD));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FIELD_ORDER)) {
-            this.setFieldOrder(this.jsonObject.getInt(JSONMapping.FIELD_ORDER));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.CSS_CLASS)) {
-            this.setCssClass(this.jsonObject.getString(JSONMapping.CSS_CLASS));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.CSS_STYLE)) {
-            this.setCssStyle(this.jsonObject.getString(JSONMapping.CSS_STYLE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.GROUPED)) {
-            this.setGrouped(this.jsonObject.getBoolean(JSONMapping.GROUPED));
-        }
+        this.setRouteField(this.extractObject(JSONMapping.ROUTE_FIELD, Field::new));
+        this.setFieldOrder(this.getAsIntegerNullSafe(JSONMapping.FIELD_ORDER));
+        this.setCssClass(this.getAsStringNullSafe(JSONMapping.CSS_CLASS));
+        this.setCssStyle(this.getAsStringNullSafe(JSONMapping.CSS_STYLE));
+        this.setGrouped(this.getAsBooleanNullSafe(JSONMapping.GROUPED));
     }
 
     /**
@@ -105,24 +90,18 @@ public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         if (this.getRouteField() != null) {
             Field reducedField = new Field(this.getRouteField().getId());
-            returnVal.put(JSONMapping.ROUTE_FIELD, reducedField.toJsonObject());
+            returnVal.add(JSONMapping.ROUTE_FIELD, reducedField.toJsonObject());
         }
 
-        returnVal.put(JSONMapping.FIELD_ORDER, this.getFieldOrder());
-        returnVal.put(JSONMapping.GROUPED, this.isGrouped());
-
-        if (this.getCssClass() != null) {
-            returnVal.put(JSONMapping.CSS_CLASS, this.getCssClass());
-        }
-
-        if (this.getCssStyle() != null) {
-            returnVal.put(JSONMapping.CSS_STYLE, this.getCssStyle());
-        }
+        this.setAsProperty(JSONMapping.FIELD_ORDER, returnVal, this.getFieldOrder());
+        this.setAsProperty(JSONMapping.GROUPED, returnVal, this.isGrouped());
+        this.setAsProperty(JSONMapping.CSS_CLASS, returnVal, this.getCssClass());
+        this.setAsProperty(JSONMapping.CSS_STYLE, returnVal, this.getCssStyle());
 
         return returnVal;
     }

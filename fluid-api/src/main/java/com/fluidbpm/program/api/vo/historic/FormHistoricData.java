@@ -158,18 +158,18 @@ public class FormHistoricData extends ABaseFluidGSONObject {
         if (this.jsonObject == null) return;
 
         this.setDate(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE));
-        this.setDateAndFieldName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DATE_AND_FIELD_NAME));
-        this.setFormContainerFieldValuesJSON(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON));
-        this.setLogEntryType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LOG_ENTRY_TYPE));
-        this.setDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCRIPTION));
-        this.setHistoricEntryType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.HISTORIC_ENTRY_TYPE));
-        this.setUser(this.extractObject(this.jsonObject, JSONMapping.USER, User::new));
-        this.setFormForAuditCreate(this.extractObject(this.jsonObject, JSONMapping.FORM_FOR_AUDIT_CREATE, Form::new));
-        this.setField(this.extractObject(this.jsonObject, JSONMapping.FIELD, Field::new));
+        this.setDateAndFieldName(this.getAsStringNullSafe(JSONMapping.DATE_AND_FIELD_NAME));
+        this.setFormContainerFieldValuesJSON(this.getAsStringNullSafe(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON));
+        this.setLogEntryType(this.getAsStringNullSafe(JSONMapping.LOG_ENTRY_TYPE));
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
+        this.setHistoricEntryType(this.getAsStringNullSafe(JSONMapping.HISTORIC_ENTRY_TYPE));
+        this.setUser(this.extractObject(JSONMapping.USER, User::new));
+        this.setFormForAuditCreate(this.extractObject(JSONMapping.FORM_FOR_AUDIT_CREATE, Form::new));
+        this.setField(this.extractObject(JSONMapping.FIELD, Field::new));
 
-        this.setIsFieldDifferentFromPrevious(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
-        this.setIsFieldTypeSignature(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.IS_FIELD_TYPE_SIGNATURE));
-        this.setIsEscapeText(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.IS_ESCAPE_TEXT));
+        this.setIsFieldDifferentFromPrevious(this.getAsBooleanNullSafe(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS));
+        this.setIsFieldTypeSignature(this.getAsBooleanNullSafe(JSONMapping.IS_FIELD_TYPE_SIGNATURE));
+        this.setIsEscapeText(this.getAsBooleanNullSafe(JSONMapping.IS_ESCAPE_TEXT));
     }
 
     /**
@@ -182,66 +182,18 @@ public class FormHistoricData extends ABaseFluidGSONObject {
     @Override
     public JsonObject toJsonObject() throws JSONException {
         JsonObject returnVal = super.toJsonObject();
-
-        //Date...
-        if (this.getDate() != null) {
-            returnVal.addProperty(JSONMapping.DATE, this.getDateAsLongFromJson(this.getDate()));
-        }
-
-        //Date and Time Field Name...
-        if (this.getDateAndFieldName() != null) {
-            returnVal.addProperty(JSONMapping.DATE_AND_FIELD_NAME, this.getDateAndFieldName());
-        }
-
-        //Form Container Field Values JSON...
-        if (this.getFormContainerFieldValuesJSON() != null) {
-            returnVal.addProperty(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON, this.getFormContainerFieldValuesJSON());
-        }
-
-        //Log Entry Type...
-        if (this.getLogEntryType() != null) {
-            returnVal.addProperty(JSONMapping.LOG_ENTRY_TYPE, this.getLogEntryType());
-        }
-
-        //Description...
-        if (this.getDescription() != null) {
-            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
-        }
-
-        //Historic Entry Type...
-        if (this.getHistoricEntryType() != null) {
-            returnVal.addProperty(JSONMapping.HISTORIC_ENTRY_TYPE, this.getHistoricEntryType());
-        }
-
-        //User...
-        if (this.getUser() != null) {
-            returnVal.add(JSONMapping.USER, this.getUser().toJsonObject());
-        }
-
-        //Field...
-        if (this.getField() != null) {
-            returnVal.add(JSONMapping.FIELD, this.getField().toJsonObject());
-        }
-
-        //Different from Previous...
-        if (this.getIsFieldDifferentFromPrevious() != null) {
-            returnVal.addProperty(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS, this.getIsFieldDifferentFromPrevious());
-        }
-
-        //Field type Signature...
-        if (this.getIsFieldTypeSignature() != null) {
-            returnVal.addProperty(JSONMapping.IS_FIELD_TYPE_SIGNATURE, this.getIsFieldTypeSignature());
-        }
-
-        //Escape Text...
-        if (this.getIsEscapeText() != null) {
-            returnVal.addProperty(JSONMapping.IS_ESCAPE_TEXT, this.getIsEscapeText());
-        }
-
-        //Form for Audit Create...
-        if (this.getFormForAuditCreate() != null) {
-            returnVal.add(JSONMapping.FORM_FOR_AUDIT_CREATE, this.getFormForAuditCreate().toJsonObject());
-        }
+        this.setAsProperty(JSONMapping.DATE, returnVal, this.getDateAsLongFromJson(this.getDate()));
+        this.setAsProperty(JSONMapping.DATE_AND_FIELD_NAME, returnVal, this.getDateAndFieldName());
+        this.setAsProperty(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON, returnVal, this.getFormContainerFieldValuesJSON());
+        this.setAsProperty(JSONMapping.LOG_ENTRY_TYPE, returnVal, this.getLogEntryType());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsProperty(JSONMapping.HISTORIC_ENTRY_TYPE, returnVal, this.getHistoricEntryType());
+        this.setAsObj(JSONMapping.USER, returnVal, this::getUser);
+        this.setAsObj(JSONMapping.FIELD, returnVal, this::getField);
+        this.setAsProperty(JSONMapping.IS_FIELD_DIFFERENT_FROM_PREVIOUS, returnVal, this.getIsFieldDifferentFromPrevious());
+        this.setAsProperty(JSONMapping.IS_FIELD_TYPE_SIGNATURE, returnVal, this.getIsFieldTypeSignature());
+        this.setAsProperty(JSONMapping.IS_ESCAPE_TEXT, returnVal, this.getIsEscapeText());
+        this.setAsObj(JSONMapping.FORM_FOR_AUDIT_CREATE, returnVal, this::getFormForAuditCreate);
         return returnVal;
     }
 }

@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.field;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,18 +85,10 @@ public class AutoComplete extends ABaseFluidGSONObject {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        //Query...
-        this.setQuery(this.getAsStringNullSafe(this.jsonObject, JSONMapping.QUERY));
-        this.setMaxResults(this.getAsIntegerNullSafe(this.jsonObject, JSONMapping.MAX_RESULTS));
-        this.setFormField(new Field(this.jsonObject.getAsJsonObject(JSONMapping.FORM_FIELD)));
-
-        //Result...
-        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.EXISTING_VALUES)) {
-            JsonArray array = this.jsonObject.getAsJsonArray(JSONMapping.EXISTING_VALUES);
-            List<String> results = new ArrayList<>();
-            array.forEach(el -> results.add(el.getAsString()));
-            this.setExistingValues(results);
-        }
+        this.setQuery(this.getAsStringNullSafe(JSONMapping.QUERY));
+        this.setMaxResults(this.getAsIntegerNullSafe(JSONMapping.MAX_RESULTS));
+        this.setFormField(this.extractObject(JSONMapping.FORM_FIELD, Field::new));
+        this.setExistingValues(this.extractStrings(JSONMapping.EXISTING_VALUES));
     }
 
     /**
@@ -109,20 +100,11 @@ public class AutoComplete extends ABaseFluidGSONObject {
     @Override
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-
-        //Query...
-        returnVal.addProperty(JSONMapping.QUERY, this.getQuery());
-        returnVal.addProperty(JSONMapping.MAX_RESULTS, this.getMaxResults());
-        returnVal.add(JSONMapping.FORM_FIELD, this.getFormField().toJsonObject());
-
-        //Inputs...
-        if (this.getExistingValues() != null) {
-            JsonArray jsonArray = new JsonArray();
-            for (String toAdd : this.getExistingValues()) {
-                jsonArray.add(toAdd);
-            }
-            returnVal.add(JSONMapping.EXISTING_VALUES, jsonArray);
-        }
+        this.setAsObj(JSONMapping.FORM_FIELD, returnVal, this::getFormField);
+        this.setAsProperty(JSONMapping.QUERY, returnVal, this.getQuery());
+        this.setAsProperty(JSONMapping.MAX_RESULTS, returnVal, this.getMaxResults());
+        this.setAsObj(JSONMapping.FORM_FIELD, returnVal, this::getFormField);
+        this.setAsStringArray(JSONMapping.EXISTING_VALUES, returnVal, this.getExistingValues());
         return returnVal;
     }
 }

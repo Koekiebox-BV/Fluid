@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
+import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 /**

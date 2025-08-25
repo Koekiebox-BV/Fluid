@@ -201,16 +201,25 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     public Form(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
-        this.setFormDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FORM_DESCRIPTION));
-        this.setAncestorLabel(this.getAsStringNullSafe(this.jsonObject, JSONMapping.ANCESTOR_LABEL));
-        this.setDescendantsLabel(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCENDANTS_LABEL));
-        this.setNumberInputs(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.NUMBER_INPUTS));
-        this.setTitle(this.getAsStringNullSafe(this.jsonObject, JSONMapping.TITLE));
-        this.setFlowState(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FLOW_STATE));
-        this.setState(this.getAsStringNullSafe(this.jsonObject, JSONMapping.STATE));
+        this.setFormDescription(this.getAsStringNullSafe(JSONMapping.FORM_DESCRIPTION));
+        this.setAncestorLabel(this.getAsStringNullSafe(JSONMapping.ANCESTOR_LABEL));
+        this.setDescendantsLabel(this.getAsStringNullSafe(JSONMapping.DESCENDANTS_LABEL));
+        this.setNumberInputs(this.getAsBooleanNullSafe(JSONMapping.NUMBER_INPUTS));
+        this.setTitle(this.getAsStringNullSafe(JSONMapping.TITLE));
+        this.setFlowState(this.getAsStringNullSafe(JSONMapping.FLOW_STATE));
+        this.setState(this.getAsStringNullSafe(JSONMapping.STATE));
+        this.setFormType(this.getAsStringNullSafe(JSONMapping.FORM_TYPE));
+        this.setFormTypeId(this.getAsLongNullSafe(JSONMapping.FORM_TYPE_ID));
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
+        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
+        this.setAssociatedFlows(this.extractObjects(JSONMapping.ASSOCIATED_FLOWS, Flow::new));
+        this.setFormFields(this.extractObjects(JSONMapping.FORM_FIELDS, Field::new));
+        this.setAncestorId(this.getAsLongNullSafe(JSONMapping.ANCESTOR_ID));
+        this.setTableFieldParentId(this.getAsLongNullSafe(JSONMapping.TABLE_FIELD_PARENT_ID));
+        this.setTableFieldParentName(this.getAsStringNullSafe(JSONMapping.TABLE_FIELD_PARENT_NAME));
+        this.setDescendantIds(this.extractLongs(JSONMapping.DESCENDANT_IDS));
 
         //User...
         if (this.isPropertyNotNull(this.jsonObject, JSONMapping.CURRENT_USER)) {
@@ -218,27 +227,16 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             User currentUser = new User();
             //User Id
             if (this.isPropertyNotNull(jsonObjCurUsr, User.JSONMapping.Elastic.USER_ID)) {
-                currentUser.setId(this.getAsLongNullSafe(jsonObjCurUsr, User.JSONMapping.Elastic.USER_ID));
+                currentUser.setId(jsonObjCurUsr.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
             } else if (this.isPropertyNotNull(jsonObjCurUsr, ABaseFluidJSONObject.JSONMapping.ID)) {
                 //Id is set, make use of that instead...
-                currentUser.setId(this.getAsLongNullSafe(jsonObjCurUsr, ABaseFluidJSONObject.JSONMapping.ID));
+                currentUser.setId(jsonObjCurUsr.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
             }
             if (this.isPropertyNotNull(jsonObjCurUsr, User.JSONMapping.USERNAME)) {
-                currentUser.setUsername(this.getAsStringNullSafe(jsonObjCurUsr, User.JSONMapping.USERNAME));
+                currentUser.setUsername(jsonObjCurUsr.get(User.JSONMapping.USERNAME).getAsString());
             }
             this.setCurrentUser(currentUser);
         }
-
-        this.setFormType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FORM_TYPE));
-        this.setFormTypeId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.FORM_TYPE_ID));
-        this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
-        this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
-        this.setAssociatedFlows(this.extractObjects(this.jsonObject, JSONMapping.ASSOCIATED_FLOWS, Flow::new));
-        this.setFormFields(this.extractObjects(this.jsonObject, JSONMapping.FORM_FIELDS, Field::new));
-        this.setAncestorId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.ANCESTOR_ID));
-        this.setTableFieldParentId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.TABLE_FIELD_PARENT_ID));
-        this.setTableFieldParentName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.TABLE_FIELD_PARENT_NAME));
-        this.setDescendantIds(this.extractLongs(this.jsonObject, JSONMapping.DESCENDANT_IDS));
     }
 
     /**
@@ -680,29 +678,29 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        returnVal.addProperty(JSONMapping.FORM_TYPE, this.getFormType());
-        returnVal.addProperty(JSONMapping.FORM_TYPE_ID, this.getFormTypeId());
-        returnVal.addProperty(JSONMapping.TITLE, this.getTitle());
-        returnVal.addProperty(JSONMapping.FORM_DESCRIPTION, this.getFormDescription());
-        returnVal.addProperty(JSONMapping.ANCESTOR_LABEL, this.getAncestorLabel());
-        returnVal.addProperty(JSONMapping.DESCENDANTS_LABEL, this.getDescendantsLabel());
-        returnVal.addProperty(JSONMapping.NUMBER_INPUTS, this.getNumberInputs());
-        returnVal.addProperty(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
-        returnVal.addProperty(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
-        returnVal.add(JSONMapping.CURRENT_USER, this.getCurrentUser() == null ? null : this.getCurrentUser().toJsonObject());
+        this.setAsProperty(JSONMapping.FORM_TYPE, returnVal, this.getFormType());
+        this.setAsProperty(JSONMapping.FORM_TYPE_ID, returnVal, this.getFormTypeId());
+        this.setAsProperty(JSONMapping.TITLE, returnVal, this.getTitle());
+        this.setAsProperty(JSONMapping.FORM_DESCRIPTION, returnVal, this.getFormDescription());
+        this.setAsProperty(JSONMapping.ANCESTOR_LABEL, returnVal, this.getAncestorLabel());
+        this.setAsProperty(JSONMapping.DESCENDANTS_LABEL, returnVal, this.getDescendantsLabel());
+        this.setAsProperty(JSONMapping.NUMBER_INPUTS, returnVal, this.getNumberInputs());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        this.setAsObj(JSONMapping.CURRENT_USER, returnVal, this::getCurrentUser);
 
-        returnVal.addProperty(JSONMapping.STATE, this.getState());
-        returnVal.addProperty(JSONMapping.FLOW_STATE, this.getFlowState());
+        this.setAsProperty(JSONMapping.STATE, returnVal, this.getState());
+        this.setAsProperty(JSONMapping.FLOW_STATE, returnVal, this.getFlowState());
 
-        returnVal.add(JSONMapping.FORM_FIELDS, this.toJsonObjArray(this.getFormFields()));
-        returnVal.add(JSONMapping.ASSOCIATED_FLOWS, this.toJsonObjArray(this.getAssociatedFlows()));
+        this.setAsObjArray(JSONMapping.FORM_FIELDS, returnVal, this::getFormFields);
+        this.setAsObjArray(JSONMapping.ASSOCIATED_FLOWS, returnVal, this::getAssociatedFlows);
 
-        returnVal.addProperty(JSONMapping.ANCESTOR_ID, this.getAncestorId());
-        returnVal.addProperty(JSONMapping.TABLE_FIELD_PARENT_ID, this.getTableFieldParentId());
-        returnVal.addProperty(JSONMapping.TABLE_FIELD_PARENT_NAME, this.getTableFieldParentName());
+        this.setAsProperty(JSONMapping.ANCESTOR_ID, returnVal, this.getAncestorId());
+        this.setAsProperty(JSONMapping.TABLE_FIELD_PARENT_ID, returnVal, this.getTableFieldParentId());
+        this.setAsProperty(JSONMapping.TABLE_FIELD_PARENT_NAME, returnVal, this.getTableFieldParentName());
 
-        returnVal.add(JSONMapping.ASSOCIATED_FLOWS, this.toJsonObjArray(this.getAssociatedFlows()));
-        returnVal.add(JSONMapping.DESCENDANT_IDS, this.toJsonLongArray(this.getDescendantIds()));
+        this.setAsObjArray(JSONMapping.ASSOCIATED_FLOWS, returnVal, this::getAssociatedFlows);
+        this.setAsLongArray(JSONMapping.DESCENDANT_IDS, returnVal, this.getDescendantIds());
 
         return returnVal;
     }
@@ -1010,23 +1008,23 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         this.jsonObject = jsonObject;
         if (jsonObject == null) return;
 
-        this.setId(this.getAsLongNullSafe(jsonObject, ABaseFluidJSONObject.JSONMapping.ID));
-        this.setFormType(this.getAsStringNullSafe(jsonObject, JSONMapping.FORM_TYPE));
-        this.setFormTypeId(this.getAsLongNullSafe(jsonObject, JSONMapping.FORM_TYPE_ID));
-        this.setTitle(this.getAsStringNullSafe(jsonObject, JSONMapping.TITLE));
-        this.setFlowState(this.getAsStringNullSafe(jsonObject, JSONMapping.FLOW_STATE));
-        this.setState(this.getAsStringNullSafe(jsonObject, JSONMapping.STATE));
-        this.setFormDescription(this.getAsStringNullSafe(jsonObject, JSONMapping.FORM_DESCRIPTION));
+        this.setId(this.getAsLongNullSafe(ABaseFluidJSONObject.JSONMapping.ID));
+        this.setFormType(this.getAsStringNullSafe(JSONMapping.FORM_TYPE));
+        this.setFormTypeId(this.getAsLongNullSafe(JSONMapping.FORM_TYPE_ID));
+        this.setTitle(this.getAsStringNullSafe(JSONMapping.TITLE));
+        this.setFlowState(this.getAsStringNullSafe(JSONMapping.FLOW_STATE));
+        this.setState(this.getAsStringNullSafe(JSONMapping.STATE));
+        this.setFormDescription(this.getAsStringNullSafe(JSONMapping.FORM_DESCRIPTION));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
 
-        if (this.isPropertyNull(jsonObject, JSONMapping.CURRENT_USER)) {
+        if (this.isPropertyNull(this.jsonObject, JSONMapping.CURRENT_USER)) {
             this.setCurrentUser(null);
         } else {
             JsonObject currUserJsonObj = jsonObject.getAsJsonObject(JSONMapping.CURRENT_USER);
             User currentUser = new User();
-            currentUser.setId(this.getAsLongNullSafe(currUserJsonObj, User.JSONMapping.Elastic.USER_ID));
-            currentUser.setUsername(this.getAsStringNullSafe(currUserJsonObj, User.JSONMapping.USERNAME));
+            currentUser.setId(currUserJsonObj.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
+            currentUser.setUsername(currUserJsonObj.get(User.JSONMapping.USERNAME).getAsString());
             this.setCurrentUser(currentUser);
         }
 
@@ -1047,10 +1045,10 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         }
 
         //Ancestor...
-        this.setAncestorId(this.getAsLongNullSafe(jsonObject, JSONMapping.ANCESTOR_ID));
-        this.setTableFieldParentId(this.getAsLongNullSafe(jsonObject, JSONMapping.TABLE_FIELD_PARENT_ID));
-        this.setTableFieldParentName(this.getAsStringNullSafe(jsonObject, JSONMapping.TABLE_FIELD_PARENT_NAME));
-        this.setDescendantIds(this.extractLongs(jsonObject, JSONMapping.DESCENDANT_IDS));
+        this.setAncestorId(this.getAsLongNullSafe(JSONMapping.ANCESTOR_ID));
+        this.setTableFieldParentId(this.getAsLongNullSafe(JSONMapping.TABLE_FIELD_PARENT_ID));
+        this.setTableFieldParentName(this.getAsStringNullSafe(JSONMapping.TABLE_FIELD_PARENT_NAME));
+        this.setDescendantIds(this.extractLongs(JSONMapping.DESCENDANT_IDS));
     }
 
     /**

@@ -15,8 +15,9 @@
 
 package com.fluidbpm.program.api.vo.webkit.form;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
@@ -32,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
-public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
+public class WebKitFormLayoutAdvance extends ABaseFluidGSONObject {
     private int colSpan = 6;
     private Field field;
 
@@ -40,7 +41,7 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
      * Default.
      */
     public WebKitFormLayoutAdvance() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -58,16 +59,12 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitFormLayoutAdvance(JSONObject jsonObjectParam) {
+    public WebKitFormLayoutAdvance(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.COLUMN_SPAN))
-            this.setColSpan(this.jsonObject.getInt(JSONMapping.COLUMN_SPAN));
-
-        if (!this.jsonObject.isNull(JSONMapping.FIELD)) {
-            this.setField(this.fieldFromLclJsonObject(JSONMapping.FIELD));
-        }
+        this.setColSpan(this.getAsIntegerNullSafe(JSONMapping.COLUMN_SPAN));
+        this.setField(this.extractObject(JSONMapping.FIELD, Field::new));
     }
 
     /**
@@ -90,16 +87,14 @@ public class WebKitFormLayoutAdvance extends ABaseFluidJSONObject {
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         if (this.getField() != null) {
             Field reducedField = new Field(this.getField().getId(), this.getField().getFieldName());
-            returnVal.put(JSONMapping.FIELD, reducedField.toJsonObject());
+            returnVal.add(JSONMapping.FIELD, reducedField.toJsonObject());
         }
-
-        returnVal.put(JSONMapping.COLUMN_SPAN, this.getColSpan());
-
+        this.setAsProperty(JSONMapping.COLUMN_SPAN, returnVal, this.getColSpan());
         return returnVal;
     }
 

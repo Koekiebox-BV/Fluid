@@ -16,12 +16,12 @@
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
+public class WebKitWorkspaceJobView extends ABaseFluidGSONObject {
     private JobView jobView;
     private Integer fetchLimit;
 
@@ -49,7 +49,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
     }
 
     public WebKitWorkspaceJobView() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -57,18 +57,18 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitWorkspaceJobView(JSONObject jsonObjectParam) {
+    public WebKitWorkspaceJobView(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) {
             return;
         }
 
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW)) {
-            this.setJobView(new JobView(this.jsonObject.getJSONObject(JSONMapping.JOB_VIEW)));
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.JOB_VIEW)) {
+            this.setJobView(new JobView(this.jsonObject.getAsJsonObject(JSONMapping.JOB_VIEW)));
         }
 
-        if (!this.jsonObject.isNull(JSONMapping.FETCH_LIMIT)) {
-            this.setFetchLimit(this.jsonObject.getInt(JSONMapping.FETCH_LIMIT));
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.FETCH_LIMIT)) {
+            this.setFetchLimit(this.jsonObject.get(JSONMapping.FETCH_LIMIT).getAsInt());
         }
     }
 
@@ -85,20 +85,20 @@ public class WebKitWorkspaceJobView extends ABaseFluidJSONObject {
      * Returns the local JSON object.
      * Only set through constructor.
      *
-     * @return The local set {@code JSONObject} object.
+     * @return The local set {@code JsonObject} object.
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
         if (this.getJobView() != null) {
             JobView reducedView = new JobView(this.getJobView().getId());
-            returnVal.put(JSONMapping.JOB_VIEW, reducedView.toJsonObject());
+            returnVal.add(JSONMapping.JOB_VIEW, reducedView.toJsonObject());
         }
 
         if (this.getFetchLimit() != null) {
-            returnVal.put(JSONMapping.FETCH_LIMIT, this.getFetchLimit());
+            returnVal.addProperty(JSONMapping.FETCH_LIMIT, this.getFetchLimit());
         }
 
         return returnVal;

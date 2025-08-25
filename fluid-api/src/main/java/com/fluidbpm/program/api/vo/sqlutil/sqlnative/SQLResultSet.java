@@ -15,8 +15,8 @@
 
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
-import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -27,10 +27,10 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author jasonbruwer on 2018-05-26
  * @see SQLRow
- * @see ABaseListing
+ * @see ABaseGSONListing
  * @since v1.8
  */
-public class SQLResultSet extends ABaseListing<SQLRow> {
+public class SQLResultSet extends ABaseGSONListing<SQLRow> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -45,7 +45,7 @@ public class SQLResultSet extends ABaseListing<SQLRow> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLResultSet(JSONObject jsonObjectParam) {
+    public SQLResultSet(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -57,7 +57,7 @@ public class SQLResultSet extends ABaseListing<SQLRow> {
      */
     @Override
     @XmlTransient
-    public SQLRow getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public SQLRow getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new SQLRow(jsonObjectParam);
     }
 }

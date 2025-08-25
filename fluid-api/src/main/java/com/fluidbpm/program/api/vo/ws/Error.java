@@ -15,10 +15,12 @@
 
 package com.fluidbpm.program.api.vo.ws;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+import org.json.JSONException;
 
 /**
  * <p>
@@ -33,8 +35,9 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see WS
  * @since v1.0
  */
-public class Error extends ABaseFluidJSONObject {
-
+@Getter
+@Setter
+public class Error extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private int errorCode;
@@ -46,7 +49,6 @@ public class Error extends ABaseFluidJSONObject {
     public static class JSONMapping {
         public static final String ERROR_CODE = "errorCode";
         public static final String ERROR_MESSAGE = "errorMessage";
-
         public static final String ERROR_CODE_OTHER = "error_code";
         public static final String ERROR_MESSAGE_OTHER = "error_message";
     }
@@ -74,85 +76,47 @@ public class Error extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Error(JSONObject jsonObjectParam) {
+    public Error(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
         //Error Code...
-        if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE)) {
-            this.setErrorCode(
-                    Long.valueOf(this.jsonObject.getLong(JSONMapping.ERROR_CODE)).intValue());
-        } else if (!this.jsonObject.isNull(JSONMapping.ERROR_CODE_OTHER)) {
-            this.setErrorCode(
-                    Long.valueOf(this.jsonObject.getLong(JSONMapping.ERROR_CODE_OTHER)).intValue());
+        Long errorCodeLong = this.getAsLongNullSafe(JSONMapping.ERROR_CODE);
+        if (errorCodeLong == null) {
+            errorCodeLong = this.getAsLongNullSafe(JSONMapping.ERROR_CODE_OTHER);
+        }
+        if (errorCodeLong != null) {
+            this.setErrorCode(errorCodeLong.intValue());
         }
 
         //Error Message...
-        if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE)) {
-            this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE));
-        } else if (!this.jsonObject.isNull(JSONMapping.ERROR_MESSAGE_OTHER)) {
-            this.setErrorMessage(this.jsonObject.getString(JSONMapping.ERROR_MESSAGE_OTHER));
+        String errorMessage = this.getAsStringNullSafe(JSONMapping.ERROR_MESSAGE);
+        if (errorMessage == null) {
+            errorMessage = this.getAsStringNullSafe(JSONMapping.ERROR_MESSAGE_OTHER);
         }
-    }
-
-    /**
-     * Gets the Error Code.
-     *
-     * @return Error Code.
-     */
-    public int getErrorCode() {
-        return this.errorCode;
-    }
-
-    /**
-     * Sets the Error Code.
-     *
-     * @param errorCode Error Code.
-     */
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    /**
-     * Gets the Error Message.
-     *
-     * @return Error Message.
-     */
-    public String getErrorMessage() {
-        return this.errorMessage;
-    }
-
-    /**
-     * Sets the Error Message.
-     *
-     * @param errorMessage Error Message.
-     */
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        this.setErrorMessage(errorMessage);
     }
 
     /**
      * <p>
-     * Base {@code toJsonObject} that creates a {@code JSONObject}
+     * Base {@code toJsonObject} that creates a {@code JsonObject}
      * with the Id and ServiceTicket set.
      * </p>
      *
-     * @return {@code JSONObject} representation of {@code ABaseFluidJSONObject}
+     * @return {@code JsonObject} representation of {@code ABaseFluidGSONObject}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see org.json.JSONObject
+     * @see com.google.gson.JsonObject
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = super.toJsonObject();
-
-        returnVal.put(JSONMapping.ERROR_CODE, this.getErrorCode());
-        returnVal.put(JSONMapping.ERROR_CODE_OTHER, this.getErrorCode());
+        this.setAsProperty(JSONMapping.ERROR_CODE, returnVal, this.getErrorCode());
+        this.setAsProperty(JSONMapping.ERROR_CODE_OTHER, returnVal, this.getErrorCode());
 
         //Error Message...
-        if (this.getErrorMessage() != null) {
-            returnVal.put(JSONMapping.ERROR_MESSAGE, this.getErrorMessage());
-            returnVal.put(JSONMapping.ERROR_MESSAGE_OTHER, this.getErrorMessage());
-        }
+        this.setAsProperty(JSONMapping.ERROR_MESSAGE, returnVal, this.getErrorMessage());
+        this.setAsProperty(JSONMapping.ERROR_MESSAGE_OTHER, returnVal, this.getErrorMessage());
 
         return returnVal;
     }

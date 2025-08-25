@@ -15,14 +15,15 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Getter
 @Setter
-public class PunchCardEntry extends ABaseFluidJSONReportObject {
+public class PunchCardEntry extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private Date punchCardDay;
@@ -67,15 +68,11 @@ public class PunchCardEntry extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public PunchCardEntry(JSONObject jsonObjectParam) {
+    public PunchCardEntry(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
-        this.setPunchCardDay(
-                this.getDateFieldValueFromFieldWithName(
-                        JSONMapping.PUNCH_CARD_DAY));
+        this.setPunchCardDay(this.getDateFieldValueFromFieldWithName(JSONMapping.PUNCH_CARD_DAY));
 
         this.setFirstLoginForDay(
                 this.getDateFieldValueFromFieldWithName(
@@ -95,40 +92,22 @@ public class PunchCardEntry extends ABaseFluidJSONReportObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code PunchCardEntry}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code PunchCardEntry}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getPunchCardDay() != null) {
-            returnVal.put(JSONMapping.PUNCH_CARD_DAY,
-                    this.getDateAsObjectFromJson(this.getPunchCardDay()));
-        }
-
-        if (this.getFirstLoginForDay() != null) {
-            returnVal.put(JSONMapping.FIRST_LOGIN_FOR_DAY,
-                    this.getDateAsObjectFromJson(this.getFirstLoginForDay()));
-        }
-
-        if (this.getSecondLastLogout() != null) {
-            returnVal.put(JSONMapping.SECOND_LAST_LOGOUT,
-                    this.getDateAsObjectFromJson(this.getSecondLastLogout()));
-        }
-
-        if (this.getSecondLastLogin() != null) {
-            returnVal.put(JSONMapping.SECOND_LAST_LOGIN,
-                    this.getDateAsObjectFromJson(this.getSecondLastLogin()));
-        }
-
-        if (this.getLastLogout() != null) {
-            returnVal.put(JSONMapping.LAST_LOGOUT,
-                    this.getDateAsObjectFromJson(this.getLastLogout()));
-        }
+        this.setAsProperty(JSONMapping.PUNCH_CARD_DAY, returnVal, this.getDateAsLongFromJson(this.getPunchCardDay()));
+        this.setAsProperty(JSONMapping.FIRST_LOGIN_FOR_DAY, returnVal, this.getDateAsLongFromJson(this.getFirstLoginForDay()));
+        this.setAsProperty(JSONMapping.SECOND_LAST_LOGOUT, returnVal, this.getDateAsLongFromJson(this.getSecondLastLogout()));
+        this.setAsProperty(JSONMapping.SECOND_LAST_LOGIN, returnVal, this.getDateAsLongFromJson(this.getSecondLastLogin()));
+        this.setAsProperty(JSONMapping.LAST_LOGOUT, returnVal, this.getDateAsLongFromJson(this.getLastLogout()));
 
         return returnVal;
     }

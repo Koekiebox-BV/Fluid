@@ -78,8 +78,8 @@ public class RoleToUserQuery extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setRole(this.extractObject(this.jsonObject, JSONMapping.ROLE, Role::new));
-        this.setUserQuery(this.extractObject(this.jsonObject, JSONMapping.USER_QUERY, UserQuery::new));
+        this.setRole(this.extractObject(JSONMapping.ROLE, Role::new));
+        this.setUserQuery(this.extractObject(JSONMapping.USER_QUERY, UserQuery::new));
     }
 
     /**
@@ -94,17 +94,8 @@ public class RoleToUserQuery extends ABaseFluidGSONObject {
     @JsonIgnore
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-
-        //User Query...
-        if (this.getUserQuery() != null) {
-            returnVal.add(JSONMapping.USER_QUERY, this.getUserQuery().toJsonObject());
-        }
-
-        //Role...
-        if (this.getRole() != null) {
-            returnVal.add(JSONMapping.ROLE, this.getRole().toJsonObject());
-        }
-
+        this.setAsObj(JSONMapping.USER_QUERY, returnVal, this::getUserQuery);
+        this.setAsObj(JSONMapping.ROLE, returnVal, this::getRole);
         return returnVal;
     }
 }

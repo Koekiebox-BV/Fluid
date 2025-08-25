@@ -112,12 +112,12 @@ public class FlowStepRule extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setOrder(this.getAsLongNullSafe(this.jsonObject, JSONMapping.ORDER));
-        this.setRule(this.getAsStringNullSafe(this.jsonObject, JSONMapping.RULE));
-        this.setCurrentTypedSyntax(this.getAsStringNullSafe(this.jsonObject, JSONMapping.CURRENT_TYPED_SYNTAX));
-        this.setFlow(this.extractObject(this.jsonObject, JSONMapping.FLOW, Flow::new));
-        this.setFlowStep(this.extractObject(this.jsonObject, JSONMapping.FLOW_STEP, FlowStep::new));
-        this.setNextValidSyntaxWords(this.extractStrings(this.jsonObject, JSONMapping.NEXT_VALID_SYNTAX_WORDS));
+        this.setOrder(this.getAsLongNullSafe(JSONMapping.ORDER));
+        this.setRule(this.getAsStringNullSafe(JSONMapping.RULE));
+        this.setCurrentTypedSyntax(this.getAsStringNullSafe(JSONMapping.CURRENT_TYPED_SYNTAX));
+        this.setFlow(this.extractObject(JSONMapping.FLOW, Flow::new));
+        this.setFlowStep(this.extractObject(JSONMapping.FLOW_STEP, FlowStep::new));
+        this.setNextValidSyntaxWords(this.extractStrings(JSONMapping.NEXT_VALID_SYNTAX_WORDS));
     }
 
     /**

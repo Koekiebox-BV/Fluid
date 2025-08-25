@@ -149,14 +149,14 @@ public class Attachment extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
-        this.setPath(this.getAsStringNullSafe(this.jsonObject, JSONMapping.PATH));
-        this.setVersion(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VERSION));
-        this.setContentType(this.getAsStringNullSafe(this.jsonObject, JSONMapping.CONTENT_TYPE));
-        this.setFormId(this.getAsLongNullSafe(this.jsonObject, JSONMapping.FORM_ID));
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setPath(this.getAsStringNullSafe(JSONMapping.PATH));
+        this.setVersion(this.getAsStringNullSafe(JSONMapping.VERSION));
+        this.setContentType(this.getAsStringNullSafe(JSONMapping.CONTENT_TYPE));
+        this.setFormId(this.getAsLongNullSafe(JSONMapping.FORM_ID));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
-        this.setAttachmentDataBase64(this.getAsStringNullSafe(this.jsonObject, JSONMapping.ATTACHMENT_DATA_BASE64));
+        this.setAttachmentDataBase64(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DATA_BASE64));
     }
 
     /**
@@ -190,51 +190,14 @@ public class Attachment extends ABaseFluidGSONObject {
     @JsonIgnore
     public JsonObject toJsonObject() throws JSONException {
         JsonObject returnVal = super.toJsonObject();
-        //Attachment Data...
-        if (this.getAttachmentDataBase64() != null) {
-            returnVal.addProperty(JSONMapping.ATTACHMENT_DATA_BASE64, this.getAttachmentDataBase64());
-        }
-
-        //Content Type...
-        if (this.getContentType() != null) {
-            returnVal.addProperty(JSONMapping.CONTENT_TYPE, this.getContentType());
-        }
-
-        //Form Id...
-        if (this.getFormId() != null) {
-            returnVal.addProperty(JSONMapping.FORM_ID, this.getFormId());
-        }
-
-        //Name...
-        if (this.getName() != null) {
-            returnVal.addProperty(JSONMapping.NAME, this.getName());
-        }
-
-        //Path...
-        if (this.getPath() != null) {
-            returnVal.addProperty(JSONMapping.PATH, this.getPath());
-        }
-
-        //Version...
-        if (this.getVersion() != null) {
-            returnVal.addProperty(JSONMapping.VERSION, this.getVersion());
-        }
-
-        //Date Created...
-        if (this.getDateCreated() != null) {
-            returnVal.addProperty(
-                    JSONMapping.DATE_CREATED,
-                    this.getDateAsLongFromJson(this.getDateCreated())
-            );
-        }
-
-        //Date Last Updated...
-        if (this.getDateLastUpdated() != null) {
-            returnVal.addProperty(
-                    JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateAsLongFromJson(this.getDateLastUpdated())
-            );
-        }
+        this.setAsProperty(JSONMapping.ATTACHMENT_DATA_BASE64, returnVal, this.getAttachmentDataBase64());
+        this.setAsProperty(JSONMapping.CONTENT_TYPE, returnVal, this.getContentType());
+        this.setAsProperty(JSONMapping.FORM_ID, returnVal, this.getFormId());
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.PATH, returnVal, this.getPath());
+        this.setAsProperty(JSONMapping.VERSION, returnVal, this.getVersion());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateAsLongFromJson(this.getDateLastUpdated()));
         return returnVal;
     }
 

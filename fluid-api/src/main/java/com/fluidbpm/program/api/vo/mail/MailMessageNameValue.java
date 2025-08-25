@@ -15,12 +15,16 @@
 
 package com.fluidbpm.program.api.vo.mail;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Fluid Mail Message Name and Value.
@@ -36,7 +40,9 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
  * @see ABaseFluidVO
  * @since v1.0
  */
-public class MailMessageNameValue extends ABaseFluidJSONObject {
+@Getter
+@Setter
+public class MailMessageNameValue extends ABaseFluidGSONObject {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,7 +72,6 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
      */
     public MailMessageNameValue(String nameParam, String valueParam) {
         super();
-
         this.setName(nameParam);
         this.setValue(valueParam);
     }
@@ -76,85 +81,29 @@ public class MailMessageNameValue extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessageNameValue(JSONObject jsonObjectParam) {
+    public MailMessageNameValue(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
-
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-
-            this.setName(this.jsonObject.getString(
-                    JSONMapping.NAME));
-        }
-
-        //Value...
-        if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
-
-            this.setValue(this.jsonObject.getString(
-                    JSONMapping.VALUE));
-        }
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setValue(this.getAsStringNullSafe(JSONMapping.VALUE));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code MailMessageNameValue}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code MailMessageNameValue}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        //Name...
-        if (this.getName() != null) {
-            returnVal.put(JSONMapping.NAME, this.getName());
-        }
-
-        //Value...
-        if (this.getValue() != null) {
-            returnVal.put(JSONMapping.VALUE, this.getValue());
-        }
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.VALUE, returnVal, this.getValue());
 
         return returnVal;
-    }
-
-    /**
-     * Gets the name of the name-value to replace.
-     *
-     * @return The Name of the value to replace.
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Sets the name of the name-value to replace.
-     *
-     * @param nameParam The Name of the value to replace.
-     */
-    public void setName(String nameParam) {
-        this.name = nameParam;
-    }
-
-    /**
-     * Gets the replacement value.
-     *
-     * @return The replacement value.
-     */
-    public String getValue() {
-        return this.value;
-    }
-
-    /**
-     * Sets the replacement value.
-     *
-     * @param valueParam The replacement value.
-     */
-    public void setValue(String valueParam) {
-        this.value = valueParam;
     }
 }

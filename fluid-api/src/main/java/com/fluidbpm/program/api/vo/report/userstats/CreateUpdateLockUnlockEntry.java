@@ -15,15 +15,14 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +35,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
+public class CreateUpdateLockUnlockEntry extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private Date entryDay;
@@ -64,63 +63,31 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public CreateUpdateLockUnlockEntry(JSONObject jsonObjectParam) {
+    public CreateUpdateLockUnlockEntry(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) {
             return;
         }
         this.setEntryDay(this.getDateFieldValueFromFieldWithName(JSONMapping.ENTRY_DAY));
-
-        if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_TYPE_STATS)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.FORM_CONTAINER_TYPE_STATS);
-            List<FormContainerTypeStats> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new FormContainerTypeStats(listingArray.getJSONObject(index)));
-            }
-            this.setFormContainerTypeStats(listing);
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FORM_ENTRY_TYPE_STATS)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.FORM_ENTRY_TYPE_STATS);
-            List<FormEntryTypeStats> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new FormEntryTypeStats(listingArray.getJSONObject(index)));
-            }
-            this.setFormEntryTypeStats(listing);
-        }
+        this.setFormContainerTypeStats(this.extractObjects(JSONMapping.FORM_CONTAINER_TYPE_STATS, FormContainerTypeStats::new));
+        this.setFormEntryTypeStats(this.extractObjects(JSONMapping.FORM_ENTRY_TYPE_STATS, FormEntryTypeStats::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code CreateUpdateLockUnlockEntry}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code CreateUpdateLockUnlockEntry}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getEntryDay() != null) {
-            returnVal.put(JSONMapping.ENTRY_DAY,
-                    this.getDateAsObjectFromJson(this.getEntryDay()));
-        }
-
-        if (this.getFormContainerTypeStats() != null && !this.getFormContainerTypeStats().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (FormContainerTypeStats toAdd : this.getFormContainerTypeStats()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.FORM_CONTAINER_TYPE_STATS, jsonArray);
-        }
-
-        if (this.getFormEntryTypeStats() != null && !this.getFormEntryTypeStats().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (FormEntryTypeStats toAdd : this.getFormEntryTypeStats()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.FORM_ENTRY_TYPE_STATS, jsonArray);
-        }
+        this.setAsProperty(JSONMapping.ENTRY_DAY, returnVal, this.getDateAsLongFromJson(this.getEntryDay()));
+        this.setAsObjArray(JSONMapping.FORM_CONTAINER_TYPE_STATS, returnVal, this::getFormContainerTypeStats);
+        this.setAsObjArray(JSONMapping.FORM_ENTRY_TYPE_STATS, returnVal, this::getFormEntryTypeStats);
 
         return returnVal;
     }

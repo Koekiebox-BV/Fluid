@@ -148,8 +148,8 @@ public class FluidItem extends ABaseFluidGSONObject {
             super(jsonObjectParam);
             if (this.jsonObject == null) return;
 
-            this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
-            this.setValue(this.getAsStringNullSafe(this.jsonObject, JSONMapping.VALUE));
+            this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+            this.setValue(this.getAsStringNullSafe(JSONMapping.VALUE));
         }
 
         /**
@@ -280,15 +280,15 @@ public class FluidItem extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setCustomProperties(this.extractObjects(this.jsonObject, JSONMapping.CUSTOM_PROPERTIES, FluidItemProperty::new));
-        this.setUserFields(this.extractObjects(this.jsonObject, JSONMapping.USER_FIELDS, Field::new));
-        this.setRouteFields(this.extractObjects(this.jsonObject, JSONMapping.ROUTE_FIELDS, Field::new));
-        this.setGlobalFields(this.extractObjects(this.jsonObject, JSONMapping.GLOBAL_FIELDS, Field::new));
-        this.setAttachments(this.extractObjects(this.jsonObject, JSONMapping.ATTACHMENTS, Attachment::new));
-        this.setForm(this.extractObject(this.jsonObject, JSONMapping.FORM, Form::new));
-        this.setFlow(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FLOW));
-        this.setFlowStateString(this.getAsStringNullSafe(this.jsonObject, JSONMapping.FLOW_STATE));
-        this.setStep(this.getAsStringNullSafe(this.jsonObject, JSONMapping.STEP));
+        this.setCustomProperties(this.extractObjects(JSONMapping.CUSTOM_PROPERTIES, FluidItemProperty::new));
+        this.setUserFields(this.extractObjects(JSONMapping.USER_FIELDS, Field::new));
+        this.setRouteFields(this.extractObjects(JSONMapping.ROUTE_FIELDS, Field::new));
+        this.setGlobalFields(this.extractObjects(JSONMapping.GLOBAL_FIELDS, Field::new));
+        this.setAttachments(this.extractObjects(JSONMapping.ATTACHMENTS, Attachment::new));
+        this.setForm(this.extractObject(JSONMapping.FORM, Form::new));
+        this.setFlow(this.getAsStringNullSafe(JSONMapping.FLOW));
+        this.setFlowStateString(this.getAsStringNullSafe(JSONMapping.FLOW_STATE));
+        this.setStep(this.getAsStringNullSafe(JSONMapping.STEP));
         this.setStepEnteredTime(this.getDateFieldValueFromFieldWithName(JSONMapping.STEP_ENTERED_TIME));
     }
 

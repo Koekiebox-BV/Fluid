@@ -50,7 +50,6 @@ public class UserQuery extends ABaseGSONListing<FluidItem> {
     private String description;
 
     private List<String> rules;
-
     private List<Field> inputs;
 
     private Date dateCreated;
@@ -138,10 +137,10 @@ public class UserQuery extends ABaseGSONListing<FluidItem> {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
-        this.setDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCRIPTION));
-        this.setInputs(this.extractObjects(this.jsonObject, JSONMapping.INPUTS, Field::new));
-        this.setRules(this.extractStrings(this.jsonObject, JSONMapping.RULES));
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
+        this.setInputs(this.extractObjects(JSONMapping.INPUTS, Field::new));
+        this.setRules(this.extractStrings(JSONMapping.RULES));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
     }
@@ -155,42 +154,12 @@ public class UserQuery extends ABaseGSONListing<FluidItem> {
     @Override
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-
-        //Name...
-        if (this.getName() != null) {
-            returnVal.addProperty(JSONMapping.NAME, this.getName());
-        }
-
-        //Description...
-        if (this.getDescription() != null) {
-            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
-        }
-
-        //Inputs...
-        if (this.getInputs() != null) {
-            returnVal.add(JSONMapping.INPUTS, this.toJsonObjArray(this.getInputs()));
-        }
-
-        //Rules...
-        if (this.getRules() != null) {
-            returnVal.add(JSONMapping.RULES, this.toJsonArray(this.getRules()));
-        }
-
-        //Date Created...
-        if (this.getDateCreated() != null)
-            returnVal.addProperty(
-                    JSONMapping.DATE_CREATED,
-                    this.getDateAsLongFromJson(this.getDateCreated())
-            );
-
-        //Date Last Updated...
-        if (this.getDateLastUpdated() != null) {
-            returnVal.addProperty(
-                    JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateAsLongFromJson(this.getDateLastUpdated())
-            );
-        }
-
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsObjArray(JSONMapping.INPUTS, returnVal, this::getInputs);
+        this.setAsStringArray(JSONMapping.RULES, returnVal, this.getRules());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateAsLongFromJson(this.getDateLastUpdated()));
         return returnVal;
     }
 

@@ -15,13 +15,11 @@
 
 package com.fluidbpm.program.api.vo.auth0;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +29,7 @@ import java.util.List;
  * @see User
  * @since v1.0
  */
-public class NormalizedUserProfile extends ABaseFluidJSONObject {
+public class NormalizedUserProfile extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String userId;
@@ -78,7 +76,7 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
      *
      * @see ABaseFluidJSONObject
      */
-    public static class Identity extends ABaseFluidJSONObject {
+    public static class Identity extends ABaseFluidGSONObject {
         private String accessToken;
         private String provider;
         private String userId;
@@ -108,42 +106,16 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
          *
          * @param jsonObjectParam The JSON Object.
          */
-        public Identity(JSONObject jsonObjectParam) {
+        public Identity(JsonObject jsonObjectParam) {
             super(jsonObjectParam);
+            if (this.jsonObject == null) return;
 
-            if (this.jsonObject == null) {
-                return;
-            }
-
-            //Access Token...
-            if (!this.jsonObject.isNull(JSONMapping.ACCESS_TOKEN)) {
-                this.setAccessToken(this.jsonObject.getString(
-                        JSONMapping.ACCESS_TOKEN));
-            }
-
-            //Provider...
-            if (!this.jsonObject.isNull(JSONMapping.PROVIDER)) {
-                this.setProvider(this.jsonObject.getString(
-                        JSONMapping.PROVIDER));
-            }
-
-            //User Id...
-            if (!this.jsonObject.isNull(NormalizedUserProfile.JSONMapping.USER_ID)) {
-                this.setUserId(this.jsonObject.getString(
-                        JSONMapping.USER_ID));
-            }
-
-            //Connection...
-            if (!this.jsonObject.isNull(JSONMapping.CONNECTION)) {
-                this.setConnection(this.jsonObject.getString(
-                        JSONMapping.CONNECTION));
-            }
-
-            //Is Social...
-            if (!this.jsonObject.isNull(JSONMapping.IS_SOCIAL)) {
-                this.setSocial(this.jsonObject.getBoolean(
-                        JSONMapping.IS_SOCIAL));
-            }
+            this.setAccessToken(this.getAsStringNullSafe(JSONMapping.ACCESS_TOKEN));
+            this.setProvider(this.getAsStringNullSafe(JSONMapping.PROVIDER));
+            this.setUserId(this.getAsStringNullSafe(JSONMapping.USER_ID));
+            this.setConnection(this.getAsStringNullSafe(JSONMapping.CONNECTION));
+            Boolean isSocialVal = this.getAsBooleanNullSafe(JSONMapping.IS_SOCIAL);
+            if (isSocialVal != null) this.setSocial(isSocialVal);
         }
 
         /**
@@ -240,36 +212,17 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
          * Conversion to {@code JSONObject} from Java Object.
          *
          * @return {@code JSONObject} representation of {@code Identity}
-         * @throws JSONException If there is a problem with the JSON Body.
          * @see ABaseFluidJSONObject#toJsonObject()
          */
         @Override
-        public JSONObject toJsonObject() throws JSONException {
+        public JsonObject toJsonObject() {
+            JsonObject returnVal = super.toJsonObject();
 
-            JSONObject returnVal = super.toJsonObject();
-
-            //Access Token...
-            if (this.getAccessToken() != null) {
-                returnVal.put(JSONMapping.ACCESS_TOKEN, this.getAccessToken());
-            }
-
-            //Provider...
-            if (this.getProvider() != null) {
-                returnVal.put(JSONMapping.PROVIDER, this.getProvider());
-            }
-
-            //User Id...
-            if (this.getUserId() != null) {
-                returnVal.put(JSONMapping.USER_ID, this.getUserId());
-            }
-
-            //Connection...
-            if (this.getConnection() != null) {
-                returnVal.put(JSONMapping.CONNECTION, this.getConnection());
-            }
-
-            //Is Social...
-            returnVal.put(JSONMapping.IS_SOCIAL, this.isSocial());
+            this.setAsProperty(JSONMapping.ACCESS_TOKEN, returnVal, this.getAccessToken());
+            this.setAsProperty(JSONMapping.PROVIDER, returnVal, this.getProvider());
+            this.setAsProperty(JSONMapping.USER_ID, returnVal, this.getUserId());
+            this.setAsProperty(JSONMapping.CONNECTION, returnVal, this.getConnection());
+            this.setAsProperty(JSONMapping.IS_SOCIAL, returnVal, Boolean.valueOf(this.isSocial()));
 
             return returnVal;
         }
@@ -287,69 +240,22 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public NormalizedUserProfile(JSONObject jsonObjectParam) {
+    public NormalizedUserProfile(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
+        this.setUserId(this.getAsStringNullSafe(JSONMapping.USER_ID));
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setEmail(this.getAsStringNullSafe(JSONMapping.EMAIL));
+        Boolean emailVerifiedVal = this.getAsBooleanNullSafe(JSONMapping.EMAIL_VERIFIED);
+        if (emailVerifiedVal != null) this.setEmailVerified(emailVerifiedVal);
+        this.setNickname(this.getAsStringNullSafe(JSONMapping.NICKNAME));
+        this.setPicture(this.getAsStringNullSafe(JSONMapping.PICTURE));
+        this.setGivenName(this.getAsStringNullSafe(JSONMapping.GIVEN_NAME));
+        this.setFamilyName(this.getAsStringNullSafe(JSONMapping.FAMILY_NAME));
+        this.setLocale(this.getAsStringNullSafe(JSONMapping.LOCALE));
 
-        //User Id...
-        if (!this.jsonObject.isNull(JSONMapping.USER_ID)) {
-            this.setUserId(this.jsonObject.getString(JSONMapping.USER_ID));
-        }
-
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
-        }
-
-        //Email...
-        if (!this.jsonObject.isNull(JSONMapping.EMAIL)) {
-            this.setEmail(this.jsonObject.getString(JSONMapping.EMAIL));
-        }
-
-        //Email Verified...
-        if (!this.jsonObject.isNull(JSONMapping.EMAIL_VERIFIED)) {
-            this.setEmailVerified(this.jsonObject.getBoolean(JSONMapping.EMAIL_VERIFIED));
-        }
-
-        //Nickname...
-        if (!this.jsonObject.isNull(JSONMapping.NICKNAME)) {
-            this.setNickname(this.jsonObject.getString(JSONMapping.NICKNAME));
-        }
-
-        //Picture...
-        if (!this.jsonObject.isNull(JSONMapping.PICTURE)) {
-            this.setPicture(this.jsonObject.getString(JSONMapping.PICTURE));
-        }
-
-        //Given Name...
-        if (!this.jsonObject.isNull(JSONMapping.GIVEN_NAME)) {
-            this.setGivenName(this.jsonObject.getString(JSONMapping.GIVEN_NAME));
-        }
-
-        //Family Name...
-        if (!this.jsonObject.isNull(JSONMapping.FAMILY_NAME)) {
-            this.setFamilyName(this.jsonObject.getString(JSONMapping.FAMILY_NAME));
-        }
-
-        //Locale...
-        if (!this.jsonObject.isNull(JSONMapping.LOCALE)) {
-            this.setLocale(this.jsonObject.getString(JSONMapping.LOCALE));
-        }
-
-        //Roles...
-        if (!this.jsonObject.isNull(JSONMapping.IDENTITIES)) {
-
-            this.identities = new ArrayList<Identity>();
-
-            JSONArray identityListing = this.jsonObject.getJSONArray(JSONMapping.IDENTITIES);
-
-            for (int index = 0; index < identityListing.length(); index++) {
-                this.identities.add(new Identity(identityListing.getJSONObject(index)));
-            }
-        }
+        this.setIdentities(this.extractObjects(JSONMapping.IDENTITIES, Identity::new));
     }
 
     /**
@@ -555,69 +461,26 @@ public class NormalizedUserProfile extends ABaseFluidJSONObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to JsonObject from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code NormalizedUserProfile}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return JsonObject representation of NormalizedUserProfile
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.USER_ID, returnVal, this.getUserId());
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.EMAIL, returnVal, this.getEmail());
+        this.setAsProperty(JSONMapping.EMAIL_VERIFIED, returnVal, Boolean.valueOf(this.isEmailVerified()));
+        this.setAsProperty(JSONMapping.NICKNAME, returnVal, this.getNickname());
+        this.setAsProperty(JSONMapping.PICTURE, returnVal, this.getPicture());
+        this.setAsProperty(JSONMapping.GIVEN_NAME, returnVal, this.getGivenName());
+        this.setAsProperty(JSONMapping.FAMILY_NAME, returnVal, this.getFamilyName());
+        this.setAsProperty(JSONMapping.LOCALE, returnVal, this.getLocale());
 
-        //User Id...
-        if (this.getUserId() != null) {
-            returnVal.put(JSONMapping.USER_ID, this.getUserId());
-        }
-
-        //Name...
-        if (this.getName() != null) {
-            returnVal.put(JSONMapping.NAME, this.getName());
-        }
-
-        //Email...
-        if (this.getEmail() != null) {
-            returnVal.put(JSONMapping.EMAIL, this.getEmail());
-        }
-
-        //Email Verified...
-        returnVal.put(JSONMapping.EMAIL_VERIFIED, this.isEmailVerified());
-
-        //Nickname...
-        if (this.getNickname() != null) {
-            returnVal.put(JSONMapping.NICKNAME, this.getNickname());
-        }
-
-        //Picture...
-        if (this.getPicture() != null) {
-            returnVal.put(JSONMapping.PICTURE, this.getPicture());
-        }
-
-        //Given Name...
-        if (this.getGivenName() != null) {
-            returnVal.put(JSONMapping.GIVEN_NAME, this.getGivenName());
-        }
-
-        //Family Name...
-        if (this.getFamilyName() != null) {
-            returnVal.put(JSONMapping.FAMILY_NAME, this.getFamilyName());
-        }
-
-        //Locale...
-        if (this.getLocale() != null) {
-            returnVal.put(JSONMapping.LOCALE, this.getLocale());
-        }
-
-        //Identities...
-        if (this.getIdentities() != null && !this.getIdentities().isEmpty()) {
-            JSONArray identitiesArr = new JSONArray();
-            for (Identity toAdd : this.getIdentities()) {
-                identitiesArr.put(toAdd.toJsonObject());
-            }
-
-            returnVal.put(JSONMapping.IDENTITIES, identitiesArr);
-        }
+        this.setAsObjArray(JSONMapping.IDENTITIES, returnVal, this::getIdentities);
 
         return returnVal;
     }

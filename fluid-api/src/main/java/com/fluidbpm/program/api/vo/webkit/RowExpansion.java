@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.webkit;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class RowExpansion extends ABaseFluidJSONObject {
+public class RowExpansion extends ABaseFluidGSONObject {
     private boolean tableExpansionDisplayAttachments;
     private boolean tableExpansionDisplayAncestor;
     private boolean tableExpansionDisplayDescendant;
@@ -102,7 +102,7 @@ public class RowExpansion extends ABaseFluidJSONObject {
      * Default.
      */
     public RowExpansion() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -110,30 +110,17 @@ public class RowExpansion extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RowExpansion(JSONObject jsonObjectParam) {
+    public RowExpansion(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR))
-            this.setTableExpansionDisplayAncestor(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR));
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_DESCENDANT))
-            this.setTableExpansionDisplayDescendant(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_DESCENDANT));
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS))
-            this.setTableExpansionDisplayRecords(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS));
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT))
-            this.setTableExpansionDisplayRecordsInlineEdit(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT));
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS))
-            this.setTableExpansionDisplayAttachments(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS));
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_FLOW_HISTORY))
-            this.setTableExpansionDisplayFlowHistory(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_FLOW_HISTORY));
-
-        if (!this.jsonObject.isNull(JSONMapping.TABLE_EXPANSION_DISPLAY_FORM_HISTORY))
-            this.setTableExpansionDisplayFormHistory(this.jsonObject.getBoolean(JSONMapping.TABLE_EXPANSION_DISPLAY_FORM_HISTORY));
+        this.setTableExpansionDisplayAncestor(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR));
+        this.setTableExpansionDisplayDescendant(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_DESCENDANT));
+        this.setTableExpansionDisplayRecords(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS));
+        this.setTableExpansionDisplayRecordsInlineEdit(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT));
+        this.setTableExpansionDisplayAttachments(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS));
+        this.setTableExpansionDisplayFlowHistory(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_FLOW_HISTORY));
+        this.setTableExpansionDisplayFormHistory(this.getAsBooleanNullSafe(JSONMapping.TABLE_EXPANSION_DISPLAY_FORM_HISTORY));
     }
 
     /**
@@ -147,16 +134,16 @@ public class RowExpansion extends ABaseFluidJSONObject {
      * @see org.json.JSONObject
      */
     @Override
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR, this.isTableExpansionDisplayAncestor());
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS, this.isTableExpansionDisplayAttachments());
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_DESCENDANT, this.isTableExpansionDisplayDescendant());
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_FLOW_HISTORY, this.isTableExpansionDisplayFlowHistory());
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_FORM_HISTORY, this.isTableExpansionDisplayFormHistory());
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS, this.isTableExpansionDisplayRecords());
-        returnVal.put(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT, this.isTableExpansionDisplayRecordsInlineEdit());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_ANCESTOR, returnVal, this.isTableExpansionDisplayAncestor());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_ATTACHMENTS, returnVal, this.isTableExpansionDisplayAttachments());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_DESCENDANT, returnVal, this.isTableExpansionDisplayDescendant());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_FLOW_HISTORY, returnVal, this.isTableExpansionDisplayFlowHistory());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_FORM_HISTORY, returnVal, this.isTableExpansionDisplayFormHistory());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS, returnVal, this.isTableExpansionDisplayRecords());
+        this.setAsProperty(JSONMapping.TABLE_EXPANSION_DISPLAY_RECORDS_INLINE_EDIT, returnVal, this.isTableExpansionDisplayRecordsInlineEdit());
 
         return returnVal;
     }

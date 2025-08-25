@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.ABaseListing;
@@ -155,7 +156,7 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	 * @see org.json.JSONObject
 	 */
 	public void sendMessage(
-		ABaseFluidJSONObject baseFluidJSONObjectParam,
+		ABaseFluidGSONObject baseFluidJSONObjectParam,
 		String requestIdParam
 	) {
 		if (baseFluidJSONObjectParam != null) {

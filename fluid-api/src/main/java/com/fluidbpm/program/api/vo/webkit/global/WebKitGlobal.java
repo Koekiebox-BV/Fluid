@@ -16,15 +16,13 @@
 package com.fluidbpm.program.api.vo.webkit.global;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.webkit.userquery.WebKitMenuItem;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +41,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class WebKitGlobal extends ABaseFluidJSONObject {
+public class WebKitGlobal extends ABaseFluidGSONObject {
     private String layoutMode;
     private String formType;
     private String layoutColors;
@@ -80,131 +78,55 @@ public class WebKitGlobal extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitGlobal(JSONObject jsonObjectParam) {
+    public WebKitGlobal(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.LAYOUT_MODE)) {
-            this.setLayoutMode(this.jsonObject.getString(JSONMapping.LAYOUT_MODE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.INPUT_STYLE_ADDITION)) {
-            this.setInputStyleAddition(this.jsonObject.getString(JSONMapping.INPUT_STYLE_ADDITION));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FORM_TYPE)) {
-            this.setFormType(this.jsonObject.getString(JSONMapping.FORM_TYPE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.LAYOUT_COLORS)) {
-            this.setLayoutColors(this.jsonObject.getString(JSONMapping.LAYOUT_COLORS));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.TOP_BAR_THEME)) {
-            this.setTopbarTheme(this.jsonObject.getString(JSONMapping.TOP_BAR_THEME));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_THEME)) {
-            this.setMenuTheme(this.jsonObject.getString(JSONMapping.MENU_THEME));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_MODE_DEFAULT)) {
-            this.setMenuModeDefault(this.jsonObject.getString(JSONMapping.MENU_MODE_DEFAULT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_TYPE_DEFAULT)) {
-            this.setMenuTypeDefault(this.jsonObject.getBoolean(JSONMapping.MENU_TYPE_DEFAULT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_MODE_DEFAULT)) {
-            this.setMenuModeDefault(this.jsonObject.getString(JSONMapping.MENU_MODE_DEFAULT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.COMPONENT_COLORS)) {
-            this.setComponentColors(this.jsonObject.getString(JSONMapping.COMPONENT_COLORS));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.COMPONENT_COLORS_HEX)) {
-            this.setComponentColorsHex(this.jsonObject.getString(JSONMapping.COMPONENT_COLORS_HEX));
-        } else {
+        this.setLayoutMode(this.getAsStringNullSafe(JSONMapping.LAYOUT_MODE));
+        this.setInputStyleAddition(this.getAsStringNullSafe(JSONMapping.INPUT_STYLE_ADDITION));
+        this.setFormType(this.getAsStringNullSafe(JSONMapping.FORM_TYPE));
+        this.setLayoutColors(this.getAsStringNullSafe(JSONMapping.LAYOUT_COLORS));
+        this.setTopbarTheme(this.getAsStringNullSafe(JSONMapping.TOP_BAR_THEME));
+        this.setMenuTheme(this.getAsStringNullSafe(JSONMapping.MENU_THEME));
+        this.setMenuModeDefault(this.getAsStringNullSafe(JSONMapping.MENU_MODE_DEFAULT));
+        this.setMenuTypeDefault(this.getAsBooleanNullSafe(JSONMapping.MENU_TYPE_DEFAULT));
+        this.setComponentColors(this.getAsStringNullSafe(JSONMapping.COMPONENT_COLORS));
+        this.setComponentColorsHex(this.getAsStringNullSafe(JSONMapping.COMPONENT_COLORS_HEX));
+        
+        if (UtilGlobal.isBlank(this.getComponentColorsHex())) {
             this.setComponentColorsHex(this.getComponentColors());
         }
-
-        if (!this.jsonObject.isNull(JSONMapping.PROFILE_MODE_DEFAULT)) {
-            this.setProfileModeDefault(this.jsonObject.getString(JSONMapping.PROFILE_MODE_DEFAULT));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.WEB_KIT_MENU_ITEMS)) {
-            JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.WEB_KIT_MENU_ITEMS);
-            List<WebKitMenuItem> objs = new ArrayList();
-            for (int index = 0; index < jsonArray.length(); index++) {
-                objs.add(new WebKitMenuItem(jsonArray.getJSONObject(index)));
-            }
-            this.setWebKitMenuItems(objs);
-        }
+        
+        this.setProfileModeDefault(this.getAsStringNullSafe(JSONMapping.PROFILE_MODE_DEFAULT));
+        this.setWebKitMenuItems(this.extractObjects(JSONMapping.WEB_KIT_MENU_ITEMS, WebKitMenuItem::new));
     }
 
     /**
      * Returns the local JSON object.
      * Only set through constructor.
      *
-     * @return The local set {@code JSONObject} object.
+     * @return The local set {@code JsonObject} object.
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getLayoutMode() != null) {
-            returnVal.put(JSONMapping.LAYOUT_MODE, this.getLayoutMode());
-        }
-
-        if (this.getInputStyleAddition() != null) {
-            returnVal.put(JSONMapping.INPUT_STYLE_ADDITION, this.getInputStyleAddition());
-        }
-
-        if (this.getFormType() != null) {
-            returnVal.put(JSONMapping.FORM_TYPE, this.getFormType());
-        }
-
-        if (this.getLayoutColors() != null) {
-            returnVal.put(JSONMapping.LAYOUT_COLORS, this.getLayoutColors());
-        }
-
-        if (this.getTopbarTheme() != null) {
-            returnVal.put(JSONMapping.TOP_BAR_THEME, this.getTopbarTheme());
-        }
-
-        if (this.getMenuTheme() != null) {
-            returnVal.put(JSONMapping.MENU_THEME, this.getMenuTheme());
-        }
-
-        if (this.getMenuModeDefault() != null) {
-            returnVal.put(JSONMapping.MENU_MODE_DEFAULT, this.getMenuModeDefault());
-        }
-
-        if (this.getMenuTypeDefault() != null) {
-            returnVal.put(JSONMapping.MENU_TYPE_DEFAULT, this.getMenuTypeDefault());
-        }
-
-        if (this.getComponentColors() != null) {
-            returnVal.put(JSONMapping.COMPONENT_COLORS, this.getComponentColors());
-        }
+        this.setAsProperty(JSONMapping.LAYOUT_MODE, returnVal, this.getLayoutMode());
+        this.setAsProperty(JSONMapping.INPUT_STYLE_ADDITION, returnVal, this.getInputStyleAddition());
+        this.setAsProperty(JSONMapping.FORM_TYPE, returnVal, this.getFormType());
+        this.setAsProperty(JSONMapping.LAYOUT_COLORS, returnVal, this.getLayoutColors());
+        this.setAsProperty(JSONMapping.TOP_BAR_THEME, returnVal, this.getTopbarTheme());
+        this.setAsProperty(JSONMapping.MENU_THEME, returnVal, this.getMenuTheme());
+        this.setAsProperty(JSONMapping.MENU_MODE_DEFAULT, returnVal, this.getMenuModeDefault());
+        this.setAsProperty(JSONMapping.MENU_TYPE_DEFAULT, returnVal, this.getMenuTypeDefault());
+        this.setAsProperty(JSONMapping.COMPONENT_COLORS, returnVal, this.getComponentColors());
 
         this.setComponentColorsHex(this.hexFromComponentColors());
-        if (this.getComponentColorsHex() != null) {
-            returnVal.put(JSONMapping.COMPONENT_COLORS_HEX, this.getComponentColorsHex());
-        }
+        this.setAsProperty(JSONMapping.COMPONENT_COLORS_HEX, returnVal, this.getComponentColorsHex());
+        this.setAsProperty(JSONMapping.PROFILE_MODE_DEFAULT, returnVal, this.getProfileModeDefault());
 
-        if (this.getProfileModeDefault() != null) {
-            returnVal.put(JSONMapping.PROFILE_MODE_DEFAULT, this.getProfileModeDefault());
-        }
-
-        if (this.getWebKitMenuItems() != null && !this.getWebKitMenuItems().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (WebKitMenuItem toAdd : this.getWebKitMenuItems()) jsonArray.put(toAdd.toJsonObject());
-            returnVal.put(JSONMapping.WEB_KIT_MENU_ITEMS, jsonArray);
-        }
+        this.setAsObjArray(JSONMapping.WEB_KIT_MENU_ITEMS, returnVal, this::getWebKitMenuItems);
 
         return returnVal;
     }

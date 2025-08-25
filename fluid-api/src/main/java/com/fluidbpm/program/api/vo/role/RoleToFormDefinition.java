@@ -72,7 +72,6 @@ public class RoleToFormDefinition extends ABaseFluidGSONObject {
      */
     public RoleToFormDefinition(Long roleToFormDefinitionIdParam) {
         super();
-
         this.setId(roleToFormDefinitionIdParam);
     }
 
@@ -85,15 +84,10 @@ public class RoleToFormDefinition extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Form Definition...
-        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.FORM_DEFINITION)) {
-            this.setFormDefinition(new Form(this.jsonObject.getAsJsonObject(
-                    JSONMapping.FORM_DEFINITION)));
-        }
-
-        this.setCanCreate(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_CREATE));
-        this.setAttachmentsView(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.ATTACHMENTS_VIEW));
-        this.setAttachmentsCreateUpdate(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.ATTACHMENTS_CREATE_UPDATE));
+        this.setFormDefinition(this.extractObject(JSONMapping.FORM_DEFINITION, Form::new));
+        this.setCanCreate(this.getAsBooleanNullSafe(JSONMapping.CAN_CREATE));
+        this.setAttachmentsView(this.getAsBooleanNullSafe(JSONMapping.ATTACHMENTS_VIEW));
+        this.setAttachmentsCreateUpdate(this.getAsBooleanNullSafe(JSONMapping.ATTACHMENTS_CREATE_UPDATE));
     }
 
     /**
@@ -166,19 +160,10 @@ public class RoleToFormDefinition extends ABaseFluidGSONObject {
     @JsonIgnore
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        //Can Create...
-        if (this.isCanCreate() != null) {
-            returnVal.addProperty(JSONMapping.CAN_CREATE, this.isCanCreate().booleanValue());
-        }
-        if (this.isAttachmentsView() != null) {
-            returnVal.addProperty(JSONMapping.ATTACHMENTS_VIEW, this.isAttachmentsView().booleanValue());
-        }
-        if (this.isAttachmentsCreateUpdate() != null) {
-            returnVal.addProperty(JSONMapping.ATTACHMENTS_CREATE_UPDATE, this.isAttachmentsCreateUpdate().booleanValue());
-        }
-        if (this.getFormDefinition() != null) {
-            returnVal.add(JSONMapping.FORM_DEFINITION, this.getFormDefinition().toJsonObject());
-        }
+        this.setAsObj(JSONMapping.FORM_DEFINITION, returnVal, this::getFormDefinition);
+        this.setAsProperty(JSONMapping.CAN_CREATE, returnVal, this.isCanCreate());
+        this.setAsProperty(JSONMapping.ATTACHMENTS_VIEW, returnVal, this.isAttachmentsView());
+        this.setAsProperty(JSONMapping.ATTACHMENTS_CREATE_UPDATE, returnVal, this.isAttachmentsCreateUpdate());
         return returnVal;
     }
 }

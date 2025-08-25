@@ -15,13 +15,13 @@
 
 package com.fluidbpm.program.api.vo.webkit.userquery;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.webkit.RowExpansion;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class WebKitUserQuery extends ABaseFluidJSONObject {
+public class WebKitUserQuery extends ABaseFluidGSONObject {
     private UserQuery userQuery;
     private WebKitMenuItem menuItem;
     private RowExpansion rowExpansion;
@@ -120,10 +120,10 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
     }
 
     /**
-     * Default with new instance of {@code JSONObject}.
+     * Default with new instance of {@code JsonObject}.
      */
     public WebKitUserQuery() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -142,7 +142,7 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
      * @param userQuery  The {@code UserQuery}
      * @see UserQuery
      */
-    public WebKitUserQuery(JSONObject jsonObject, UserQuery userQuery) {
+    public WebKitUserQuery(JsonObject jsonObject, UserQuery userQuery) {
         this(jsonObject);
         this.setUserQuery(userQuery);
     }
@@ -152,66 +152,32 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public WebKitUserQuery(JSONObject jsonObject) {
+    public WebKitUserQuery(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        if (this.jsonObject.isNull(JSONMapping.ROW_EXPANSION)) this.setRowExpansion(new RowExpansion(new JSONObject()));
-        else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
-
-        if (!this.jsonObject.isNull(JSONMapping.USER_QUERY))
-            this.setUserQuery(this.userQueryFromLclJsonObject(JSONMapping.USER_QUERY));
-
-        if (!this.jsonObject.isNull(JSONMapping.MENU_ITEM))
-            this.setMenuItem(new WebKitMenuItem(this.jsonObject.getJSONObject(JSONMapping.MENU_ITEM)));
-
-        if (!this.jsonObject.isNull(JSONMapping.ENABLE_FOR_TOP_BAR))
-            this.setEnableForTopBar(this.jsonObject.getBoolean(JSONMapping.ENABLE_FOR_TOP_BAR));
-
-        if (!this.jsonObject.isNull(JSONMapping.ENABLE_CALCULATED_LABELS))
-            this.setEnableCalculatedLabels(this.jsonObject.getBoolean(JSONMapping.ENABLE_CALCULATED_LABELS));
-
-        if (!this.jsonObject.isNull(JSONMapping.QUERY_INPUT_LAYOUT_STYLE))
-            this.setQueryInputLayoutStyle(this.jsonObject.getString(JSONMapping.QUERY_INPUT_LAYOUT_STYLE));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FORM_TYPE))
-            this.setShowColumnFormType(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_FORM_TYPE));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ID))
-            this.setShowColumnID(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ID));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_TITLE))
-            this.setShowColumnTitle(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_TITLE));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_ATTACHMENT))
-            this.setShowColumnAttachment(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_ATTACHMENT));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_CREATED))
-            this.setShowColumnDateCreated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_CREATED));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED))
-            this.setShowColumnDateLastUpdated(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_USER))
-            this.setShowColumnUser(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_USER));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_STATE))
-            this.setShowColumnState(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_STATE));
-
-        if (!this.jsonObject.isNull(JSONMapping.SHOW_COLUMN_FLOW_STATE))
-            this.setShowColumnFlowState(this.jsonObject.getBoolean(JSONMapping.SHOW_COLUMN_FLOW_STATE));
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_HEADER))
-            this.setAttachmentHeader(this.jsonObject.getString(JSONMapping.ATTACHMENT_HEADER));
-
-        if (!this.jsonObject.isNull(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE))
-            this.setAttachmentThumbnailSize(this.jsonObject.getInt(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
-
-        if (!this.jsonObject.isNull(JSONMapping.TOP_BAR_DIALOG_WIDTH))
-            this.setTopBarDialogWidth(this.jsonObject.getInt(JSONMapping.TOP_BAR_DIALOG_WIDTH));
-
-        if (!this.jsonObject.isNull(JSONMapping.PAGINATOR_ROWS))
-            this.setPaginatorRows(this.jsonObject.getInt(JSONMapping.PAGINATOR_ROWS));
+        this.setRowExpansion(this.extractObject(JSONMapping.ROW_EXPANSION, RowExpansion::new));
+        this.setUserQuery(this.extractObject(JSONMapping.USER_QUERY, UserQuery::new));
+        this.setMenuItem(this.extractObject(JSONMapping.MENU_ITEM, WebKitMenuItem::new));
+        
+        this.setEnableForTopBar(this.getAsBooleanNullSafe(JSONMapping.ENABLE_FOR_TOP_BAR));
+        this.setEnableCalculatedLabels(this.getAsBooleanNullSafe(JSONMapping.ENABLE_CALCULATED_LABELS));
+        this.setQueryInputLayoutStyle(this.getAsStringNullSafe(JSONMapping.QUERY_INPUT_LAYOUT_STYLE));
+        
+        this.setShowColumnFormType(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_FORM_TYPE));
+        this.setShowColumnID(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_ID));
+        this.setShowColumnTitle(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_TITLE));
+        this.setShowColumnAttachment(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_ATTACHMENT));
+        this.setShowColumnDateCreated(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_DATE_CREATED));
+        this.setShowColumnDateLastUpdated(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
+        this.setShowColumnUser(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_USER));
+        this.setShowColumnState(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_STATE));
+        this.setShowColumnFlowState(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_FLOW_STATE));
+        
+        this.setAttachmentHeader(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_HEADER));
+        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
+        this.setTopBarDialogWidth(this.getAsIntegerNullSafe(JSONMapping.TOP_BAR_DIALOG_WIDTH));
+        this.setPaginatorRows(this.getAsIntegerNullSafe(JSONMapping.PAGINATOR_ROWS));
     }
 
     /**
@@ -222,47 +188,47 @@ public class WebKitUserQuery extends ABaseFluidJSONObject {
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
-        returnVal.put(JSONMapping.ENABLE_FOR_TOP_BAR, this.isEnableForTopBar());
-        returnVal.put(JSONMapping.ENABLE_CALCULATED_LABELS, this.isEnableCalculatedLabels());
-        returnVal.put(JSONMapping.QUERY_INPUT_LAYOUT_STYLE, this.getQueryInputLayoutStyle());
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        
+        this.setAsProperty(JSONMapping.ENABLE_FOR_TOP_BAR, returnVal, this.isEnableForTopBar());
+        this.setAsProperty(JSONMapping.ENABLE_CALCULATED_LABELS, returnVal, this.isEnableCalculatedLabels());
+        this.setAsProperty(JSONMapping.QUERY_INPUT_LAYOUT_STYLE, returnVal, this.getQueryInputLayoutStyle());
 
-        returnVal.put(JSONMapping.ATTACHMENT_HEADER, this.getAttachmentHeader());
-        returnVal.put(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.getAttachmentThumbnailSize());
-        returnVal.put(JSONMapping.TOP_BAR_DIALOG_WIDTH, this.getTopBarDialogWidth());
+        this.setAsProperty(JSONMapping.ATTACHMENT_HEADER, returnVal, this.getAttachmentHeader());
+        this.setAsProperty(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, returnVal, this.getAttachmentThumbnailSize());
+        this.setAsProperty(JSONMapping.TOP_BAR_DIALOG_WIDTH, returnVal, this.getTopBarDialogWidth());
 
-        returnVal.put(JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
-        returnVal.put(JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
-        returnVal.put(JSONMapping.SHOW_COLUMN_TITLE, this.isShowColumnTitle());
-        returnVal.put(JSONMapping.SHOW_COLUMN_ATTACHMENT, this.isShowColumnAttachment());
-        returnVal.put(JSONMapping.SHOW_COLUMN_DATE_CREATED, this.isShowColumnDateCreated());
-        returnVal.put(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, this.isShowColumnDateLastUpdated());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_ID, returnVal, this.isShowColumnID());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_FORM_TYPE, returnVal, this.isShowColumnFormType());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_TITLE, returnVal, this.isShowColumnTitle());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_ATTACHMENT, returnVal, this.isShowColumnAttachment());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_DATE_CREATED, returnVal, this.isShowColumnDateCreated());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, returnVal, this.isShowColumnDateLastUpdated());
 
-        returnVal.put(JSONMapping.SHOW_COLUMN_USER, this.isShowColumnUser());
-        returnVal.put(JSONMapping.SHOW_COLUMN_STATE, this.isShowColumnState());
-        returnVal.put(JSONMapping.SHOW_COLUMN_FLOW_STATE, this.isShowColumnFlowState());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_USER, returnVal, this.isShowColumnUser());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_STATE, returnVal, this.isShowColumnState());
+        this.setAsProperty(JSONMapping.SHOW_COLUMN_FLOW_STATE, returnVal, this.isShowColumnFlowState());
 
-        returnVal.put(JSONMapping.PAGINATOR_ROWS, this.getPaginatorRows());
+        this.setAsProperty(JSONMapping.PAGINATOR_ROWS, returnVal, this.getPaginatorRows());
 
         if (this.getUserQuery() != null) {
             if (this.jsonIncludeAll) {
-                returnVal.put(JSONMapping.USER_QUERY, this.getUserQuery().toJsonObject());
+                this.setAsObj(JSONMapping.USER_QUERY, returnVal, this::getUserQuery);
             } else {
                 UserQuery reduced = new UserQuery(this.getUserQuery().getId());
                 reduced.setName(this.getUserQuery().getName());
-                returnVal.put(JSONMapping.USER_QUERY, reduced.toJsonObject());
+                JsonObject userQueryJson = reduced.toJsonObject();
+                returnVal.add(JSONMapping.USER_QUERY, userQueryJson);
             }
         }
 
         if (this.getMenuItem() != null) {
             WebKitMenuItem reduced = new WebKitMenuItem(this.getMenuItem().getMenuId());
-            returnVal.put(JSONMapping.MENU_ITEM, reduced.toJsonObject());
+            returnVal.add(JSONMapping.MENU_ITEM, reduced.toJsonObject());
         }
 
-        if (this.getRowExpansion() != null) {
-            returnVal.put(JSONMapping.ROW_EXPANSION, this.getRowExpansion().toJsonObject());
-        }
+        this.setAsObj(JSONMapping.ROW_EXPANSION, returnVal, this::getRowExpansion);
 
         return returnVal;
     }

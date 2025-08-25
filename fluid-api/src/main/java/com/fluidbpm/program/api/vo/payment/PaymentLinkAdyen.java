@@ -15,13 +15,15 @@
 
 package com.fluidbpm.program.api.vo.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -36,7 +38,7 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
-public class PaymentLinkAdyen extends ABaseFluidJSONObject {
+public class PaymentLinkAdyen extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
     private String paymentLink;
 
@@ -69,28 +71,24 @@ public class PaymentLinkAdyen extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public PaymentLinkAdyen(JSONObject jsonObjectParam) {
+    public PaymentLinkAdyen(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.PAYMENT_LINK)) {
-            this.setPaymentLink(this.jsonObject.getString(JSONMapping.PAYMENT_LINK));
-        }
+        this.setPaymentLink(this.getAsStringNullSafe(JSONMapping.PAYMENT_LINK));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code PaymentLinkAdyen}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code PaymentLinkAdyen}
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-        if (this.getPaymentLink() != null) {
-            returnVal.put(JSONMapping.PAYMENT_LINK, this.getPaymentLink());
-        }
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.PAYMENT_LINK, returnVal, this.getPaymentLink());
         return returnVal;
     }
 
@@ -101,7 +99,7 @@ public class PaymentLinkAdyen extends ABaseFluidJSONObject {
      */
     @Override
     public String toString() {
-        JSONObject jsonObject = this.toJsonObject();
+        JsonObject jsonObject = this.toJsonObject();
         if (jsonObject != null) return jsonObject.toString();
         return UtilGlobal.EMPTY;
     }

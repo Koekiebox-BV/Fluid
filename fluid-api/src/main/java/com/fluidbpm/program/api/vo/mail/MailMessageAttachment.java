@@ -15,12 +15,16 @@
 
 package com.fluidbpm.program.api.vo.mail;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Fluid representation of a Email message attachment.
@@ -33,7 +37,9 @@ import com.fluidbpm.program.api.vo.attachment.Attachment;
  * @see ABaseFluidVO
  * @since v1.0
  */
-public class MailMessageAttachment extends ABaseFluidJSONObject {
+@Getter
+@Setter
+public class MailMessageAttachment extends ABaseFluidGSONObject {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +68,6 @@ public class MailMessageAttachment extends ABaseFluidJSONObject {
      */
     public MailMessageAttachment(String attachmentPathParam) {
         super();
-
         this.setAttachmentPath(attachmentPathParam);
     }
 
@@ -71,89 +76,29 @@ public class MailMessageAttachment extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public MailMessageAttachment(JSONObject jsonObjectParam) {
+    public MailMessageAttachment(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
-
-        //Attachment Path...
-        if (!this.jsonObject.isNull(
-                JSONMapping.ATTACHMENT_PATH)) {
-
-            this.setAttachmentPath(this.jsonObject.getString(
-                    JSONMapping.ATTACHMENT_PATH));
-        }
-
-        //Attachment Data-64...
-        if (!this.jsonObject.isNull(
-                JSONMapping.ATTACHMENT_DATA_BASE64)) {
-
-            this.setAttachmentDataBase64(this.jsonObject.getString(
-                    JSONMapping.ATTACHMENT_DATA_BASE64));
-        }
+        this.setAttachmentPath(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_PATH));
+        this.setAttachmentDataBase64(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DATA_BASE64));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code MailMessageAttachment}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code MailMessageAttachment}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        //Attachment Path...
-        if (this.getAttachmentPath() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_PATH,
-                    this.getAttachmentPath());
-        }
-
-        //Attachment Data Base64...
-        if (this.getAttachmentDataBase64() != null) {
-            returnVal.put(JSONMapping.ATTACHMENT_DATA_BASE64,
-                    this.getAttachmentDataBase64());
-        }
+        this.setAsProperty(JSONMapping.ATTACHMENT_PATH, returnVal, this.getAttachmentPath());
+        this.setAsProperty(JSONMapping.ATTACHMENT_DATA_BASE64, returnVal, this.getAttachmentDataBase64());
 
         return returnVal;
-    }
-
-    /**
-     * Gets the path to the attachment.
-     *
-     * @return Path to the attachment.
-     */
-    public String getAttachmentPath() {
-        return this.attachmentPath;
-    }
-
-    /**
-     * Sets the path to the attachment.
-     *
-     * @param attachmentPathParam Path to the attachment.
-     */
-    public void setAttachmentPath(String attachmentPathParam) {
-        this.attachmentPath = attachmentPathParam;
-    }
-
-    /**
-     * Gets the attachment data in {@code Base-64} format.
-     *
-     * @return Base-64 attachment content.
-     */
-    public String getAttachmentDataBase64() {
-        return this.attachmentDataBase64;
-    }
-
-    /**
-     * Sets the attachment data in {@code Base-64} format.
-     *
-     * @param attachmentDataBase64Param Base-64 attachment content.
-     */
-    public void setAttachmentDataBase64(String attachmentDataBase64Param) {
-        this.attachmentDataBase64 = attachmentDataBase64Param;
     }
 }

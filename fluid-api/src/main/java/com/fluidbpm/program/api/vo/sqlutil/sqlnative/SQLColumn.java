@@ -15,10 +15,16 @@
 
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import javax.xml.bind.annotation.XmlTransient;
+import java.sql.Types;
+import java.util.Date;
 
 /**
  * <p>
@@ -32,13 +38,13 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see java.sql.ResultSet
  * @since v1.8
  */
-public class SQLColumn extends ABaseFluidJSONObject {
-
+@Getter
+@Setter
+public class SQLColumn extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String columnName;
     private Integer columnIndex;
-
     private Integer sqlType;
     private Object sqlValue;
 
@@ -72,7 +78,8 @@ public class SQLColumn extends ABaseFluidJSONObject {
             String columnNameParam,
             Integer columnIndexParam,
             Integer sqlTypeParam,
-            Object sqlValueParam) {
+            Object sqlValueParam
+    ) {
         super();
 
         this.columnName = columnNameParam;
@@ -86,160 +93,141 @@ public class SQLColumn extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLColumn(JSONObject jsonObjectParam) {
+    public SQLColumn(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
-
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.COLUMN_NAME)) {
-
-            this.setColumnName(
-                    this.jsonObject.getString(
-                            JSONMapping.COLUMN_NAME));
-        }
-
-        //Index...
-        if (!this.jsonObject.isNull(JSONMapping.COLUMN_INDEX)) {
-
-            this.setColumnIndex(
-                    this.jsonObject.getInt(JSONMapping.COLUMN_INDEX));
-        }
-
-        //SQL Type...
-        if (!this.jsonObject.isNull(JSONMapping.SQL_TYPE)) {
-
-            this.setSqlType(
-                    this.jsonObject.getInt(JSONMapping.SQL_TYPE));
-        }
-
-        //Value...
-        if (!this.jsonObject.isNull(JSONMapping.SQL_VALUE)) {
-
-            this.setSqlValue(this.jsonObject.get(JSONMapping.SQL_VALUE));
+        this.setColumnName(this.getAsStringNullSafe(JSONMapping.COLUMN_NAME));
+        this.setColumnIndex(this.getAsIntegerNullSafe(JSONMapping.COLUMN_INDEX));
+        this.setSqlType(this.getAsIntegerNullSafe(JSONMapping.SQL_TYPE));
+        
+        // Handle SQL Value
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.SQL_VALUE)) {
+            JsonElement valElement = this.jsonObject.get(JSONMapping.SQL_VALUE);
+            if ((!valElement.isJsonNull() && valElement.isJsonPrimitive()) &&
+                    this.getSqlType() != null) {
+                int sqlType = this.getSqlType();
+                switch (sqlType) {
+                    // String types
+                    case Types.VARCHAR:
+                    case Types.CHAR:
+                    case Types.LONGVARCHAR:
+                    case Types.NCHAR:
+                    case Types.NVARCHAR:
+                    case Types.LONGNVARCHAR:
+                    case Types.CLOB:
+                    case Types.NCLOB:
+                    case Types.SQLXML:
+                    case Types.DATALINK:
+                        this.setSqlValue(valElement.getAsString());
+                        break;
+                    
+                    // Integer types
+                    case Types.INTEGER:
+                    case Types.SMALLINT:
+                    case Types.TINYINT:
+                        this.setSqlValue(valElement.getAsInt());
+                        break;
+                    
+                    // Long types
+                    case Types.BIGINT:
+                    case Types.ROWID:
+                        this.setSqlValue(valElement.getAsLong());
+                        break;
+                    
+                    // Floating point types
+                    case Types.FLOAT:
+                    case Types.REAL:
+                    case Types.DOUBLE:
+                    case Types.NUMERIC:
+                    case Types.DECIMAL:
+                        this.setSqlValue(valElement.getAsDouble());
+                        break;
+                    
+                    // Boolean type
+                    case Types.BOOLEAN:
+                    case Types.BIT:
+                        this.setSqlValue(valElement.getAsBoolean());
+                        break;
+                    
+                    // Date and Time types
+                    case Types.DATE:
+                    case Types.TIME:
+                    case Types.TIMESTAMP:
+                    case Types.TIME_WITH_TIMEZONE:
+                    case Types.TIMESTAMP_WITH_TIMEZONE:
+                        // For date/time types, store as string and let the caller parse as needed
+                        this.setSqlValue(valElement.getAsString());
+                        break;
+                    
+                    // Binary types
+                    case Types.BINARY:
+                    case Types.VARBINARY:
+                    case Types.LONGVARBINARY:
+                    case Types.BLOB:
+                        // For binary types, store as string and let the caller decode as needed
+                        this.setSqlValue(valElement.getAsString());
+                        break;
+                    
+                    // Complex types
+                    case Types.ARRAY:
+                    case Types.STRUCT:
+                    case Types.REF:
+                    case Types.REF_CURSOR:
+                    case Types.JAVA_OBJECT:
+                    case Types.DISTINCT:
+                    case Types.OTHER:
+                        // For complex types, store as string representation
+                        this.setSqlValue(valElement.getAsString());
+                        break;
+                    
+                    // NULL type
+                    case Types.NULL:
+                        this.setSqlValue(null);
+                        break;
+                    
+                    // Default case for any unhandled types
+                    default:
+                        this.setSqlValue(valElement.getAsString());
+                        break;
+                }
+            }
         }
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code UserQuery}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code SQLColumn}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = super.toJsonObject();
-
-        //Name...
-        if (this.getColumnName() != null) {
-            returnVal.put(JSONMapping.COLUMN_NAME,
-                    this.getColumnName());
-        }
-
-        //Index...
-        if (this.getColumnIndex() != null) {
-            returnVal.put(JSONMapping.COLUMN_INDEX,
-                    this.getColumnIndex());
-        }
-
-        //SQL Type...
-        if (this.getSqlType() != null) {
-            returnVal.put(
-                    JSONMapping.SQL_TYPE, this.getSqlType());
-        }
-
-        //SQL Value...
-        if (this.getSqlValue() != null) {
-            returnVal.put(JSONMapping.SQL_VALUE,
-                    this.getSqlValue());
+        this.setAsProperty(JSONMapping.COLUMN_NAME, returnVal, this.getColumnName());
+        this.setAsProperty(JSONMapping.COLUMN_INDEX, returnVal, this.getColumnIndex());
+        this.setAsProperty(JSONMapping.SQL_TYPE, returnVal, this.getSqlType());
+        
+        // Handle SQL Value based on its type
+        Object sqlValue = this.getSqlValue();
+        if (sqlValue != null) {
+            if (sqlValue instanceof String) {
+                returnVal.addProperty(JSONMapping.SQL_VALUE, (String) sqlValue);
+            } else if (sqlValue instanceof Number) {
+                returnVal.addProperty(JSONMapping.SQL_VALUE, (Number) sqlValue);
+            } else if (sqlValue instanceof Date) {
+                returnVal.addProperty(JSONMapping.SQL_VALUE, ((Date) sqlValue).getTime());
+            } else if (sqlValue instanceof Boolean) {
+                returnVal.addProperty(JSONMapping.SQL_VALUE, (Boolean) sqlValue);
+            } else {
+                // For other types, convert to string
+                returnVal.addProperty(JSONMapping.SQL_VALUE, sqlValue.toString());
+            }
         }
 
         return returnVal;
-    }
-
-    /**
-     * Get the SQL column name.
-     *
-     * @return The SQL column name.
-     */
-    public String getColumnName() {
-        return this.columnName;
-    }
-
-    /**
-     * Set the SQL column name.
-     *
-     * @param columnNameParam The SQL column name.
-     */
-    public void setColumnName(String columnNameParam) {
-        this.columnName = columnNameParam;
-    }
-
-    /**
-     * Get the SQL parameter index.
-     * The first parameter is 1.
-     *
-     * @return The SQL parameter index.
-     * @see java.sql.PreparedStatement#setObject(int, Object)
-     */
-    public Integer getColumnIndex() {
-        return this.columnIndex;
-    }
-
-    /**
-     * Set the SQL parameter index.
-     * The first parameter is 1.
-     *
-     * @param indexParam The SQL parameter index.
-     * @see java.sql.PreparedStatement#setObject(int, Object)
-     */
-    public void setColumnIndex(Integer indexParam) {
-        this.columnIndex = indexParam;
-    }
-
-    /**
-     * Get the SQL Type as {@code int}.
-     *
-     * @return The SQL Type.
-     * @see java.sql.Types
-     */
-    public Integer getSqlType() {
-        return this.sqlType;
-    }
-
-    /**
-     * Set the SQL Type as {@code Integer}.
-     *
-     * @param sqlTypeParam The SQL Type.
-     * @see java.sql.Types
-     */
-    public void setSqlType(Integer sqlTypeParam) {
-        this.sqlType = sqlTypeParam;
-    }
-
-    /**
-     * Get the param value.
-     * The type will be converted at time of use.
-     *
-     * @return The value of the parameter.
-     * @see java.sql.PreparedStatement#setObject(int, Object)
-     */
-    public Object getSqlValue() {
-        return this.sqlValue;
-    }
-
-    /**
-     * Get the param value.
-     * The type will be converted at time of use.
-     *
-     * @param paramValueParam The value of the parameter.
-     * @see java.sql.PreparedStatement#setObject(int, Object)
-     */
-    public void setSqlValue(Object paramValueParam) {
-        this.sqlValue = paramValueParam;
     }
 }

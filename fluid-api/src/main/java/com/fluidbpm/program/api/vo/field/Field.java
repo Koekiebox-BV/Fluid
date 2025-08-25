@@ -316,11 +316,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      */
     public Field(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        this.setFieldName(this.getAsStringNullSafe(jsonObjectParam, JSONMapping.FIELD_NAME));
-        this.setFieldDescription(this.getAsStringNullSafe(jsonObjectParam, JSONMapping.FIELD_DESCRIPTION));
-        this.setFieldType(this.getAsStringNullSafe(jsonObjectParam, JSONMapping.FIELD_TYPE));
-        this.setTypeMetaData(this.getAsStringNullSafe(jsonObjectParam, JSONMapping.TYPE_META_DATA));
+        this.setFieldName(this.getAsStringNullSafe(JSONMapping.FIELD_NAME));
+        this.setFieldDescription(this.getAsStringNullSafe(JSONMapping.FIELD_DESCRIPTION));
+        this.setFieldType(this.getAsStringNullSafe(JSONMapping.FIELD_TYPE));
+        this.setTypeMetaData(this.getAsStringNullSafe(JSONMapping.TYPE_META_DATA));
 
         //Field Value...
         if (this.isPropertyNotNull(this.jsonObject, JSONMapping.FIELD_VALUE)) {
@@ -444,28 +445,28 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                     //Multi Choices Selected Multi Choices...
                     if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
                             jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
-                            jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)) {
+                            jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)
+                    ) {
                         this.setFieldValue(new MultiChoice(jsonObject));
                     } else if (jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE)) {
                         //[Payara] mapping for rest...
-                        String typeVal = this.getAsStringNullSafe(jsonObject, MultiChoice.JSONMapping.TYPE);
+                        String typeVal = jsonObject.get(MultiChoice.JSONMapping.TYPE).getAsString();
                         if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
                             this.setFieldValue(new MultiChoice(
-                                    this.stringAsJsonObject(this.getAsStringNullSafe(jsonObject, MultiChoice.JSONMapping.VALUE))
+                                    this.stringAsJsonObject(jsonObject.get(MultiChoice.JSONMapping.VALUE).getAsString())
                             ));
                         }
                     } else if ((jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_MULTI_CHOICES) ||
                             jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES)) ||
-                            jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
+                            jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)
+                    ) {
                         this.setFieldValue(new MultiChoice(jsonObject));
                     }
                 } else {
                     if (this.isPropertyString(this.jsonObject, JSONMapping.FIELD_VALUE)) {
                         String stringVal = jsonEl.getAsString();
                         if (stringVal.startsWith("{")) {
-                            this.setFieldValue(new MultiChoice(
-                                    this.stringAsJsonObject(stringVal))
-                            );
+                            this.setFieldValue(new MultiChoice(this.stringAsJsonObject(stringVal)));
                         } else this.setFieldValue(new MultiChoice(stringVal));
                     } else if (this.isPropertyNumber(this.jsonObject, JSONMapping.FIELD_VALUE)) {
                         Number numbVal = jsonEl.getAsNumber();

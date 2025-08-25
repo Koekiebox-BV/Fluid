@@ -15,13 +15,12 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.webkit.RowExpansion;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class WebKitViewSub extends ABaseFluidJSONObject {
+public class WebKitViewSub extends ABaseFluidGSONObject {
     /*
      * data_table - Table
      * data_view_list - See https://www.primefaces.org/rain/list.xhtml
@@ -117,7 +116,7 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
     }
 
     public WebKitViewSub() {
-        this(new JSONObject());
+        this(new JsonObject());
     }
 
     /**
@@ -125,90 +124,29 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public WebKitViewSub(JSONObject jsonObjectParam) {
+    public WebKitViewSub(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.LISTING_MODE)) {
-            this.setListingMode(this.jsonObject.getString(JSONMapping.LISTING_MODE));
-        }
+        this.setListingMode(this.getAsStringNullSafe(JSONMapping.LISTING_MODE));
+        this.setIcon(this.getAsStringNullSafe(JSONMapping.ICON));
+        this.setLabel(this.getAsStringNullSafe(JSONMapping.LABEL));
+        this.setSubOrder(this.getAsIntegerNullSafe(JSONMapping.SUB_ORDER));
+        this.setShowColumnFormType(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE));
+        this.setShowColumnID(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID));
+        this.setShowColumnTitle(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE));
+        this.setShowColumnStepEntryTime(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME));
+        this.setShowColumnDateCreated(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED));
+        this.setShowColumnDateLastUpdated(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
+        this.setShowColumnCurrentFlow(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW));
+        this.setShowColumnCurrentStep(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP));
+        this.setShowColumnCurrentView(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW));
+        this.setShowColumnProgressPercentage(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE));
+        this.setShowColumnAttachment(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT));
 
-        if (!this.jsonObject.isNull(JSONMapping.ICON)) {
-            this.setIcon(this.jsonObject.getString(JSONMapping.ICON));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.LABEL)) {
-            this.setLabel(this.jsonObject.getString(JSONMapping.LABEL));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SUB_ORDER)) {
-            this.setSubOrder(this.jsonObject.getInt(JSONMapping.SUB_ORDER));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE)) {
-            this.setShowColumnFormType(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID)) {
-            this.setShowColumnID(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE)) {
-            this.setShowColumnTitle(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME)) {
-            this.setShowColumnStepEntryTime(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED)) {
-            this.setShowColumnDateCreated(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED)) {
-            this.setShowColumnDateLastUpdated(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW)) {
-            this.setShowColumnCurrentFlow(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP)) {
-            this.setShowColumnCurrentStep(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW)) {
-            this.setShowColumnCurrentView(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE)) {
-            this.setShowColumnProgressPercentage(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE));
-        }
-
-        if (!this.jsonObject.isNull(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT)) {
-            this.setShowColumnAttachment(this.jsonObject.getBoolean(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.ROW_EXPANSION)) this.setRowExpansion(new RowExpansion(new JSONObject()));
-        else this.setRowExpansion(new RowExpansion(this.jsonObject.getJSONObject(JSONMapping.ROW_EXPANSION)));
-
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEWS)) {
-            JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.JOB_VIEWS);
-            List<WebKitWorkspaceJobView> objs = new ArrayList();
-            for (int index = 0; index < jsonArray.length(); index++) {
-                objs.add(new WebKitWorkspaceJobView(jsonArray.getJSONObject(index)));
-            }
-            this.setJobViews(objs);
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELDS)) {
-            JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.ROUTE_FIELDS);
-            List<WebKitWorkspaceRouteField> objs = new ArrayList();
-            for (int index = 0; index < jsonArray.length(); index++) {
-                objs.add(new WebKitWorkspaceRouteField(jsonArray.getJSONObject(index)));
-            }
-            this.setRouteFields(objs);
-        }
+        this.setRowExpansion(this.extractObject(JSONMapping.ROW_EXPANSION, RowExpansion::new));
+        this.setJobViews(this.extractObjects(JSONMapping.JOB_VIEWS, WebKitWorkspaceJobView::new));
+        this.setRouteFields(this.extractObjects(JSONMapping.ROUTE_FIELDS, WebKitWorkspaceRouteField::new));
     }
 
     /**
@@ -219,44 +157,29 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getLabel() != null) returnVal.put(JSONMapping.LABEL, this.getLabel());
-        if (this.getIcon() != null) returnVal.put(JSONMapping.ICON, this.getIcon());
+        this.setAsProperty(JSONMapping.LABEL, returnVal, this.getLabel());
+        this.setAsProperty(JSONMapping.ICON, returnVal, this.getIcon());
+        this.setAsProperty(JSONMapping.SUB_ORDER, returnVal, this.getSubOrder());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID, returnVal, this.isShowColumnID());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE, returnVal, this.isShowColumnFormType());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE, returnVal, this.isShowColumnTitle());
 
-        returnVal.put(JSONMapping.SUB_ORDER, this.getSubOrder());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME, returnVal, this.isShowColumnStepEntryTime());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED, returnVal, this.isShowColumnDateCreated());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, returnVal, this.isShowColumnDateLastUpdated());
 
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID, this.isShowColumnID());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE, this.isShowColumnFormType());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE, this.isShowColumnTitle());
-
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_STEP_ENTRY_TIME, this.isShowColumnStepEntryTime());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_CREATED, this.isShowColumnDateCreated());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_DATE_LAST_UPDATED, this.isShowColumnDateLastUpdated());
-
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW, this.isShowColumnCurrentFlow());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP, this.isShowColumnCurrentStep());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW, this.isShowColumnCurrentView());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE, this.isShowColumnProgressPercentage());
-        returnVal.put(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT, this.isShowColumnAttachment());
-
-        if (this.getListingMode() != null) returnVal.put(JSONMapping.LISTING_MODE, this.getListingMode());
-
-        if (this.getJobViews() != null && !this.getJobViews().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (WebKitWorkspaceJobView toAdd : this.getJobViews()) jsonArray.put(toAdd.toJsonObject());
-            returnVal.put(JSONMapping.JOB_VIEWS, jsonArray);
-        }
-
-        if (this.getRouteFields() != null && !this.getRouteFields().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (WebKitWorkspaceRouteField toAdd : this.getRouteFields()) jsonArray.put(toAdd.toJsonObject());
-            returnVal.put(JSONMapping.ROUTE_FIELDS, jsonArray);
-        }
-
-        if (this.getRowExpansion() != null)
-            returnVal.put(JSONMapping.ROW_EXPANSION, this.getRowExpansion().toJsonObject());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_FLOW, returnVal, this.isShowColumnCurrentFlow());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_STEP, returnVal, this.isShowColumnCurrentStep());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_CURRENT_VIEW, returnVal, this.isShowColumnCurrentView());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_PROGRESS_PERCENTAGE, returnVal, this.isShowColumnProgressPercentage());
+        this.setAsProperty(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ATTACHMENT, returnVal, this.isShowColumnAttachment());
+        this.setAsProperty(JSONMapping.LISTING_MODE, returnVal, this.getListingMode());
+        this.setAsObjArray(JSONMapping.JOB_VIEWS, returnVal, this::getJobViews);
+        this.setAsObjArray(JSONMapping.ROUTE_FIELDS, returnVal, this::getRouteFields);
+        this.setAsObj(JSONMapping.ROW_EXPANSION, returnVal, this::getRowExpansion);
 
         return returnVal;
     }
@@ -343,13 +266,10 @@ public class WebKitViewSub extends ABaseFluidJSONObject {
         } else {
             this.setShowColumnAttachment(false);
         }
-
-
     }
 
     /**
      * Return the Text representation of {@code this} object.
-     *
      * @return JSON body of {@code this} object.
      */
     @Override

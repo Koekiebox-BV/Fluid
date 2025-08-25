@@ -15,11 +15,10 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
+
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
@@ -28,10 +27,10 @@ import com.fluidbpm.program.api.vo.ABaseListing;
  *
  * @author jasonbruwer
  * @see Collaboration
- * @see ABaseListing
+ * @see com.fluidbpm.program.api.vo.ABaseGSONListing
  * @since v1.9
  */
-public class CollaborationListing extends ABaseListing<Collaboration> {
+public class CollaborationListing extends ABaseGSONListing<Collaboration> {
 
     private static final long serialVersionUID = 1L;
 
@@ -47,7 +46,7 @@ public class CollaborationListing extends ABaseListing<Collaboration> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public CollaborationListing(JSONObject jsonObjectParam) {
+    public CollaborationListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -59,7 +58,7 @@ public class CollaborationListing extends ABaseListing<Collaboration> {
      */
     @Override
     @XmlTransient
-    public Collaboration getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public Collaboration getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new Collaboration(jsonObjectParam);
     }
 }

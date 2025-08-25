@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.report;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 /**
@@ -28,22 +30,21 @@ import org.json.JSONObject;
  * @see JSONObject
  * @since v1.11
  */
-public abstract class ABaseFluidJSONReportObject extends ABaseFluidJSONObject {
+public abstract class ABaseFluidGSONReportObject extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
      */
-    public ABaseFluidJSONReportObject() {
+    public ABaseFluidGSONReportObject() {
         super();
     }
 
     /**
      * Populates local variables Id and Service Ticket with {@code jsonObjectParam}.
-     *
      * @param jsonObjectParam The JSON Object.
      */
-    public ABaseFluidJSONReportObject(JSONObject jsonObjectParam) {
+    public ABaseFluidGSONReportObject(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 }

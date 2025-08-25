@@ -1,6 +1,6 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 
 /**
@@ -10,7 +10,7 @@ import com.fluidbpm.program.api.vo.ws.Error;
  * @author jasonbruwer on 2016/03/11.
  * @since 1.1
  */
-public interface IMessageReceivedCallback<T extends ABaseFluidJSONObject> {
+public interface IMessageReceivedCallback<T extends ABaseFluidGSONObject> {
 
 	/**
 	 * When an error message is sent back.

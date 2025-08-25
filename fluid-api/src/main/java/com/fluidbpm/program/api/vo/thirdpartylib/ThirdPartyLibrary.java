@@ -15,13 +15,14 @@
 
 package com.fluidbpm.program.api.vo.thirdpartylib;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.common.io.BaseEncoding;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
@@ -36,7 +37,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Setter
 @Getter
-public class ThirdPartyLibrary extends ABaseFluidJSONObject {
+public class ThirdPartyLibrary extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String filename;
@@ -77,34 +78,24 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ThirdPartyLibrary(JSONObject jsonObjectParam) {
+    public ThirdPartyLibrary(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
         //Filename...
-        if (!this.jsonObject.isNull(JSONMapping.FILENAME)) {
-            this.setFilename(this.jsonObject.getString(JSONMapping.FILENAME));
-        }
+        this.setFilename(this.getAsStringNullSafe(JSONMapping.FILENAME));
 
         //Description...
-        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
-        }
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
 
         //Sha-256...
-        if (!this.jsonObject.isNull(JSONMapping.SHA_256_SUM)) {
-            this.setSha256sum(this.jsonObject.getString(JSONMapping.SHA_256_SUM));
-        }
+        this.setSha256sum(this.getAsStringNullSafe(JSONMapping.SHA_256_SUM));
 
         //Add to classpath...
-        if (!this.jsonObject.isNull(JSONMapping.ADD_TOOLS_TO_CLASS_PATH)) {
-            this.setAddToolsToClassPath(
-                    this.jsonObject.getBoolean(JSONMapping.ADD_TOOLS_TO_CLASS_PATH));
-        }
+        this.setAddToolsToClassPath(this.getAsBooleanNullSafe(JSONMapping.ADD_TOOLS_TO_CLASS_PATH));
 
         //Data Base-64...
-        if (!this.jsonObject.isNull(JSONMapping.LIBRARY_DATA_BASE64)) {
-            this.setLibraryDataBase64(this.jsonObject.getString(JSONMapping.LIBRARY_DATA_BASE64));
-        }
+        this.setLibraryDataBase64(this.getAsStringNullSafe(JSONMapping.LIBRARY_DATA_BASE64));
 
         //Date Created...
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(
@@ -136,53 +127,53 @@ public class ThirdPartyLibrary extends ABaseFluidJSONObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code Field}
+     * @return {@code JsonObject} representation of {@code Field}
      * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
         //Filename...
         if (this.getFilename() != null) {
-            returnVal.put(JSONMapping.FILENAME, this.getFilename());
+            returnVal.addProperty(JSONMapping.FILENAME, this.getFilename());
         }
 
         //Description...
         if (this.getDescription() != null) {
-            returnVal.put(JSONMapping.DESCRIPTION, this.getDescription());
+            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
         }
 
         //Sha-256 SUM...
         if (this.getSha256sum() != null) {
-            returnVal.put(JSONMapping.SHA_256_SUM, this.getSha256sum());
+            returnVal.addProperty(JSONMapping.SHA_256_SUM, this.getSha256sum());
         }
 
         //Add Tools to Classpath...
         if (this.isAddToolsToClassPath() != null) {
-            returnVal.put(JSONMapping.ADD_TOOLS_TO_CLASS_PATH, this.isAddToolsToClassPath());
+            returnVal.addProperty(JSONMapping.ADD_TOOLS_TO_CLASS_PATH, this.isAddToolsToClassPath());
         }
 
         //Library Data in Base-64...
         if (this.getLibraryDataBase64() != null) {
-            returnVal.put(JSONMapping.LIBRARY_DATA_BASE64,
+            returnVal.addProperty(JSONMapping.LIBRARY_DATA_BASE64,
                     this.getLibraryDataBase64());
         }
 
         //Date Created...
         if (this.getDateCreated() != null) {
-            returnVal.put(JSONMapping.DATE_CREATED,
-                    this.getDateAsObjectFromJson(this.getDateCreated()));
+            returnVal.addProperty(JSONMapping.DATE_CREATED,
+                    this.getDateAsLongFromJson(this.getDateCreated()));
         }
 
         //Date Last Updated...
         if (this.getDateLastUpdated() != null) {
-            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateAsObjectFromJson(this.getDateLastUpdated()));
+            returnVal.addProperty(JSONMapping.DATE_LAST_UPDATED,
+                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
         }
 
         return returnVal;

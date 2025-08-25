@@ -22,6 +22,7 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.common.io.BaseEncoding;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import org.json.JSONArray;
@@ -835,13 +836,14 @@ public class UtilGlobal {
      * @param source the JSONObject containing the source data fields to be copied
      * @param target the JSONObject to which the fields should be copied, if not already set
      */
-    public static void copyJSONFieldsNotSet(JSONObject source, JSONObject target) {
-        Iterator<String> keys = source.keys();
+    public static void copyJSONFieldsNotSet(JsonObject source, JsonObject target) {
+        Iterator<String> keys = source.keySet().iterator();
         while (keys.hasNext()) {
             String key = keys.next();
-            if (target.has(key)) continue;
+            if (target.has(key) || source.get(key).isJsonNull()) continue;
 
-            target.put(key, source.get(key));
+            JsonElement jsonEl = source.get(key);
+            target.add(key, jsonEl);
         }
     }
 }

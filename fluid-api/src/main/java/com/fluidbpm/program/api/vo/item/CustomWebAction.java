@@ -15,15 +15,15 @@
 
 package com.fluidbpm.program.api.vo.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
@@ -85,53 +85,29 @@ public class CustomWebAction extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.TASK_IDENTIFIER)) {
-            this.setTaskIdentifier(this.jsonObject.getString(JSONMapping.TASK_IDENTIFIER));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.EXECUTION_TIME_MILLIS)) {
-            this.setExecutionTimeMillis(this.jsonObject.getLong(JSONMapping.EXECUTION_TIME_MILLIS));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.IS_TABLE_RECORD)) {
-            this.setIsTableRecord(this.jsonObject.getBoolean(JSONMapping.IS_TABLE_RECORD));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO)) {
-            this.setFormTableRecordBelongsTo(this.jsonObject.getLong(
-                    JSONMapping.FORM_TABLE_RECORD_BELONGS_TO));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FORM)) {
-            this.setForm(new Form(this.jsonObject.getJSONObject(JSONMapping.FORM)));
-        }
+        this.setTaskIdentifier(this.getAsStringNullSafe(JSONMapping.TASK_IDENTIFIER));
+        this.setExecutionTimeMillis(this.getAsLongNullSafe(JSONMapping.EXECUTION_TIME_MILLIS));
+        this.setIsTableRecord(this.getAsBooleanNullSafe(JSONMapping.IS_TABLE_RECORD));
+        this.setFormTableRecordBelongsTo(this.getAsLongNullSafe(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO));
+        this.setForm(this.extractObject(JSONMapping.FORM, Form::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code CustomWebAction}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code CustomWebAction}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        if (this.getTaskIdentifier() != null) {
-            returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
-        }
-        if (this.getExecutionTimeMillis() != null) {
-            returnVal.put(JSONMapping.EXECUTION_TIME_MILLIS, this.getExecutionTimeMillis());
-        }
-        if (this.getIsTableRecord() != null) {
-            returnVal.put(JSONMapping.IS_TABLE_RECORD, this.getIsTableRecord());
-        }
-        if (this.getFormTableRecordBelongsTo() != null) {
-            returnVal.put(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO, this.getFormTableRecordBelongsTo());
-        }
-        if (this.getForm() != null) {
-            returnVal.put(JSONMapping.FORM, this.getForm().toJsonObject());
-        }
+        this.setAsProperty(JSONMapping.TASK_IDENTIFIER, returnVal, this.getTaskIdentifier());
+        this.setAsProperty(JSONMapping.EXECUTION_TIME_MILLIS, returnVal, this.getExecutionTimeMillis());
+        this.setAsProperty(JSONMapping.IS_TABLE_RECORD, returnVal, this.getIsTableRecord());
+        this.setAsProperty(JSONMapping.FORM_TABLE_RECORD_BELONGS_TO, returnVal, this.getFormTableRecordBelongsTo());
+        this.setAsObj(JSONMapping.FORM, returnVal, this::getForm);
         return returnVal;
     }
 

@@ -17,13 +17,11 @@ package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.sql.PreparedStatement;
@@ -43,12 +41,10 @@ import java.util.Optional;
  * @since v1.8
  */
 @NoArgsConstructor
-public class SQLRow extends ABaseFluidJSONObject {
-
+@Getter
+@Setter
+public class SQLRow extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
-
-    @Getter
-    @Setter
     private List<SQLColumn> sqlColumns;
 
     /**
@@ -105,46 +101,32 @@ public class SQLRow extends ABaseFluidJSONObject {
         } else this.sqlColumns.add(column);
     }
 
-
     /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SQLRow(JSONObject jsonObjectParam) {
+    public SQLRow(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //SQL Columns...
-        if (!this.jsonObject.isNull(JSONMapping.SQL_COLUMNS)) {
-            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.SQL_COLUMNS);
-            List<SQLColumn> sqlColumns = new ArrayList();
-            for (int index = 0; index < rulesArr.length(); index++) {
-                sqlColumns.add(new SQLColumn(rulesArr.getJSONObject(index)));
-            }
-            this.setSqlColumns(sqlColumns);
-        } else this.setSqlColumns(null);
+        this.setSqlColumns(this.extractObjects(JSONMapping.SQL_COLUMNS, SQLColumn::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code UserQuery}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code SQLRow}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-        //SQL Columns...
-        if (this.getSqlColumns() != null) {
-            JSONArray jsonArray = new JSONArray();
-            for (SQLColumn toAdd : this.getSqlColumns()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.SQL_COLUMNS, jsonArray);
-        }
-
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        
+        this.setAsObjArray(JSONMapping.SQL_COLUMNS, returnVal, this::getSqlColumns);
+        
         return returnVal;
     }
 }

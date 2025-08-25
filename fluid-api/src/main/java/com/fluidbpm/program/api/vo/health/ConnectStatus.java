@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -34,7 +34,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ConnectStatus extends ABaseFluidJSONObject {
+public class ConnectStatus extends ABaseFluidGSONObject {
     private Date timestamp;
     private Health systemHealth;
     private Health databaseHealth;
@@ -63,76 +63,59 @@ public class ConnectStatus extends ABaseFluidJSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public ConnectStatus(JSONObject jsonObject) {
+    public ConnectStatus(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
         this.setTimestamp(this.getDateFieldValueFromFieldWithName(JSONMapping.TIMESTAMP));
 
-        if (!this.jsonObject.isNull(JSONMapping.SYSTEM_HEALTH)) {
-            this.setSystemHealth(this.jsonObject.getEnum(Health.class, JSONMapping.SYSTEM_HEALTH));
+        String systemHealthStr = this.getAsStringNullSafe(JSONMapping.SYSTEM_HEALTH);
+        if (systemHealthStr != null && !systemHealthStr.isEmpty()) {
+            try {
+                this.setSystemHealth(Health.valueOf(systemHealthStr));
+            } catch (IllegalArgumentException ignored) {
+                // ignore invalid value
+            }
         }
 
-        if (!this.jsonObject.isNull(JSONMapping.DATABASE_HEALTH)) {
-            this.setDatabaseHealth(this.jsonObject.getEnum(Health.class, JSONMapping.DATABASE_HEALTH));
+        String databaseHealthStr = this.getAsStringNullSafe(JSONMapping.DATABASE_HEALTH);
+        if (databaseHealthStr != null && !databaseHealthStr.isEmpty()) {
+            try {
+                this.setDatabaseHealth(Health.valueOf(databaseHealthStr));
+            } catch (IllegalArgumentException ignored) {
+                // ignore invalid value
+            }
         }
 
-        if (!this.jsonObject.isNull(JSONMapping.VERSION)) {
-            this.setVersion(this.jsonObject.getString(JSONMapping.VERSION));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FLUID_API_VERSION)) {
-            this.setFluidAPIVersion(this.jsonObject.getString(JSONMapping.FLUID_API_VERSION));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.FLUID_WEBKIT_VERSION)) {
-            this.setFluidWebKitVersion(this.jsonObject.getString(JSONMapping.FLUID_WEBKIT_VERSION));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.INTERNAL_TIMEZONE)) {
-            this.setInternalTimeZone(this.jsonObject.getString(JSONMapping.INTERNAL_TIMEZONE));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-            this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-        }
+        this.setVersion(this.getAsStringNullSafe(JSONMapping.VERSION));
+        this.setFluidAPIVersion(this.getAsStringNullSafe(JSONMapping.FLUID_API_VERSION));
+        this.setFluidWebKitVersion(this.getAsStringNullSafe(JSONMapping.FLUID_WEBKIT_VERSION));
+        this.setInternalTimeZone(this.getAsStringNullSafe(JSONMapping.INTERNAL_TIMEZONE));
+        this.setConnectObtainDurationMillis(this.getAsLongNullSafe(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code ConnectStatus}.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getTimestamp() != null) {
-            returnVal.put(JSONMapping.TIMESTAMP, this.getDateAsObjectFromJson(this.getTimestamp()));
-        }
-
+        this.setAsProperty(JSONMapping.TIMESTAMP, returnVal, this.getDateAsLongFromJson(this.getTimestamp()));
         if (this.getSystemHealth() != null) {
-            returnVal.put(JSONMapping.SYSTEM_HEALTH, this.getSystemHealth());
+            this.setAsProperty(JSONMapping.SYSTEM_HEALTH, returnVal, this.getSystemHealth().toString());
         }
-
         if (this.getDatabaseHealth() != null) {
-            returnVal.put(JSONMapping.DATABASE_HEALTH, this.getDatabaseHealth());
+            this.setAsProperty(JSONMapping.DATABASE_HEALTH, returnVal, this.getDatabaseHealth().toString());
         }
-
-        if (this.getVersion() != null) returnVal.put(JSONMapping.VERSION, this.getVersion());
-        if (this.getFluidAPIVersion() != null) {
-            returnVal.put(JSONMapping.FLUID_API_VERSION, this.getFluidAPIVersion());
-        }
-        if (this.getFluidWebKitVersion() != null) {
-            returnVal.put(JSONMapping.FLUID_WEBKIT_VERSION, this.getFluidWebKitVersion());
-        }
-        if (this.getInternalTimeZone() != null)
-            returnVal.put(JSONMapping.INTERNAL_TIMEZONE, this.getInternalTimeZone());
-        if (this.getConnectObtainDurationMillis() != null) {
-            returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-        }
+        this.setAsProperty(JSONMapping.VERSION, returnVal, this.getVersion());
+        this.setAsProperty(JSONMapping.FLUID_API_VERSION, returnVal, this.getFluidAPIVersion());
+        this.setAsProperty(JSONMapping.FLUID_WEBKIT_VERSION, returnVal, this.getFluidWebKitVersion());
+        this.setAsProperty(JSONMapping.INTERNAL_TIMEZONE, returnVal, this.getInternalTimeZone());
+        this.setAsProperty(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, returnVal, this.getConnectObtainDurationMillis());
 
         return returnVal;
     }

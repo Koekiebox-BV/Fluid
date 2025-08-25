@@ -15,9 +15,10 @@
 
 package com.fluidbpm.program.api.vo.user;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -31,8 +32,9 @@ import java.util.Date;
  * @see User
  * @since v1.8
  */
-public class UserNotification extends ABaseFluidJSONObject {
-
+@Getter
+@Setter
+public class UserNotification extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private Date dateRead;
@@ -91,199 +93,49 @@ public class UserNotification extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserNotification(JSONObject jsonObjectParam) {
+    public UserNotification(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
+        // User
+        this.setUser(this.extractObject(JSONMapping.USER, User::new));
 
-        //User...
-        if (!this.jsonObject.isNull(JSONMapping.USER)) {
-            this.setUser(this.userFromLclJsonObject(JSONMapping.USER));
-        }
+        // Dates
+        this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
+        this.setDateRead(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_READ));
 
-        //Date Created...
-        this.setDateCreated(this.getDateFieldValueFromFieldWithName(
-                JSONMapping.DATE_CREATED));
+        // Strings
+        this.setMessage(this.getAsStringNullSafe(JSONMapping.MESSAGE));
+        this.setExpiringLink(this.getAsStringNullSafe(JSONMapping.EXPIRING_LINK));
 
-        //Date Read...
-        this.setDateRead(this.getDateFieldValueFromFieldWithName(
-                JSONMapping.DATE_READ));
-
-        //Message...
-        if (!this.jsonObject.isNull(JSONMapping.MESSAGE)) {
-            this.setMessage(this.jsonObject.getString(JSONMapping.MESSAGE));
-        }
-
-        //Expiring Link...
-        if (!this.jsonObject.isNull(JSONMapping.EXPIRING_LINK)) {
-            this.setExpiringLink(this.jsonObject.getString(
-                    JSONMapping.EXPIRING_LINK));
-        }
-
-        //User Notification Type...
-        if (!this.jsonObject.isNull(JSONMapping.USER_NOTIFICATION_TYPE)) {
-            this.setUserNotificationType(this.jsonObject.getInt(
-                    JSONMapping.USER_NOTIFICATION_TYPE));
-        }
-    }
-
-
-    /**
-     * Gets The {@code Date} the User Notification was created.
-     *
-     * @return Date Created.
-     */
-    public Date getDateCreated() {
-        return this.dateCreated;
+        // Type
+        Integer notifType = this.getAsIntegerNullSafe(JSONMapping.USER_NOTIFICATION_TYPE);
+        if (notifType != null) this.setUserNotificationType(notifType);
     }
 
     /**
-     * Sets The {@code Date} the User Notification was created.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @param dateCreatedParam Date Created.
-     */
-    public void setDateCreated(Date dateCreatedParam) {
-        this.dateCreated = dateCreatedParam;
-    }
-
-    /**
-     * Gets The {@code Date} the User Notification was read by the user.
-     *
-     * @return Date Read.
-     */
-    public Date getDateRead() {
-        return this.dateRead;
-    }
-
-    /**
-     * Sets {@code Date} the User Notification was read by the user.
-     *
-     * @param dateReadParam Date Read.
-     */
-    public void setDateRead(Date dateReadParam) {
-        this.dateRead = dateReadParam;
-    }
-
-    /**
-     * Gets the notification text message.
-     *
-     * @return Message.
-     */
-    public String getMessage() {
-        return this.message;
-    }
-
-    /**
-     * Sets the notification text message.
-     *
-     * @param messageParam Message.
-     */
-    public void setMessage(String messageParam) {
-        this.message = messageParam;
-    }
-
-    /**
-     * Gets the notification expiring link (if applicable).
-     *
-     * @return Expiring Link.
-     */
-    public String getExpiringLink() {
-        return this.expiringLink;
-    }
-
-    /**
-     * Sets the notification expiring link (if applicable).
-     *
-     * @param expiringLinkParam Expiring Link.
-     */
-    public void setExpiringLink(String expiringLinkParam) {
-        this.expiringLink = expiringLinkParam;
-    }
-
-    /**
-     * The {@code User} the notification is for.
-     *
-     * @return The {@code User}
-     * @see User
-     */
-    public User getUser() {
-        return this.user;
-    }
-
-    /**
-     * The {@code User} the notification is for.
-     *
-     * @param userParam The {@code User}
-     * @see User
-     */
-    public void setUser(User userParam) {
-        this.user = userParam;
-    }
-
-    /**
-     * The notification type.
-     *
-     * @return The {@code User} notification type.
-     * @see UserNotificationType
-     */
-    public int getUserNotificationType() {
-        return this.userNotificationType;
-    }
-
-    /**
-     * The notification type.
-     *
-     * @param userNotificationTypeParam The notification type.
-     * @see UserNotificationType
-     */
-    public void setUserNotificationType(int userNotificationTypeParam) {
-        this.userNotificationType = userNotificationTypeParam;
-    }
-
-    /**
-     * Conversion to {@code JSONObject} from Java Object.
-     *
-     * @return {@code JSONObject} representation of {@code UserNotification}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code UserNotification}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = super.toJsonObject();
+        // User
+        this.setAsObj(JSONMapping.USER, returnVal, this::getUser);
 
-        //User...
-        if (this.getUser() != null) {
-            returnVal.put(JSONMapping.USER,
-                    this.getUser().toJsonObject());
-        }
+        // Dates
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_READ, returnVal, this.getDateAsLongFromJson(this.getDateRead()));
 
-        //Date Created...
-        if (this.getDateCreated() != null) {
-            returnVal.put(JSONMapping.DATE_CREATED,
-                    this.getDateAsObjectFromJson(this.getDateCreated()));
-        }
+        // Strings
+        this.setAsProperty(JSONMapping.EXPIRING_LINK, returnVal, this.getExpiringLink());
+        this.setAsProperty(JSONMapping.MESSAGE, returnVal, this.getMessage());
 
-        //Date Read...
-        if (this.getDateRead() != null) {
-            returnVal.put(JSONMapping.DATE_READ, this.getDateAsObjectFromJson(this.getDateRead()));
-        }
-
-        //Expiring Link...
-        if (this.getExpiringLink() != null) {
-            returnVal.put(JSONMapping.EXPIRING_LINK, this.getExpiringLink());
-        }
-
-        //Message...
-        if (this.getMessage() != null) {
-            returnVal.put(JSONMapping.MESSAGE, this.getMessage());
-        }
-
-        //User Notification Type...
-        returnVal.put(JSONMapping.USER_NOTIFICATION_TYPE, this.getUserNotificationType());
-
+        // Type
+        this.setAsProperty(JSONMapping.USER_NOTIFICATION_TYPE, returnVal, this.getUserNotificationType());
         return returnVal;
     }
 }

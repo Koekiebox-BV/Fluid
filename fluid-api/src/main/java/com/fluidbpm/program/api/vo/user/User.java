@@ -160,24 +160,24 @@ public class User extends ABaseFluidGSONObject {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        this.setUsername(this.getAsStringNullSafe(this.jsonObject, JSONMapping.USERNAME));
-        this.setPasswordSha256(this.getAsStringNullSafe(this.jsonObject, JSONMapping.PASSWORD_SHA_256));
-        this.setPasswordClear(this.getAsStringNullSafe(this.jsonObject, JSONMapping.PASSWORD_CLEAR));
+        this.setUsername(this.getAsStringNullSafe(JSONMapping.USERNAME));
+        this.setPasswordSha256(this.getAsStringNullSafe(JSONMapping.PASSWORD_SHA_256));
+        this.setPasswordClear(this.getAsStringNullSafe(JSONMapping.PASSWORD_CLEAR));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
         this.setPasswordChangedAt(this.getDateFieldValueFromFieldWithName(JSONMapping.PASSWORD_CHANGED_AT));
         this.setLoggedInDateTime(this.getDateFieldValueFromFieldWithName(JSONMapping.LOGGED_IN_DATE_TIME));
-        this.setSalt(this.getAsStringNullSafe(this.jsonObject, JSONMapping.SALT));
-        this.setActive(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.ACTIVE));
-        this.setInvalidLoginCount(this.getAsIntegerNullSafe(this.jsonObject, JSONMapping.INVALID_LOGIN_COUNT));
-        this.setTimezone(this.getAsFloatNullSafe(this.jsonObject, JSONMapping.TIMEZONE));
-        this.setDateFormat(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DATE_FORMAT));
-        this.setTimeFormat(this.getAsStringNullSafe(this.jsonObject, JSONMapping.TIME_FORMAT));
-        this.setLocale(this.getAsStringNullSafe(this.jsonObject, JSONMapping.LOCALE));
-        this.setEmailUserNotification(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.EMAIL_USER_NOTIFICATION));
-        this.setRoles(this.extractObjects(this.jsonObject, JSONMapping.ROLES, Role::new));
-        this.setEmailAddresses(this.extractStrings(this.jsonObject, JSONMapping.EMAIL_ADDRESSES));
-        this.setUserFields(this.extractObjects(this.jsonObject, JSONMapping.USER_FIELDS, Field::new));
+        this.setSalt(this.getAsStringNullSafe(JSONMapping.SALT));
+        this.setActive(this.getAsBooleanNullSafe(JSONMapping.ACTIVE));
+        this.setInvalidLoginCount(this.getAsIntegerNullSafe(JSONMapping.INVALID_LOGIN_COUNT));
+        this.setTimezone(this.getAsFloatNullSafe(JSONMapping.TIMEZONE));
+        this.setDateFormat(this.getAsStringNullSafe(JSONMapping.DATE_FORMAT));
+        this.setTimeFormat(this.getAsStringNullSafe(JSONMapping.TIME_FORMAT));
+        this.setLocale(this.getAsStringNullSafe(JSONMapping.LOCALE));
+        this.setEmailUserNotification(this.getAsBooleanNullSafe(JSONMapping.EMAIL_USER_NOTIFICATION));
+        this.setRoles(this.extractObjects(JSONMapping.ROLES, Role::new));
+        this.setEmailAddresses(this.extractStrings(JSONMapping.EMAIL_ADDRESSES));
+        this.setUserFields(this.extractObjects(JSONMapping.USER_FIELDS, Field::new));
     }
 
     /**

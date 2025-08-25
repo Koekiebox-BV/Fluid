@@ -21,8 +21,8 @@ import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchE
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.IndicesClient;
 import org.elasticsearch.client.RequestOptions;
@@ -137,7 +137,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
 
             // Found a match...
             MappingMetadata casted = getExistingIndex.getMappings().get(mappingKey);
-            existingPropsToUpdate = new Gson().fromJson(casted.source().string(), JsonObject.class);
+            existingPropsToUpdate = JsonParser.parseString(casted.source().toString()).getAsJsonObject();
         }
 
         //No mapping for the type create a new one...

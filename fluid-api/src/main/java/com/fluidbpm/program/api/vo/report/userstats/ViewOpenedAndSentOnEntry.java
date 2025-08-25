@@ -15,13 +15,15 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User statistics.
@@ -32,7 +34,7 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
-public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
+public class ViewOpenedAndSentOnEntry extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private String viewName;
@@ -62,35 +64,14 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ViewOpenedAndSentOnEntry(JSONObject jsonObjectParam) {
+    public ViewOpenedAndSentOnEntry(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject.isNull(JSONMapping.VIEW_NAME)) {
-            this.setViewName(null);
-        } else {
-            this.setViewName(this.jsonObject.getString(JSONMapping.VIEW_NAME));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.VIEW_CLICKS)) {
-            this.setViewClicks(0);
-        } else {
-            this.setViewClicks(this.jsonObject.getInt(JSONMapping.VIEW_CLICKS));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.OPENED_FROM_VIEW_COUNTS)) {
-            this.setOpenedFromViewCounts(0);
-        } else {
-            this.setOpenedFromViewCounts(this.jsonObject.getInt(JSONMapping.OPENED_FROM_VIEW_COUNTS));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.SENT_ON)) {
-            this.setSentOn(0);
-        } else {
-            this.setSentOn(this.jsonObject.getInt(JSONMapping.SENT_ON));
-        }
+        this.setViewName(this.getAsStringNullSafe(JSONMapping.VIEW_NAME));
+        this.setViewClicks(this.getAsIntegerNullSafe(JSONMapping.VIEW_CLICKS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.VIEW_CLICKS));
+        this.setOpenedFromViewCounts(this.getAsIntegerNullSafe(JSONMapping.OPENED_FROM_VIEW_COUNTS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.OPENED_FROM_VIEW_COUNTS));
+        this.setSentOn(this.getAsIntegerNullSafe(JSONMapping.SENT_ON) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.SENT_ON));
     }
 
 
@@ -103,9 +84,7 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
         }
 
         float decimal = ((float) this.sentOn / (float) this.openedFromViewCounts);
-        if (decimal == 1) {
-            return 100;
-        }
+        if (decimal == 1) return 100;
 
         String stringVal = Float.toString(decimal).substring(2);
         if (stringVal.length() > 1) {
@@ -115,23 +94,21 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidJSONReportObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code ViewOpenedAndSentOnEntry}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code ViewOpenedAndSentOnEntry}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getViewName() != null) {
-            returnVal.put(JSONMapping.VIEW_NAME, this.getViewName());
-        }
-
-        returnVal.put(JSONMapping.VIEW_CLICKS, this.getViewClicks());
-        returnVal.put(JSONMapping.OPENED_FROM_VIEW_COUNTS, this.getOpenedFromViewCounts());
-        returnVal.put(JSONMapping.SENT_ON, this.getSentOn());
+        this.setAsProperty(JSONMapping.VIEW_NAME, returnVal, this.getViewName());
+        this.setAsProperty(JSONMapping.VIEW_CLICKS, returnVal, this.getViewClicks());
+        this.setAsProperty(JSONMapping.OPENED_FROM_VIEW_COUNTS, returnVal, this.getOpenedFromViewCounts());
+        this.setAsProperty(JSONMapping.SENT_ON, returnVal, this.getSentOn());
 
         return returnVal;
     }

@@ -29,9 +29,9 @@ import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.flow.RouteFieldClient;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
+import com.google.gson.JsonObject;
 import lombok.extern.java.Log;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -207,17 +207,16 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         //2. Attachments...
         List<Attachment> attachments = new ArrayList<Attachment>();
 
-        JsonObject jsonObject = new JSONObject();
+        JsonObject jsonObject = new JsonObject();
         try {
-            JSONObject jsonMemberObject = new JSONObject();
+            JsonObject jsonMemberObject = new JsonObject();
+            jsonMemberObject.addProperty("firstname","Jason"+identifier);
+            jsonMemberObject.addProperty("lastname", "Bruwer"+identifier);
+            jsonMemberObject.addProperty("id_number","81212211122");
+            jsonMemberObject.addProperty("cellphone","1111");
+            jsonMemberObject.addProperty("member_number","ZOOOOL");
 
-            jsonMemberObject.put("firstname","Jason"+identifier);
-            jsonMemberObject.put("lastname", "Bruwer"+identifier);
-            jsonMemberObject.put("id_number","81212211122");
-            jsonMemberObject.put("cellphone","1111");
-            jsonMemberObject.put("member_number","ZOOOOL");
-
-            jsonObject.put("member",jsonMemberObject);
+            jsonObject.add("member",jsonMemberObject);
         } catch (JSONException e) {
             Assert.fail(e.getMessage());
             return toCreate;

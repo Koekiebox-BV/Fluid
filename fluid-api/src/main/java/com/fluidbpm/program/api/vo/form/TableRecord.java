@@ -15,16 +15,12 @@
 
 package com.fluidbpm.program.api.vo.form;
 
-import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.fluidbpm.program.api.vo.field.Field;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.field.Field;
 
 /**
  * Represents an Fluid Table Record.
@@ -37,9 +33,8 @@ import com.fluidbpm.program.api.vo.field.Field;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TableRecord extends ABaseGSONListing {
+public class TableRecord extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
-
     private Form formContainer;
     private Form parentFormContainer;
     private Field parentFormField;
@@ -85,49 +80,27 @@ public class TableRecord extends ABaseGSONListing {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public TableRecord(JSONObject jsonObjectParam) {
+    public TableRecord(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Form Container...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER)) {
-            this.setFormContainer(
-                    new Form(this.jsonObject.getJSONObject(JSONMapping.FORM_CONTAINER)));
-        }
-
-        //Parent Form Container...
-        if (!this.jsonObject.isNull(JSONMapping.PARENT_FORM_CONTAINER)) {
-            this.setParentFormContainer(
-                    new Form(this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_CONTAINER)));
-        }
-
-        //Parent Field...
-        if (!this.jsonObject.isNull(JSONMapping.PARENT_FORM_FIELD)) {
-            this.setParentFormField(new Field(this.jsonObject.getJSONObject(JSONMapping.PARENT_FORM_FIELD)));
-        }
+        this.setFormContainer(this.extractObject(JSONMapping.FORM_CONTAINER, Form::new));
+        this.setParentFormContainer(this.extractObject(JSONMapping.PARENT_FORM_CONTAINER, Form::new));
+        this.setParentFormField(this.extractObject(JSONMapping.PARENT_FORM_FIELD, Field::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code Field}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code Field}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        //Form Container...
-        if (this.getFormContainer() != null) {
-            returnVal.put(JSONMapping.FORM_CONTAINER, this.getFormContainer().toJsonObject());
-        }
-        //Parent Form Container...
-        if (this.getParentFormContainer() != null) {
-            returnVal.put(JSONMapping.PARENT_FORM_CONTAINER, this.getParentFormContainer().toJsonObject());
-        }
-        //Parent Form Field...
-        if (this.getParentFormField() != null) {
-            returnVal.put(JSONMapping.PARENT_FORM_FIELD, this.getParentFormField().toJsonObject());
-        }
+        this.setAsObj(JSONMapping.FORM_CONTAINER, returnVal, this::getFormContainer);
+        this.setAsObj(JSONMapping.PARENT_FORM_CONTAINER, returnVal, this::getParentFormContainer);
+        this.setAsObj(JSONMapping.PARENT_FORM_FIELD, returnVal, this::getParentFormField);
         return returnVal;
     }
 }

@@ -79,8 +79,8 @@ public class RoleToJobView extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setJobView(this.extractObject(this.jsonObject, JSONMapping.JOB_VIEW, JobView::new));
-        this.setRole(this.extractObject(this.jsonObject, JSONMapping.ROLE, Role::new));
+        this.setJobView(this.extractObject(JSONMapping.JOB_VIEW, JobView::new));
+        this.setRole(this.extractObject(JSONMapping.ROLE, Role::new));
     }
 
     /**
@@ -95,20 +95,8 @@ public class RoleToJobView extends ABaseFluidGSONObject {
     @JsonIgnore
     public JsonObject toJsonObject() throws JSONException {
         JsonObject returnVal = super.toJsonObject();
-        if (this.getJobView() != null) {
-            returnVal.add(
-                    JSONMapping.JOB_VIEW,
-                    this.getJobView().toJsonObject()
-            );
-        }
-
-        //Role...
-        if (this.getRole() != null) {
-            returnVal.add(
-                    JSONMapping.ROLE,
-                    this.getRole().toJsonObject()
-            );
-        }
+        this.setAsObj(JSONMapping.JOB_VIEW, returnVal, this::getJobView);
+        this.setAsObj(JSONMapping.ROLE, returnVal, this::getRole);
         return returnVal;
     }
 }

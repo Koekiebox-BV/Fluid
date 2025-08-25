@@ -15,11 +15,16 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
 
 /**
@@ -30,8 +35,9 @@ import java.util.Date;
  * @see User
  * @since v1.9
  */
-public class Collaboration extends ABaseFluidJSONObject {
-
+@Getter
+@Setter
+public class Collaboration extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private Form formContainer;
@@ -82,73 +88,46 @@ public class Collaboration extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Collaboration(JSONObject jsonObjectParam) {
+    public Collaboration(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Form Container...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_CONTAINER)) {
-            this.setFormContainer(this.formFromLclJsonObject(JSONMapping.FORM_CONTAINER));
-        }
+        // Form Container
+        this.setFormContainer(this.extractObject(JSONMapping.FORM_CONTAINER, Form::new));
 
-        //From User...
-        if (!this.jsonObject.isNull(JSONMapping.FROM_USER)) {
-
-            JSONObject jsonObj = this.jsonObject.getJSONObject(
-                    JSONMapping.FROM_USER);
+        // From User
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.FROM_USER)) {
+            JsonObject jsonObj = this.jsonObject.getAsJsonObject(JSONMapping.FROM_USER);
             User fromUser = new User();
-
-            //User Id
-            if (!jsonObj.isNull(User.JSONMapping.Elastic.USER_ID)) {
-                fromUser.setId(jsonObj.getLong(User.JSONMapping.Elastic.USER_ID));
+            if (this.isPropertyNotNull(jsonObj, User.JSONMapping.Elastic.USER_ID)) {
+                fromUser.setId(jsonObj.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
+            } else if (this.isPropertyNotNull(jsonObj, ABaseFluidJSONObject.JSONMapping.ID)) {
+                fromUser.setId(jsonObj.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
             }
-            //Id is set, make use of that instead...
-            else if (!jsonObj.isNull(
-                    ABaseFluidJSONObject.JSONMapping.ID)) {
-                fromUser.setId(jsonObj.getLong(ABaseFluidJSONObject.JSONMapping.ID));
+            if (this.isPropertyNotNull(jsonObj, User.JSONMapping.USERNAME)) {
+                fromUser.setUsername(jsonObj.get(User.JSONMapping.USERNAME).getAsString());
             }
-
-            //Username
-            if (!jsonObj.isNull(User.JSONMapping.USERNAME)) {
-                fromUser.setUsername(jsonObj.getString(User.JSONMapping.USERNAME));
-            }
-
             this.setFromUser(fromUser);
         }
 
-        //To User...
-        if (!this.jsonObject.isNull(JSONMapping.TO_USER)) {
-
-            JSONObject jsonObj = this.jsonObject.getJSONObject(JSONMapping.TO_USER);
+        // To User
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.TO_USER)) {
+            JsonObject jsonObj = this.jsonObject.getAsJsonObject(JSONMapping.TO_USER);
             User toUser = new User();
-
-            //User Id
-            if (!jsonObj.isNull(User.JSONMapping.Elastic.USER_ID)) {
-                toUser.setId(jsonObj.getLong(User.JSONMapping.Elastic.USER_ID));
+            if (this.isPropertyNotNull(jsonObj, User.JSONMapping.Elastic.USER_ID)) {
+                toUser.setId(jsonObj.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
+            } else if (this.isPropertyNotNull(jsonObj, ABaseFluidJSONObject.JSONMapping.ID)) {
+                toUser.setId(jsonObj.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
             }
-            //Id is set, make use of that instead...
-            else if (!jsonObj.isNull(
-                    ABaseFluidJSONObject.JSONMapping.ID)) {
-                toUser.setId(jsonObj.getLong(ABaseFluidJSONObject.JSONMapping.ID));
+            if (this.isPropertyNotNull(jsonObj, User.JSONMapping.USERNAME)) {
+                toUser.setUsername(jsonObj.get(User.JSONMapping.USERNAME).getAsString());
             }
-
-            //Username
-            if (!jsonObj.isNull(User.JSONMapping.USERNAME)) {
-                toUser.setUsername(jsonObj.getString(User.JSONMapping.USERNAME));
-            }
-
             this.setToUser(toUser);
         }
 
-        //Date Read...
         this.setDateRead(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_READ));
-
-        //Date Sent...
         this.setDateSent(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_SENT));
-
-        //Message...
-        if (!this.jsonObject.isNull(JSONMapping.MESSAGE)) {
-            this.setMessage(this.jsonObject.getString(JSONMapping.MESSAGE));
-        }
+        this.setMessage(this.getAsStringNullSafe(JSONMapping.MESSAGE));
     }
 
     /**
@@ -159,158 +138,18 @@ public class Collaboration extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        //Form Container...
-        if (this.getFormContainer() != null) {
-            returnVal.put(JSONMapping.FORM_CONTAINER,
-                    this.getFormContainer().toJsonObject());
-        }
-
-        //Message...
-        if (this.getMessage() != null) {
-            returnVal.put(JSONMapping.MESSAGE, this.getMessage());
-        }
-
-        //Date Read...
-        if (this.getDateRead() != null) {
-            returnVal.put(JSONMapping.DATE_READ, this.getDateAsObjectFromJson(this.getDateRead()));
-        }
-
-        //Date Sent...
-        if (this.getDateSent() != null) {
-            returnVal.put(JSONMapping.DATE_SENT, this.getDateAsObjectFromJson(this.getDateSent()));
-        }
-
-        //From User...
-        if (this.getFromUser() != null) {
-            returnVal.put(
-                    JSONMapping.FROM_USER,
-                    this.getFromUser().toJsonObject());
-        }
-
-        //To User...
-        if (this.getToUser() != null) {
-            returnVal.put(
-                    JSONMapping.TO_USER,
-                    this.getToUser().toJsonObject());
-        }
+        this.setAsObj(JSONMapping.FORM_CONTAINER, returnVal, this::getFormContainer);
+        this.setAsProperty(JSONMapping.MESSAGE, returnVal, this.getMessage());
+        this.setAsProperty(JSONMapping.DATE_READ, returnVal, this.getDateAsLongFromJson(this.getDateRead()));
+        this.setAsProperty(JSONMapping.DATE_SENT, returnVal, this.getDateAsLongFromJson(this.getDateSent()));
+        this.setAsObj(JSONMapping.FROM_USER, returnVal, this::getFromUser);
+        this.setAsObj(JSONMapping.TO_USER, returnVal, this::getToUser);
 
         return returnVal;
-    }
-
-    /**
-     * Gets the electronic Form Container.
-     *
-     * @return The Form.
-     * @see Form
-     */
-    public Form getFormContainer() {
-        return this.formContainer;
-    }
-
-    /**
-     * Sets the electronic Form Container.
-     *
-     * @param formContainerParam The Form.
-     * @see Form
-     */
-    public void setFormContainer(Form formContainerParam) {
-        this.formContainer = formContainerParam;
-    }
-
-    /**
-     * Gets the {@code User} who shared the {@code Form}.
-     *
-     * @return The 'FROM' User.
-     * @see User
-     */
-    public User getFromUser() {
-        return this.fromUser;
-    }
-
-    /**
-     * Sets the {@code User} who shared the {@code Form}.
-     *
-     * @param fromUserParam The 'FROM' User.
-     * @see User
-     */
-    public void setFromUser(User fromUserParam) {
-        this.fromUser = fromUserParam;
-    }
-
-    /**
-     * Gets the {@code User} who the {@code Form} is shared with.
-     *
-     * @return The 'TO' User.
-     * @see User
-     */
-    public User getToUser() {
-        return this.toUser;
-    }
-
-    /**
-     * Sets the {@code User} who the {@code Form} is shared with.
-     *
-     * @param toUserParam The 'TO' User.
-     * @see User
-     */
-    public void setToUser(User toUserParam) {
-        this.toUser = toUserParam;
-    }
-
-    /**
-     * Gets The {@code Date} the Collaboration was sent.
-     *
-     * @return Date Sent.
-     */
-    public Date getDateSent() {
-        return this.dateSent;
-    }
-
-    /**
-     * Sets The {@code Date} the Collaboration was sent.
-     *
-     * @param dateSentParam Date Sent.
-     */
-    public void setDateSent(Date dateSentParam) {
-        this.dateSent = dateSentParam;
-    }
-
-    /**
-     * Gets The {@code Date} the Collaboration was read by the 'TO' {@code User}.
-     *
-     * @return Date Read.
-     */
-    public Date getDateRead() {
-        return this.dateRead;
-    }
-
-    /**
-     * Sets The {@code Date} the Collaboration was read by the 'TO' {@code User}.
-     *
-     * @param dateReadParam Date Read.
-     */
-    public void setDateRead(Date dateReadParam) {
-        this.dateRead = dateReadParam;
-    }
-
-    /**
-     * Gets the message intended for the 'TO' {@code User}.
-     *
-     * @return Message
-     */
-    public String getMessage() {
-        return this.message;
-    }
-
-    /**
-     * Sets the message intended for the 'TO' {@code User}.
-     *
-     * @param messageParam The message for the 'TO' {@code User}.
-     */
-    public void setMessage(String messageParam) {
-        this.message = messageParam;
     }
 }

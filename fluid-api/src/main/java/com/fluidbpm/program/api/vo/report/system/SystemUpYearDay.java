@@ -15,15 +15,14 @@
 
 package com.fluidbpm.program.api.vo.report.system;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class SystemUpYearDay extends ABaseFluidJSONReportObject {
+public class SystemUpYearDay extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
     private int year;
     private int day;
@@ -62,55 +61,30 @@ public class SystemUpYearDay extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SystemUpYearDay(JSONObject jsonObjectParam) {
+    public SystemUpYearDay(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject.isNull(JSONMapping.YEAR)) {
-            this.setYear(0);
-        } else {
-            this.setYear(this.jsonObject.getInt(JSONMapping.YEAR));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.DAY)) {
-            this.setDay(0);
-        } else {
-            this.setDay(this.jsonObject.getInt(JSONMapping.DAY));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.SYSTEM_UP_HOUR_MINS)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.SYSTEM_UP_HOUR_MINS);
-            List<SystemUpHourMin> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new SystemUpHourMin(listingArray.getJSONObject(index)));
-            }
-            this.setSystemUpHourMins(listing);
-        }
+        this.setYear(this.getAsIntegerNullSafe(JSONMapping.YEAR));
+        this.setDay(this.getAsIntegerNullSafe(JSONMapping.DAY));
+        this.setSystemUpHourMins(this.extractObjects(JSONMapping.SYSTEM_UP_HOUR_MINS, SystemUpHourMin::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code SystemUpYearDay}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code SystemUpYearDay}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        returnVal.put(JSONMapping.YEAR, this.getYear());
-        returnVal.put(JSONMapping.DAY, this.getDay());
-
-        if (this.getSystemUpHourMins() != null && !this.getSystemUpHourMins().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (SystemUpHourMin toAdd : this.getSystemUpHourMins()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.SYSTEM_UP_HOUR_MINS, jsonArray);
-        }
+        this.setAsProperty(JSONMapping.YEAR, returnVal, this.getYear());
+        this.setAsProperty(JSONMapping.DAY, returnVal, this.getDay());
+        this.setAsObjArray(JSONMapping.SYSTEM_UP_HOUR_MINS, returnVal, this::getSystemUpHourMins);
 
         return returnVal;
     }

@@ -15,9 +15,12 @@
 
 package com.fluidbpm.program.api.vo.compress;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Fluid wrapper object for compressed {@code JSON} in {@code Base-64} format.
@@ -25,11 +28,11 @@ import org.json.JSONObject;
  * @author jasonbruwer
  * @since v1.8
  */
-public class CompressedResponse extends ABaseFluidJSONObject {
+@Getter
+@Setter
+public class CompressedResponse extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
-
     private String dataBase64;
-
     public static String DEFAULT_ZIP_ENTRY_NAME = "response.json";
 
     /**
@@ -61,17 +64,11 @@ public class CompressedResponse extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public CompressedResponse(JSONObject jsonObjectParam) {
+    public CompressedResponse(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
-
-        //Data-64...
-        if (!this.jsonObject.isNull(JSONMapping.DATA_BASE_64)) {
-            this.setDataBase64(this.jsonObject.getString(JSONMapping.DATA_BASE_64));
-        }
+        this.setDataBase64(this.getAsStringNullSafe(JSONMapping.DATA_BASE_64));
     }
 
     /**
@@ -82,33 +79,9 @@ public class CompressedResponse extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-
-        //Data Base64...
-        if (this.getDataBase64() != null) {
-            returnVal.put(JSONMapping.DATA_BASE_64,
-                    this.getDataBase64());
-        }
-
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.DATA_BASE_64, returnVal, this.getDataBase64());
         return returnVal;
-    }
-
-    /**
-     * Gets the data in {@code Base-64} format.
-     *
-     * @return Base-64 attachment content.
-     */
-    public String getDataBase64() {
-        return this.dataBase64;
-    }
-
-    /**
-     * Sets the data in {@code Base-64} format.
-     *
-     * @param attachmentDataBase64Param Base-64 attachment content.
-     */
-    public void setDataBase64(String attachmentDataBase64Param) {
-        this.dataBase64 = attachmentDataBase64Param;
     }
 }

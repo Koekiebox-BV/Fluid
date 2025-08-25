@@ -15,12 +15,14 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User statistics for form instance stats.
@@ -31,7 +33,7 @@ import org.json.JSONObject;
  */
 @Getter
 @Setter
-public class FormContainerTypeStats extends ABaseFluidJSONReportObject {
+public class FormContainerTypeStats extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
 
     private String formContainerType;
@@ -74,84 +76,42 @@ public class FormContainerTypeStats extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public FormContainerTypeStats(JSONObject jsonObjectParam) {
+    public FormContainerTypeStats(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) {
             return;
         }
 
-        if (this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_TYPE)) {
-            this.setFormContainerType(null);
-        } else {
-            this.setFormContainerType(this.jsonObject.getString(JSONMapping.FORM_CONTAINER_TYPE));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_CREATE)) {
-            this.setCountCreate(0);
-        } else {
-            this.setCountCreate(this.jsonObject.getInt(JSONMapping.COUNT_CREATE));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_UPDATE)) {
-            this.setCountUpdate(0);
-        } else {
-            this.setCountUpdate(this.jsonObject.getInt(JSONMapping.COUNT_UPDATE));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_LOCK)) {
-            this.setCountLock(0);
-        } else {
-            this.setCountLock(this.jsonObject.getInt(JSONMapping.COUNT_LOCK));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.COUNT_UNLOCK)) {
-            this.setCountUnlock(0);
-        } else {
-            this.setCountUnlock(this.jsonObject.getInt(JSONMapping.COUNT_UNLOCK));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.DUPLICATE_LOCKS)) {
-            this.setDuplicateLocks(0);
-        } else {
-            this.setDuplicateLocks(this.jsonObject.getInt(JSONMapping.DUPLICATE_LOCKS));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.DUPLICATE_UN_LOCKS)) {
-            this.setDuplicateUnLocks(0);
-        } else {
-            this.setDuplicateUnLocks(this.jsonObject.getInt(JSONMapping.DUPLICATE_UN_LOCKS));
-        }
-
-        if (this.jsonObject.isNull(JSONMapping.DUPLICATE_UPDATES)) {
-            this.setDuplicateUpdates(0);
-        } else {
-            this.setDuplicateUpdates(this.jsonObject.getInt(JSONMapping.DUPLICATE_UPDATES));
-        }
+        this.setFormContainerType(this.getAsStringNullSafe(JSONMapping.FORM_CONTAINER_TYPE));
+        this.setCountCreate(this.getAsIntegerNullSafe(JSONMapping.COUNT_CREATE) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_CREATE));
+        this.setCountUpdate(this.getAsIntegerNullSafe(JSONMapping.COUNT_UPDATE) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_UPDATE));
+        this.setCountLock(this.getAsIntegerNullSafe(JSONMapping.COUNT_LOCK) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_LOCK));
+        this.setCountUnlock(this.getAsIntegerNullSafe(JSONMapping.COUNT_UNLOCK) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_UNLOCK));
+        this.setDuplicateLocks(this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_LOCKS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_LOCKS));
+        this.setDuplicateUnLocks(this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UN_LOCKS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UN_LOCKS));
+        this.setDuplicateUpdates(this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UPDATES) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UPDATES));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code PunchCardEntry}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code FormContainerTypeStats}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getFormContainerType() != null) {
-            returnVal.put(JSONMapping.FORM_CONTAINER_TYPE, this.getFormContainerType());
-        }
-
-        returnVal.put(JSONMapping.COUNT_CREATE, this.getCountCreate());
-        returnVal.put(JSONMapping.COUNT_LOCK, this.getCountLock());
-        returnVal.put(JSONMapping.COUNT_UNLOCK, this.getCountUnlock());
-        returnVal.put(JSONMapping.COUNT_UPDATE, this.getCountUpdate());
-
-        returnVal.put(JSONMapping.DUPLICATE_LOCKS, this.getDuplicateLocks());
-        returnVal.put(JSONMapping.DUPLICATE_UN_LOCKS, this.getDuplicateUnLocks());
-        returnVal.put(JSONMapping.DUPLICATE_UPDATES, this.getDuplicateUpdates());
+        this.setAsProperty(JSONMapping.FORM_CONTAINER_TYPE, returnVal, this.getFormContainerType());
+        this.setAsProperty(JSONMapping.COUNT_CREATE, returnVal, this.getCountCreate());
+        this.setAsProperty(JSONMapping.COUNT_LOCK, returnVal, this.getCountLock());
+        this.setAsProperty(JSONMapping.COUNT_UNLOCK, returnVal, this.getCountUnlock());
+        this.setAsProperty(JSONMapping.COUNT_UPDATE, returnVal, this.getCountUpdate());
+        this.setAsProperty(JSONMapping.DUPLICATE_LOCKS, returnVal, this.getDuplicateLocks());
+        this.setAsProperty(JSONMapping.DUPLICATE_UN_LOCKS, returnVal, this.getDuplicateUnLocks());
+        this.setAsProperty(JSONMapping.DUPLICATE_UPDATES, returnVal, this.getDuplicateUpdates());
 
         return returnVal;
     }

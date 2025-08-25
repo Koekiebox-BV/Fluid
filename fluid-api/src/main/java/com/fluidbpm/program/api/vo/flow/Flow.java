@@ -113,11 +113,11 @@ public class Flow extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setName(this.getAsStringNullSafe(this.jsonObject, JSONMapping.NAME));
-        this.setDescription(this.getAsStringNullSafe(this.jsonObject, JSONMapping.DESCRIPTION));
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
-        this.setFlowSteps(this.extractObjects(this.jsonObject, JSONMapping.FLOW_STEPS, FlowStep::new));
+        this.setFlowSteps(this.extractObjects(JSONMapping.FLOW_STEPS, FlowStep::new));
     }
 
     /**

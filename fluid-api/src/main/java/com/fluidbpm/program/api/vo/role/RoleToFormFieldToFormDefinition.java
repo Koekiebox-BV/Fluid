@@ -83,12 +83,9 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Form Definition...
-        this.setFormFieldToFormDefinition(
-                this.extractObject(this.jsonObject, JSONMapping.FORM_FIELD_TO_FORM_DEFINITION, FormFieldToFormDefinition::new)
-        );
-        this.setCanView(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_VIEW));
-        this.setCanCreateAndModify(this.getAsBooleanNullSafe(this.jsonObject, JSONMapping.CAN_CREATE_AND_MODIFY));
+        this.setFormFieldToFormDefinition(this.extractObject(JSONMapping.FORM_FIELD_TO_FORM_DEFINITION, FormFieldToFormDefinition::new));
+        this.setCanView(this.getAsBooleanNullSafe(JSONMapping.CAN_VIEW));
+        this.setCanCreateAndModify(this.getAsBooleanNullSafe(JSONMapping.CAN_CREATE_AND_MODIFY));
     }
 
     /**
@@ -155,25 +152,10 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        //Can Create...
-        if (this.isCanCreateAndModify() != null) {
-            returnVal.addProperty(JSONMapping.CAN_CREATE_AND_MODIFY,
-                    this.isCanCreateAndModify().booleanValue()
-            );
-        }
+        this.setAsProperty(JSONMapping.CAN_CREATE_AND_MODIFY, returnVal, this.isCanCreateAndModify());
+        this.setAsProperty(JSONMapping.CAN_VIEW, returnVal, this.isCanView());
+        this.setAsObj(JSONMapping.FORM_FIELD_TO_FORM_DEFINITION, returnVal, this::getFormFieldToFormDefinition);
 
-        //Can View...
-        if (this.isCanView() != null) {
-            returnVal.addProperty(JSONMapping.CAN_VIEW, this.isCanView().booleanValue());
-        }
-
-        //Form Definition...
-        if (this.getFormFieldToFormDefinition() != null) {
-            returnVal.add(
-                    JSONMapping.FORM_FIELD_TO_FORM_DEFINITION,
-                    this.getFormFieldToFormDefinition().toJsonObject()
-            );
-        }
         return returnVal;
     }
 }

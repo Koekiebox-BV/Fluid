@@ -17,14 +17,12 @@ package com.fluidbpm.program.api.vo.report.system;
 
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.compress.CompressedResponse;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,9 +34,8 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class SystemUptimeReport extends ABaseFluidJSONReportObject {
+public class SystemUptimeReport extends ABaseFluidGSONReportObject {
     private static final long serialVersionUID = 1L;
-
     //yyyy-DDD-kk-mm
     private List<SystemUpYearDay> uptimeEntries;
     private CompressedResponse compressedResponse;
@@ -63,26 +60,12 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public SystemUptimeReport(JSONObject jsonObjectParam) {
+    public SystemUptimeReport(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        if (this.jsonObject == null) {
-            return;
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.UPTIME_ENTRIES)) {
-            JSONArray listingArray = this.jsonObject.getJSONArray(JSONMapping.UPTIME_ENTRIES);
-            List<SystemUpYearDay> listing = new ArrayList();
-            for (int index = 0; index < listingArray.length(); index++) {
-                listing.add(new SystemUpYearDay(listingArray.getJSONObject(index)));
-            }
-            this.setUptimeEntries(listing);
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.COMPRESSED_RESPONSE)) {
-            this.setCompressedResponse(new CompressedResponse(
-                    this.jsonObject.getJSONObject(JSONMapping.COMPRESSED_RESPONSE)));
-        }
+        this.setUptimeEntries(this.extractObjects(JSONMapping.UPTIME_ENTRIES, SystemUpYearDay::new));
+        this.setCompressedResponse(this.extractObject(JSONMapping.COMPRESSED_RESPONSE, CompressedResponse::new));
     }
 
     /**
@@ -93,21 +76,10 @@ public class SystemUptimeReport extends ABaseFluidJSONReportObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-
-        if (this.getUptimeEntries() != null && !this.getUptimeEntries().isEmpty()) {
-            JSONArray jsonArray = new JSONArray();
-            for (SystemUpYearDay toAdd : this.getUptimeEntries()) {
-                jsonArray.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.UPTIME_ENTRIES, jsonArray);
-        }
-
-        if (this.getCompressedResponse() != null) {
-            returnVal.put(JSONMapping.COMPRESSED_RESPONSE, this.getCompressedResponse().toJsonObject());
-        }
-
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsObjArray(JSONMapping.UPTIME_ENTRIES, returnVal, this::getUptimeEntries);
+        this.setAsObj(JSONMapping.COMPRESSED_RESPONSE, returnVal, this::getCompressedResponse);
         return returnVal;
     }
 }
