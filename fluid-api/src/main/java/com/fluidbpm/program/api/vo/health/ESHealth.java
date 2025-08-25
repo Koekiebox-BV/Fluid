@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +36,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ESHealth extends ABaseFluidJSONObject {
+public class ESHealth extends ABaseFluidGSONObject {
     private boolean enabled;
     private Health elasticsearchHealth;
     private String connectionInfo;
@@ -60,7 +62,7 @@ public class ESHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public ESHealth(JSONObject jsonObject) {
+    public ESHealth(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
@@ -78,9 +80,8 @@ public class ESHealth extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         if (this.getConnectObtainDurationMillis() != null) {
             returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());

@@ -15,8 +15,10 @@
 
 package com.fluidbpm.program.api.vo.health.thirdparty;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.health.Health;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,7 +38,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExternalRunnerHealth extends ABaseFluidJSONObject {
+public class ExternalRunnerHealth extends ABaseFluidGSONObject {
 
     private static final long serialVersionUID = 1L;
 
@@ -69,9 +71,8 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ExternalRunnerHealth(JSONObject jsonObjectParam) {
+    public ExternalRunnerHealth(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
         //Flow Item Execute result...
@@ -129,8 +130,8 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
         //Fluid API Version...
         if (this.getFluidAPIVersion() != null) {
             returnVal.put(JSONMapping.FLUID_API_VERSION, this.getFluidAPIVersion());

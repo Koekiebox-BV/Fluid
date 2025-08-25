@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,8 +31,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see AppRequestToken
  * @since v1.0
  */
-public class ServiceTicket extends ABaseFluidJSONObject {
-
+public class ServiceTicket extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String principalClient;
@@ -63,8 +64,9 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ServiceTicket(JSONObject jsonObjectParam) {
+    public ServiceTicket(JsonObject jsonObjectParam) {
         super();
+        if (this.jsonObject == null) return;
 
         //Client...
         if (!jsonObjectParam.isNull(JSONMapping.CLIENT)) {
@@ -94,9 +96,8 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = new JSONObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = new JSONObject();
 
         returnVal.put(JSONMapping.CLIENT, this.getPrincipalClient());
         returnVal.put(JSONMapping.SESSION_KEY, this.getSessionKeyBase64());

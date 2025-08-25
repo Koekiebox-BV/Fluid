@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.auth0;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +35,7 @@ import java.util.List;
  * @see ABaseFluidJSONObject
  * @since v1.0
  */
-public class Connection extends ABaseFluidJSONObject {
+public class Connection extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String userId;
@@ -73,7 +75,7 @@ public class Connection extends ABaseFluidJSONObject {
      *
      * @see ABaseFluidJSONObject
      */
-    public static class Client extends ABaseFluidJSONObject {
+    public static class Client extends ABaseFluidGSONObject {
         private static final long serialVersionUID = 1L;
 
         private String accessToken;
@@ -106,12 +108,9 @@ public class Connection extends ABaseFluidJSONObject {
          *
          * @param jsonObjectParam The JSON Object.
          */
-        public Client(JSONObject jsonObjectParam) {
+        public Client(JsonObject jsonObjectParam) {
             super(jsonObjectParam);
-
-            if (this.jsonObject == null) {
-                return;
-            }
+            if (this.jsonObject == null) return;
 
             //Access Token...
             if (!this.jsonObject.isNull(JSONMapping.ACCESS_TOKEN)) {
@@ -242,9 +241,8 @@ public class Connection extends ABaseFluidJSONObject {
          * @see ABaseFluidJSONObject#toJsonObject()
          */
         @Override
-        public JSONObject toJsonObject() throws JSONException {
-
-            JSONObject returnVal = super.toJsonObject();
+        public JsonObject toJsonObject() throws JSONException {
+            JsonObject returnVal = super.toJsonObject();
 
             //Access Token...
             if (this.getAccessToken() != null) {

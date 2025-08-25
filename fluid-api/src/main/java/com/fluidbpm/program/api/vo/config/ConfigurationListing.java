@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.config;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
 import org.json.JSONObject;
 
@@ -30,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @see ABaseListing
  * @since v1.1
  */
-public class ConfigurationListing extends ABaseListing<Configuration> {
+public class ConfigurationListing extends ABaseGSONListing<Configuration> {
     private static final long serialVersionUID = 1L;
 
     /**

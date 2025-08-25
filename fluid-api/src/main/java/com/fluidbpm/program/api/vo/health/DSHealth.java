@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ import org.json.JSONObject;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DSHealth extends ABaseFluidJSONObject {
+public class DSHealth extends ABaseFluidGSONObject {
     private String name;
     private String driver;
     private String uri;

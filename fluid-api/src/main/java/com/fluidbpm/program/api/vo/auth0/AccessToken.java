@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.auth0;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
@@ -32,7 +34,7 @@ import org.json.JSONObject;
  * @see ABaseFluidJSONObject
  * @since v1.0
  */
-public class AccessToken extends ABaseFluidJSONObject {
+public class AccessToken extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     @Getter
@@ -68,7 +70,7 @@ public class AccessToken extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AccessToken(JSONObject jsonObjectParam) {
+    public AccessToken(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) {
             return;
@@ -98,8 +100,8 @@ public class AccessToken extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Access Token...
         if (this.getAccessToken() != null) {

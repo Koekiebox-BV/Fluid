@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,8 +33,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see AuthEncryptedData
  * @since v1.0
  */
-public class AppRequestToken extends ABaseFluidJSONObject {
-
+public class AppRequestToken extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     //Payload...
@@ -74,8 +75,9 @@ public class AppRequestToken extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AppRequestToken(JSONObject jsonObjectParam) {
+    public AppRequestToken(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
         //Encrypted Data Base64
         if (!this.jsonObject.isNull(JSONMapping.ENCRYPTED_DATA_BASE_64)) {
@@ -275,9 +277,8 @@ public class AppRequestToken extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Encrypted Data Base 64...
         if (this.getEncryptedDataBase64() != null) {

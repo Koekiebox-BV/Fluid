@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,7 +38,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CacheHealth extends ABaseFluidJSONObject {
+public class CacheHealth extends ABaseFluidGSONObject {
     private String type;
     private String uri;
     private Health cacheHealth;
@@ -61,7 +63,7 @@ public class CacheHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public CacheHealth(JSONObject jsonObject) {
+    public CacheHealth(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
@@ -102,8 +104,8 @@ public class CacheHealth extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         if (this.getType() != null) returnVal.put(JSONMapping.TYPE, this.getType());
         if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());

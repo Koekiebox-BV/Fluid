@@ -15,8 +15,10 @@
 
 package com.fluidbpm.program.api.vo.license;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +31,7 @@ import java.util.Date;
  * @see ABaseFluidVO
  * @since v1.8
  */
-public class LicenseRequest extends ABaseFluidJSONObject {
+public class LicenseRequest extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String machineName;
@@ -113,8 +115,8 @@ public class LicenseRequest extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Machine Name...
         if (this.getMachineName() != null) {

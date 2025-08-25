@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.config;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONException;
@@ -33,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Getter
 @Setter
 @XmlRootElement
-public class Configuration extends ABaseFluidJSONObject {
+public class Configuration extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String key;
@@ -90,7 +92,7 @@ public class Configuration extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Configuration(JSONObject jsonObjectParam) {
+    public Configuration(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
 
         if (this.jsonObject == null) return;
@@ -113,8 +115,8 @@ public class Configuration extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Key...
         if (this.getKey() != null) returnVal.put(JSONMapping.KEY, this.getKey());

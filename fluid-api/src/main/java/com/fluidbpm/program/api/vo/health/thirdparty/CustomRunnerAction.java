@@ -15,7 +15,9 @@
 
 package com.fluidbpm.program.api.vo.health.thirdparty;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,8 +37,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomRunnerAction extends ABaseFluidJSONObject {
-
+public class CustomRunnerAction extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String actionIdentifier;
@@ -61,9 +62,8 @@ public class CustomRunnerAction extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public CustomRunnerAction(JSONObject jsonObjectParam) {
+    public CustomRunnerAction(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
         //Action Identifier...
@@ -100,8 +100,8 @@ public class CustomRunnerAction extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Action Identifier...
         if (this.getActionIdentifier() != null) {

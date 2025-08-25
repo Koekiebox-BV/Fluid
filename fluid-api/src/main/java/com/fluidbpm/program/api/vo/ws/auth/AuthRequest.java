@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,8 +33,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see AuthEncryptedData
  * @since v1.0
  */
-public class AuthRequest extends ABaseFluidJSONObject {
-
+public class AuthRequest extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String username;
@@ -94,9 +95,8 @@ public class AuthRequest extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Username...
         if (this.getUsername() != null) {

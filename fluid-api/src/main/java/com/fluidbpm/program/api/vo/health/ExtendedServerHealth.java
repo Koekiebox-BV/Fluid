@@ -15,8 +15,10 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.health.thirdparty.ExternalRunnerHealth;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,7 +40,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExtendedServerHealth extends ABaseFluidJSONObject {
+public class ExtendedServerHealth extends ABaseFluidGSONObject {
     private Date timestampHealthStart;
     private Date timestampHealthEnd;
 
@@ -75,7 +77,7 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public ExtendedServerHealth(JSONObject jsonObject) {
+    public ExtendedServerHealth(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
@@ -121,8 +123,8 @@ public class ExtendedServerHealth extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         if (this.getTimestampHealthStart() != null) {
             returnVal.put(JSONMapping.TIMESTAMP_START, this.getDateAsObjectFromJson(this.getTimestampHealthStart()));

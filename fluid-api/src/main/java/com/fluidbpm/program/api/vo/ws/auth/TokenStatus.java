@@ -15,9 +15,10 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
-import java.util.Date;
-
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+
+import java.util.Date;
 
 /**
  * Status of a previously issued authentication token.
@@ -28,8 +29,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see AppRequestToken
  * @since v1.0
  */
-public class TokenStatus extends ABaseFluidJSONObject {
-
+public class TokenStatus extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private Long expirationTime;

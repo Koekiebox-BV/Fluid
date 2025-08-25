@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,8 +34,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see AuthEncryptedData
  * @since v1.0
  */
-public class AuthEncryptedData extends ABaseFluidJSONObject {
-
+public class AuthEncryptedData extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String sessionKeyBase64;
@@ -61,8 +62,9 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AuthEncryptedData(JSONObject jsonObjectParam) {
-        super();
+    public AuthEncryptedData(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
         //Role Listing...
         if (!jsonObjectParam.isNull(JSONMapping.ROLE_LISTING)) {
@@ -141,9 +143,8 @@ public class AuthEncryptedData extends ABaseFluidJSONObject {
      * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = new JSONObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = new JsonObject();
 
         returnVal.put(JSONMapping.TICKET_EXPIRES, this.getTicketExpires());
         returnVal.put(JSONMapping.ROLE_LISTING, this.getRoleListing());

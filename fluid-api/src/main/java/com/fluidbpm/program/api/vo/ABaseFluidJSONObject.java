@@ -40,7 +40,6 @@ import java.util.Date;
  * @since v1.0
  */
 public abstract class ABaseFluidJSONObject extends ABaseFluidVO {
-
     private static final long serialVersionUID = 1L;
     public static int JSON_INDENT_FACTOR = 2;
 

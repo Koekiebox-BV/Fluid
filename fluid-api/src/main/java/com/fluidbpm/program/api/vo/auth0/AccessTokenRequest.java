@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.auth0;
 
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +32,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  * @see ABaseFluidJSONObject
  * @since v1.0
  */
-public class AccessTokenRequest extends ABaseFluidJSONObject {
+public class AccessTokenRequest extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String clientId;
@@ -62,12 +64,9 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AccessTokenRequest(JSONObject jsonObjectParam) {
+    public AccessTokenRequest(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
         //Client Id...
         if (!this.jsonObject.isNull(JSONMapping.CLIENT_ID)) {
@@ -193,9 +192,8 @@ public class AccessTokenRequest extends ABaseFluidJSONObject {
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() throws JSONException {
+        JsonObject returnVal = super.toJsonObject();
 
         //Client ID...
         if (this.getClientId() != null) {
