@@ -18,7 +18,6 @@ package com.fluidbpm.program.api.vo.webkit.form;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.exception.UtilException;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonArray;
@@ -187,7 +186,7 @@ public class WebKitForm extends ABaseFluidGSONObject {
         // For Form object, we need to handle it specially since it's a complex object
         if (this.jsonObject.has(JSONMapping.FORM) && !this.jsonObject.get(JSONMapping.FORM).isJsonNull()) {
             JsonObject formJsonObj = this.jsonObject.getAsJsonObject(JSONMapping.FORM);
-            Form form = new Form(formJsonObj.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
+            Form form = new Form(formJsonObj.get(ABaseFluidGSONObject.JSONMapping.ID).getAsLong());
             if (formJsonObj.has(Form.JSONMapping.FORM_TYPE_ID) && !formJsonObj.get(Form.JSONMapping.FORM_TYPE_ID).isJsonNull()) {
                 form.setFormTypeId(formJsonObj.get(Form.JSONMapping.FORM_TYPE_ID).getAsLong());
             }
@@ -259,7 +258,7 @@ public class WebKitForm extends ABaseFluidGSONObject {
      * with the Id and ServiceTicket set.
      * </p>
      *
-     * @return {@code JSONObject} representation of {@code ABaseFluidJSONObject}
+     * @return {@code JSONObject} representation of {@code ABaseFluidGSONObject}
      * @see com.google.gson.JsonObject
      */
     @Override

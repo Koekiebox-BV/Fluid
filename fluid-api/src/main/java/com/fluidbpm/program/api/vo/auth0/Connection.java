@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.auth0;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.List;
  *
  * @author jasonbruwer
  * @see NormalizedUserProfile
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.0
  */
 public class Connection extends ABaseFluidGSONObject {
@@ -69,7 +68,7 @@ public class Connection extends ABaseFluidGSONObject {
     /**
      * Client representation of a client.
      *
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      */
     public static class Client extends ABaseFluidGSONObject {
         private static final long serialVersionUID = 1L;
@@ -210,7 +209,7 @@ public class Connection extends ABaseFluidGSONObject {
          * Conversion to {@code JsonObject} from Java Object.
          *
          * @return {@code JsonObject} representation of {@code Client}
-         * @see ABaseFluidJSONObject#toJsonObject()
+         * @see ABaseFluidGSONObject#toJsonObject()
          */
         @Override
         public JsonObject toJsonObject() {
@@ -462,7 +461,7 @@ public class Connection extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code Connection}.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

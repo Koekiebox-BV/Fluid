@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.report.userstats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -31,7 +30,6 @@ import java.util.concurrent.TimeUnit;
  * User statistic punch card entry.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidJSONObject
  * @since v1.11
  */
 @Getter
@@ -95,7 +93,7 @@ public class PunchCardEntry extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code PunchCardEntry}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

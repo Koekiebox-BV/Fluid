@@ -85,12 +85,12 @@ public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends A
      *
      * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
         int listingCountFromListing = this.setAsObjArray(JSONMapping.LISTING, returnVal, this::getListing);
         this.setAsProperty(JSONMapping.LISTING_COUNT, returnVal, this.getListingCount() == null

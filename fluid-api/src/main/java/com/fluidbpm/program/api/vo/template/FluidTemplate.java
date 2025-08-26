@@ -45,7 +45,7 @@ import java.util.List;
  * @see com.fluidbpm.program.api.vo.userquery.UserQuery
  * @see com.fluidbpm.program.api.vo.flow.Flow
  * @see com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary
- * @see com.fluidbpm.program.api.vo.ABaseFluidJSONObject
+ * @see com.fluidbpm.program.api.vo.ABaseFluidGSONObject
  * @since 1.4
  */
 @Getter

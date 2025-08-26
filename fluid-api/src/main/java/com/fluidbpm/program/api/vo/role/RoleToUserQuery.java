@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -87,7 +86,6 @@ public class RoleToUserQuery extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code RoleToUserQuery}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

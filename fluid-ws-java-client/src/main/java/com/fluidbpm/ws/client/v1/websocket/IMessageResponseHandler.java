@@ -15,7 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.websocket;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Contract interface for message handler.
@@ -36,7 +36,7 @@ public interface IMessageResponseHandler {
 	 * @param messageParam The message to check for qualification.
 	 * @return The JSONObject.
 	 *
-	 * @see JSONObject
+	 * @see JsonObject
 	 */
 	public abstract Object doesHandlerQualifyForProcessing(String messageParam);
 

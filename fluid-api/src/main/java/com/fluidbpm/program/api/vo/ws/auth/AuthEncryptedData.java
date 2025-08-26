@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.ws.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -25,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * Authorization encrypted data.
  *
  * @author jasonbruwer
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthRequest

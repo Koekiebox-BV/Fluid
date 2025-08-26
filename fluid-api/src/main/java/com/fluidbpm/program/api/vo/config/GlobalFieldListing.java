@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.config;
 
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
-import com.fluidbpm.program.api.vo.ABaseListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.google.gson.JsonObject;
 
@@ -29,7 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author jasonbruwer
  * @see Field
- * @see ABaseListing
  * @since v1.8
  */
 public class GlobalFieldListing extends ABaseGSONListing<Field> {

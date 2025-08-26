@@ -23,8 +23,6 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonParser;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -32,7 +30,6 @@ import java.io.IOException;
  * Java Web Service Client for {@code SystemUptimeReport} related actions.
  *
  * @author jasonbruwer
- * @see JSONObject
  * @see WS.Path.Report
  * @see SystemUptimeReport
  * @since v1.11
@@ -79,31 +76,25 @@ public class ReportSystemClient extends ABaseClientWS {
         if (this.serviceTicket != null) {
             userGetInfoFor.setServiceTicket(this.serviceTicket);
         }
-        try {
-            SystemUptimeReport wsReturnVal = new SystemUptimeReport(this.postJson(
-                    userGetInfoFor, WS.Path.Report.Version1.getAll(
-                            compressResponseParam,
-                            compressResponseCharsetParam)));
-            if (compressResponseParam) {
-                String base64Data = (wsReturnVal.getCompressedResponse() == null) ? null :
-                        wsReturnVal.getCompressedResponse().getDataBase64();
-                try {
-                    byte[] uncompressed = UtilGlobal.uncompress(BaseEncoding.base64().decode(base64Data), null);
-                    return new SystemUptimeReport(
-                            JsonParser.parseString(new String(uncompressed)).getAsJsonObject()
-                    );
-                } catch (IOException ioErr) {
-                    throw new FluidClientException(String.format(
-                            "Unable to unzip compressed data. %s",
-                            ioErr.getMessage()), ioErr, FluidClientException.ErrorCode.IO_ERROR);
-                }
+        SystemUptimeReport wsReturnVal = new SystemUptimeReport(this.postJson(
+                userGetInfoFor, WS.Path.Report.Version1.getAll(
+                        compressResponseParam,
+                        compressResponseCharsetParam)));
+        if (compressResponseParam) {
+            String base64Data = (wsReturnVal.getCompressedResponse() == null) ? null :
+                    wsReturnVal.getCompressedResponse().getDataBase64();
+            try {
+                byte[] uncompressed = UtilGlobal.uncompress(BaseEncoding.base64().decode(base64Data), null);
+                return new SystemUptimeReport(
+                        JsonParser.parseString(new String(uncompressed)).getAsJsonObject()
+                );
+            } catch (IOException ioErr) {
+                throw new FluidClientException(String.format(
+                        "Unable to unzip compressed data. %s",
+                        ioErr.getMessage()), ioErr, FluidClientException.ErrorCode.IO_ERROR);
             }
-
-            return wsReturnVal;
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
         }
+        return wsReturnVal;
     }
 
     /**
@@ -117,13 +108,9 @@ public class ReportSystemClient extends ABaseClientWS {
         if (this.serviceTicket != null) {
             userGetInfoFor.setServiceTicket(this.serviceTicket);
         }
-        try {
-            return new SystemUptimeReport(this.postJson(
-                    userGetInfoFor, WS.Path.Report.Version1.getAllSystemUptime()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new SystemUptimeReport(this.postJson(
+                userGetInfoFor, WS.Path.Report.Version1.getAllSystemUptime())
+        );
     }
 
     /**
@@ -137,12 +124,8 @@ public class ReportSystemClient extends ABaseClientWS {
         if (this.serviceTicket != null) {
             userGetInfoFor.setServiceTicket(this.serviceTicket);
         }
-        try {
-            return new SystemUptimeReport(this.postJson(
-                    userGetInfoFor, WS.Path.Report.Version1.getAllSystemDowntime()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new SystemUptimeReport(this.postJson(
+                userGetInfoFor, WS.Path.Report.Version1.getAllSystemDowntime())
+        );
     }
 }

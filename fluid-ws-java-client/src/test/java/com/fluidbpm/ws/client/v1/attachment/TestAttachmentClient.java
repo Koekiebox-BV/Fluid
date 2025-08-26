@@ -25,8 +25,8 @@ import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.TestFormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
+import com.google.gson.JsonObject;
 import junit.framework.TestCase;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,9 +92,9 @@ public class TestAttachmentClient extends ABaseLoggedInTestCase {
 		attachmentCreate.setContentType("application/json");
 		attachmentCreate.setFormId(createdForm.getId());
 
-		JSONObject attachmentData = new JSONObject();
-		attachmentData.put("name","Jason");
-		attachmentData.put("surname","Pieta");
+		JsonObject attachmentData = new JsonObject();
+		attachmentData.addProperty("name","Jason");
+		attachmentData.addProperty("surname","Pieta");
 
 		attachmentCreate.setAttachmentDataBase64(
 				UtilGlobal.encodeBase64(

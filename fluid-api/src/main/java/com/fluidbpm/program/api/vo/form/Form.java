@@ -18,7 +18,7 @@ package com.fluidbpm.program.api.vo.form;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
@@ -228,9 +228,9 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             //User Id
             if (this.isPropertyNotNull(jsonObjCurUsr, User.JSONMapping.Elastic.USER_ID)) {
                 currentUser.setId(jsonObjCurUsr.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
-            } else if (this.isPropertyNotNull(jsonObjCurUsr, ABaseFluidJSONObject.JSONMapping.ID)) {
+            } else if (this.isPropertyNotNull(jsonObjCurUsr, ABaseFluidGSONObject.JSONMapping.ID)) {
                 //Id is set, make use of that instead...
-                currentUser.setId(jsonObjCurUsr.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
+                currentUser.setId(jsonObjCurUsr.get(ABaseFluidGSONObject.JSONMapping.ID).getAsLong());
             }
             if (this.isPropertyNotNull(jsonObjCurUsr, User.JSONMapping.USERNAME)) {
                 currentUser.setUsername(jsonObjCurUsr.get(User.JSONMapping.USERNAME).getAsString());
@@ -670,7 +670,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      *
      * @return {@code JSONObject} representation of {@code Form}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
@@ -727,7 +726,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                     Field.JSONMapping.Elastic.MAPPING_ONLY_TYPE,
                     Field.ElasticSearchType.LONG
             );
-            returnVal.add(ABaseFluidJSONObject.JSONMapping.ID, idJsonObj);
+            returnVal.add(ABaseFluidGSONObject.JSONMapping.ID, idJsonObj);
         }
 
         //Form Type...
@@ -806,7 +805,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
                     Field.ElasticSearchType.KEYWORD);
             properties.add(User.JSONMapping.USERNAME, currentUserUsernameJsonObj);
 
-            currentUserJsonObj.add(ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES, properties);
+            currentUserJsonObj.add(ABaseFluidGSONObject.JSONMapping.Elastic.PROPERTIES, properties);
             returnVal.add(JSONMapping.CURRENT_USER, currentUserJsonObj);
         }
 
@@ -865,7 +864,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * Conversion to {@code JSONObject} for storage in ElasticCache for {@code Form}.
      * @return {@code JSONObject} representation of {@code Form}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      * @see Form
      */
     @Override
@@ -999,7 +997,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * @param jsonObject The JSON object to populate from.
      * @param formFields The Form Fields to use for mapping.
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
@@ -1008,7 +1005,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         this.jsonObject = jsonObject;
         if (jsonObject == null) return;
 
-        this.setId(this.getAsLongNullSafe(ABaseFluidJSONObject.JSONMapping.ID));
+        this.setId(this.getAsLongNullSafe(ABaseFluidGSONObject.JSONMapping.ID));
         this.setFormType(this.getAsStringNullSafe(JSONMapping.FORM_TYPE));
         this.setFormTypeId(this.getAsLongNullSafe(JSONMapping.FORM_TYPE_ID));
         this.setTitle(this.getAsStringNullSafe(JSONMapping.TITLE));

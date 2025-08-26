@@ -18,13 +18,12 @@ package com.fluidbpm.program.api.vo.ws.auth;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.google.gson.JsonObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * Response to an authorization request.
  *
  * @author jasonbruwer
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthRequest
@@ -197,7 +196,7 @@ public class AuthResponse extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AuthResponse}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

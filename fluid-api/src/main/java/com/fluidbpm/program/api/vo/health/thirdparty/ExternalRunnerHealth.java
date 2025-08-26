@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.health.thirdparty;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.health.Health;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -88,7 +87,7 @@ public class ExternalRunnerHealth extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code ExternalRunnerHealth}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

@@ -18,7 +18,6 @@ package com.fluidbpm.program.api.vo.role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.google.gson.JsonObject;
@@ -143,7 +142,6 @@ public class Role extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Role}
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

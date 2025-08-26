@@ -22,7 +22,7 @@ import com.fluidbpm.program.api.vo.webkit.form.WebKitForm;
 import com.fluidbpm.program.api.vo.webkit.form.WebKitFormListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import java.util.List;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.FormDefinition
  * @see Form
  */

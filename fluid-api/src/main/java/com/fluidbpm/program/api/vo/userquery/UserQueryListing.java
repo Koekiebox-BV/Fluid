@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.userquery;
 
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
-import com.fluidbpm.program.api.vo.ABaseListing;
 import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -28,7 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author jasonbruwer
  * @see UserQuery
- * @see ABaseListing
  * @since v1.1
  */
 public class UserQueryListing extends ABaseGSONListing<UserQuery> {

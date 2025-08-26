@@ -18,7 +18,6 @@ package com.fluidbpm.program.api.vo.attachment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.google.common.io.BaseEncoding;
@@ -184,7 +183,6 @@ public class Attachment extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code Attachment}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @JsonIgnore

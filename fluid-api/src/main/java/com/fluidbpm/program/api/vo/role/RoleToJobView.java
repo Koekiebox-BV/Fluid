@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
@@ -88,7 +87,6 @@ public class RoleToJobView extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code RoleToJobView}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

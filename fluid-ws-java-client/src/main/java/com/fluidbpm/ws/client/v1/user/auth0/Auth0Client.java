@@ -15,18 +15,17 @@
 
 package com.fluidbpm.ws.client.v1.user.auth0;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.auth0.AccessToken;
 import com.fluidbpm.program.api.vo.auth0.AccessTokenRequest;
 import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.google.gson.JsonObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Java Web Service Client for Auth0 related actions.
@@ -34,7 +33,7 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.Auth0
  */
 public class Auth0Client extends ABaseClientWS {

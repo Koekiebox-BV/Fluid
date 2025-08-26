@@ -15,7 +15,7 @@
 
 package com.fluidbpm.ws.client.v1;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Base class for all Field REST related calls.
@@ -23,7 +23,7 @@ import org.json.JSONObject;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.FormField
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.UserField
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.RouteField

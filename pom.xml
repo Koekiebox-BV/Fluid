@@ -89,14 +89,6 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!--JSON Library API https://mvnrepository.com/artifact/org.json/json -->
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>20240303</version>
-                <scope>provided</scope>
-            </dependency>
-
             <!-- Redis - https://mvnrepository.com/artifact/redis.clients/jedis -->
             <dependency>
                 <groupId>redis.clients</groupId>

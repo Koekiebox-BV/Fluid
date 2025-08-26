@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.flow;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +29,7 @@ import java.util.List;
  * @author jasonbruwer
  * @see FlowStep
  * @see FlowStepRule
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.0
  */
 @Getter
@@ -124,7 +123,6 @@ public class Flow extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code Flow}
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

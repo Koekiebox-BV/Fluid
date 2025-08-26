@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.health;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +27,7 @@ import java.util.Date;
  * Connection status for a Fluid instance.
  *
  * @author jasonbruwer on 2023-06-20.
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since 1.13
  */
 @Getter
@@ -98,7 +97,7 @@ public class ConnectStatus extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code ConnectStatus}.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

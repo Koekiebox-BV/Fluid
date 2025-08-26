@@ -20,7 +20,7 @@ import com.fluidbpm.program.api.util.cache.CacheUtil;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.util.sql.ABaseSQLUtil;
 import com.fluidbpm.program.api.util.sql.impl.SQLFormFieldUtil;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -323,7 +323,7 @@ public abstract class ABaseESUtil extends ABaseSQLUtil {
         StringBuffer byIdQuery = new StringBuffer();
 
         for (Long formId : formIdsParam) {
-            byIdQuery.append(ABaseFluidJSONObject.JSONMapping.ID);
+            byIdQuery.append(ABaseFluidGSONObject.JSONMapping.ID);
             byIdQuery.append(":\"");
             byIdQuery.append(formId);
             byIdQuery.append("\" ");

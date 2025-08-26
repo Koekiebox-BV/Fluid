@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.report.userstats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -28,7 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * User statistics for form entry types.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidJSONObject
  * @since v1.11
  */
 @Getter
@@ -77,7 +75,7 @@ public class FormEntryTypeStats extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code FormEntryTypeStats}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

@@ -23,7 +23,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
  * @author jasonbruwer
  * @since v1.3
  *
- * @see JSONObject
+ * @see JsonObject
  * @see Form
  */
 public class SQLUtilWebSocketExecuteSQLClient extends ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {

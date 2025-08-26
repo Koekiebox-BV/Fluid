@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.config;
 
 import org.apache.http.entity.ContentType;
-import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.license.LicenseRequest;
 import com.fluidbpm.program.api.vo.ws.WS.Path.License.Version1;
@@ -28,7 +27,6 @@ import com.fluidbpm.ws.client.v1.ABaseFieldClient;
  * @author jasonbruwer on 2018-05-06
  * @version v1.8
  *
- * @see JSONObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.License
  * @see com.fluidbpm.program.api.vo.license.LicenseRequest
  */

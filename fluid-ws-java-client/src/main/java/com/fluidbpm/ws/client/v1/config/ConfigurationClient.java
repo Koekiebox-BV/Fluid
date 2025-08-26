@@ -23,7 +23,7 @@ import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.google.common.io.BaseEncoding;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ import java.util.List;
  * @author jasonbruwer
  * @since v1.1
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.Configuration
  * @see com.fluidbpm.program.api.vo.config.Configuration
  * @see ABaseClientWS

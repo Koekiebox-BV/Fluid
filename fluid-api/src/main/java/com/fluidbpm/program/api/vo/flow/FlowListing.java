@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.flow;
 
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
-import com.fluidbpm.program.api.vo.ABaseListing;
 import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -28,7 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author jasonbruwer
  * @see Flow
- * @see ABaseListing
  * @since v1.4 2016-02-10
  */
 public class FlowListing extends ABaseGSONListing<Flow> {

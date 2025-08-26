@@ -16,7 +16,7 @@
 package com.fluidbpm.program.api.util;
 
 import com.fluidbpm.program.api.util.exception.UtilException;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.field.TableField;
@@ -25,8 +25,8 @@ import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -310,7 +310,7 @@ public class UtilGlobal {
      * @param fieldNameIdPrefixParam  The prefix field name for id.
      * @param fieldToExtractFromParam The field to extract the value from.
      * @param objectToSetFieldOnParam The JSON object to set the field value on.
-     * @see JSONObject
+     * @see JsonObject
      * @see Field
      */
     public void setFlatFieldOnJSONObj(
@@ -550,20 +550,31 @@ public class UtilGlobal {
     }
 
     /**
-     * Convert the {@code list} to {@code JSONArray}
+     * Convert the {@code list} to {@code JsonArray}
      *
      * @param list The list to convert to JSON Array.
-     * @param <T>  The type of {@code ABaseFluidJSONObject}
-     * @return JSONArray from {@code list}
-     * @see ABaseFluidJSONObject
-     * @see JSONArray
+     * @param <T>  The type of {@code ABaseFluidGSONObject}
+     * @return JsonArray from {@code list}
+     * @see ABaseFluidGSONObject
+     * @see JsonArray
      */
-    public static <T extends ABaseFluidJSONObject> JSONArray toJSONArray(List<T> list) {
+    public static <T extends ABaseFluidGSONObject> JsonArray toJSONArray(List<T> list) {
         if (list == null) return null;
 
-        JSONArray jsonArray = new JSONArray();
+        JsonArray jsonArray = new JsonArray();
 
-        for (T toAdd : list) jsonArray.put(toAdd.toJsonObject());
+        for (T toAdd : list) {
+            if (toAdd != null) {
+                JsonElement elem = JsonParser.parseString(toAdd.toJsonObject().toString());
+                if (elem != null && elem.isJsonObject()) {
+                    jsonArray.add(elem.getAsJsonObject());
+                } else {
+                    jsonArray.add(JsonNull.INSTANCE);
+                }
+            } else {
+                jsonArray.add(JsonNull.INSTANCE);
+            }
+        }
 
         return jsonArray;
     }
@@ -647,14 +658,21 @@ public class UtilGlobal {
      */
     public static String toSvg(String signature, int width, int height) {
 
-        JSONObject jsonObj = new JSONObject(signature);
-        if (!jsonObj.has(JSON_LINES))
+        JsonElement parsed = JsonParser.parseString(signature);
+        if (parsed == null || !parsed.isJsonObject()) {
             throw new UtilException("Signature does not have any lines.", UtilException.ErrorCode.GENERAL);
+        }
+        JsonObject jsonObj = parsed.getAsJsonObject();
+        if (!jsonObj.has(JSON_LINES) || !jsonObj.get(JSON_LINES).isJsonArray()) {
+            throw new UtilException("Signature does not have any lines.", UtilException.ErrorCode.GENERAL);
+        }
 
-        JSONArray jsonArr = jsonObj.getJSONArray(JSON_LINES);
+        JsonArray jsonArr = jsonObj.getAsJsonArray(JSON_LINES);
 
         final List<String> paths = new ArrayList<>();
-        jsonArr.forEach(line -> paths.add(toSvgPath(line)));
+        for (JsonElement line : jsonArr) {
+            paths.add(toSvgPath(line));
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("<svg width=\"%d\" height=\"%d\" xmlns=\"http://www.w3.org/2000/svg\">\n", width, height));
@@ -664,17 +682,19 @@ public class UtilGlobal {
         return sb.toString();
     }
 
-    private static String toSvgPath(Object line) {
+    private static String toSvgPath(JsonElement line) {
         StringBuilder sb = new StringBuilder("<path d=\"");
 
-        if (line instanceof JSONArray) {
-            JSONArray lineCasted = (JSONArray) line;
-            for (int index = 0; index < lineCasted.length(); index++) {
-                JSONArray coords = lineCasted.getJSONArray(index);
-                sb.append(String.format("%s%s %s ",
-                        (index == 0 ? "M" : "L"),
-                        coords.getDouble(0),
-                        coords.getDouble(1)));
+        if (line != null && line.isJsonArray()) {
+            JsonArray lineCasted = line.getAsJsonArray();
+            for (int index = 0; index < lineCasted.size(); index++) {
+                JsonElement coordsElem = lineCasted.get(index);
+                if (coordsElem != null && coordsElem.isJsonArray()) {
+                    JsonArray coords = coordsElem.getAsJsonArray();
+                    double x = (coords.size() > 0 && coords.get(0).isJsonPrimitive()) ? coords.get(0).getAsDouble() : 0d;
+                    double y = (coords.size() > 1 && coords.get(1).isJsonPrimitive()) ? coords.get(1).getAsDouble() : 0d;
+                    sb.append(String.format("%s%s %s ", (index == 0 ? "M" : "L"), x, y));
+                }
             }
         }
 

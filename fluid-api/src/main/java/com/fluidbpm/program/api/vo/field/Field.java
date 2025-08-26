@@ -20,7 +20,6 @@ import com.fluidbpm.program.api.util.GeoUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.FluidJSONException;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -909,7 +908,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Field}
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
@@ -980,7 +978,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * Conversion to {@code JSONObject} for storage in ElasticSearch.
      *
      * @return {@code JSONObject} representation of {@code Field}
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
@@ -1055,7 +1052,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @param jsonObjectParam The JSON object to populate from.
      * @return {@link Field} - The field to be added, if invalid a {@code null} will be returned.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
@@ -1146,7 +1142,6 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * @param jsonObject The JSON object to populate from.
      * @param formFields The Form Fields to use.
      * @throws FluidElasticSearchException Always.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

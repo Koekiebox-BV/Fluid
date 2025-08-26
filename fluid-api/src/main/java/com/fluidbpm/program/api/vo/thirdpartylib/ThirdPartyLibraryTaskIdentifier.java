@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.thirdpartylib;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.IEnum;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
@@ -30,7 +29,7 @@ import java.util.List;
  * 3rd Party library Task Identifier information.
  *
  * @author jasonbruwer on 2021-01-16
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.11
  */
 @Getter
@@ -112,7 +111,7 @@ public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code ThirdPartyLibraryTaskIdentifier}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

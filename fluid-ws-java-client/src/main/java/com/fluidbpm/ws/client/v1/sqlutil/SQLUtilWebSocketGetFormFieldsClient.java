@@ -24,7 +24,6 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -37,7 +36,6 @@ import java.util.concurrent.TimeoutException;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
  * @see WS.Path.FlowItem
  * @see FluidItem
  */

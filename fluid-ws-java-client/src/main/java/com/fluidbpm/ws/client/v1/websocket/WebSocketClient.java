@@ -3,11 +3,11 @@ package com.fluidbpm.ws.client.v1.websocket;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
-import org.json.JSONObject;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -115,7 +115,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 			Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
 			if (qualifyObj instanceof Error) {
 				handler.handleMessage(qualifyObj);
-			} else if (qualifyObj instanceof JSONObject) {
+			} else if (qualifyObj instanceof JsonObject) {
 				handler.handleMessage(qualifyObj);
 				handlerFoundForMsg = true;
 				break;

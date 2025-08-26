@@ -18,7 +18,7 @@ package com.fluidbpm.program.api.util.elasticsearch;
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.IFormAction;
 import com.fluidbpm.program.api.util.cache.CacheUtil;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -246,8 +246,7 @@ public class ESFormUtil extends ABaseESUtil implements IFormAction {
         }
 
         //Query using the descendantId directly...
-        StringBuffer primaryQuery = new StringBuffer(
-                ABaseFluidJSONObject.JSONMapping.ID);
+        StringBuffer primaryQuery = new StringBuffer(ABaseFluidGSONObject.JSONMapping.ID);
         primaryQuery.append(":\"");
         primaryQuery.append(electronicFormIdParam);
         primaryQuery.append("\"");

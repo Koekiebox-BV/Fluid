@@ -19,7 +19,7 @@ import com.fluidbpm.program.api.vo.health.ConnectStatus;
 import com.fluidbpm.program.api.vo.health.ExtendedServerHealth;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Java Web Service Client for {@code Health} check related actions.
@@ -27,7 +27,7 @@ import org.json.JSONObject;
  * @author jasonbruwer
  * @since v1.13
  *
- * @see JSONObject
+ * @see JsonObject
  * @see WS.Path.Report
  * @see com.fluidbpm.program.api.vo.health.Health
  */

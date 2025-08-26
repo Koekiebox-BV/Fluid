@@ -18,7 +18,7 @@ package com.fluidbpm.program.api.util.elasticsearch;
 import com.fluidbpm.program.api.util.ABaseUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
@@ -32,7 +32,7 @@ import org.elasticsearch.xcontent.XContentType;
 
 import java.io.IOException;
 
-import static com.fluidbpm.program.api.vo.ABaseFluidJSONObject.JSONMapping.Elastic.FORM_INDEX_PREFIX;
+import static com.fluidbpm.program.api.vo.ABaseFluidGSONObject.JSONMapping.Elastic.FORM_INDEX_PREFIX;
 
 /**
  * ElasticSearch Utility class used for {@code Field} mappings.
@@ -144,7 +144,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
         if (existingPropsToUpdate == null || existingPropsToUpdate.isEmpty()) {
             existingPropsToUpdate = new JsonObject();
 
-            existingPropsToUpdate.add(ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES, newContentMappingBuilderFrom);
+            existingPropsToUpdate.add(ABaseFluidGSONObject.JSONMapping.Elastic.PROPERTIES, newContentMappingBuilderFrom);
 
             //Set the additional properties...
             this.setAdditionalProps(existingPropsToUpdate, parentType);
@@ -188,7 +188,7 @@ public class ESFormFieldMappingUtil extends ABaseESUtil {
         if (noChanges) return;
 
         //Update the properties to new values...
-        existingPropsToUpdate.add(ABaseFluidJSONObject.JSONMapping.Elastic.PROPERTIES, newContentMappingBuilderFrom);
+        existingPropsToUpdate.add(ABaseFluidGSONObject.JSONMapping.Elastic.PROPERTIES, newContentMappingBuilderFrom);
 
         //Set the additional properties...
         this.setAdditionalProps(existingPropsToUpdate, parentType);

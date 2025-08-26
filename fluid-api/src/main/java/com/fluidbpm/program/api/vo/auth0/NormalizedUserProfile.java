@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.auth0;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.google.gson.JsonObject;
 
@@ -74,7 +73,7 @@ public class NormalizedUserProfile extends ABaseFluidGSONObject {
     /**
      * Identity related value object.
      *
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      */
     public static class Identity extends ABaseFluidGSONObject {
         private String accessToken;
@@ -212,7 +211,7 @@ public class NormalizedUserProfile extends ABaseFluidGSONObject {
          * Conversion to {@code JSONObject} from Java Object.
          *
          * @return {@code JSONObject} representation of {@code Identity}
-         * @see ABaseFluidJSONObject#toJsonObject()
+         * @see ABaseFluidGSONObject#toJsonObject()
          */
         @Override
         public JsonObject toJsonObject() {
@@ -464,7 +463,7 @@ public class NormalizedUserProfile extends ABaseFluidGSONObject {
      * Conversion to JsonObject from Java Object.
      *
      * @return JsonObject representation of NormalizedUserProfile
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

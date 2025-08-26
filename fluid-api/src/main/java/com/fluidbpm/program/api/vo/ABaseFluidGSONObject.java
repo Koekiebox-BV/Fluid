@@ -59,7 +59,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     };
 
     /**
-     * The JSON mapping for the {@code ABaseFluidJSONObject} object.
+     * The JSON mapping for the {@code ABaseFluidGSONObject} object.
      */
     public static class JSONMapping {
         public static final String ID = "id";
@@ -269,7 +269,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * with the Id and ServiceTicket set.
      * </p>
      *
-     * @return {@code JsonObject} representation of {@code ABaseFluidJSONObject}
+     * @return {@code JsonObject} representation of {@code ABaseFluidGSONObject}
      * @see JsonObject
      */
     @XmlTransient

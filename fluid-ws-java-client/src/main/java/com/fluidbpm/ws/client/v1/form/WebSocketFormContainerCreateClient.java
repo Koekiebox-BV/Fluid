@@ -24,7 +24,6 @@ import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeoutException;
  * IMPORTANT: This class is Thread safe.
  *
  * @author jasonbruwer
- * @see JSONObject
+ * @see JsonObject
  * @see WS.Path.FormContainer
  * @see Form
  * @since v1.4

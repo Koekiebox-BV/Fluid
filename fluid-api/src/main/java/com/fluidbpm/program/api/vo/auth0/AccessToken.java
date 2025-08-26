@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.auth0;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author jasonbruwer
  * @see NormalizedUserProfile
  * @see AccessTokenRequest
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.0
  */
 public class AccessToken extends ABaseFluidGSONObject {
@@ -83,7 +82,7 @@ public class AccessToken extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code AccessToken}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

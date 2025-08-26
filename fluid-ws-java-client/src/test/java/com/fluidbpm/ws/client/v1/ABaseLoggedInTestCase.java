@@ -31,9 +31,7 @@ import com.fluidbpm.ws.client.v1.user.LoginClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import com.google.gson.JsonObject;
 import lombok.extern.java.Log;
-import org.json.JSONException;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 
 import java.util.ArrayList;
@@ -251,18 +249,13 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
         List<Attachment> attachments = new ArrayList();
 
         JsonObject jsonObject = new JsonObject();
-        try {
-            JsonObject jsonMemberObject = new JsonObject();
-            jsonMemberObject.addProperty("firstname", "Piet" + identifier);
-            jsonMemberObject.addProperty("lastname", "Brarer" + identifier);
-            jsonMemberObject.addProperty("id_number", identifier);
-            jsonMemberObject.addProperty("cellphone", "1111");
-            jsonMemberObject.addProperty("member_number", "ZOOOOL");
-            jsonObject.add("member", jsonMemberObject);
-        } catch (JSONException e) {
-            Assert.fail(e.getMessage());
-            return toCreate;
-        }
+        JsonObject jsonMemberObject = new JsonObject();
+        jsonMemberObject.addProperty("firstname", "Piet" + identifier);
+        jsonMemberObject.addProperty("lastname", "Brarer" + identifier);
+        jsonMemberObject.addProperty("id_number", identifier);
+        jsonMemberObject.addProperty("cellphone", "1111");
+        jsonMemberObject.addProperty("member_number", "ZOOOOL");
+        jsonObject.add("member", jsonMemberObject);
 
         //First Attachment...
         Attachment attachmentToAdd = new Attachment();

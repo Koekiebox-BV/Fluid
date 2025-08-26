@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.ws.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -26,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * Request object for authorization.
  *
  * @author jasonbruwer
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthResponse
@@ -111,7 +110,7 @@ public class AuthRequest extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AuthRequest}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

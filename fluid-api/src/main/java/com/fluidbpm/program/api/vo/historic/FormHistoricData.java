@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.historic;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
@@ -177,7 +176,6 @@ public class FormHistoricData extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() throws JSONException {

@@ -129,7 +129,7 @@ public class RowExpansion extends ABaseFluidGSONObject {
      * with the Id and ServiceTicket set.
      * </p>
      *
-     * @return {@code JSONObject} representation of {@code ABaseFluidJSONObject}
+     * @return {@code JSONObject} representation of {@code ABaseFluidGSONObject}
      * @throws JSONException If there is a problem with the JSON Body.
      * @see org.json.JSONObject
      */

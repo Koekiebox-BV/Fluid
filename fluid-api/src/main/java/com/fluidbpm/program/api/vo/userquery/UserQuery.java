@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.userquery;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -149,9 +148,11 @@ public class UserQuery extends ABaseGSONListing<FluidItem> {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
+    @XmlTransient
+    @JsonIgnore
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
         this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());

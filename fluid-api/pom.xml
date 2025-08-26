@@ -56,13 +56,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--JSON Library-->
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- Redis - https://mvnrepository.com/artifact/redis.clients/jedis -->
         <dependency>
             <groupId>redis.clients</groupId>

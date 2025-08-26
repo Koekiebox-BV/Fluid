@@ -18,7 +18,6 @@ package com.fluidbpm.program.api.vo.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
@@ -157,7 +156,6 @@ public class FluidItem extends ABaseFluidGSONObject {
          *
          * @return {@code JSONObject} representation of {@code StepProperty}
          * @throws JSONException If there is a problem with the JSON Body.
-         * @see ABaseFluidJSONObject#toJsonObject()
          */
         @Override
         public JsonObject toJsonObject() throws JSONException {
@@ -297,7 +295,6 @@ public class FluidItem extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code FluidItem}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

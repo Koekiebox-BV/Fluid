@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.thirdpartylib;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -31,7 +30,7 @@ import java.util.Date;
  * 3rd Party library uploaded through the Fluid core.
  *
  * @author jasonbruwer on 2017-03-10
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.4
  */
 @NoArgsConstructor
@@ -131,7 +130,7 @@ public class ThirdPartyLibrary extends ABaseFluidGSONObject {
      *
      * @return {@code JsonObject} representation of {@code Field}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.license;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -83,7 +82,6 @@ public class LicenseRequest extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code LicenseRequest}
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() {

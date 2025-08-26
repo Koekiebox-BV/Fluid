@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.health;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,7 @@ import java.util.List;
  * Connection status for a Fluid instance cache.
  *
  * @author jasonbruwer on 2023-06-20.
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since 1.13
  */
 @Getter

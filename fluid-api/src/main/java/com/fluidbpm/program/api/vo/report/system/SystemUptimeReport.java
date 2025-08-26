@@ -15,7 +15,6 @@
 
 package com.fluidbpm.program.api.vo.report.system;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.compress.CompressedResponse;
 import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
 import com.google.gson.JsonObject;
@@ -29,7 +28,7 @@ import java.util.List;
  * System uptime data.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.11
  */
 @Getter
@@ -73,7 +72,7 @@ public class SystemUptimeReport extends ABaseFluidGSONReportObject {
      *
      * @return {@code JSONObject} representation of {@code SystemUptimeReport}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() throws JSONException {

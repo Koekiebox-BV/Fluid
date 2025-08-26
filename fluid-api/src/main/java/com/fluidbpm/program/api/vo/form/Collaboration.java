@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.form;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -101,8 +100,8 @@ public class Collaboration extends ABaseFluidGSONObject {
             User fromUser = new User();
             if (this.isPropertyNotNull(jsonObj, User.JSONMapping.Elastic.USER_ID)) {
                 fromUser.setId(jsonObj.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
-            } else if (this.isPropertyNotNull(jsonObj, ABaseFluidJSONObject.JSONMapping.ID)) {
-                fromUser.setId(jsonObj.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
+            } else if (this.isPropertyNotNull(jsonObj, ABaseFluidGSONObject.JSONMapping.ID)) {
+                fromUser.setId(jsonObj.get(ABaseFluidGSONObject.JSONMapping.ID).getAsLong());
             }
             if (this.isPropertyNotNull(jsonObj, User.JSONMapping.USERNAME)) {
                 fromUser.setUsername(jsonObj.get(User.JSONMapping.USERNAME).getAsString());
@@ -116,8 +115,8 @@ public class Collaboration extends ABaseFluidGSONObject {
             User toUser = new User();
             if (this.isPropertyNotNull(jsonObj, User.JSONMapping.Elastic.USER_ID)) {
                 toUser.setId(jsonObj.get(User.JSONMapping.Elastic.USER_ID).getAsLong());
-            } else if (this.isPropertyNotNull(jsonObj, ABaseFluidJSONObject.JSONMapping.ID)) {
-                toUser.setId(jsonObj.get(ABaseFluidJSONObject.JSONMapping.ID).getAsLong());
+            } else if (this.isPropertyNotNull(jsonObj, ABaseFluidGSONObject.JSONMapping.ID)) {
+                toUser.setId(jsonObj.get(ABaseFluidGSONObject.JSONMapping.ID).getAsLong());
             }
             if (this.isPropertyNotNull(jsonObj, User.JSONMapping.USERNAME)) {
                 toUser.setUsername(jsonObj.get(User.JSONMapping.USERNAME).getAsString());
@@ -135,7 +134,7 @@ public class Collaboration extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code Field}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

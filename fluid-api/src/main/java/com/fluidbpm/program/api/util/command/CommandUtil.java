@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.auth0.AccessTokenRequest;
 import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
 
@@ -36,7 +35,7 @@ import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
  * @author jasonbruwer
  * @see NormalizedUserProfile
  * @see AccessTokenRequest
- * @see ABaseFluidJSONObject
+ * @see "ABaseFluidJSONObject"
  * @since v1.6
  */
 public class CommandUtil {

@@ -1,7 +1,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil.sqlnative;
 
 import com.google.gson.JsonObject;
-import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;

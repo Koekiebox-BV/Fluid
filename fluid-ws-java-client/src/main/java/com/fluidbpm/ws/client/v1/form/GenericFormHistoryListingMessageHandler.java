@@ -20,7 +20,6 @@ import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
-import org.json.JSONObject;
 
 /**
  * A Form Listing handler for {@code FormHistoricDataListing}'s.
@@ -35,7 +34,6 @@ public class GenericFormHistoryListingMessageHandler extends AGenericListMessage
 	 *
 	 * @param messageReceivedCallback The callback events.
 	 * @param webSocketClient The web-socket client.
-	 * @param compressedResponse Compress the SQL Result in Base-64.
 	 */
 	public GenericFormHistoryListingMessageHandler(
 		IMessageReceivedCallback<FormHistoricDataListing> messageReceivedCallback,

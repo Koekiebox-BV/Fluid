@@ -2,13 +2,11 @@ package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.compress.CompressedResponse;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -84,8 +82,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      * the message {@code messageParam}
      *
      * @param message The message to check for qualification.
-     * @return The JSONObject.
-     * @see JSONObject
+     * @return The JsonObject.
+     * @see JsonObject
      */
     public Object doesHandlerQualifyForProcessing(String message) {
         JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
@@ -105,7 +103,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      *
      * @param objectToProcess The message to handle in JSON format.
      * @see Error
-     * @see JSONObject
+     * @see JsonObject
      */
     @Override
     public void handleMessage(Object objectToProcess) {
@@ -251,9 +249,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      * Create a new instance of {@code T}.
      *
      * @param jsonObjectParam The {@code JSONObject} to create an object from.
-     * @return An instance of {@code ABaseFluidJSONObject}.
-     * @see ABaseFluidJSONObject
-     * @see JSONObject
+     * @return An instance of {@code ABaseFluidGSONObject}.
+     * @see ABaseFluidGSONObject
      */
     public abstract T getNewInstanceBy(JsonObject jsonObjectParam);
 

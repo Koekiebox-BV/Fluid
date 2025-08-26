@@ -18,7 +18,6 @@ package com.fluidbpm.ws.client.v1;
 import com.fluidbpm.GitDescribe;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -41,8 +40,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.net.ssl.SSLContext;
 import java.io.File;
@@ -66,7 +63,7 @@ import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
  * Makes use of AutoCloseable to close streams.
  *
  * @author jasonbruwer
- * @see JSONObject
+ * @see JsonObject
  * @see HttpEntity
  * @see HttpResponse
  * @see HttpClient
@@ -133,8 +130,13 @@ public abstract class ABaseClientWS implements AutoCloseable {
             this.second = second;
         }
 
-        public T getFirst() { return first; }
-        public U getSecond() { return second; }
+        public T getFirst() {
+            return first;
+        }
+
+        public U getSecond() {
+            return second;
+        }
     }
 
 
@@ -259,7 +261,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *
      * @param postfixUrl URL mapping after the Base endpoint.
      * @return Return body as JSON.
-     * @see JSONObject
+     * @see JsonObject
      */
     public JsonObject getJson(String postfixUrl) {
         return this.getJson(false, postfixUrl);
@@ -273,7 +275,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam       URL mapping after the Base endpoint.
      * @param headerNameValuesParam The HTTP Headers to include.
      * @return Return body as JSON.
-     * @see JSONObject
+     * @see JsonObject
      */
     public JsonObject getJson(
             String postfixUrlParam,
@@ -292,7 +294,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *                                  base endpoint is valid.
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
-     * @see JSONObject
+     * @see JsonObject
      */
     public JsonObject getJson(
             boolean checkConnectionValidParam,
@@ -309,7 +311,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @param headerNameValuesParam     The HTTP Headers to include.
      * @return Return body as JSON.
-     * @see JSONObject
+     * @see JsonObject
      */
     public JsonObject getJson(
             boolean checkConnectionValidParam,
@@ -325,58 +327,37 @@ public abstract class ABaseClientWS implements AutoCloseable {
         }
 
         CloseableHttpClient httpclient = this.getClient();
-        try {
-            HttpGet httpGet = new HttpGet(this.endpointUrl.concat(postfixUrlParam));
-
-            if (headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
-                headerNameValuesParam.stream()
-                        .filter(hdrItm -> hdrItm.getName() != null && !hdrItm.getName().trim().isEmpty())
-                        .filter(hdrItm -> hdrItm.getValue() != null && !hdrItm.getValue().trim().isEmpty())
-                        .forEach(hdrItm -> {
-                            httpGet.setHeader(hdrItm.getName(), hdrItm.getValue());
-                        });
-            }
-
-            // Create a custom response handler
-            ResponseHandler<String> responseHandler = this.getJsonResponseHandler(this.endpointUrl.concat(postfixUrlParam));
-            String responseBody = this.executeHttp(httpclient, httpGet, responseHandler, postfixUrlParam);
-            if (responseBody.trim().isEmpty()) {
-                throw new FluidClientException(
-                        "No response data from '" + this.endpointUrl.concat(postfixUrlParam) + "'.", FluidClientException.ErrorCode.IO_ERROR);
-            }
-
-
-            JsonObject jsonOjb = JsonParser.parseString(responseBody).getAsJsonObject();
-            if (!jsonOjb.has(Error.JSONMapping.ERROR_CODE) && jsonOjb.get(Error.JSONMapping.ERROR_CODE).isJsonNull()) {
-                return jsonOjb;
-            }
-
-            int errorCode = jsonOjb.get(Error.JSONMapping.ERROR_CODE).getAsInt();
-            if (errorCode > 0) {
-                String errorMessage = (jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).isJsonNull()
-                        ? "Not set" :
-                        jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).getAsString());
-                throw new FluidClientException(errorMessage, errorCode);
-            }
-            return jsonOjb;
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(), FluidClientException.ErrorCode.JSON_PARSING);
+        HttpGet httpGet = new HttpGet(this.endpointUrl.concat(postfixUrlParam));
+        if (headerNameValuesParam != null && !headerNameValuesParam.isEmpty()) {
+            headerNameValuesParam.stream()
+                    .filter(hdrItm -> hdrItm.getName() != null && !hdrItm.getName().trim().isEmpty())
+                    .filter(hdrItm -> hdrItm.getValue() != null && !hdrItm.getValue().trim().isEmpty())
+                    .forEach(hdrItm -> {
+                        httpGet.setHeader(hdrItm.getName(), hdrItm.getValue());
+                    });
         }
-    }
 
-    /**
-     * Performs an HTTP-POST request with {@code postfixUrlParam}.
-     *
-     * @param baseDomainParam The base domain to convert to JSON and POST
-     *                        to {@code this} endpoint.
-     * @param postfixUrlParam URL mapping after the Base endpoint.
-     * @return Return body as JSON.
-     * @see JSONObject
-     * @see ABaseFluidJSONObject
-     */
-    protected JSONObject postJson(ABaseFluidJSONObject baseDomainParam, String postfixUrlParam) {
-        //No need to check connection...
-        return this.postJson(false, baseDomainParam, postfixUrlParam);
+        // Create a custom response handler
+        ResponseHandler<String> responseHandler = this.getJsonResponseHandler(this.endpointUrl.concat(postfixUrlParam));
+        String responseBody = this.executeHttp(httpclient, httpGet, responseHandler, postfixUrlParam);
+        if (responseBody.trim().isEmpty()) {
+            throw new FluidClientException(
+                    "No response data from '" + this.endpointUrl.concat(postfixUrlParam) + "'.", FluidClientException.ErrorCode.IO_ERROR);
+        }
+
+        JsonObject jsonOjb = JsonParser.parseString(responseBody).getAsJsonObject();
+        if (!jsonOjb.has(Error.JSONMapping.ERROR_CODE) && jsonOjb.get(Error.JSONMapping.ERROR_CODE).isJsonNull()) {
+            return jsonOjb;
+        }
+
+        int errorCode = jsonOjb.get(Error.JSONMapping.ERROR_CODE).getAsInt();
+        if (errorCode > 0) {
+            String errorMessage = (jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).isJsonNull()
+                    ? "Not set" :
+                    jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).getAsString());
+            throw new FluidClientException(errorMessage, errorCode);
+        }
+        return jsonOjb;
     }
 
     protected JsonObject postJson(ABaseFluidGSONObject baseDomainParam, String postfixUrlParam) {
@@ -393,13 +374,13 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *                                  to {@code this} endpoint.
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
-     * @see JSONObject
-     * @see ABaseFluidJSONObject
+     * @see JsonObject
+     * @see ABaseFluidGSONObject
      */
-    protected JSONObject postJson(
+    protected JsonObject postJson(
             List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
-            ABaseFluidJSONObject baseDomainParam,
+            ABaseFluidGSONObject baseDomainParam,
             String postfixUrlParam
     ) {
         return this.executeJson(
@@ -419,33 +400,8 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *                                  to {@code this} endpoint.
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
-     * @see JSONObject
-     * @see ABaseFluidJSONObject
-     */
-    protected JSONObject postJson(
-            boolean checkConnectionValidParam,
-            ABaseFluidJSONObject baseDomainParam,
-            String postfixUrlParam
-    ) {
-        return this.executeJson(
-                HttpMethod.POST,
-                null,
-                checkConnectionValidParam,
-                baseDomainParam,
-                ContentType.APPLICATION_JSON,
-                postfixUrlParam);
-    }
-
-    /**
-     * Performs an HTTP-POST request with {@code postfixUrlParam}.
-     *
-     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
-     * @param baseDomainParam           The base domain to convert to JSON and POST
-     *                                  to {@code this} endpoint.
-     * @param postfixUrlParam           URL mapping after the Base endpoint.
-     * @return Return body as JSON.
-     * @see JSONObject
-     * @see ABaseFluidJSONObject
+     * @see JsonObject
+     * @see ABaseFluidGSONObject
      */
     protected JsonObject postJson(
             boolean checkConnectionValidParam,
@@ -471,8 +427,8 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @param contentTypeParam          The Mime / Content type to submit as.
      * @return Return body as JSON string.
-     * @see JSONObject
-     * @see ABaseFluidJSONObject
+     * @see JsonObject
+     * @see ABaseFluidGSONObject
      */
     protected String patchJson(List<HeaderNameValue> headerNameValuesParam,
                                boolean checkConnectionValidParam,
@@ -495,12 +451,9 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *                        to {@code this} endpoint.
      * @param postfixUrlParam URL mapping after the Base endpoint.
      * @return Return body as JSON.
-     * @see JSONObject
+     * @see JsonObject
      */
-    protected JSONObject deleteJson(
-            ABaseFluidJSONObject baseDomainParam,
-            String postfixUrlParam
-    ) {
+    protected JsonObject deleteJson(ABaseFluidGSONObject baseDomainParam, String postfixUrlParam) {
         //No need to check connection...
         return this.deleteJson(false, baseDomainParam, postfixUrlParam);
     }
@@ -513,11 +466,11 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *                                  to {@code this} endpoint.
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
-     * @see JSONObject
+     * @see JsonObject
      */
-    protected JSONObject deleteJson(
+    protected JsonObject deleteJson(
             boolean checkConnectionValidParam,
-            ABaseFluidJSONObject baseDomainParam,
+            ABaseFluidGSONObject baseDomainParam,
             String postfixUrlParam
     ) {
         return this.executeJson(
@@ -538,7 +491,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
      */
-    protected JSONObject postForm(
+    protected JsonObject postForm(
             boolean checkConnectionValidParam,
             List<FormNameValue> formNameValuesParam,
             String postfixUrlParam
@@ -553,34 +506,12 @@ public abstract class ABaseClientWS implements AutoCloseable {
     }
 
     /**
-     * Performs an HTTP-PUT request with {@code postfixUrlParam}.
-     *
-     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
-     * @param baseDomainParam           The JSON object to submit to endpoint as PUT.
-     * @param postfixUrlParam           URL mapping after the Base endpoint.
-     * @return Return body as JSON.
-     */
-    protected JSONObject putJson(
-            boolean checkConnectionValidParam,
-            ABaseFluidJSONObject baseDomainParam,
-            String postfixUrlParam
-    ) {
-        return this.executeJson(
-                HttpMethod.PUT,
-                null,
-                checkConnectionValidParam,
-                baseDomainParam,
-                ContentType.APPLICATION_JSON,
-                postfixUrlParam);
-    }
-
-    /**
      * Sends an HTTP PUT request to a specified URL using the provided parameters
      * and returns the resulting JsonObject response.
      *
      * @param checkConnectionValidParam indicates whether the connection validity needs to be checked before executing the request
-     * @param baseDomainParam the base object representing the domain data to send in the HTTP request body
-     * @param postfixUrlParam the URL postfix to be appended to the base URL for the HTTP request
+     * @param baseDomainParam           the base object representing the domain data to send in the HTTP request body
+     * @param postfixUrlParam           the URL postfix to be appended to the base URL for the HTTP request
      * @return the JsonObject resulting from the execution of the HTTP PUT request
      */
     protected JsonObject putJson(
@@ -595,21 +526,6 @@ public abstract class ABaseClientWS implements AutoCloseable {
                 baseDomainParam,
                 ContentType.APPLICATION_JSON,
                 postfixUrlParam);
-    }
-
-    /**
-     * Performs an HTTP-PUT request with {@code postfixUrlParam}.
-     *
-     * @param baseDomainParam The JSON object to submit to endpoint as PUT.
-     * @param postfixUrlParam URL mapping after the Base endpoint.
-     * @return Return body as JSON.
-     */
-    protected JSONObject putJson(
-            ABaseFluidJSONObject baseDomainParam,
-            String postfixUrlParam
-    ) {
-        //Create without connection check...
-        return this.putJson(false, baseDomainParam, postfixUrlParam);
     }
 
     /**
@@ -638,47 +554,9 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
      * @see HttpMethod
-     * @see JSONObject
+     * @see JsonObject
      * @see ContentType
-     * @see ABaseFluidJSONObject
-     */
-    protected JSONObject executeJson(
-            HttpMethod httpMethodParam,
-            List<HeaderNameValue> headerNameValuesParam,
-            boolean checkConnectionValidParam,
-            ABaseFluidJSONObject baseDomainParam,
-            ContentType contentTypeParam,
-            String postfixUrlParam
-    ) {
-        //Validate that something is set.
-        if (baseDomainParam == null)
-            throw new FluidClientException("No JSON body to post.", FluidClientException.ErrorCode.FIELD_VALIDATE);
-
-        String bodyJsonString = baseDomainParam.toJsonObject().toString();
-        return this.executeString(
-                httpMethodParam,
-                headerNameValuesParam,
-                checkConnectionValidParam,
-                bodyJsonString,
-                contentTypeParam,
-                postfixUrlParam
-        );
-    }
-
-    /**
-     * Submit a JSON based HTTP request body with JSON as a response.
-     *
-     * @param httpMethodParam           The HTTP method to use.
-     * @param headerNameValuesParam     The additional HTTP headers.
-     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
-     * @param baseDomainParam           The object to convert to JSON and submit as {@code httpMethodParam}.
-     * @param contentTypeParam          The Mime / Content type to submit as.
-     * @param postfixUrlParam           URL mapping after the Base endpoint.
-     * @return Return body as JSON.
-     * @see HttpMethod
-     * @see JSONObject
-     * @see ContentType
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      */
     protected JsonObject executeJson(
             HttpMethod httpMethodParam,
@@ -700,9 +578,8 @@ public abstract class ABaseClientWS implements AutoCloseable {
                 checkConnectionValidParam,
                 bodyJsonString,
                 contentTypeParam,
-                postfixUrlParam,
-                true
-        ).getSecond();
+                postfixUrlParam
+        );
     }
 
     /**
@@ -716,11 +593,11 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
      * @see HttpMethod
-     * @see JSONObject
+     * @see JsonObject
      * @see ContentType
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      */
-    protected JSONObject executeForm(
+    protected JsonObject executeForm(
             HttpMethod httpMethodParam,
             List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
@@ -770,53 +647,17 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
      * @see HttpMethod
-     * @see JSONObject
+     * @see JsonObject
      * @see ContentType
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      */
-    protected JSONObject executeString(
+    protected JsonObject executeString(
             HttpMethod httpMethodParam,
             List<HeaderNameValue> headerNameValuesParam,
             boolean checkConnectionValidParam,
             String stringParam,
             ContentType contentTypeParam,
             String postfixUrlParam
-    ) {
-        return this.executeString(
-                httpMethodParam,
-                headerNameValuesParam,
-                checkConnectionValidParam,
-                stringParam,
-                contentTypeParam,
-                postfixUrlParam,
-                false
-        ).getFirst();
-    }
-
-    /**
-     * Submit the {@code stringParam} as HTTP request body with JSON as a response.
-     *
-     * @param httpMethodParam           The HTTP method to use.
-     * @param headerNameValuesParam     The additional HTTP headers.
-     * @param checkConnectionValidParam Check if connection to base endpoint is valid.
-     * @param stringParam               The Text to submit.
-     * @param contentTypeParam          The Mime / Content type to submit as.
-     * @param postfixUrlParam           URL mapping after the Base endpoint.
-     * @param useGson                   Make use of GSON and not org.JSON.
-     * @return Return body as JSON.
-     * @see HttpMethod
-     * @see JSONObject
-     * @see ContentType
-     * @see ABaseFluidJSONObject
-     */
-    protected Pair<JSONObject, JsonObject> executeString(
-            HttpMethod httpMethodParam,
-            List<HeaderNameValue> headerNameValuesParam,
-            boolean checkConnectionValidParam,
-            String stringParam,
-            ContentType contentTypeParam,
-            String postfixUrlParam,
-            boolean useGson
     ) {
         String responseBody = this.executeTxtReceiveTxt(
                 httpMethodParam,
@@ -832,39 +673,18 @@ public abstract class ABaseClientWS implements AutoCloseable {
                     "No response data from '" + this.endpointUrl.concat(postfixUrlParam) + "'.",
                     FluidClientException.ErrorCode.IO_ERROR);
 
-        try {
-            if (useGson) {
-                JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
-                JsonElement errEl = jsonObject.get(Error.JSONMapping.ERROR_CODE);
-                if (errEl == null || errEl.isJsonNull()) return new Pair<>(null, jsonObject);
+        JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+        JsonElement errEl = jsonObject.get(Error.JSONMapping.ERROR_CODE);
+        if (errEl == null || errEl.isJsonNull()) return jsonObject;
 
-                if (jsonObject.has(Error.JSONMapping.ERROR_CODE) &&
-                        jsonObject.get(Error.JSONMapping.ERROR_CODE).getAsInt() > 0) {
-                    String errorMessage = (jsonObject.has(Error.JSONMapping.ERROR_MESSAGE) &&
-                            UtilGlobal.isNotBlank(jsonObject.get(Error.JSONMapping.ERROR_MESSAGE).getAsString())) ?
-                            jsonObject.get(Error.JSONMapping.ERROR_MESSAGE).getAsString() : "Not set";
-                    throw new FluidClientException(errorMessage, jsonObject.get(Error.JSONMapping.ERROR_CODE).getAsInt());
-                }
-                return new Pair<>(null, jsonObject);
-            }
-
-            JSONObject jsonOjb = new JSONObject(responseBody);
-            if (jsonOjb.isNull(Error.JSONMapping.ERROR_CODE)) return new Pair<>(jsonOjb, null);
-
-            int errorCode = jsonOjb.getInt(Error.JSONMapping.ERROR_CODE);
-            if (errorCode > 0) {
-                String errorMessage = (jsonOjb.isNull(Error.JSONMapping.ERROR_MESSAGE)
-                        ? "Not set" :
-                        jsonOjb.getString(Error.JSONMapping.ERROR_MESSAGE));
-                throw new FluidClientException(errorMessage, errorCode);
-            }
-            return new Pair<>(jsonOjb, null);
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(
-                    jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING
-            );
+        if (jsonObject.has(Error.JSONMapping.ERROR_CODE) &&
+                jsonObject.get(Error.JSONMapping.ERROR_CODE).getAsInt() > 0) {
+            String errorMessage = (jsonObject.has(Error.JSONMapping.ERROR_MESSAGE) &&
+                    UtilGlobal.isNotBlank(jsonObject.get(Error.JSONMapping.ERROR_MESSAGE).getAsString())) ?
+                    jsonObject.get(Error.JSONMapping.ERROR_MESSAGE).getAsString() : "Not set";
+            throw new FluidClientException(errorMessage, jsonObject.get(Error.JSONMapping.ERROR_CODE).getAsInt());
         }
+        return jsonObject;
     }
 
     /**
@@ -878,9 +698,9 @@ public abstract class ABaseClientWS implements AutoCloseable {
      * @param postfixUrlParam           URL mapping after the Base endpoint.
      * @return Return body as JSON.
      * @see HttpMethod
-     * @see JSONObject
+     * @see JsonObject
      * @see ContentType
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      */
     protected String executeTxtReceiveTxt(
             HttpMethod httpMethodParam,
@@ -1122,7 +942,7 @@ public abstract class ABaseClientWS implements AutoCloseable {
      *
      * @param baseDomainParam The domain object to inspect.
      * @return Whether the {@code baseDomainParam} is of type {@code Error} or error code is greater than 0.
-     * @see ABaseFluidJSONObject
+     * @see ABaseFluidGSONObject
      * @see Error
      */
     protected boolean isError(ABaseFluidGSONObject baseDomainParam) {

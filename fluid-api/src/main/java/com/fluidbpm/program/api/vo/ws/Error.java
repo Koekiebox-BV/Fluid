@@ -16,11 +16,9 @@
 package com.fluidbpm.program.api.vo.ws;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 /**
  * <p>
@@ -31,7 +29,7 @@ import org.json.JSONException;
  * is present.
  *
  * @author jasonbruwer
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see WS
  * @since v1.0
  */
@@ -104,11 +102,10 @@ public class Error extends ABaseFluidGSONObject {
      * </p>
      *
      * @return {@code JsonObject} representation of {@code ABaseFluidGSONObject}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see com.google.gson.JsonObject
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
         this.setAsProperty(JSONMapping.ERROR_CODE, returnVal, this.getErrorCode());

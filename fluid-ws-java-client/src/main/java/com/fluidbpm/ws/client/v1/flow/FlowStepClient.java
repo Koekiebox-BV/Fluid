@@ -21,7 +21,7 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Used to change any of the Flow Steps.
@@ -32,7 +32,7 @@ import org.json.JSONObject;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.FlowStep
  * @see FlowStep
  * @see ABaseClientWS

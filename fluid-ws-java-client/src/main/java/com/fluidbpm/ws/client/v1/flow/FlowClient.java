@@ -21,7 +21,6 @@ import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroup;
 import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroupListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -35,7 +34,6 @@ import java.util.List;
  * @since v1.0
  * @version v1.0
  *
- * @see JSONObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.Flow
  * @see Flow
  * @see ABaseClientWS

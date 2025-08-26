@@ -26,8 +26,6 @@ import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.google.gson.JsonObject;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -175,10 +173,10 @@ public class UserClient extends ABaseClientWS {
         String confirmNewPassword =
                 confirmNewPasswordParam == null ? UtilGlobal.EMPTY : confirmNewPasswordParam;
 
-        JSONObject passwordClear = new JSONObject();
-        passwordClear.put(JSON_TAG_EXISTING, existingPassword);
-        passwordClear.put(JSON_TAG_NEW, newPassword);
-        passwordClear.put(JSON_TAG_CONFIRM_NEW, confirmNewPassword);
+        JsonObject passwordClear = new JsonObject();
+        passwordClear.addProperty(JSON_TAG_EXISTING, existingPassword);
+        passwordClear.addProperty(JSON_TAG_NEW, newPassword);
+        passwordClear.addProperty(JSON_TAG_CONFIRM_NEW, confirmNewPassword);
 
         toChangePasswordFor.setPasswordClear(passwordClear.toString());
 
@@ -222,14 +220,10 @@ public class UserClient extends ABaseClientWS {
         User userToGetInfoFor = new User();
         userToGetInfoFor.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor,
-                    WS.Path.User.Version1.userInformation()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new User(this.postJson(
+                userToGetInfoFor,
+                WS.Path.User.Version1.userInformation())
+        );
     }
 
     /**
@@ -244,13 +238,9 @@ public class UserClient extends ABaseClientWS {
         userToGetInfoFor.setUsername(username);
         userToGetInfoFor.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.getByUsername()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new User(this.postJson(
+                userToGetInfoFor, WS.Path.User.Version1.getByUsername())
+        );
     }
 
     /**
@@ -273,13 +263,9 @@ public class UserClient extends ABaseClientWS {
 
         userToGetInfoFor.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new User(this.postJson(
-                    userToGetInfoFor, WS.Path.User.Version1.getByEmail()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new User(this.postJson(
+                userToGetInfoFor, WS.Path.User.Version1.getByEmail())
+        );
     }
 
     /**
@@ -294,13 +280,7 @@ public class UserClient extends ABaseClientWS {
         userToGetInfoFor.setId(userId);
 
         userToGetInfoFor.setServiceTicket(this.serviceTicket);
-
-        try {
-            return new User(this.postJson(userToGetInfoFor, WS.Path.User.Version1.getById()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new User(this.postJson(userToGetInfoFor, WS.Path.User.Version1.getById()));
     }
 
     /**
@@ -313,14 +293,10 @@ public class UserClient extends ABaseClientWS {
         UserListing userToGetInfoFor = new UserListing();
         userToGetInfoFor.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new UserListing(this.postJson(
-                    userToGetInfoFor,
-                    WS.Path.User.Version1.getAllUsers()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserListing(this.postJson(
+                userToGetInfoFor,
+                WS.Path.User.Version1.getAllUsers())
+        );
     }
 
     /**
@@ -333,15 +309,10 @@ public class UserClient extends ABaseClientWS {
      */
     public UserListing getAllUsersByJobView(JobView jobView) {
         if (jobView != null) jobView.setServiceTicket(this.serviceTicket);
-
-        try {
-            return new UserListing(this.postJson(
-                    jobView,
-                    WS.Path.User.Version1.getAllUsersByJobView()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserListing(this.postJson(
+                jobView,
+                WS.Path.User.Version1.getAllUsersByJobView())
+        );
     }
 
     /**
@@ -355,13 +326,9 @@ public class UserClient extends ABaseClientWS {
     public UserListing getAllUsersByRole(Role role) {
         if (role != null) role.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new UserListing(this.postJson(
-                    role, WS.Path.User.Version1.getAllUsersByRole()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserListing(this.postJson(
+                role, WS.Path.User.Version1.getAllUsersByRole())
+        );
     }
 
     /**
@@ -377,13 +344,9 @@ public class UserClient extends ABaseClientWS {
 
         userToPost.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new UserListing(this.postJson(
-                    userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserListing(this.postJson(
+                userToPost, WS.Path.User.Version1.getAllUsersWhereLoggedInSince())
+        );
     }
 
     /**
@@ -397,13 +360,10 @@ public class UserClient extends ABaseClientWS {
         if (user == null) return null;
 
         user.setServiceTicket(this.serviceTicket);
-        try {
-            return new UserFieldListing(this.postJson(
-                    user,
-                    WS.Path.User.Version1.getUserFieldValuesByUser()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(), FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserFieldListing(this.postJson(
+                user,
+                WS.Path.User.Version1.getUserFieldValuesByUser())
+        );
     }
 
     /**
@@ -432,9 +392,6 @@ public class UserClient extends ABaseClientWS {
             if (UtilGlobal.isBlank(base64Text)) return null;
 
             return UtilGlobal.decodeBase64(base64Text);
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
         } catch (UnsupportedEncodingException unsEncExcept) {
             throw new FluidClientException(unsEncExcept.getMessage(),
                     unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
@@ -465,21 +422,16 @@ public class UserClient extends ABaseClientWS {
         if ((user.getId() == null || user.getId().longValue() < 1L) &&
                 UtilGlobal.isBlank(user.getUsername())) return null;
 
-        try {
-            JsonObject gravatarJSONObj = this.postJson(
-                    user, WS.Path.User.Version1.getGravatarByUser(size)
-            );
+        JsonObject gravatarJSONObj = this.postJson(
+                user, WS.Path.User.Version1.getGravatarByUser(size)
+        );
 
-            if (!gravatarJSONObj.has(JSON_TAG_DATA) || gravatarJSONObj.get(JSON_TAG_DATA).isJsonNull()) {
-                return null;
-            }
-
-            String base64Text = gravatarJSONObj.get(JSON_TAG_DATA).getAsString();
-            if (UtilGlobal.isBlank(base64Text)) return null;
-            return UtilGlobal.decodeBase64(base64Text);
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
+        if (!gravatarJSONObj.has(JSON_TAG_DATA) || gravatarJSONObj.get(JSON_TAG_DATA).isJsonNull()) {
+            return null;
         }
+
+        String base64Text = gravatarJSONObj.get(JSON_TAG_DATA).getAsString();
+        if (UtilGlobal.isBlank(base64Text)) return null;
+        return UtilGlobal.decodeBase64(base64Text);
     }
 }

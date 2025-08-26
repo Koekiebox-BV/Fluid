@@ -58,7 +58,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidGSONOb
      * Conversion to {@code JsonObject} for storage in ElasticSearch.
      *
      * @return {@code JsonObject} representation of {@code subclass-type}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
@@ -70,7 +70,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidGSONOb
      * data-types more effective.
      *
      * @return {@code JsonObject} representation of {@code Form} definition.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
@@ -81,7 +81,7 @@ public abstract class ABaseFluidElasticSearchJSONObject extends ABaseFluidGSONOb
      *
      * @param jsonObject The JSON object to populate from.
      * @param formFields The Form Fields to use.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore

@@ -22,7 +22,7 @@ import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import static com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField.Version1.global
  * @author jasonbruwer on 2018-05-05
  * @version v1.8
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.GlobalField
  * @see Field
  * @see ABaseFieldClient

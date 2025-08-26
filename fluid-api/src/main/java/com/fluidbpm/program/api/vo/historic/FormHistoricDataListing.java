@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.historic;
 
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
-import com.fluidbpm.program.api.vo.ABaseListing;
 import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -29,7 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author jasonbruwer
  * @version v1.8
  * @see FormHistoricData
- * @see ABaseListing
  * @since v1.8
  */
 public class FormHistoricDataListing extends ABaseGSONListing<FormHistoricData> {

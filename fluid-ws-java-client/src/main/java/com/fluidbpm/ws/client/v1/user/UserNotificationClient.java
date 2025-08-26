@@ -15,25 +15,22 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.user.UserNotification;
 import com.fluidbpm.program.api.vo.user.UserNotificationListing;
 import com.fluidbpm.program.api.vo.ws.WS;
-import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.google.gson.JsonObject;
+
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Java Web Service Client for User Notification related actions.
  *
  * @author jasonbruwer
- * @see JSONObject
+ * @see JsonObject
  * @see WS.Path.UserNotification
  * @see com.fluidbpm.program.api.vo.user.UserNotification
  * @since v1.8 2018-04-05
@@ -163,15 +160,9 @@ public class UserNotificationClient extends ABaseClientWS {
             userNoti.setServiceTicket(this.serviceTicket);
         }
 
-        try {
-            return new UserNotification(this.postJson(
-                    userNoti, WS.Path.UserNotification.Version1.getById()));
-        }
-        //Json format issues...
-        catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserNotification(this.postJson(
+                userNoti, WS.Path.UserNotification.Version1.getById())
+        );
     }
 
     /**
@@ -188,17 +179,11 @@ public class UserNotificationClient extends ABaseClientWS {
         User loggedInUser = new User();
         loggedInUser.setServiceTicket(this.serviceTicket);
 
-        try {
-            return new UserNotificationListing(this.postJson(
-                    loggedInUser,
-                    WS.Path.UserNotification.Version1.getAllReadByUser(
-                            queryLimitParam,
-                            offsetParam))).getListing();
-        } catch (JSONException jsonExcept) {
-            //rethrow as a Fluid Client exception.
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserNotificationListing(this.postJson(
+                loggedInUser,
+                WS.Path.UserNotification.Version1.getAllReadByUser(
+                        queryLimitParam,
+                        offsetParam))).getListing();
     }
 
     /**
@@ -217,18 +202,11 @@ public class UserNotificationClient extends ABaseClientWS {
         if (this.serviceTicket != null) {
             loggedInUser.setServiceTicket(this.serviceTicket);
         }
-
-        try {
-            return new UserNotificationListing(this.postJson(
-                    loggedInUser,
-                    WS.Path.UserNotification.Version1.getAllUnReadByUser(
-                            queryLimitParam, offsetParam
-                    ))).getListing();
-        } catch (JSONException jsonExcept) {
-            //rethrow as a Fluid Client exception.
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserNotificationListing(this.postJson(
+                loggedInUser,
+                WS.Path.UserNotification.Version1.getAllUnReadByUser(
+                        queryLimitParam, offsetParam
+                ))).getListing();
     }
 
     /**
@@ -284,19 +262,13 @@ public class UserNotificationClient extends ABaseClientWS {
                 (toDateParam == null) ?
                         System.currentTimeMillis() : toDateParam.getTime();
 
-        try {
-            return new UserNotificationListing(this.postJson(
-                    userParam,
-                    WS.Path.UserNotification.Version1.getAllByUserAndDate(
-                            queryLimitParam,
-                            offsetParam,
-                            fromDate,
-                            toDate
-                    ))).getListing();
-        } catch (JSONException jsonExcept) {
-            //rethrow as a Fluid Client exception.
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new UserNotificationListing(this.postJson(
+                userParam,
+                WS.Path.UserNotification.Version1.getAllByUserAndDate(
+                        queryLimitParam,
+                        offsetParam,
+                        fromDate,
+                        toDate
+                ))).getListing();
     }
 }

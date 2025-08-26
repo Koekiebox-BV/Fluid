@@ -18,7 +18,6 @@ package com.fluidbpm.program.api.vo.field;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -116,7 +115,6 @@ public class TableField extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code TableField}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.report.userstats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -29,7 +28,7 @@ import java.util.List;
  * User statistics report.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see ViewOpenedAndSentOnEntry
  * @see PunchCardEntry
  * @see CreateUpdateLockUnlockEntry
@@ -94,7 +93,7 @@ public class UserStatsReport extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code UserStatsReport}
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -153,7 +152,6 @@ public class RoleToFormDefinition extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient

@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.ws.auth;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 import java.util.Date;
 
@@ -24,7 +23,7 @@ import java.util.Date;
  * Status of a previously issued authentication token.
  *
  * @author jasonbruwer
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see ServiceTicket
  * @see AppRequestToken
  * @since v1.0

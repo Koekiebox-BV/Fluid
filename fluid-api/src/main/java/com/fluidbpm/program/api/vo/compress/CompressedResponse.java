@@ -16,7 +16,6 @@
 package com.fluidbpm.program.api.vo.compress;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,7 +75,7 @@ public class CompressedResponse extends ABaseFluidGSONObject {
      *
      * @return {@code JSONObject} representation of {@code MailMessageAttachment}
      * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
     public JsonObject toJsonObject() throws JSONException {

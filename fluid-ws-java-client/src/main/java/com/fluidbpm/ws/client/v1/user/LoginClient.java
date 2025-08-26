@@ -26,8 +26,6 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -166,7 +164,7 @@ import java.util.concurrent.TimeUnit;
  * Each of the API Web Services will require the service ticket to perform functions.
  *
  * @author jasonbruwer
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.Auth0
  * @see com.fluidbpm.program.api.vo.user.User
  * @since v1.0
@@ -198,23 +196,17 @@ public class LoginClient extends ABaseClientWS {
     public User loginBasic(String usernameParam, String passwordParam) {
         if (usernameParam == null || passwordParam == null) return null;
 
-        try {
-            List<HeaderNameValue> headNameVal = new ArrayList<>();
-            String value = usernameParam.concat(":").concat(passwordParam);
-            value = BaseEncoding.base64().encode(value.getBytes());
-            HeaderNameValue basicHeader = new HeaderNameValue(AUTHORIZATION, BASIC.concat(" ").concat(value));
-            headNameVal.add(basicHeader);
+        List<HeaderNameValue> headNameVal = new ArrayList<>();
+        String value = usernameParam.concat(":").concat(passwordParam);
+        value = BaseEncoding.base64().encode(value.getBytes());
+        HeaderNameValue basicHeader = new HeaderNameValue(AUTHORIZATION, BASIC.concat(" ").concat(value));
+        headNameVal.add(basicHeader);
 
-            return new User(this.getJson(
-                    false,
-                    WS.Path.User.Version1.userBasicAuth(),
-                    headNameVal)
-            );
-        } catch (JSONException jsonException) {
-            throw new FluidClientException(
-                    jsonException.getMessage(), jsonException,
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new User(this.getJson(
+                false,
+                WS.Path.User.Version1.userBasicAuth(),
+                headNameVal)
+        );
     }
 
     /**
@@ -262,18 +254,12 @@ public class LoginClient extends ABaseClientWS {
 
         //Init the session...
         //Init the session to get the salt...
-        AuthResponse authResponse;
-        try {
-            authResponse = new AuthResponse(
-                    this.postJson(
-                            true,
-                            authRequest,
-                            WS.Path.User.Version1.userInitSession()));
-        } catch (JSONException jsonException) {
-            //JSON format problem...
-            throw new FluidClientException(
-                    jsonException.getMessage(), jsonException, FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        AuthResponse authResponse = new AuthResponse(
+                this.postJson(
+                        true,
+                        authRequest,
+                        WS.Path.User.Version1.userInitSession())
+        );
 
         AuthEncryptedData authEncData = this.initializeSession(password, authResponse);
 
@@ -374,12 +360,7 @@ public class LoginClient extends ABaseClientWS {
         requestToServer.setSeedBase64(UtilGlobal.encodeBase64(seed));
         requestToServer.setServiceTicket(serviceTicketBase64Param);
 
-        try {
-            return new AppRequestToken(this.postJson(requestToServer, WS.Path.User.Version1.userIssueToken()));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new AppRequestToken(this.postJson(requestToServer, WS.Path.User.Version1.userIssueToken()));
     }
 
     /**
@@ -406,9 +387,6 @@ public class LoginClient extends ABaseClientWS {
                     hostParam,
                     userAgentInfoParam
             )));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    jsonExcept, FluidClientException.ErrorCode.JSON_PARSING);
         } catch (UnsupportedEncodingException unsEncExcept) {
             //Encoding not supported...
             throw new FluidClientException(unsEncExcept.getMessage(),
