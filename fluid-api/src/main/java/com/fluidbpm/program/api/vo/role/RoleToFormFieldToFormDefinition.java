@@ -144,7 +144,7 @@ public class RoleToFormFieldToFormDefinition extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code RoleToFormFieldToFormDefinition}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

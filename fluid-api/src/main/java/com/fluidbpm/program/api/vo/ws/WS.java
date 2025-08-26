@@ -21,7 +21,6 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import lombok.NonNull;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -44,7 +43,6 @@ import static com.fluidbpm.program.api.vo.ws.WS.Path.UserQuery.Version1.QueryPar
  *
  * @author jasonbruwer
  * @see ABaseFluidVO
- * @see JSONObject
  * @since v1.0
  */
 public class WS {

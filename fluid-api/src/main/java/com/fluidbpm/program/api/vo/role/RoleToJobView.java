@@ -22,7 +22,6 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -86,12 +85,11 @@ public class RoleToJobView extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code RoleToJobView}
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
         this.setAsObj(JSONMapping.JOB_VIEW, returnVal, this::getJobView);
         this.setAsObj(JSONMapping.ROLE, returnVal, this::getRole);

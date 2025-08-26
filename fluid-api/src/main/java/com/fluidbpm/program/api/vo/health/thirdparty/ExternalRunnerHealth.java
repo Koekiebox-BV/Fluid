@@ -87,7 +87,7 @@ public class ExternalRunnerHealth extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code ExternalRunnerHealth}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

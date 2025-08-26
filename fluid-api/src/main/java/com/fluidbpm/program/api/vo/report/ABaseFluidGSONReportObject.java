@@ -17,7 +17,6 @@ package com.fluidbpm.program.api.vo.report;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.google.gson.JsonObject;
-import org.json.JSONObject;
 
 /**
  * <p>
@@ -25,7 +24,6 @@ import org.json.JSONObject;
  * JSON based message format used by the Fluid RESTful Web Service for reports.
  *
  * @author jasonbruwer
- * @see JSONObject
  * @since v1.11
  */
 public abstract class ABaseFluidGSONReportObject extends ABaseFluidGSONObject {

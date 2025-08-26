@@ -96,7 +96,7 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code ViewOpenedAndSentOnEntry}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

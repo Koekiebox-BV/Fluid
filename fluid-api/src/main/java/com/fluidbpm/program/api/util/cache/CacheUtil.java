@@ -21,11 +21,11 @@ import com.fluidbpm.program.api.util.cache.exception.FluidCacheException;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;
 import net.rubyeye.xmemcached.exception.MemcachedException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
@@ -386,70 +386,87 @@ public class CacheUtil extends ABaseUtil {
      * @return CachedFieldValue from {@code objWithKeyParam}.
      */
     private CachedFieldValue getCacheFieldValueFromObject(String objWithKeyParam) {
-        if (objWithKeyParam == null) {
-            return null;
-        }
+        if (objWithKeyParam == null) return null;
 
-        JSONObject jsonObjFromSrc = new JSONObject(objWithKeyParam);
-        int dataTypeId = jsonObjFromSrc.optInt(JSONStruct.DATA_TYPE_ID);
+        JsonObject jsonObjFromSrc = JsonParser.parseString(objWithKeyParam).getAsJsonObject();
+        Integer dataTypeId =
+                (jsonObjFromSrc.has(JSONStruct.DATA_TYPE_ID) && !jsonObjFromSrc.get(JSONStruct.DATA_TYPE_ID).isJsonNull())
+                        ? jsonObjFromSrc.get(JSONStruct.DATA_TYPE_ID).getAsInt()
+                        : null;
+
+        if (dataTypeId == null) return null;
 
         CachedFieldValue returnVal = new CachedFieldValue();
-        returnVal.dataType = jsonObjFromSrc.optString(JSONStruct.WORD);
+        returnVal.dataType = jsonObjFromSrc.has(JSONStruct.WORD) && !jsonObjFromSrc.get(JSONStruct.WORD).isJsonNull()
+                ? jsonObjFromSrc.get(JSONStruct.WORD).getAsString()
+                : null;
 
         switch (dataTypeId) {
             case _1_TEXT:
             case _3_PARAGRAPH_TEXT:
             case _8_TEXT_ENCRYPTED:
-                returnVal.cachedFieldValue = jsonObjFromSrc.optString(JSONStruct.TEXT_VALUE);
+                returnVal.cachedFieldValue = (jsonObjFromSrc.has(JSONStruct.TEXT_VALUE) && !jsonObjFromSrc.get(JSONStruct.TEXT_VALUE).isJsonNull())
+                        ? jsonObjFromSrc.get(JSONStruct.TEXT_VALUE).getAsString() : null;
                 break;
             case _2_TRUE_FALSE:
-                returnVal.cachedFieldValue = jsonObjFromSrc.optBoolean(JSONStruct.BOOLEAN_VALUE);
+                returnVal.cachedFieldValue = (jsonObjFromSrc.has(JSONStruct.BOOLEAN_VALUE) && !jsonObjFromSrc.get(JSONStruct.BOOLEAN_VALUE).isJsonNull())
+                        ? jsonObjFromSrc.get(JSONStruct.BOOLEAN_VALUE).getAsBoolean() : null;
                 break;
-            case _4_MULTI_CHOICE:
+            case _4_MULTI_CHOICE: {
                 MultiChoice multiChoice = new MultiChoice();
                 List<String> availChoices = new ArrayList<>(), selectedChoices = new ArrayList<>();
-                JSONArray jsonAvailChoices = jsonObjFromSrc.optJSONArray(JSONStruct.AVAILABLE_CHOICES);
-                if (jsonAvailChoices != null) {
-                    for (int index = 0; index < jsonAvailChoices.length(); index++) {
-                        availChoices.add(jsonAvailChoices.getString(index));
+                if (jsonObjFromSrc.has(JSONStruct.AVAILABLE_CHOICES) && jsonObjFromSrc.get(JSONStruct.AVAILABLE_CHOICES).isJsonArray()) {
+                    com.google.gson.JsonArray jsonAvailChoices = jsonObjFromSrc.getAsJsonArray(JSONStruct.AVAILABLE_CHOICES);
+                    for (int index = 0; index < jsonAvailChoices.size(); index++) {
+                        if (!jsonAvailChoices.get(index).isJsonNull()) {
+                            availChoices.add(jsonAvailChoices.get(index).getAsString());
+                        }
                     }
                 }
-                JSONArray jsonSelectedChoices = jsonObjFromSrc.optJSONArray(JSONStruct.SELECTED_CHOICES);
-                if (jsonSelectedChoices != null) {
-                    for (int index = 0; index < jsonSelectedChoices.length(); index++) {
-                        selectedChoices.add(jsonSelectedChoices.getString(index));
+                if (jsonObjFromSrc.has(JSONStruct.SELECTED_CHOICES) && jsonObjFromSrc.get(JSONStruct.SELECTED_CHOICES).isJsonArray()) {
+                    com.google.gson.JsonArray jsonSelectedChoices = jsonObjFromSrc.getAsJsonArray(JSONStruct.SELECTED_CHOICES);
+                    for (int index = 0; index < jsonSelectedChoices.size(); index++) {
+                        if (!jsonSelectedChoices.get(index).isJsonNull()) {
+                            selectedChoices.add(jsonSelectedChoices.get(index).getAsString());
+                        }
                     }
                 }
-
                 multiChoice.setAvailableMultiChoices(availChoices);
                 multiChoice.setSelectedMultiChoices(selectedChoices);
                 returnVal.cachedFieldValue = multiChoice;
                 break;
-            case _5_DATE_TIME:
-                returnVal.cachedFieldValue =
-                        new Date(jsonObjFromSrc.optLong(JSONStruct.DATE_VALUE));
+            }
+            case _5_DATE_TIME: {
+                Long epoch = (jsonObjFromSrc.has(JSONStruct.DATE_VALUE) && !jsonObjFromSrc.get(JSONStruct.DATE_VALUE).isJsonNull())
+                        ? jsonObjFromSrc.get(JSONStruct.DATE_VALUE).getAsLong() : null;
+                returnVal.cachedFieldValue = epoch == null ? null : new Date(epoch);
                 break;
+            }
             case _6_DECIMAL:
-                returnVal.cachedFieldValue = jsonObjFromSrc.optDouble(JSONStruct.DECIMAL_VALUE);
+                returnVal.cachedFieldValue = (jsonObjFromSrc.has(JSONStruct.DECIMAL_VALUE) && !jsonObjFromSrc.get(JSONStruct.DECIMAL_VALUE).isJsonNull())
+                        ? jsonObjFromSrc.get(JSONStruct.DECIMAL_VALUE).getAsDouble() : null;
                 break;
-            case _7_TABLE_FIELD:
+            case _7_TABLE_FIELD: {
                 List<Form> listOfForms = new ArrayList<>();
-                JSONArray jsonFormIds = jsonObjFromSrc.optJSONArray(JSONStruct.FORM_CONTAINERS);
-                if (jsonFormIds != null) {
-                    for (int index = 0; index < jsonFormIds.length(); index++) {
-                        listOfForms.add(new Form(jsonFormIds.getLong(index)));
+                if (jsonObjFromSrc.has(JSONStruct.FORM_CONTAINERS) && jsonObjFromSrc.get(JSONStruct.FORM_CONTAINERS).isJsonArray()) {
+                    com.google.gson.JsonArray jsonFormIds = jsonObjFromSrc.getAsJsonArray(JSONStruct.FORM_CONTAINERS);
+                    for (int index = 0; index < jsonFormIds.size(); index++) {
+                        if (!jsonFormIds.get(index).isJsonNull()) {
+                            listOfForms.add(new Form(jsonFormIds.get(index).getAsLong()));
+                        }
                     }
                 }
                 returnVal.cachedFieldValue = listOfForms;
                 break;
+            }
             case _9_LABEL:
-                returnVal.cachedFieldValue = jsonObjFromSrc.optString(JSONStruct.LABEL);
+                returnVal.cachedFieldValue = (jsonObjFromSrc.has(JSONStruct.LABEL) && !jsonObjFromSrc.get(JSONStruct.LABEL).isJsonNull())
+                        ? jsonObjFromSrc.get(JSONStruct.LABEL).getAsString() : null;
+                break;
+            default:
                 break;
         }
-
-        if (returnVal.cachedFieldValue == null) {
-            return null;
-        }
+        if (returnVal.cachedFieldValue == null) return null;
 
         return returnVal;
     }

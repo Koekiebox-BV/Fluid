@@ -96,7 +96,7 @@ public class CustomWebAction extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code CustomWebAction}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

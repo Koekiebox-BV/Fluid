@@ -93,7 +93,7 @@ public class ExtendedServerHealth extends ABaseFluidGSONObject {
      * Conversion to JsonObject from Java Object.
      *
      * @return JsonObject representation of this object.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

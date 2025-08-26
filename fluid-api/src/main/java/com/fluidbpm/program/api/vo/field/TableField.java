@@ -22,7 +22,6 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
@@ -114,12 +113,11 @@ public class TableField extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code TableField}
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
         this.setAsProperty(JSONMapping.SUM_DECIMALS, returnVal, this.getSumDecimals());
         this.setAsObjArray(JSONMapping.TABLE_RECORDS, returnVal, this::getTableRecords);

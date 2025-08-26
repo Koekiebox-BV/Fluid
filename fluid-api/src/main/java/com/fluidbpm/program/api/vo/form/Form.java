@@ -28,8 +28,6 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
@@ -669,7 +667,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Form}
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient
@@ -712,12 +709,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      *
      * @return {@code JSONObject} representation of {@code Form} for
      * ElasticSearch mapping.
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonMappingForElasticSearch() throws JSONException {
+    public JsonObject toJsonMappingForElasticSearch() {
         JsonObject returnVal = new JsonObject();
         //Id...
         {
@@ -863,13 +859,12 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     /**
      * Conversion to {@code JSONObject} for storage in ElasticCache for {@code Form}.
      * @return {@code JSONObject} representation of {@code Form}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see Form
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonForElasticSearch() throws JSONException {
+    public JsonObject toJsonForElasticSearch() {
         JsonObject returnVal = super.toJsonObject();
 
         //Form Type...
@@ -958,7 +953,6 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * as {@code JsonNull.INSTANCE}. {@code Field.Type.Table} fields are not supported and will be skipped.
      *
      * @return Flat {@code JSON} object (No inner fields).
-     * @see JSONObject
      */
     @XmlTransient
     @JsonIgnore
@@ -996,12 +990,11 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      * Populate the object based on the ElasticSearch JSON structure.
      * @param jsonObject The JSON object to populate from.
      * @param formFields The Form Fields to use for mapping.
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public void populateFromElasticSearchJson(JsonObject jsonObject, List<Field> formFields) throws JSONException {
+    public void populateFromElasticSearchJson(JsonObject jsonObject, List<Field> formFields) {
         this.jsonObject = jsonObject;
         if (jsonObject == null) return;
 

@@ -97,7 +97,7 @@ public class ConnectStatus extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code ConnectStatus}.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

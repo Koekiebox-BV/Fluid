@@ -21,7 +21,6 @@ import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
@@ -129,8 +128,8 @@ public class ThirdPartyLibrary extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code Field}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
+     * 
      */
     @Override
     @XmlTransient

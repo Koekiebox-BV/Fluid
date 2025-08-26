@@ -19,7 +19,6 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -75,8 +74,6 @@ public class NewInstanceDefault extends ABaseFluidGSONObject {
      * </p>
      *
      * @return {@code JSONObject} representation of {@code NewInstanceDefault}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see org.json.JSONObject
      */
     @Override
     @XmlTransient

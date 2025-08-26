@@ -184,7 +184,7 @@ public class FlowStep extends ABaseFluidGSONObject {
          * Conversion to {@code JsonObject} from Java Object.
          *
          * @return {@code JsonObject} representation of {@code StepProperty}
-         * @see ABaseFluidGSONObject#toJsonObject()
+         * 
          */
         @Override
         @XmlTransient
@@ -326,7 +326,7 @@ public class FlowStep extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code FlowStep}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

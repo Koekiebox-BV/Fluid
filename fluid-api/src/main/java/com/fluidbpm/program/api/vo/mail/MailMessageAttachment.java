@@ -87,7 +87,7 @@ public class MailMessageAttachment extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code MailMessageAttachment}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

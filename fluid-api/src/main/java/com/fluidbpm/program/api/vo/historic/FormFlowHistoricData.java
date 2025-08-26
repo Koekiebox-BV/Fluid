@@ -22,7 +22,6 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import java.util.Date;
 
@@ -100,8 +99,8 @@ public class FormFlowHistoricData extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

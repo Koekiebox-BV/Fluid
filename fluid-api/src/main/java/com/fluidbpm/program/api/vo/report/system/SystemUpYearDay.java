@@ -72,7 +72,7 @@ public class SystemUpYearDay extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code SystemUpYearDay}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

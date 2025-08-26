@@ -117,7 +117,7 @@ public class UserNotification extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code UserNotification}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

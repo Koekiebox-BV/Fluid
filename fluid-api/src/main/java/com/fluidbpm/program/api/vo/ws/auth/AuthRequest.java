@@ -110,7 +110,7 @@ public class AuthRequest extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AuthRequest}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

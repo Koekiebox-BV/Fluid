@@ -94,7 +94,7 @@ public class AutoComplete extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AutoComplete}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

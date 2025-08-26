@@ -19,8 +19,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
@@ -84,8 +82,7 @@ public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends A
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code RoleToFormDefinition}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient
@@ -106,7 +103,6 @@ public abstract class ABaseGSONListing<T extends ABaseFluidGSONObject> extends A
      *
      * @param jsonObjectParam The JSON object to convert to {@code T}.
      * @return T from constructor.
-     * @see JSONObject
      */
     @XmlTransient
     @JsonIgnore

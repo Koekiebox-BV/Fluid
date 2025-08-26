@@ -148,7 +148,7 @@ public class UserQuery extends ABaseGSONListing<FluidItem> {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

@@ -93,7 +93,7 @@ public class UserStatsReport extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code UserStatsReport}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

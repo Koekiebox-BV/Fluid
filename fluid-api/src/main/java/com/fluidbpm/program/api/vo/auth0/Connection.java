@@ -209,7 +209,7 @@ public class Connection extends ABaseFluidGSONObject {
          * Conversion to {@code JsonObject} from Java Object.
          *
          * @return {@code JsonObject} representation of {@code Client}
-         * @see ABaseFluidGSONObject#toJsonObject()
+         * 
          */
         @Override
         public JsonObject toJsonObject() {
@@ -461,7 +461,7 @@ public class Connection extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code Connection}.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

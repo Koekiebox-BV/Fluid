@@ -88,7 +88,7 @@ public class SystemUpHourMin extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code SystemUpHourMin}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

@@ -19,7 +19,6 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 /**
  * Fluid wrapper object for compressed {@code JSON} in {@code Base-64} format.
@@ -74,11 +73,11 @@ public class CompressedResponse extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code MailMessageAttachment}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
+     * 
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
         this.setAsProperty(JSONMapping.DATA_BASE_64, returnVal, this.getDataBase64());
         return returnVal;

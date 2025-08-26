@@ -20,7 +20,6 @@ import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,8 +129,6 @@ public class RowExpansion extends ABaseFluidGSONObject {
      * </p>
      *
      * @return {@code JSONObject} representation of {@code ABaseFluidGSONObject}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see org.json.JSONObject
      */
     @Override
     public JsonObject toJsonObject() {

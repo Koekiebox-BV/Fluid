@@ -27,8 +27,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -155,10 +153,9 @@ public class FluidItem extends ABaseFluidGSONObject {
          * Conversion to {@code JSONObject} from Java Object.
          *
          * @return {@code JSONObject} representation of {@code StepProperty}
-         * @throws JSONException If there is a problem with the JSON Body.
          */
         @Override
-        public JsonObject toJsonObject() throws JSONException {
+        public JsonObject toJsonObject() {
             JsonObject returnVal = super.toJsonObject();
             returnVal.addProperty(JSONMapping.NAME, this.getName());
             returnVal.addProperty(JSONMapping.VALUE, this.getValue());
@@ -294,12 +291,12 @@ public class FluidItem extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code FluidItem}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * 
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
         returnVal.addProperty(JSONMapping.FLOW, this.getFlow());

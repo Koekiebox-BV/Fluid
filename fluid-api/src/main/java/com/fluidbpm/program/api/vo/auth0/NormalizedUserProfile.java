@@ -211,7 +211,7 @@ public class NormalizedUserProfile extends ABaseFluidGSONObject {
          * Conversion to {@code JSONObject} from Java Object.
          *
          * @return {@code JSONObject} representation of {@code Identity}
-         * @see ABaseFluidGSONObject#toJsonObject()
+         * 
          */
         @Override
         public JsonObject toJsonObject() {
@@ -463,7 +463,7 @@ public class NormalizedUserProfile extends ABaseFluidGSONObject {
      * Conversion to JsonObject from Java Object.
      *
      * @return JsonObject representation of NormalizedUserProfile
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     public JsonObject toJsonObject() {

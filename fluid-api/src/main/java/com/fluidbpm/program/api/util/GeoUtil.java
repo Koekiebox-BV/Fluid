@@ -15,17 +15,19 @@
 
 package com.fluidbpm.program.api.util;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Geo utility to set Latitude and Longitude based data for maps.
- * The Geo utility may be utilized by any client to correctly supply lat, long, radius and address info as JSON text.
+ * Any client may use the Geo utility to correctly supply lat, long, radius and address info as JSON text.
  *
  * @since 1.12
  */
 public class GeoUtil {
-    private JSONObject json;
+    private JsonObject json;
 
     /**
      * Mapping field names for the JSON address based field.
@@ -50,20 +52,31 @@ public class GeoUtil {
      * @param existingJson The JSON String.
      */
     public GeoUtil(String existingJson) {
-        if (UtilGlobal.isBlank(existingJson)) this.json = new JSONObject();
-        else {
-            try {
-                this.json = new JSONObject(existingJson);
-            } catch (JSONException jsonErr) {
-                this.json = new JSONObject();
+        if (UtilGlobal.isBlank(existingJson)) {
+            this.json = new JsonObject();
+            return;
+        }
+        try {
+            JsonElement parsed = JsonParser.parseString(existingJson);
+            if (parsed != null && parsed.isJsonObject()) {
+                this.json = parsed.getAsJsonObject();
+            } else {
+                this.json = new JsonObject();
                 String[] existingVals = existingJson.split("\\|");
-                if (existingVals != null && existingVals.length > 1) {
-                    this.setLatitude(Double.valueOf(existingVals[0]));
-                    this.setLongitude(Double.valueOf(existingVals[1]));
-
+                if (existingVals.length > 1) {
+                    try { this.setLatitude(Double.valueOf(existingVals[0])); } catch (NumberFormatException ignore) {}
+                    try { this.setLongitude(Double.valueOf(existingVals[1])); } catch (NumberFormatException ignore) {}
                     if (existingVals.length > 2) this.setAddress(existingVals[2]);
                 } else this.setAddress(existingJson);
             }
+        } catch (Exception jsonErr) {
+            this.json = new JsonObject();
+            String[] existingVals = existingJson.split("\\|");
+            if (existingVals != null && existingVals.length > 1) {
+                try { this.setLatitude(Double.valueOf(existingVals[0])); } catch (NumberFormatException ignore) {}
+                try { this.setLongitude(Double.valueOf(existingVals[1])); } catch (NumberFormatException ignore) {}
+                if (existingVals.length > 2) this.setAddress(existingVals[2]);
+            } else this.setAddress(existingJson);
         }
     }
 
@@ -74,10 +87,10 @@ public class GeoUtil {
      */
     public void setLatitude(Double latitude) {
         if (latitude == null) {
-            this.json.put(JSONMapping.LAT, JSONObject.NULL);
+            this.json.add(JSONMapping.LAT, JsonNull.INSTANCE);
             return;
         }
-        this.json.put(JSONMapping.LAT, latitude);
+        this.json.addProperty(JSONMapping.LAT, latitude);
     }
 
     /**
@@ -86,8 +99,10 @@ public class GeoUtil {
      * @return The latitude or {@code 0.0} if not set.
      */
     public Double getLatitude() {
-        if (this.json.has(JSONMapping.LAT) && !this.json.isNull(JSONMapping.LAT))
-            return this.json.getDouble(JSONMapping.LAT);
+        if (this.json.has(JSONMapping.LAT)) {
+            JsonElement e = this.json.get(JSONMapping.LAT);
+            if (e != null && !e.isJsonNull()) return e.getAsDouble();
+        }
         return 0.0;
     }
 
@@ -98,10 +113,10 @@ public class GeoUtil {
      */
     public void setLongitude(Double longitude) {
         if (longitude == null) {
-            this.json.put(JSONMapping.LON, JSONObject.NULL);
+            this.json.add(JSONMapping.LON, JsonNull.INSTANCE);
             return;
         }
-        this.json.put(JSONMapping.LON, longitude);
+        this.json.addProperty(JSONMapping.LON, longitude);
     }
 
     /**
@@ -110,8 +125,10 @@ public class GeoUtil {
      * @return The longitude or {@code 0.0} if not set.
      */
     public Double getLongitude() {
-        if (this.json.has(JSONMapping.LON) && !this.json.isNull(JSONMapping.LON))
-            return this.json.getDouble(JSONMapping.LON);
+        if (this.json.has(JSONMapping.LON)) {
+            JsonElement e = this.json.get(JSONMapping.LON);
+            if (e != null && !e.isJsonNull()) return e.getAsDouble();
+        }
         return 0.0;
     }
 
@@ -122,13 +139,13 @@ public class GeoUtil {
      */
     public void setAddress(String address) {
         if (address == null) {
-            this.json.put(JSONMapping.ADDR, JSONObject.NULL);
+            this.json.add(JSONMapping.ADDR, JsonNull.INSTANCE);
             return;
         }
 
         if (address.length() > 150) address = address.substring(0, 150);
 
-        this.json.put(JSONMapping.ADDR, address);
+        this.json.addProperty(JSONMapping.ADDR, address);
     }
 
     /**
@@ -137,8 +154,10 @@ public class GeoUtil {
      * @return The address or {@code empty} if not set.
      */
     public String getAddress() {
-        if (this.json.has(JSONMapping.ADDR) && !this.json.isNull(JSONMapping.ADDR))
-            return this.json.getString(JSONMapping.ADDR);
+        if (this.json.has(JSONMapping.ADDR)) {
+            JsonElement e = this.json.get(JSONMapping.ADDR);
+            if (e != null && !e.isJsonNull()) return e.getAsString();
+        }
         return UtilGlobal.EMPTY;
     }
 
@@ -149,10 +168,10 @@ public class GeoUtil {
      */
     public void setRadius(Double radius) {
         if (radius == null) {
-            this.json.put(JSONMapping.RADIUS, JSONObject.NULL);
+            this.json.add(JSONMapping.RADIUS, JsonNull.INSTANCE);
             return;
         }
-        this.json.put(JSONMapping.RADIUS, radius);
+        this.json.addProperty(JSONMapping.RADIUS, radius);
     }
 
     /**
@@ -161,8 +180,10 @@ public class GeoUtil {
      * @return The radius or {@code 0.0} if not set.
      */
     public Double getRadius() {
-        if (this.json.has(JSONMapping.RADIUS) && !this.json.isNull(JSONMapping.RADIUS))
-            return this.json.getDouble(JSONMapping.RADIUS);
+        if (this.json.has(JSONMapping.RADIUS)) {
+            JsonElement e = this.json.get(JSONMapping.RADIUS);
+            if (e != null && !e.isJsonNull()) return e.getAsDouble();
+        }
         return 0.0;
     }
 
@@ -193,10 +214,12 @@ public class GeoUtil {
         double lat = this.getLatitude(), lon = this.getLongitude();
         if (lat == 0.0 && lon == 0.0) return UtilGlobal.EMPTY;
 
-        if (this.json.has(JSONMapping.RADIUS) && this.json.getDouble(JSONMapping.RADIUS) < 1) {
-            this.json.remove(JSONMapping.RADIUS);
+        if (this.json.has(JSONMapping.RADIUS)) {
+            JsonElement rEl = this.json.get(JSONMapping.RADIUS);
+            if (rEl != null && !rEl.isJsonNull()) {
+                if (rEl.getAsDouble() < 1) this.json.remove(JSONMapping.RADIUS);
+            }
         }
-
         return this.json.toString();
     }
 }

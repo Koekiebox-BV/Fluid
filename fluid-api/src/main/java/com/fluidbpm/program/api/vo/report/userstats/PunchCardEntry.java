@@ -93,7 +93,7 @@ public class PunchCardEntry extends ABaseFluidGSONReportObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code PunchCardEntry}
-     * @see ABaseFluidGSONObject#toJsonObject()
+     * 
      */
     @Override
     @XmlTransient

@@ -20,7 +20,6 @@ import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -28,7 +27,6 @@ import java.util.List;
  * System uptime data.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidGSONObject
  * @since v1.11
  */
 @Getter
@@ -71,11 +69,9 @@ public class SystemUptimeReport extends ABaseFluidGSONReportObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code SystemUptimeReport}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
         this.setAsObjArray(JSONMapping.UPTIME_ENTRIES, returnVal, this::getUptimeEntries);
         this.setAsObj(JSONMapping.COMPRESSED_RESPONSE, returnVal, this::getCompressedResponse);

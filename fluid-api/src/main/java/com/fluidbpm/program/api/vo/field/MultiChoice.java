@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -194,7 +193,6 @@ public class MultiChoice extends ABaseFluidGSONObject {
      * Conversion to {@code JsonObject} from Java Object.
      *
      * @return {@code JsonObject} representation of {@code MultiChoice}.
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient

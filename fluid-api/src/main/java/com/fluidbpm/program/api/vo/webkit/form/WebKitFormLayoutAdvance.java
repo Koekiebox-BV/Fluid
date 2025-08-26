@@ -20,8 +20,6 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -82,7 +80,7 @@ public class WebKitFormLayoutAdvance extends ABaseFluidGSONObject {
      * </p>
      *
      * @return {@code JSONObject} representation of {@code WebKitFormLayoutAdvance}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * 
      * @see JSONObject
      */
     @Override
