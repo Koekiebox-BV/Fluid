@@ -15,17 +15,15 @@
 
 package com.fluidbpm.program.api.vo.health.thirdparty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
@@ -66,64 +64,29 @@ public class CustomRunnerAction extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Action Identifier...
-        if (!this.jsonObject.isNull(JSONMapping.ACTION_IDENTIFIER)) {
-            this.setActionIdentifier(this.jsonObject.getString(JSONMapping.ACTION_IDENTIFIER));
-        }
+        this.setActionIdentifier(this.getAsStringNullSafe(JSONMapping.ACTION_IDENTIFIER));
+        this.setActionLocation(this.getAsStringNullSafe(JSONMapping.ACTION_LOCATION));
+        this.setActionType(this.getAsStringNullSafe(JSONMapping.ACTION_TYPE));
 
-        //Action Location...
-        if (!this.jsonObject.isNull(JSONMapping.ACTION_LOCATION)) {
-            this.setActionLocation(this.jsonObject.getString(JSONMapping.ACTION_LOCATION));
-        }
-
-        //Action Type...
-        if (!this.jsonObject.isNull(JSONMapping.ACTION_TYPE)) {
-            this.setActionType(this.jsonObject.getString(JSONMapping.ACTION_TYPE));
-        }
-
-        //Form Definitions...
-        if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITIONS)) {
-            JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
-            List<String> formDefinitions = new ArrayList();
-            for (int index = 0; index < jsonPropArray.length(); index++) {
-                formDefinitions.add(jsonPropArray.getString(index));
-            }
-            this.setFormDefinitions(formDefinitions);
-        }
+        this.setFormDefinitions(this.extractStrings(JSONMapping.FORM_DEFINITIONS));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code CustomRunnerAction}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code CustomRunnerAction}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        //Action Identifier...
-        if (this.getActionIdentifier() != null) {
-            returnVal.put(JSONMapping.ACTION_IDENTIFIER, this.getActionIdentifier());
-        }
-
-        //Action Location...
-        if (this.getActionLocation() != null) {
-            returnVal.put(JSONMapping.ACTION_LOCATION, this.getActionLocation());
-        }
-
-        //Action Type...
-        if (this.getActionType() != null) {
-            returnVal.put(JSONMapping.ACTION_TYPE, this.getActionType());
-        }
-
-        //Form Definitions...
-        if (this.getFormDefinitions() != null && !this.getFormDefinitions().isEmpty()) {
-            JSONArray formDeffsArr = new JSONArray();
-            for (String toAdd : this.getFormDefinitions()) formDeffsArr.put(toAdd);
-            returnVal.put(JSONMapping.FORM_DEFINITIONS, formDeffsArr);
-        }
+        this.setAsProperty(JSONMapping.ACTION_IDENTIFIER, returnVal, this.getActionIdentifier());
+        this.setAsProperty(JSONMapping.ACTION_LOCATION, returnVal, this.getActionLocation());
+        this.setAsProperty(JSONMapping.ACTION_TYPE, returnVal, this.getActionType());
+        this.setAsStringArray(JSONMapping.FORM_DEFINITIONS, returnVal, this.getFormDefinitions());
 
         return returnVal;
     }

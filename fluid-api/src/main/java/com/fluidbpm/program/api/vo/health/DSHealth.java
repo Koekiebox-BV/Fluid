@@ -15,21 +15,20 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
- * Connection status for a Fluid instance.
- *
- * @author jasonbruwer on 2023-06-20.
- * @see ABaseFluidJSONObject
- * @since 1.13
- */
+     * Connection status for a Fluid instance.
+     *
+     * @author jasonbruwer on 2023-06-20.
+     * @see ABaseFluidGSONObject
+     * @since 1.13
+     */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -60,58 +59,38 @@ public class DSHealth extends ABaseFluidGSONObject {
      *
      * @param jsonObject The JSON Object.
      */
-    public DSHealth(JSONObject jsonObject) {
+    public DSHealth(JsonObject jsonObject) {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDriver(this.getAsStringNullSafe(JSONMapping.DRIVER));
+        this.setUri(this.getAsStringNullSafe(JSONMapping.URI));
+        this.setConnectionInfo(this.getAsStringNullSafe(JSONMapping.CONNECTION_INFO));
+
+        String dbHealth = this.getAsStringNullSafe(JSONMapping.DATABASE_HEALTH);
+        if (UtilGlobal.isNotBlank(dbHealth)) {
+            this.setDatabaseHealth(Health.valueOf(dbHealth));
         }
 
-        if (!this.jsonObject.isNull(JSONMapping.DRIVER)) {
-            this.setDriver(this.jsonObject.getString(JSONMapping.DRIVER));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.URI)) {
-            this.setUri(this.jsonObject.getString(JSONMapping.URI));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
-            this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.DATABASE_HEALTH)) {
-            this.setDatabaseHealth(this.jsonObject.getEnum(Health.class, JSONMapping.DATABASE_HEALTH));
-        }
-
-        if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-            this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-        }
+        this.setConnectObtainDurationMillis(this.getAsLongNullSafe(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to JsonObject from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return JsonObject representation of this object.
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
-        if (this.getDriver() != null) returnVal.put(JSONMapping.DRIVER, this.getDriver());
-        if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
-        if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
-
-        if (this.getDatabaseHealth() != null) {
-            returnVal.put(JSONMapping.DATABASE_HEALTH, this.getDatabaseHealth());
-        }
-
-        if (this.getConnectObtainDurationMillis() != null) {
-            returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-        }
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DRIVER, returnVal, this.getDriver());
+        this.setAsProperty(JSONMapping.URI, returnVal, this.getUri());
+        this.setAsProperty(JSONMapping.CONNECTION_INFO, returnVal, this.getConnectionInfo());
+        this.setAsProperty(JSONMapping.DATABASE_HEALTH, returnVal, this.getDatabaseHealth());
+        this.setAsProperty(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, returnVal, this.getConnectObtainDurationMillis());
 
         return returnVal;
     }

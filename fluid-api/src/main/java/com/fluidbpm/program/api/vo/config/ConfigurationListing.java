@@ -17,7 +17,7 @@ package com.fluidbpm.program.api.vo.config;
 
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -46,7 +46,7 @@ public class ConfigurationListing extends ABaseGSONListing<Configuration> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ConfigurationListing(JSONObject jsonObjectParam) {
+    public ConfigurationListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -58,7 +58,7 @@ public class ConfigurationListing extends ABaseGSONListing<Configuration> {
      */
     @Override
     @XmlTransient
-    public Configuration getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public Configuration getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new Configuration(jsonObjectParam);
     }
 }

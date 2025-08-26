@@ -20,8 +20,8 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * An Auth0 Access Token used by Fluid.
@@ -72,51 +72,28 @@ public class AccessToken extends ABaseFluidGSONObject {
      */
     public AccessToken(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
-        //Access Token...
-        if (!this.jsonObject.isNull(JSONMapping.ACCESS_TOKEN)) {
-            this.setAccessToken(this.jsonObject.getString(JSONMapping.ACCESS_TOKEN));
-        }
-
-        //Id Token...
-        if (!this.jsonObject.isNull(JSONMapping.ID_TOKEN)) {
-            this.setIdToken(this.jsonObject.getString(JSONMapping.ID_TOKEN));
-        }
-
-        //Token Type...
-        if (!this.jsonObject.isNull(JSONMapping.TOKEN_TYPE)) {
-            this.setTokenType(this.jsonObject.getString(JSONMapping.TOKEN_TYPE));
-        }
+        this.setAccessToken(this.getAsStringNullSafe(JSONMapping.ACCESS_TOKEN));
+        this.setIdToken(this.getAsStringNullSafe(JSONMapping.ID_TOKEN));
+        this.setTokenType(this.getAsStringNullSafe(JSONMapping.TOKEN_TYPE));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code AccessToken}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code AccessToken}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        //Access Token...
-        if (this.getAccessToken() != null) {
-            returnVal.put(JSONMapping.ACCESS_TOKEN, this.getAccessToken());
-        }
-
-        //Id Token...
-        if (this.getIdToken() != null) {
-            returnVal.put(JSONMapping.ID_TOKEN, this.getIdToken());
-        }
-
-        //Token Type...
-        if (this.getTokenType() != null) {
-            returnVal.put(JSONMapping.TOKEN_TYPE, this.getTokenType());
-        }
+        this.setAsProperty(JSONMapping.ACCESS_TOKEN, returnVal, this.getAccessToken());
+        this.setAsProperty(JSONMapping.ID_TOKEN, returnVal, this.getIdToken());
+        this.setAsProperty(JSONMapping.TOKEN_TYPE, returnVal, this.getTokenType());
 
         return returnVal;
     }

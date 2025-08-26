@@ -16,13 +16,10 @@
 package com.fluidbpm.program.api.vo.health;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -30,7 +27,6 @@ import java.util.List;
  * Connection status for a Fluid instance.
  *
  * @author jasonbruwer on 2023-06-20.
- * @see ABaseFluidJSONObject
  * @since 1.13
  */
 @Getter
@@ -66,26 +62,19 @@ public class ESHealth extends ABaseFluidGSONObject {
         super(jsonObject);
         if (this.jsonObject == null) return;
 
-
-        if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-            this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-        }
+        this.setConnectObtainDurationMillis(this.getAsLongNullSafe(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to JsonObject from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return JsonObject representation of this object.
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        if (this.getConnectObtainDurationMillis() != null) {
-            returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-        }
+        this.setAsProperty(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, returnVal, this.getConnectObtainDurationMillis());
 
         return returnVal;
     }

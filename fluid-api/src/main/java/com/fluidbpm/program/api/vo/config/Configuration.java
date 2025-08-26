@@ -20,10 +20,10 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Fluid configurations.
@@ -94,36 +94,25 @@ public class Configuration extends ABaseFluidGSONObject {
      */
     public Configuration(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
-        //Key...
-        if (!this.jsonObject.isNull(JSONMapping.KEY)) {
-            this.setKey(this.jsonObject.getString(JSONMapping.KEY));
-        }
 
-        //Value...
-        if (!this.jsonObject.isNull(JSONMapping.VALUE)) {
-            this.setValue(this.jsonObject.getString(JSONMapping.VALUE));
-        }
+        this.setKey(this.getAsStringNullSafe(JSONMapping.KEY));
+        this.setValue(this.getAsStringNullSafe(JSONMapping.VALUE));
     }
 
     /**
      * Conversion to {@code JSONObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code Flow}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JSONObject} representation of {@code Configuration}
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-
-        //Key...
-        if (this.getKey() != null) returnVal.put(JSONMapping.KEY, this.getKey());
-
-        //Value...
-        if (this.getValue() != null) returnVal.put(JSONMapping.VALUE, this.getValue());
-
+        this.setAsProperty(JSONMapping.KEY, returnVal, this.getKey());
+        this.setAsProperty(JSONMapping.VALUE, returnVal, this.getValue());
         return returnVal;
     }
 }

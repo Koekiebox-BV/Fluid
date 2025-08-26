@@ -24,6 +24,8 @@ import com.fluidbpm.program.api.vo.ws.auth.AuthResponse;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.google.common.io.BaseEncoding;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -334,11 +336,9 @@ public class LoginClient extends ABaseClientWS {
                 seedBytes
         );
 
-        try {
-            return new AuthEncryptedData(new JSONObject(new String(decryptedEncryptedData)));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(), FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        String decryptedJson = new String(decryptedEncryptedData);
+        JsonObject gsonObject = JsonParser.parseString(decryptedJson).getAsJsonObject();
+        return new AuthEncryptedData(gsonObject);
     }
 
     /**

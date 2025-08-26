@@ -17,10 +17,7 @@ package com.fluidbpm.program.api.vo.auth0;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.google.gson.JsonObject;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * An Auth0 Access Token Request used by Fluid.
@@ -29,7 +26,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
  *
  * @author jasonbruwer
  * @see NormalizedUserProfile
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @since v1.0
  */
 public class AccessTokenRequest extends ABaseFluidGSONObject {
@@ -68,30 +65,11 @@ public class AccessTokenRequest extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Client Id...
-        if (!this.jsonObject.isNull(JSONMapping.CLIENT_ID)) {
-            this.setClientId(this.jsonObject.getString(JSONMapping.CLIENT_ID));
-        }
-
-        //Client Secret...
-        if (!this.jsonObject.isNull(JSONMapping.CLIENT_SECRET)) {
-            this.setClientSecret(this.jsonObject.getString(JSONMapping.CLIENT_SECRET));
-        }
-
-        //Code...
-        if (!this.jsonObject.isNull(JSONMapping.CODE)) {
-            this.setCode(this.jsonObject.getString(JSONMapping.CODE));
-        }
-
-        //Grant Type...
-        if (!this.jsonObject.isNull(JSONMapping.GRANT_TYPE)) {
-            this.setGrantType(this.jsonObject.getString(JSONMapping.GRANT_TYPE));
-        }
-
-        //Redirect URI...
-        if (!this.jsonObject.isNull(JSONMapping.REDIRECT_URI)) {
-            this.setRedirectUri(this.jsonObject.getString(JSONMapping.REDIRECT_URI));
-        }
+        this.setClientId(this.getAsStringNullSafe(JSONMapping.CLIENT_ID));
+        this.setClientSecret(this.getAsStringNullSafe(JSONMapping.CLIENT_SECRET));
+        this.setCode(this.getAsStringNullSafe(JSONMapping.CODE));
+        this.setGrantType(this.getAsStringNullSafe(JSONMapping.GRANT_TYPE));
+        this.setRedirectUri(this.getAsStringNullSafe(JSONMapping.REDIRECT_URI));
     }
 
     /**
@@ -185,40 +163,20 @@ public class AccessTokenRequest extends ABaseFluidGSONObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code AccessTokenRequest}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code AccessTokenRequest}
+     * @see ABaseFluidGSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        //Client ID...
-        if (this.getClientId() != null) {
-            returnVal.put(JSONMapping.CLIENT_ID, this.getClientId());
-        }
-
-        //Client Secret...
-        if (this.getClientSecret() != null) {
-            returnVal.put(JSONMapping.CLIENT_SECRET, this.getClientSecret());
-        }
-
-        //Code...
-        if (this.getCode() != null) {
-            returnVal.put(JSONMapping.CODE, this.getCode());
-        }
-
-        //Grant Type...
-        if (this.getGrantType() != null) {
-            returnVal.put(JSONMapping.GRANT_TYPE, this.getGrantType());
-        }
-
-        //Redirect URI...
-        if (this.getRedirectUri() != null) {
-            returnVal.put(JSONMapping.REDIRECT_URI, this.getRedirectUri());
-        }
+        this.setAsProperty(JSONMapping.CLIENT_ID, returnVal, this.getClientId());
+        this.setAsProperty(JSONMapping.CLIENT_SECRET, returnVal, this.getClientSecret());
+        this.setAsProperty(JSONMapping.CODE, returnVal, this.getCode());
+        this.setAsProperty(JSONMapping.GRANT_TYPE, returnVal, this.getGrantType());
+        this.setAsProperty(JSONMapping.REDIRECT_URI, returnVal, this.getRedirectUri());
 
         return returnVal;
     }

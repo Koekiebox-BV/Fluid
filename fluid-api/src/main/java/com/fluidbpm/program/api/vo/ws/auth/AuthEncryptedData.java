@@ -15,12 +15,11 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.google.gson.JsonObject;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Authorization encrypted data.
@@ -66,20 +65,9 @@ public class AuthEncryptedData extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Role Listing...
-        if (!jsonObjectParam.isNull(JSONMapping.ROLE_LISTING)) {
-            this.setRoleListing(jsonObjectParam.getString(JSONMapping.ROLE_LISTING));
-        }
-
-        //Session Key...
-        if (!jsonObjectParam.isNull(JSONMapping.SESSION_KEY)) {
-            this.setSessionKeyBase64(jsonObjectParam.getString(JSONMapping.SESSION_KEY));
-        }
-
-        //Ticket Expires...
-        if (!jsonObjectParam.isNull(JSONMapping.TICKET_EXPIRES)) {
-            this.setTicketExpires(jsonObjectParam.getLong(JSONMapping.TICKET_EXPIRES));
-        }
+        this.setRoleListing(this.getAsStringNullSafe(JSONMapping.ROLE_LISTING));
+        this.setSessionKeyBase64(this.getAsStringNullSafe(JSONMapping.SESSION_KEY));
+        this.setTicketExpires(this.getAsLongNullSafe(JSONMapping.TICKET_EXPIRES));
     }
 
     /**
@@ -137,18 +125,19 @@ public class AuthEncryptedData extends ABaseFluidGSONObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code AuthEncryptedData}
-     * @throws JSONException If there is a problem with the JSON Body.
+     * @return {@code JsonObject} representation of {@code AuthEncryptedData}
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
-        JsonObject returnVal = new JsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        returnVal.put(JSONMapping.TICKET_EXPIRES, this.getTicketExpires());
-        returnVal.put(JSONMapping.ROLE_LISTING, this.getRoleListing());
-        returnVal.put(JSONMapping.SESSION_KEY, this.getSessionKeyBase64());
+        this.setAsProperty(JSONMapping.TICKET_EXPIRES, returnVal, this.getTicketExpires());
+        this.setAsProperty(JSONMapping.ROLE_LISTING, returnVal, this.getRoleListing());
+        this.setAsProperty(JSONMapping.SESSION_KEY, returnVal, this.getSessionKeyBase64());
 
         return returnVal;
     }

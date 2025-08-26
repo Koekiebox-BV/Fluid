@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
-import com.google.gson.JsonObject;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Request object for authorization.
@@ -45,6 +45,26 @@ public class AuthRequest extends ABaseFluidGSONObject {
     public static class JSONMapping {
         public static final String USERNAME = "username";
         public static final String LIFETIME = "lifetime";
+    }
+
+    /**
+     * Default constructor.
+     */
+    public AuthRequest() {
+        super();
+    }
+
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public AuthRequest(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
+
+        this.setUsername(this.getAsStringNullSafe(JSONMapping.USERNAME));
+        this.setLifetime(this.getAsLongNullSafe(JSONMapping.LIFETIME));
     }
 
     /**
@@ -91,22 +111,16 @@ public class AuthRequest extends ABaseFluidGSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AuthRequest}
-     * @throws JSONException If there is a problem with the JSON Body.
      * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JsonObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        //Username...
-        if (this.getUsername() != null) {
-            returnVal.put(JSONMapping.USERNAME, this.getUsername());
-        }
-
-        //Lifetime...
-        if (this.getLifetime() != null) {
-            returnVal.put(JSONMapping.LIFETIME, this.getLifetime());
-        }
+        this.setAsProperty(JSONMapping.USERNAME, returnVal, this.getUsername());
+        this.setAsProperty(JSONMapping.LIFETIME, returnVal, this.getLifetime());
 
         return returnVal;
     }
