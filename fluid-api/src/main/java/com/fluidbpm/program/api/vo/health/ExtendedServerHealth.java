@@ -99,8 +99,8 @@ public class ExtendedServerHealth extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        this.setAsProperty(JSONMapping.TIMESTAMP_START, returnVal, this.getDateAsLongFromJson(this.getTimestampHealthStart()));
-        this.setAsProperty(JSONMapping.TIMESTAMP_END, returnVal, this.getDateAsLongFromJson(this.getTimestampHealthEnd()));
+        this.setAsProperty(JSONMapping.TIMESTAMP_START, returnVal, (this.getTimestampHealthStart()));
+        this.setAsProperty(JSONMapping.TIMESTAMP_END, returnVal, (this.getTimestampHealthEnd()));
         this.setAsObjArray(JSONMapping.DS_HEALTH, returnVal, this::getDsHealth);
         this.setAsObj(JSONMapping.CACHE_HEALTH, returnVal, this::getCacheHealth);
         this.setAsObj(JSONMapping.ES_HEALTH, returnVal, this::getEsHealth);

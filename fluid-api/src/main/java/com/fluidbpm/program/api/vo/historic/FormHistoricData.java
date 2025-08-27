@@ -179,7 +179,7 @@ public class FormHistoricData extends ABaseFluidGSONObject {
     @Override
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        this.setAsProperty(JSONMapping.DATE, returnVal, this.getDateAsLongFromJson(this.getDate()));
+        this.setAsProperty(JSONMapping.DATE, returnVal, (this.getDate()));
         this.setAsProperty(JSONMapping.DATE_AND_FIELD_NAME, returnVal, this.getDateAndFieldName());
         this.setAsProperty(JSONMapping.FORM_CONTAINER_FIELD_VALUES_JSON, returnVal, this.getFormContainerFieldValuesJSON());
         this.setAsProperty(JSONMapping.LOG_ENTRY_TYPE, returnVal, this.getLogEntryType());

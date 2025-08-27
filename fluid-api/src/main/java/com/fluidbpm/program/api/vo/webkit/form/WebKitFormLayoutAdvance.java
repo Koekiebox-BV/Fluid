@@ -61,7 +61,7 @@ public class WebKitFormLayoutAdvance extends ABaseFluidGSONObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setColSpan(this.getAsIntegerNullSafe(JSONMapping.COLUMN_SPAN));
+        this.setColSpan(this.getAsIntegerNullSafeStrictVal(JSONMapping.COLUMN_SPAN));
         this.setField(this.extractObject(JSONMapping.FIELD, Field::new));
     }
 
@@ -80,8 +80,6 @@ public class WebKitFormLayoutAdvance extends ABaseFluidGSONObject {
      * </p>
      *
      * @return {@code JSONObject} representation of {@code WebKitFormLayoutAdvance}
-     * 
-     * @see JSONObject
      */
     @Override
     @XmlTransient

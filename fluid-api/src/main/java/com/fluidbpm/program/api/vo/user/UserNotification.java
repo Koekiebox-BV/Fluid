@@ -127,8 +127,8 @@ public class UserNotification extends ABaseFluidGSONObject {
         this.setAsObj(JSONMapping.USER, returnVal, this::getUser);
 
         // Dates
-        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
-        this.setAsProperty(JSONMapping.DATE_READ, returnVal, this.getDateAsLongFromJson(this.getDateRead()));
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, (this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_READ, returnVal, (this.getDateRead()));
 
         // Strings
         this.setAsProperty(JSONMapping.EXPIRING_LINK, returnVal, this.getExpiringLink());

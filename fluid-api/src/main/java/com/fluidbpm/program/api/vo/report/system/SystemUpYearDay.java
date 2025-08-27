@@ -63,8 +63,8 @@ public class SystemUpYearDay extends ABaseFluidGSONReportObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setYear(this.getAsIntegerNullSafe(JSONMapping.YEAR));
-        this.setDay(this.getAsIntegerNullSafe(JSONMapping.DAY));
+        this.setYear(this.getAsIntegerNullSafeStrictVal(JSONMapping.YEAR));
+        this.setDay(this.getAsIntegerNullSafeStrictVal(JSONMapping.DAY));
         this.setSystemUpHourMins(this.extractObjects(JSONMapping.SYSTEM_UP_HOUR_MINS, SystemUpHourMin::new));
     }
 

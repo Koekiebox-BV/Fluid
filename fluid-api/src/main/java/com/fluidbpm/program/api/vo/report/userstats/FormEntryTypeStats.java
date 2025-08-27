@@ -66,9 +66,9 @@ public class FormEntryTypeStats extends ABaseFluidGSONReportObject {
         if (this.jsonObject == null) return;
 
         this.setFormContainerType(this.getAsStringNullSafe(JSONMapping.FORM_CONTAINER_TYPE));
-        this.setCountDocument(this.getAsIntegerNullSafe(JSONMapping.COUNT_DOCUMENT) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_DOCUMENT));
-        this.setCountFolder(this.getAsIntegerNullSafe(JSONMapping.COUNT_FOLDER) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_FOLDER));
-        this.setCountTableRecord(this.getAsIntegerNullSafe(JSONMapping.COUNT_TABLE_RECORD) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_TABLE_RECORD));
+        this.setCountDocument(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_DOCUMENT));
+        this.setCountFolder(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_FOLDER));
+        this.setCountTableRecord(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_TABLE_RECORD));
     }
 
     /**

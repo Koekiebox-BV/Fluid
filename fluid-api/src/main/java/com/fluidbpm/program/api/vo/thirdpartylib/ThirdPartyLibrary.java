@@ -127,8 +127,7 @@ public class ThirdPartyLibrary extends ABaseFluidGSONObject {
     /**
      * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JsonObject} representation of {@code Field}
-     * 
+     * @return {@code JsonObject} representation of {@code ThirdPartyLibrary}
      * 
      */
     @Override
@@ -136,43 +135,13 @@ public class ThirdPartyLibrary extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        //Filename...
-        if (this.getFilename() != null) {
-            returnVal.addProperty(JSONMapping.FILENAME, this.getFilename());
-        }
-
-        //Description...
-        if (this.getDescription() != null) {
-            returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
-        }
-
-        //Sha-256 SUM...
-        if (this.getSha256sum() != null) {
-            returnVal.addProperty(JSONMapping.SHA_256_SUM, this.getSha256sum());
-        }
-
-        //Add Tools to Classpath...
-        if (this.isAddToolsToClassPath() != null) {
-            returnVal.addProperty(JSONMapping.ADD_TOOLS_TO_CLASS_PATH, this.isAddToolsToClassPath());
-        }
-
-        //Library Data in Base-64...
-        if (this.getLibraryDataBase64() != null) {
-            returnVal.addProperty(JSONMapping.LIBRARY_DATA_BASE64,
-                    this.getLibraryDataBase64());
-        }
-
-        //Date Created...
-        if (this.getDateCreated() != null) {
-            returnVal.addProperty(JSONMapping.DATE_CREATED,
-                    this.getDateAsLongFromJson(this.getDateCreated()));
-        }
-
-        //Date Last Updated...
-        if (this.getDateLastUpdated() != null) {
-            returnVal.addProperty(JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateAsLongFromJson(this.getDateLastUpdated()));
-        }
+        this.setAsProperty(JSONMapping.FILENAME, returnVal, this.getFilename());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsProperty(JSONMapping.SHA_256_SUM, returnVal, this.getSha256sum());
+        this.setAsProperty(JSONMapping.ADD_TOOLS_TO_CLASS_PATH, returnVal, this.isAddToolsToClassPath());
+        this.setAsProperty(JSONMapping.LIBRARY_DATA_BASE64, returnVal, this.getLibraryDataBase64());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateCreated());
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateLastUpdated());
 
         return returnVal;
     }

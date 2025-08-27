@@ -175,9 +175,9 @@ public class WebKitUserQuery extends ABaseFluidGSONObject {
         this.setShowColumnFlowState(this.getAsBooleanNullSafe(JSONMapping.SHOW_COLUMN_FLOW_STATE));
         
         this.setAttachmentHeader(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_HEADER));
-        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
-        this.setTopBarDialogWidth(this.getAsIntegerNullSafe(JSONMapping.TOP_BAR_DIALOG_WIDTH));
-        this.setPaginatorRows(this.getAsIntegerNullSafe(JSONMapping.PAGINATOR_ROWS));
+        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
+        this.setTopBarDialogWidth(this.getAsIntegerNullSafeStrictVal(JSONMapping.TOP_BAR_DIALOG_WIDTH));
+        this.setPaginatorRows(this.getAsIntegerNullSafeStrictVal(JSONMapping.PAGINATOR_ROWS));
     }
 
     /**

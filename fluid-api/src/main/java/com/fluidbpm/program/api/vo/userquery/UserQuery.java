@@ -159,8 +159,8 @@ public class UserQuery extends ABaseGSONListing<FluidItem> {
         this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
         this.setAsObjArray(JSONMapping.INPUTS, returnVal, this::getInputs);
         this.setAsStringArray(JSONMapping.RULES, returnVal, this.getRules());
-        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
-        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, (this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, (this.getDateLastUpdated()));
         return returnVal;
     }
 

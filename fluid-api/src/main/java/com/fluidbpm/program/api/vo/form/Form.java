@@ -681,8 +681,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         this.setAsProperty(JSONMapping.ANCESTOR_LABEL, returnVal, this.getAncestorLabel());
         this.setAsProperty(JSONMapping.DESCENDANTS_LABEL, returnVal, this.getDescendantsLabel());
         this.setAsProperty(JSONMapping.NUMBER_INPUTS, returnVal, this.getNumberInputs());
-        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
-        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, (this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, (this.getDateLastUpdated()));
         this.setAsObj(JSONMapping.CURRENT_USER, returnVal, this::getCurrentUser);
 
         this.setAsProperty(JSONMapping.STATE, returnVal, this.getState());

@@ -103,7 +103,7 @@ public class ConnectStatus extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        this.setAsProperty(JSONMapping.TIMESTAMP, returnVal, this.getDateAsLongFromJson(this.getTimestamp()));
+        this.setAsProperty(JSONMapping.TIMESTAMP, returnVal, (this.getTimestamp()));
         if (this.getSystemHealth() != null) {
             this.setAsProperty(JSONMapping.SYSTEM_HEALTH, returnVal, this.getSystemHealth().toString());
         }

@@ -193,8 +193,8 @@ public class Attachment extends ABaseFluidGSONObject {
         this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
         this.setAsProperty(JSONMapping.PATH, returnVal, this.getPath());
         this.setAsProperty(JSONMapping.VERSION, returnVal, this.getVersion());
-        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateAsLongFromJson(this.getDateCreated()));
-        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateCreated());
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateLastUpdated());
         return returnVal;
     }
 

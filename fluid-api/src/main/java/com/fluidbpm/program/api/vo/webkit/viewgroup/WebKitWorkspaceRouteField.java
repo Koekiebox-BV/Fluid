@@ -67,7 +67,7 @@ public class WebKitWorkspaceRouteField extends ABaseFluidGSONObject {
         if (this.jsonObject == null) return;
 
         this.setRouteField(this.extractObject(JSONMapping.ROUTE_FIELD, Field::new));
-        this.setFieldOrder(this.getAsIntegerNullSafe(JSONMapping.FIELD_ORDER));
+        this.setFieldOrder(this.getAsIntegerNullSafeStrictVal(JSONMapping.FIELD_ORDER));
         this.setCssClass(this.getAsStringNullSafe(JSONMapping.CSS_CLASS));
         this.setCssStyle(this.getAsStringNullSafe(JSONMapping.CSS_STYLE));
         this.setGrouped(this.getAsBooleanNullSafe(JSONMapping.GROUPED));

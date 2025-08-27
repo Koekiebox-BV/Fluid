@@ -169,14 +169,14 @@ public class WebKitViewGroup extends ABaseFluidGSONObject {
         this.setAttachmentColumnLabel(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LABEL));
         this.setAttachmentColumnLayout(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LAYOUT));
 
-        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
-        this.setAttachmentPreviewSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_PREVIEW_SIZE));
-        this.setAttachmentColumnMaxImageCount(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT));
+        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
+        this.setAttachmentPreviewSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_PREVIEW_SIZE));
+        this.setAttachmentColumnMaxImageCount(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT));
 
         this.setEnableRenderEmptyTable(this.getAsBooleanNullSafe(JSONMapping.ENABLE_RENDER_EMPTY_TABLE));
         this.setEnableBulkEdit(this.getAsBooleanNullSafe(JSONMapping.ENABLE_BULK_EDIT));
 
-        this.setGroupOrder(this.getAsIntegerNullSafe(JSONMapping.GROUP_ORDER));
+        this.setGroupOrder(this.getAsIntegerNullSafeStrictVal(JSONMapping.GROUP_ORDER));
         this.setTableMaxCountPerPage(this.getAsIntegerNullSafe(JSONMapping.TABLE_MAX_COUNT_PER_PAGE));
         this.setShowButtonBulkUpdate(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_BULK_UPDATE));
         this.setShowButtonExport(this.getAsBooleanNullSafe(JSONMapping.SHOW_BUTTON_EXPORT));

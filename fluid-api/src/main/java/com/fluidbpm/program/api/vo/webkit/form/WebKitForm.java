@@ -186,7 +186,11 @@ public class WebKitForm extends ABaseFluidGSONObject {
         // For Form object, we need to handle it specially since it's a complex object
         if (this.jsonObject.has(JSONMapping.FORM) && !this.jsonObject.get(JSONMapping.FORM).isJsonNull()) {
             JsonObject formJsonObj = this.jsonObject.getAsJsonObject(JSONMapping.FORM);
-            Form form = new Form(formJsonObj.get(ABaseFluidGSONObject.JSONMapping.ID).getAsLong());
+            Form form = new Form(
+                    formJsonObj.has(ABaseFluidGSONObject.JSONMapping.ID) &&
+                            !formJsonObj.get(ABaseFluidGSONObject.JSONMapping.ID).isJsonNull() ?
+                            formJsonObj.get(ABaseFluidGSONObject.JSONMapping.ID).getAsLong() : null
+            );
             if (formJsonObj.has(Form.JSONMapping.FORM_TYPE_ID) && !formJsonObj.get(Form.JSONMapping.FORM_TYPE_ID).isJsonNull()) {
                 form.setFormTypeId(formJsonObj.get(Form.JSONMapping.FORM_TYPE_ID).getAsLong());
             }
@@ -200,10 +204,10 @@ public class WebKitForm extends ABaseFluidGSONObject {
         this.setInputLayout(this.getAsStringNullSafe(JSONMapping.INPUT_LAYOUT));
         this.setDisplayFormDescription(this.getAsBooleanNullSafe(JSONMapping.DISPLAY_FORM_DESCRIPTION));
         this.setDisplayFieldDescription(this.getAsBooleanNullSafe(JSONMapping.DISPLAY_FIELD_DESCRIPTION));
-        this.setAttachmentSize(this.getAsIntegerNullSafe(JSONMapping.ATTACHMENT_SIZE));
+        this.setAttachmentSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_SIZE));
         this.setAttachmentDisplayLocation(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_LOCATION));
         this.setAttachmentDisplayType(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_TYPE));
-        this.setDisplayWidth(this.getAsIntegerNullSafe(JSONMapping.DISPLAY_WIDTH));
+        this.setDisplayWidth(this.getAsIntegerNullSafeStrictVal(JSONMapping.DISPLAY_WIDTH));
         this.setDisplayHeight(this.getAsIntegerNullSafe(JSONMapping.DISPLAY_HEIGHT));
         this.setVisibleSectionsDisplayBehaviour(this.getAsStringNullSafe(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR));
         this.setFormDisplayBehaviour(this.getAsStringNullSafe(JSONMapping.FORM_DISPLAY_BEHAVIOUR));

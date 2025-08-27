@@ -77,18 +77,16 @@ public class FormContainerTypeStats extends ABaseFluidGSONReportObject {
      */
     public FormContainerTypeStats(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-        if (this.jsonObject == null) {
-            return;
-        }
+        if (this.jsonObject == null) return;
 
         this.setFormContainerType(this.getAsStringNullSafe(JSONMapping.FORM_CONTAINER_TYPE));
-        this.setCountCreate(this.getAsIntegerNullSafe(JSONMapping.COUNT_CREATE) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_CREATE));
-        this.setCountUpdate(this.getAsIntegerNullSafe(JSONMapping.COUNT_UPDATE) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_UPDATE));
-        this.setCountLock(this.getAsIntegerNullSafe(JSONMapping.COUNT_LOCK) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_LOCK));
-        this.setCountUnlock(this.getAsIntegerNullSafe(JSONMapping.COUNT_UNLOCK) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.COUNT_UNLOCK));
-        this.setDuplicateLocks(this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_LOCKS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_LOCKS));
-        this.setDuplicateUnLocks(this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UN_LOCKS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UN_LOCKS));
-        this.setDuplicateUpdates(this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UPDATES) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.DUPLICATE_UPDATES));
+        this.setCountCreate(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_CREATE));
+        this.setCountUpdate(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_UPDATE));
+        this.setCountLock(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_LOCK));
+        this.setCountUnlock(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_UNLOCK));
+        this.setDuplicateLocks(this.getAsIntegerNullSafeStrictVal(JSONMapping.DUPLICATE_LOCKS));
+        this.setDuplicateUnLocks(this.getAsIntegerNullSafeStrictVal(JSONMapping.DUPLICATE_UN_LOCKS));
+        this.setDuplicateUpdates(this.getAsIntegerNullSafeStrictVal(JSONMapping.DUPLICATE_UPDATES));
     }
 
     /**

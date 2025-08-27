@@ -82,7 +82,7 @@ public class CreateUpdateLockUnlockEntry extends ABaseFluidGSONReportObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        this.setAsProperty(JSONMapping.ENTRY_DAY, returnVal, this.getDateAsLongFromJson(this.getEntryDay()));
+        this.setAsProperty(JSONMapping.ENTRY_DAY, returnVal, (this.getEntryDay()));
         this.setAsObjArray(JSONMapping.FORM_CONTAINER_TYPE_STATS, returnVal, this::getFormContainerTypeStats);
         this.setAsObjArray(JSONMapping.FORM_ENTRY_TYPE_STATS, returnVal, this::getFormEntryTypeStats);
 

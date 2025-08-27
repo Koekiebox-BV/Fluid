@@ -334,17 +334,17 @@ public class FlowStep extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        returnVal.addProperty(JSONMapping.NAME, this.getName());
-        returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
-        returnVal.addProperty(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
-        returnVal.addProperty(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
-        returnVal.add(JSONMapping.FLOW, this.getFlow().toJsonObject());
-        returnVal.addProperty(JSONMapping.FLOW_STEP_TYPE, this.getFlowStepType());
-        returnVal.addProperty(JSONMapping.FLOW_STEP_PARENT_ID, this.getFlowStepParentId());
-        returnVal.add(JSONMapping.ENTRY_RULES, this.toJsonObjArray(this.getEntryRules()));
-        returnVal.add(JSONMapping.EXIT_RULES, this.toJsonObjArray(this.getExitRules()));
-        returnVal.add(JSONMapping.VIEW_RULES, this.toJsonObjArray(this.getViewRules()));
-        returnVal.add(JSONMapping.STEP_PROPERTIES, this.toJsonObjArray(this.getStepProperties()));
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateCreated());
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateLastUpdated());
+        this.setAsObj(JSONMapping.FLOW, returnVal, this::getFlow);
+        this.setAsProperty(JSONMapping.FLOW_STEP_TYPE, returnVal, this.getFlowStepType());
+        this.setAsProperty(JSONMapping.FLOW_STEP_PARENT_ID, returnVal, this.getFlowStepParentId());
+        this.setAsObjArray(JSONMapping.ENTRY_RULES, returnVal, this::getEntryRules);
+        this.setAsObjArray(JSONMapping.EXIT_RULES, returnVal, this::getExitRules);
+        this.setAsObjArray(JSONMapping.VIEW_RULES, returnVal, this::getViewRules);
+        this.setAsObjArray(JSONMapping.STEP_PROPERTIES, returnVal, this::getStepProperties);
 
         return returnVal;
     }

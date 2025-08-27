@@ -21,7 +21,6 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -157,8 +156,10 @@ public class FluidItem extends ABaseFluidGSONObject {
         @Override
         public JsonObject toJsonObject() {
             JsonObject returnVal = super.toJsonObject();
-            returnVal.addProperty(JSONMapping.NAME, this.getName());
-            returnVal.addProperty(JSONMapping.VALUE, this.getValue());
+
+            this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+            this.setAsProperty(JSONMapping.VALUE, returnVal, this.getValue());
+
             return returnVal;
         }
     }
@@ -299,16 +300,16 @@ public class FluidItem extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        returnVal.addProperty(JSONMapping.FLOW, this.getFlow());
-        returnVal.addProperty(JSONMapping.STEP, this.getStep());
-        returnVal.add(JSONMapping.FORM, this.getForm() == null ? JsonNull.INSTANCE : this.getForm().toJsonObject());
-        returnVal.add(JSONMapping.CUSTOM_PROPERTIES, this.toJsonObjArray(this.getCustomProperties()));
-        returnVal.add(JSONMapping.USER_FIELDS, this.toJsonObjArray(this.getUserFields()));
-        returnVal.add(JSONMapping.ROUTE_FIELDS, this.toJsonObjArray(this.getRouteFields()));
-        returnVal.add(JSONMapping.GLOBAL_FIELDS, this.toJsonObjArray(this.getGlobalFields()));
-        returnVal.add(JSONMapping.ATTACHMENTS, this.toJsonObjArray(this.getAttachments()));
-        returnVal.addProperty(JSONMapping.FLOW_STATE, this.getFlowState() == null ? null : this.getFlowState().toString());
-        returnVal.addProperty(JSONMapping.STEP_ENTERED_TIME, this.getDateAsLongFromJson(this.getStepEnteredTime()));
+        this.setAsProperty(JSONMapping.FLOW, returnVal, this.getFlow());
+        this.setAsProperty(JSONMapping.STEP, returnVal, this.getStep());
+        this.setAsProperty(JSONMapping.STEP_ENTERED_TIME, returnVal, this.getStepEnteredTime());
+        this.setAsObj(JSONMapping.FORM, returnVal, this::getForm);
+        this.setAsObjArray(JSONMapping.CUSTOM_PROPERTIES, returnVal, this::getCustomProperties);
+        this.setAsObjArray(JSONMapping.USER_FIELDS, returnVal, this::getUserFields);
+        this.setAsObjArray(JSONMapping.ROUTE_FIELDS, returnVal, this::getRouteFields);
+        this.setAsObjArray(JSONMapping.GLOBAL_FIELDS, returnVal, this::getGlobalFields);
+        this.setAsObjArray(JSONMapping.ATTACHMENTS, returnVal, this::getAttachments);
+        this.setAsProperty(JSONMapping.FLOW_STATE, returnVal, this.getFlowState() == null ? null : this.getFlowState().toString());
 
         return returnVal;
     }
@@ -320,7 +321,6 @@ public class FluidItem extends ABaseFluidGSONObject {
      * as {@code JSONObject.Null}. {@code Field.Type.Table} fields are not supported and will be skipped.
      *
      * @return Flat {@code JSON} object (No inner fields).
-     * @see JSONObject
      */
     @XmlTransient
     @JsonIgnore
@@ -805,7 +805,7 @@ public class FluidItem extends ABaseFluidGSONObject {
         if (fieldToSelectFrom == null) return;
         if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return;
 
-        List<Field> copyList = new ArrayList();
+        List<Field> copyList = new ArrayList<>();
         copyList.addAll(fieldToSelectFrom);
 
         String fieldNameLower = fieldNameParam.toLowerCase();
@@ -831,7 +831,7 @@ public class FluidItem extends ABaseFluidGSONObject {
     @XmlTransient
     @JsonIgnore
     public void addAttachment(Attachment toAddParam) {
-        if (!this.containsAttachments()) this.setAttachments(new ArrayList());
+        if (!this.containsAttachments()) this.setAttachments(new ArrayList<>());
         this.getAttachments().add(toAddParam);
     }
 
@@ -845,7 +845,7 @@ public class FluidItem extends ABaseFluidGSONObject {
     @XmlTransient
     @JsonIgnore
     public void addCustomProperty(FluidItemProperty property) {
-        if (this.customProperties == null) this.setCustomProperties(new ArrayList());
+        if (this.customProperties == null) this.setCustomProperties(new ArrayList<>());
         this.getCustomProperties().add(property);
     }
 

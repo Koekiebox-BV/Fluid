@@ -127,11 +127,13 @@ public class Flow extends ABaseFluidGSONObject {
     @Override
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        returnVal.addProperty(JSONMapping.NAME, this.getName());
-        returnVal.addProperty(JSONMapping.DESCRIPTION, this.getDescription());
-        returnVal.add(JSONMapping.FLOW_STEPS, this.toJsonObjArray(this.getFlowSteps()));
-        returnVal.addProperty(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
-        returnVal.addProperty(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
+
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateCreated());
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateLastUpdated());
+        this.setAsObjArray(JSONMapping.FLOW_STEPS, returnVal, this::getFlowSteps);
+
         return returnVal;
     }
 }

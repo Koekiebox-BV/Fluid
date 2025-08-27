@@ -168,7 +168,7 @@ public class User extends ABaseFluidGSONObject {
         this.setLoggedInDateTime(this.getDateFieldValueFromFieldWithName(JSONMapping.LOGGED_IN_DATE_TIME));
         this.setSalt(this.getAsStringNullSafe(JSONMapping.SALT));
         this.setActive(this.getAsBooleanNullSafe(JSONMapping.ACTIVE));
-        this.setInvalidLoginCount(this.getAsIntegerNullSafe(JSONMapping.INVALID_LOGIN_COUNT));
+        this.setInvalidLoginCount(this.getAsIntegerNullSafeStrictVal(JSONMapping.INVALID_LOGIN_COUNT));
         this.setTimezone(this.getAsFloatNullSafe(JSONMapping.TIMEZONE));
         this.setDateFormat(this.getAsStringNullSafe(JSONMapping.DATE_FORMAT));
         this.setTimeFormat(this.getAsStringNullSafe(JSONMapping.TIME_FORMAT));
@@ -232,25 +232,24 @@ public class User extends ABaseFluidGSONObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        returnVal.addProperty(JSONMapping.ACTIVE, this.isActive());
-        returnVal.addProperty(JSONMapping.INVALID_LOGIN_COUNT, this.getInvalidLoginCount());
-        returnVal.addProperty(JSONMapping.USERNAME, this.getUsername());
-        returnVal.addProperty(JSONMapping.PASSWORD_SHA_256, this.getPasswordSha256());
-        returnVal.addProperty(JSONMapping.PASSWORD_CLEAR, this.getPasswordClear());
-        returnVal.addProperty(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
-        returnVal.addProperty(JSONMapping.DATE_LAST_UPDATED, this.getDateAsLongFromJson(this.getDateLastUpdated()));
-        returnVal.addProperty(JSONMapping.PASSWORD_CHANGED_AT, this.getDateAsLongFromJson(this.getPasswordChangedAt()));
-        returnVal.addProperty(JSONMapping.LOGGED_IN_DATE_TIME, this.getDateAsLongFromJson(this.getLoggedInDateTime()));
-        returnVal.addProperty(JSONMapping.SALT, this.getSalt());
-        returnVal.addProperty(JSONMapping.TIMEZONE, this.getTimezone() == null ? null : this.getTimezone().doubleValue());
-        returnVal.addProperty(JSONMapping.DATE_FORMAT, this.getDateFormat());
-        returnVal.addProperty(JSONMapping.TIME_FORMAT, this.getTimeFormat());
-        returnVal.addProperty(JSONMapping.LOCALE, this.getLocale());
-        returnVal.addProperty(JSONMapping.EMAIL_USER_NOTIFICATION, this.isEmailUserNotification());
-
-        returnVal.add(JSONMapping.ROLES, this.toJsonObjArray(this.getRoles()));
-        returnVal.add(JSONMapping.EMAIL_ADDRESSES, this.toJsonArray(this.getEmailAddresses()));
-        returnVal.add(JSONMapping.USER_FIELDS, this.toJsonObjArray(this.getUserFields()));
+        this.setAsProperty(JSONMapping.ACTIVE, returnVal, this.isActive());
+        this.setAsProperty(JSONMapping.INVALID_LOGIN_COUNT, returnVal, this.getInvalidLoginCount());
+        this.setAsProperty(JSONMapping.USERNAME, returnVal, this.getUsername());
+        this.setAsProperty(JSONMapping.PASSWORD_SHA_256, returnVal, this.getPasswordSha256());
+        this.setAsProperty(JSONMapping.PASSWORD_CLEAR, returnVal, this.getPasswordClear());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateCreated());
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, this.getDateLastUpdated());
+        this.setAsProperty(JSONMapping.PASSWORD_CHANGED_AT, returnVal, this.getPasswordChangedAt());
+        this.setAsProperty(JSONMapping.LOGGED_IN_DATE_TIME, returnVal, this.getLoggedInDateTime());
+        this.setAsProperty(JSONMapping.SALT, returnVal, this.getSalt());
+        this.setAsProperty(JSONMapping.TIMEZONE, returnVal, this.getTimezone() == null ? null : this.getTimezone().doubleValue());
+        this.setAsProperty(JSONMapping.DATE_FORMAT, returnVal, this.getDateFormat());
+        this.setAsProperty(JSONMapping.TIME_FORMAT, returnVal, this.getTimeFormat());
+        this.setAsProperty(JSONMapping.LOCALE, returnVal, this.getLocale());
+        this.setAsProperty(JSONMapping.EMAIL_USER_NOTIFICATION, returnVal, this.isEmailUserNotification());
+        this.setAsObjArray(JSONMapping.ROLES, returnVal, this::getRoles);
+        this.setAsStringArray(JSONMapping.EMAIL_ADDRESSES, returnVal, this.getEmailAddresses());
+        this.setAsObjArray(JSONMapping.USER_FIELDS, returnVal, this::getUserFields);
 
         return returnVal;
     }

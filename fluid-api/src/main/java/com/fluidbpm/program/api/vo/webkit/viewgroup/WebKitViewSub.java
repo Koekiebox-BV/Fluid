@@ -131,7 +131,7 @@ public class WebKitViewSub extends ABaseFluidGSONObject {
         this.setListingMode(this.getAsStringNullSafe(JSONMapping.LISTING_MODE));
         this.setIcon(this.getAsStringNullSafe(JSONMapping.ICON));
         this.setLabel(this.getAsStringNullSafe(JSONMapping.LABEL));
-        this.setSubOrder(this.getAsIntegerNullSafe(JSONMapping.SUB_ORDER));
+        this.setSubOrder(this.getAsIntegerNullSafeStrictVal(JSONMapping.SUB_ORDER));
         this.setShowColumnFormType(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_FORM_TYPE));
         this.setShowColumnID(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_ID));
         this.setShowColumnTitle(this.getAsBooleanNullSafe(WebKitViewGroup.JSONMapping.SHOW_COLUMN_TITLE));

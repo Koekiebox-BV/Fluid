@@ -28,7 +28,6 @@ import java.util.List;
  * User statistics report.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidGSONObject
  * @see ViewOpenedAndSentOnEntry
  * @see PunchCardEntry
  * @see CreateUpdateLockUnlockEntry
@@ -79,10 +78,10 @@ public class UserStatsReport extends ABaseFluidGSONReportObject {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        this.setNumberOfLogins(this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS));
-        this.setNumberOfLoginsPrevCycle(this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE));
-        this.setPiCount(this.getAsIntegerNullSafe(JSONMapping.PI_COUNT) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.PI_COUNT));
-        this.setPiLockedCount(this.getAsIntegerNullSafe(JSONMapping.PI_LOCKED_COUNT) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.PI_LOCKED_COUNT));
+        this.setNumberOfLogins(this.getAsIntegerNullSafeStrictVal(JSONMapping.NUMBER_OF_LOGINS));
+        this.setNumberOfLoginsPrevCycle(this.getAsIntegerNullSafeStrictVal(JSONMapping.NUMBER_OF_LOGINS_PREV_CYCLE));
+        this.setPiCount(this.getAsIntegerNullSafeStrictVal(JSONMapping.PI_COUNT));
+        this.setPiLockedCount(this.getAsIntegerNullSafeStrictVal(JSONMapping.PI_LOCKED_COUNT));
 
         this.setPunchCardEntries(this.extractObjects(JSONMapping.PUNCH_CARD_ENTRIES, PunchCardEntry::new));
         this.setViewOpenedAndSentOnEntries(this.extractObjects(JSONMapping.VIEW_OPENED_AND_SENT_ON_ENTRIES, ViewOpenedAndSentOnEntry::new));

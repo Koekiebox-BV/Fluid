@@ -154,9 +154,9 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      */
     @XmlTransient
     @JsonIgnore
-    protected Boolean getAsBooleanNullSafe(String propertyName) {
+    protected boolean getAsBooleanNullSafe(String propertyName) {
         JsonElement jsonElement = this.jsonObject.get(propertyName);
-        if (jsonElement == null || jsonElement.isJsonNull()) return null;
+        if (jsonElement == null || jsonElement.isJsonNull()) return false;
         return jsonElement.getAsBoolean();
     }
 
@@ -173,6 +173,21 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
         JsonElement jsonElement = this.jsonObject.get(propertyName);
         if (jsonElement == null || jsonElement.isJsonNull()) return null;
         return jsonElement.getAsInt();
+    }
+
+    /**
+     * Safely retrieves the integer value of the specified property from a given JSON object.
+     * Returns null if the property does not exist or its value is null.
+     *
+     * @param propertyName The name of the property to retrieve.
+     * @return The integer value of the specified property, or null if the property does not exist or its value is null.
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected int getAsIntegerNullSafeStrictVal(String propertyName) {
+        Integer intVal = this.getAsIntegerNullSafe(propertyName);
+        if (intVal == null) return 0;
+        return intVal;
     }
 
     /**
@@ -387,7 +402,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     @JsonIgnore
     protected <T extends ABaseFluidGSONObject> List<T> extractObjects(String fieldName, Function<JsonObject, T> factory) {
         List<T> list = new ArrayList<>();
-        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonArray()) return list;
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.get(fieldName).isJsonArray()) return list;
         JsonArray listing = this.jsonObject.getAsJsonArray(fieldName);
         listing.forEach(itm -> list.add(factory.apply(itm.getAsJsonObject())));
         return list;
@@ -418,12 +433,11 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     @JsonIgnore
     protected List<String> extractStrings(String fieldName) {
         List<String> list = new ArrayList<>();
-        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonArray()) return list;
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.get(fieldName).isJsonArray()) return list;
         JsonArray listing = this.jsonObject.getAsJsonArray(fieldName);
         listing.forEach(itm -> list.add(itm.getAsString()));
         return list;
     }
-
 
     /**
      * Extracts a list of long values from a specified field in a JsonObject.
@@ -435,7 +449,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     @JsonIgnore
     protected List<Long> extractLongs(String fieldName) {
         List<Long> list = new ArrayList<>();
-        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.isJsonArray()) return list;
+        if (this.isPropertyNull(this.jsonObject, fieldName) || !this.jsonObject.get(fieldName).isJsonArray()) return list;
         JsonArray listing = this.jsonObject.getAsJsonArray(fieldName);
         listing.forEach(itm -> list.add(itm.getAsLong()));
         return list;
@@ -626,6 +640,21 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     protected void setAsProperty(String fieldName, JsonObject jsonObject, Boolean value) {
         if (value == null) return;
         jsonObject.addProperty(fieldName, value);
+    }
+
+    /**
+     * Sets a property in the given JsonObject with a specified field name and boolean value
+     * if the value is not null.
+     *
+     * @param fieldName the name of the field to be added to the JsonObject
+     * @param jsonObject the JsonObject to which the property will be added
+     * @param value the boolean value to be set as the property; if null, no action is taken
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected void setAsProperty(String fieldName, JsonObject jsonObject, Date value) {
+        if (value == null) return;
+        jsonObject.addProperty(fieldName, value.getTime());
     }
 
     /**

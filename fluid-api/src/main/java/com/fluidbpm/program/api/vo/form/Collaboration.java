@@ -143,8 +143,8 @@ public class Collaboration extends ABaseFluidGSONObject {
 
         this.setAsObj(JSONMapping.FORM_CONTAINER, returnVal, this::getFormContainer);
         this.setAsProperty(JSONMapping.MESSAGE, returnVal, this.getMessage());
-        this.setAsProperty(JSONMapping.DATE_READ, returnVal, this.getDateAsLongFromJson(this.getDateRead()));
-        this.setAsProperty(JSONMapping.DATE_SENT, returnVal, this.getDateAsLongFromJson(this.getDateSent()));
+        this.setAsProperty(JSONMapping.DATE_READ, returnVal, this.getDateRead());
+        this.setAsProperty(JSONMapping.DATE_SENT, returnVal, this.getDateSent());
         this.setAsObj(JSONMapping.FROM_USER, returnVal, this::getFromUser);
         this.setAsObj(JSONMapping.TO_USER, returnVal, this::getToUser);
 

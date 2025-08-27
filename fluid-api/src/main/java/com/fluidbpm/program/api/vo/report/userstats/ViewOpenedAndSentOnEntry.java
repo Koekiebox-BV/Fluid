@@ -68,9 +68,9 @@ public class ViewOpenedAndSentOnEntry extends ABaseFluidGSONReportObject {
         if (this.jsonObject == null) return;
 
         this.setViewName(this.getAsStringNullSafe(JSONMapping.VIEW_NAME));
-        this.setViewClicks(this.getAsIntegerNullSafe(JSONMapping.VIEW_CLICKS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.VIEW_CLICKS));
-        this.setOpenedFromViewCounts(this.getAsIntegerNullSafe(JSONMapping.OPENED_FROM_VIEW_COUNTS) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.OPENED_FROM_VIEW_COUNTS));
-        this.setSentOn(this.getAsIntegerNullSafe(JSONMapping.SENT_ON) == null ? 0 : this.getAsIntegerNullSafe(JSONMapping.SENT_ON));
+        this.setViewClicks(this.getAsIntegerNullSafeStrictVal(JSONMapping.VIEW_CLICKS));
+        this.setOpenedFromViewCounts(this.getAsIntegerNullSafeStrictVal(JSONMapping.OPENED_FROM_VIEW_COUNTS));
+        this.setSentOn(this.getAsIntegerNullSafeStrictVal(JSONMapping.SENT_ON));
     }
 
 

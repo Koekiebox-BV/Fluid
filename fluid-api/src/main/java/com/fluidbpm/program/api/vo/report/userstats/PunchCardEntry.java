@@ -101,11 +101,11 @@ public class PunchCardEntry extends ABaseFluidGSONReportObject {
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
-        this.setAsProperty(JSONMapping.PUNCH_CARD_DAY, returnVal, this.getDateAsLongFromJson(this.getPunchCardDay()));
-        this.setAsProperty(JSONMapping.FIRST_LOGIN_FOR_DAY, returnVal, this.getDateAsLongFromJson(this.getFirstLoginForDay()));
-        this.setAsProperty(JSONMapping.SECOND_LAST_LOGOUT, returnVal, this.getDateAsLongFromJson(this.getSecondLastLogout()));
-        this.setAsProperty(JSONMapping.SECOND_LAST_LOGIN, returnVal, this.getDateAsLongFromJson(this.getSecondLastLogin()));
-        this.setAsProperty(JSONMapping.LAST_LOGOUT, returnVal, this.getDateAsLongFromJson(this.getLastLogout()));
+        this.setAsProperty(JSONMapping.PUNCH_CARD_DAY, returnVal, (this.getPunchCardDay()));
+        this.setAsProperty(JSONMapping.FIRST_LOGIN_FOR_DAY, returnVal, (this.getFirstLoginForDay()));
+        this.setAsProperty(JSONMapping.SECOND_LAST_LOGOUT, returnVal, (this.getSecondLastLogout()));
+        this.setAsProperty(JSONMapping.SECOND_LAST_LOGIN, returnVal, (this.getSecondLastLogin()));
+        this.setAsProperty(JSONMapping.LAST_LOGOUT, returnVal, (this.getLastLogout()));
 
         return returnVal;
     }

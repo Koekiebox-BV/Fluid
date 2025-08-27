@@ -70,11 +70,8 @@ public class SystemUpHourMin extends ABaseFluidGSONReportObject {
             return;
         }
 
-        Integer hourVal = this.getAsIntegerNullSafe(JSONMapping.HOUR);
-        this.setHour(hourVal != null ? hourVal : 0);
-
-        Integer minuteVal = this.getAsIntegerNullSafe(JSONMapping.MINUTE);
-        this.setMinute(minuteVal != null ? minuteVal : 0);
+        this.setHour(this.getAsIntegerNullSafeStrictVal(JSONMapping.HOUR));
+        this.setMinute(this.getAsIntegerNullSafeStrictVal(JSONMapping.MINUTE));
         
         String stateStr = this.getAsStringNullSafe(JSONMapping.STATE);
         if (stateStr != null && !stateStr.isEmpty()) {

@@ -91,8 +91,8 @@ public class LicenseRequest extends ABaseFluidGSONObject {
         this.setAsProperty(JSONMapping.LICENSE_CIPHER_TEXT, returnVal, this.getLicenseCipherText());
         this.setAsProperty(JSONMapping.LICENSE_TYPE, returnVal, this.getLicenseType());
         this.setAsProperty(JSONMapping.USER_COUNT, returnVal, this.getUserCount());
-        this.setAsProperty(JSONMapping.DATE_VALID_FROM, returnVal, this.getDateAsLongFromJson(this.getDateValidFrom()));
-        this.setAsProperty(JSONMapping.DATE_VALID_TO, returnVal, this.getDateAsLongFromJson(this.getDateValidTo()));
+        this.setAsProperty(JSONMapping.DATE_VALID_FROM, returnVal, (this.getDateValidFrom()));
+        this.setAsProperty(JSONMapping.DATE_VALID_TO, returnVal, (this.getDateValidTo()));
 
         return returnVal;
     }
