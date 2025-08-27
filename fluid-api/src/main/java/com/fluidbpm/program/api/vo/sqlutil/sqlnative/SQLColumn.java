@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -157,9 +158,14 @@ public class SQLColumn extends ABaseFluidGSONObject {
                     case Types.TIME_WITH_TIMEZONE:
                     case Types.TIMESTAMP_WITH_TIMEZONE:
                         // For date/time types, store as string and let the caller parse as needed
-                        this.setSqlValue(valElement.getAsString());
+                        String timeAsTxt = valElement.getAsString();
+                        long timeAsNumb = UtilGlobal.toLongSafe(timeAsTxt);
+                        if (timeAsNumb > 0) {
+                            this.setSqlValue(timeAsNumb);
+                        } else {
+                            this.setSqlValue(timeAsTxt);
+                        }
                         break;
-                    
                     // Binary types
                     case Types.BINARY:
                     case Types.VARBINARY:
