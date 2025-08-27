@@ -630,7 +630,6 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
 
     /**
      * Sets a given Enum value as a property in the provided JSON object.
-     *
      * @param fieldName the name of the field to be set in the JSON object
      * @param jsonObject the JSON object where the field will be added
      * @param value the Enum value to be added as a property; if null, no action will be taken
@@ -644,7 +643,6 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
 
     /**
      * Return the Text representation of {@code this} object.
-     *
      * @return JSON body of {@code this} object.
      */
     @Override
@@ -657,7 +655,6 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
 
     /**
      * Return the Text representation of {@code this} object.
-     *
      * @return JSON body of {@code this} object.
      */
     @XmlTransient

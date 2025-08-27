@@ -219,7 +219,6 @@ public abstract class ABaseClientWS implements AutoCloseable {
     ) {
         try {
             Object returnedObj = httpClientParam.execute(httpUriRequestParam, responseHandlerParam);
-
             //String text came back...
             if (returnedObj instanceof String) {
                 return (String) returnedObj;
@@ -346,16 +345,14 @@ public abstract class ABaseClientWS implements AutoCloseable {
         }
 
         JsonObject jsonOjb = JsonParser.parseString(responseBody).getAsJsonObject();
-        if (!jsonOjb.has(Error.JSONMapping.ERROR_CODE) && jsonOjb.get(Error.JSONMapping.ERROR_CODE).isJsonNull()) {
-            return jsonOjb;
-        }
-
-        int errorCode = jsonOjb.get(Error.JSONMapping.ERROR_CODE).getAsInt();
-        if (errorCode > 0) {
-            String errorMessage = (jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).isJsonNull()
-                    ? "Not set" :
-                    jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).getAsString());
-            throw new FluidClientException(errorMessage, errorCode);
+        if (jsonOjb.has(Error.JSONMapping.ERROR_CODE) && !jsonOjb.get(Error.JSONMapping.ERROR_CODE).isJsonNull()) {
+            int errorCode = jsonOjb.get(Error.JSONMapping.ERROR_CODE).getAsInt();
+            if (errorCode > 0) {
+                String errorMessage = (jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).isJsonNull()
+                        ? "Not set" :
+                        jsonOjb.get(Error.JSONMapping.ERROR_MESSAGE).getAsString());
+                throw new FluidClientException(errorMessage, errorCode);
+            }
         }
         return jsonOjb;
     }
