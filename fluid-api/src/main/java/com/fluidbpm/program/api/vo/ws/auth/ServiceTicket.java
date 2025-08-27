@@ -15,24 +15,26 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Status of a previously issued authentication token.
  *
  * @author jasonbruwer
- * @since v1.0
- *
- * @see ABaseFluidJSONObject
  * @see TokenStatus
  * @see AppRequestToken
+ * @since v1.0
  */
-public class ServiceTicket extends ABaseFluidJSONObject {
-
-    public static final long serialVersionUID = 1L;
+@Getter
+@Setter
+public class ServiceTicket extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
     private String principalClient;
     private Long ticketExpires;
@@ -43,7 +45,6 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      * The JSON mapping for the {@code ServiceTicket} object.
      */
     public static final class JSONMapping {
-
         public static final String CLIENT = "client";
         public static final String TICKET_EXPIRES = "ticketExpiration";
         public static final String SESSION_KEY = "sessionKeyBase64";
@@ -64,117 +65,32 @@ public class ServiceTicket extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ServiceTicket(JSONObject jsonObjectParam) {
-        super();
+    public ServiceTicket(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Client...
-        if (!jsonObjectParam.isNull(JSONMapping.CLIENT)) {
-            this.setPrincipalClient(jsonObjectParam.getString(JSONMapping.CLIENT));
-        }
-
-        //Session Key...
-        if (!jsonObjectParam.isNull(JSONMapping.SESSION_KEY)) {
-            this.setSessionKeyBase64(jsonObjectParam.getString(JSONMapping.SESSION_KEY));
-        }
-
-        //Ticket Expires...
-        if (!jsonObjectParam.isNull(JSONMapping.TICKET_EXPIRES)) {
-            this.setTicketExpires(jsonObjectParam.getLong(JSONMapping.TICKET_EXPIRES));
-        }
-
-        //Username...
-        if (!jsonObjectParam.isNull(JSONMapping.AUTHORISED_USERNAME)) {
-            this.setAuthorisedUsername(jsonObjectParam.getString(JSONMapping.AUTHORISED_USERNAME));
-        }
+        this.setPrincipalClient(this.getAsStringNullSafe(JSONMapping.CLIENT));
+        this.setSessionKeyBase64(this.getAsStringNullSafe(JSONMapping.SESSION_KEY));
+        this.setTicketExpires(this.getAsLongNullSafe(JSONMapping.TICKET_EXPIRES));
+        this.setAuthorisedUsername(this.getAsStringNullSafe(JSONMapping.AUTHORISED_USERNAME));
     }
 
     /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code ServiceTicket}
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = new JSONObject();
-
-        returnVal.put(JSONMapping.CLIENT, this.getPrincipalClient());
-        returnVal.put(JSONMapping.SESSION_KEY, this.getSessionKeyBase64());
-        returnVal.put(JSONMapping.TICKET_EXPIRES, this.getTicketExpires());
-        returnVal.put(JSONMapping.AUTHORISED_USERNAME, this.getAuthorisedUsername());
+        this.setAsProperty(JSONMapping.CLIENT, returnVal, this.getPrincipalClient());
+        this.setAsProperty(JSONMapping.SESSION_KEY, returnVal, this.getSessionKeyBase64());
+        this.setAsProperty(JSONMapping.TICKET_EXPIRES, returnVal, this.getTicketExpires());
+        this.setAsProperty(JSONMapping.AUTHORISED_USERNAME, returnVal, this.getAuthorisedUsername());
 
         return returnVal;
-    }
-
-    /**
-     * Gets the Principal Client.
-     * @return {@code String} representation of the client.
-     */
-    public String getPrincipalClient() {
-        return this.principalClient;
-    }
-
-    /**
-     * Sets the Principal Client.
-     *
-     * @param principalClient representation of the client.
-     */
-    public void setPrincipalClient(String principalClient) {
-        this.principalClient = principalClient;
-    }
-
-    /**
-     * Gets when the ticket expires.
-     *
-     * @return The time the ticket expires.
-     */
-    public Long getTicketExpires() {
-        return this.ticketExpires;
-    }
-
-    /**
-     * Sets when the ticket expires.
-     *
-     * @param ticketExpiresParam The time the ticket expires.
-     */
-    public void setTicketExpires(Long ticketExpiresParam) {
-        this.ticketExpires = ticketExpiresParam;
-    }
-
-    /**
-     * Gets the Session Key in Base-64 format.
-     *
-     * @return Session Key.
-     */
-    public String getSessionKeyBase64() {
-        return this.sessionKeyBase64;
-    }
-
-    /**
-     * Sets the Session Key in Base-64 format.
-     *
-     * @param sessionKeyBase64Param Session Key.
-     */
-    public void setSessionKeyBase64(String sessionKeyBase64Param) {
-        this.sessionKeyBase64 = sessionKeyBase64Param;
-    }
-
-    /**
-     * Gets the Authorised username.
-     *
-     * @return The Authorised Username.
-     */
-    public String getAuthorisedUsername() {
-        return this.authorisedUsername;
-    }
-
-    /**
-     * Sets the Authorised User username.
-     *
-     * @param authorisedUsername The Authorised User Username.
-     */
-    public void setAuthorisedUsername(String authorisedUsername) {
-        this.authorisedUsername = authorisedUsername;
     }
 }

@@ -31,8 +31,6 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +42,6 @@ import java.util.Map;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.FormContainer
  * @see Form
  */
@@ -446,15 +443,10 @@ public class FormContainerClient extends ABaseClientWS {
         Long jobViewId = (jobView == null) ? null : jobView.getId();
         Long lockAsUserId = (userToLockAs == null) ? null : userToLockAs.getId();
 
-        try {
-            return new Form(this.postJson(
+        return new Form(this.postJson(
                 this.clearForRestIdOnly(form),
                 WS.Path.FormContainer.Version1.lockFormContainer(jobViewId, lockAsUserId))
-            );
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        );
     }
 
     /**
@@ -540,17 +532,13 @@ public class FormContainerClient extends ABaseClientWS {
     ) {
         Long unLockAsUserId = (userToUnLockAs == null) ? null : userToUnLockAs.getId();
 
-        try {
-            return new Form(this.postJson(
-                    this.clearForRestIdOnly(form),
-                    WS.Path.FormContainer.Version1.unLockFormContainer(
-                            unLockAsUserId,
-                            unlockAsync,
-                            removeFromPersonalInventory)));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new Form(this.postJson(
+                this.clearForRestIdOnly(form),
+                WS.Path.FormContainer.Version1.unLockFormContainer(
+                        unLockAsUserId,
+                        unlockAsync,
+                        removeFromPersonalInventory))
+        );
     }
 
     /**
@@ -572,18 +560,14 @@ public class FormContainerClient extends ABaseClientWS {
         boolean includeDescendants,
         boolean includeFormProperties
     ) {
-        try {
-            return new Attachment(this.postJson(
-                    this.clearForRestIdOnly(formToPrint),
-                    WS.Path.FormContainer.Version1.printAsPDFAttachment(
-                            includeCompanyLogo,
-                            includeAncestor,
-                            includeDescendants,
-                            includeFormProperties)));
-        } catch (JSONException jsonExcept) {
-            throw new FluidClientException(jsonExcept.getMessage(),
-                    FluidClientException.ErrorCode.JSON_PARSING);
-        }
+        return new Attachment(this.postJson(
+                this.clearForRestIdOnly(formToPrint),
+                WS.Path.FormContainer.Version1.printAsPDFAttachment(
+                        includeCompanyLogo,
+                        includeAncestor,
+                        includeDescendants,
+                        includeFormProperties))
+        );
     }
 
     /**

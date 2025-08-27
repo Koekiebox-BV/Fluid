@@ -15,16 +15,14 @@
 
 package com.fluidbpm.program.api.vo.health.thirdparty;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.health.Health;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,9 +34,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExternalRunnerHealth extends ABaseFluidJSONObject {
-
-    public static final long serialVersionUID = 1L;
+public class ExternalRunnerHealth extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
     private String fluidAPIVersion;
     private Long timestamp;
@@ -69,100 +66,42 @@ public class ExternalRunnerHealth extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public ExternalRunnerHealth(JSONObject jsonObjectParam) {
+    public ExternalRunnerHealth(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
-
         if (this.jsonObject == null) return;
 
-        //Flow Item Execute result...
-        if (!this.jsonObject.isNull(JSONMapping.FLUID_API_VERSION)) {
-            this.setFluidAPIVersion(this.jsonObject.getString(JSONMapping.FLUID_API_VERSION));
+        this.setFluidAPIVersion(this.getAsStringNullSafe(JSONMapping.FLUID_API_VERSION));
+        this.setSecretInstanceUUID(this.getAsStringNullSafe(JSONMapping.SECRET_INSTANCE_UUID));
+        this.setTimestamp(this.getAsLongNullSafe(JSONMapping.TIMESTAMP));
+        String runnerHealthStr = this.getAsStringNullSafe(JSONMapping.RUNNER_HEALTH);
+        if (UtilGlobal.isNotBlank(runnerHealthStr)) {
+            this.setRunnerHealth(Health.valueOf(runnerHealthStr));
         }
-
-        //Instance secret...
-        if (!this.jsonObject.isNull(JSONMapping.SECRET_INSTANCE_UUID)) {
-            this.setSecretInstanceUUID(this.jsonObject.getString(JSONMapping.SECRET_INSTANCE_UUID));
-        }
-
-        //Timestamp...
-        if (!this.jsonObject.isNull(JSONMapping.TIMESTAMP)) {
-            this.setTimestamp(this.jsonObject.getLong(JSONMapping.TIMESTAMP));
-        }
-
-        //Runner Health...
-        if (!this.jsonObject.isNull(JSONMapping.RUNNER_HEALTH)) {
-            this.setRunnerHealth(this.jsonObject.getEnum(Health.class, JSONMapping.RUNNER_HEALTH));
-        }
-
-        //Connection Info...
-        if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
-            this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
-        }
-
-        //URI...
-        if (!this.jsonObject.isNull(JSONMapping.URI)) {
-            this.setUri(this.jsonObject.getString(JSONMapping.URI));
-        }
-
-        //Duration...
-        if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-            this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-        }
-
-        //Custom Runner Actions...
-        if (!this.jsonObject.isNull(JSONMapping.CUSTOM_RUNNER_ACTIONS)) {
-            JSONArray jsonPropArray = this.jsonObject.getJSONArray(JSONMapping.CUSTOM_RUNNER_ACTIONS);
-            List<CustomRunnerAction> customerRunnerActions = new ArrayList();
-            for (int index = 0;index < jsonPropArray.length();index++) {
-                customerRunnerActions.add(new CustomRunnerAction(jsonPropArray.getJSONObject(index)));
-            }
-
-            this.setCustomRunnerActions(customerRunnerActions);
-        }
+        this.setConnectionInfo(this.getAsStringNullSafe(JSONMapping.CONNECTION_INFO));
+        this.setUri(this.getAsStringNullSafe(JSONMapping.URI));
+        this.setConnectObtainDurationMillis(this.getAsLongNullSafe(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
+        this.setCustomRunnerActions(this.extractObjects(JSONMapping.CUSTOM_RUNNER_ACTIONS, CustomRunnerAction::new));
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to {@code JsonObject} from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code FlowItemExecutePacket}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return {@code JsonObject} representation of {@code ExternalRunnerHealth}
+     * 
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-        //Fluid API Version...
-        if (this.getFluidAPIVersion() != null) {
-            returnVal.put(JSONMapping.FLUID_API_VERSION, this.getFluidAPIVersion());
-        }
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        //Secret Instance UUID...
-        if (this.getSecretInstanceUUID() != null) {
-            returnVal.put(JSONMapping.SECRET_INSTANCE_UUID, this.getSecretInstanceUUID());
-        }
+        this.setAsProperty(JSONMapping.FLUID_API_VERSION, returnVal, this.getFluidAPIVersion());
+        this.setAsProperty(JSONMapping.SECRET_INSTANCE_UUID, returnVal, this.getSecretInstanceUUID());
+        this.setAsProperty(JSONMapping.TIMESTAMP, returnVal, this.getTimestamp());
+        this.setAsProperty(JSONMapping.RUNNER_HEALTH, returnVal, this.getRunnerHealth());
+        this.setAsProperty(JSONMapping.CONNECTION_INFO, returnVal, this.getConnectionInfo());
+        this.setAsProperty(JSONMapping.URI, returnVal, this.getUri());
+        this.setAsProperty(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, returnVal, this.getConnectObtainDurationMillis());
+        this.setAsObjArray(JSONMapping.CUSTOM_RUNNER_ACTIONS, returnVal, this::getCustomRunnerActions);
 
-        //Timestamp...
-        if (this.getTimestamp() != null) returnVal.put(JSONMapping.TIMESTAMP, this.getTimestamp());
-        //Runner Health...
-        if (this.getRunnerHealth() != null) returnVal.put(JSONMapping.RUNNER_HEALTH, this.getRunnerHealth());
-        //Connection Info...
-        if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
-        //URI...
-        if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
-        //Connection Obtain Duration...
-        if (this.getConnectObtainDurationMillis() != null) {
-            returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-        }
-
-        //Custom Runner Actions...
-        if (this.getCustomRunnerActions() != null && !this.getCustomRunnerActions().isEmpty()) {
-            JSONArray customRunnersArr = new JSONArray();
-            for (CustomRunnerAction toAdd :this.getCustomRunnerActions()) {
-                customRunnersArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.CUSTOM_RUNNER_ACTIONS, customRunnersArr);
-        }
         return returnVal;
     }
 }

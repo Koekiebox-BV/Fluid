@@ -32,78 +32,77 @@ import java.util.concurrent.TimeUnit;
  * SQL Utility class used for {@code Form} Definition related actions.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see ABaseSQLUtil
  * @see Form
+ * @since v1.0
  */
 public class SQLFormDefinitionUtil extends ABaseSQLUtil {
-	private static final Map<Long,String> LOCAL_MAPPING = new HashMap();
-	private static long timeToUpdateAgain = 0;
+    private static final Map<Long, String> LOCAL_MAPPING = new HashMap();
+    private static long timeToUpdateAgain = 0;
 
-	/**
-	 * New FormDefinition util instance using {@code connectionParam}.
-	 *
-	 * @param connectionParam SQL Connection to use for Fields.
-	 */
-	public SQLFormDefinitionUtil(Connection connectionParam) {
-		super(connectionParam);
-	}
+    /**
+     * New FormDefinition util instance using {@code connectionParam}.
+     *
+     * @param connectionParam SQL Connection to use for Fields.
+     */
+    public SQLFormDefinitionUtil(Connection connectionParam) {
+        super(connectionParam);
+    }
 
-	/**
-	 * Retrieves the Form Definition and Title mapping
-	 * currently stored in Fluid.
-	 *
-	 * @return Form Definition Id and Title.
-	 */
-	public Map<Long,String> getFormDefinitionIdAndTitle() {
-		//When already cached, use the cached value...
-		if (!LOCAL_MAPPING.isEmpty()) {
-			Map<Long,String> returnVal = new HashMap<>(LOCAL_MAPPING);
-			//The id's are outdated...
-			if (System.currentTimeMillis() > SQLFormDefinitionUtil.timeToUpdateAgain) {
-				synchronized (LOCAL_MAPPING) {
-					LOCAL_MAPPING.clear();
-				}
-			}
-			return returnVal;
-		}
+    /**
+     * Retrieves the Form Definition and Title mapping
+     * currently stored in Fluid.
+     *
+     * @return Form Definition Id and Title.
+     */
+    public Map<Long, String> getFormDefinitionIdAndTitle() {
+        //When already cached, use the cached value...
+        if (!LOCAL_MAPPING.isEmpty()) {
+            Map<Long, String> returnVal = new HashMap<>(LOCAL_MAPPING);
+            //The id's are outdated...
+            if (System.currentTimeMillis() > SQLFormDefinitionUtil.timeToUpdateAgain) {
+                synchronized (LOCAL_MAPPING) {
+                    LOCAL_MAPPING.clear();
+                }
+            }
+            return returnVal;
+        }
 
-		//Only allow one thread to set the local mapping...
-		synchronized (LOCAL_MAPPING) {
-			if (!LOCAL_MAPPING.isEmpty()) return new HashMap<>(LOCAL_MAPPING);
-			PreparedStatement preparedStatement = null;
-			ResultSet resultSet = null;
-			try {
-				ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
-						this.getSQLTypeFromConnection(),
-						ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
+        //Only allow one thread to set the local mapping...
+        synchronized (LOCAL_MAPPING) {
+            if (!LOCAL_MAPPING.isEmpty()) return new HashMap<>(LOCAL_MAPPING);
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            try {
+                ISyntax syntax = SyntaxFactory.getInstance().getSyntaxFor(
+                        this.getSQLTypeFromConnection(),
+                        ISyntax.ProcedureMapping.FormDefinition.GetFormDefinitions);
 
-				preparedStatement = this.getConnection().prepareStatement(
-						syntax.getPreparedStatement());
+                preparedStatement = this.getConnection().prepareStatement(
+                        syntax.getPreparedStatement());
 
-				resultSet = preparedStatement.executeQuery();
+                resultSet = preparedStatement.executeQuery();
 
-				//Iterate each of the form containers...
-				while (resultSet.next()) {
-					Long id = resultSet.getLong(1);
-					String title = resultSet.getString(2);
-					LOCAL_MAPPING.put(id,title);
-				}
-				SQLFormDefinitionUtil.timeToUpdateAgain = (System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10));
-			} catch (SQLException sqlError) {
-				throw new FluidSQLException(sqlError);
-			} finally {
-				this.closeStatement(preparedStatement,resultSet);
-			}
-			return new HashMap<>(LOCAL_MAPPING);
-		}
-	}
+                //Iterate each of the form containers...
+                while (resultSet.next()) {
+                    Long id = resultSet.getLong(1);
+                    String title = resultSet.getString(2);
+                    LOCAL_MAPPING.put(id, title);
+                }
+                SQLFormDefinitionUtil.timeToUpdateAgain = (System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(10));
+            } catch (SQLException sqlError) {
+                throw new FluidSQLException(sqlError);
+            } finally {
+                this.closeStatement(preparedStatement, resultSet);
+            }
+            return new HashMap<>(LOCAL_MAPPING);
+        }
+    }
 
-	/**
-	 * Clear the local cache for form definition titles to primary key mappings.
-	 */
-	public static void clearStaticMapping() {
-		LOCAL_MAPPING.clear();
-	}
+    /**
+     * Clear the local cache for form definition titles to primary key mappings.
+     */
+    public static void clearStaticMapping() {
+        LOCAL_MAPPING.clear();
+    }
 }

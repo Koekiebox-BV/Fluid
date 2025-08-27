@@ -15,52 +15,48 @@
 
 package com.fluidbpm.program.api.vo.item;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
+
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code FluidItem}s.
+ * Represents a {@code List} of {@code FluidItem}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see FluidItem
- * @see ABaseListing
+ * @since v1.1
  */
-public class FluidItemListing extends ABaseListing<FluidItem> {
+public class FluidItemListing extends ABaseGSONListing<FluidItem> {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    /**
+     * Default constructor.
+     */
+    public FluidItemListing() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public FluidItemListing() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FluidItemListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FluidItemListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
-
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code FluidItem}.
-	 * @return New {@code FluidItem} instance.
-	 */
-	@Override
-	@XmlTransient
-	public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new FluidItem(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code FluidItem}.
+     * @return New {@code FluidItem} instance.
+     */
+    @Override
+    @XmlTransient
+    public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new FluidItem(jsonObjectParam);
+    }
 }

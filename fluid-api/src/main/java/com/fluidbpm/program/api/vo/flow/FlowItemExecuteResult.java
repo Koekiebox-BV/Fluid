@@ -15,267 +15,133 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.mail.MailMessage;
 import com.fluidbpm.program.api.vo.user.User;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 /**
  * <p>
- *     Container <code>POJO</code> used to send back result from
- *     {@code FlowItemExecutePacket}.
+ * Container <code>POJO</code> used to send back result from
+ * {@code FlowItemExecutePacket}.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.0
  * @see FlowItemExecutePacket
+ * @since v1.0
  */
 @Getter
 @Setter
-public class FlowItemExecuteResult extends ABaseFluidJSONObject {
+public class FlowItemExecuteResult extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    private FlowStepRule flowStepRule;
+    private FluidItem fluidItem;
+    private List<FluidItem> fluidItems;
 
-	private FlowStepRule flowStepRule;
-	private FluidItem fluidItem;
-	private List<FluidItem> fluidItems;
+    private String assignmentRuleValue;
+    private String statementResultAsString;
 
-	private String assignmentRuleValue;
-	private String statementResultAsString;
+    //regards to schedule and flow-program...
+    //flow-program...
+    private String executePerFluidItemQuery;
+    private Boolean progressToNextPhase;
 
-	//regards to schedule and flow-program...
-	//flow-program...
-	private String executePerFluidItemQuery;
-	private Boolean progressToNextPhase;
+    //schedule-program...
+    private String fluidItemQuery;
+    private String executionResult;
+    private List<User> executeUsers;
+    private User loggedInUser;
+    private JobView view;
+    private List<MailMessage> mailMessagesToSend;
 
-	//schedule-program...
-	private String fluidItemQuery;
-	private String executionResult;
-	private List<User> executeUsers;
-	private User loggedInUser;
-	private JobView view;
-	private List<MailMessage> mailMessagesToSend;
+    /**
+     * The JSON mapping for the {@code FlowItemExecuteResult} object.
+     */
+    public static class JSONMapping {
+        public static final String FLOW_STEP_RULE = "flowStepRule";
+        public static final String FLUID_ITEM = "fluidItem";
+        public static final String LOGGED_IN_USER = "loggedInUser";
+        public static final String VIEW = "view";
+        public static final String FLUID_ITEMS = "fluidItems";
+        public static final String ASSIGNMENT_RULE_VALUE = "assignmentRuleValue";
+        public static final String STATEMENT_RESULT_AS_STRING = "statementResultAsString";
 
-	/**
-	 * The JSON mapping for the {@code FlowItemExecuteResult} object.
-	 */
-	public static class JSONMapping {
-		public static final String FLOW_STEP_RULE = "flowStepRule";
-		public static final String FLUID_ITEM = "fluidItem";
-		public static final String LOGGED_IN_USER = "loggedInUser";
-		public static final String VIEW = "view";
-		public static final String FLUID_ITEMS = "fluidItems";
-		public static final String ASSIGNMENT_RULE_VALUE = "assignmentRuleValue";
-		public static final String STATEMENT_RESULT_AS_STRING = "statementResultAsString";
+        //flow programs...
+        public static final String EXECUTE_PER_FLUID_ITEM_QUERY = "executePerFluidItemQuery";
+        public static final String PROGRESS_TO_NEXT_PHASE = "progressToNextPhase";
 
-		//flow programs...
-		public static final String EXECUTE_PER_FLUID_ITEM_QUERY = "executePerFluidItemQuery";
-		public static final String PROGRESS_TO_NEXT_PHASE = "progressToNextPhase";
+        //schedule programs...
+        public static final String FLUID_ITEM_QUERY = "fluidItemQuery";
+        public static final String EXECUTION_RESULT = "executionResult";
+        public static final String EXECUTE_USERS = "executeUsers";
+        public static final String MAIL_MESSAGES_TO_SEND = "mailMessagesToSend";
+    }
 
-		//schedule programs...
-		public static final String FLUID_ITEM_QUERY = "fluidItemQuery";
-		public static final String EXECUTION_RESULT = "executionResult";
-		public static final String EXECUTE_USERS = "executeUsers";
-		public static final String MAIL_MESSAGES_TO_SEND = "mailMessagesToSend";
-	}
+    /**
+     * Default constructor.
+     */
+    public FlowItemExecuteResult() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public FlowItemExecuteResult() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FlowItemExecuteResult(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FlowItemExecuteResult(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
+        this.setFluidItem(this.extractObject(JSONMapping.FLUID_ITEM, FluidItem::new));
+        this.setLoggedInUser(this.extractObject(JSONMapping.LOGGED_IN_USER, User::new));
+        this.setView(this.extractObject(JSONMapping.VIEW, JobView::new));
+        this.setFlowStepRule(this.extractObject(JSONMapping.FLOW_STEP_RULE, FlowStepRule::new));
+        this.setAssignmentRuleValue(this.getAsStringNullSafe(JSONMapping.ASSIGNMENT_RULE_VALUE));
+        this.setStatementResultAsString(this.getAsStringNullSafe(JSONMapping.STATEMENT_RESULT_AS_STRING));
+        this.setExecutePerFluidItemQuery(this.getAsStringNullSafe(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY));
+        this.setProgressToNextPhase(this.getAsBooleanNullSafe(JSONMapping.PROGRESS_TO_NEXT_PHASE));
+        this.setFluidItemQuery(this.getAsStringNullSafe(JSONMapping.FLUID_ITEM_QUERY));
+        this.setExecutionResult(this.getAsStringNullSafe(JSONMapping.EXECUTION_RESULT));
+        this.setFluidItems(this.extractObjects(JSONMapping.FLUID_ITEMS, FluidItem::new));
+        this.setExecuteUsers(this.extractObjects(JSONMapping.EXECUTE_USERS, User::new));
+        this.setMailMessagesToSend(this.extractObjects(JSONMapping.MAIL_MESSAGES_TO_SEND, MailMessage::new));
+    }
 
-		if (this.jsonObject == null) return;
-
-		//Fluid Item...
-		if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEM)) {
-			this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(JSONMapping.FLUID_ITEM)));
-		}
-
-		//Logged In User...
-		if (!this.jsonObject.isNull(JSONMapping.LOGGED_IN_USER)) {
-			this.setLoggedInUser(new User(this.jsonObject.getJSONObject(JSONMapping.LOGGED_IN_USER)));
-		}
-
-		//View...
-		if (!this.jsonObject.isNull(JSONMapping.VIEW)) {
-			this.setView(new JobView(this.jsonObject.getJSONObject(JSONMapping.VIEW)));
-		}
-
-		//Flow Step Rule...
-		if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
-			this.setFlowStepRule(new FlowStepRule(this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP_RULE)));
-		}
-
-		//Assignment Rule Value...
-		if (!this.jsonObject.isNull(JSONMapping.ASSIGNMENT_RULE_VALUE)) {
-			this.setAssignmentRuleValue(this.jsonObject.getString(JSONMapping.ASSIGNMENT_RULE_VALUE));
-		}
-
-		//Statement Result As String...
-		if (!this.jsonObject.isNull(JSONMapping.STATEMENT_RESULT_AS_STRING)) {
-			this.setStatementResultAsString(this.jsonObject.getString(JSONMapping.STATEMENT_RESULT_AS_STRING));
-		}
-
-		//Execute per Fluid Item Query...
-		if (!this.jsonObject.isNull(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY)) {
-			this.setExecutePerFluidItemQuery(this.jsonObject.getString(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY));
-		}
-
-		//Progress to next phase...
-		if (!this.jsonObject.isNull(JSONMapping.PROGRESS_TO_NEXT_PHASE)) {
-			this.setProgressToNextPhase(this.jsonObject.getBoolean(
-					JSONMapping.PROGRESS_TO_NEXT_PHASE));
-		}
-
-		//Fluid Item Query...
-		if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEM_QUERY)) {
-			this.setFluidItemQuery(this.jsonObject.getString(JSONMapping.FLUID_ITEM_QUERY));
-		}
-
-		//Execution Result...
-		if (!this.jsonObject.isNull(JSONMapping.EXECUTION_RESULT)) {
-			this.setExecutionResult(this.jsonObject.getString(JSONMapping.EXECUTION_RESULT));
-		}
-
-		//Fluid Items...
-		if (!this.jsonObject.isNull(JSONMapping.FLUID_ITEMS)) {
-			JSONArray fluidItemsArr = this.jsonObject.getJSONArray(JSONMapping.FLUID_ITEMS);
-			List<FluidItem> listOfItems = new ArrayList();
-			for (int index = 0;index < fluidItemsArr.length();index++) {
-				listOfItems.add(new FluidItem(fluidItemsArr.getJSONObject(index)));
-			}
-
-			this.setFluidItems(listOfItems);
-		}
-
-		//Execute Users...
-		if (!this.jsonObject.isNull(JSONMapping.EXECUTE_USERS)) {
-			JSONArray executeUsersArr = this.jsonObject.getJSONArray(JSONMapping.EXECUTE_USERS);
-			List<User> listOfItems = new ArrayList();
-			for (int index = 0;index < executeUsersArr.length();index++) {
-				listOfItems.add(new User(executeUsersArr.getJSONObject(index)));
-			}
-			this.setExecuteUsers(listOfItems);
-		}
-
-		//Mail Messages to send...
-		if (!this.jsonObject.isNull(JSONMapping.MAIL_MESSAGES_TO_SEND)) {
-			JSONArray mailMessagesToSendArr = this.jsonObject.getJSONArray(JSONMapping.MAIL_MESSAGES_TO_SEND);
-			List<MailMessage> listOfItems = new ArrayList();
-			for (int index = 0;index < mailMessagesToSendArr.length();index++) {
-				listOfItems.add(new MailMessage(mailMessagesToSendArr.getJSONObject(index)));
-			}
-			this.setMailMessagesToSend(listOfItems);
-		}
-	}
-
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code FlowItemExecuteResult}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
-
-		//Fluid Item...
-		if (this.getFluidItem() != null) {
-			returnVal.put(JSONMapping.FLUID_ITEM, this.getFluidItem().toJsonObject());
-		}
-
-		//Logged In User...
-		if (this.getLoggedInUser() != null) {
-			returnVal.put(JSONMapping.LOGGED_IN_USER, this.getLoggedInUser().toJsonObject());
-		}
-
-		//View...
-		if (this.getView() != null) {
-			returnVal.put(JSONMapping.VIEW, this.getView().toJsonObject());
-		}
-
-		//Flow Step Rule...
-		if (this.getFlowStepRule() != null) {
-			returnVal.put(JSONMapping.FLOW_STEP_RULE, this.getFlowStepRule().toJsonObject());
-		}
-
-		//Assignment Rule...
-		if (this.getAssignmentRuleValue() != null) {
-			returnVal.put(JSONMapping.ASSIGNMENT_RULE_VALUE, this.getAssignmentRuleValue());
-		}
-
-		//Statement Result as String...
-		if (this.getStatementResultAsString() != null) {
-			returnVal.put(JSONMapping.STATEMENT_RESULT_AS_STRING, this.getStatementResultAsString());
-		}
-
-		//Execute per Fluid Item Query...
-		if (this.getExecutePerFluidItemQuery() != null) {
-			returnVal.put(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY, this.getExecutePerFluidItemQuery());
-		}
-
-		//Fluid Item Query...
-		if (this.getFluidItemQuery() != null) {
-			returnVal.put(JSONMapping.FLUID_ITEM_QUERY, this.getFluidItemQuery());
-		}
-
-		//Execution Result...
-		if (this.getExecutionResult() != null) {
-			returnVal.put(JSONMapping.EXECUTION_RESULT, this.getExecutionResult());
-		}
-
-		//Progress to next phase...
-		if (this.getProgressToNextPhase() != null) {
-			returnVal.put(JSONMapping.PROGRESS_TO_NEXT_PHASE, this.getProgressToNextPhase());
-		}
-
-		//Fluid Items...
-		if (this.getFluidItems() != null && !this.getFluidItems().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
-			for (FluidItem item : this.getFluidItems()) {
-				jsonArray.put(item.toJsonObject());
-			}
-			returnVal.put(JSONMapping.FLUID_ITEMS, jsonArray);
-		}
-
-		//Execute Users...
-		if (this.getExecuteUsers() != null && !this.getExecuteUsers().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
-			for (User item : this.getExecuteUsers()) {
-				jsonArray.put(item.toJsonObject());
-			}
-			returnVal.put(JSONMapping.EXECUTE_USERS, jsonArray);
-		}
-
-		//Mail Messages To Send...
-		if (this.getMailMessagesToSend() != null && !this.getMailMessagesToSend().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
-			for (MailMessage item : this.getMailMessagesToSend()) {
-				jsonArray.put(item.toJsonObject());
-			}
-			returnVal.put(JSONMapping.MAIL_MESSAGES_TO_SEND, jsonArray);
-		}
-
-		return returnVal;
-	}
+    /**
+     * Conversion to {@code JsonObject} from Java Object.
+     *
+     * @return {@code JsonObject} representation of {@code FlowItemExecuteResult}
+     * 
+     */
+    @Override
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        
+        this.setAsObj(JSONMapping.FLUID_ITEM, returnVal, this::getFluidItem);
+        this.setAsObj(JSONMapping.LOGGED_IN_USER, returnVal, this::getLoggedInUser);
+        this.setAsObj(JSONMapping.VIEW, returnVal, this::getView);
+        this.setAsObj(JSONMapping.FLOW_STEP_RULE, returnVal, this::getFlowStepRule);
+        this.setAsProperty(JSONMapping.ASSIGNMENT_RULE_VALUE, returnVal, this.getAssignmentRuleValue());
+        this.setAsProperty(JSONMapping.STATEMENT_RESULT_AS_STRING, returnVal, this.getStatementResultAsString());
+        this.setAsProperty(JSONMapping.EXECUTE_PER_FLUID_ITEM_QUERY, returnVal, this.getExecutePerFluidItemQuery());
+        this.setAsProperty(JSONMapping.FLUID_ITEM_QUERY, returnVal, this.getFluidItemQuery());
+        this.setAsProperty(JSONMapping.EXECUTION_RESULT, returnVal, this.getExecutionResult());
+        this.setAsProperty(JSONMapping.PROGRESS_TO_NEXT_PHASE, returnVal, this.getProgressToNextPhase());
+        this.setAsObjArray(JSONMapping.FLUID_ITEMS, returnVal, this::getFluidItems);
+        this.setAsObjArray(JSONMapping.EXECUTE_USERS, returnVal, this::getExecuteUsers);
+        this.setAsObjArray(JSONMapping.MAIL_MESSAGES_TO_SEND, returnVal, this::getMailMessagesToSend);
+        
+        return returnVal;
+    }
 }

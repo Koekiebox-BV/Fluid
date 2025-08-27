@@ -15,94 +15,92 @@
 
 package com.fluidbpm.program.api.vo.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     An Adyen Payment link that will forward a user to Adyen where a eCommerce transaction can be performed.
- *     See; https://docs.adyen.com/online-payments/pay-by-link/api
- *     https://docs.adyen.com/api-explorer/#/CheckoutService/paymentLinks
+ * An Adyen Payment link that will forward a user to Adyen where a eCommerce transaction can be performed.
+ * See; https://docs.adyen.com/online-payments/pay-by-link/api
+ * https://docs.adyen.com/api-explorer/#/CheckoutService/paymentLinks
  * </p>
  *
  * @author jasonbruwer
- * @since v1.12
- *
  * @see Form
+ * @since v1.12
  */
 @Getter
 @Setter
-public class PaymentLinkAdyen extends ABaseFluidJSONObject {
-	public static final long serialVersionUID = 1L;
-	private String paymentLink;
+public class PaymentLinkAdyen extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
+    private String paymentLink;
 
-	/**
-	 * The JSON mapping for the {@code PaymentLinkAdyen} object.
-	 */
-	public static class JSONMapping {
-		public static final String PAYMENT_LINK = "paymentLink";
-	}
+    /**
+     * The JSON mapping for the {@code PaymentLinkAdyen} object.
+     */
+    public static class JSONMapping {
+        public static final String PAYMENT_LINK = "paymentLink";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public PaymentLinkAdyen() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public PaymentLinkAdyen() {
+        super();
+    }
 
-	/**
-	 * Constructor to create {@code PaymentLinkAdyen} with a payment link.
-	 *
-	 * @param paymentLink The unique payment link
-	 */
-	public PaymentLinkAdyen(String paymentLink) {
-		super();
-		this.setPaymentLink(paymentLink);
-	}
+    /**
+     * Constructor to create {@code PaymentLinkAdyen} with a payment link.
+     *
+     * @param paymentLink The unique payment link
+     */
+    public PaymentLinkAdyen(String paymentLink) {
+        super();
+        this.setPaymentLink(paymentLink);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public PaymentLinkAdyen(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public PaymentLinkAdyen(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-		if (!this.jsonObject.isNull(JSONMapping.PAYMENT_LINK)) {
-			this.setPaymentLink(this.jsonObject.getString(JSONMapping.PAYMENT_LINK));
-		}
-	}
+        this.setPaymentLink(this.getAsStringNullSafe(JSONMapping.PAYMENT_LINK));
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code PaymentLinkAdyen}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
-		if (this.getPaymentLink() != null) {
-			returnVal.put(JSONMapping.PAYMENT_LINK, this.getPaymentLink());
-		}
-		return returnVal;
-	}
+    /**
+     * Conversion to {@code JsonObject} from Java Object.
+     *
+     * @return {@code JsonObject} representation of {@code PaymentLinkAdyen}
+     */
+    @Override
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.PAYMENT_LINK, returnVal, this.getPaymentLink());
+        return returnVal;
+    }
 
-	/**
-	 * String value for a table field.
-	 * @return JSON text from the table field.
-	 */
-	@Override
-	public String toString() {
-		JSONObject jsonObject = this.toJsonObject();
-		if (jsonObject != null) return jsonObject.toString();
-		return UtilGlobal.EMPTY;
-	}
+    /**
+     * String value for a table field.
+     *
+     * @return JSON text from the table field.
+     */
+    @Override
+    public String toString() {
+        JsonObject jsonObject = this.toJsonObject();
+        if (jsonObject != null) return jsonObject.toString();
+        return UtilGlobal.EMPTY;
+    }
 }

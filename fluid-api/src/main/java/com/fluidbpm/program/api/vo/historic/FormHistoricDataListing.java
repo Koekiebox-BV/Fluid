@@ -15,52 +15,49 @@
 
 package com.fluidbpm.program.api.vo.historic;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
+
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code FluidItem}s.
+ * Represents a {@code List} of {@code FluidItem}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.8
  * @version v1.8
- *
  * @see FormHistoricData
- * @see ABaseListing
+ * @since v1.8
  */
-public class FormHistoricDataListing extends ABaseListing<FormHistoricData> {
-    public static final long serialVersionUID = 1L;
+public class FormHistoricDataListing extends ABaseGSONListing<FormHistoricData> {
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public FormHistoricDataListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public FormHistoricDataListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FormHistoricDataListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FormHistoricDataListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code FormHistoricData}.
-	 * @return New {@code FormHistoricData} instance.
-	 */
-	@Override
-	@XmlTransient
-	public FormHistoricData getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new FormHistoricData(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code FluidItem} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code FormHistoricData}.
+     * @return New {@code FormHistoricData} instance.
+     */
+    @Override
+    @XmlTransient
+    public FormHistoricData getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new FormHistoricData(jsonObjectParam);
+    }
 }

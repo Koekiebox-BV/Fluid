@@ -24,7 +24,7 @@ import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -39,7 +39,6 @@ import java.util.concurrent.TimeoutException;
  * @author jasonbruwer
  * @since v1.5
  *
- * @see JSONObject
  * @see WS.Path.FormContainer
  * @see Form
  */
@@ -182,7 +181,7 @@ public class WebSocketSendToFlowClient extends
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public FluidItem getNewInstanceBy(JSONObject jsonObject) {
+		public FluidItem getNewInstanceBy(JsonObject jsonObject) {
 			this.returnedFluidItem = new FluidItem(jsonObject);
 			return this.returnedFluidItem;
 		}

@@ -15,52 +15,50 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
+
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Collaboration}s.
+ * Represents a {@code List} of {@code Collaboration}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.9
- *
  * @see Collaboration
- * @see ABaseListing
+ * @see com.fluidbpm.program.api.vo.ABaseGSONListing
+ * @since v1.9
  */
-public class CollaborationListing extends ABaseListing<Collaboration> {
+public class CollaborationListing extends ABaseGSONListing<Collaboration> {
 
-	public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public CollaborationListing() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public CollaborationListing() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public CollaborationListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public CollaborationListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Collaboration} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Collaboration}.
-	 * @return New {@code Collaboration} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Collaboration getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new Collaboration(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Collaboration} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Collaboration}.
+     * @return New {@code Collaboration} instance.
+     */
+    @Override
+    @XmlTransient
+    public Collaboration getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new Collaboration(jsonObjectParam);
+    }
 }

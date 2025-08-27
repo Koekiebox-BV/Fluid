@@ -15,25 +15,29 @@
 
 package com.fluidbpm.program.api.vo.role;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents what Views a {@code Role} has access to.
+ * Represents what Views a {@code Role} has access to.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Form
  * @see Role
+ * @since v1.1
  */
-public class RoleToJobView extends ABaseFluidJSONObject {
+@Getter
+@Setter
+public class RoleToJobView extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private JobView jobView;
@@ -69,77 +73,26 @@ public class RoleToJobView extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public RoleToJobView(JSONObject jsonObjectParam){
+    public RoleToJobView(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Job View...
-        if (!this.jsonObject.isNull(JSONMapping.JOB_VIEW)) {
-            this.setJobView(new JobView(this.jsonObject.getJSONObject(JSONMapping.JOB_VIEW)));
-        }
-
-        //Role...
-        if (!this.jsonObject.isNull(JSONMapping.ROLE)) {
-            this.setRole(new Role(this.jsonObject.getJSONObject(JSONMapping.ROLE)));
-        }
-    }
-
-    /**
-     * Gets the View.
-     *
-     * @return View Rule.
-     */
-    public JobView getJobView() {
-        return this.jobView;
-    }
-
-    /**
-     * Sets the Role for the View.
-     *
-     * @param jobViewParam View Rule.
-     */
-    public void setJobView(JobView jobViewParam) {
-        this.jobView = jobViewParam;
-    }
-
-    /**
-     * Gets the Role for the View.
-     *
-     * @return View Rule.
-     */
-    public Role getRole() {
-        return this.role;
-    }
-
-    /**
-     * Sets the Role for the View.
-     *
-     * @param roleParam View Rule.
-     */
-    public void setRole(Role roleParam) {
-        this.role = roleParam;
+        this.setJobView(this.extractObject(JSONMapping.JOB_VIEW, JobView::new));
+        this.setRole(this.extractObject(JSONMapping.ROLE, Role::new));
     }
 
     /**
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code RoleToJobView}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-        //Job View...
-        if (this.getJobView() != null) {
-            returnVal.put(JSONMapping.JOB_VIEW, this.getJobView().toJsonObject());
-        }
-
-        //Role...
-        if (this.getRole() != null) {
-            returnVal.put(JSONMapping.ROLE, this.getRole().toJsonObject());
-        }
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsObj(JSONMapping.JOB_VIEW, returnVal, this::getJobView);
+        this.setAsObj(JSONMapping.ROLE, returnVal, this::getRole);
         return returnVal;
     }
 }

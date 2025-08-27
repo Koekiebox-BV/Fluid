@@ -20,14 +20,15 @@ import com.fluidbpm.program.api.util.GeoUtil;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchException;
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.FluidJSONException;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigDecimal;
@@ -51,6 +52,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
     @Setter
     @Getter
+    @SerializedName(JSONMapping.FIELD_NAME)
     private String fieldName;
 
     @Getter
@@ -311,32 +313,18 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Field(JSONObject jsonObjectParam) {
+    public Field(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Field Name...
-        if (!this.jsonObject.isNull(JSONMapping.FIELD_NAME)) {
-            this.setFieldName(this.jsonObject.getString(JSONMapping.FIELD_NAME));
-        }
-
-        //Field Description...
-        if (!this.jsonObject.isNull(JSONMapping.FIELD_DESCRIPTION)) {
-            this.setFieldDescription(this.jsonObject.getString(JSONMapping.FIELD_DESCRIPTION));
-        }
-
-        //Field Type...
-        if (!this.jsonObject.isNull(JSONMapping.FIELD_TYPE)) {
-            this.setFieldType(this.jsonObject.getString(JSONMapping.FIELD_TYPE));
-        }
-
-        //Meta Data...
-        if (!this.jsonObject.isNull(JSONMapping.TYPE_META_DATA)) {
-            this.setTypeMetaData(this.jsonObject.getString(JSONMapping.TYPE_META_DATA));
-        }
+        this.setFieldName(this.getAsStringNullSafe(JSONMapping.FIELD_NAME));
+        this.setFieldDescription(this.getAsStringNullSafe(JSONMapping.FIELD_DESCRIPTION));
+        this.setFieldType(this.getAsStringNullSafe(JSONMapping.FIELD_TYPE));
+        this.setTypeMetaData(this.getAsStringNullSafe(JSONMapping.TYPE_META_DATA));
 
         //Field Value...
-        if (!this.jsonObject.isNull(JSONMapping.FIELD_VALUE)) {
-            Object objFromKey = this.jsonObject.get(JSONMapping.FIELD_VALUE);
+        if (this.isPropertyNotNull(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+            JsonElement objFromKey = this.jsonObject.get(JSONMapping.FIELD_VALUE);
             String fieldType = this.getFieldType();
             if (UtilGlobal.isBlank(fieldType)) {
                 this.setValueBasedOnObjectType(objFromKey);
@@ -352,9 +340,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @param objFromKey The object value.
      */
-    private void setValueBasedOnObjectType(Object objFromKey) {
-        if (objFromKey instanceof JSONObject) {
-            JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
+    private void setValueBasedOnObjectType(JsonElement objFromKey) {
+        if (objFromKey.isJsonObject()) {
+            JsonObject jsonObject = objFromKey.getAsJsonObject();
             //Multi Choices Selected Multi Choices...
             if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
                     jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
@@ -363,9 +351,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             } else if (Type.MultipleChoice.toString().equals(this.getFieldType()) &&
                     (jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE))) {
                 //[Payara] mapping for rest...
-                String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
+                String typeVal = jsonObject.get(MultiChoice.JSONMapping.TYPE).getAsString();
                 if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
-                    this.setFieldValue(new MultiChoice(new JSONObject(jsonObject.getString(MultiChoice.JSONMapping.VALUE))));
+                    this.setFieldValue(new MultiChoice(
+                            this.stringAsJsonObject(jsonObject.get(MultiChoice.JSONMapping.VALUE).getAsString())
+                    ));
                 }
             } else if (jsonObject.has(TableField.JSONMapping.TABLE_RECORDS)) {
                 //Table Field...
@@ -375,24 +365,21 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                     jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
                 this.setFieldValue(new MultiChoice(jsonObject));
             }
-        } else if (objFromKey instanceof Long) {
-            long castedLong = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
-            if (this.getTypeAsEnum() != null && this.getTypeAsEnum() == Type.DateTime) {
-                this.setFieldValue(new Date(castedLong));
-            } else this.setFieldValue(castedLong);
-        } else if (objFromKey instanceof Number) {
-            try {
-                this.setFieldValue(this.jsonObject.getNumber(JSONMapping.FIELD_VALUE));
-            } catch (NoSuchMethodError nsm) {
-                nsm.printStackTrace();
-                this.setFieldValue(this.jsonObject.getLong(JSONMapping.FIELD_VALUE));
+        } else if (this.isPropertyNumber(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+            Number castedNumb = objFromKey.getAsNumber();
+            if (castedNumb instanceof Double || castedNumb instanceof Float) {
+                this.setFieldValue(castedNumb.doubleValue());
+            } else {
+                if (this.getTypeAsEnum() != null && this.getTypeAsEnum() == Type.DateTime) {
+                    this.setFieldValue(new Date(castedNumb.longValue()));
+                } else this.setFieldValue(castedNumb.longValue());
             }
-        } else if (objFromKey instanceof Boolean) {
-            this.setFieldValue(this.jsonObject.getBoolean(JSONMapping.FIELD_VALUE));
+        } else if (this.isPropertyBoolean(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+            this.setFieldValue(objFromKey.getAsBoolean());
         } else {
-            String stringVal = this.jsonObject.getString(JSONMapping.FIELD_VALUE);
+            String stringVal = objFromKey.getAsString();
             if (this.getTypeAsEnum() == Type.MultipleChoice && stringVal != null && stringVal.startsWith("{")) {
-                this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+                this.setFieldValue(new MultiChoice(this.stringAsJsonObject(stringVal)));
             } else {
                 this.setFieldValue(stringVal);
             }
@@ -404,90 +391,95 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @param objFromKey The object value.
      */
-    private void setValueBasedOnFieldType(Type fieldType, Object objFromKey) {
+    private void setValueBasedOnFieldType(Type fieldType, JsonElement objFromKey) {
         Objects.requireNonNull(fieldType);
-        if (objFromKey == null) {
+        if (objFromKey == null || objFromKey.isJsonNull()) {
             this.setFieldValue(null);
             return;
         }
 
+        JsonElement jsonEl = this.jsonObject.get(JSONMapping.FIELD_VALUE);
         switch (fieldType) {
             case Text:
             case ParagraphText:
             case TextEncrypted:
             case Label:
-                Object labelFieldValue = this.jsonObject.get(JSONMapping.FIELD_VALUE);
-                if (labelFieldValue instanceof String) this.setFieldValue(labelFieldValue);
-                else if (labelFieldValue instanceof JSONObject) {
-                    this.setFieldValue(((JSONObject) labelFieldValue).toString(1));
-                } else if (labelFieldValue == null) this.setFieldValue(null);
-                else throw new IllegalArgumentException(String.format(
-                            "Label field value '%s:%s:%s' is not supported.",
-                            objFromKey, labelFieldValue, labelFieldValue.getClass().getName()));
+                if (this.isPropertyString(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+                    this.setFieldValue(jsonEl.getAsString());
+                } else if (jsonEl.isJsonObject()) {
+                    this.setFieldValue(jsonEl.getAsJsonObject().toString());
+                } else {
+                    throw new IllegalArgumentException(String.format(
+                            "Label field value '%s:%s' is not supported.",
+                            objFromKey, jsonEl)
+                    );
+                }
                 break;
             case TrueFalse:
-                Object boolFieldValue = this.jsonObject.get(JSONMapping.FIELD_VALUE);
-                if (boolFieldValue instanceof Boolean) this.setFieldValue(boolFieldValue);
-                else if (boolFieldValue instanceof JSONObject) this.setFieldValue(Boolean.FALSE);
-                else if (boolFieldValue == null) this.setFieldValue(null);
-                else throw new IllegalArgumentException(String.format(
-                            "TrueFalse field value '%s:%s:%s' is not supported.",
-                            objFromKey, boolFieldValue, boolFieldValue.getClass().getName()));
+                if (this.isPropertyBoolean(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+                    this.setFieldValue(jsonEl.getAsBoolean());
+                } else if (jsonEl.isJsonObject()) {
+                    this.setFieldValue(Boolean.FALSE);
+                } else {
+                    throw new IllegalArgumentException(String.format(
+                            "TrueFalse field value '%s:%s' is not supported.",
+                            objFromKey, jsonEl));
+                }
                 break;
             case DateTime:
                 this.setFieldValue(new Date(this.valueAsLongFromNumber(objFromKey)));
                 break;
             case Decimal:
-                Object decimalFieldValue = this.jsonObject.get(JSONMapping.FIELD_VALUE);
-                if (objFromKey instanceof Number) {
-                    this.setFieldValueAsDouble(((Number) decimalFieldValue).doubleValue());
-                } else if (decimalFieldValue instanceof JSONObject) this.setFieldValue(0.0D);
+                if (jsonEl.isJsonPrimitive() && jsonEl.getAsJsonPrimitive().isNumber()) {
+                    this.setFieldValueAsDouble(jsonEl.getAsDouble());
+                } else if (jsonEl.isJsonObject()) this.setFieldValue(0.0D);
                 else throw new IllegalArgumentException(String.format(
                             "Decimal data type received value '%s' of type '%s'. Not allowed.",
                             objFromKey, objFromKey.getClass()
                     ));
                 break;
             case MultipleChoice:
-                if (objFromKey instanceof JSONObject) {
-                    JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
+                if (jsonEl.isJsonObject()) {
+                    JsonObject jsonObject = jsonEl.getAsJsonObject();
                     //Multi Choices Selected Multi Choices...
                     if ((jsonObject.has(MultiChoice.JSONMapping.SELECTED_MULTI_CHOICES) ||
                             jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES)) ||
-                            jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)) {
+                            jsonObject.has(MultiChoice.JSONMapping.SELECTED_CHOICES_COMBINED)
+                    ) {
                         this.setFieldValue(new MultiChoice(jsonObject));
                     } else if (jsonObject.has(MultiChoice.JSONMapping.TYPE) && jsonObject.has(MultiChoice.JSONMapping.VALUE)) {
                         //[Payara] mapping for rest...
-                        String typeVal = jsonObject.getString(MultiChoice.JSONMapping.TYPE);
+                        String typeVal = jsonObject.get(MultiChoice.JSONMapping.TYPE).getAsString();
                         if (MultiChoice.JSONMapping.TYPE_STRING.equals(typeVal)) {
-                            this.setFieldValue(new MultiChoice(new JSONObject(jsonObject.getString(MultiChoice.JSONMapping.VALUE))));
+                            this.setFieldValue(new MultiChoice(
+                                    this.stringAsJsonObject(jsonObject.get(MultiChoice.JSONMapping.VALUE).getAsString())
+                            ));
                         }
                     } else if ((jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_MULTI_CHOICES) ||
                             jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES)) ||
-                            jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)) {
+                            jsonObject.has(MultiChoice.JSONMapping.AVAILABLE_CHOICES_COMBINED)
+                    ) {
                         this.setFieldValue(new MultiChoice(jsonObject));
                     }
                 } else {
-                    Object objVal = this.jsonObject.get(JSONMapping.FIELD_VALUE);
-                    if (objVal instanceof String) {
-                        String stringVal = (String) objVal;
+                    if (this.isPropertyString(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+                        String stringVal = jsonEl.getAsString();
                         if (stringVal.startsWith("{")) {
-                            this.setFieldValue(new MultiChoice(new JSONObject(stringVal)));
+                            this.setFieldValue(new MultiChoice(this.stringAsJsonObject(stringVal)));
                         } else this.setFieldValue(new MultiChoice(stringVal));
-                    } else if (objVal instanceof Number) {
-                        Number numbVal = (Number) objVal;
+                    } else if (this.isPropertyNumber(this.jsonObject, JSONMapping.FIELD_VALUE)) {
+                        Number numbVal = jsonEl.getAsNumber();
                         this.setFieldValue(new MultiChoice(String.valueOf(numbVal)));
                     } else {
                         throw new IllegalArgumentException(String.format(
-                                "Multi-Choice data type received value '%s' of type '%s'. Unable to extract value.",
-                                objVal, objFromKey.getClass()
+                                "Multi-Choice data type received value '%s'. Unable to extract value.", jsonEl
                         ));
                     }
                 }
                 break;
             case Table:
-                if (objFromKey instanceof JSONObject) {
-                    JSONObject jsonObject = this.jsonObject.getJSONObject(JSONMapping.FIELD_VALUE);
-                    this.setFieldValue(new TableField(jsonObject));
+                if (objFromKey.isJsonObject()) {
+                    this.setFieldValue(new TableField(objFromKey.getAsJsonObject()));
                 } else {
                     throw new IllegalArgumentException(String.format(
                             "Table data type received value '%s' of type '%s'. Not allowed.",
@@ -509,16 +501,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * @param objFromJson value.
      * @return Long value from {@code objFromJson}.
      */
-    private long valueAsLongFromNumber(Object objFromJson) {
+    private long valueAsLongFromNumber(JsonElement objFromJson) {
         long returnVal = 0;
-        if (objFromJson instanceof Number) {
-            try {
-                returnVal = this.jsonObject.getNumber(JSONMapping.FIELD_VALUE).longValue();
-            } catch (NoSuchMethodError nsm) {
-                //For older versions of org.json library...
-                nsm.printStackTrace();
-                returnVal = this.jsonObject.getLong(JSONMapping.FIELD_VALUE);
-            }
+        if (objFromJson.isJsonPrimitive() && objFromJson.getAsJsonPrimitive().isNumber()) {
+            return objFromJson.getAsLong();
         }
         return returnVal;
     }
@@ -817,6 +803,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
     /**
      * Sets the Type of {@code this} {@code Field} as {@code enum}.
+     *
      * @param type The Field fieldType.
      * @see Type
      */
@@ -921,62 +908,46 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Field}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
-
-        //Field Name...
-        if (this.getFieldName() != null) returnVal.put(JSONMapping.FIELD_NAME, this.getFieldName());
-
-        //Field Description...
-        if (this.getFieldDescription() != null)
-            returnVal.put(JSONMapping.FIELD_DESCRIPTION, this.getFieldDescription());
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        returnVal.addProperty(JSONMapping.FIELD_NAME, this.getFieldName());
+        returnVal.addProperty(JSONMapping.FIELD_DESCRIPTION, this.getFieldDescription());
+        returnVal.addProperty(JSONMapping.FIELD_TYPE, this.getFieldType());
+        returnVal.addProperty(JSONMapping.TYPE_META_DATA, this.getTypeMetaData());
 
         //Field Value...
         if (this.getFieldValue() != null) {
             //Text...
             if (this.getFieldValue() instanceof String) {
-                returnVal.put(JSONMapping.FIELD_VALUE, this.getFieldValue());
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, this.getFieldValueAsString());
             } else if (this.getFieldValue() instanceof Number) {
                 //Decimal...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((Number) this.getFieldValue()).doubleValue());
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, ((Number) this.getFieldValue()).doubleValue());
             } else if (this.getFieldValue() instanceof Boolean) {
                 //True False...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        (Boolean) this.getFieldValue());
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, (Boolean) this.getFieldValue());
             } else if (this.getFieldValue() instanceof Date) {
                 //Date Time...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        this.getDateAsObjectFromJson((Date) this.getFieldValue()));
+                returnVal.addProperty(JSONMapping.FIELD_VALUE, this.getDateAsLongFromJson((Date) this.getFieldValue()));
             } else if (this.getFieldValue() instanceof MultiChoice) {
                 //Multi Choice...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((MultiChoice) this.getFieldValue()).toJsonObject());
+                returnVal.add(JSONMapping.FIELD_VALUE, ((MultiChoice) this.getFieldValue()).toJsonObject());
             } else if (this.getFieldValue() instanceof TableField) {
                 //Table Field...
-                returnVal.put(JSONMapping.FIELD_VALUE,
-                        ((TableField) this.getFieldValue()).toJsonObject());
+                returnVal.add(JSONMapping.FIELD_VALUE, ((TableField) this.getFieldValue()).toJsonObject());
             } else {
-                returnVal.put(JSONMapping.FIELD_VALUE, this.getFieldValue());
+                throw new FluidJSONException(
+                        String.format("Object value '%s' of type '%s' is not supported.",
+                                this.getFieldValue(),
+                                this.getFieldValue().getClass().getName()
+                        )
+                );
             }
         }
-
-        //Type...
-        if (this.getFieldType() != null) {
-            returnVal.put(JSONMapping.FIELD_TYPE, this.getFieldType());
-        }
-
-        //Type Meta Data...
-        if (this.getTypeMetaData() != null) {
-            returnVal.put(JSONMapping.TYPE_META_DATA, this.getTypeMetaData());
-        }
-
         return returnVal;
     }
 
@@ -987,20 +958,19 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @return {@code JSONObject} representation of {@code Field} for
      * ElasticSearch mapping.
-     * @throws JSONException If there is a problem with the JSON Body.
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonMappingForElasticSearch() throws JSONException {
+    public JsonObject toJsonMappingForElasticSearch() {
         String fieldNameUpperCamel = this.getFieldNameAsUpperCamel();
         if (fieldNameUpperCamel == null) return null;
 
         String elasticType = this.getElasticSearchFieldType();
         if (elasticType == null) return null;
 
-        JSONObject returnVal = new JSONObject();
-        returnVal.put(JSONMapping.Elastic.MAPPING_ONLY_TYPE, elasticType);
+        JsonObject returnVal = new JsonObject();
+        returnVal.addProperty(JSONMapping.Elastic.MAPPING_ONLY_TYPE, elasticType);
         return returnVal;
     }
 
@@ -1008,16 +978,14 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * Conversion to {@code JSONObject} for storage in ElasticSearch.
      *
      * @return {@code JSONObject} representation of {@code Field}
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public JSONObject toJsonForElasticSearch() throws JSONException {
+    public JsonObject toJsonForElasticSearch() {
         if (!this.doesFieldQualifyForElasticSearchInsert()) return null;
 
-        JSONObject returnVal = new JSONObject();
+        JsonObject returnVal = new JsonObject();
         String fieldIdAsString = this.getFieldNameAsUpperCamel();
         Object fieldValue = this.getFieldValue();
 
@@ -1025,14 +993,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         if (fieldValue instanceof TableField) {
             TableField tableField = (TableField) this.getFieldValue();
             if (tableField.getTableRecords() != null && !tableField.getTableRecords().isEmpty()) {
-                JSONArray array = new JSONArray();
+                JsonArray array = new JsonArray();
                 for (Form record : tableField.getTableRecords()) {
                     if (record.getId() == null) continue;
-
-                    array.put(record.getId());
+                    array.add(record.getId());
                 }
-
-                returnVal.put(fieldIdAsString, array);
+                returnVal.add(fieldIdAsString, array);
             }
         } else if (fieldValue instanceof MultiChoice) {
             //Multiple Choice...
@@ -1040,8 +1006,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
             if (multiChoice.getSelectedMultiChoices() != null &&
                     !multiChoice.getSelectedMultiChoices().isEmpty()) {
-                JSONArray array = new JSONArray();
-
+                JsonArray array = new JsonArray();
                 for (String selectedChoice : multiChoice.getSelectedMultiChoices()) {
                     Long selectedChoiceAsLong = null;
                     try {
@@ -1050,38 +1015,35 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                             selectedChoiceAsLong = Long.parseLong(selectedChoice);
                         }
                     } catch (NumberFormatException nfe) {
-                        selectedChoiceAsLong = null;
+                        // No need, already null.
                     }
-
                     //When not long, store as is...
                     if (selectedChoiceAsLong == null) {
-                        array.put(selectedChoice);
-                    } else {
-                        array.put(selectedChoiceAsLong.longValue());
-                    }
+                        array.add(selectedChoice);
+                    } else array.add(selectedChoiceAsLong);
                 }
-
-                returnVal.put(fieldIdAsString, array);
+                returnVal.add(fieldIdAsString, array);
             }
-        } else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) ||
-                fieldValue instanceof String) {
-            //Other valid types...
+        } else if ((fieldValue instanceof Number || fieldValue instanceof Boolean) || fieldValue instanceof String) {
             if ((fieldValue instanceof String) && LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
                 GeoUtil geo = new GeoUtil(fieldValue.toString());
-                fieldValue = String.format("%s,%s", geo.getLatitude(), geo.getLongitude());
+                returnVal.addProperty(fieldIdAsString, String.format("%s,%s", geo.getLatitude(), geo.getLongitude()));
+            } else if (fieldValue instanceof String) {
+                returnVal.addProperty(fieldIdAsString, (String) fieldValue);
+            } else if (fieldValue instanceof Boolean) {
+                returnVal.addProperty(fieldIdAsString, (Boolean) fieldValue);
+            } else {
+                returnVal.addProperty(fieldIdAsString, (Number) fieldValue);
             }
-
-            returnVal.put(fieldIdAsString, fieldValue);
         } else if (fieldValue instanceof Date) {
             //Date...
-            returnVal.put(fieldIdAsString, ((Date) fieldValue).getTime());
+            returnVal.addProperty(fieldIdAsString, ((Date) fieldValue).getTime());
         } else {
             //Problem...
             throw new FluidElasticSearchException(
                     "Field Value of field-type '" + fieldValue.getClass().getSimpleName()
                             + "' and Value '" + fieldValue + "' is not supported.");
         }
-
         return returnVal;
     }
 
@@ -1090,70 +1052,63 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      *
      * @param jsonObjectParam The JSON object to populate from.
      * @return {@link Field} - The field to be added, if invalid a {@code null} will be returned.
-     * @throws JSONException If there is a problem with the JSON Body.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @XmlTransient
     @JsonIgnore
-    public Field populateFromElasticSearchJson(JSONObject jsonObjectParam) throws JSONException {
+    public Field populateFromElasticSearchJson(JsonObject jsonObjectParam) {
         if (this.getFieldNameAsUpperCamel() == null) return null;
 
         String fieldIdAsString = this.getFieldNameAsUpperCamel();
-        if (jsonObjectParam.isNull(fieldIdAsString)) return null;
+        if (this.isPropertyNull(jsonObjectParam, fieldIdAsString)) return null;
 
         Field.Type type;
         if ((type = this.getTypeAsEnum()) == null) return null;
 
-        Object formFieldValue = jsonObjectParam.get(fieldIdAsString);
+        JsonElement formFieldValue = jsonObjectParam.get(fieldIdAsString);
         Field fieldToAdd = null;
         switch (type) {
             case DateTime:
-                if (formFieldValue instanceof Number) {
+                if (this.isPropertyNumber(jsonObjectParam, fieldIdAsString)) {
                     fieldToAdd = new Field(
                             this.getId(),
                             this.getFieldName(),
-                            new Date(((Number) formFieldValue).longValue()),
-                            type);
+                            new Date(formFieldValue.getAsLong()),
+                            type
+                    );
                 }
                 break;
             case Decimal:
-                if (formFieldValue instanceof Number) {
+                if (this.isPropertyNumber(jsonObjectParam, fieldIdAsString)) {
                     fieldToAdd = new Field(
                             this.getId(),
                             this.getFieldName(),
-                            ((Number) formFieldValue).doubleValue(),
-                            type);
+                            formFieldValue.getAsDouble(),
+                            type
+                    );
                 }
                 break;
             case MultipleChoice:
-                if (formFieldValue instanceof JSONArray) {
-                    JSONArray casted = (JSONArray) formFieldValue;
-                    List<String> selectedChoices = new ArrayList();
-                    for (int index = 0; index < casted.length(); index++) {
-                        selectedChoices.add(casted.get(index).toString());
-                    }
-
+                if (formFieldValue.isJsonArray()) {
+                    List<String> selectedChoices = new ArrayList<>();
+                    formFieldValue.getAsJsonArray().forEach(itm -> selectedChoices.add(itm.getAsString()));
                     if (selectedChoices.isEmpty()) return null;
 
                     MultiChoice multiChoiceToSet = new MultiChoice(selectedChoices);
-
                     fieldToAdd = new Field(this.getId(), this.getFieldName(), multiChoiceToSet, type);
                 }
                 break;
             case Table:
-                List<Form> tableRecords = new ArrayList();
-
+                List<Form> tableRecords = new ArrayList<>();
                 //When array already...
-                if (formFieldValue instanceof JSONArray) {
-                    JSONArray casted = (JSONArray) formFieldValue;
-                    for (int index = 0; index < casted.length(); index++) {
-                        Object obAtIndex = casted.get(index);
-                        if (obAtIndex instanceof Number) tableRecords.add(new Form(((Number) obAtIndex).longValue()));
-                    }
-                }
-                //When there is only a single number stored...
-                else if (formFieldValue instanceof Number) {
-                    tableRecords.add(new Form(((Number) formFieldValue).longValue()));
+                if (formFieldValue.isJsonArray()) {
+                    formFieldValue.getAsJsonArray().forEach(itm -> {
+                        if (itm.isJsonPrimitive() && itm.getAsJsonPrimitive().isNumber()) {
+                            tableRecords.add(new Form((itm.getAsJsonPrimitive().getAsLong())));
+                        }
+                    });
+                } else if (formFieldValue.isJsonPrimitive() && formFieldValue.getAsJsonPrimitive().isNumber()) {
+                    //When there is only a single number stored...
+                    tableRecords.add(new Form(formFieldValue.getAsLong()));
                 }
 
                 if (tableRecords.isEmpty()) return null;
@@ -1163,44 +1118,38 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             case Text:
             case TextEncrypted:
             case ParagraphText:
-                if (formFieldValue instanceof String) {
+                if (formFieldValue.isJsonPrimitive() && formFieldValue.getAsJsonPrimitive().isString()) {
                     //Latitude and Longitude storage...
                     if (LATITUDE_AND_LONGITUDE.equals(this.getTypeMetaData())) {
                         GeoUtil geoUtil = new GeoUtil(formFieldValue.toString());
                         fieldToAdd = new Field(this.getId(), this.getFieldName(), geoUtil.toString(), type);
                     } else {
-                        //Other...
-                        fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue.toString(), type);
+                        fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue.getAsString(), type);
                     }
                 }
                 break;
             case TrueFalse:
-                if (formFieldValue instanceof Boolean)
-                    fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue, type);
+                if (formFieldValue.isJsonPrimitive() && formFieldValue.getAsJsonPrimitive().isBoolean())
+                    fieldToAdd = new Field(this.getId(), this.getFieldName(), formFieldValue.getAsBoolean(), type);
                 break;
         }
-
         return fieldToAdd;
     }
 
     /**
      * Not allowed to call this method.
      *
-     * @param jsonObjectParam The JSON object to populate from.
-     * @param formFieldsParam The Form Fields to use.
-     * @throws JSONException               Never.
+     * @param jsonObject The JSON object to populate from.
+     * @param formFields The Form Fields to use.
      * @throws FluidElasticSearchException Always.
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
     @XmlTransient
     @JsonIgnore
-    public void populateFromElasticSearchJson(
-            JSONObject jsonObjectParam,
-            List<Field> formFieldsParam
-    ) throws JSONException {
+    public void populateFromElasticSearchJson(JsonObject jsonObject, List<Field> formFields) {
         throw new FluidElasticSearchException(
-                "Method not implemented. Make use of 'populateFromElasticSearchJson(JSONObject jsonObjectParam)' method.");
+                "Method not implemented. Make use of 'populateFromElasticSearchJson(JsonObject jsonObjectParam)' method."
+        );
     }
 
     /**
@@ -1222,11 +1171,8 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             case Text:
                 String metaData = this.getTypeMetaData();
                 if (metaData == null || metaData.isEmpty()) return ElasticSearchType.TEXT;
-
-                if (LATITUDE_AND_LONGITUDE.equals(metaData)) return ElasticSearchType.GEO_POINT;
-
-                if (PLAIN_KEYWORD.equals(metaData)) return ElasticSearchType.KEYWORD;
-
+                else if (LATITUDE_AND_LONGITUDE.equals(metaData)) return ElasticSearchType.GEO_POINT;
+                else if (PLAIN_KEYWORD.equals(metaData)) return ElasticSearchType.KEYWORD;
                 return ElasticSearchType.TEXT;
             case TrueFalse:
                 return ElasticSearchType.BOOLEAN;
@@ -1287,16 +1233,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     @JsonIgnore
     public String getFieldValueAsDoubleDecimalFormat() {
         DecimalFormat df = new DecimalFormat(this.getDecimalFormat());
-
         Double dblVal = this.getFieldValueAsDouble();
         if (dblVal == null) dblVal = 0.0;
-
         String formatted = df.format(dblVal);
-
         if (this.decimalMetaFormat != null && UtilGlobal.isNotBlank(this.decimalMetaFormat.getPrefix())) {
             return String.format("%s%s", this.decimalMetaFormat.getPrefix(), formatted);
         }
-
         return formatted;
     }
 

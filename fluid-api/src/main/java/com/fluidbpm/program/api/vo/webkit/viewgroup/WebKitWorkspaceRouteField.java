@@ -15,12 +15,12 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.google.gson.JsonObject;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -32,118 +32,98 @@ import javax.xml.bind.annotation.XmlTransient;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class WebKitWorkspaceRouteField extends ABaseFluidJSONObject {
-	private Field routeField;
+public class WebKitWorkspaceRouteField extends ABaseFluidGSONObject {
+    private Field routeField;
+    private int fieldOrder;
+    private boolean grouped;
+    private String cssStyle;
+    private String cssClass;
 
-	private int fieldOrder;
-	private boolean grouped;
-	private String cssStyle;
-	private String cssClass;
+    @XmlTransient
+    private boolean selected;
 
-	@XmlTransient
-	private boolean selected;
+    /**
+     * The JSON mapping for the {@code WebKitForm} object.
+     */
+    public static class JSONMapping {
+        public static final String ROUTE_FIELD = "routeField";
+        public static final String FIELD_ORDER = "fieldOrder";
+        public static final String GROUPED = "grouped";
+        public static final String CSS_STYLE = "cssStyle";
+        public static final String CSS_CLASS = "cssClass";
+    }
 
-	/**
-	 * The JSON mapping for the {@code WebKitForm} object.
-	 */
-	public static class JSONMapping {
-		public static final String ROUTE_FIELD = "routeField";
-		public static final String FIELD_ORDER = "fieldOrder";
-		public static final String GROUPED = "grouped";
-		public static final String CSS_STYLE = "cssStyle";
-		public static final String CSS_CLASS = "cssClass";
-	}
+    public WebKitWorkspaceRouteField() {
+        this(new JsonObject());
+    }
 
-	public WebKitWorkspaceRouteField() {
-		this(new JSONObject());
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public WebKitWorkspaceRouteField(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public WebKitWorkspaceRouteField(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) return;
+        this.setRouteField(this.extractObject(JSONMapping.ROUTE_FIELD, Field::new));
+        this.setFieldOrder(this.getAsIntegerNullSafeStrictVal(JSONMapping.FIELD_ORDER));
+        this.setCssClass(this.getAsStringNullSafe(JSONMapping.CSS_CLASS));
+        this.setCssStyle(this.getAsStringNullSafe(JSONMapping.CSS_STYLE));
+        this.setGrouped(this.getAsBooleanNullSafe(JSONMapping.GROUPED));
+    }
 
-		if (!this.jsonObject.isNull(JSONMapping.ROUTE_FIELD)) {
-			this.setRouteField(new Field(this.jsonObject.getJSONObject(JSONMapping.ROUTE_FIELD)));
-		}
+    /**
+     * @param routeField The route field associated.
+     * @see Field
+     */
+    public WebKitWorkspaceRouteField(Field routeField) {
+        this();
+        this.setRouteField(routeField);
+    }
 
-		if (!this.jsonObject.isNull(JSONMapping.FIELD_ORDER)) {
-			this.setFieldOrder(this.jsonObject.getInt(JSONMapping.FIELD_ORDER));
-		}
+    /**
+     * Returns the local JSON object.
+     * Only set through constructor.
+     *
+     * @return The local set {@code JSONObject} object.
+     */
+    @Override
+    @XmlTransient
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-		if (!this.jsonObject.isNull(JSONMapping.CSS_CLASS)) {
-			this.setCssClass(this.jsonObject.getString(JSONMapping.CSS_CLASS));
-		}
+        if (this.getRouteField() != null) {
+            Field reducedField = new Field(this.getRouteField().getId());
+            returnVal.add(JSONMapping.ROUTE_FIELD, reducedField.toJsonObject());
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.CSS_STYLE)) {
-			this.setCssStyle(this.jsonObject.getString(JSONMapping.CSS_STYLE));
-		}
+        this.setAsProperty(JSONMapping.FIELD_ORDER, returnVal, this.getFieldOrder());
+        this.setAsProperty(JSONMapping.GROUPED, returnVal, this.isGrouped());
+        this.setAsProperty(JSONMapping.CSS_CLASS, returnVal, this.getCssClass());
+        this.setAsProperty(JSONMapping.CSS_STYLE, returnVal, this.getCssStyle());
 
-		if (!this.jsonObject.isNull(JSONMapping.GROUPED)) {
-			this.setGrouped(this.jsonObject.getBoolean(JSONMapping.GROUPED));
-		}
-	}
+        return returnVal;
+    }
 
-	/**
-	 * @param routeField The route field associated.
-	 * @see Field
-	 */
-	public WebKitWorkspaceRouteField(Field routeField) {
-		this();
-		this.setRouteField(routeField);
-	}
+    /**
+     * Return the Text representation of {@code this} object.
+     *
+     * @return JSON body of {@code this} object.
+     */
+    @Override
+    @XmlTransient
+    public String toString() {
+        return super.toString();
+    }
 
-	/**
-	 * Returns the local JSON object.
-	 * Only set through constructor.
-	 *
-	 * @return The local set {@code JSONObject} object.
-	 */
-	@Override
-	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
-
-		if (this.getRouteField() != null) {
-			Field reducedField = new Field(this.getRouteField().getId());
-			returnVal.put(JSONMapping.ROUTE_FIELD, reducedField.toJsonObject());
-		}
-
-		returnVal.put(JSONMapping.FIELD_ORDER, this.getFieldOrder());
-		returnVal.put(JSONMapping.GROUPED, this.isGrouped());
-
-		if (this.getCssClass() != null) {
-			returnVal.put(JSONMapping.CSS_CLASS, this.getCssClass());
-		}
-
-		if (this.getCssStyle() != null) {
-			returnVal.put(JSONMapping.CSS_STYLE, this.getCssStyle());
-		}
-
-		return returnVal;
-	}
-
-	/**
-	 * Return the Text representation of {@code this} object.
-	 *
-	 * @return JSON body of {@code this} object.
-	 */
-	@Override
-	@XmlTransient
-	public String toString() {
-		return super.toString();
-	}
-
-	/**
-	 * Id for WebKit Field.
-	 * @return Primary Key of {@code routeField}.
-	 */
-	@Override
-	public Long getId() {
-		return (this.routeField == null) ? null : this.routeField.getId();
-	}
+    /**
+     * Id for WebKit Field.
+     *
+     * @return Primary Key of {@code routeField}.
+     */
+    @Override
+    public Long getId() {
+        return (this.routeField == null) ? null : this.routeField.getId();
+    }
 }

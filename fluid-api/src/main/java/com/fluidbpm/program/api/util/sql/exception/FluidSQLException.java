@@ -23,22 +23,21 @@ import com.fluidbpm.program.api.util.exception.UtilException;
  * Exception class related to SQL Exceptions exclusively.
  *
  * @author jasonbruwer
- * @since v1.0
- *
  * @see UtilException
  * @see SQLException
+ * @since v1.0
  */
 public class FluidSQLException extends UtilException {
 
-	/**
-	 * Constructor used to wrap a traditional {@code SQLException}
-	 * into an {@code FluidSQLException}.
-	 *
-	 * @param sqlExceptionParam Traditional Java SQL Exception.
-	 */
-	public FluidSQLException(SQLException sqlExceptionParam) {
-		super("SQL Problem: "+((sqlExceptionParam == null) ? null:
-				sqlExceptionParam.getMessage()),
-				sqlExceptionParam, ErrorCode.SQL);
-	}
+    /**
+     * Constructor used to wrap a traditional {@code SQLException}
+     * into an {@code FluidSQLException}.
+     *
+     * @param sqlExceptionParam Traditional Java SQL Exception.
+     */
+    public FluidSQLException(SQLException sqlExceptionParam) {
+        super("SQL Problem: " + ((sqlExceptionParam == null) ? null :
+                        sqlExceptionParam.getMessage()),
+                sqlExceptionParam, ErrorCode.SQL);
+    }
 }

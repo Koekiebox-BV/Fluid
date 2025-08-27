@@ -15,106 +15,79 @@
 
 package com.fluidbpm.program.api.vo.report.userstats;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User statistics for form entry types.
  *
  * @author jasonbruwer on 2020-08-20
  * @since v1.11
- * 
- * @see ABaseFluidJSONObject
  */
 @Getter
 @Setter
-public class FormEntryTypeStats extends ABaseFluidJSONReportObject {
-	public static final long serialVersionUID = 1L;
+public class FormEntryTypeStats extends ABaseFluidGSONReportObject {
+    private static final long serialVersionUID = 1L;
 
-	private String formContainerType;
+    private String formContainerType;
+    private int countDocument;
+    private int countFolder;
+    private int countTableRecord;
 
-	private int countDocument;
-	private int countFolder;
-	private int countTableRecord;
+    /**
+     * The JSON mapping for the {@code FormEntryTypeStats} object.
+     */
+    public static class JSONMapping {
+        public static final String FORM_CONTAINER_TYPE = "formContainerType";
+        public static final String COUNT_DOCUMENT = "countDocument";
+        public static final String COUNT_FOLDER = "countFolder";
+        public static final String COUNT_TABLE_RECORD = "countTableRecord";
+    }
 
-	/**
-	 * The JSON mapping for the {@code FormEntryTypeStats} object.
-	 */
-	public static class JSONMapping {
-		public static final String FORM_CONTAINER_TYPE = "formContainerType";
-		public static final String COUNT_DOCUMENT = "countDocument";
-		public static final String COUNT_FOLDER = "countFolder";
-		public static final String COUNT_TABLE_RECORD = "countTableRecord";
-	}
+    /**
+     * Default constructor.
+     */
+    public FormEntryTypeStats() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public FormEntryTypeStats() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FormEntryTypeStats(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FormEntryTypeStats(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+        this.setFormContainerType(this.getAsStringNullSafe(JSONMapping.FORM_CONTAINER_TYPE));
+        this.setCountDocument(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_DOCUMENT));
+        this.setCountFolder(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_FOLDER));
+        this.setCountTableRecord(this.getAsIntegerNullSafeStrictVal(JSONMapping.COUNT_TABLE_RECORD));
+    }
 
-		if (this.jsonObject.isNull(JSONMapping.FORM_CONTAINER_TYPE)) {
-			this.setFormContainerType(null);
-		} else {
-			this.setFormContainerType(this.jsonObject.getString(JSONMapping.FORM_CONTAINER_TYPE));
-		}
+    /**
+     * Conversion to {@code JsonObject} from Java Object.
+     *
+     * @return {@code JsonObject} representation of {@code FormEntryTypeStats}
+     * 
+     */
+    @Override
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-		if (this.jsonObject.isNull(JSONMapping.COUNT_DOCUMENT)) {
-			this.setCountDocument(0);
-		} else {
-			this.setCountDocument(this.jsonObject.getInt(JSONMapping.COUNT_DOCUMENT));
-		}
+        this.setAsProperty(JSONMapping.FORM_CONTAINER_TYPE, returnVal, this.getFormContainerType());
+        this.setAsProperty(JSONMapping.COUNT_DOCUMENT, returnVal, this.getCountDocument());
+        this.setAsProperty(JSONMapping.COUNT_FOLDER, returnVal, this.getCountFolder());
+        this.setAsProperty(JSONMapping.COUNT_TABLE_RECORD, returnVal, this.getCountTableRecord());
 
-		if (this.jsonObject.isNull(JSONMapping.COUNT_FOLDER)) {
-			this.setCountFolder(0);
-		} else {
-			this.setCountFolder(this.jsonObject.getInt(JSONMapping.COUNT_FOLDER));
-		}
-
-		if (this.jsonObject.isNull(JSONMapping.COUNT_TABLE_RECORD)) {
-			this.setCountTableRecord(0);
-		} else {
-			this.setCountTableRecord(this.jsonObject.getInt(JSONMapping.COUNT_TABLE_RECORD));
-		}
-
-	}
-
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code PunchCardEntry}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
-
-		if (this.getFormContainerType() != null) {
-			returnVal.put(JSONMapping.FORM_CONTAINER_TYPE, this.getFormContainerType());
-		}
-
-		returnVal.put(JSONMapping.COUNT_DOCUMENT, this.getCountDocument());
-		returnVal.put(JSONMapping.COUNT_FOLDER, this.getCountFolder());
-		returnVal.put(JSONMapping.COUNT_TABLE_RECORD, this.getCountTableRecord());
-
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

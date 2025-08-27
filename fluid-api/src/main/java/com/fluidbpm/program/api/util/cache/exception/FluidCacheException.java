@@ -22,31 +22,30 @@ import java.sql.SQLException;
  * Exception class related to Caching Exceptions exclusively.
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see UtilException
  * @see SQLException
+ * @since v1.1
  */
 public class FluidCacheException extends UtilException {
 
-	/**
-	 * Constructor used to wrap a traditional {@code Exception}
-	 * into an {@code FluidCacheException}.
-	 *
-	 * @param messageParam Exception message.
-	 */
-	public FluidCacheException(String messageParam) {
-		super("Cache Problem: "+messageParam ,ErrorCode.CACHE);
-	}
+    /**
+     * Constructor used to wrap a traditional {@code Exception}
+     * into an {@code FluidCacheException}.
+     *
+     * @param messageParam Exception message.
+     */
+    public FluidCacheException(String messageParam) {
+        super("Cache Problem: " + messageParam, ErrorCode.CACHE);
+    }
 
-	/**
-	 * Constructor used to wrap a traditional {@code Exception}
-	 * into an {@code FluidCacheException}.
-	 *
-	 * @param messageParam Exception message.
-	 * @param exceptionParam Traditional Java Exception.
-	 */
-	public FluidCacheException(String messageParam, Exception exceptionParam) {
-		super("Cache Problem: "+messageParam,exceptionParam ,ErrorCode.CACHE);
-	}
+    /**
+     * Constructor used to wrap a traditional {@code Exception}
+     * into an {@code FluidCacheException}.
+     *
+     * @param messageParam   Exception message.
+     * @param exceptionParam Traditional Java Exception.
+     */
+    public FluidCacheException(String messageParam, Exception exceptionParam) {
+        super("Cache Problem: " + messageParam, exceptionParam, ErrorCode.CACHE);
+    }
 }

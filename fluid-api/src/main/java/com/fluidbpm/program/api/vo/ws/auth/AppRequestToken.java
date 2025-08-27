@@ -15,26 +15,22 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Authorization request token data.
  *
  * @author jasonbruwer
- * @since v1.0
- *
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see TokenStatus
  * @see AuthRequest
  * @see AuthResponse
  * @see AuthEncryptedData
+ * @since v1.0
  */
-public class AppRequestToken extends ABaseFluidJSONObject {
-
-    public static final long serialVersionUID = 1L;
+public class AppRequestToken extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
     //Payload...
     private String encryptedDataBase64;//Contains [TicketExpires], [Roles] and [SessionKey]...
@@ -75,53 +71,19 @@ public class AppRequestToken extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AppRequestToken(JSONObject jsonObjectParam){
+    public AppRequestToken(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Encrypted Data Base64
-        if (!this.jsonObject.isNull(JSONMapping.ENCRYPTED_DATA_BASE_64)) {
-            this.setEncryptedDataBase64(this.jsonObject.getString(JSONMapping.ENCRYPTED_DATA_BASE_64));
-        }
-
-        //Encrypted Data HMAC Base64
-        if (!this.jsonObject.isNull(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64)) {
-            this.setEncryptedDataHmacBase64(this.jsonObject.getString(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64));
-        }
-
-        //IV Base 64...
-        if (!this.jsonObject.isNull(JSONMapping.IV_BASE_64)) {
-            this.setIvBase64(this.jsonObject.getString(JSONMapping.IV_BASE_64));
-        }
-
-        //Seed Base 64...
-        if (!this.jsonObject.isNull(JSONMapping.SEED_BASE_64)) {
-            this.setSeedBase64(this.jsonObject.getString(JSONMapping.SEED_BASE_64));
-        }
-
-        //Service Ticket 64...
-        if (!this.jsonObject.isNull(ABaseFluidJSONObject.JSONMapping.SERVICE_TICKET)) {
-            this.setServiceTicket(this.jsonObject.getString(ABaseFluidJSONObject.JSONMapping.SERVICE_TICKET));
-        }
-
-        //Salt...
-        if (!this.jsonObject.isNull(JSONMapping.SALT)) {
-            this.setSalt(this.jsonObject.getString(JSONMapping.SALT));
-        }
-
-        //Principal Client...
-        if (!this.jsonObject.isNull(JSONMapping.PRINCIPAL_CLIENT)) {
-            this.setPrincipalClient(this.jsonObject.getString(JSONMapping.PRINCIPAL_CLIENT));
-        }
-
-        //Role String...
-        if (!this.jsonObject.isNull(JSONMapping.ROLE_STRING)) {
-            this.setRoleString(this.jsonObject.getString(JSONMapping.ROLE_STRING));
-        }
-
-        //Timestamp...
-        if (!this.jsonObject.isNull(JSONMapping.TIMESTAMP)) {
-            this.setTimestamp(this.jsonObject.getLong(JSONMapping.TIMESTAMP));
-        }
+        this.setEncryptedDataBase64(this.getAsStringNullSafe(JSONMapping.ENCRYPTED_DATA_BASE_64));
+        this.setEncryptedDataHmacBase64(this.getAsStringNullSafe(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64));
+        this.setIvBase64(this.getAsStringNullSafe(JSONMapping.IV_BASE_64));
+        this.setSeedBase64(this.getAsStringNullSafe(JSONMapping.SEED_BASE_64));
+        // serviceTicket handled in base class
+        this.setSalt(this.getAsStringNullSafe(JSONMapping.SALT));
+        this.setPrincipalClient(this.getAsStringNullSafe(JSONMapping.PRINCIPAL_CLIENT));
+        this.setRoleString(this.getAsStringNullSafe(JSONMapping.ROLE_STRING));
+        this.setTimestamp(this.getAsLongNullSafe(JSONMapping.TIMESTAMP));
     }
 
     /**
@@ -269,62 +231,22 @@ public class AppRequestToken extends ABaseFluidJSONObject {
     }
 
     /**
-     * Conversion to {@code JSONObject} from Java Object.
+     * Conversion to JsonObject from Java Object.
      *
-     * @return {@code JSONObject} representation of {@code AppRequestToken}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * @return JsonObject representation of AppRequestToken
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = super.toJsonObject();
-
-        //Encrypted Data Base 64...
-        if (this.getEncryptedDataBase64() != null) {
-            returnVal.put(JSONMapping.ENCRYPTED_DATA_BASE_64, this.getEncryptedDataBase64());
-        }
-
-        //Encrypted Data HMAC Base 64...
-        if (this.getEncryptedDataHmacBase64() != null) {
-            returnVal.put(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64, this.getEncryptedDataHmacBase64());
-        }
-
-        //IV Base 64...
-        if (this.getIvBase64() != null) {
-            returnVal.put(JSONMapping.IV_BASE_64, this.getIvBase64());
-        }
-
-        //Seed Base 64...
-        if (this.getSeedBase64() != null) {
-            returnVal.put(JSONMapping.SEED_BASE_64, this.getSeedBase64());
-        }
-
-        //Service Ticket Base 64...
-        if (this.getServiceTicket() != null) {
-            returnVal.put(ABaseFluidJSONObject.JSONMapping.SERVICE_TICKET, this.getServiceTicket());
-        }
-
-        //Salt...
-        if (this.getSalt() != null) {
-            returnVal.put(JSONMapping.SALT, this.getSalt());
-        }
-
-        //Principal Client...
-        if (this.getPrincipalClient() != null) {
-            returnVal.put(JSONMapping.PRINCIPAL_CLIENT, this.getPrincipalClient());
-        }
-
-        //Role String...
-        if (this.getRoleString() != null) {
-            returnVal.put(JSONMapping.ROLE_STRING, this.getRoleString());
-        }
-
-        //Timestamp...
-        if (this.getTimestamp() != null) {
-            returnVal.put(JSONMapping.TIMESTAMP, this.getTimestamp());
-        }
+        this.setAsProperty(JSONMapping.ENCRYPTED_DATA_BASE_64, returnVal, this.getEncryptedDataBase64());
+        this.setAsProperty(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64, returnVal, this.getEncryptedDataHmacBase64());
+        this.setAsProperty(JSONMapping.IV_BASE_64, returnVal, this.getIvBase64());
+        this.setAsProperty(JSONMapping.SEED_BASE_64, returnVal, this.getSeedBase64());
+        this.setAsProperty(JSONMapping.SALT, returnVal, this.getSalt());
+        this.setAsProperty(JSONMapping.PRINCIPAL_CLIENT, returnVal, this.getPrincipalClient());
+        this.setAsProperty(JSONMapping.ROLE_STRING, returnVal, this.getRoleString());
+        this.setAsProperty(JSONMapping.TIMESTAMP, returnVal, this.getTimestamp());
 
         return returnVal;
     }

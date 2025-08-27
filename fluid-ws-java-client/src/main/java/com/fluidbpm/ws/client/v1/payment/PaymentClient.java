@@ -20,7 +20,7 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.payment.PaymentLinkAdyen;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Client used to perform Payments securely.
@@ -28,7 +28,7 @@ import org.json.JSONObject;
  * @author jasonbruwer
  * @since v1.12
  *
- * @see JSONObject
+ * @see JsonObject
  * @see WS.Path.Configuration
  * @see Configuration
  * @see ABaseClientWS

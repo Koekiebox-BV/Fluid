@@ -15,12 +15,11 @@
 
 package com.fluidbpm.program.api.vo.health;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -29,66 +28,54 @@ import java.util.List;
  *
  * @author jasonbruwer on 2023-06-20.
  * @since 1.13
- * @see ABaseFluidJSONObject
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class ESHealth extends ABaseFluidJSONObject {
-	private boolean enabled;
-	private Health elasticsearchHealth;
-	private String connectionInfo;
-	private String connectionProperties;
-	private Long connectObtainDurationMillis;
-	private List<String> addresses;
+public class ESHealth extends ABaseFluidGSONObject {
+    private boolean enabled;
+    private Health elasticsearchHealth;
+    private String connectionInfo;
+    private String connectionProperties;
+    private Long connectObtainDurationMillis;
+    private List<String> addresses;
 
-	/**
-	 * The JSON mapping for the {@code ConnectStatus} object.
-	 */
-	public static class JSONMapping {
-		public static final String TIMESTAMP = "timestamp";
-		public static final String SYSTEM_HEALTH = "systemHealth";
-		public static final String DATABASE_HEALTH = "databaseHealth";
-		public static final String VERSION = "version";
-		public static final String FLUID_API_VERSION = "fluidAPIVersion";
-		public static final String INTERNAL_TIMEZONE = "internalTimeZone";
-		public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
-	}
+    /**
+     * The JSON mapping for the {@code ConnectStatus} object.
+     */
+    public static class JSONMapping {
+        public static final String TIMESTAMP = "timestamp";
+        public static final String SYSTEM_HEALTH = "systemHealth";
+        public static final String DATABASE_HEALTH = "databaseHealth";
+        public static final String VERSION = "version";
+        public static final String FLUID_API_VERSION = "fluidAPIVersion";
+        public static final String INTERNAL_TIMEZONE = "internalTimeZone";
+        public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObject The JSON Object.
-	 */
-	public ESHealth(JSONObject jsonObject) {
-		super(jsonObject);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObject The JSON Object.
+     */
+    public ESHealth(JsonObject jsonObject) {
+        super(jsonObject);
+        if (this.jsonObject == null) return;
 
+        this.setConnectObtainDurationMillis(this.getAsLongNullSafe(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
+    }
 
+    /**
+     * Conversion to JsonObject from Java Object.
+     *
+     * @return JsonObject representation of this object.
+     */
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
+        this.setAsProperty(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, returnVal, this.getConnectObtainDurationMillis());
 
-		if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-			this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-		}
-	}
-
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
-
-
-		if (this.getConnectObtainDurationMillis() != null) {
-			returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-		}
-
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

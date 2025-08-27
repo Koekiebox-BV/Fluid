@@ -15,6 +15,8 @@
 
 package com.fluidbpm.program.api.vo.health;
 
+import com.fluidbpm.program.api.vo.IEnum;
+
 /**
  * Health rating for a fluid instance.
  * Unhealthy -> Instance is facing errors with the matching service.
@@ -24,8 +26,8 @@ package com.fluidbpm.program.api.vo.health;
  * @author jasonbruwer on 2023-06-20.
  * @since 1.13
  */
-public enum Health {
-	Unhealthy,
-	Healthy,
-	Degraded
+public enum Health implements IEnum {
+    Unhealthy,
+    Healthy,
+    Degraded
 }

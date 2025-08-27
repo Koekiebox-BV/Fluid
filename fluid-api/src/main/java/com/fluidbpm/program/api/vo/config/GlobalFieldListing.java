@@ -15,53 +15,49 @@
 
 package com.fluidbpm.program.api.vo.config;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.google.gson.JsonObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of Global {@code Field}s.
+ * Represents a {@code List} of Global {@code Field}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.8
- *
  * @see Field
- * @see ABaseListing
+ * @since v1.8
  */
-public class GlobalFieldListing extends ABaseListing<Field> {
+public class GlobalFieldListing extends ABaseGSONListing<Field> {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    /**
+     * Default constructor.
+     */
+    public GlobalFieldListing() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public GlobalFieldListing() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public GlobalFieldListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public GlobalFieldListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
-
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Field} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Field}.
-	 * @return New {@code Field} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new Field(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Field} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Field}.
+     * @return New {@code Field} instance.
+     */
+    @Override
+    @XmlTransient
+    public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new Field(jsonObjectParam);
+    }
 }

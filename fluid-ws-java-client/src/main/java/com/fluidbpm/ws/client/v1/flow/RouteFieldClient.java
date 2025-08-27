@@ -23,7 +23,7 @@ import com.fluidbpm.program.api.vo.webkit.viewgroup.WebKitViewGroup;
 import com.fluidbpm.program.api.vo.ws.WS.Path.RouteField.Version1;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.List;
  * @since v1.0
  * @version v1.8
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.RouteField
  * @see Field
  * @see ABaseFieldClient

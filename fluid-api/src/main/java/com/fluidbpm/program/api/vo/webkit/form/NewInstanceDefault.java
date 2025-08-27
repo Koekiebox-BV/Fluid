@@ -15,11 +15,10 @@
 
 package com.fluidbpm.program.api.vo.webkit.form;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -28,64 +27,60 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Getter
 @Setter
-public class NewInstanceDefault extends ABaseFluidJSONObject {
-	public static final String FIELD = "field";
-	public static final String DEFAULT = "defaultVal";
+public class NewInstanceDefault extends ABaseFluidGSONObject {
+    public static final String FIELD = "field";
+    public static final String DEFAULT = "defaultVal";
 
-	private String field;
-	private String defaultVal;
+    private String field;
+    private String defaultVal;
 
-	/**
-	 * Default.
-	 */
-	public NewInstanceDefault() {
-		this(new JSONObject());
-	}
+    /**
+     * Default.
+     */
+    public NewInstanceDefault() {
+        this(new JsonObject());
+    }
 
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param field The field.
-	 * @param defValue The default value.
-	 */
-	public NewInstanceDefault(String field, String defValue) {
-		this();
-		this.setField(field);
-		this.setDefaultVal(defValue);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param field    The field.
+     * @param defValue The default value.
+     */
+    public NewInstanceDefault(String field, String defValue) {
+        this();
+        this.setField(field);
+        this.setDefaultVal(defValue);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObject The JSON Object.
-	 */
-	public NewInstanceDefault(JSONObject jsonObject) {
-		super(jsonObject);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObject The JSON Object.
+     */
+    public NewInstanceDefault(JsonObject jsonObject) {
+        super(jsonObject);
+        if (this.jsonObject == null) return;
 
-		if (!this.jsonObject.isNull(FIELD)) this.setField(this.jsonObject.getString(FIELD));
-		if (!this.jsonObject.isNull(DEFAULT)) this.setDefaultVal(this.jsonObject.getString(DEFAULT));
-	}
+        this.setField(this.getAsStringNullSafe(FIELD));
+        this.setDefaultVal(this.getAsStringNullSafe(DEFAULT));
+    }
 
-	/**
-	 * <p>
-	 * Base {@code toJsonObject} that creates a {@code JSONObject}
-	 * with the Id and ServiceTicket set.
-	 * </p>
-	 *
-	 * @return {@code JSONObject} representation of {@code NewInstanceDefault}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 * @see org.json.JSONObject
-	 */
-	@Override
-	@XmlTransient
-	public JSONObject toJsonObject() {
-		JSONObject returnVal = super.toJsonObject();
-
-		returnVal.put(FIELD, this.getField());
-		returnVal.put(DEFAULT, this.getDefaultVal());
-
-		return returnVal;
-	}
+    /**
+     * <p>
+     * Base {@code toJsonObject} that creates a {@code JSONObject}
+     * with the Id and ServiceTicket set.
+     * </p>
+     *
+     * @return {@code JSONObject} representation of {@code NewInstanceDefault}
+     */
+    @Override
+    @XmlTransient
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(FIELD, returnVal, this.getField());
+        this.setAsProperty(DEFAULT, returnVal, this.getDefaultVal());
+        return returnVal;
+    }
 }

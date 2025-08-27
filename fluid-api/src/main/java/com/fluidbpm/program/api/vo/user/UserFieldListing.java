@@ -16,26 +16,23 @@
 package com.fluidbpm.program.api.vo.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fluidbpm.program.api.vo.ABaseListing;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.field.Field;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of User {@code Field}s.
+ * Represents a {@code List} of User {@code Field}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.3
- *
  * @see Field
- * @see ABaseListing
+ * @since v1.3
  */
-public class UserFieldListing extends ABaseListing<Field> {
-
-    public static final long serialVersionUID = 1L;
+public class UserFieldListing extends ABaseGSONListing<Field> {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
@@ -49,7 +46,7 @@ public class UserFieldListing extends ABaseListing<Field> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserFieldListing(JSONObject jsonObjectParam){
+    public UserFieldListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -62,7 +59,7 @@ public class UserFieldListing extends ABaseListing<Field> {
     @Override
     @XmlTransient
     @JsonIgnore
-    public Field getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public Field getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new Field(jsonObjectParam);
     }
 }

@@ -15,11 +15,11 @@
 
 package com.fluidbpm.ws.client.v1.user;
 
-import org.json.JSONObject;
 
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.google.gson.JsonObject;
 
 /**
  * Client to create a {@code admin} user if not yet created.
@@ -27,7 +27,7 @@ import com.fluidbpm.ws.client.v1.ABaseClientWS;
  * @author jasonbruwer
  * @since v1.8
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.user.User
  */
 public class AdminUserCreateClient extends ABaseClientWS {

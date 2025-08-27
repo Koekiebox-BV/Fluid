@@ -15,148 +15,118 @@
 
 package com.fluidbpm.program.api.vo.flow;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 
 /**
  * <p>
- *     Container <code>POJO</code> used to contain
- *     the {@code FluidItem} and {@code FlowStepRule}.
+ * Container <code>POJO</code> used to contain
+ * the {@code FluidItem} and {@code FlowStepRule}.
  *
  * <p>
- *     Purely used to {@code compile} and {@code execute} a
- *     Fluid Rule against a {@code FluidItem} in realtime.
+ * Purely used to {@code compile} and {@code execute} a
+ * Fluid Rule against a {@code FluidItem} in realtime.
  *
  * @author jasonbruwer
- * @since v1.0
  * @see FluidItem
  * @see FlowStepRule
+ * @since v1.0
  */
-public class FlowItemExecutePacket extends ABaseFluidJSONObject {
+public class FlowItemExecutePacket extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
+    private FlowStepRule flowStepRule;
+    private FluidItem fluidItem;
 
-	public static final long serialVersionUID = 1L;
+    /**
+     * The JSON mapping for the {@code FlowItemExecutePacket} object.
+     */
+    public static class JSONMapping {
+        public static final String FLOW_STEP_RULE = "flowStepRule";
+        public static final String FLUID_ITEM = "fluidItem";
+    }
 
-	private FlowStepRule flowStepRule;
-	private FluidItem fluidItem;
+    /**
+     * Default constructor.
+     */
+    public FlowItemExecutePacket() {
+        super();
+    }
 
-	/**
-	 * The JSON mapping for the {@code FlowItemExecutePacket} object.
-	 */
-	public static class JSONMapping
-	{
-		public static final String FLOW_STEP_RULE = "flowStepRule";
-		public static final String FLUID_ITEM = "fluidItem";
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FlowItemExecutePacket(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-	/**
-	 * Default constructor.
-	 */
-	public FlowItemExecutePacket() {
-		super();
-	}
+        this.setFluidItem(this.extractObject(JSONMapping.FLUID_ITEM, FluidItem::new));
+        this.setFlowStepRule(this.extractObject(JSONMapping.FLOW_STEP_RULE, FlowStepRule::new));
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FlowItemExecutePacket(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
+    /**
+     * Conversion to {@code JsonObject} from Java Object.
+     *
+     * @return {@code JsonObject} representation of {@code FlowItemExecutePacket}
+     * 
+     */
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-		if (this.jsonObject == null)
-		{
-			return;
-		}
+        //Fluid Item...
+        if (this.getFluidItem() != null) {
+            returnVal.add(JSONMapping.FLUID_ITEM, this.getFluidItem().toJsonObject());
+        }
 
-		//Fluid Item...
-		if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
+        //Flow Step Rule...
+        if (this.getFlowStepRule() != null) {
+            returnVal.add(JSONMapping.FLOW_STEP_RULE, this.getFlowStepRule().toJsonObject());
+        }
 
-			this.setFluidItem(new FluidItem(this.jsonObject.getJSONObject(
-					JSONMapping.FLUID_ITEM)));
-		}
+        return returnVal;
+    }
 
-		//Flow Step Rule...
-		if (!this.jsonObject.isNull(JSONMapping.FLOW_STEP_RULE)) {
+    /**
+     * Gets the rule to execute.
+     *
+     * @return Rule to execute.
+     * @see FlowStepRule
+     */
+    public FlowStepRule getFlowStepRule() {
+        return this.flowStepRule;
+    }
 
-			this.setFlowStepRule(new FlowStepRule(
-					this.jsonObject.getJSONObject(JSONMapping.FLOW_STEP_RULE)));
-		}
-	}
+    /**
+     * Sets the rule to execute.
+     *
+     * @param flowStepRuleParam Rule to execute.
+     * @see FlowStepRule
+     */
+    public void setFlowStepRule(FlowStepRule flowStepRuleParam) {
+        this.flowStepRule = flowStepRuleParam;
+    }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code FlowItemExecutePacket}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException
-	{
-		JSONObject returnVal = super.toJsonObject();
+    /**
+     * Gets the Fluid item.
+     *
+     * @return Fluid item.
+     * @see FluidItem
+     */
+    public FluidItem getFluidItem() {
+        return this.fluidItem;
+    }
 
-		//Fluid Item...
-		if (this.getFluidItem() != null)
-		{
-			returnVal.put(JSONMapping.FLUID_ITEM,
-					this.getFluidItem().toJsonObject());
-		}
-
-		//Flow Step Rule...
-		if (this.getFlowStepRule() != null)
-		{
-			returnVal.put(JSONMapping.FLOW_STEP_RULE,
-					this.getFlowStepRule().toJsonObject());
-		}
-
-		return returnVal;
-	}
-
-	/**
-	 * Gets the rule to execute.
-	 *
-	 * @return Rule to execute.
-	 *
-	 * @see FlowStepRule
-	 */
-	public FlowStepRule getFlowStepRule() {
-		return this.flowStepRule;
-	}
-
-	/**
-	 * Sets the rule to execute.
-	 *
-	 * @param flowStepRuleParam Rule to execute.
-	 *
-	 * @see FlowStepRule
-	 */
-	public void setFlowStepRule(FlowStepRule flowStepRuleParam) {
-		this.flowStepRule = flowStepRuleParam;
-	}
-
-	/**
-	 * Gets the Fluid item.
-	 *
-	 * @return Fluid item.
-	 *
-	 * @see FluidItem
-	 */
-	public FluidItem getFluidItem() {
-		return this.fluidItem;
-	}
-
-	/**
-	 * Sets the Fluid item.
-	 *
-	 * @param fluidItemParam Fluid item.
-	 *
-	 * @see FluidItem
-	 */
-	public void setFluidItem(FluidItem fluidItemParam) {
-		this.fluidItem = fluidItemParam;
-	}
+    /**
+     * Sets the Fluid item.
+     *
+     * @param fluidItemParam Fluid item.
+     * @see FluidItem
+     */
+    public void setFluidItem(FluidItem fluidItemParam) {
+        this.fluidItem = fluidItemParam;
+    }
 }

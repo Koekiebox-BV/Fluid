@@ -15,52 +15,48 @@
 
 package com.fluidbpm.program.api.vo.attachment;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
+
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Attachment}s.
+ * Represents a {@code List} of {@code Attachment}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.8
- *
  * @see Attachment
- * @see ABaseListing
+ * @since v1.8
  */
-public class AttachmentListing extends ABaseListing<Attachment> {
+public class AttachmentListing extends ABaseGSONListing<Attachment> {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    /**
+     * Default constructor.
+     */
+    public AttachmentListing() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public AttachmentListing() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public AttachmentListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public AttachmentListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
-
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Attachment} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Attachment}.
-	 * @return New {@code Attachment} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Attachment getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new Attachment(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Attachment} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Attachment}.
+     * @return New {@code Attachment} instance.
+     */
+    @Override
+    @XmlTransient
+    public Attachment getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new Attachment(jsonObjectParam);
+    }
 }

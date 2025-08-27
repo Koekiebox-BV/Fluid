@@ -16,9 +16,7 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ABaseFluidVO;
-import com.fluidbpm.program.api.vo.ABaseListing;
+import com.fluidbpm.program.api.vo.*;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 
@@ -149,13 +147,11 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 	/**
 	 * Send the {@code baseFluidJSONObjectParam} via Web Socket.
 	 *
-	 * @param baseFluidJSONObjectParam The JSONObject to send.
+	 * @param baseFluidJSONObjectParam The JsonObject to send.
 	 * @param requestIdParam The unique request id.
-	 *
-	 * @see org.json.JSONObject
 	 */
 	public void sendMessage(
-		ABaseFluidJSONObject baseFluidJSONObjectParam,
+		ABaseFluidGSONObject baseFluidJSONObjectParam,
 		String requestIdParam
 	) {
 		if (baseFluidJSONObjectParam != null) {
@@ -368,12 +364,12 @@ public abstract class ABaseClientWebSocket<RespHandler extends IMessageResponseH
 		RespHandler respHandler = this.getHandler(uniqueReqIdParam);
 		if (respHandler instanceof AGenericListMessageHandler) {
 			AGenericListMessageHandler handlerCasted = ((AGenericListMessageHandler)respHandler);
-			List<? extends ABaseFluidJSONObject> returnValue = handlerCasted.getReturnValue();
+			List<? extends ABaseFluidGSONObject> returnValue = handlerCasted.getReturnValue();
 			if (returnValue != null) {
 				returnValSize = returnValue.size();
 				returnValue.forEach(listingItm -> {
-					if (listingItm instanceof ABaseListing) {
-						ABaseListing castedToListing = (ABaseListing)listingItm;
+					if (listingItm instanceof ABaseGSONListing) {
+						ABaseGSONListing castedToListing = (ABaseGSONListing)listingItm;
 						formFieldsCombined.append(castedToListing.toJsonObject().toString());
 					} else {
 						formFieldsCombined.append(listingItm.toString());

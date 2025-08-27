@@ -15,13 +15,6 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.json.JSONObject;
-
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -31,6 +24,12 @@ import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
+import com.google.gson.JsonObject;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Java Web Socket Client for {@code SQLUtil} related actions.
@@ -38,7 +37,7 @@ import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
+ * @see JsonObject
  * @see WS.Path.FlowItem
  * @see FluidItem
  */
@@ -245,7 +244,7 @@ public class SQLUtilWebSocketGetAncestorClient extends
 		 * @return new {@code Form}.
 		 */
 		@Override
-		public Form getNewInstanceBy(JSONObject jsonObjectParam) {
+		public Form getNewInstanceBy(JsonObject jsonObjectParam) {
 			return new Form(jsonObjectParam);
 		}
 	}

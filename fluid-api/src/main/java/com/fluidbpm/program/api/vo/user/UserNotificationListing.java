@@ -17,24 +17,22 @@ package com.fluidbpm.program.api.vo.user;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code UserNotification}s.
+ * Represents a {@code List} of {@code UserNotification}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.8
- *
  * @see UserNotification
- * @see ABaseListing
+ * @see ABaseGSONListing
+ * @since v1.8
  */
-public class UserNotificationListing extends ABaseListing<UserNotification> {
+public class UserNotificationListing extends ABaseGSONListing<UserNotification> {
 
-    public static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Default constructor.
@@ -48,7 +46,7 @@ public class UserNotificationListing extends ABaseListing<UserNotification> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserNotificationListing(JSONObject jsonObjectParam){
+    public UserNotificationListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
     }
 
@@ -60,7 +58,7 @@ public class UserNotificationListing extends ABaseListing<UserNotification> {
      */
     @Override
     @XmlTransient
-    public UserNotification getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public UserNotification getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new UserNotification(jsonObjectParam);
     }
 }

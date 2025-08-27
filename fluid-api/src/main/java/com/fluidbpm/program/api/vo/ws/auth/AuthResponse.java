@@ -15,26 +15,23 @@
 
 package com.fluidbpm.program.api.vo.ws.auth;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
 
 /**
  * Response to an authorization request.
  *
  * @author jasonbruwer
- * @since v1.0
- *
- * @see ABaseFluidJSONObject
+ * @see ABaseFluidGSONObject
  * @see TokenStatus
  * @see AppRequestToken
  * @see AuthRequest
  * @see AuthEncryptedData
+ * @since v1.0
  */
-public class AuthResponse extends ABaseFluidJSONObject {
-
-    public static final long serialVersionUID = 1L;
+public class AuthResponse extends ABaseFluidGSONObject {
+    private static final long serialVersionUID = 1L;
 
     private String salt;
 
@@ -71,38 +68,16 @@ public class AuthResponse extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public AuthResponse(JSONObject jsonObjectParam) {
+    public AuthResponse(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-        //Salt...
-        if (!this.jsonObject.isNull(JSONMapping.SALT)) {
-            this.setSalt(this.jsonObject.getString(JSONMapping.SALT));
-        }
-
-        //Encrypted Data Base64
-        if (!this.jsonObject.isNull(JSONMapping.ENCRYPTED_DATA_BASE_64)) {
-            this.setEncryptedDataBase64(this.jsonObject.getString(JSONMapping.ENCRYPTED_DATA_BASE_64));
-        }
-
-        //Encrypted Data HMAC Base64
-        if (!this.jsonObject.isNull(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64)) {
-            this.setEncryptedDataHmacBase64(this.jsonObject.getString(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64));
-        }
-
-        //IV Base 64...
-        if (!this.jsonObject.isNull(JSONMapping.IV_BASE_64)) {
-            this.setIvBase64(this.jsonObject.getString(JSONMapping.IV_BASE_64));
-        }
-
-        //IV Base 64...
-        if (!this.jsonObject.isNull(JSONMapping.SEED_BASE_64)) {
-            this.setSeedBase64(this.jsonObject.getString(JSONMapping.SEED_BASE_64));
-        }
-
-        //Service Ticket 64...
-        if (!this.jsonObject.isNull(JSONMapping.SERVICE_TICKET_BASE_64)) {
-            this.setServiceTicketBase64(this.jsonObject.getString(JSONMapping.SERVICE_TICKET_BASE_64));
-        }
+        this.setSalt(this.getAsStringNullSafe(JSONMapping.SALT));
+        this.setEncryptedDataBase64(this.getAsStringNullSafe(JSONMapping.ENCRYPTED_DATA_BASE_64));
+        this.setEncryptedDataHmacBase64(this.getAsStringNullSafe(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64));
+        this.setIvBase64(this.getAsStringNullSafe(JSONMapping.IV_BASE_64));
+        this.setSeedBase64(this.getAsStringNullSafe(JSONMapping.SEED_BASE_64));
+        this.setServiceTicketBase64(this.getAsStringNullSafe(JSONMapping.SERVICE_TICKET_BASE_64));
     }
 
     /**
@@ -179,7 +154,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
 
     /**
      * Gets the seed in Base-64 format.
-     *
+     * <p>
      * https://en.wikipedia.org/wiki/SEED
      *
      * @return Seed in Base-64 format.
@@ -190,7 +165,7 @@ public class AuthResponse extends ABaseFluidJSONObject {
 
     /**
      * Sets the seed in Base-64 format.
-     *
+     * <p>
      * https://en.wikipedia.org/wiki/SEED
      *
      * @param seedBase64 Seed in Base-64 format.
@@ -221,44 +196,18 @@ public class AuthResponse extends ABaseFluidJSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code AuthResponse}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * 
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        JSONObject returnVal = super.toJsonObject();
-
-        //Salt...
-        if (this.getSalt() != null) {
-            returnVal.put(JSONMapping.SALT, this.getSalt());
-        }
-
-        //Encrypted Data Base 64...
-        if (this.getEncryptedDataBase64() != null) {
-            returnVal.put(JSONMapping.ENCRYPTED_DATA_BASE_64, this.getEncryptedDataBase64());
-        }
-
-        //Encrypted Data HMAC Base 64...
-        if (this.getEncryptedDataHmacBase64() != null) {
-            returnVal.put(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64, this.getEncryptedDataHmacBase64());
-        }
-
-        //IV Base 64...
-        if (this.getIvBase64() != null) {
-            returnVal.put(JSONMapping.IV_BASE_64, this.getIvBase64());
-        }
-
-        //Seed Base 64...
-        if (this.getSeedBase64() != null) {
-            returnVal.put(JSONMapping.SEED_BASE_64, this.getSeedBase64());
-        }
-
-        //Service Ticket Base 64...
-        if (this.getServiceTicketBase64() != null) {
-            returnVal.put(JSONMapping.SERVICE_TICKET_BASE_64, this.getServiceTicketBase64());
-        }
+        this.setAsProperty(JSONMapping.SALT, returnVal, this.getSalt());
+        this.setAsProperty(JSONMapping.ENCRYPTED_DATA_BASE_64, returnVal, this.getEncryptedDataBase64());
+        this.setAsProperty(JSONMapping.ENCRYPTED_DATA_HMAC_BASE_64, returnVal, this.getEncryptedDataHmacBase64());
+        this.setAsProperty(JSONMapping.IV_BASE_64, returnVal, this.getIvBase64());
+        this.setAsProperty(JSONMapping.SEED_BASE_64, returnVal, this.getSeedBase64());
+        this.setAsProperty(JSONMapping.SERVICE_TICKET_BASE_64, returnVal, this.getServiceTicketBase64());
 
         return returnVal;
     }

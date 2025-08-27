@@ -1,6 +1,6 @@
 package com.fluidbpm.ws.client.v1.sqlutil.sqlnative;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
@@ -37,7 +37,7 @@ public class SQLResultSetMessageHandler extends AGenericListMessageHandler<SQLRe
 	 * @return new {@code SQLResultSet}.
 	 */
 	@Override
-	public SQLResultSet getNewInstanceBy(JSONObject jsonObjectParam) {
+	public SQLResultSet getNewInstanceBy(JsonObject jsonObjectParam) {
 		return new SQLResultSet(jsonObjectParam);
 	}
 }

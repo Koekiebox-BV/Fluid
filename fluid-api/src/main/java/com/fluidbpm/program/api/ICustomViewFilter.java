@@ -25,41 +25,40 @@ import java.util.List;
 /**
  * Implement this <code>interface</code> when you want Fluid to make use of a custom
  * filter to filter when a VIEW is actioned.
- *
+ * <p>
  * The schedules are configured within Fluid.
  *
  * @author jasonbruwer
- * @since v1.12
- *
  * @see Form
  * @see FluidItem
  * @see com.fluidbpm.program.api.vo.flow.JobView
+ * @since v1.12
  */
 public interface ICustomViewFilter extends IActionBase {
 
-	/**
-	 * <code>Execute Order (2)</code>
-	 *
-	 * The name of the custom field filter in order to know which to execute.
-	 *
-	 * @return The Fluid Implementation <code>Unique View Filter Identifier</code>.
-	 */
-	String getFilterIdentifier();
+    /**
+     * <code>Execute Order (2)</code>
+     * <p>
+     * The name of the custom field filter in order to know which to execute.
+     *
+     * @return The Fluid Implementation <code>Unique View Filter Identifier</code>.
+     */
+    String getFilterIdentifier();
 
-	/**
-	 * <code>Execute Order (3)</code>
-	 *
-	 * Performs the {@code execute} action to create a sub-set of items from {@code allItemsFromStep}.
-	 * The custom view filter is ideal to cater for more complex filters not satisfied by the base workflow functionality.
-	 *
-	 * @param allItemsFromStep All the {@code FluidItem}'s from the step associated with {@code viewInvoked}.
-	 * @param viewInvoked The {@code JobView} that was invoked.
-	 * @param loggedInUser The currently logged in {@code User} who invoked the view.
-	 * @return A {@code List<FluidItem>} list of items which need to be sub-set of {@code allItemsFromStep}
-	 * @throws Exception If any problems occur during execution.
-	 *         The FlowItem will be moved into an <code>Erroneous</code> state.
-	 * @see FluidItem
-	 * @see JobView
-	 */
-	List<FluidItem> execute(List<FluidItem> allItemsFromStep, JobView viewInvoked, User loggedInUser) throws Exception;
+    /**
+     * <code>Execute Order (3)</code>
+     * <p>
+     * Performs the {@code execute} action to create a sub-set of items from {@code allItemsFromStep}.
+     * The custom view filter is ideal to cater for more complex filters not satisfied by the base workflow functionality.
+     *
+     * @param allItemsFromStep All the {@code FluidItem}'s from the step associated with {@code viewInvoked}.
+     * @param viewInvoked      The {@code JobView} that was invoked.
+     * @param loggedInUser     The currently logged in {@code User} who invoked the view.
+     * @return A {@code List<FluidItem>} list of items which need to be sub-set of {@code allItemsFromStep}
+     * @throws Exception If any problems occur during execution.
+     *                   The FlowItem will be moved into an <code>Erroneous</code> state.
+     * @see FluidItem
+     * @see JobView
+     */
+    List<FluidItem> execute(List<FluidItem> allItemsFromStep, JobView viewInvoked, User loggedInUser) throws Exception;
 }

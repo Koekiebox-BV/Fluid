@@ -17,15 +17,13 @@ package com.fluidbpm.program.api.vo.role;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -33,25 +31,24 @@ import java.util.List;
 
 /**
  * <p>
- *     Represents the Fluid framework user Role.
+ * Represents the Fluid framework user Role.
  * </p>
- *
+ * <p>
  * The following fields are mandatory for creating or updating a Role;
  * Name (create and update)
  * Description (create and update)
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see User
  * @see RoleToFormDefinition
  * @see RoleToJobView
  * @see UserQuery
+ * @since v1.1
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class Role extends ABaseFluidJSONObject {
+public class Role extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -105,97 +102,32 @@ public class Role extends ABaseFluidJSONObject {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public Role(JSONObject jsonObjectParam){
+    public Role(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Name:
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
-        }
-        // Description:
-        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
-        }
-        // Admin Permissions:
-        if (!this.jsonObject.isNull(JSONMapping.ADMIN_PERMISSIONS)) {
-            JSONArray adminPermissionListing =
-                    this.jsonObject.getJSONArray(JSONMapping.ADMIN_PERMISSIONS);
-            List<String> adminPermissionList = new ArrayList<>();
-            for (int index = 0;index < adminPermissionListing.length();index++) {
-                adminPermissionList.add(adminPermissionListing.getString(index));
-            }
-            this.setAdminPermissions(adminPermissionList);
-        }
-        // Custom Permissions:
-        if (!this.jsonObject.isNull(JSONMapping.CUSTOM_PERMISSIONS)) {
-            JSONArray customPermissionListing =
-                    this.jsonObject.getJSONArray(JSONMapping.CUSTOM_PERMISSIONS);
-            List<String> customPermissionList = new ArrayList<>();
-            for (int index = 0;index < customPermissionListing.length();index++) {
-                customPermissionList.add(customPermissionListing.getString(index));
-            }
-            this.setCustomPermissions(customPermissionList);
-        }
-        // Role to Form Definitions:
-        if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_FORM_DEFINITIONS)) {
-            JSONArray roleToFormDefArray = this.jsonObject.getJSONArray(
-                    JSONMapping.ROLE_TO_FORM_DEFINITIONS);
-            List<RoleToFormDefinition> roleToFormDefListing = new ArrayList<>();
-            for (int index = 0;index < roleToFormDefArray.length();index++) {
-                roleToFormDefListing.add(
-                        new RoleToFormDefinition(roleToFormDefArray.getJSONObject(index)));
-            }
-            this.setRoleToFormDefinitions(roleToFormDefListing);
-        }
-        // Role to Form Field to Form Definitions:
-        if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS)) {
-            JSONArray roleToFormDefArray = this.jsonObject.getJSONArray(
-                    JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS);
-            List<RoleToFormFieldToFormDefinition> roleToFormDefListing = new ArrayList<>();
-            for (int index = 0;index < roleToFormDefArray.length();index++) {
-                roleToFormDefListing.add(
-                        new RoleToFormFieldToFormDefinition(roleToFormDefArray.getJSONObject(index)));
-            }
-            this.setRoleToFormFieldToFormDefinitions(roleToFormDefListing);
-        }
-        //Role to Job Views...
-        if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_JOB_VIEWS)) {
-            JSONArray roleToJobViewDefArray = this.jsonObject.getJSONArray(
-                    JSONMapping.ROLE_TO_JOB_VIEWS);
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
 
-            List<RoleToJobView> roleToFormDefListing = new ArrayList<>();
-            for (int index = 0;index < roleToJobViewDefArray.length();index++) {
-                roleToFormDefListing.add(
-                        new RoleToJobView(roleToJobViewDefArray.getJSONObject(index)));
-            }
-            this.setRoleToJobViews(roleToFormDefListing);
-        }
-        //Role to User Queries...
-        if (!this.jsonObject.isNull(JSONMapping.ROLE_TO_USER_QUERIES)) {
-            JSONArray userQueryArray = this.jsonObject.getJSONArray(
-                    JSONMapping.ROLE_TO_USER_QUERIES);
-            List<RoleToUserQuery> userQueryListing = new ArrayList<>();
-            for (int index = 0;index < userQueryArray.length();index++) {
-                userQueryListing.add(
-                        new RoleToUserQuery(userQueryArray.getJSONObject(index)));
-            }
-            this.setRoleToUserQueries(userQueryListing);
-        }
+        this.setAdminPermissions(this.extractStrings(JSONMapping.ADMIN_PERMISSIONS));
+        this.setCustomPermissions(this.extractStrings(JSONMapping.CUSTOM_PERMISSIONS));
+        this.setRoleToFormDefinitions(this.extractObjects(JSONMapping.ROLE_TO_FORM_DEFINITIONS, RoleToFormDefinition::new));
+        this.setRoleToFormFieldToFormDefinitions(this.extractObjects(JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS, RoleToFormFieldToFormDefinition::new));
+        this.setRoleToJobViews(this.extractObjects(JSONMapping.ROLE_TO_JOB_VIEWS, RoleToJobView::new));
+        this.setRoleToUserQueries(this.extractObjects(JSONMapping.ROLE_TO_USER_QUERIES, RoleToUserQuery::new));
     }
 
     /**
      * Convert the comma-separated list of roles as objects.
-     * @param roleListing The comma separated role listing.
-     *                         Example; {@code "Admin, Super Admin, HR, Finance"}
      *
+     * @param roleListing The comma separated role listing.
+     *                    Example; {@code "Admin, Super Admin, HR, Finance"}
      * @return The {@code roleListingParam} as {@code Role} objects.
      */
     @XmlTransient
     @JsonIgnore
     public static List<Role> convertToObjects(String roleListing) {
         if (roleListing == null || roleListing.trim().isEmpty()) return null;
-
         String[] listOfRoles = roleListing.split(UtilGlobal.REG_EX_COMMA);
         List<Role> returnVal = new ArrayList<>();
         for (String roleName : listOfRoles) {
@@ -203,7 +135,6 @@ public class Role extends ABaseFluidJSONObject {
             roleToAdd.setName(roleName.trim());
             returnVal.add(roleToAdd);
         }
-
         return returnVal;
     }
 
@@ -211,73 +142,22 @@ public class Role extends ABaseFluidJSONObject {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code Role}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-        JSONObject returnVal = super.toJsonObject();
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-        //Name...
-        if (this.getName() != null) {
-            returnVal.put(JSONMapping.NAME,this.getName());
-        }
-
-        //Description...
-        if (this.getDescription() != null) {
-            returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
-        }
-
-        //Admin Permissions...
-        if (this.getAdminPermissions() != null && !this.getAdminPermissions().isEmpty()) {
-            JSONArray adminPerArr = new JSONArray();
-            for (String toAdd : this.getAdminPermissions()) adminPerArr.put(toAdd);
-            returnVal.put(JSONMapping.ADMIN_PERMISSIONS, adminPerArr);
-        }
-
-        // Custom Permissions...
-        if (this.getCustomPermissions() != null && !this.getCustomPermissions().isEmpty()) {
-            JSONArray custPerArr = new JSONArray();
-            for (String toAdd : this.getCustomPermissions()) custPerArr.put(toAdd);
-            returnVal.put(JSONMapping.CUSTOM_PERMISSIONS, custPerArr);
-        }
-
-        //Role to Form Definitions...
-        if (this.getRoleToFormDefinitions() != null && !this.getRoleToFormDefinitions().isEmpty()) {
-            JSONArray roleToFormDefArr = new JSONArray();
-            for (RoleToFormDefinition toAdd :this.getRoleToFormDefinitions()) {
-                roleToFormDefArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.ROLE_TO_FORM_DEFINITIONS,roleToFormDefArr);
-        }
-
-        //Role To Form Field To Form Definition...
-        if (this.getRoleToFormFieldToFormDefinitions() != null && !this.getRoleToFormFieldToFormDefinitions().isEmpty()) {
-            JSONArray roleToJobViewArr = new JSONArray();
-            for (RoleToFormFieldToFormDefinition toAdd :this.getRoleToFormFieldToFormDefinitions()) {
-                roleToJobViewArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS, roleToJobViewArr);
-        }
-
-        //Role to Job Views...
-        if (this.getRoleToJobViews() != null && !this.getRoleToJobViews().isEmpty()) {
-            JSONArray roleToJobViewArr = new JSONArray();
-            for (RoleToJobView toAdd :this.getRoleToJobViews()) {
-                roleToJobViewArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.ROLE_TO_JOB_VIEWS, roleToJobViewArr);
-        }
-
-        //Role to User Queries...
-        if (this.getRoleToUserQueries() != null && !this.getRoleToUserQueries().isEmpty()) {
-            JSONArray userQueriesArr = new JSONArray();
-            for (RoleToUserQuery toAdd :this.getRoleToUserQueries()) {
-                userQueriesArr.put(toAdd.toJsonObject());
-            }
-            returnVal.put(JSONMapping.ROLE_TO_USER_QUERIES, userQueriesArr);
-        }
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsStringArray(JSONMapping.ADMIN_PERMISSIONS, returnVal, this.getAdminPermissions());
+        this.setAsStringArray(JSONMapping.CUSTOM_PERMISSIONS, returnVal, this.getCustomPermissions());
+        this.setAsObjArray(JSONMapping.ROLE_TO_FORM_DEFINITIONS, returnVal, this::getRoleToFormDefinitions);
+        this.setAsObjArray(JSONMapping.ROLE_TO_FORM_FIELD_TO_FORM_DEFINITIONS, returnVal, this::getRoleToFormFieldToFormDefinitions);
+        this.setAsObjArray(JSONMapping.ROLE_TO_JOB_VIEWS, returnVal, this::getRoleToJobViews);
+        this.setAsObjArray(JSONMapping.ROLE_TO_USER_QUERIES, returnVal, this::getRoleToUserQueries);
+        
         return returnVal;
     }
 }

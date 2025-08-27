@@ -17,15 +17,12 @@ package com.fluidbpm.program.api.vo.userquery;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.ABaseListing;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
@@ -35,9 +32,9 @@ import java.util.List;
 
 /**
  * <p>
- *     Represents a Query that can be executed via the
- *     API. The {@code UserQuery}s are configured from the
- *     Administration.
+ * Represents a Query that can be executed via the
+ * API. The {@code UserQuery}s are configured from the
+ * Administration.
  * </p>
  *
  * @author jasonbruwer
@@ -45,14 +42,13 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class UserQuery extends ABaseListing<FluidItem> {
-    public static final long serialVersionUID = 1L;
+public class UserQuery extends ABaseGSONListing<FluidItem> {
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String description;
 
     private List<String> rules;
-
     private List<Field> inputs;
 
     private Date dateCreated;
@@ -96,7 +92,7 @@ public class UserQuery extends ABaseListing<FluidItem> {
      * Sets the Id and name associated with a 'User Query'.
      *
      * @param userQueryId UserQuery Id.
-     * @param name UserQuery Name.
+     * @param name        UserQuery Name.
      */
     public UserQuery(Long userQueryId, String name) {
         super();
@@ -106,7 +102,8 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
     /**
      * Easy access to execute user query.
-     * @param name Name of query to execute.
+     *
+     * @param name   Name of query to execute.
      * @param inputs Input values for query.
      */
     public UserQuery(String name, List<Field> inputs) {
@@ -117,10 +114,11 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
     /**
      * Easy access to execute user query.
-     * @param name Name of query to execute.
+     *
+     * @param name   Name of query to execute.
      * @param inputs Input values for query.
      */
-    public UserQuery(String name, Field ... inputs) {
+    public UserQuery(String name, Field... inputs) {
         super();
         this.setName(name);
         List<Field> inputsList = new ArrayList<>();
@@ -134,44 +132,15 @@ public class UserQuery extends ABaseListing<FluidItem> {
      *
      * @param jsonObjectParam The JSON Object.
      */
-    public UserQuery(JSONObject jsonObjectParam) {
+    public UserQuery(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
         if (this.jsonObject == null) return;
 
-        //Name...
-        if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-            this.setName(this.jsonObject.getString(JSONMapping.NAME));
-        }
-
-        //Description...
-        if (!this.jsonObject.isNull(JSONMapping.DESCRIPTION)) {
-            this.setDescription(this.jsonObject.getString(JSONMapping.DESCRIPTION));
-        }
-
-        //Inputs...
-        if (!this.jsonObject.isNull(JSONMapping.INPUTS)) {
-            JSONArray fieldsArr = this.jsonObject.getJSONArray(JSONMapping.INPUTS);
-            List<Field> assFields = new ArrayList();
-            for (int index = 0;index < fieldsArr.length();index++) {
-                assFields.add(new Field(fieldsArr.getJSONObject(index)));
-            }
-            this.setInputs(assFields);
-        }
-
-        //Rules...
-        if (!this.jsonObject.isNull(JSONMapping.RULES)) {
-            JSONArray rulesArr = this.jsonObject.getJSONArray(JSONMapping.RULES);
-            List<String> rules = new ArrayList();
-            for (int index = 0;index < rulesArr.length();index++) {
-                rules.add(rulesArr.getString(index));
-            }
-            this.setRules(rules);
-        }
-
-        //Date Created...
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDescription(this.getAsStringNullSafe(JSONMapping.DESCRIPTION));
+        this.setInputs(this.extractObjects(JSONMapping.INPUTS, Field::new));
+        this.setRules(this.extractStrings(JSONMapping.RULES));
         this.setDateCreated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_CREATED));
-
-        //Date Last Updated...
         this.setDateLastUpdated(this.getDateFieldValueFromFieldWithName(JSONMapping.DATE_LAST_UPDATED));
     }
 
@@ -179,45 +148,19 @@ public class UserQuery extends ABaseListing<FluidItem> {
      * Conversion to {@code JSONObject} from Java Object.
      *
      * @return {@code JSONObject} representation of {@code UserQuery}
-     * @throws JSONException If there is a problem with the JSON Body.
-     *
-     * @see ABaseFluidJSONObject#toJsonObject()
+     * 
      */
     @Override
-    public JSONObject toJsonObject() throws JSONException {
-
-        JSONObject returnVal = super.toJsonObject();
-
-        //Name...
-        if (this.getName() != null) returnVal.put(JSONMapping.NAME,this.getName());
-
-        //Description...
-        if (this.getDescription() != null) returnVal.put(JSONMapping.DESCRIPTION,this.getDescription());
-
-        //Inputs...
-        if (this.getInputs() != null) {
-            JSONArray jsonArray = new JSONArray();
-            for (Field toAdd : this.getInputs()) jsonArray.put(toAdd.toJsonObject());
-            returnVal.put(JSONMapping.INPUTS, jsonArray);
-        }
-
-        //Rules...
-        if (this.getRules() != null) {
-            JSONArray jsonArray = new JSONArray();
-            for (String toAdd : this.getRules()) jsonArray.put(toAdd);
-            returnVal.put(JSONMapping.RULES, jsonArray);
-        }
-
-        //Date Created...
-        if (this.getDateCreated() != null)
-            returnVal.put(JSONMapping.DATE_CREATED,
-                    this.getDateAsObjectFromJson(this.getDateCreated()));
-
-        //Date Last Updated...
-        if (this.getDateLastUpdated() != null)
-            returnVal.put(JSONMapping.DATE_LAST_UPDATED,
-                    this.getDateAsObjectFromJson(this.getDateLastUpdated()));
-
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DESCRIPTION, returnVal, this.getDescription());
+        this.setAsObjArray(JSONMapping.INPUTS, returnVal, this::getInputs);
+        this.setAsStringArray(JSONMapping.RULES, returnVal, this.getRules());
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, (this.getDateCreated()));
+        this.setAsProperty(JSONMapping.DATE_LAST_UPDATED, returnVal, (this.getDateLastUpdated()));
         return returnVal;
     }
 
@@ -230,12 +173,13 @@ public class UserQuery extends ABaseListing<FluidItem> {
     @Override
     @XmlTransient
     @JsonIgnore
-    public FluidItem getObjectFromJSONObject(JSONObject jsonObjectParam) {
+    public FluidItem getObjectFromJSONObject(JsonObject jsonObjectParam) {
         return new FluidItem(jsonObjectParam);
     }
 
     /**
      * Extract the field names where the value of the rule is of type {@code INPUT_VALUE}.
+     *
      * @return List of {@code FormField} names.
      */
     @XmlTransient
@@ -247,9 +191,9 @@ public class UserQuery extends ABaseListing<FluidItem> {
 
         for (String rule : this.getRules()) {
             int firstIndexOfBracket = rule.indexOf(LEFT_SQ_BRACKET);
-            int lastIndexOfBracket =rule.indexOf(RIGHT_SQ_BRACKET);
+            int lastIndexOfBracket = rule.indexOf(RIGHT_SQ_BRACKET);
 
-            String formFieldName = rule.substring(firstIndexOfBracket,lastIndexOfBracket+1);
+            String formFieldName = rule.substring(firstIndexOfBracket, lastIndexOfBracket + 1);
             String[] wordsInRule = rule.split(UtilGlobal.REG_EX_SPACE);
             if (wordsInRule == null || wordsInRule.length == 0) continue;
 

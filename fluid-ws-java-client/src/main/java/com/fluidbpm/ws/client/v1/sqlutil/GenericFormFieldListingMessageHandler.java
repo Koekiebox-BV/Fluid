@@ -15,7 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
@@ -65,7 +65,7 @@ public class GenericFormFieldListingMessageHandler extends AGenericListMessageHa
 	 * @return new {@code FormFieldListing}.
 	 */
 	@Override
-	public FormFieldListing getNewInstanceBy(JSONObject jsonObjectParam) {
+	public FormFieldListing getNewInstanceBy(JsonObject jsonObjectParam) {
 		return new FormFieldListing(jsonObjectParam);
 	}
 }

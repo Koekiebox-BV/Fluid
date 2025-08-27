@@ -26,9 +26,10 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
-import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -155,10 +156,11 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                     .orElse(null);
             TestCase.assertNotNull(adminUpdated);
 
-            JSONObject adminJson = new JSONObject(adminUpdated.getFormContainerFieldValuesJSON());
+
+            JsonObject adminJson = JsonParser.parseString(adminUpdated.getFormContainerFieldValuesJSON()).getAsJsonObject();
 
             TestCase.assertEquals(auditForm.getTitle(), adminJson.get("title"));
-            TestCase.assertEquals(9, adminJson.length());
+            TestCase.assertEquals(9, adminJson.keySet().size());
         }
     }
 

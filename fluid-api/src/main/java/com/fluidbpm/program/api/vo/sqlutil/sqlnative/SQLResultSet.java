@@ -15,50 +15,49 @@
 
 package com.fluidbpm.program.api.vo.sqlutil.sqlnative;
 
-import com.fluidbpm.program.api.vo.ABaseListing;
-import org.json.JSONObject;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code SQLRow}s.
+ * Represents a {@code List} of {@code SQLRow}s.
  * </p>
  *
  * @author jasonbruwer on 2018-05-26
- * @since v1.8
- *
  * @see SQLRow
- * @see ABaseListing
+ * @see ABaseGSONListing
+ * @since v1.8
  */
-public class SQLResultSet extends ABaseListing<SQLRow> {
-	public static final long serialVersionUID = 1L;
+public class SQLResultSet extends ABaseGSONListing<SQLRow> {
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor.
-	 */
-	public SQLResultSet() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public SQLResultSet() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public SQLResultSet(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public SQLResultSet(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code SQLRow} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code SQLRow}.
-	 * @return New {@code SQLRow} instance.
-	 */
-	@Override
-	@XmlTransient
-	public SQLRow getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new SQLRow(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code SQLRow} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code SQLRow}.
+     * @return New {@code SQLRow} instance.
+     */
+    @Override
+    @XmlTransient
+    public SQLRow getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new SQLRow(jsonObjectParam);
+    }
 }

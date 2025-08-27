@@ -22,10 +22,11 @@ import com.fluidbpm.program.api.vo.webkit.global.WebKitGlobal;
 import com.fluidbpm.program.api.vo.webkit.global.WebKitPersonalInventory;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.Builder;
 import lombok.Data;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -95,10 +96,10 @@ public class MigratorConfig {
         // WebKit:
         if (opts.webKitGlobal != null) {
             Configuration existing = getConfigurationSafe(cc, Configuration.Key.WebKit);
-            JSONObject wkGlobalJson = opts.webKitGlobal.toJsonObject();
-            JSONObject existingJson;
-            if (existing == null) existingJson = new JSONObject();
-            else existingJson = new JSONObject(existing.getValue());
+            JsonObject wkGlobalJson = opts.webKitGlobal.toJsonObject();
+            JsonObject existingJson;
+            if (existing == null) existingJson = new JsonObject();
+            else existingJson = JsonParser.parseString(existing.getValue()).getAsJsonObject();
 
             copyJSONFieldsNotSet(existingJson, wkGlobalJson);
 
@@ -107,10 +108,10 @@ public class MigratorConfig {
         // WebKit: PI
         if (opts.webKitPersonalInventory != null) {
             Configuration existing = getConfigurationSafe(cc, Configuration.Key.WebKitPersonalInventory);
-            JSONObject wkPIJson = opts.webKitPersonalInventory.toJsonObject();
-            JSONObject existingJson;
-            if (existing == null) existingJson = new JSONObject();
-            else existingJson = new JSONObject(existing.getValue());
+            JsonObject wkPIJson = opts.webKitPersonalInventory.toJsonObject();
+            JsonObject existingJson;
+            if (existing == null) existingJson = new JsonObject();
+            else existingJson = JsonParser.parseString(existing.getValue()).getAsJsonObject();
 
             copyJSONFieldsNotSet(existingJson, wkPIJson);
 
@@ -122,15 +123,15 @@ public class MigratorConfig {
             Configuration existing = getConfigurationSafe(cc, Configuration.Key.CustomPermissionMapping);
             boolean update = false;
             if (existing != null && UtilGlobal.isNotBlank(existing.getValue())) {
-                JSONArray array = new JSONArray(existing.getValue());
+                JsonArray array = JsonParser.parseString(existing.getValue()).getAsJsonArray();
                 for (ICustomPermission perm : opts.customPermissions) {
                     int index = perm.ordinal();
                     String permValFromEnum = perm.getPermission();
-                    JSONObject permJson = array.getJSONObject(index);
-                    String perValue = permJson.optString(CONF_PERM_NAME);
+                    JsonObject permJson = array.get(index).getAsJsonObject();
+                    String perValue = permJson.get(CONF_PERM_NAME).getAsString();
                     if (!perValue.equals(permValFromEnum)) update = true;
 
-                    permJson.put(CONF_PERM_NAME, permValFromEnum);
+                    permJson.addProperty(CONF_PERM_NAME, permValFromEnum);
                 }
 
                 if (update) {

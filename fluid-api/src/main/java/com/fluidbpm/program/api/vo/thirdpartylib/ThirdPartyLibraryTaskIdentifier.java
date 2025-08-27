@@ -15,146 +15,135 @@
 
 package com.fluidbpm.program.api.vo.thirdpartylib;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.fluidbpm.program.api.vo.IEnum;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 3rd Party library Task Identifier information.
  *
  * @author jasonbruwer on 2021-01-16
+ * @see ABaseFluidGSONObject
  * @since v1.11
- *
- * @see ABaseFluidJSONObject
  */
 @Getter
 @Setter
-public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidJSONObject {
-	private String libraryFilename;
-	private String librarySha256sum;
-	private String libraryDescription;
+public class ThirdPartyLibraryTaskIdentifier extends ABaseFluidGSONObject {
+    private String libraryFilename;
+    private String librarySha256sum;
+    private String libraryDescription;
 
-	private ThirdPartyLibraryTaskType thirdPartyLibraryTaskType;
-	private String taskIdentifier;
-	private List<Form> formDefinitions;
-	private Long thirdPartyLibraryId;
+    private ThirdPartyLibraryTaskType thirdPartyLibraryTaskType;
+    private String taskIdentifier;
+    private List<Form> formDefinitions;
+    private Long thirdPartyLibraryId;
 
-	/**
-	 * Types of 3rd party programs.
-	 */
-	public enum ThirdPartyLibraryTaskType {
-		CustomProgram,
-		CustomWebAction,
-		CustomScheduledAction,
-		CalculatedFieldAction
-	}
+    /**
+     * Types of 3rd party programs.
+     */
+    public enum ThirdPartyLibraryTaskType implements IEnum {
+        CustomProgram,
+        CustomWebAction,
+        CustomScheduledAction,
+        CalculatedFieldAction
+    }
 
-	/**
-	 * The JSON mapping for the {@code ThirdPartyLibraryTaskIdentifier} object.
-	 */
-	public static class JSONMapping {
-		public static final String LIBRARY_FILENAME = "libraryFilename";
-		public static final String LIBRARY_SHA256SUM = "librarySha256sum";
-		public static final String LIBRARY_DESCRIPTION = "libraryDescription";
+    /**
+     * The JSON mapping for the {@code ThirdPartyLibraryTaskIdentifier} object.
+     */
+    public static class JSONMapping {
+        public static final String LIBRARY_FILENAME = "libraryFilename";
+        public static final String LIBRARY_SHA256SUM = "librarySha256sum";
+        public static final String LIBRARY_DESCRIPTION = "libraryDescription";
 
-		public static final String THIRD_PARTY_LIBRARY_TASK_TYPE = "thirdPartyLibraryTaskType";
-		public static final String TASK_IDENTIFIER = "taskIdentifier";
-		public static final String FORM_DEFINITIONS = "formDefinitions";
-		public static final String THIRD_PARTY_LIBRARY_ID = "thirdPartyLibraryId";
-	}
+        public static final String THIRD_PARTY_LIBRARY_TASK_TYPE = "thirdPartyLibraryTaskType";
+        public static final String TASK_IDENTIFIER = "taskIdentifier";
+        public static final String FORM_DEFINITIONS = "formDefinitions";
+        public static final String THIRD_PARTY_LIBRARY_ID = "thirdPartyLibraryId";
+    }
 
-	/**
-	 * Sets the Id associated with a Third party library.
-	 *
-	 * @param thirdPartyLibIdParam Third Party Library Id.
-	 */
-	public ThirdPartyLibraryTaskIdentifier(Long thirdPartyLibIdParam) {
-		super();
-		this.setId(thirdPartyLibIdParam);
-	}
+    /**
+     * Sets the Id associated with a Third party library.
+     *
+     * @param thirdPartyLibIdParam Third Party Library Id.
+     */
+    public ThirdPartyLibraryTaskIdentifier(Long thirdPartyLibIdParam) {
+        super();
+        this.setId(thirdPartyLibIdParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public ThirdPartyLibraryTaskIdentifier(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public ThirdPartyLibraryTaskIdentifier(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) return;
 
-		if (!this.jsonObject.isNull(JSONMapping.LIBRARY_FILENAME)) {
-			this.setLibraryFilename(this.jsonObject.getString(JSONMapping.LIBRARY_FILENAME));
-		}
+        this.setLibraryFilename(this.getAsStringNullSafe(JSONMapping.LIBRARY_FILENAME));
+        this.setLibrarySha256sum(this.getAsStringNullSafe(JSONMapping.LIBRARY_SHA256SUM));
+        this.setLibraryDescription(this.getAsStringNullSafe(JSONMapping.LIBRARY_DESCRIPTION));
+        this.setTaskIdentifier(this.getAsStringNullSafe(JSONMapping.TASK_IDENTIFIER));
+        this.setThirdPartyLibraryId(this.getAsLongNullSafe(JSONMapping.THIRD_PARTY_LIBRARY_ID));
 
-		if (!this.jsonObject.isNull(JSONMapping.LIBRARY_SHA256SUM)) {
-			this.setLibrarySha256sum(this.jsonObject.getString(JSONMapping.LIBRARY_SHA256SUM));
-		}
+        String taskTypeStr = this.getAsStringNullSafe(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE);
+        if (taskTypeStr != null && !taskTypeStr.isEmpty()) {
+            this.setThirdPartyLibraryTaskType(ThirdPartyLibraryTaskType.valueOf(taskTypeStr));
+        }
+        this.setFormDefinitions(this.extractObjects(JSONMapping.FORM_DEFINITIONS, Form::new));
+    }
 
-		if (!this.jsonObject.isNull(JSONMapping.LIBRARY_DESCRIPTION)) {
-			this.setLibraryDescription(this.jsonObject.getString(JSONMapping.LIBRARY_DESCRIPTION));
-		}
+    /**
+     * Default constructor.
+     */
+    public ThirdPartyLibraryTaskIdentifier() {
+        super();
+    }
 
-		if (!this.jsonObject.isNull(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE)) {
-			this.setThirdPartyLibraryTaskType(this.jsonObject.getEnum(ThirdPartyLibraryTaskType.class,
-					JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE));
-		}
+    /**
+     * Conversion to {@code JSONObject} from Java Object.
+     *
+     * @return {@code JSONObject} representation of {@code ThirdPartyLibraryTaskIdentifier}
+     * 
+     */
+    @Override
+    @XmlTransient
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-		if (!this.jsonObject.isNull(JSONMapping.TASK_IDENTIFIER)) {
-			this.setTaskIdentifier(this.jsonObject.getString(JSONMapping.TASK_IDENTIFIER));
-		}
+        this.setAsProperty(JSONMapping.THIRD_PARTY_LIBRARY_ID, returnVal, this.getThirdPartyLibraryId());
+        this.setAsProperty(JSONMapping.LIBRARY_FILENAME, returnVal, this.getLibraryFilename());
+        this.setAsProperty(JSONMapping.LIBRARY_SHA256SUM, returnVal, this.getLibrarySha256sum());
+        this.setAsProperty(JSONMapping.LIBRARY_DESCRIPTION, returnVal, this.getLibraryDescription());
+        this.setAsProperty(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE, returnVal, this.getThirdPartyLibraryTaskType());
+        this.setAsProperty(JSONMapping.TASK_IDENTIFIER, returnVal, this.getTaskIdentifier());
+        this.setAsObjArray(JSONMapping.FORM_DEFINITIONS, returnVal, this::getFormDefinitions);
 
-		if (!this.jsonObject.isNull(JSONMapping.THIRD_PARTY_LIBRARY_ID)) {
-			this.setThirdPartyLibraryId(this.jsonObject.getLong(JSONMapping.THIRD_PARTY_LIBRARY_ID));
-		}
-
-		if (!this.jsonObject.isNull(JSONMapping.FORM_DEFINITIONS)) {
-			JSONArray jsonArray = this.jsonObject.getJSONArray(JSONMapping.FORM_DEFINITIONS);
-			List<Form> objs = new ArrayList();
-			for (int index = 0;index < jsonArray.length();index++) objs.add(new Form(jsonArray.getJSONObject(index)));
-			this.setFormDefinitions(objs);
-		}
-	}
-
-	/**
-	 * Default constructor.
-	 */
-	public ThirdPartyLibraryTaskIdentifier() {
-		super();
-	}
-
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code ThirdPartyLibraryTaskIdentifier}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	@XmlTransient
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
-
-		if (this.getThirdPartyLibraryId() != null) returnVal.put(JSONMapping.THIRD_PARTY_LIBRARY_ID, this.getThirdPartyLibraryId());
-		if (this.getLibraryFilename() != null) returnVal.put(JSONMapping.LIBRARY_FILENAME, this.getLibraryFilename());
-		if (this.getLibrarySha256sum() != null) returnVal.put(JSONMapping.LIBRARY_SHA256SUM, this.getLibrarySha256sum());
-		if (this.getLibraryDescription() != null) returnVal.put(JSONMapping.LIBRARY_DESCRIPTION, this.getLibraryDescription());
-		if (this.getThirdPartyLibraryTaskType() != null) returnVal.put(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE, this.getThirdPartyLibraryTaskType());
-		if (this.getTaskIdentifier() != null) returnVal.put(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
-		
-		if (this.getFormDefinitions() != null && !this.getFormDefinitions().isEmpty()) {
-			JSONArray jsonArray = new JSONArray();
-			for (Form toAdd : this.getFormDefinitions()) jsonArray.put(toAdd.toJsonObject());
-			returnVal.put(JSONMapping.FORM_DEFINITIONS, jsonArray);
-		}
-
-		return returnVal;
-	}
+        if (this.getThirdPartyLibraryId() != null)
+            returnVal.addProperty(JSONMapping.THIRD_PARTY_LIBRARY_ID, this.getThirdPartyLibraryId());
+        if (this.getLibraryFilename() != null) {
+            returnVal.addProperty(JSONMapping.LIBRARY_FILENAME, this.getLibraryFilename());
+        }
+        if (this.getLibrarySha256sum() != null)
+            returnVal.addProperty(JSONMapping.LIBRARY_SHA256SUM, this.getLibrarySha256sum());
+        if (this.getLibraryDescription() != null)
+            returnVal.addProperty(JSONMapping.LIBRARY_DESCRIPTION, this.getLibraryDescription());
+        if (this.getThirdPartyLibraryTaskType() != null) {
+            returnVal.addProperty(JSONMapping.THIRD_PARTY_LIBRARY_TASK_TYPE, this.getThirdPartyLibraryTaskType().toString());
+        }
+        if (this.getTaskIdentifier() != null) {
+            returnVal.addProperty(JSONMapping.TASK_IDENTIFIER, this.getTaskIdentifier());
+        }
+        if (this.getFormDefinitions() != null && !this.getFormDefinitions().isEmpty()) {
+            returnVal.add(JSONMapping.FORM_DEFINITIONS, this.toJsonObjArray(this.getFormDefinitions()));
+        }
+        return returnVal;
+    }
 }

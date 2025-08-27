@@ -23,39 +23,36 @@ import com.fluidbpm.program.api.vo.item.FluidItem;
  * Implement this <code>interface</code> when you want Fluid populate a
  * label only field.
  * The value of the field will be calculated based on {@code Field}s of a {@code Form}.
- *
+ * <p>
  * The fields are configured within Fluid.
  *
  * @author jasonbruwer
- * @since v1.8
- *
  * @see Form
  * @see Field
+ * @since v1.8
  *
  */
 public interface ICalculatedLabelField extends IActionBase {
 
-	/**
-	 * <code>Execute Order (2)</code>
-	 *
-	 * The Fluid {@code Field} associated with the {@code sub-class} implementation.
-	 * If there are conflicting field names, only the first will be executed.
-	 *
-	 * @return The Fluid Implementation <code>Field Identifier</code>.
-	 */
-	String getLabelFieldApplicable();
+    /**
+     * <code>Execute Order (2)</code>
+     * <p>
+     * The Fluid {@code Field} associated with the {@code sub-class} implementation.
+     * If there are conflicting field names, only the first will be executed.
+     *
+     * @return The Fluid Implementation <code>Field Identifier</code>.
+     */
+    String getLabelFieldApplicable();
 
-	/**
-	 * <code>Execute Order (3)</code>
-	 *
-	 * @param fluidItemParam {@code FluidItem} that may be used to calculate the field label.
-	 *
-	 * @return The value of the field. String and primitive data types are supported.
-	 * @throws Exception If any problems occur during execution.
-	 *         The field with have a value of {@code -Error Retrieving Value-}
-	 *
-	 * @see FluidItem
-	 * @see Field
-	 */
-	Object calculateFieldValue(FluidItem fluidItemParam) throws Exception;
+    /**
+     * <code>Execute Order (3)</code>
+     *
+     * @param fluidItemParam {@code FluidItem} that may be used to calculate the field label.
+     * @return The value of the field. String and primitive data types are supported.
+     * @throws Exception If any problems occur during execution.
+     *                   The field with have a value of {@code -Error Retrieving Value-}
+     * @see FluidItem
+     * @see Field
+     */
+    Object calculateFieldValue(FluidItem fluidItemParam) throws Exception;
 }

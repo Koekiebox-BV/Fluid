@@ -15,107 +15,99 @@
 
 package com.fluidbpm.program.api.vo.report.system;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
-import com.fluidbpm.program.api.vo.report.ABaseFluidJSONReportObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fluidbpm.program.api.vo.report.ABaseFluidGSONReportObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * User statistics.
  *
  * @author jasonbruwer on 2020-08-20
+ * @see ABaseFluidGSONObject
  * @since v1.11
- * 
- * @see ABaseFluidJSONObject
  */
 @Getter
 @Setter
-public class SystemUpHourMin extends ABaseFluidJSONReportObject {
-	public static final long serialVersionUID = 1L;
+public class SystemUpHourMin extends ABaseFluidGSONReportObject {
+    private static final long serialVersionUID = 1L;
 
-	private int hour;
-	private int minute;
-	private State state = State.Unknown;
+    private int hour;
+    private int minute;
+    private State state = State.Unknown;
 
-	public static enum State {
-		Unknown, Up, Down
-	}
+    public static enum State {
+        Unknown, Up, Down
+    }
 
-	/**
-	 * The JSON mapping for the {@code SystemUpHourMin} object.
-	 */
-	public static class JSONMapping {
-		public static final String HOUR = "hour";
-		public static final String MINUTE = "minute";
-		public static final String STATE = "state";
-	}
+    /**
+     * The JSON mapping for the {@code SystemUpHourMin} object.
+     */
+    public static class JSONMapping {
+        public static final String HOUR = "hour";
+        public static final String MINUTE = "minute";
+        public static final String STATE = "state";
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public SystemUpHourMin() {
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public SystemUpHourMin() {
+        super();
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public SystemUpHourMin(JSONObject jsonObjectParam) {
-		super(jsonObjectParam);
-		if (this.jsonObject == null) {
-			return;
-		}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public SystemUpHourMin(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+        if (this.jsonObject == null) {
+            return;
+        }
 
-		if (this.jsonObject.isNull(JSONMapping.HOUR)) {
-			this.setHour(0);
-		} else {
-			this.setHour(this.jsonObject.getInt(JSONMapping.HOUR));
-		}
+        this.setHour(this.getAsIntegerNullSafeStrictVal(JSONMapping.HOUR));
+        this.setMinute(this.getAsIntegerNullSafeStrictVal(JSONMapping.MINUTE));
+        
+        String stateStr = this.getAsStringNullSafe(JSONMapping.STATE);
+        if (stateStr != null && !stateStr.isEmpty()) {
+            this.setState(State.valueOf(stateStr));
+        } else {
+            this.setState(State.Unknown);
+        }
+    }
 
-		if (this.jsonObject.isNull(JSONMapping.MINUTE)) {
-			this.setMinute(0);
-		} else {
-			this.setMinute(this.jsonObject.getInt(JSONMapping.MINUTE));
-		}
+    /**
+     * Conversion to {@code JsonObject} from Java Object.
+     *
+     * @return {@code JsonObject} representation of {@code SystemUpHourMin}
+     * 
+     */
+    @Override
+    @XmlTransient
+    @JsonIgnore
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-		if (this.jsonObject.isNull(JSONMapping.STATE)) {
-			this.setState(State.Unknown);
-		} else {
-			this.setState(State.valueOf(this.jsonObject.getString(JSONMapping.STATE)));
-		}
-	}
+        this.setAsProperty(JSONMapping.HOUR, returnVal, this.getHour());
+        this.setAsProperty(JSONMapping.MINUTE, returnVal, this.getMinute());
+        if (this.getState() != null) {
+            this.setAsProperty(JSONMapping.STATE, returnVal, this.getState().toString());
+        }
 
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code SystemUpHourMin}
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
+        return returnVal;
+    }
 
-		returnVal.put(JSONMapping.HOUR, this.getHour());
-		returnVal.put(JSONMapping.MINUTE, this.getMinute());
-		if (this.getState() != null) {
-			returnVal.put(JSONMapping.STATE, this.getState());
-		}
-
-		return returnVal;
-	}
-
-	/**
-	 * Comparing the hour and minute.
-	 *
-	 * @return {@code ((this.getHour() * 100) + this.getMinute())}
-	 */
-	public long comparingHourMinute() {
-		return ((this.getHour() * 100) + this.getMinute());
-	}
+    /**
+     * Comparing the hour and minute.
+     *
+     * @return {@code ((this.getHour() * 100) + this.getMinute())}
+     */
+    public long comparingHourMinute() {
+        return ((this.getHour() * 100) + this.getMinute());
+    }
 }

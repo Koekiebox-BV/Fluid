@@ -15,104 +15,83 @@
 
 package com.fluidbpm.program.api.vo.health;
 
-import com.fluidbpm.program.api.vo.ABaseFluidJSONObject;
+import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
- * Connection status for a Fluid instance.
- *
- * @author jasonbruwer on 2023-06-20.
- * @since 1.13
- * @see ABaseFluidJSONObject
- */
+     * Connection status for a Fluid instance.
+     *
+     * @author jasonbruwer on 2023-06-20.
+     * @see ABaseFluidGSONObject
+     * @since 1.13
+     */
 @Getter
 @Setter
 @NoArgsConstructor
-public class DSHealth extends ABaseFluidJSONObject {
-	private String name;
-	private String driver;
-	private String uri;
-	private String username;
-	private Health databaseHealth;
-	private String connectionInfo;
-	private Long connectObtainDurationMillis;
+public class DSHealth extends ABaseFluidGSONObject {
+    private String name;
+    private String driver;
+    private String uri;
+    private String username;
+    private Health databaseHealth;
+    private String connectionInfo;
+    private Long connectObtainDurationMillis;
 
-	/**
-	 * The JSON mapping for the {@code ConnectStatus} object.
-	 */
-	public static class JSONMapping {
-		public static final String NAME = "name";
-		public static final String DRIVER = "driver";
-		public static final String URI = "uri";
-		public static final String USERNAME = "username";
-		public static final String DATABASE_HEALTH = "databaseHealth";
-		public static final String CONNECTION_INFO = "connectionInfo";
-		public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
-	}
+    /**
+     * The JSON mapping for the {@code ConnectStatus} object.
+     */
+    public static class JSONMapping {
+        public static final String NAME = "name";
+        public static final String DRIVER = "driver";
+        public static final String URI = "uri";
+        public static final String USERNAME = "username";
+        public static final String DATABASE_HEALTH = "databaseHealth";
+        public static final String CONNECTION_INFO = "connectionInfo";
+        public static final String CONNECT_OBTAIN_DURATION_MILLIS = "connectObtainDurationMillis";
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObject The JSON Object.
-	 */
-	public DSHealth(JSONObject jsonObject) {
-		super(jsonObject);
-		if (this.jsonObject == null) return;
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObject The JSON Object.
+     */
+    public DSHealth(JsonObject jsonObject) {
+        super(jsonObject);
+        if (this.jsonObject == null) return;
 
-		if (!this.jsonObject.isNull(JSONMapping.NAME)) {
-			this.setName(this.jsonObject.getString(JSONMapping.NAME));
-		}
+        this.setName(this.getAsStringNullSafe(JSONMapping.NAME));
+        this.setDriver(this.getAsStringNullSafe(JSONMapping.DRIVER));
+        this.setUri(this.getAsStringNullSafe(JSONMapping.URI));
+        this.setConnectionInfo(this.getAsStringNullSafe(JSONMapping.CONNECTION_INFO));
 
-		if (!this.jsonObject.isNull(JSONMapping.DRIVER)) {
-			this.setDriver(this.jsonObject.getString(JSONMapping.DRIVER));
-		}
+        String dbHealth = this.getAsStringNullSafe(JSONMapping.DATABASE_HEALTH);
+        if (UtilGlobal.isNotBlank(dbHealth)) {
+            this.setDatabaseHealth(Health.valueOf(dbHealth));
+        }
 
-		if (!this.jsonObject.isNull(JSONMapping.URI)) {
-			this.setUri(this.jsonObject.getString(JSONMapping.URI));
-		}
+        this.setConnectObtainDurationMillis(this.getAsLongNullSafe(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
+    }
 
-		if (!this.jsonObject.isNull(JSONMapping.CONNECTION_INFO)) {
-			this.setConnectionInfo(this.jsonObject.getString(JSONMapping.CONNECTION_INFO));
-		}
+    /**
+     * Conversion to JsonObject from Java Object.
+     *
+     * @return JsonObject representation of this object.
+     */
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObject returnVal = super.toJsonObject();
 
-		if (!this.jsonObject.isNull(JSONMapping.DATABASE_HEALTH)) {
-			this.setDatabaseHealth(this.jsonObject.getEnum(Health.class, JSONMapping.DATABASE_HEALTH));
-		}
+        this.setAsProperty(JSONMapping.NAME, returnVal, this.getName());
+        this.setAsProperty(JSONMapping.DRIVER, returnVal, this.getDriver());
+        this.setAsProperty(JSONMapping.URI, returnVal, this.getUri());
+        this.setAsProperty(JSONMapping.CONNECTION_INFO, returnVal, this.getConnectionInfo());
+        this.setAsProperty(JSONMapping.DATABASE_HEALTH, returnVal, this.getDatabaseHealth());
+        this.setAsProperty(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, returnVal, this.getConnectObtainDurationMillis());
 
-		if (!this.jsonObject.isNull(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS)) {
-			this.setConnectObtainDurationMillis(this.jsonObject.getLong(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS));
-		}
-	}
-
-	/**
-	 * Conversion to {@code JSONObject} from Java Object.
-	 *
-	 * @return {@code JSONObject} representation of {@code FormFlowHistoricData}.
-	 * @throws JSONException If there is a problem with the JSON Body.
-	 *
-	 * @see ABaseFluidJSONObject#toJsonObject()
-	 */
-	@Override
-	public JSONObject toJsonObject() throws JSONException {
-		JSONObject returnVal = super.toJsonObject();
-
-		if (this.getName() != null) returnVal.put(JSONMapping.NAME, this.getName());
-		if (this.getDriver() != null) returnVal.put(JSONMapping.DRIVER, this.getDriver());
-		if (this.getUri() != null) returnVal.put(JSONMapping.URI, this.getUri());
-		if (this.getConnectionInfo() != null) returnVal.put(JSONMapping.CONNECTION_INFO, this.getConnectionInfo());
-
-		if (this.getDatabaseHealth() != null) {
-			returnVal.put(JSONMapping.DATABASE_HEALTH, this.getDatabaseHealth());
-		}
-		
-		if (this.getConnectObtainDurationMillis() != null) {
-			returnVal.put(JSONMapping.CONNECT_OBTAIN_DURATION_MILLIS, this.getConnectObtainDurationMillis());
-		}
-
-		return returnVal;
-	}
+        return returnVal;
+    }
 }

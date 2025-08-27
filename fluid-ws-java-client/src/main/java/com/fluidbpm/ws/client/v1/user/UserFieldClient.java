@@ -20,7 +20,7 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.List;
  * @author jasonbruwer
  * @since v1.0
  *
- * @see JSONObject
+ * @see JsonObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.UserField
  * @see Field
  */

@@ -15,52 +15,49 @@
 
 package com.fluidbpm.program.api.vo.form;
 
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.google.gson.JsonObject;
+
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.json.JSONObject;
-
-import com.fluidbpm.program.api.vo.ABaseListing;
 
 /**
  * <p>
- *     Represents a {@code List} of {@code Form}s.
+ * Represents a {@code List} of {@code Form}s.
  * </p>
  *
  * @author jasonbruwer
- * @since v1.1
- *
  * @see Form
- * @see ABaseListing
+ * @see ABaseGSONListing
+ * @since v1.1
  */
-public class FormListing extends ABaseListing<Form> {
+public class FormListing extends ABaseGSONListing<Form> {
+    private static final long serialVersionUID = 1L;
 
-	public static final long serialVersionUID = 1L;
+    /**
+     * Default constructor.
+     */
+    public FormListing() {
+        super();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	public FormListing() {
-		super();
-	}
+    /**
+     * Populates local variables with {@code jsonObjectParam}.
+     *
+     * @param jsonObjectParam The JSON Object.
+     */
+    public FormListing(JsonObject jsonObjectParam) {
+        super(jsonObjectParam);
+    }
 
-	/**
-	 * Populates local variables with {@code jsonObjectParam}.
-	 *
-	 * @param jsonObjectParam The JSON Object.
-	 */
-	public FormListing(JSONObject jsonObjectParam){
-		super(jsonObjectParam);
-	}
-
-	/**
-	 * Converts the {@code jsonObjectParam} to a {@code Form} object.
-	 *
-	 * @param jsonObjectParam The JSON object to convert to {@code Form}.
-	 * @return New {@code Form} instance.
-	 */
-	@Override
-	@XmlTransient
-	public Form getObjectFromJSONObject(JSONObject jsonObjectParam) {
-		return new Form(jsonObjectParam);
-	}
+    /**
+     * Converts the {@code jsonObjectParam} to a {@code Form} object.
+     *
+     * @param jsonObjectParam The JSON object to convert to {@code Form}.
+     * @return New {@code Form} instance.
+     */
+    @Override
+    @XmlTransient
+    public Form getObjectFromJSONObject(JsonObject jsonObjectParam) {
+        return new Form(jsonObjectParam);
+    }
 }
