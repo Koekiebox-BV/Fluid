@@ -922,7 +922,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
         //Field Value...
         if (this.getFieldValue() != null) {
             //Text...
-            if (this.getFieldValue() instanceof String) {
+            if (this.getFieldValue() instanceof JsonElement) {
+                returnVal.add(JSONMapping.FIELD_VALUE, (JsonElement) this.getFieldValue());
+            } else if (this.getFieldValue() instanceof String) {
                 returnVal.addProperty(JSONMapping.FIELD_VALUE, this.getFieldValueAsString());
             } else if (this.getFieldValue() instanceof Number) {
                 //Decimal...
