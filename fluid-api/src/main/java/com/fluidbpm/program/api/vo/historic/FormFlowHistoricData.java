@@ -105,50 +105,15 @@ public class FormFlowHistoricData extends ABaseFluidGSONObject {
     @Override
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
-        //Date Created...
-        if (this.getDateCreated() != null) {
-            returnVal.addProperty(JSONMapping.DATE_CREATED, this.getDateAsLongFromJson(this.getDateCreated()));
-        }
-
-        //Rule Executed...
-        if (this.getRuleExecuted() != null) {
-            returnVal.addProperty(JSONMapping.RULE_EXECUTED, this.getRuleExecuted());
-        }
-
-        //Rule Executed Result...
-        if (this.getRuleExecutedResult() != null) {
-            returnVal.addProperty(JSONMapping.RULE_EXECUTED_RESULT, this.getRuleExecutedResult());
-        }
-
-        //Rule Order...
-        if (this.getFlowRuleOrder() != null) {
-            returnVal.addProperty(JSONMapping.FLOW_RULE_ORDER, this.getFlowRuleOrder());
-        }
-
-        //Log Entry Type...
-        if (this.getLogEntryType() != null) {
-            returnVal.addProperty(JSONMapping.LOG_ENTRY_TYPE, this.getLogEntryType());
-        }
-
-        //User...
-        if (this.getUser() != null) {
-            returnVal.add(JSONMapping.USER, this.getUser().toJsonObject());
-        }
-
-        //Flow Step...
-        if (this.getFlowStep() != null) {
-            returnVal.add(JSONMapping.FLOW_STEP, this.getFlowStep().toJsonObject());
-        }
-
-        //Form...
-        if (this.getForm() != null) {
-            returnVal.add(JSONMapping.FORM, this.getForm().toJsonObject());
-        }
-
-        //Job View...
-        if (this.getJobView() != null) {
-            returnVal.addProperty(JSONMapping.JOB_VIEW, this.getJobView());
-        }
+        this.setAsProperty(JSONMapping.DATE_CREATED, returnVal, this.getDateCreated());
+        this.setAsProperty(JSONMapping.RULE_EXECUTED, returnVal, this.getRuleExecuted());
+        this.setAsProperty(JSONMapping.RULE_EXECUTED_RESULT, returnVal, this.getRuleExecutedResult());
+        this.setAsProperty(JSONMapping.FLOW_RULE_ORDER, returnVal, this.getFlowRuleOrder());
+        this.setAsProperty(JSONMapping.LOG_ENTRY_TYPE, returnVal, this.getLogEntryType());
+        this.setAsObj(JSONMapping.USER, returnVal, this::getUser);
+        this.setAsObj(JSONMapping.FLOW_STEP, returnVal, this::getFlowStep);
+        this.setAsObj(JSONMapping.FORM, returnVal, this::getForm);
+        this.setAsProperty(JSONMapping.JOB_VIEW, returnVal, this.getJobView());
         return returnVal;
     }
 }
