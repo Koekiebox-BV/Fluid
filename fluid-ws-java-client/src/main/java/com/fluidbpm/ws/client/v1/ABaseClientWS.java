@@ -24,6 +24,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -921,6 +922,8 @@ public abstract class ABaseClientWS implements AutoCloseable {
     public boolean isConnectionValid() {
         try {
             this.getJson(false, WS.Path.Test.Version1.testConnection());
+        } catch (JsonSyntaxException jsonSyntaxException) {
+            return false;
         } catch (FluidClientException flowJobExcept) {
             switch (flowJobExcept.getErrorCode()) {
                 case FluidClientException.ErrorCode.CONNECT_ERROR:
