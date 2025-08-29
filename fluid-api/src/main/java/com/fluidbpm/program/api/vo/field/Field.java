@@ -22,6 +22,7 @@ import com.fluidbpm.program.api.util.elasticsearch.exception.FluidElasticSearchE
 import com.fluidbpm.program.api.vo.ABaseFluidElasticSearchJSONObject;
 import com.fluidbpm.program.api.vo.FluidJSONException;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -941,6 +942,9 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             } else if (this.getFieldValue() instanceof TableField) {
                 //Table Field...
                 returnVal.add(JSONMapping.FIELD_VALUE, ((TableField) this.getFieldValue()).toJsonObject());
+            } else if (this.getFieldValue() instanceof TableRecord) {
+                //Table Record...
+                returnVal.add(JSONMapping.FIELD_VALUE, ((TableRecord) this.getFieldValue()).toJsonObject());
             } else {
                 throw new FluidJSONException(
                         String.format("Object value '%s' of type '%s' is not supported.",
