@@ -379,6 +379,10 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                     if (end == null || end.before(created)) end = created;
 
                     String logEntryType = historyData.getLogEntryType();
+                    if (logEntryType == null) {
+                        throw new IllegalStateException("The log entry type is not set!!!"
+                                + historyData.toJsonObject());
+                    }
                     switch (logEntryType) {
                         case "New Route Item": newRoute = true; break;
                         case "Exit Rule": exit = true; break;

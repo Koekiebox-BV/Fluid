@@ -26,7 +26,6 @@ import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
-import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.flowitem.FlowItemClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
@@ -36,6 +35,8 @@ import org.junit.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.fluidbpm.ws.client.v1.flow.TestFlowClient.TestStatics.FLOW_NAME;
 
 /**
  * Created by jasonbruwer on 14/12/22.
@@ -350,7 +351,7 @@ public class TestFlowStepEntryRuleClient extends ABaseLoggedInTestCase {
 		TestCase.assertNotNull(appRequestToken);
 
 		Flow flowToDel = new Flow();
-		flowToDel.setName("JUnit - Main");
+		flowToDel.setName(FLOW_NAME);
 
 		FlowClient flowClient = new FlowClient(BASE_URL, appRequestToken.getServiceTicket());
 		flowClient.forceDeleteFlow(flowToDel);
