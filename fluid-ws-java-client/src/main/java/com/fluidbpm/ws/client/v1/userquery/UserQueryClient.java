@@ -266,29 +266,32 @@ public class UserQueryClient extends ABaseClientWS {
      * Executes the {@code UserQuery} {@code queryToExecuteParam}
      * and returns the result information.
      *
-     * @param queryToExecuteParam     The UserQuery to execute.
-     * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
-     * @param queryLimitParam         The query limit.
-     * @param offsetParam             The query offset.
-     * @param forceUseDatabaseParam   Force to use underlying database.
+     * @param queryToExecute     The UserQuery to execute.
+     * @param populateAncestorId - Whether the ancestor id should be populated (when applicable).
+     * @param queryLimit         The query limit.
+     * @param offset             The query offset.
+     * @param forceUseDatabase   Force to use underlying database.
      * @return The UserQuery result.
      * @see FluidItemListing
      */
     public FluidItemListing executeUserQuery(
-            UserQuery queryToExecuteParam,
-            boolean populateAncestorIdParam,
-            int queryLimitParam,
-            int offsetParam,
-            boolean forceUseDatabaseParam
+            UserQuery queryToExecute,
+            boolean populateAncestorId,
+            int queryLimit,
+            int offset,
+            boolean forceUseDatabase
     ) {
-        if (queryToExecuteParam != null) queryToExecuteParam.setServiceTicket(this.serviceTicket);
+        if (queryToExecute != null) queryToExecute.setServiceTicket(this.serviceTicket);
 
-        return new FluidItemListing(this.postJson(
-                queryToExecuteParam, WS.Path.UserQuery.Version1.executeUserQuery(
-                        populateAncestorIdParam,
-                        forceUseDatabaseParam,
-                        queryLimitParam,
-                        offsetParam))
+        return new FluidItemListing(
+                this.postJson(
+                        queryToExecute, WS.Path.UserQuery.Version1.executeUserQuery(
+                        populateAncestorId,
+                        forceUseDatabase,
+                        queryLimit,
+                        offset
+                        )
+                )
         );
     }
 
@@ -314,6 +317,38 @@ public class UserQueryClient extends ABaseClientWS {
             int offsetParam,
             boolean forceUseDatabaseParam
     ) {
+        return this.executeUserQueryReturnListing(
+                queryToExecuteParam,
+                populateAncestorIdParam,
+                executeCalculatedLabels,
+                queryLimitParam,
+                offsetParam,
+                forceUseDatabaseParam
+        ).getListing();
+    }
+
+    /**
+     * Executes the {@code UserQuery} {@code queryToExecuteParam}
+     * and returns the result information.
+     *
+     * @param queryToExecuteParam     The UserQuery to execute.
+     * @param populateAncestorIdParam - Whether the ancestor id should be populated (when applicable).
+     * @param executeCalculatedLabels Execute the calculate labels.
+     * @param queryLimitParam         The query limit.
+     * @param offsetParam             The query offset.
+     * @param forceUseDatabaseParam   Force to use underlying database.
+     * @return The UserQuery result.
+     * @see FluidItemListing
+     * @see List<FluidItem>
+     */
+    public FluidItemListing executeUserQueryReturnListing(
+            UserQuery queryToExecuteParam,
+            boolean populateAncestorIdParam,
+            boolean executeCalculatedLabels,
+            int queryLimitParam,
+            int offsetParam,
+            boolean forceUseDatabaseParam
+    ) {
         if (queryToExecuteParam != null) queryToExecuteParam.setServiceTicket(this.serviceTicket);
 
         return new FluidItemListing(this.postJson(
@@ -323,6 +358,6 @@ public class UserQueryClient extends ABaseClientWS {
                         executeCalculatedLabels,
                         queryLimitParam,
                         offsetParam))
-        ).getListing();
+        );
     }
 }
