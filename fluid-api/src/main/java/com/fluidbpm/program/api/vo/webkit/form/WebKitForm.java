@@ -37,6 +37,9 @@ import java.util.List;
 @Getter
 @Setter
 public class WebKitForm extends ABaseFluidGSONObject {
+    private static final String DEF_GROUP = "Add New";
+    private static final String DEF_NEW_INSTANCE = "pi pi-file-o";
+
     private Form form;
     private String inputLayout = InputLayout.VERTICAL;//vertical / advanced
     //The [webKitFormLayoutAdvances] is only applicable for [inputLayout] value 'advanced'.
@@ -73,8 +76,8 @@ public class WebKitForm extends ABaseFluidGSONObject {
     private boolean enableCalculatedLabels;
 
     private String newFormTitleFormula;// string format|Name,Surname
-    private String createNewInstanceIcon = "pi pi-file-o";
-    private String createNewInstanceGroup = "Add New";
+    private String createNewInstanceIcon = DEF_NEW_INSTANCE;
+    private String createNewInstanceGroup = DEF_GROUP;
 
     private boolean enableFormFieldHistory;
 
@@ -475,6 +478,27 @@ public class WebKitForm extends ABaseFluidGSONObject {
         this.getMandatoryFields().stream()
                 .forEach(itm -> returnVal.append(String.format("%s\n", itm)));
         return returnVal.toString();
+    }
+
+    /**
+     * @return The new instance group if set, otherwise [Add New].
+     */
+    public String getCreateNewInstanceGroup() {
+        return UtilGlobal.isBlank(this.createNewInstanceGroup) ? DEF_GROUP : this.createNewInstanceGroup;
+    }
+
+    /**
+     * @return The new instance icon if set, otherwise [pi pi-file-o].
+     */
+    public String getCreateNewInstanceIcon() {
+        return UtilGlobal.isBlank(this.createNewInstanceIcon) ? DEF_NEW_INSTANCE : this.createNewInstanceIcon;
+    }
+
+    /**
+     * @return The attachment display type or [grid] if not set.
+     */
+    public String getAttachmentDisplayType() {
+        return UtilGlobal.isBlank(this.attachmentDisplayType) ? AttachmentDisplayType.GRID : this.attachmentDisplayType;
     }
 
     /**
