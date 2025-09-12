@@ -159,7 +159,7 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
 
             JsonObject adminJson = JsonParser.parseString(adminUpdated.getFormContainerFieldValuesJSON()).getAsJsonObject();
 
-            TestCase.assertEquals(auditForm.getTitle(), adminJson.get("title"));
+            TestCase.assertEquals(auditForm.getTitle(), adminJson.get("title").getAsString());
             TestCase.assertEquals(9, adminJson.keySet().size());
         }
     }

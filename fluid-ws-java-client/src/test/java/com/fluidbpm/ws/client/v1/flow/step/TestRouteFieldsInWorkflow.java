@@ -185,7 +185,7 @@ public class TestRouteFieldsInWorkflow extends ABaseTestFlowStep {
             log.warning(content.toString());
 
             sleepForSeconds(5);
-            TestCase.assertTrue(createdItems.size() > 0);
+            TestCase.assertTrue(!createdItems.isEmpty());
 
             TestCase.assertTrue("Could not reach state where items are all out of workflow.",
                     this.executeUntilInState(fiClient, createdItems, FluidItem.FlowState.NotInFlow, 10));
