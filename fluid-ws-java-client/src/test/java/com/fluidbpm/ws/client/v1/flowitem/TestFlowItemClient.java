@@ -67,11 +67,11 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
         // 0. Create the Flow...
         Flow flowToCreate = new Flow();
-        flowToCreate.setName(TestFlowClient.TestStatics.FLOW_NAME);
+        String flowName = TestFlowClient.TestStatics.FLOW_NAME.concat(" ItmClient");
+        flowToCreate.setName(flowName);
         flowToCreate.setDescription(TestFlowClient.TestStatics.FLOW_DESCRIPTION);
 
         Flow createdFlow = null;
-        String flowName = TestFlowClient.TestStatics.FLOW_NAME;
         try {
             createdFlow = flowClient.createFlow(flowToCreate);
             flowName = createdFlow.getName();

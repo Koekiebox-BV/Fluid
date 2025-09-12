@@ -30,6 +30,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static com.fluidbpm.ws.client.v1.flow.TestFlowClient.TestStatics.FLOW_NAME_JUTF;
+
 /**
  * Created by jasonbruwer on 14/12/22.
  */
@@ -127,7 +129,7 @@ public class TestFlowStepClient extends ABaseLoggedInTestCase {
 
 		//1. The Test Flow Step...
 		Flow createdFlow = new Flow();
-		createdFlow.setName("JUnit Test Flow");
+		createdFlow.setName(FLOW_NAME_JUTF.concat(" - Assignment Test Flow"));
 		createdFlow.setDescription("Test Flow Description.");
 		createdFlow = flowClient.createFlow(createdFlow);
 

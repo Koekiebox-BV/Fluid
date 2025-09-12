@@ -35,6 +35,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.fluidbpm.ws.client.v1.flow.TestFlowClient.TestStatics.FLOW_NAME_JUTF;
+
 /**
  * Created by jasonbruwer on 14/12/22.
  */
@@ -152,7 +154,7 @@ public class TestRoleClient extends ABaseLoggedInTestCase {
 
 		//1. The Test Flow Step...
 		Flow createdFlow = new Flow();
-		createdFlow.setName("JUnit Test Flow");
+		createdFlow.setName(FLOW_NAME_JUTF.concat(" Role Test Flow Step"));
 		createdFlow.setDescription("Test Flow Description.");
 
 		try {
