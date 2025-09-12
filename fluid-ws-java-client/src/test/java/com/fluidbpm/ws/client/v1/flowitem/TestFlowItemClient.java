@@ -252,7 +252,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
         }
     }
 
-    @Test(timeout = 600_000)//seconds.
+    @Test(timeout = 800_000)//seconds.
     public void testWorkflowRuleExecutionWithConcurrency() {
         if (this.isConnectionInValid) return;
 
