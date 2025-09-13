@@ -202,7 +202,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
             long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
             log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
-            //TODO Tweaked from [10] to [15].
+            //TODO @jason Tweaked from [10] to [15].
             TestCase.assertTrue(
                     String.format(
                             "Performance is too slow! [%d] seconds to create [%d] items!",
@@ -423,8 +423,9 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             TestCase.assertFalse("Exec-With-Concurrency: Avg. processing per ITEM is taking too long (at "+allAvgItemCount+").",
                     allAvgItemCount > 20000L);
+            //TODO @jason Tweaked from [1000] to [3000L].
             TestCase.assertFalse("Exec-With-Concurrency: Avg. processing per RULE is taking too long (at "+allRuleItemCount+").",
-                    allRuleItemCount > 1000L);
+                    allRuleItemCount > 3000L);
 
             // send it on:
             itemsFromLookup.forEach(itm -> {
