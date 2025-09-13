@@ -237,7 +237,10 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                         case "Moved to User View": moved = true; break;
                     }
                 }
-                TestCase.assertTrue(UtilGlobal.isAllTrue(flowEnd, newStep, newRoute, usrDone, open, moved));
+                TestCase.assertTrue(String.format(
+                        "Expected outcomes not reached! flowEnd[%s], newStep[%s], newRoute[%s], usrDone[%s], open[%s], moved[%s]",
+                                flowEnd, newStep, newRoute, usrDone, open, moved),
+                        UtilGlobal.isAllTrue(flowEnd, newStep, newRoute, usrDone, open, moved));
                 TestCase.assertNotNull(formById);
                 TestCase.assertEquals("NotInFlow", formById.getFlowState());
                 Double emailUnique = formById.getFieldValueAsDouble("Email Unique Identifier");
