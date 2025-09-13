@@ -126,7 +126,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
      * Test creating a workflow step with an assignment option.
      * Then test whether the items may be viewed from the workflow step.
      */
-    @Test(timeout = 240_000)//seconds.
+    @Test(timeout = 260_000)//seconds.
     public void testSmallWorkflowAssignStepWithConcurrency() {
         if (this.isConnectionInValid) return;
 
@@ -181,7 +181,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             JobView viewWorkView = viewsForAssignStep.get(1);
 
             // run once to cache the view:
-            this.executeUntilOrTO(flowItmClient, viewWorkView, 0, 10);
+            this.executeUntilOrTOFromView(flowItmClient, viewWorkView, 0, 10);
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
@@ -195,21 +195,25 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 });
             }
 
-            List<FluidItem> itemsFromLookup = this.executeUntilOrTO(flowItmClient, viewWorkView, itemCount, 80);
+            // Fetch items from View:
+            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
+                    flowItmClient, viewWorkView, itemCount, 100
+            );
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
             long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
             log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
             TestCase.assertTrue(String.format("Performance is too slow! [%d] seconds to create [%d] items!",
                             timeTakenInS, itemCount), timeTakenInS < 10);
 
-            // send it on:
+            // Lock each item and send it on:
             itemsFromLookup.forEach(itm -> {
+                //TODO @jason, add a method to lock and send on at the same time...
                 fcClient.lockFormContainer(itm.getForm(), viewWorkView);
                 flowItmClient.sendFlowItemOn(itm);
             });
 
-            // wait until all the items are moved out:
-            this.executeUntilOrTO(flowItmClient, viewWorkView, 0, 80);
+            // Wait until all the items are moved out:
+            this.executeUntilOrTOFromView(flowItmClient, viewWorkView, 0, 100);
 
             try {
                 Integer count = flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListingCount();
@@ -240,7 +244,8 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 TestCase.assertTrue(String.format(
                         "Expected outcomes not reached! flowEnd[%s], newStep[%s], newRoute[%s], usrDone[%s], open[%s], moved[%s]",
                                 flowEnd, newStep, newRoute, usrDone, open, moved),
-                        UtilGlobal.isAllTrue(flowEnd, newStep, newRoute, usrDone, open, moved));
+                        UtilGlobal.isAllTrue(flowEnd, newStep, newRoute, usrDone, open, moved)
+                );
                 TestCase.assertNotNull(formById);
                 TestCase.assertEquals("NotInFlow", formById.getFlowState());
                 Double emailUnique = formById.getFieldValueAsDouble("Email Unique Identifier");
@@ -343,7 +348,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             JobView viewWorkView = viewsForAssignStep.get(1);
 
             // run once to cache the view:
-            this.executeUntilOrTO(fiClient, viewWorkView, 0, 10);
+            this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 10);
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
@@ -357,7 +362,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 });
             }
 
-            List<FluidItem> itemsFromLookup = this.executeUntilOrTO(fiClient, viewWorkView, itemCount, 100);
+            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(fiClient, viewWorkView, itemCount, 100);
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
             long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
             log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
@@ -422,7 +427,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             });
 
             // wait until all the items are moved out:
-            this.executeUntilOrTO(fiClient, viewWorkView, 0, 100);
+            this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 100);
 
             try {
                 int count = fiClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing().size();

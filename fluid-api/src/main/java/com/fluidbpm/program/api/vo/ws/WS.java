@@ -326,7 +326,10 @@ public class WS {
                  *                             in user must have permission to perform this action.
                  * @return {@code /v1/form_container/lock_form_container}
                  */
-                public static final String lockFormContainer(Long jobViewIdParam, Long lockingAsUserIdParam) {
+                public static final String lockFormContainer(
+                        Long jobViewIdParam,
+                        Long lockingAsUserIdParam
+                ) {
                     String base = Version.VERSION_1.concat(ROOT).concat(LOCK_FORM_CONTAINER);
 
                     String additionString = "?";

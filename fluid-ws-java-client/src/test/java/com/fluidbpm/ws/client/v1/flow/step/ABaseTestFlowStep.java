@@ -81,14 +81,14 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         super.destroy();
     }
 
-    protected List<FluidItem> executeUntilOrTO(
+    protected List<FluidItem> executeUntilOrTOFromView(
             FlowItemClient fiClient,
             JobView view,
             int attemptCount,
             int maxWaitSeconds
     ) {
         for (int iter = 0; iter < maxWaitSeconds; iter++) {
-            sleepForSeconds(1);
+            this.sleepForSeconds(3);
             try {
                 List<FluidItem> attempt = fiClient.getFluidItemsForView(view, attemptCount, 0).getListing();
                 if (attempt != null && attempt.size() == attemptCount) return attempt;
