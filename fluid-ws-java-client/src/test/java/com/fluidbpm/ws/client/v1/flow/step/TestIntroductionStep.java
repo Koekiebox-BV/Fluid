@@ -242,8 +242,8 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
 
             log.info(String.format("Total(%d): [%d]per-item, [%d]per-rule", ITEM_COUNT_PER_SUB, allAvgItemCount, allRuleItemCount));
 
-            TestCase.assertFalse("Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000L);
-            TestCase.assertFalse("Avg. processing per RULE is taking too long.", allRuleItemCount > 1000L);
+            TestCase.assertFalse("Intro: Avg. processing per ITEM is taking too long.", allAvgItemCount > 5000L);
+            TestCase.assertFalse("Intro: Avg. processing per RULE is taking too long.", allRuleItemCount > 1000L);
         }
     }
 
