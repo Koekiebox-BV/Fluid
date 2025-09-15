@@ -866,4 +866,23 @@ public class UtilGlobal {
             target.add(key, jsonEl);
         }
     }
+
+    /**
+     * Retrieves the first Field object from the provided list where the field name matches the given
+     * field name, ignoring case sensitivity.
+     *
+     * @param list the list of Field objects to search through
+     * @param fieldName the name of the field to search for in the list
+     * @return the first matching Field object from the list if found, or null if no match is found or the fieldName is blank
+     */
+    public static Field fieldFromName(List<Field> list, String fieldName) {
+        if (UtilGlobal.isBlank(fieldName)) return null;
+
+        String fieldNameLower = fieldName.toLowerCase();
+        return list.stream()
+                .filter(itm -> itm.getFieldName() != null &&
+                        fieldNameLower.equals(itm.getFieldName().toLowerCase()))
+                .findFirst()
+                .orElse(null);
+    }
 }

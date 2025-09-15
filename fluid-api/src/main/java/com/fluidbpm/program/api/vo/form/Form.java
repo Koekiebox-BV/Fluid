@@ -577,14 +577,8 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
         if (fieldToSelectFrom == null) return;
         if (fieldName == null || fieldName.trim().isEmpty()) return;
 
-        String fieldNameLower = fieldName.toLowerCase();
         List<Field> copyList = new ArrayList<>(fieldToSelectFrom);
-
-        Field fieldWithName = copyList.stream()
-                .filter(itm -> itm.getFieldName() != null &&
-                        fieldNameLower.equals(itm.getFieldName().toLowerCase()))
-                .findFirst()
-                .orElse(null);
+        Field fieldWithName = UtilGlobal.fieldFromName(copyList, fieldName);
         if (fieldWithName == null) {
             fieldToSelectFrom.add(new Field(fieldName, fieldValue, type));
         } else {

@@ -805,15 +805,8 @@ public class FluidItem extends ABaseFluidGSONObject {
         if (fieldToSelectFrom == null) return;
         if (fieldNameParam == null || fieldNameParam.trim().isEmpty()) return;
 
-        List<Field> copyList = new ArrayList<>();
-        copyList.addAll(fieldToSelectFrom);
-
-        String fieldNameLower = fieldNameParam.toLowerCase();
-        Field fieldWithName = copyList.stream()
-                .filter(itm -> itm.getFieldName() != null &&
-                        fieldNameLower.equals(itm.getFieldName().toLowerCase()))
-                .findFirst()
-                .orElse(null);
+        List<Field> copyList = new ArrayList<>(fieldToSelectFrom);
+        Field fieldWithName = UtilGlobal.fieldFromName(copyList, fieldNameParam);
         if (fieldWithName == null) {
             fieldToSelectFrom.add(new Field(fieldNameParam, fieldValueParam, typeParam));
         } else {

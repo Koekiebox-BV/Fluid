@@ -268,7 +268,11 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
     public void testWorkflowRuleExecutionWithConcurrency() {
         if (this.isConnectionInValid) return;
 
-        int itemCount = 100;
+        int
+                itemCount = 100,
+                tCountNewItems = 10,
+                tCountLockSendOn = 15,
+                tCountDelete = 2;
         try (
                 FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
                 FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
@@ -354,8 +358,8 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             // run once to cache the view:
             this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 10);
 
-            // create the work-items:
-            ExecutorService executor = Executors.newFixedThreadPool(6);
+            // Create the work-items:
+            ExecutorService executor = Executors.newFixedThreadPool(tCountNewItems);
             long itmCreate = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
                 executor.submit(() -> {
@@ -427,10 +431,13 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             TestCase.assertFalse("Exec-With-Concurrency: Avg. processing per RULE is taking too long (at "+allRuleItemCount+").",
                     allRuleItemCount > 3000L);
 
-            // send it on:
+            // Send it on:
+            ExecutorService executorLockSendOn = Executors.newFixedThreadPool(tCountLockSendOn);
             itemsFromLookup.forEach(itm -> {
-                fcClient.lockFormContainer(itm.getForm(), viewWorkView);
-                fiClient.sendFlowItemOn(itm);
+                executorLockSendOn.submit(() -> {
+                    fcClient.lockFormContainer(itm.getForm(), viewWorkView);
+                    fiClient.sendFlowItemOn(itm);
+                });
             });
 
             // wait until all the items are moved out:
@@ -443,13 +450,16 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
             }
 
-            // ensure the correct steps have taken place:
+            // Ensure the correct steps have taken place:
+            ExecutorService executorDelete = Executors.newFixedThreadPool(tCountDelete);
             itemsFromLookup.forEach(itm -> {
-                fcClient.deleteFormContainer(itm.getForm());
+                executorDelete.submit(() -> {
+                    fcClient.deleteFormContainer(itm.getForm());
+                });
             });
 
-            // cleanup:
-            if (flow == null) flow = flowClient.getFlowByName(flowName);
+            // Cleanup:
+            flow = flowClient.getFlowByName(flowName);
             flowClient.forceDeleteFlow(flow);
 
             rfClient.deleteField(rfStatus);

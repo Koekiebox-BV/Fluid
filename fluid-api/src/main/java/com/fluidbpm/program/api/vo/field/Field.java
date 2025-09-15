@@ -36,6 +36,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -826,11 +829,11 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
 
         if (this.getFieldType() == null && fieldValue != null) {
             //Date...
-            if (fieldValue instanceof Instant) {
-                this.setTypeAsEnum(Type.DateTime);
-                Instant asInstant = (Instant) fieldValue;
-                this.fieldValue = Date.from(asInstant);
-            } else if (fieldValue instanceof Date) {
+            if ((fieldValue instanceof Instant || fieldValue instanceof Date) ||
+                    (fieldValue instanceof LocalDate || fieldValue instanceof YearMonth)
+            ) {
+                Date valAsDate = this.attemptConvertToDate(fieldValue);
+                if (valAsDate != null) this.fieldValue = valAsDate;
                 this.setTypeAsEnum(Type.DateTime);
             } else if (fieldValue instanceof Number) {
                 //Number...
@@ -850,7 +853,38 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
             }
         } else if (this.getTypeAsEnum() == Type.MultipleChoice && fieldValue instanceof String) {
             this.fieldValue = new MultiChoice((String) fieldValue);
+        } else if (this.getTypeAsEnum() == Type.DateTime) {
+            Date valAsDate = this.attemptConvertToDate(fieldValue);
+            if (valAsDate != null) this.fieldValue = valAsDate;
         }
+    }
+
+    /**
+     * Attempts to convert the given object to a Date instance. The method supports conversion
+     * from several types such as Date, YearMonth, LocalDate, Instant, and Number. If the given
+     * object cannot be converted, it returns null.
+     *
+     * @param fieldValue the object to be converted to a Date. It can be an instance of Date,
+     *                   YearMonth, LocalDate, Instant, or Number.
+     * @return the converted Date if the input object can be converted, or null if conversion
+     *         is not possible.
+     */
+    private Date attemptConvertToDate(Object fieldValue) {
+        if (fieldValue instanceof Date) return (Date) fieldValue;
+
+        if (fieldValue instanceof YearMonth) {
+            YearMonth casted = (YearMonth)fieldValue;
+            LocalDate lastDayOfMonth = casted.atEndOfMonth();
+            return Date.from(lastDayOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } else if (fieldValue instanceof LocalDate) {
+            LocalDate casted = (LocalDate)fieldValue;
+            return Date.from(casted.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } else if (fieldValue instanceof Instant) {
+            return Date.from((Instant)fieldValue);
+        } else if (fieldValue instanceof Number) {
+            return new Date(((Number) fieldValue).longValue());
+        }
+        return null;// Unable to convert to date.
     }
 
     /**
