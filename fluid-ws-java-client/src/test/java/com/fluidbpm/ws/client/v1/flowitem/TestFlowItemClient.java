@@ -92,7 +92,6 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
         Form formById = fcClient.getFormContainerById(createdItem.getForm().getId());
         List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(createdItem.getForm());
         TestCase.assertNotNull(flowHistoryData);
-
         boolean containFlowEnd = false, containToNewStep = false, containNewRouteItem = false;
         for (FormFlowHistoricData itm : flowHistoryData) {
             String logEntryType = itm.getLogEntryType();
@@ -103,9 +102,11 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             }
         }
 
-        TestCase.assertTrue(containFlowEnd && containToNewStep && containNewRouteItem);
+        TestCase.assertTrue("Not all leg entries were found: " +
+                "FlowEnd["+containFlowEnd+"], ToNewStep["+containToNewStep+"], NewRouteItem["+containNewRouteItem+"]",
+                containFlowEnd && containToNewStep && containNewRouteItem);
         TestCase.assertNotNull(formById);
-        TestCase.assertEquals("NotInFlow", formById.getFlowState());
+        TestCase.assertEquals("Expected work-item to be 'NotInFlow'.", "NotInFlow", formById.getFlowState());
 
         // Confirm item is no longer in flow due to exit rule...
         try {
