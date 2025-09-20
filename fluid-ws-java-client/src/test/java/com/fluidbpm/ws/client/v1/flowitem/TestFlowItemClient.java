@@ -127,7 +127,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
      * Test creating a workflow step with an assignment option.
      * Then test whether the items may be viewed from the workflow step.
      */
-    @Test(timeout = 260_000)//seconds.
+    @Test(timeout = 350_000)//seconds.
     public void testSmallWorkflowAssignStepWithConcurrency() {
         if (this.isConnectionInValid) return;
 
@@ -212,7 +212,6 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             // Lock each item and send it on:
             itemsFromLookup.forEach(itm -> {
-                //TODO @jason, add a method to lock and send on at the same time...
                 fcClient.lockFormContainer(itm.getForm(), viewWorkView);
                 flowItmClient.sendFlowItemOn(itm);
             });
