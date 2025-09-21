@@ -272,7 +272,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 itemCount = 100,
                 tCountNewItems = 10,
                 tCountLockSendOn = 15,
-                tCountDelete = 2;
+                tCountDelete = 1;
         try (
                 FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
                 FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
@@ -441,7 +441,9 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             });
 
             // wait until all the items are moved out:
+            log.info("Waiting for Lock/SendOn to complete.");
             this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 100);
+            log.info("Lock/SendOn completed.");
 
             try {
                 int count = fiClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing().size();
@@ -450,6 +452,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
             }
 
+            log.info("Cleanup all work-items.");
             // Ensure the correct steps have taken place:
             ExecutorService executorDelete = Executors.newFixedThreadPool(tCountDelete);
             itemsFromLookup.forEach(itm -> {
@@ -457,6 +460,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                     fcClient.deleteFormContainer(itm.getForm());
                 });
             });
+            log.info("Removing created workflows and fields.");
 
             // Cleanup:
             flow = flowClient.getFlowByName(flowName);
