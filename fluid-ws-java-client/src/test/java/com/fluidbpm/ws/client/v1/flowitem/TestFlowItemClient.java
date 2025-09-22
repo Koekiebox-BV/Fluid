@@ -461,13 +461,15 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 });
             });
             log.info("Removing created workflows and fields.");
-
             // Cleanup:
             flow = flowClient.getFlowByName(flowName);
+            log.info("Removing flow '"+flow.getName()+"' (by force).");
             flowClient.forceDeleteFlow(flow);
 
+            log.info("Removing fields.");
             rfClient.deleteField(rfStatus);
             rfClient.deleteField(rfEmailFrom);
+            log.info("DONE!");
         }
     }
 }
