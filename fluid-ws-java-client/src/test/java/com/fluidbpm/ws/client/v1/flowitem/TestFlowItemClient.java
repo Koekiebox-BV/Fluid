@@ -452,6 +452,8 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                 if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
             }
 
+            this.sleepForSeconds(2);
+
             log.info("Cleanup all work-items.");
             // Ensure the correct steps have taken place:
             ExecutorService executorDelete = Executors.newFixedThreadPool(tCountDelete);
