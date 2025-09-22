@@ -457,10 +457,16 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             ExecutorService executorDelete = Executors.newFixedThreadPool(tCountDelete);
             itemsFromLookup.forEach(itm -> {
                 executorDelete.submit(() -> {
-                    fcClient.deleteFormContainer(itm.getForm());
+                    try {
+                        fcClient.deleteFormContainer(itm.getForm());
+                    } catch (Exception e) {
+                        TestCase.fail(String.format("Unable to delete! %s", e.getMessage()));
+                        e.printStackTrace();
+                        log.severe("Failed to delete form container for item: "+itm.getId());
+                    }
                 });
             });
-            log.info("Removing created workflows and fields.");
+            log.info("Removing created workflows and fields. First get flow '"+flowName+"'.");
             // Cleanup:
             flow = flowClient.getFlowByName(flowName);
             log.info("Removing flow '"+flow.getName()+"' (by force).");
