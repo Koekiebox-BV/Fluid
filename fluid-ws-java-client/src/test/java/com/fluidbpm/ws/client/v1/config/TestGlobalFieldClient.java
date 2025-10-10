@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.config;
 
 import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.program.api.vo.ws.auth.AppRequestToken;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
@@ -32,43 +31,45 @@ import java.util.List;
  */
 public class TestGlobalFieldClient extends ABaseLoggedInTestCase {
 
-	private LoginClient loginClient;
+    private LoginClient loginClient;
+    @Before
+    public void init() {
+        ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
+        this.loginClient = new LoginClient(BASE_URL);
+    }
 
-	/**
-	 *
-	 */
-	@Before
-	public void init() {
-		ABaseClientWS.IS_IN_JUNIT_TEST_MODE = true;
-		this.loginClient = new LoginClient(BASE_URL);
-	}
+    /**
+     *
+     */
+    @After
+    public void destroy()
+    {
+        this.loginClient.closeAndClean();
+    }
 
-	/**
-	 *
-	 */
-	@After
-	public void destroy()
-	{
-		this.loginClient.closeAndClean();
-	}
+    /**
+     * Fetching of all global fields.
+     */
+    @Test
+    public void testFetchAllGlobalFields() {
+        if (this.isConnectionInValid) return;
 
-	/**
-	 *
-	 */
-	@Test
-	public void testFetchAllGlobalFields() {
-		if (this.isConnectionInValid) return;
+        GlobalFieldClient globalFieldClient = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        List<Field> allGlobals = globalFieldClient.getAllGlobalFields();
 
-		AppRequestToken appRequestToken = this.loginClient.login(USERNAME, PASSWORD);
-		TestCase.assertNotNull(appRequestToken);
+        TestCase.assertNotNull("Fields need to be set.", allGlobals);
+    }
 
-		String serviceTicket = appRequestToken.getServiceTicket();
+    /**
+     * Fetching of all global fields.
+     */
+    @Test
+    public void testFetchByName() {
+        if (this.isConnectionInValid) return;
 
-		GlobalFieldClient globalFieldClient = new GlobalFieldClient(BASE_URL,serviceTicket);
-		List<Field> allGlobals = globalFieldClient.getAllGlobalFields();
-		
-		TestCase.assertNotNull("Fields need to be set.", allGlobals);
-	}
+        GlobalFieldClient globalFieldClient = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
 
-
+        Field nrOfUsers = globalFieldClient.getFieldValueByName("Number of Users");
+        TestCase.assertNotNull("Field need to be set.", nrOfUsers);
+    }
 }
