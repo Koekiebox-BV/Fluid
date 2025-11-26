@@ -36,7 +36,7 @@ import java.util.List;
  * Java Web Service Client for User related actions.
  *
  * @author jasonbruwer
- * @see JSONObject
+ * @see com.fluidbpm.program.api.vo.ABaseFluidGSONObject
  * @see com.fluidbpm.program.api.vo.ws.WS.Path.User
  * @see User
  * @since v1.0

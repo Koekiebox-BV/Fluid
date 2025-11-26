@@ -56,6 +56,15 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class ABaseESUtil extends ABaseSQLUtil {
 
+    /**
+     * The `RestHighLevelClient` instance used for interactions with an Elasticsearch server.
+     * This client provides the means to execute Elasticsearch operations such as indexing, searching,
+     * or managing indices within the scope of the {@code ABaseESUtil} class.
+     *
+     * The client is protected, ensuring it can only be accessed within this class or its subclasses.
+     * It is initialized either through a constructor or at runtime, enabling core Elasticsearch
+     * functionalities to be utilized as defined by the methods of this utility class.
+     */
     protected RestHighLevelClient client;
     protected SQLFormFieldUtil fieldUtil = null;
 

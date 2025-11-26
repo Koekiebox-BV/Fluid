@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  * Sequence for login is as follows;
  *
  * <br>
- * <h1>1. Pre Checks;</h1>
+ * 1. Pre Checks;
  * <br>
  * <p>
  * The API requires the following prerequisites;
@@ -59,7 +59,7 @@ import java.util.concurrent.TimeUnit;
  * to enable AES-256. See http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
  *
  * <br>
- * <h1>2. Authentication Steps</h1>
+ * 2. Authentication Steps
  * <p>
  *     The steps below explains the process of authenticating against the Fluid-API.
  * <br>

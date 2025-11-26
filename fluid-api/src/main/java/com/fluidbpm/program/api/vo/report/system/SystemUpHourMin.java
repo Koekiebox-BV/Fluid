@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * User statistics.
  *
  * @author jasonbruwer on 2020-08-20
- * @see ABaseFluidGSONObject
+ * @see com.fluidbpm.program.api.vo.ABaseFluidGSONObject
  * @since v1.11
  */
 @Getter
