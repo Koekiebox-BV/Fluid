@@ -277,4 +277,38 @@ public class WebKitViewSub extends ABaseFluidGSONObject {
     public String toString() {
         return super.toString();
     }
+
+    /**
+     * Retrieves the {@code RowExpansion} object associated with this instance.
+     * If the {@code RowExpansion} object is not initialized, a new instance
+     * will be created and returned.
+     *
+     * @return The {@code RowExpansion} object associated with this instance.
+     */
+    public RowExpansion getRowExpansion() {
+        if (this.rowExpansion == null) this.rowExpansion = new RowExpansion();
+        return this.rowExpansion;
+    }
+
+    /**
+     * Retrieves the list of {@code WebKitWorkspaceJobView} objects associated with this instance.
+     * If the list is not initialized, a new {@code ArrayList} will be created and returned.
+     *
+     * @return A {@code List} of {@code WebKitWorkspaceJobView} objects representing the job views.
+     */
+    public List<WebKitWorkspaceJobView> getJobViews() {
+        if (this.jobViews == null) this.jobViews = new ArrayList<>();
+        return this.jobViews;
+    }
+
+    /**
+     * Retrieves the list of {@code WebKitWorkspaceRouteField} objects associated with this instance.
+     * If the list is not initialized, a new {@code ArrayList} will be created and returned.
+     *
+     * @return A {@code List} of {@code WebKitWorkspaceRouteField} objects.
+     */
+    public List<WebKitWorkspaceRouteField> getRouteFields() {
+        if (this.routeFields == null) this.routeFields = new ArrayList<>();
+        return this.routeFields;
+    }
 }
