@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.fluidbpm</groupId>
         <artifactId>fluid-root</artifactId>
-        <version>1.14</version>
+        <version>1.15</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -139,9 +139,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${version.plugin.compiler}</version>
                 <configuration>
-                    <source>${version.jdk.compile}</source>
-                    <target>${version.jdk.compile}</target>
-
+                    <release>${maven.compiler.release}</release>
                     <compilerArgs>
                         <!--arg>add-modules</arg>
                         <arg>java.xml.bind</arg-->

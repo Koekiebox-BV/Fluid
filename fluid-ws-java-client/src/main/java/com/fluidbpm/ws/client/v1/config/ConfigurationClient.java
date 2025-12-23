@@ -75,7 +75,9 @@ public class ConfigurationClient extends ABaseClientWS {
 
 
 	/**
-	 * Retrieve the company logo as Base64 configuration.
+	 * Retrieves the company logo configuration.
+	 *
+	 * @return A {@code Configuration} object representing the company logo.
 	 */
 	public Configuration getCompanyLogo() {
 		Configuration configuration = new Configuration();
@@ -84,7 +86,12 @@ public class ConfigurationClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Retrieve the small company logo as Base64 configuration.
+	 * Retrieves the small version of the company logo configuration.
+	 * This method constructs a {@code Configuration} object, assigns
+	 * the current service ticket to it, and sends a request to fetch
+	 * the small company logo settings from the remote service.
+	 *
+	 * @return A {@code Configuration} object containing the small company logo configuration.
 	 */
 	public Configuration getCompanyLogoSmall() {
 		Configuration configuration = new Configuration();
@@ -93,8 +100,12 @@ public class ConfigurationClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Load the small company logo.
-	 * @param logoData The bytes for the logo.
+	 * Loads a small version of the company logo by encoding the provided logo data and
+	 * creating a Configuration object. The service ticket is included in the configuration,
+	 * and the small company logo is updated via a call to the appropriate web service endpoint.
+	 *
+	 * @param logoData The raw byte array representing the company logo to be loaded.
+	 * @return A {@code Configuration} object representing the updated configuration for the small company logo.
 	 */
 	public Configuration loadCompanyLogoSmall(byte[] logoData) {
 		Configuration configuration = new Configuration();
@@ -104,8 +115,13 @@ public class ConfigurationClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Load the large company logo.
-	 * @param logoData The bytes for the logo.
+	 * Loads a large company logo into the system by encoding the provided logo data,
+	 * creating a {@code Configuration} object, and sending a request to update the
+	 * large company logo configuration via the appropriate web service endpoint.
+	 *
+	 * @param logoData The raw byte array representing the company logo to be loaded.
+	 * @return A {@code Configuration} object representing the updated configuration
+	 *         for the large company logo.
 	 */
 	public Configuration loadCompanyLogo(byte[] logoData) {
 		Configuration configuration = new Configuration();

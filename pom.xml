@@ -6,7 +6,7 @@
     <groupId>com.fluidbpm</groupId>
     <artifactId>fluid-root</artifactId>
     <packaging>pom</packaging>
-    <version>1.14</version>
+    <version>1.15</version>
     <name>Fluid Root</name>
     <description>Parent pom providing default setups for all application and admin servers modules.</description>
     <url>https://github.com/Koekiebox-BV/Fluid</url>
@@ -36,7 +36,7 @@
     <properties>
         <!-- Maven-compiler-plugin -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jdk.compile>11</version.jdk.compile>
+        <maven.compiler.release>11</maven.compiler.release>
 
         <!--Plugins-->
         <version.plugin.compiler>3.13.0</version.plugin.compiler>

@@ -80,10 +80,14 @@ public class MigratorFlow {
     }
 
     /**
-     * Migrate a flow.
+     * Migrates a flow by creating or retrieving the necessary flow and its steps, and then
+     * configuring entry, view, and exit rules based on the provided migration options.
      *
-     * @param fc {@code FlowClient}
-     * @param opts {@code OptFlowMigrate}
+     * @param fc The {@code FlowClient} used to manage flows.
+     * @param fsc The {@code FlowStepClient} used to manage steps within a flow.
+     * @param fsrc The {@code FlowStepRuleClient} used to manage rules associated with steps.
+     * @param opts The {@code MigrateOptFlow} object containing migration options such as flow name,
+     *             description, steps, step properties, and rules.
      */
     public static void migrateFlow(
             FlowClient fc,

@@ -19,9 +19,9 @@ import com.fluidbpm.program.api.vo.IEnum;
 
 /**
  * Health rating for a fluid instance.
- * Unhealthy -> Instance is facing errors with the matching service.
- * Healthy -> All is well.
- * Degraded -> Service is operational, but not responsive enough.
+ * Unhealthy - Instance is facing errors with the matching service.
+ * Healthy - All is well.
+ * Degraded - Service is operational, but not responsive enough.
  *
  * @author jasonbruwer on 2023-06-20.
  * @since 1.13

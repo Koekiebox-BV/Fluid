@@ -118,9 +118,12 @@ public class FlowClient extends ABaseClientWS {
 	}
 
 	/**
-	 * Retrieve the Flow View Group configuration by name.
-	 * @return The view group config by name.
-	 * @see WebKitViewGroupListing
+	 * Retrieves a WebKitViewGroup by its name. This method initializes a WebKitViewGroup object,
+	 * assigns the current service ticket and the provided name to it,
+	 * and posts it as a JSON payload to fetch the corresponding WebKitViewGroup from the service.
+	 *
+	 * @param name The name of the WebKitViewGroup to retrieve.
+	 * @return The WebKitViewGroup corresponding to the given name.
 	 */
 	public WebKitViewGroup getViewGroupWebKitByName(String name) {
 		WebKitViewGroup flow = new WebKitViewGroup();
