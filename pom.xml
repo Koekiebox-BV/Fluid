@@ -36,7 +36,7 @@
     <properties>
         <!-- Maven-compiler-plugin -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.jdk.compile>1.8</version.jdk.compile>
+        <version.jdk.compile>11</version.jdk.compile>
 
         <!--Plugins-->
         <version.plugin.compiler>3.13.0</version.plugin.compiler>
@@ -210,7 +210,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.34</version>
+                <version>1.18.42</version>
                 <scope>provided</scope>
             </dependency>
 
