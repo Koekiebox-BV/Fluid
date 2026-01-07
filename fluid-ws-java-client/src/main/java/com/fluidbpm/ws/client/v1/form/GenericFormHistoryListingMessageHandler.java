@@ -29,27 +29,27 @@ import com.google.gson.JsonObject;
  */
 public class GenericFormHistoryListingMessageHandler extends AGenericListMessageHandler<FormHistoricDataListing> {
 
-	/**
-	 * Constructor for FormListing callbacks.
-	 *
-	 * @param messageReceivedCallback The callback events.
-	 * @param webSocketClient The web-socket client.
-	 */
-	public GenericFormHistoryListingMessageHandler(
-		IMessageReceivedCallback<FormHistoricDataListing> messageReceivedCallback,
-		WebSocketClient webSocketClient
-	) {
-		super(messageReceivedCallback, webSocketClient);
-	}
+    /**
+     * Constructor for FormListing callbacks.
+     *
+     * @param messageReceivedCallback The callback events.
+     * @param webSocketClient The web-socket client.
+     */
+    public GenericFormHistoryListingMessageHandler(
+        IMessageReceivedCallback<FormHistoricDataListing> messageReceivedCallback,
+        WebSocketClient webSocketClient
+    ) {
+        super(messageReceivedCallback, webSocketClient);
+    }
 
-	/**
-	 * New {@code FormFieldListing} by {@code jsonObjectParam}
-	 *
-	 * @param jsonObjectParam The JSON Object to parse.
-	 * @return new {@code FormFieldListing}.
-	 */
-	@Override
-	public FormHistoricDataListing getNewInstanceBy(JsonObject jsonObjectParam) {
-		return new FormHistoricDataListing(jsonObjectParam);
-	}
+    /**
+     * New {@code FormFieldListing} by {@code jsonObjectParam}
+     *
+     * @param jsonObjectParam The JSON Object to parse.
+     * @return new {@code FormFieldListing}.
+     */
+    @Override
+    public FormHistoricDataListing getNewInstanceBy(JsonObject jsonObjectParam) {
+        return new FormHistoricDataListing(jsonObjectParam);
+    }
 }

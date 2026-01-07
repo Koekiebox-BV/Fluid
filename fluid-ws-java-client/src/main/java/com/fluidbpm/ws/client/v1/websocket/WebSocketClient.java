@@ -3,6 +3,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import org.glassfish.tyrus.client.ClientManager;
@@ -16,186 +17,263 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * The {@code ClientEndpoint} Web Socket client.
+ * Represents a WebSocket client for managing communication with a WebSocket server.
+ * This class includes methods to handle connection lifecycle events, processing received messages,
+ * and sending messages through the WebSocket.
+ *
+ * @param <RespHandler> Type extending {@link IMessageResponseHandler} for handling server responses.
  *
  * @author jasonbruwer on 2016/03/11.
  * @since 1.1
  */
 @ClientEndpoint()
 public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
+    private Session userSession = null;
+    private final Map<String, RespHandler> messageHandlers;
 
-	private Session userSession = null;
-	private Map<String, RespHandler> messageHandlers;
+    @Getter
+    protected int sentMessages = 0;
+    @Getter
+    protected int receivedMessages = 0;
 
-	@Getter
-	protected int sentMessages = 0;
-	@Getter
-	protected int receivedMessages = 0;
+    @Getter
+    private final Mode mode;
 
-	/**
-	 * Default constructor with an endpoint.
-	 * Establishes a connection to remote.
-	 *
-	 * @param endpointURIParam The Endpoint URI.
-	 * @param messageHandlersParam Map of message handlers.
-	 * @throws DeploymentException If there is a connection problem.
-	 * @throws IOException If there is a I/O problem.
-	 */
-	public WebSocketClient(
-			URI endpointURIParam,
-			Map<String, RespHandler> messageHandlersParam
-	) throws DeploymentException, IOException {
-		this.messageHandlers = messageHandlersParam;
+    public enum Mode {
+        Text,
+        Binary
+    }
 
-		this.sentMessages = 0;
-		this.receivedMessages = 0;
+    /**
+     * Constructs a WebSocketClient with the specified endpoint URI and message handlers.
+     * Establishes a web socket connection to the remote server.
+     *
+     * @param endpointURIParam The URI of the web socket endpoint to connect to.
+     * @param messageHandlersParam A map of message handlers, where the keys represent
+     *                              specific message types and the values are responsible
+     *                              for handling corresponding messages.
+     * @throws DeploymentException If there is an error establishing the web socket connection.
+     * @throws IOException If an I/O error occurs during the connection process.
+     */
+    public WebSocketClient(
+            URI endpointURIParam,
+            Map<String, RespHandler> messageHandlersParam
+    ) throws DeploymentException, IOException {
+        this(endpointURIParam, messageHandlersParam, Mode.Text);
+    }
 
-		//ContainerProvider.getWebSocketContainer()
-		ClientManager clMng = ClientManager.createClient(GrizzlyClientContainer.class.getName());
+    /**
+     * Default constructor with an endpoint.
+     * Establishes a connection to remote.
+     *
+     * @param endpointURIParam The Endpoint URI.
+     * @param messageHandlersParam Map of message handlers.
+     * @param mode Mode to use.
+     * @throws DeploymentException If there is a connection problem.
+     * @throws IOException If there is a I/O problem.
+     */
+    public WebSocketClient(
+            URI endpointURIParam,
+            Map<String, RespHandler> messageHandlersParam,
+            Mode mode
+    ) throws DeploymentException, IOException {
+        this.messageHandlers = messageHandlersParam;
+        this.mode = mode;
 
-		clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, String.valueOf(15000));
-		WebSocketContainer container = clMng;
+        this.sentMessages = 0;
+        this.receivedMessages = 0;
 
-		//WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
-		//WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        //ContainerProvider.getWebSocketContainer()
+        ClientManager clMng = ClientManager.createClient(GrizzlyClientContainer.class.getName());
 
-		int tenMB = (1000000 * 10);
-		int oneGB = (tenMB * 100);
+        clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, String.valueOf(15000));
+        WebSocketContainer container = clMng;
 
-		container.setDefaultMaxTextMessageBufferSize(oneGB);
-		container.setDefaultMaxBinaryMessageBufferSize(oneGB);
+        //WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
+        //WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 
-		container.connectToServer(this, endpointURIParam);
-	}
+        int tenMB = (1000000 * 10);
+        int oneGB = (tenMB * 100);
 
-	/**
-	 * Callback hook for Connection open events.
-	 *
-	 * @param userSession the userSession which is opened.
-	 */
-	@OnOpen
-	public void onOpen(Session userSession) {
-		this.userSession = userSession;
-		// No session timeout:
-		this.userSession.setMaxIdleTimeout(0L);
-		this.receivedMessages = 0;
-		this.sentMessages = 0;
-	}
+        container.setDefaultMaxTextMessageBufferSize(oneGB);
+        container.setDefaultMaxBinaryMessageBufferSize(oneGB);
 
-	/**
-	 * Callback hook for Connection close events.
-	 *
-	 * @param userSession The userSession which is getting closed.
-	 * @param reason The reason for connection close.
-	 *
-	 */
-	@OnClose
-	public void onClose(Session userSession, CloseReason reason) {
-		this.userSession = null;
+        container.connectToServer(this, endpointURIParam);
+    }
 
-		if (this.messageHandlers != null) {
-			this.messageHandlers.values().forEach(handle -> {
-				handle.connectionClosed();
-			});
-		}
-	}
+    /**
+     * Callback hook for Connection open events.
+     *
+     * @param userSession the userSession which is opened.
+     */
+    @OnOpen
+    public void onOpen(Session userSession) {
+        this.userSession = userSession;
+        // No session timeout:
+        this.userSession.setMaxIdleTimeout(0L);
+        this.receivedMessages = 0;
+        this.sentMessages = 0;
+    }
 
-	/**
-	 * Callback hook for Message Events. This method will be invoked when
-	 * a client sends a message.
-	 * @param message The text message.
-	 */
-	@OnMessage
-	public void onMessage(String message) {
-		this.receivedMessages++;
+    /**
+     * Callback hook for Connection close events.
+     *
+     * @param userSession The userSession which is getting closed.
+     * @param reason The reason for connection close.
+     *
+     */
+    @OnClose
+    public void onClose(Session userSession, CloseReason reason) {
+        this.userSession = null;
 
-		boolean handlerFoundForMsg = false;
-		for (IMessageResponseHandler handler :
-				new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
-			Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
-			if (qualifyObj instanceof Error) {
-				handler.handleMessage(qualifyObj);
-			} else if (qualifyObj instanceof JsonObject) {
-				handler.handleMessage(qualifyObj);
-				handlerFoundForMsg = true;
-				break;
-			}
-		}
+        if (this.messageHandlers != null) {
+            this.messageHandlers.values().forEach(IMessageResponseHandler::connectionClosed);
+        }
+    }
 
-		if (!handlerFoundForMsg) {
-			throw new FluidClientException(
-					"No handler found for message;\n"+message,
-					FluidClientException.ErrorCode.IO_ERROR
-			);
-		}
-	}
+    /**
+     * Callback hook for Message Events. This method will be invoked when
+     * a client sends a message.
+     * @param message The text message.
+     */
+    @OnMessage
+    public void onMessage(String message) {
+        this.receivedMessages++;
 
-	/**
-	 * Send a message.
-	 *
-	 * @param aBaseFluidJSONObject The JSON Object to send.
-	 */
-	public void sendMessage(ABaseFluidGSONObject aBaseFluidJSONObject) {
-		if (aBaseFluidJSONObject == null) {
-			throw new FluidClientException("No JSON Object to send.", FluidClientException.ErrorCode.IO_ERROR);
-		} else this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
-	}
+        boolean handlerFoundForMsg = false;
+        for (IMessageResponseHandler handler : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
+            Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
+            if (qualifyObj instanceof Error) {
+                handler.handleMessage(qualifyObj);
+            } else if (qualifyObj instanceof JsonObject) {
+                handler.handleMessage(qualifyObj);
+                handlerFoundForMsg = true;
+                break;
+            }
+        }
 
-	/**
-	 * Send a message as text.
-	 *
-	 * @param messageToSend The text message to send.
-	 */
-	public void sendMessage(String messageToSend) {
-		if (this.userSession == null) {
-			throw new FluidClientException(
-					"User Session is not set. Verify if connection is open.",
-					FluidClientException.ErrorCode.SESSION_EXPIRED
-			);
-		}
+        if (!handlerFoundForMsg) {
+            throw new FluidClientException(
+                    "(Text): No handler found for message;\n"+message,
+                    FluidClientException.ErrorCode.IO_ERROR
+            );
+        }
+    }
 
-		RemoteEndpoint.Async asyncRemote = null;
-		if ((asyncRemote = this.userSession.getAsyncRemote()) == null) {
-			throw new FluidClientException(
-					"Remote Session is not set. Verify if connection is open.",
-					FluidClientException.ErrorCode.IO_ERROR);
-		}
+    /**
+     * Callback hook for receiving binary message events.
+     * Invoked when the server sends a binary message to the client.
+     * @param message The binary message payload received from the server.
+     */
+    @OnMessage
+    public void onMessage(byte[] message) {
+        this.receivedMessages++;
 
-		asyncRemote.sendText(messageToSend);
-		this.sentMessages++;
-	}
+        boolean handlerFoundForMsg = false;
+        for (IMessageResponseHandler handler : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
+            Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
+            if (qualifyObj instanceof Error) {
+                handler.handleMessage(qualifyObj);
+            } else if (qualifyObj instanceof JsonObject) {//TOOD will be handling ANS.1 DER format here.
+                handler.handleMessage(qualifyObj);
+                handlerFoundForMsg = true;
+                break;
+            }
+        }
 
-	/**
-	 * Closes the Web Socket User session.
-	 */
-	public void closeSession() {
-		if (this.userSession == null) return;
+        if (!handlerFoundForMsg) {
+            throw new FluidClientException(
+                    "(Binary): No handler found for message;\n"+ BaseEncoding.base16().encode(message),
+                    FluidClientException.ErrorCode.IO_ERROR
+            );
+        }
+    }
 
-		try {
-			this.userSession.close();
-		} catch (IOException e) {
-			throw new FluidClientException(
-					"Unable to close session. "+e.getMessage(), e, FluidClientException.ErrorCode.IO_ERROR);
-		}
-	}
+    /**
+     * Callback hook for handling errors that occur during WebSocket communication.
+     * This method is invoked when an error is encountered either due to a session issue
+     * or other exceptions during WebSocket events.
+     *
+     * @param session The WebSocket session during which the error occurred.
+     *                It may be {@code null} if the session is unavailable.
+     * @param t The {@code Throwable} error or exception that was encountered.
+     */
+    @OnError
+    public void onError(Session session, Throwable t) {
+        System.err.println("WS error: " + (session != null ? session.getId() : "n/a") + " -> ");
+        t.printStackTrace();
+        for (IMessageResponseHandler handler : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
+            Error err = new Error(FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR, t.getMessage());
+            handler.handleMessage(err);
+        }
+    }
 
-	/**
-	 * Check to see whether the session is open.
-	 *
-	 * @return {@code true} if session is open, otherwise {@code false}.
-	 */
-	public boolean isSessionOpen() {
-		if (this.userSession == null) return false;
-		return this.userSession.isOpen();
-	}
+    /**
+     * Send a message.
+     *
+     * @param aBaseFluidJSONObject The JSON Object to send.
+     */
+    public void sendMessage(ABaseFluidGSONObject aBaseFluidJSONObject) {
+        if (aBaseFluidJSONObject == null) {
+            throw new FluidClientException("No JSON Object to send.", FluidClientException.ErrorCode.IO_ERROR);
+        } else this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
+    }
 
-	/**
-	 * Return the current user session id.
-	 *
-	 * @return {@code Session ID} if session is open, otherwise {@code null}.
-	 */
-	public String getSessionId(){
-		if (this.userSession == null) return null;
-		return this.userSession.getId();
-	}
+    /**
+     * Send a message as text.
+     *
+     * @param messageToSend The text message to send.
+     */
+    public void sendMessage(String messageToSend) {
+        if (this.userSession == null) {
+            throw new FluidClientException(
+                    "User Session is not set. Verify if connection is open.",
+                    FluidClientException.ErrorCode.SESSION_EXPIRED
+            );
+        }
+
+        RemoteEndpoint.Async asyncRemote = null;
+        if ((asyncRemote = this.userSession.getAsyncRemote()) == null) {
+            throw new FluidClientException(
+                    "Remote Session is not set. Verify if connection is open.",
+                    FluidClientException.ErrorCode.IO_ERROR);
+        }
+
+        asyncRemote.sendText(messageToSend);
+        this.sentMessages++;
+    }
+
+    /**
+     * Closes the Web Socket User session.
+     */
+    public void closeSession() {
+        if (this.userSession == null) return;
+
+        try {
+            this.userSession.close();
+        } catch (IOException e) {
+            throw new FluidClientException(
+                    "Unable to close session. "+e.getMessage(), e, FluidClientException.ErrorCode.IO_ERROR);
+        }
+    }
+
+    /**
+     * Check to see whether the session is open.
+     *
+     * @return {@code true} if session is open, otherwise {@code false}.
+     */
+    public boolean isSessionOpen() {
+        if (this.userSession == null) return false;
+        return this.userSession.isOpen();
+    }
+
+    /**
+     * Return the current user session id.
+     *
+     * @return {@code Session ID} if session is open, otherwise {@code null}.
+     */
+    public String getSessionId(){
+        if (this.userSession == null) return null;
+        return this.userSession.getId();
+    }
 }

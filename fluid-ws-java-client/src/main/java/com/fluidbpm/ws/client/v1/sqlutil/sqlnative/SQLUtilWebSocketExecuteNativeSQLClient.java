@@ -43,7 +43,7 @@ import java.util.concurrent.TimeoutException;
  * @see SQLResultSet
  */
 public class SQLUtilWebSocketExecuteNativeSQLClient extends
-		ABaseClientWebSocket<AGenericListMessageHandler<SQLResultSet>> {
+		ABaseClientWebSocket<AGenericListMessageHandler<SQLResultSet>, SQLResultSet> {
 
 	/**
 	 * Constructor that sets the Service Ticket from authentication.

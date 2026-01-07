@@ -7,11 +7,11 @@ import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -27,16 +27,19 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @since 1.1
  */
 public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject> implements IMessageResponseHandler {
+    private final WebSocketClient<?> webSocketClient;
 
-    private WebSocketClient webSocketClient;
-
+    @Getter
     private final List<T> returnValue;
-    private List<Error> errors;
+    @Getter
+    private final List<Error> errors;
 
-    private IMessageReceivedCallback<T> messageReceivedCallback;
+    private final IMessageReceivedCallback<T> messageReceivedCallback;
+    @Getter
     private boolean isConnectionClosed;
 
-    private Set<String> expectedEchoMessagesBeforeComplete;
+    @Getter
+    private final Set<String> expectedEchoMessagesBeforeComplete;
     private CompletableFuture<List<T>> completableFuture;
 
     private boolean compressedResponse;
@@ -52,7 +55,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      */
     public AGenericListMessageHandler(
             IMessageReceivedCallback<T> messageReceivedCallbackParam,
-            WebSocketClient webSocketClientParam,
+            WebSocketClient<?> webSocketClientParam,
             boolean compressedResponseParam
     ) {
         this(messageReceivedCallbackParam, webSocketClientParam);
@@ -67,23 +70,29 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      */
     public AGenericListMessageHandler(
             IMessageReceivedCallback<T> messageReceivedCallbackParam,
-            WebSocketClient webSocketClientParam
+            WebSocketClient<?> webSocketClientParam
     ) {
         this.messageReceivedCallback = messageReceivedCallbackParam;
         this.webSocketClient = webSocketClientParam;
-        this.returnValue = new CopyOnWriteArrayList();
-        this.errors = new CopyOnWriteArrayList();
-        this.expectedEchoMessagesBeforeComplete = new CopyOnWriteArraySet();
+        this.returnValue = new CopyOnWriteArrayList<>();
+        this.errors = new CopyOnWriteArrayList<>();
+        this.expectedEchoMessagesBeforeComplete = new CopyOnWriteArraySet<>();
         this.isConnectionClosed = false;
     }
 
     /**
-     * Checks whether {@code this} message handler can process
-     * the message {@code messageParam}
+     * Determines whether the handler qualifies for processing the given JSON message.
      *
-     * @param message The message to check for qualification.
-     * @return The JsonObject.
-     * @see JsonObject
+     * This method examines the provided JSON message to determine if it contains
+     * an error or matches expected echo messages. If the message contains an error,
+     * an {@code Error} object is returned. If the message matches an expected echo
+     * message, the message is returned as a {@code JsonObject}. If neither condition
+     * is met, {@code null} is returned.
+     *
+     * @param message The JSON message to evaluate for processing qualification.
+     * @return An {@code Error} object if an error exists in the message,
+     *         a {@code JsonObject} if the message matches expected echo messages,
+     *         or {@code null} if no condition is met.
      */
     public Object doesHandlerQualifyForProcessing(String message) {
         JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
@@ -92,6 +101,20 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
 
         String echo = fluidError.getEcho();
         if (this.expectedEchoMessagesBeforeComplete.contains(echo)) return jsonObject;
+
+        return null;
+    }
+
+    /**
+     * Determines if the current handler qualifies to process the given message.
+     *
+     * @param message The message, provided as a byte array, to verify for processing qualification.
+     * @return An object indicating the qualification status of the handler for the provided byte array message.
+     */
+    @Override
+    public Object doesHandlerQualifyForProcessing(byte[] message) {
+
+        //TODO Need to process ASN.1 DER message.
 
         return null;
     }
@@ -139,7 +162,6 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
                 }
                 jsonObject = JsonParser.parseString(new String(uncompressedJson)).getAsJsonObject();
             }
-
             T messageForm = this.getNewInstanceBy(jsonObject);
 
             //Add to the list of return values...
@@ -198,15 +220,6 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
     }
 
     /**
-     * Checks whether the connection to the server is closed.
-     *
-     * @return Whether connection is closed.
-     */
-    public boolean isConnectionClosed() {
-        return this.isConnectionClosed;
-    }
-
-    /**
      * Checks to see whether there are error responses.
      *
      * @return Whether there is an error.
@@ -225,24 +238,6 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
         if (expectedMessageEchoParam == null || expectedMessageEchoParam.trim().isEmpty()) return;
 
         this.expectedEchoMessagesBeforeComplete.add(expectedMessageEchoParam);
-    }
-
-    /**
-     * Get the list of remaining messages to receive.
-     *
-     * @return The message waiting for responses.
-     */
-    public Set<String> getExpectedEchoMessagesBeforeComplete() {
-        return this.expectedEchoMessagesBeforeComplete;
-    }
-
-    /**
-     * Error listing.
-     *
-     * @return The error that occured.
-     */
-    public List<Error> getErrors() {
-        return this.errors;
     }
 
     /**
@@ -269,16 +264,12 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      * @return The return value echo messages.
      */
     private List<String> getEchoMessagesFromReturnValue() {
-        List<String> returnListing = new ArrayList();
+        List<String> returnListing = new ArrayList<>();
 
         if (this.returnValue == null) return returnListing;
 
-        Iterator<T> iterForReturnVal =
-                this.returnValue.iterator();
-
         //Only add where the ECHO message is set...
-        while (iterForReturnVal.hasNext()) {
-            T returnVal = iterForReturnVal.next();
+        for (T returnVal : this.returnValue) {
             if (returnVal.getEcho() == null) continue;
 
             returnListing.add(returnVal.getEcho());
@@ -314,15 +305,6 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
      */
     public void clear() {
         this.returnValue.clear();
-    }
-
-    /**
-     * Gets the return value.
-     *
-     * @return The return value listing.
-     */
-    public List<T> getReturnValue() {
-        return this.returnValue;
     }
 
     /**

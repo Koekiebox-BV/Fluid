@@ -24,6 +24,7 @@ import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +43,7 @@ import java.util.concurrent.TimeoutException;
  * @since v1.4
  */
 public class WebSocketFormContainerCreateClient extends
-        ABaseClientWebSocket<WebSocketFormContainerCreateClient.CreateFormContainerMessageHandler> {
+        ABaseClientWebSocket<WebSocketFormContainerCreateClient.CreateFormContainerMessageHandler, Form> {
 
     /**
      * Constructor that sets the Service Ticket from authentication.
@@ -56,12 +57,16 @@ public class WebSocketFormContainerCreateClient extends
             String endpointBaseUrlParam,
             IMessageReceivedCallback<Form> messageReceivedCallbackParam,
             String serviceTicketAsHexParam,
-            long timeoutInMillisParam) {
-        super(endpointBaseUrlParam,
+            long timeoutInMillisParam
+    ) {
+        super(
+                endpointBaseUrlParam,
                 messageReceivedCallbackParam,
                 timeoutInMillisParam,
                 WS.Path.FormContainer.Version1.formContainerCreateWebSocket(
-                        serviceTicketAsHexParam));
+                        serviceTicketAsHexParam
+                )
+        );
 
         this.setServiceTicket(serviceTicketAsHexParam);
     }
@@ -154,7 +159,8 @@ public class WebSocketFormContainerCreateClient extends
     /**
      * Gets the single form. Still relying on a single session.
      */
-    static class CreateFormContainerMessageHandler extends AGenericListMessageHandler<Form> {
+    @Getter
+    public static class CreateFormContainerMessageHandler extends AGenericListMessageHandler<Form> {
         private Form returnedForm;
 
         /**
@@ -165,7 +171,7 @@ public class WebSocketFormContainerCreateClient extends
          */
         public CreateFormContainerMessageHandler(
                 IMessageReceivedCallback<Form> messageReceivedCallbackParam,
-                WebSocketClient webSocketClientParam
+                WebSocketClient<?> webSocketClientParam
         ) {
             super(messageReceivedCallbackParam, webSocketClientParam);
         }
@@ -179,15 +185,6 @@ public class WebSocketFormContainerCreateClient extends
         @Override
         public Form getNewInstanceBy(JsonObject jsonObjectParam) {
             this.returnedForm = new Form(jsonObjectParam);
-            return this.returnedForm;
-        }
-
-        /**
-         * Gets the value from that was returned after the WS call.
-         *
-         * @return The returned form.
-         */
-        public Form getReturnedForm() {
             return this.returnedForm;
         }
     }

@@ -26,30 +26,43 @@ import com.google.gson.JsonObject;
  */
 public interface IMessageResponseHandler {
 
-	/**
-	 * Checks whether {@code subclass} message handler can process
-	 * the message {@code messageParam}.
-	 *
-	 * If the handler can't process the message, a {@code null} value
-	 * should be returned.
-	 *
-	 * @param messageParam The message to check for qualification.
-	 * @return The JSONObject.
-	 *
-	 * @see JsonObject
-	 */
-	public abstract Object doesHandlerQualifyForProcessing(String messageParam);
+    /**
+     * Checks whether {@code subclass} message handler can process
+     * the message {@code messageParam}.
+     *
+     * If the handler can't process the message, a {@code null} value
+     * should be returned.
+     *
+     * @param message The message to check for qualification.
+     * @return The JSONObject.
+     *
+     * @see JsonObject
+     */
+    Object doesHandlerQualifyForProcessing(String message);
 
-	/**
-	 * Handle the {@code messageParam}.
-	 *
-	 * @param messageParam The message from the server.
-	 */
-	public abstract void handleMessage(Object messageParam);
+    /**
+     * Determines whether the handler qualifies for processing the given message.
+     *
+     * This method evaluates the provided byte array message to determine if the
+     * implementing handler can process it. If the handler is unable to process
+     * the message, the method should return {@code null}.
+     *
+     * @param message The byte array representation of the message to be checked.
+     * @return An {@code Object} indicating that the handler qualifies to process
+     *         the message, or {@code null} if the handler cannot process it.
+     */
+    Object doesHandlerQualifyForProcessing(byte[] message);
 
-	/**
-	 * When a connection closed has been initiated
-	 * remotely.
-	 */
-	public abstract void connectionClosed();
+    /**
+     * Handle the {@code messageParam}.
+     *
+     * @param messageParam The message from the server.
+     */
+    void handleMessage(Object messageParam);
+
+    /**
+     * When a connection closed has been initiated
+     * remotely.
+     */
+    void connectionClosed();
 }

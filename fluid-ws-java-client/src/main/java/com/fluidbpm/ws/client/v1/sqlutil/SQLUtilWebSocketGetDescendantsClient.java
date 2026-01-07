@@ -41,7 +41,7 @@ import java.util.concurrent.TimeoutException;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetDescendantsClient extends
-		ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
+		ABaseClientWebSocket<AGenericListMessageHandler<FormListing>, FormListing> {
 
 	private boolean massFetch;
 

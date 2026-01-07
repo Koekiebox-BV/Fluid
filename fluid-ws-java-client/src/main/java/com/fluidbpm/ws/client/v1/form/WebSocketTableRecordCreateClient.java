@@ -44,7 +44,7 @@ import java.util.concurrent.TimeoutException;
  * @since v1.5
  */
 public class WebSocketTableRecordCreateClient extends
-        ABaseClientWebSocket<WebSocketTableRecordCreateClient.CreateTableRecordMessageHandler> {
+        ABaseClientWebSocket<WebSocketTableRecordCreateClient.CreateTableRecordMessageHandler, TableRecord> {
 
     /**
      * Constructor that sets the Service Ticket from authentication.
