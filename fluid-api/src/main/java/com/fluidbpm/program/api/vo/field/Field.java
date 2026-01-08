@@ -806,10 +806,10 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
-     * Sets the Type of {@code this} {@code Field} as {@code enum}.
+     * Sets the field type as an enumerated value and returns the current Field instance.
      *
-     * @param type The Field fieldType.
-     * @see Type
+     * @param type the enumerated type to set for the field
+     * @return the current instance of the Field after setting the type
      */
     @XmlTransient
     @JsonIgnore

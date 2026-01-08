@@ -409,12 +409,13 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     }
 
     /**
-     * Extracts and constructs an object of type T from the specified JSON object and field name
-     * using the provided factory function.
+     * Extracts an object of type {@code T} from a JSON field using the provided factory function.
      *
-     * @param fieldName the name of the field to extract from the JSON object
-     * @param factory a function that takes a JsonObject and produces an object of type T
-     * @return the constructed object of type T, or null if the field is null or the JSON object is invalid
+     * @param <T>        the type of object to extract, which must extend {@code ABaseFluidGSONObject}
+     * @param fieldName  the name of the field in the JSON object to extract
+     * @param factory    a function that takes a {@code JsonObject} and produces an object of type {@code T}
+     * @return           an object of type {@code T} created by the factory function, or {@code null} if the field
+     *                   does not exist, is {@code null}, or the JSON structure is not valid
      */
     @XmlTransient
     @JsonIgnore
@@ -503,8 +504,8 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     /**
      * Converts a list of objects extending ABaseFluidGSONObject into a JsonArray.
      *
-     * @param list the list of objects to be serialized into a JsonArray. Each object in the list should extend ABaseFluidGSONObject.
-     * @return a JsonArray containing the serialized objects. If the input list is null, an empty JsonArray is returned.
+     * @param list the list of objects to be converted; can be null, in which case, an empty JsonArray is returned
+     * @return a JsonArray representing the JSON objects of the input list, or an empty JsonArray if the list is null
      */
     @XmlTransient
     @JsonIgnore
@@ -516,13 +517,14 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     }
 
     /**
-     * Populates a JSON object field with an array representation of objects
-     * derived from a provided factory and returns the size of the object list.
+     * Sets the given field in the provided JsonObject as an array of JSON objects
+     * derived from a list of ABaseFluidGSONObject instances. The list of objects
+     * is supplied by the provided factory.
      *
-     * @param fieldName the name of the field in the JSON object to populate with the array
-     * @param jsonObject the JSON object to which the array will be added
-     * @param factory a supplier for obtaining a list of objects extending ABaseFluidGSONObject
-     * @return the number of objects in the created list, or 0 if the list is null or empty
+     * @param fieldName  the name of the field to be added to the JsonObject
+     * @param jsonObject the target JsonObject where the array should be added
+     * @param factory    a supplier that provides the list of objects to be converted into the JSON array
+     * @return the number of objects added to the JSON array
      */
     @XmlTransient
     @JsonIgnore

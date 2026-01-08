@@ -101,10 +101,16 @@ public class DecimalMetaFormat {
     public static final String RIGHT_SQ_BRACKET = "]";
 
     /**
-     * Format the {@code toFormatParam} to text.
+     * Formats the given {@code DecimalMetaFormat} object with the specified currency details.
+     * If a new currency is provided, its details are applied to the {@code DecimalMetaFormat},
+     * including setting the step factor, prefix, minimum, and maximum values.
+     * Then, the updated {@code DecimalMetaFormat} object is serialized into a specific string format
+     * and returned.
      *
-     * @param toFormat The {@code DecimalMetaFormat} to format.
-     * @return {@code Spinner_Min[0]_Max[1]_StepFactor[1]_Prefix[$];} formatted decimal format.
+     * @param toFormat the {@code DecimalMetaFormat} object to format or update
+     * @param newCurrency the {@code Currency} object whose details should be applied;
+     *                    if {@code null}, no changes are made to the {@code DecimalMetaFormat} object
+     * @return the serialized string representation of the formatted {@code DecimalMetaFormat}
      */
     public static final String format(DecimalMetaFormat toFormat, Currency newCurrency) {
         StringBuilder returnVal = new StringBuilder();

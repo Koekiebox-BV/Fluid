@@ -812,21 +812,23 @@ public class UtilGlobal {
     }
 
     /**
-     * New instance of field from args.
+     * Creates a new Field instance with the specified name, value, and type.
      *
-     * @param fieldName Sets Field Name.
-     * @param fieldVal  Sets Field Value.
-     * @param type      Sets Field Type.
+     * @param fieldName the name of the field to be created
+     * @param fieldVal the value to be assigned to the field
+     * @param type the type of the field
+     * @return a new Field instance containing the specified name, value, and type
      */
     public static Field newField(String fieldName, Object fieldVal, Field.Type type) {
         return new Field(fieldName, fieldVal, type);
     }
 
     /**
-     * New instance of field from args.
+     * Creates a new {@code Field} instance with the specified name and multi-choice options.
      *
-     * @param fieldName   Sets Field Name.
-     * @param multiChoice Sets Field Value as Multichoice.
+     * @param fieldName the name of the field to be created
+     * @param multiChoice the multi-choice options associated with the field
+     * @return a new {@code Field} instance with the given name and multi-choice options
      */
     public static Field newField(String fieldName, MultiChoice multiChoice) {
         return new Field(fieldName, multiChoice);
