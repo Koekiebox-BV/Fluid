@@ -15,13 +15,11 @@
 
 package com.fluidbpm.ws.client.v1.asn1der;
 
-import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
-import com.fluidbpm.program.api.vo.user.User;
-import com.fluidbpm.ws.client.FluidClientException;
 import org.bouncycastle.asn1.*;
 
-import java.io.IOException;
+import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.FORM_TYPE;
+import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.TITLE;
 
 public class ASNMapperForm extends ASNBaseMapper<Form> {
     public static class Map {
@@ -29,56 +27,57 @@ public class ASNMapperForm extends ASNBaseMapper<Form> {
 
         public static final int FORM_TYPE = START++;
         public static final int FORM_TYPE_ID = START++;
+        public static final int TITLE = START++;
+        public static final int DATE_CREATED = START++;
     }
 
     public Form decode(byte[] der) {
         ASN1Sequence seq = this.initSeq(der);
-        User returnVal = new User();
-        returnVal.setId(asLong(seq.getObjectAt(ASNMapperForm.Map.ID), ABaseFluidGSONObject.JSONMapping.ID));
-        seq.getObjectAt(ASNMapperForm.Map.USERNAME);
+        Form returnVal = new Form();
+        this.popBaseFields(returnVal, seq);
 
-        for (int i = 1; i < seq.size(); i++) {
-            ASN1Encodable e = seq.getObjectAt(i);
-            ASN1TaggedObject t = ASN1TaggedObject.getInstance(e);
-            int tagNo = t.getTagNo();
-            ASN1Primitive prim = t.getLoadedObject();
+        for (int i = ASNBaseMapper.Map.CONTINUE; i < seq.size(); i++) {
+            ASN1TaggedObject tag = asTagged(seq.getObjectAt(i), "Tag "+i);
+            int tagNo = tag.getTagNo();
+            ASN1Object prim = tag.getBaseObject();
 
-            switch (tagNo) {
-                case Map.USERNAME:
-                    returnVal.setUsername(asUtf8(prim, User.JSONMapping.USERNAME));
-                break;
-                default:break;
+            if (tagNo == Map.FORM_TYPE) {
+                returnVal.setFormType(asUtf8(prim, Form.JSONMapping.FORM_TYPE));
+            } else if (tagNo == Map.FORM_TYPE_ID) {
+                returnVal.setFormTypeId(asLong(prim, Form.JSONMapping.FORM_TYPE_ID));
+            } else if (tagNo == Map.TITLE) {
+                returnVal.setTitle(asUtf8(prim, Form.JSONMapping.TITLE));
+            } else if (tagNo == Map.DATE_CREATED) {
+                returnVal.setDateCreated(asDate(prim, Form.JSONMapping.DATE_CREATED));
             }
         }
 
         return returnVal;
     }
 
-    public byte[] encode(Form item) {
-
-        try {
-            return seq(item).getEncoded(ASN1Encoding.DER);
-        } catch (IOException ioErr) {
-            throw new FluidClientException(ioErr.getMessage(), ioErr, FluidClientException.ErrorCode.ASN_1_ERROR);
-        }
-    }
-
-    public static ASN1EncodableVector vector(Form item) {
+    public DERSequence encode(Form item) {
         ASN1EncodableVector vect = initVector(item);
 
         if (item.getFormType() != null) {
-            vect.add(new DERTaggedObject(true, Map.FORM_TYPE, new DERUTF8String(item.getFormType())));
+            vect.add(new DERTaggedObject(true, FORM_TYPE, new DERUTF8String(item.getFormType())));
         }
 
-        if (item.getFormType() != null) {
-            vect.add(new DERTaggedObject(true, Map.FORM_TYPE, new DERUTF8String(item.getFormType())));
+        Long formTypeId = item.getFormTypeId();
+        if (formTypeId != null) {
+            vect.add(new DERTaggedObject(true, Map.FORM_TYPE_ID, new ASN1Integer(formTypeId)));
         }
 
-        vect.add(new DERUTF8String(item.getTitle() == null ? -1 : item.getId()));
+        if (item.getTitle() != null) {
+            vect.add(new DERTaggedObject(true, TITLE, new DERUTF8String(item.getTitle())));
+        }
 
-        vect.add(new DERSequence(vect));
+        if (item.getDateCreated() != null) {
+            vect.add(new DERTaggedObject(true, Map.DATE_CREATED, new ASN1GeneralizedTime(item.getDateCreated())));
+        }
 
-        return ;
+        assert vect.size() <= ASNMapperForm.Map.START : "Vector size is not as expected. ";
+
+        return new DERSequence(vect);
     }
 
 }

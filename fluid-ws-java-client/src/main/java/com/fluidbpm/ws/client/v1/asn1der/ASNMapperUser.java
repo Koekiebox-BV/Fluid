@@ -17,56 +17,62 @@ package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.user.User;
-import com.fluidbpm.ws.client.FluidClientException;
 import org.bouncycastle.asn1.*;
 
-import java.io.IOException;
-
+/**
+ * The ASNMapperUser class provides functionality for encoding and decoding
+ * User objects to and from ASN.1 DER format using predefined mappings.
+ * It extends the ASNBaseMapper class and specializes in handling User object-related
+ * transformations.
+ *
+ * This class ensures that the User's attributes, such as ID and username,
+ * are correctly serialized and deserialized according to the specified ASN.1 structure.
+ */
 public class ASNMapperUser extends ASNBaseMapper<User> {
     public static class Map {
         public static final int ID = 0;
         public static final int USERNAME = 1;
     }
 
+    /**
+     * Decodes an ASN.1 DER-encoded byte array into a {@code User} object.
+     * The method uses predefined mappings to parse and map the DER-encoded data.
+     *
+     * @param der the byte array containing the ASN.1 DER-encoded representation of a User.
+     * @return a {@code User} object reconstructed from the provided DER-encoded data.
+     */
     public User decode(byte[] der) {
         ASN1Sequence seq = this.initSeq(der);
         User returnVal = new User();
         returnVal.setId(asLong(seq.getObjectAt(ASNMapperUser.Map.ID), ABaseFluidGSONObject.JSONMapping.ID));
-        seq.getObjectAt(ASNMapperUser.Map.USERNAME);
 
-        for (int i = 1; i < seq.size(); i++) {
-            ASN1Encodable e = seq.getObjectAt(i);
-            ASN1TaggedObject t = ASN1TaggedObject.getInstance(e);
-            int tagNo = t.getTagNo();
-            ASN1Primitive prim = t.getLoadedObject();
-
-            switch (tagNo) {
-                case Map.USERNAME:
-                    returnVal.setUsername(asUtf8(prim, User.JSONMapping.USERNAME));
-                break;
-                default:break;
-            }
+        if (seq.size() > 1) {
+            ASN1TaggedObject tagUsername =
+                    asTagged(seq.getObjectAt(ASNMapperUser.Map.USERNAME), User.JSONMapping.USERNAME);
+            returnVal.setUsername(asUtf8(tagUsername, User.JSONMapping.USERNAME));
         }
         return returnVal;
     }
 
-    public byte[] encode(User item) {
-
-        try {
-            return seq(item).getEncoded(ASN1Encoding.DER);
-        } catch (IOException ioErr) {
-            throw new FluidClientException(ioErr.getMessage(), ioErr, FluidClientException.ErrorCode.ASN_1_ERROR);
-        }
-    }
-
-    public static DERSequence seq(User item) {
-        ASN1EncodableVector vect = new ASN1EncodableVector();
-        vect.add(new ASN1Integer(item.getId() == null ? -1 : item.getId()));
+    /**
+     * Encodes a {@code User} object into an ASN.1 DER sequence. The method serializes
+     * the User's attributes into an ASN.1 format for standardized data representation.
+     *
+     * @param item the {@code User} object to be encoded. If the User's ID is {@code null},
+     *             the method encodes the ID as {@code -1}. If the User's username is
+     *             {@code null}, it is omitted from the encoding.
+     * @return a {@code DERSequence} representing the ASN.1 encoded form of the provided {@code User} object.
+     */
+    public DERSequence encode(User item) {
+        ASN1EncodableVector vectUser = new ASN1EncodableVector();
+        vectUser.add( new ASN1Integer(DefWhenNull.nullSafeId(item.getId())));
 
         if (item.getUsername() != null) {
-            vect.add(new DERTaggedObject(true, ASNMapperUser.Map.USERNAME, new DERUTF8String(item.getUsername()))); // [1]
+            vectUser.add(new DERTaggedObject(true, ASNMapperUser.Map.USERNAME, new DERUTF8String(item.getUsername())));
         }
-        return new DERSequence(vect);
-    }
 
+        assert vectUser.size() > 0 && vectUser.size() < 3 : "Init User sequence size is not as expected.";
+
+        return new DERSequence(vectUser);
+    }
 }

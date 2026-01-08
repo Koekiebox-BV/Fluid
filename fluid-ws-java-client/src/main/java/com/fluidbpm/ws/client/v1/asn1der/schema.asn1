@@ -1,0 +1,33 @@
+Base ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           UTF8String,
+    requestUuid             UTF8String,
+    echo                    UTF8String,
+    loggedInUserFromTicket  User
+}
+
+User ::= SEQUENCE {
+    id       INTEGER,
+    username [1] EXPLICIT UTF8String OPTIONAL
+}
+
+Error ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           UTF8String,
+    requestUuid             UTF8String,
+    echo                    UTF8String,
+    loggedInUserFromTicket  User,
+    errorCode               INTEGER,
+    errorMessage            UTF8String
+}
+
+Form ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           UTF8String,
+    requestUuid             UTF8String,
+    echo                    UTF8String,
+    loggedInUserFromTicket  User,
+    formType                [5] EXPLICIT UTF8String OPTIONAL,
+    formTypeId              [6] EXPLICIT INTEGER OPTIONAL,
+    title                   [7] EXPLICIT UTF8String OPTIONAL
+}
