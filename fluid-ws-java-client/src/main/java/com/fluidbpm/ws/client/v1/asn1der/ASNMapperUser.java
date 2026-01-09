@@ -34,6 +34,10 @@ public class ASNMapperUser extends ASNBaseMapper<User> {
         public static final int USERNAME = 1;
     }
 
+    public ASNMapperUser() {
+        super(InitType.NONE);
+    }
+
     /**
      * Decodes an ASN.1 DER-encoded byte array into a {@code User} object.
      * The method uses predefined mappings to parse and map the DER-encoded data.
@@ -75,7 +79,7 @@ public class ASNMapperUser extends ASNBaseMapper<User> {
      */
     public DERSequence encode(User item) {
         ASN1EncodableVector vectUser = new ASN1EncodableVector();
-        vectUser.add( new ASN1Integer(DefWhenNull.nullSafeId(item.getId())));
+        vectUser.add(new ASN1Integer(DefWhenNull.nullSafeId(item.getId())));
 
         if (item.getUsername() != null) {
             vectUser.add(new DERTaggedObject(true, ASNMapperUser.Map.USERNAME, new DERUTF8String(item.getUsername())));

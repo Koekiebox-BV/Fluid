@@ -20,7 +20,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,11 +42,13 @@ import java.util.function.Supplier;
 public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBaseMapper<T> {
     protected final java.util.Map<Integer, BiConsumer<T, ASN1Object>> decoders = new HashMap<>();
 
+    public ASNBaseTaggedMapper(InitType type) {
+        super(type);
+    }
+
     /**
      * Example of decoder implementation:
      * decoders.put(Map.FORM_TYPE, (f, p) -> f.setFormType(asUtf8(p, Form.JSONMapping.FORM_TYPE)));
-     *
-     *
      * Maps and decodes tagged fields from the given {@link ASN1Sequence} into the provided object {@code obj}.
      * The decoding is handled by looking up field-specific decoder functions in the {@code decoders} map.
      *
@@ -89,6 +93,26 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
     }
 
     /**
+     * Decodes an ASN.1 tagged object from the given sequence and populates the provided object
+     * using a specified decoding function.
+     *
+     * @param seq the tag or identifier within the ASN.1 sequence that determines the
+     *            type of the tagged object.
+     * @param toPopulate the instance of type T that will be populated with the decoded
+     *                   information from the tagged object.
+     * @param decodeMappingFunc a function that specifies the decoding logic for the tagged object
+     *                          and maps it onto the provided object of type T.
+     */
+    protected void decodeTaggedObject(
+            ASN1Sequence seq,
+            T toPopulate,
+            Function<TagObj<T>, Void> decodeMappingFunc
+    ) {
+        int startIndex = this.initType == InitType.ID_ONLY ? 1 : ASNBaseMapper.Map.CONTINUE;
+        this.decodeTaggedObject(seq, toPopulate, decodeMappingFunc, startIndex);
+    }
+
+    /**
      * Populates a given object using tagged objects within an ASN1 sequence.
      *
      * This method iterates through the tagged objects within the specified ASN1 sequence
@@ -98,13 +122,15 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
      * @param toPopulate the target object to populate using the tagged object data
      * @param decodeMappingFunc a function that accepts a {@code TagObj} containing the tag number, field name, and
      *                base object, and performs a desired operation or transformation
+     * @param startIndex the index in the sequence from which decoding should begin.
      */
     protected void decodeTaggedObject(
             ASN1Sequence seq,
             T toPopulate,
-            Function<TagObj<T>, Void> decodeMappingFunc
+            Function<TagObj<T>, Void> decodeMappingFunc,
+            int startIndex
     ) {
-        for (int i = ASNBaseMapper.Map.CONTINUE; i < seq.size(); i++) {
+        for (int i = startIndex; i < seq.size(); i++) {
             String fieldName = "Tag "+i+" on "+toPopulate.getClass().getSimpleName();
             ASN1TaggedObject tag = this.asTagged(seq.getObjectAt(i), fieldName);
             int tagNo = tag.getTagNo();
@@ -154,6 +180,21 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
     }
 
     /**
+     * Decodes the given ASN1Sequence into a list of objects of type T.
+     *
+     * @param fieldsSeq the ASN1Sequence to decode, representing a sequence of encoded objects
+     * @param fieldName the name of the field being processed, used for error handling or logging
+     * @return a List of objects of type T decoded from the provided ASN1Sequence
+     */
+    public final List<T> decodeAsList(ASN1Sequence fieldsSeq, String fieldName) {
+        List<T> returnVal = new ArrayList<>();
+        for (int j = 0; j < fieldsSeq.size(); j++) {
+            returnVal.add(this.decode(this.asSeq(fieldsSeq.getObjectAt(j), fieldName)));
+        }
+        return returnVal;
+    }
+
+    /**
      * Encodes the provided object of type {@code T} into a DER-encoded ASN.1 sequence.
      *
      * This method performs the encoding of the input object by initializing an {@link ASN1EncodableVector}
@@ -170,8 +211,6 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
     public final DERSequence encode(T vo) {
         ASN1EncodableVector vect = initVector(vo);
         this.encodeTaggedObject(vo, vect);
-
-        assert vect.size() >= ASNMapperForm.Map.START : "Vector size is not as expected. ";
 
         return new DERSequence(vect);
     }

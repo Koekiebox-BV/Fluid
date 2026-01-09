@@ -59,7 +59,7 @@ public class TestASNBaseMapper extends ABaseTestCase {
 
 	@Before
 	public void setup() {
-		this.base = new ASNBaseMapper<Error>() {
+		this.base = new ASNBaseMapper<Error>(ASNBaseMapper.InitType.NONE) {
 			@Override
 			public Error decode(byte[] der) {
 				ASN1Sequence seq = this.initSeq(der);
@@ -83,7 +83,7 @@ public class TestASNBaseMapper extends ABaseTestCase {
 	@Test
 	public void testInitVector() throws IOException {
 		Error error = new Error();
-		ASN1Sequence seq = new DERSequence(ASNBaseMapper.initVector(error));
+		ASN1Sequence seq = new DERSequence(this.base.initVector(error));
 		byte[] encoded = seq.getEncoded(ASN1Encoding.DER);
 		String asciiHex = BaseEncoding.base16().encode(encoded);
 
@@ -103,7 +103,7 @@ public class TestASNBaseMapper extends ABaseTestCase {
 		error.setServiceTicket(servTicket);
 		error.setRequestUuid(reqId);
 		error.setEcho(echo);
-		ASN1Sequence seq = new DERSequence(ASNBaseMapper.initVector(error));
+		ASN1Sequence seq = new DERSequence(this.base.initVector(error));
 
 		this.base.popBaseFields(error, seq);
 

@@ -16,7 +16,7 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.form.Form;
-import lombok.RequiredArgsConstructor;
+import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
 import org.bouncycastle.asn1.*;
 
 import java.util.function.Supplier;
@@ -38,12 +38,24 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.*;
  * This mapper is typically employed in scenarios where standardized encoding
  * of {@code Form}-related data is essential for interoperability or persistence.
  */
-@RequiredArgsConstructor
 public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
     private final ASNMapperUser asnMapUser;
+    private final ASNMapperField asnMapField;
+    private final PayloadPopulate payloadPopulate;
 
-    public ASNMapperForm() {
-        this(new ASNMapperUser());
+    public ASNMapperForm(
+            ASNMapperUser user,
+            ASNMapperField field,
+            PayloadPopulate payloadPopulate
+    ) {
+        super(InitType.ALL);
+        this.asnMapUser = user;
+        this.asnMapField = field;
+        this.payloadPopulate = payloadPopulate;
+    }
+
+    public ASNMapperForm(PayloadPopulate payloadPopulate) {
+        this(new ASNMapperUser(), new ASNMapperField(payloadPopulate), payloadPopulate);
     }
 
     public static class Map extends ASNBaseMapper.Map {
@@ -56,6 +68,7 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
 
         public static final int DATE_CREATED = 11;
         public static final int DATE_LAST_UPDATED = 12;
+        public static final int FORM_FIELDS = 13;
     }
 
     /**
@@ -100,10 +113,10 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
                 toPop.setTitle(asUtf8(obj, Form.JSONMapping.TITLE));
                 break;
             case FLOW_STATE:
-                toPop.setFlowState(asUtf8(obj, Form.JSONMapping.FLOW_STATE));
+                toPop.setFlowState(asGeneralTxt(obj, Form.JSONMapping.FLOW_STATE));
                 break;
             case STATE:
-                toPop.setState(asUtf8(obj, Form.JSONMapping.STATE));
+                toPop.setState(asGeneralTxt(obj, Form.JSONMapping.STATE));
                 break;
             case CURRENT_USER:
                 toPop.setCurrentUser(
@@ -115,6 +128,11 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
                 break;
             case DATE_LAST_UPDATED:
                 toPop.setDateLastUpdated(asDate(obj, Form.JSONMapping.DATE_LAST_UPDATED));
+                break;
+            case FORM_FIELDS:
+                toPop.setFormFields(
+                        this.asnMapField.decodeAsList(asSeq(obj, Form.JSONMapping.FORM_FIELDS), Form.JSONMapping.FORM_FIELDS)
+                );
                 break;
         }
         return null;
@@ -170,7 +188,8 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
             vect.add(new DERTaggedObject(true, DATE_LAST_UPDATED, new ASN1GeneralizedTime(item.getDateLastUpdated())));
         }
 
-
+        // Form Fields:
+        this.asnMapField.setAsList(item.getFormFields(), vect, FORM_FIELDS);
     }
 
 }

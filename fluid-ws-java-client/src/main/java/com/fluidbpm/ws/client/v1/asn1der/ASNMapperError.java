@@ -41,6 +41,24 @@ import org.bouncycastle.asn1.*;
  * aligns with the mapping logic in both the encode and decode methods.
  */
 public class ASNMapperError extends ASNBaseMapper<Error> {
+    public ASNMapperError() {
+        super(InitType.ALL);
+    }
+
+    /**
+     * A static nested class that provides constant mappings for error components.
+     * This class defines unique identifiers for different fields of an error
+     * object, such as a code and a message, to facilitate mapping and encoding.
+     *
+     * The constants defined here are typically used in conjunction with the
+     * parent class's functionality to process error objects in DER (Distinguished
+     * Encoding Rules)-encoded format.
+     *
+     * Fields:
+     * - START: Used to initialize the mapping sequence.
+     * - CODE: Represents the unique identifier for error codes.
+     * - MESSAGE: Represents the unique identifier for error messages.
+     */
     public static class Map {
         public static int START = ASNBaseMapper.Map.CONTINUE;
         public static final int CODE = START++;;

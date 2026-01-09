@@ -20,11 +20,14 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.FluidClientException;
+import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Abstract base class responsible for encoding and decoding objects of type {@code T}
@@ -32,7 +35,15 @@ import java.util.Date;
  *
  * @param <T> the type of the object that extends {@code ABaseFluidVO}.
  */
+@RequiredArgsConstructor
 public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
+    protected final InitType initType;
+    public enum InitType {
+        NONE,
+        ID_ONLY,
+        ALL
+    }
+
     /**
      * A helper class providing utility methods for handling null values by substituting them
      * with defined default values. This class is designed to ensure that the calling code
@@ -135,17 +146,16 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
      * @param seq  The ASN1Sequence from which the data will be extracted and mapped to the fields of the value object.
      */
     protected void popBaseFields(T vo, ASN1Sequence seq) {
-        int seqSize = seq.size();
-        assert seqSize >= Map.CONTINUE : "Sequence size is not as expected.";
+        vo.setId(asLong(seq.getObjectAt(ASNBaseMapper.Map.ID), ABaseFluidGSONObject.JSONMapping.ID));
+        if (this.initType == ASNBaseTaggedMapper.InitType.ID_ONLY) return;
 
-        vo.setId(asLong(seq.getObjectAt(ASNMapperUser.Map.ID), ABaseFluidGSONObject.JSONMapping.ID));
-        vo.setServiceTicket(asUtf8(seq.getObjectAt(ASNBaseMapper.Map.SERVICE_TICKET), ABaseFluidGSONObject.JSONMapping.SERVICE_TICKET));
-        vo.setRequestUuid(asUtf8(seq.getObjectAt(ASNBaseMapper.Map.REQ_UUID), ABaseFluidGSONObject.JSONMapping.REQUEST_UUID));
-        vo.setEcho(asUtf8(seq.getObjectAt(ASNBaseMapper.Map.ECHO), ABaseFluidGSONObject.JSONMapping.ECHO));
+        vo.setServiceTicket(asGeneralTxt(seq.getObjectAt(ASNBaseMapper.Map.SERVICE_TICKET), ABaseFluidGSONObject.JSONMapping.SERVICE_TICKET));
+        vo.setRequestUuid(asGeneralTxt(seq.getObjectAt(ASNBaseMapper.Map.REQ_UUID), ABaseFluidGSONObject.JSONMapping.REQUEST_UUID));
+        vo.setEcho(asGeneralTxt(seq.getObjectAt(ASNBaseMapper.Map.ECHO), ABaseFluidGSONObject.JSONMapping.ECHO));
 
         ASN1Sequence seqUser = ASN1Sequence.getInstance(seq.getObjectAt(ASNBaseMapper.Map.USER));
         vo.setLoggedInUserFromTicket(new User(
-                asLong(seqUser.getObjectAt(ASNMapperUser.Map.ID), ABaseFluidGSONObject.JSONMapping.ID)
+                asLong(seqUser.getObjectAt(ASNBaseMapper.Map.ID), ABaseFluidGSONObject.JSONMapping.ID)
         ));
 
         if (seqUser.size() > 1) {
@@ -172,14 +182,16 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
      * @return An ASN1EncodableVector populated with the encoded fields of the provided {@code ABaseFluidVO} object
      *         and its associated user details.
      */
-    protected static ASN1EncodableVector initVector(ABaseFluidVO vo) {
+    protected ASN1EncodableVector initVector(ABaseFluidVO vo) {
         ASN1EncodableVector vect = new ASN1EncodableVector();
         if (vo == null) return vect;
 
         vect.add(new ASN1Integer(DefWhenNull.nullSafeId(vo.getId())));
-        vect.add(new DERUTF8String(DefWhenNull.nullSafeTxt(vo.getServiceTicket())));
-        vect.add(new DERUTF8String(DefWhenNull.nullSafeTxt(vo.getRequestUuid())));
-        vect.add(new DERUTF8String(DefWhenNull.nullSafeTxt(vo.getEcho())));
+        if (this.initType == ASNBaseTaggedMapper.InitType.ID_ONLY) return vect;
+
+        vect.add(new DERGeneralString(DefWhenNull.nullSafeTxt(vo.getServiceTicket())));
+        vect.add(new DERGeneralString(DefWhenNull.nullSafeTxt(vo.getRequestUuid())));
+        vect.add(new DERGeneralString(DefWhenNull.nullSafeTxt(vo.getEcho())));
 
         // User:
         User userToUse = vo.getLoggedInUserFromTicket();
@@ -240,6 +252,36 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
             return i.getValue().intValueExact();
         }
         throw new FluidClientException("Field " + field + " expected INTEGER, got " + e.getClass().getSimpleName(),
+                FluidClientException.ErrorCode.ASN_1_ERROR);
+    }
+
+    /**
+     * Converts the given ASN1Encodable object to a double value using the specified field name.
+     *
+     * @param e the ASN1Encodable object to be converted
+     * @param field the name of the field that contains the value to be converted
+     * @return the double value obtained from the specified field in the ASN1Encodable object
+     */
+    protected double asReal(ASN1Encodable e, String field) {
+        String txt = asGeneralTxt(e, field);
+        return new BigDecimal(txt).doubleValue();
+    }
+
+    /**
+     * Converts the given ASN1Encodable object into an octet string if it is an instance
+     * of ASN1OctetString. Throws an exception if the input object is not of the expected type.
+     *
+     * @param e the ASN1Encodable object to be converted.
+     * @param field the name of the field being processed, used in error messaging.
+     * @return a byte array representing the octet string if the conversion is successful.
+     * @throws FluidClientException if the input object is not an instance of ASN1OctetString.
+     */
+    protected byte[] asOctetString(ASN1Encodable e, String field) {
+        if (e instanceof ASN1OctetString) {
+            ASN1OctetString o = (ASN1OctetString) e;
+            return o.getOctets();
+        }
+        throw new FluidClientException("Field " + field + " expected REAL, got " + e.getClass().getSimpleName(),
                 FluidClientException.ErrorCode.ASN_1_ERROR);
     }
 
@@ -375,12 +417,43 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
             return s.getString();
         }
         throw new FluidClientException(
-                "Field " + field + " expected TEXT, got " +
+                "Field " + field + " expected TEXT(utf-8), got " +
                         e.getClass().getSimpleName(),
                 FluidClientException.ErrorCode.ASN_1_ERROR
         );
     }
 
+    /**
+     * Converts the given ASN1Encodable object to a general text representation
+     * if it is an instance of ASN1GeneralString. Throws an exception if the
+     * object is not of the expected type.
+     *
+     * @param e the ASN1Encodable object to be converted
+     * @param field the name of the field being processed, used for error reporting
+     * @return the string representation of the ASN1GeneralString if conversion is successful
+     * @throws FluidClientException if the given ASN1Encodable is not an instance of ASN1GeneralString
+     */
+    protected String asGeneralTxt(ASN1Encodable e, String field) {
+        if (e instanceof ASN1GeneralString) {
+            ASN1GeneralString s = (ASN1GeneralString) e;
+            return s.getString();
+        }
+        throw new FluidClientException(
+                "Field " + field + " expected TEXT(general), got " +
+                        e.getClass().getSimpleName(),
+                FluidClientException.ErrorCode.ASN_1_ERROR
+        );
+    }
+
+    /**
+     * Converts an ASN1Encodable object to a Date if it is of type ASN1GeneralizedTime.
+     *
+     * @param e the ASN1Encodable object to be converted
+     * @param field the field name used for error reporting
+     * @return the Date representation of the ASN1GeneralizedTime object
+     * @throws FluidClientException if the ASN1Encodable object is not of type ASN1GeneralizedTime
+     *                              or if the date format is invalid
+     */
     protected Date asDate(ASN1Encodable e, String field) {
         if (e instanceof ASN1GeneralizedTime) {
             ASN1GeneralizedTime t = ((ASN1GeneralizedTime) e);
@@ -398,5 +471,21 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
                         e.getClass().getSimpleName(),
                 FluidClientException.ErrorCode.ASN_1_ERROR
         );
+    }
+
+    /**
+     * Populates the provided ASN1EncodableVector with a DERTaggedObject containing
+     * the encoded representations of the elements in the provided list.
+     *
+     * @param list the list of elements to be encoded and added to the vector
+     * @param primVector the ASN1EncodableVector where the DERTaggedObject will be added
+     * @param index the tag number used to create the DERTaggedObject
+     */
+    protected void setAsList(List<T> list, ASN1EncodableVector primVector, int index) {
+        if (list != null && !list.isEmpty()) {
+            ASN1EncodableVector fieldsVect = new ASN1EncodableVector();
+            for (T field : list) fieldsVect.add(this.encode(field));
+            primVector.add(new DERTaggedObject(true, index, new DERSequence(fieldsVect)));
+        }
     }
 }

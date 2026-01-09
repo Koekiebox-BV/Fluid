@@ -1,0 +1,88 @@
+/*
+ * Koekiebox CONFIDENTIAL
+ *
+ * [2012] - [2017] Koekiebox (Pty) Ltd
+ * All Rights Reserved.
+ *
+ * NOTICE: All information contained herein is, and remains the property
+ * of Koekiebox and its suppliers, if any. The intellectual and
+ * technical concepts contained herein are proprietary to Koekiebox
+ * and its suppliers and may be covered by South African and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material is strictly
+ * forbidden unless prior written permission is obtained from Koekiebox.
+ */
+
+package com.fluidbpm.ws.client.v1.asn1der.vo;
+
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**/
+@Getter
+public class PayloadPopulate extends ABaseFluidVO {
+    private static final long serialVersionUID = 1L;
+
+    // FieldName, ChoiceId, Alias
+    private Map<String, Map<Integer, String>> multiChoicesForm;
+    private Map<String, Map<Integer, String>> multiChoicesUser;
+    private Map<String, Map<Integer, String>> multiChoicesRoute;
+    private Map<String, Map<Integer, String>> multiChoicesGlobal;
+    private Map<String, String> fieldMetaData;
+
+    public String getMetaDataValue(String fieldName) {
+        if (true) return null;//TODO fix
+        return this.fieldMetaData.get(fieldName);
+    }
+
+    public List<String> getMultiChoiceRouteValues(String fieldName) {
+        return getMultiChoiceValues(this.multiChoicesRoute, fieldName);
+    }
+
+    public List<String> getSelectedMultiChoiceRouteValues(
+            String fieldName, int[] selectedIds
+    ) {
+        return getSelectedMultiChoiceValues(this.multiChoicesRoute, fieldName, selectedIds);
+    }
+
+    public List<Integer> getSelectedMultiChoiceRouteIdValues(
+            String fieldName, String[] selectedAliases
+    ) {
+        //TODO return getSelectedMultiChoiceValues(this.multiChoicesRoute, fieldName, selectedIds);
+        return null;
+    }
+
+    public List<String> getMultiChoiceFormValues(String fieldName) {
+        return getMultiChoiceValues(this.multiChoicesForm, fieldName);
+    }
+
+    public List<String> getSelectedMultiChoiceFormValues(
+            String fieldName, int[] selectedIds
+    ) {
+        return getSelectedMultiChoiceValues(this.multiChoicesForm, fieldName, selectedIds);
+    }
+
+    private List<String> getMultiChoiceValues(
+            Map<String, Map<Integer, String>> multiChoices,
+            String fieldName
+    ) {
+        Map<Integer, String> map = multiChoices.get(fieldName);
+        return map == null ? new ArrayList<>() : new ArrayList<>(map.values());
+    }
+
+    private List<String> getSelectedMultiChoiceValues(
+            Map<String, Map<Integer, String>> multiChoices,
+            String fieldName,
+            int[] selectedIds
+    ) {
+        Map<Integer, String> map = multiChoices.get(fieldName);
+
+        List<String> selectedValues = new ArrayList<>();
+        for (int id : selectedIds) selectedValues.add(map.get(id));
+        return selectedValues;
+    }
+}

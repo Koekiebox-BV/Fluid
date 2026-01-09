@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.item.FluidItem;
-import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.*;
 
 /**
@@ -27,9 +26,13 @@ import org.bouncycastle.asn1.*;
  * for the {@code FluidItem} object within the context of the Abstract Syntax Notation One (ASN.1)
  * representation.
  */
-@RequiredArgsConstructor
 public class ASNMapperFluidItem extends ASNBaseMapper<FluidItem> {
     private final ASNMapperForm asnMapForm;
+
+    public ASNMapperFluidItem(ASNMapperForm asnMapForm) {
+        super(InitType.ALL);
+        this.asnMapForm = asnMapForm;
+    }
 
     public static class Map extends ASNBaseMapper.Map {
         public static int START = ASNBaseMapper.Map.CONTINUE;

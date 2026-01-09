@@ -15,13 +15,16 @@
 
 package com.fluidbpm.ws.client.v1.asn1der;
 
+import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
 import com.google.common.io.BaseEncoding;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
@@ -45,7 +48,11 @@ public class TestASNFormMapper extends ABaseTestCase {
 		item.setDateCreated(new Date(1767906456000L));
 		item.setDateLastUpdated(new Date(1767906456000L));
 
-		ASNMapperForm mapper = new ASNMapperForm();
+		item.setFormFields(new ArrayList<>());
+		item.getFormFields().add(new Field(111L, "nickname"));
+		item.getFormFields().add(new Field(222L, "surname"));
+
+		ASNMapperForm mapper = new ASNMapperForm(new PayloadPopulate());
 
 		byte[] raw = seqBytes(mapper.encode(item));
 		Form decoded = mapper.decode(raw);
@@ -61,6 +68,11 @@ public class TestASNFormMapper extends ABaseTestCase {
 		Assert.assertEquals("Decoded form date created is not as expected.", item.getDateCreated().getTime(), decoded.getDateCreated().getTime());
 		Assert.assertEquals("Decoded form date last updated is not as expected.", item.getDateLastUpdated().getTime(), decoded.getDateLastUpdated().getTime());
 
+		Assert.assertEquals("Decoded form fields count is not as expected.", item.getFormFields().size(), decoded.getFormFields().size());
+		Assert.assertEquals("Decoded form fields [0] id is not as expected.", item.getFormFields().get(0).getId(), decoded.getFormFields().get(0).getId());
+		Assert.assertEquals("Decoded form fields [0] name is not as expected.", item.getFormFields().get(0).getFieldName(), decoded.getFormFields().get(0).getFieldName());
+		Assert.assertEquals("Decoded form fields [1] id is not as expected.", item.getFormFields().get(1).getId(), decoded.getFormFields().get(1).getId());
+		Assert.assertEquals("Decoded form fields [1] name is not as expected.", item.getFormFields().get(1).getFieldName(), decoded.getFormFields().get(1).getFieldName());
 
 		System.out.println(BaseEncoding.base16().encode(raw));
 	}
