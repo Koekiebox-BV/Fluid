@@ -18,6 +18,7 @@ package com.fluidbpm.program.api.vo;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.user.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -37,6 +38,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ABaseFluidVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -55,13 +57,6 @@ public class ABaseFluidVO implements Serializable {
     public ABaseFluidVO(Long idParam) {
         super();
         this.id = idParam;
-    }
-
-    /**
-     * Default constructor.
-     */
-    public ABaseFluidVO() {
-        super();
     }
 
     /**

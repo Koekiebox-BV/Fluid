@@ -41,8 +41,18 @@ public class ASNMapperUser extends ASNBaseMapper<User> {
      * @param der the byte array containing the ASN.1 DER-encoded representation of a User.
      * @return a {@code User} object reconstructed from the provided DER-encoded data.
      */
-    public User decode(byte[] der) {
-        ASN1Sequence seq = this.initSeq(der);
+    public final User decode(byte[] der) {
+        return this.decode(this.initSeq(der));
+    }
+
+    /**
+     * Decodes an ASN1Sequence into a {@code User} object. This method parses the sequence using
+     * predefined mappings to extract and set the corresponding attributes of the User object.
+     *
+     * @param seq the ASN1Sequence containing the encoded representation of a User.
+     * @return a {@code User} object reconstructed from the provided ASN1Sequence.
+     */
+    public final User decode(ASN1Sequence seq) {
         User returnVal = new User();
         returnVal.setId(asLong(seq.getObjectAt(ASNMapperUser.Map.ID), ABaseFluidGSONObject.JSONMapping.ID));
 

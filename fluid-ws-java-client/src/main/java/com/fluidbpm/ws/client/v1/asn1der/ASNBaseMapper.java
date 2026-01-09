@@ -287,6 +287,30 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
     }
 
     /**
+     * Converts the provided {@link ASN1Encodable} object to an {@link ASN1Sequence},
+     * ensuring that the given object is of the correct type.
+     *
+     * @param e     The {@link ASN1Encodable} instance to be converted. Must be an
+     *              instance of {@link ASN1Sequence}.
+     * @param field The name of the field being processed, used in error reporting
+     *              if the conversion is unsuccessful.
+     * @return The {@link ASN1Sequence} instance extracted from the provided
+     *         {@link ASN1Encodable} object.
+     * @throws FluidClientException if the provided {@link ASN1Encodable} is not
+     *                              of type {@link ASN1Sequence}.
+     */
+    protected ASN1Sequence asSeq(ASN1Encodable e, String field) {
+        if (e instanceof ASN1Sequence) {
+            return ASN1Sequence.getInstance(e);
+        }
+        throw new FluidClientException(
+                "Field " + field + " expected ASN1Sequence, got " +
+                        e.getClass().getSimpleName(),
+                FluidClientException.ErrorCode.ASN_1_ERROR
+        );
+    }
+
+    /**
      * Converts the provided {@link ASN1Encodable} object to a boolean value, ensuring that
      * the given object is of type {@link ASN1Boolean}.
      *

@@ -16,47 +16,126 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.form.Form;
+import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.*;
 
-import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.FORM_TYPE;
-import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.TITLE;
+import java.util.function.Supplier;
 
-public class ASNMapperForm extends ASNBaseMapper<Form> {
-    public static class Map {
-        public static int START = ASNBaseMapper.Map.CONTINUE;
+import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.*;
 
-        public static final int FORM_TYPE = START++;
-        public static final int FORM_TYPE_ID = START++;
-        public static final int TITLE = START++;
-        public static final int DATE_CREATED = START++;
+/**
+ * The ASNMapperForm class is responsible for encoding and decoding objects of type
+ * {@code Form} into ASN.1 DER-encoded sequences with specific tagged mappings. This
+ * mapper extends the {@code ASNBaseTaggedMapper} class and specializes in handling
+ * {@code Form} instances, applying domain-specific logic for the serialization and
+ * deserialization processes of tagged data objects.
+ *
+ * It provides mechanisms for:
+ * - Creating new {@code Form} instances for decoding purposes.
+ * - Assigning tagged data to the appropriate fields of {@code Form}.
+ * - Encoding {@code Form} objects into ASN.1 DER-compliant tagged structures.
+ *
+ * This mapper is typically employed in scenarios where standardized encoding
+ * of {@code Form}-related data is essential for interoperability or persistence.
+ */
+@RequiredArgsConstructor
+public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
+    private final ASNMapperUser asnMapUser;
+
+    public ASNMapperForm() {
+        this(new ASNMapperUser());
     }
 
-    public Form decode(byte[] der) {
-        ASN1Sequence seq = this.initSeq(der);
-        Form returnVal = new Form();
-        this.popBaseFields(returnVal, seq);
+    public static class Map extends ASNBaseMapper.Map {
+        public static final int FORM_TYPE = 5;
+        public static final int FORM_TYPE_ID = 6;
+        public static final int TITLE = 7;
+        public static final int FLOW_STATE = 8;
+        public static final int STATE = 9;
+        public static final int CURRENT_USER = 10;
 
-        for (int i = ASNBaseMapper.Map.CONTINUE; i < seq.size(); i++) {
-            ASN1TaggedObject tag = asTagged(seq.getObjectAt(i), "Tag "+i);
-            int tagNo = tag.getTagNo();
-            ASN1Object prim = tag.getBaseObject();
+        public static final int DATE_CREATED = 11;
+        public static final int DATE_LAST_UPDATED = 12;
+    }
 
-            if (tagNo == Map.FORM_TYPE) {
-                returnVal.setFormType(asUtf8(prim, Form.JSONMapping.FORM_TYPE));
-            } else if (tagNo == Map.FORM_TYPE_ID) {
-                returnVal.setFormTypeId(asLong(prim, Form.JSONMapping.FORM_TYPE_ID));
-            } else if (tagNo == Map.TITLE) {
-                returnVal.setTitle(asUtf8(prim, Form.JSONMapping.TITLE));
-            } else if (tagNo == Map.DATE_CREATED) {
-                returnVal.setDateCreated(asDate(prim, Form.JSONMapping.DATE_CREATED));
-            }
+    /**
+     * Provides a supplier for creating new instances of the {@code Form} class.
+     * This method is typically used to generate fresh {@code Form} objects for
+     * operations related to ASN.1 DER sequence encoding or decoding processes.
+     *
+     * @return A {@code Supplier} that, when invoked, creates and returns a new {@code Form} instance.
+     */
+    @Override
+    protected Supplier<Form> supplierForInstance() {
+        return Form::new;
+    }
+
+    /**
+     * Maps the data contained in a {@code TagObj<Form>} object to the appropriate attributes
+     * of the associated {@code Form} instance. The method processes the tag number and updates
+     * the corresponding fields in {@code Form} based on the tag's content.
+     *
+     * @param tag the {@code TagObj<Form>} object that contains the tag number and data to be
+     *            mapped to the {@code Form} instance.
+     *
+     * @return always returns {@code null} after completing the mapping operation.
+     */
+    @Override
+    protected Void mapDecodedTaggedObject(TagObj<Form> tag) {
+        assert tag != null : "Arguments cannot be null.";
+
+        Form toPop = tag.getToPopulate();
+        ASN1Object obj = tag.getObj();
+
+        assert toPop != null && obj != null : "TagObj instances cannot be null.";
+
+        switch (tag.getTagNo()) {
+            case FORM_TYPE:
+                toPop.setFormType(asUtf8(obj, Form.JSONMapping.FORM_TYPE));
+                break;
+            case FORM_TYPE_ID:
+                toPop.setFormTypeId(asLong(obj, Form.JSONMapping.FORM_TYPE_ID));
+                break;
+            case TITLE:
+                toPop.setTitle(asUtf8(obj, Form.JSONMapping.TITLE));
+                break;
+            case FLOW_STATE:
+                toPop.setFlowState(asUtf8(obj, Form.JSONMapping.FLOW_STATE));
+                break;
+            case STATE:
+                toPop.setState(asUtf8(obj, Form.JSONMapping.STATE));
+                break;
+            case CURRENT_USER:
+                toPop.setCurrentUser(
+                        this.asnMapUser.decode(asSeq(obj, Form.JSONMapping.CURRENT_USER))
+                );
+                break;
+            case DATE_CREATED:
+                toPop.setDateCreated(asDate(obj, Form.JSONMapping.DATE_CREATED));
+                break;
+            case DATE_LAST_UPDATED:
+                toPop.setDateLastUpdated(asDate(obj, Form.JSONMapping.DATE_LAST_UPDATED));
+                break;
         }
-
-        return returnVal;
+        return null;
     }
 
-    public DERSequence encode(Form item) {
-        ASN1EncodableVector vect = initVector(item);
+    /**
+     * Encodes the attributes of a {@code Form} object as ASN.1 tagged objects
+     * and adds them to the specified {@code ASN1EncodableVector}.
+     *
+     * Depending on the attributes present in the given {@code Form} object,
+     * this method creates tagged objects for fields like form type, form type ID,
+     * title, and date created, and adds them to the provided vector.
+     *
+     * @param item   The {@code Form} object to be encoded. Must not be null.
+     * @param vect  The {@code ASN1EncodableVector} where the encoded tagged
+     *              objects will be added. Must not be null.
+     */
+    @Override
+    public void encodeTaggedObject(Form item, ASN1EncodableVector vect) {
+        assert item != null && vect != null : "Arguments cannot be null.";
+        assert vect.size() > 0 : "Vector size should be greater than zero.";
 
         if (item.getFormType() != null) {
             vect.add(new DERTaggedObject(true, FORM_TYPE, new DERUTF8String(item.getFormType())));
@@ -64,20 +143,34 @@ public class ASNMapperForm extends ASNBaseMapper<Form> {
 
         Long formTypeId = item.getFormTypeId();
         if (formTypeId != null) {
-            vect.add(new DERTaggedObject(true, Map.FORM_TYPE_ID, new ASN1Integer(formTypeId)));
+            vect.add(new DERTaggedObject(true, FORM_TYPE_ID, new ASN1Integer(formTypeId)));
         }
 
         if (item.getTitle() != null) {
             vect.add(new DERTaggedObject(true, TITLE, new DERUTF8String(item.getTitle())));
         }
 
-        if (item.getDateCreated() != null) {
-            vect.add(new DERTaggedObject(true, Map.DATE_CREATED, new ASN1GeneralizedTime(item.getDateCreated())));
+        if (item.getFlowState() != null) {
+            vect.add(new DERTaggedObject(true, FLOW_STATE, new DERGeneralString(item.getFlowState())));
         }
 
-        assert vect.size() <= ASNMapperForm.Map.START : "Vector size is not as expected. ";
+        if (item.getState() != null) {
+            vect.add(new DERTaggedObject(true, STATE, new DERGeneralString(item.getState())));
+        }
 
-        return new DERSequence(vect);
+        if (item.getCurrentUser() != null) {
+            vect.add(new DERTaggedObject(true, CURRENT_USER, this.asnMapUser.encode(item.getCurrentUser())));
+        }
+
+        if (item.getDateCreated() != null) {
+            vect.add(new DERTaggedObject(true, DATE_CREATED, new ASN1GeneralizedTime(item.getDateCreated())));
+        }
+
+        if (item.getDateLastUpdated() != null) {
+            vect.add(new DERTaggedObject(true, DATE_LAST_UPDATED, new ASN1GeneralizedTime(item.getDateLastUpdated())));
+        }
+
+
     }
 
 }
