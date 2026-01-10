@@ -108,7 +108,6 @@ public class WebSocketGetFormHistoryByFormClient extends
                         "WebSocket-GetFormHistory: The connection was closed by the server prior to the response received.",
                         FluidClientException.ErrorCode.IO_ERROR);
             }
-
             return returnValue;
         } catch (InterruptedException exceptParam) {
             //Interrupted...

@@ -35,9 +35,10 @@ public class ASNMapperFactory {
         this.baseTransmission = new ASNMapperBaseTransmission();
     }
 
-    public ABaseFluidVO readObjectFromReceived(ASN1Sequence seq, int type) {
-        BaseTransmission bt = this.baseTransmission.decode(seq);
-        PayloadPopulate payloadPopulate = this.payloadPop.payloadPopulate(seq);
+    public ABaseFluidVO readObjectFromReceived(ASN1Sequence baseTrans, int type) {
+        BaseTransmission bt = this.baseTransmission.decode(baseTrans);
+        PayloadPopulate payloadPopulate = bt.getPayloadPopulate(); //TODO this.payloadPop.payloadPopulate(seq);
+        ASN1Sequence transmissionObject = bt.getTransmissionObject();
 
         // Mappers:
         ASNMapperUser asnMapUser = new ASNMapperUser();
@@ -54,7 +55,7 @@ public class ASNMapperFactory {
         }
         assert mapper != null : "Mapper is null!";
 
-        ABaseFluidVO returnVal = mapper.decode(seq);
+        ABaseFluidVO returnVal = mapper.decode(transmissionObject);
         returnVal.setServiceTicket(bt.getServiceTicket());
         returnVal.setRequestUuid(bt.getRequestUuid());
         returnVal.setEcho(bt.getEcho());

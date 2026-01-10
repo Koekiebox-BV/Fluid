@@ -26,6 +26,7 @@ import java.util.Map;
 /**
  *
  */
+@Deprecated
 public class ASNMapperPayloadPopulate {
     public ASNMapperPayloadPopulate() {
         super();
