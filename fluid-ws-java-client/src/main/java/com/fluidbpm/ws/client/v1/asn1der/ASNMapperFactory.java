@@ -17,23 +17,26 @@ package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.vo.BaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1Sequence;
 
-import static com.fluidbpm.ws.client.v1.asn1der.GlobalIDSpecial.Type.FLUID_ITEM;
-import static com.fluidbpm.ws.client.v1.asn1der.GlobalIDSpecial.Type.FORM;
+import static com.fluidbpm.ws.client.v1.asn1der.GlobalIDSpecial.Type.*;
 
 /**
  *
  */
 public class ASNMapperFactory {
     private ASNMapperPayloadPopulate payloadPop = null;
+    private final ASNMapperBaseTransmission baseTransmission;
     public ASNMapperFactory() {
         super();
         this.payloadPop = new ASNMapperPayloadPopulate();
+        this.baseTransmission = new ASNMapperBaseTransmission();
     }
 
-    public ABaseFluidVO readObject(ASN1Sequence seq, int type) {
+    public ABaseFluidVO readObjectFromReceived(ASN1Sequence seq, int type) {
+        BaseTransmission bt = this.baseTransmission.decode(seq);
         PayloadPopulate payloadPopulate = this.payloadPop.payloadPopulate(seq);
 
         // Mappers:
@@ -45,10 +48,22 @@ public class ASNMapperFactory {
         switch (type) {
             case FLUID_ITEM: mapper = new ASNMapperFluidItem(asnMapForm);break;
             case FORM: mapper = asnMapForm;break;
+            case FIELD: mapper = asnMapField;break;
             default:
                 throw new FluidClientException("Invalid type code: " + type, FluidClientException.ErrorCode.ASN_1_ERROR);
         }
         assert mapper != null : "Mapper is null!";
-        return mapper.decode(seq);
+
+        ABaseFluidVO returnVal = mapper.decode(seq);
+        returnVal.setServiceTicket(bt.getServiceTicket());
+        returnVal.setRequestUuid(bt.getRequestUuid());
+        returnVal.setEcho(bt.getEcho());
+        returnVal.setLoggedInUserFromTicket(bt.getLoggedInUserFromTicket());
+        return returnVal;
+    }
+
+    public byte[] writeObjectForSend(ABaseFluidVO objVo) {
+
+        return null;
     }
 }

@@ -47,6 +47,7 @@ public class GlobalIDSpecial {
         // Valid return types:
         public static final int FLUID_ITEM = -2;//-1 is reserved for not set.
         public static final int FORM = -3;
+        public static final int FIELD = -4;
     }
 
     /**

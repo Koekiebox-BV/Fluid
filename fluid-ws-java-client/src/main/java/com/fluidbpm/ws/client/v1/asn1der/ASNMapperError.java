@@ -96,8 +96,7 @@ public class ASNMapperError extends ASNBaseMapper<Error> {
      * @throws com.fluidbpm.ws.client.FluidClientException if the byte array cannot be decoded into a valid {@code ASN1Sequence}
      */
     public Error decode(byte[] der) {
-        ASN1Sequence seq = this.initSeq(der);
-        return this.decode(seq);
+        return this.decode(this.initSeq(der));
     }
 
     /**
@@ -131,7 +130,7 @@ public class ASNMapperError extends ASNBaseMapper<Error> {
         vect.add(new ASN1Integer(item.getErrorCode()));
         vect.add(new DERUTF8String(DefWhenNull.nullSafeTxt(item.getErrorMessage())));
 
-        assert vect.size() == Map.START : "Vector size is not as expected. "+vect.size()+" vs "+Map.MESSAGE;
+        assert vect.size() == Map.START : "Vector size is not as expected. "+vect.size()+" vs "+Map.START;
 
         return new DERSequence(vect);
     }

@@ -67,7 +67,6 @@ public class WebSocketFormContainerCreateClient extends
                         serviceTicketAsHexParam
                 )
         );
-
         this.setServiceTicket(serviceTicketAsHexParam);
     }
 

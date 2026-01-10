@@ -124,12 +124,10 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
         final ASN1Sequence asn1Seq = initial.initSeq(der);
 
         int typeCode = initial.asInt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ID), "Type Code");
-
         if (typeCode == ERROR_TYPE) {
             return initial.decode(asn1Seq);
         } else {
-            //TODO test with instance variable.
-            return new ASNMapperFactory().readObject(asn1Seq, typeCode);
+            return new ASNMapperFactory().readObjectFromReceived(asn1Seq, typeCode);
         }
     }
 

@@ -3,6 +3,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -216,12 +218,18 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     public void sendMessage(ABaseFluidGSONObject aBaseFluidJSONObject) {
         if (aBaseFluidJSONObject == null) {
             throw new FluidClientException("No JSON Object to send.", FluidClientException.ErrorCode.IO_ERROR);
-        } else this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
+        }
+
+        if (this.mode == Mode.Binary) {
+            byte[] binary = new ASNMapperFactory().writeObjectForSend(aBaseFluidJSONObject);
+            this.sendMessage(binary);
+        } else {
+            this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
+        }
     }
 
     /**
      * Send a message as text.
-     *
      * @param messageToSend The text message to send.
      */
     public void sendMessage(String messageToSend) {
@@ -238,8 +246,29 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                     "Remote Session is not set. Verify if connection is open.",
                     FluidClientException.ErrorCode.IO_ERROR);
         }
-
         asyncRemote.sendText(messageToSend);
+        this.sentMessages++;
+    }
+
+    /**
+     * Send a message as text.
+     * @param messageToSend The text message to send.
+     */
+    public void sendMessage(byte[] messageToSend) {
+        if (this.userSession == null) {
+            throw new FluidClientException(
+                    "(send-binary) User Session is not set. Verify if connection is open.",
+                    FluidClientException.ErrorCode.SESSION_EXPIRED
+            );
+        }
+
+        RemoteEndpoint.Async asyncRemote = null;
+        if ((asyncRemote = this.userSession.getAsyncRemote()) == null) {
+            throw new FluidClientException(
+                    "(send-binary) Remote Session is not set. Verify if connection is open.",
+                    FluidClientException.ErrorCode.IO_ERROR);
+        }
+        asyncRemote.sendBinary(ByteBuffer.wrap(messageToSend));
         this.sentMessages++;
     }
 

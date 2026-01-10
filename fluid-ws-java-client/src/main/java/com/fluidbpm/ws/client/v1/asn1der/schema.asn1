@@ -11,6 +11,41 @@ User ::= SEQUENCE {
     username                [1] EXPLICIT UTF8String OPTIONAL
 }
 
+-- Base object for single valued SEQUENCE transmission objects:
+BaseTransmission ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           GeneralString,
+    requestUuid             GeneralString,
+    echo                    GeneralString,
+    loggedInUserFromTicket  User,
+    payloadPopulate         PayloadPopulate,
+    transmissionObject      SEQUENCE
+}
+
+-- Population object for field meta-data, and multi-choice values:
+PayloadPopulate ::= SEQUENCE {
+    multiChoicesForm        SEQUENCE OF MultiChoiceField,
+    multiChoicesUser        SEQUENCE OF MultiChoiceField,
+    multiChoicesRoute       SEQUENCE OF MultiChoiceField,
+    multiChoicesGlobal      SEQUENCE OF MultiChoiceField,
+    fieldMetaData           SEQUENCE OF FormFieldMetaData
+}
+
+MultiChoiceField ::= SEQUENCE {
+    fieldName               GeneralString,
+    multiChoices            SEQUENCE OF MultiChoice
+}
+
+MultiChoice ::= SEQUENCE {
+    id                      INTEGER,
+    description             GeneralString
+}
+
+FormFieldMetaData ::= SEQUENCE {
+    fieldName               GeneralString,
+    metaData                GeneralString
+}
+
 Error ::= SEQUENCE {
     id                      INTEGER,
     serviceTicket           GeneralString,
@@ -25,17 +60,13 @@ Table ::= SEQUENCE {
     tableRecords            [1] EXPLICIT SEQUENCE OF Form OPTIONAL
 }
 
-MultipleChoice ::= SEQUENCE {
-    selectedRecords         [0] SEQUENCE OF INTEGER
-}
-
 Field ::= SEQUENCE {
     id                      INTEGER,
     fieldName               [1] EXPLICIT GeneralString OPTIONAL,
     fieldValText            [2] EXPLICIT UTF8String OPTIONAL,
     fieldValBoolean         [3] EXPLICIT ASN1Boolean OPTIONAL,
     fieldValParagraphText   [4] EXPLICIT UTF8String OPTIONAL,
-    fieldValMultiChoice     [5] EXPLICIT MultipleChoice OPTIONAL,
+    fieldValMultiChoice     [5] EXPLICIT SEQUENCE OF INTEGER OPTIONAL,
     fieldValDateTime        [6] EXPLICIT GeneralizedTime OPTIONAL,
     fieldValDecimalInt      [7] EXPLICIT INTEGER OPTIONAL,
     fieldValDecimalReal     [8] EXPLICIT GeneralString OPTIONAL,
