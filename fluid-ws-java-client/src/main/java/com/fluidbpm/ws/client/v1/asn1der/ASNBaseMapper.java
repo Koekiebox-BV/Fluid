@@ -225,7 +225,7 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
      * @throws FluidClientException if there is an error decoding the byte array or if
      *         the provided byte array is invalid
      */
-    protected ASN1Sequence initSeq(byte[] der) {
+    public ASN1Sequence initSeq(byte[] der) {
         try {
             return (ASN1Sequence)ASN1Primitive.fromByteArray(der);
         } catch (IOException ioErr) {

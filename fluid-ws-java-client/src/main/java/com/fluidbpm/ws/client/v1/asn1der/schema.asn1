@@ -46,17 +46,13 @@ Field ::= SEQUENCE {
 
 Form ::= SEQUENCE {
     id                      INTEGER,
-    serviceTicket           GeneralString,
-    requestUuid             GeneralString,
-    echo                    GeneralString,
-    loggedInUserFromTicket  User,
-    formType                [5] EXPLICIT UTF8String OPTIONAL,
-    formTypeId              [6] EXPLICIT INTEGER OPTIONAL,
-    title                   [7] EXPLICIT UTF8String OPTIONAL,
-    flowState               [8] EXPLICIT GeneralString OPTIONAL,
-    state                   [9] EXPLICIT GeneralString OPTIONAL,
-    currentUser             [10] EXPLICIT User OPTIONAL,
-    dateCreated             [11] EXPLICIT GeneralizedTime OPTIONAL,
-    dateLastUpdated         [12] EXPLICIT GeneralizedTime OPTIONAL,
-    formFields              [13] EXPLICIT SEQUENCE OF Field OPTIONAL
+    formType                [1] EXPLICIT UTF8String OPTIONAL,
+    formTypeId              [2] EXPLICIT INTEGER OPTIONAL,
+    title                   [3] EXPLICIT UTF8String OPTIONAL,
+    flowState               [4] EXPLICIT GeneralString OPTIONAL,
+    state                   [5] EXPLICIT GeneralString OPTIONAL,
+    currentUser             [6] EXPLICIT User OPTIONAL,
+    dateCreated             [7] EXPLICIT GeneralizedTime OPTIONAL,
+    dateLastUpdated         [8] EXPLICIT GeneralizedTime OPTIONAL,
+    formFields              [9] EXPLICIT SEQUENCE OF Field OPTIONAL
 }

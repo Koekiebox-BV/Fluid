@@ -66,22 +66,53 @@ public class ASNMapperError extends ASNBaseMapper<Error> {
     }
 
     /**
-     * Decodes a DER-encoded byte array into an {@code Error} object.
-     * The method parses the given ASN.1 sequence, retrieves relevant fields
-     * such as error code and error message, and sets them on a new {@code Error} object.
+     * Decodes an {@code ASN1Sequence} into an {@code Error} object by mapping the sequence
+     * fields to the corresponding properties of the {@code Error} object.
      *
-     * @param der the byte array containing the DER-encoded representation of an {@code Error} object
-     * @return a populated {@code Error} object with fields decoded from the ASN.1 sequence
-     * @throws com.fluidbpm.ws.client.FluidClientException if the provided byte array is invalid or cannot be parsed into an ASN.1 sequence
+     * This method leverages the {@code popBaseFields} method to populate common fields and then
+     * explicitly maps the error code and error message from the sequence.
+     *
+     * @param seq the {@code ASN1Sequence} containing the encoded error data.
+     *            It is expected to have fields corresponding to {@code Map.CODE} and {@code Map.MESSAGE}.
+     * @return an {@code Error} object populated with data from the provided {@code ASN1Sequence}.
      */
-    public Error decode(byte[] der) {
-        ASN1Sequence seq = this.initSeq(der);
+    public Error decode(ASN1Sequence seq) {
         Error returnVal = new Error();
         this.popBaseFields(returnVal, seq);
 
         returnVal.setErrorCode(asInt(seq.getObjectAt(Map.CODE), Error.JSONMapping.ERROR_CODE));
         returnVal.setErrorMessage(asUtf8(seq.getObjectAt(Map.MESSAGE), Error.JSONMapping.ERROR_MESSAGE));
         return returnVal;
+    }
+
+    /**
+     * Decodes a DER-encoded byte array into an {@code Error} object.
+     *
+     * This method initializes an {@code ASN1Sequence} from the provided byte array
+     * and then maps the sequence fields to populate the properties of the {@code Error} object.
+     *
+     * @param der the byte array containing the DER-encoded data to be decoded
+     * @return an {@code Error} object populated with data extracted from the provided byte array
+     * @throws com.fluidbpm.ws.client.FluidClientException if the byte array cannot be decoded into a valid {@code ASN1Sequence}
+     */
+    public Error decode(byte[] der) {
+        ASN1Sequence seq = this.initSeq(der);
+        return this.decode(seq);
+    }
+
+    /**
+     * Converts the provided {@link ASN1Encodable} object to an integer value.
+     * This method delegates the conversion logic to the superclass implementation.
+     *
+     * @param e     The {@link ASN1Encodable} instance to be converted.
+     *              Must be an instance of {@link ASN1Integer}.
+     * @param field The name of the field being processed; used in error reporting
+     *              if the conversion fails.
+     * @return The integer value extracted from the {@link ASN1Encodable} instance.
+     */
+    @Override
+    public int asInt(ASN1Encodable e, String field) {
+        return super.asInt(e, field);
     }
 
     /**

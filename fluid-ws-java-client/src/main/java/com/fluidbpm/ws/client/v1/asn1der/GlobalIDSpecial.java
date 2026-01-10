@@ -32,6 +32,35 @@ package com.fluidbpm.ws.client.v1.asn1der;
  *   payloads distinctly during processing.
  */
 public class GlobalIDSpecial {
-    public static int ERROR_TYPE = -666;
-    public static int TAG_PAYLOAD_POPULATE = -100000;
+    /**
+     * The Type class defines a collection of constant values used for identifying
+     * specific categories or conditions within the system.
+     *
+     * Constants:
+     * - {@code ERROR_TYPE}: Represents a predefined error type identifier with a
+     *   value of {@code -666}. This constant is primarily utilized to standardize
+     *   error handling behaviors and signal specific error conditions in the system.
+     */
+    public static final class Type {
+        public static final int ERROR_TYPE = -666;
+
+        // Valid return types:
+        public static final int FLUID_ITEM = -2;//-1 is reserved for not set.
+        public static final int FORM = -3;
+    }
+
+    /**
+     * The Tag class defines a collection of constant values associated with
+     * tagging mechanisms in the system. These constants serve as identifiers,
+     * enabling components to standardize processing workflows and manage
+     * tagged data consistently across the architecture.
+     *
+     * Constants:
+     * - {@code TAG_PAYLOAD_POPULATE}: Represents a special tag used during
+     *   the payload population process. It is assigned a value of {@code -100000}
+     *   and is leveraged to categorize or flag payload-related operations.
+     */
+    public static final class Tag {
+        public static final int TAG_PAYLOAD_POPULATE = -100000;
+    }
 }

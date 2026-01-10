@@ -281,7 +281,5 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
      *            which includes its tag number, field name, and the associated ASN.1 data.
      * @return Always returns {@code null}.
      */
-    protected Void mapDecodedTaggedObject(TagObj<T> tag) {
-        return null;
-    }
+    protected abstract Void mapDecodedTaggedObject(TagObj<T> tag);
 }

@@ -2,12 +2,17 @@ package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.compress.CompressedResponse;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
+import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
+import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
+import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -18,6 +23,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static com.fluidbpm.ws.client.v1.asn1der.GlobalIDSpecial.Type.ERROR_TYPE;
+
 /**
  * Base list message handler.
  *
@@ -26,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @see CompletableFuture
  * @since 1.1
  */
-public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject> implements IMessageResponseHandler {
+public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> implements IMessageResponseHandler {
     private final WebSocketClient<?> webSocketClient;
 
     @Getter
@@ -108,15 +115,22 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
     /**
      * Determines if the current handler qualifies to process the given message.
      *
-     * @param message The message, provided as a byte array, to verify for processing qualification.
+     * @param der The message, provided as a byte array, to verify for processing qualification.
      * @return An object indicating the qualification status of the handler for the provided byte array message.
      */
     @Override
-    public Object doesHandlerQualifyForProcessing(byte[] message) {
+    public Object doesHandlerQualifyForProcessing(byte[] der) {
+        ASNMapperError initial = new ASNMapperError();
+        final ASN1Sequence asn1Seq = initial.initSeq(der);
 
-        //TODO Need to process ASN.1 DER message.
+        int typeCode = initial.asInt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ID), "Type Code");
 
-        return null;
+        if (typeCode == ERROR_TYPE) {
+            return initial.decode(asn1Seq);
+        } else {
+            //TODO test with instance variable.
+            return new ASNMapperFactory().readObject(asn1Seq, typeCode);
+        }
     }
 
     /**
@@ -131,18 +145,24 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
     @Override
     public void handleMessage(Object objectToProcess) {
         //There is an error...
+        final T messageForm;
         if (objectToProcess instanceof Error) {
             Error fluidError = ((Error) objectToProcess);
             this.errors.add(fluidError);
 
             //Do a message callback...
-            if (this.messageReceivedCallback != null) this.messageReceivedCallback.errorMessageReceived(fluidError);
+            if (this.messageReceivedCallback != null) {
+                this.messageReceivedCallback.errorMessageReceived(fluidError);
+            }
 
             //If complete future is provided...
             if (this.completableFuture != null) {
                 this.completableFuture.completeExceptionally(
                         new FluidClientException(fluidError.getErrorMessage(), fluidError.getErrorCode()));
             }
+            messageForm = null;
+        } else if (objectToProcess instanceof ABaseFluidVO) {
+            messageForm = (T) objectToProcess;
         } else {
             //No Error...
             JsonObject jsonObject = (JsonObject) objectToProcess;
@@ -162,26 +182,27 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidGSONObject>
                 }
                 jsonObject = JsonParser.parseString(new String(uncompressedJson)).getAsJsonObject();
             }
-            T messageForm = this.getNewInstanceBy(jsonObject);
+            messageForm = this.getNewInstanceBy(jsonObject);
+        }
+        if (messageForm == null) return;//Error occurred.
 
-            //Add to the list of return values...
-            this.returnValue.add(messageForm);
+        //Add to the list of return values...
+        this.returnValue.add(messageForm);
 
-            //Do a message callback...
-            if (this.messageReceivedCallback != null) this.messageReceivedCallback.messageReceived(messageForm);
+        //Do a message callback...
+        if (this.messageReceivedCallback != null) this.messageReceivedCallback.messageReceived(messageForm);
 
-            //Completable future is set, and all response messages received...
-            if (this.completableFuture != null) {
-                String echo = messageForm.getEcho();
-                if (echo != null && !echo.trim().isEmpty()) this.expectedEchoMessagesBeforeComplete.remove(echo);
+        //Completable future is set, and all response messages received...
+        if (this.completableFuture != null) {
+            String echo = messageForm.getEcho();
+            if (echo != null && !echo.trim().isEmpty()) this.expectedEchoMessagesBeforeComplete.remove(echo);
 
-                if (this.webSocketClient.getSentMessages() == this.webSocketClient.getReceivedMessages()) {
-                    //Sent and received messages match...
-                    this.completableFuture.complete(this.returnValue);
-                } else if (this.expectedEchoMessagesBeforeComplete.isEmpty()) {
-                    //All expected messages received...
-                    this.completableFuture.complete(this.returnValue);
-                }
+            if (this.webSocketClient.getSentMessages() == this.webSocketClient.getReceivedMessages()) {
+                //Sent and received messages match...
+                this.completableFuture.complete(this.returnValue);
+            } else if (this.expectedEchoMessagesBeforeComplete.isEmpty()) {
+                //All expected messages received...
+                this.completableFuture.complete(this.returnValue);
             }
         }
     }

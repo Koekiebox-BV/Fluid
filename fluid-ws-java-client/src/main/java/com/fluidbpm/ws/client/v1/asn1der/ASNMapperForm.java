@@ -48,7 +48,7 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
             ASNMapperField field,
             PayloadPopulate payloadPopulate
     ) {
-        super(InitType.ALL);
+        super(InitType.ID_ONLY);
         this.asnMapUser = user;
         this.asnMapField = field;
         this.payloadPopulate = payloadPopulate;
@@ -59,16 +59,16 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
     }
 
     public static class Map extends ASNBaseMapper.Map {
-        public static final int FORM_TYPE = 5;
-        public static final int FORM_TYPE_ID = 6;
-        public static final int TITLE = 7;
-        public static final int FLOW_STATE = 8;
-        public static final int STATE = 9;
-        public static final int CURRENT_USER = 10;
+        public static final int FORM_TYPE = 1;
+        public static final int FORM_TYPE_ID = 2;
+        public static final int TITLE = 3;
+        public static final int FLOW_STATE = 4;
+        public static final int STATE = 5;
+        public static final int CURRENT_USER = 6;
 
-        public static final int DATE_CREATED = 11;
-        public static final int DATE_LAST_UPDATED = 12;
-        public static final int FORM_FIELDS = 13;
+        public static final int DATE_CREATED = 7;
+        public static final int DATE_LAST_UPDATED = 8;
+        public static final int FORM_FIELDS = 9;
     }
 
     /**
@@ -95,7 +95,7 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
      */
     @Override
     protected Void mapDecodedTaggedObject(TagObj<Form> tag) {
-        assert tag != null : "Arguments cannot be null.";
+        assert tag != null : "TagObj cannot be null.";
 
         Form toPop = tag.getToPopulate();
         ASN1Object obj = tag.getObj();
