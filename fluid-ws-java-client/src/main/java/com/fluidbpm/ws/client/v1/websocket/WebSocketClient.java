@@ -224,7 +224,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             byte[] binary = new ASNMapperFactory().writeObjectForSend(aBaseFluidJSONObject);
             this.sendMessage(binary);
         } else {
-            this.sendMessage(aBaseFluidJSONObject.toJsonObject().toString());
+            String txt = aBaseFluidJSONObject.toJsonObject().toString();
+            this.sendMessage(txt);
         }
     }
 

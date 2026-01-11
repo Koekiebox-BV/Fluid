@@ -19,7 +19,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.google.common.io.BaseEncoding;
 import org.junit.Assert;
 import org.junit.Test;

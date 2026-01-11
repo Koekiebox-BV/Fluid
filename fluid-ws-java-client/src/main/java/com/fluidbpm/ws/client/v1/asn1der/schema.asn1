@@ -18,9 +18,11 @@ BaseTransmission ::= SEQUENCE {
     requestUuid             GeneralString,
     echo                    GeneralString,
     loggedInUserFromTicket  User,
-    payloadPopulate         [5] EXPLICIT PayloadPopulate OPTIONAL,
     -- The transmissionObject may be a sequence of single field values, or a sequence of sequences:
-    transmissionObject      [6] EXPLICIT SEQUENCE OPTIONAL
+    transmissionObject      [5] EXPLICIT SEQUENCE OPTIONAL,
+    -- Payloads wrapped to support parameters.
+    requestObject           [6] EXPLICIT RequestObject OPTIONAL
+    payloadPopulate         [7] EXPLICIT PayloadPopulate OPTIONAL,
 }
 
 -- Population object for field meta-data, and multi-choice values:
@@ -45,6 +47,16 @@ MultiChoice ::= SEQUENCE {
 FormFieldMetaData ::= SEQUENCE {
     fieldName               GeneralString,
     metaData                GeneralString
+}
+
+RequestObject ::= SEQUENCE {
+    path                    GeneralString,
+    parameters              [1] EXPLICIT SEQUENCE OF RequestParameter OPTIONAL
+}
+
+RequestParameter ::= SEQUENCE {
+    alias                   GeneralString,
+    value                   GeneralString
 }
 
 Error ::= SEQUENCE {

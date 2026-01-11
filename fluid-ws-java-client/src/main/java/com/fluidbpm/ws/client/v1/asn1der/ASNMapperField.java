@@ -16,7 +16,7 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.field.Field;
-import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.DERGeneralString;

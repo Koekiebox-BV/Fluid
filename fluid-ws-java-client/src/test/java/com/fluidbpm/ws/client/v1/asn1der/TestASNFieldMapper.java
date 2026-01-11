@@ -17,7 +17,7 @@ package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,7 +47,9 @@ public class TestASNFieldMapper extends ABaseTestCase {
 		Field item = new Field(765L);
 		item.setFieldName("field name");
 
-		ASNMapperField mapper = new ASNMapperField(new PayloadPopulate());
+		ASNMapperField mapper = new ASNMapperField(new PayloadPopulate(
+
+		));
 
 		byte[] raw = seqBytes(mapper.encode(item));
 		Field decoded = mapper.decode(raw);

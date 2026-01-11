@@ -13,7 +13,7 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.ws.client.v1.asn1der.vo;
+package com.fluidbpm.ws.client.v1.asn1der.vo.transmission;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
@@ -33,6 +33,16 @@ public class PayloadPopulate extends ABaseFluidVO {
     private Map<String, Map<Integer, String>> multiChoicesRoute;
     private Map<String, Map<Integer, String>> multiChoicesGlobal;
     private Map<String, String> fieldMetaData;
+
+    public PayloadPopulate(
+            List<ASNMultiChoiceField> mcFormField,
+            List<ASNMultiChoiceField> mcUserField,
+            List<ASNMultiChoiceField> mcRouteField,
+            List<ASNMultiChoiceField> mcGlobalField,
+            List<FormFieldMetaData> ffMetaData
+    ) {
+
+    }
 
     public String getMetaDataValue(String fieldName) {
         if (true) return null;//TODO fix

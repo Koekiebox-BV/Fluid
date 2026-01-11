@@ -17,7 +17,8 @@ package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.fluidbpm.ws.client.v1.asn1der.vo.BaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -16,7 +16,7 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.form.Form;
-import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.*;
 
 import java.util.function.Supplier;

@@ -31,7 +31,7 @@ package com.fluidbpm.ws.client.v1.asn1der;
  *   of {@code -100000}, enabling components to manage or flag
  *   payloads distinctly during processing.
  */
-public class GlobalIDSpecial {
+public class ANSGlobal {
     /**
      * The Type class defines a collection of constant values used for identifying
      * specific categories or conditions within the system.
@@ -63,5 +63,11 @@ public class GlobalIDSpecial {
      */
     public static final class Tag {
         public static final int TAG_PAYLOAD_POPULATE = -100000;
+    }
+
+    public static final class Path {
+        public static final class Form {
+            public static final String FORM = "";
+        }
     }
 }

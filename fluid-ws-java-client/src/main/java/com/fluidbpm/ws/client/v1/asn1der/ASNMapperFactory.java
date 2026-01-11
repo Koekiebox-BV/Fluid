@@ -17,11 +17,13 @@ package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.asn1der.vo.BaseTransmission;
-import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperPayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1Sequence;
 
-import static com.fluidbpm.ws.client.v1.asn1der.GlobalIDSpecial.Type.*;
+import static com.fluidbpm.ws.client.v1.asn1der.ANSGlobal.Type.*;
 
 /**
  *

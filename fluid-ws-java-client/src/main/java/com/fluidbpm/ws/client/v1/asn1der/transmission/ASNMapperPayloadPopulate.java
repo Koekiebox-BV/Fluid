@@ -13,9 +13,10 @@
  * forbidden unless prior written permission is obtained from Koekiebox.
  */
 
-package com.fluidbpm.ws.client.v1.asn1der;
+package com.fluidbpm.ws.client.v1.asn1der.transmission;
 
-import com.fluidbpm.ws.client.v1.asn1der.vo.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1TaggedObject;
@@ -33,14 +34,14 @@ public class ASNMapperPayloadPopulate {
     }
 
     public PayloadPopulate payloadPopulate(ASN1Sequence seq) {
-        PayloadPopulate payloadPopulate = new PayloadPopulate();
+        PayloadPopulate payloadPopulate = null;//new PayloadPopulate();
 
         Enumeration<ASN1Object> enumeration = seq.getObjects();
         while (enumeration.hasMoreElements()) {
             ASN1Object obj = enumeration.nextElement();
             if (obj instanceof ASN1TaggedObject) {
                 ASN1TaggedObject taggedObject = (ASN1TaggedObject) obj;
-                if (taggedObject.getTagNo() == GlobalIDSpecial.Tag.TAG_PAYLOAD_POPULATE) {
+                if (taggedObject.getTagNo() == ANSGlobal.Tag.TAG_PAYLOAD_POPULATE) {
                     this.populate(payloadPopulate, ASN1TaggedObject.getInstance(taggedObject));
                     break;
                 }

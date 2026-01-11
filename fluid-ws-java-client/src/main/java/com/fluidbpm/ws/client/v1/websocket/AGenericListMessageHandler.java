@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static com.fluidbpm.ws.client.v1.asn1der.GlobalIDSpecial.Type.ERROR_TYPE;
+import static com.fluidbpm.ws.client.v1.asn1der.ANSGlobal.Type.ERROR_TYPE;
 
 /**
  * Base list message handler.
