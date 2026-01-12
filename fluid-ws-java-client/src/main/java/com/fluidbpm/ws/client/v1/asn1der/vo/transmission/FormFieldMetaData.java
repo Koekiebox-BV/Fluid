@@ -17,13 +17,15 @@ package com.fluidbpm.ws.client.v1.asn1der.vo.transmission;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**/
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class FormFieldMetaData extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
-    private String fieldName;
-    private String metaData;
+    private final String fieldName;
+    private final String metaData;
 }

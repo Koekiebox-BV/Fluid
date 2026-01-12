@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.asn1der.vo.transmission;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.List;
 /**/
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class ASNMultiChoiceField extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
-    private String fieldName;
-    private List<ASNMultiChoice> multiChoices;
+    private final String fieldName;
+    private final List<ASNMultiChoice> multiChoices;
 }

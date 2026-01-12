@@ -47,9 +47,9 @@ public class TestASNFieldMapper extends ABaseTestCase {
 		Field item = new Field(765L);
 		item.setFieldName("field name");
 
-		ASNMapperField mapper = new ASNMapperField(new PayloadPopulate(
-
-		));
+		PayloadPopulate payPop = new PayloadPopulate();
+		ASNMapperForm mapForm = new ASNMapperForm(payPop);
+		ASNMapperField mapper = new ASNMapperField(payPop, new ASNMapperTableField(mapForm));
 
 		byte[] raw = seqBytes(mapper.encode(item));
 		Field decoded = mapper.decode(raw);

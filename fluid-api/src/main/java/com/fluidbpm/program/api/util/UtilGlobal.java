@@ -30,6 +30,7 @@ import com.google.gson.JsonParser;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -937,5 +938,16 @@ public class UtilGlobal {
                         fieldNameLower.equals(itm.getFieldName().toLowerCase()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Determines whether the given BigDecimal represents a whole number.
+     *
+     * @param bd the BigDecimal to check; may be null
+     * @return true if the BigDecimal is a whole number, or false if it is null or not a whole number
+     */
+    public static boolean isWhole(BigDecimal bd) {
+        if (bd == null) return false;
+        return bd.stripTrailingZeros().scale() <= 0;
     }
 }

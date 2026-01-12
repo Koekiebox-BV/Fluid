@@ -127,7 +127,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
         if (typeCode == ERROR_TYPE) {
             return initial.decode(asn1Seq);
         } else {
-            return new ASNMapperFactory().readObjectFromReceived(asn1Seq, typeCode);
+            return new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
         }
     }
 

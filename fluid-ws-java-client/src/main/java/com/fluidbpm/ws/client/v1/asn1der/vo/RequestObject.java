@@ -17,14 +17,15 @@ package com.fluidbpm.ws.client.v1.asn1der.vo;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /**/
 @Getter
+@Setter
 public class RequestObject extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
     private String path;
     private List<RequestParameter> requestParameters;
-
 }

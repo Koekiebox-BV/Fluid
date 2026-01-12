@@ -66,6 +66,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
         public static final String SERVICE_TICKET = "serviceTicket";
         public static final String REQUEST_UUID = "requestUuid";
         public static final String ECHO = "echo";
+        public static final String LOGGED_IN_USER = "loggedInUser";
 
         /**
          * Elastic specific properties.

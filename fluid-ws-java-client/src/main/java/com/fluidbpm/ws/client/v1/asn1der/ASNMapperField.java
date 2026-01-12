@@ -16,13 +16,21 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.asn1.DERGeneralString;
-import org.bouncycastle.asn1.DERTaggedObject;
+import lombok.Getter;
+import lombok.Setter;
+import org.bouncycastle.asn1.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.function.Supplier;
+
+import static com.fluidbpm.program.api.util.UtilGlobal.isWhole;
 
 /**
  * The ASNMapperField class is responsible for mapping, decoding, and encoding operations
@@ -32,6 +40,10 @@ import java.util.function.Supplier;
  */
 public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
     private final PayloadPopulate payloadPopulate;
+
+    @Getter
+    @Setter
+    private ASNMapperTableField asnMapTableField;
 
     public static class Map extends ASNBaseMapper.Map {
         public static final int NAME = 1;
@@ -49,7 +61,9 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
         public static final int VALUE_9_LABEL = 11;
     }
 
-    public ASNMapperField(PayloadPopulate payloadPopulate) {
+    public ASNMapperField(
+            PayloadPopulate payloadPopulate
+    ) {
         super(InitType.ID_ONLY);
         this.payloadPopulate = payloadPopulate;
     }
@@ -104,10 +118,17 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                 break;
             case Map.VALUE_4_MULTI:
                 toPop.setTypeAsEnum(Field.Type.MultipleChoice);
-                //TODO set the avail
-                //TODO set the selected
-
-                // TODO toPop.setFieldValue(asUtf8(obj, Field.JSONMapping.FIELD_VALUE));
+                ASN1Sequence seqOfIntegers = asSeq(obj, Field.JSONMapping.FIELD_VALUE);
+                Enumeration<ASN1Encodable> intEnums = seqOfIntegers.getObjects();
+                List<String> selectedChoices = new ArrayList<>();
+                while (intEnums.hasMoreElements()) {
+                    int intVal = asInt(intEnums.nextElement(), Field.JSONMapping.FIELD_VALUE);
+                    String valTxtSelected =
+                            this.payloadPopulate.getSelectedMultiChoiceFormValue(fieldName, intVal);
+                    if (valTxtSelected != null) selectedChoices.add(valTxtSelected);
+                }
+                List<String> availChoices = this.payloadPopulate.getAvailableMultiChoicesForm(fieldName);
+                toPop.setFieldValue(new MultiChoice(selectedChoices, availChoices));
                 break;
             case Map.VALUE_5_DATE_TIME:
                 toPop.setTypeAsEnum(Field.Type.DateTime);
@@ -123,7 +144,8 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                 break;
             case Map.VALUE_7_TABLE:
                 toPop.setTypeAsEnum(Field.Type.Table);
-                // TODO toPop.setFieldValue(asUtf8(obj, Field.JSONMapping.FIELD_VALUE));
+                ASN1Sequence decSeqTbl = asSeq(obj, Field.JSONMapping.FIELD_VALUE);
+                toPop.setFieldValue(this.asnMapTableField.decode(decSeqTbl));
                 break;
             case Map.VALUE_8_ENCRYPTED:
                 toPop.setTypeAsEnum(Field.Type.TextEncrypted);
@@ -131,12 +153,11 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                 break;
             case Map.VALUE_9_LABEL:
                 toPop.setTypeAsEnum(Field.Type.Label);
-                toPop.setFieldValue(asUtf8(obj, Field.JSONMapping.FIELD_VALUE));
+                toPop.setFieldValue(asGeneralTxt(obj, Field.JSONMapping.FIELD_VALUE));
                 break;
         }
 
         toPop.setTypeMetaData(this.payloadPopulate.getMetaDataValue(fieldName));
-
         return null;
     }
 
@@ -153,23 +174,69 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
         assert item != null && vect != null : "Arguments cannot be null.";
         assert vect.size() > 0 : "Vector size should be greater than zero.";
 
-        if (item.getFieldName() != null) {
-            vect.add(new DERTaggedObject(true, Map.NAME, new DERGeneralString(item.getFieldName())));
+        String fieldName = item.getFieldName();
+        if (fieldName != null) {
+            vect.add(new DERTaggedObject(true, Map.NAME, new DERGeneralString(fieldName)));
         }
 
         Field.Type type = item.getTypeAsEnum();
         if (type != null && item.getFieldValue() != null) {
             switch (type) {
                 case Text:
-                case ParagraphText:
-                case TrueFalse:
-                case DateTime:
-                case Decimal:
-                case Label:
                     vect.add(new DERTaggedObject(true, Map.VALUE_1_TEXT,
-                            new DERGeneralString(item.getFieldValue().toString())));
+                            new DERUTF8String(item.getFieldValueAsString())));
+                    break;
+                case TrueFalse:
+                    Boolean boolVal = item.getFieldValueAsBoolean();
+                    boolean boolPrim = boolVal != null && boolVal;
+                    vect.add(new DERTaggedObject(true, Map.VALUE_2_TRUE_FALSE,
+                            boolPrim ? ASN1Boolean.TRUE : ASN1Boolean.FALSE));
+                    break;
+                case ParagraphText:
+                    vect.add(new DERTaggedObject(true, Map.VALUE_3_PARA_TEXT,
+                            new DERUTF8String(item.getFieldValueAsString())));
                     break;
                 case MultipleChoice:
+                    ASN1EncodableVector vectOfInts = new ASN1EncodableVector();
+                    MultiChoice mcValue = item.getFieldValueAsMultiChoice();
+                    if (mcValue != null) {
+                        List<String> selectedChoices = mcValue.getSelectedMultiChoices();
+                        int[] selectedInts = this.payloadPopulate.getMultiChoiceFormValues(fieldName, selectedChoices);
+                        if (selectedInts != null) {
+                            for (int selectedInt : selectedInts) vectOfInts.add(new ASN1Integer(selectedInt));
+                        }
+                    }
+                    vect.add(new DERTaggedObject(true, Map.VALUE_4_MULTI, new DERSequence(vectOfInts)));
+                    break;
+                case DateTime:
+                    Date dateVal = item.getFieldValueAsDate();
+                    if (dateVal == null) dateVal = new Date(0L);//1970-01-01T00:00:00.000Z
+                    vect.add(new DERTaggedObject(true, Map.VALUE_5_DATE_TIME, new ASN1GeneralizedTime(dateVal)));
+                    break;
+                case Decimal:
+                    BigDecimal bdVal = item.getFieldValueAsBigDecimal();
+                    if (bdVal == null) bdVal = BigDecimal.ZERO;
+                    if (isWhole(bdVal)) {
+                        long longVal = bdVal.longValue();
+                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_INT, new ASN1Integer(longVal)));
+                    } else {
+                        String bdTxtVal = bdVal.toString();
+                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_REAL, new DERGeneralString(bdTxtVal)));
+                    }
+                    break;
+                case Table:
+                    TableField tblFieldVal = item.getFieldValueAsTableField();
+                    DERSequence tblSeq = this.asnMapTableField.encode(tblFieldVal);
+                    vect.add(new DERTaggedObject(true, Map.VALUE_7_TABLE, tblSeq));
+                    break;
+                case TextEncrypted:
+                    vect.add(new DERTaggedObject(true, Map.VALUE_8_ENCRYPTED,
+                            new DERUTF8String(item.getFieldValueAsString())));
+                    break;
+                case Label:
+                    vect.add(new DERTaggedObject(true, Map.VALUE_9_LABEL,
+                            new DERGeneralString(item.getFieldValue().toString())));
+                    break;
             }
         }
     }

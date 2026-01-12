@@ -24,6 +24,6 @@ import lombok.Setter;
 @Setter
 public class ASNMultiChoice extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
+    private Integer value;
     private String alias;
-    private String value;
 }

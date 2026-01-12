@@ -42,6 +42,7 @@ public class ANSGlobal {
      *   error handling behaviors and signal specific error conditions in the system.
      */
     public static final class Type {
+        public static final int UNKNOWN = -777;
         public static final int ERROR_TYPE = -666;
 
         // Valid return types:

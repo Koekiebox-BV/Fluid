@@ -602,6 +602,21 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Converts the field value to a BigDecimal representation.
+     * The method retrieves the field value as a Double and, if it is not null,
+     * converts it to a BigDecimal. If the field value is null, the method returns null.
+     *
+     * @return the field value as a BigDecimal if not null; otherwise, null
+     */
+    @XmlTransient
+    @JsonIgnore
+    public BigDecimal getFieldValueAsBigDecimal() {
+        Double doubleVal = this.getFieldValueAsDouble();
+        if (doubleVal == null) return null;
+        return new BigDecimal(doubleVal);
+    }
+
+    /**
      * Gets the value of {@code this} {@code Field} as a {@code Long}.
      *
      * @return The Field Value.

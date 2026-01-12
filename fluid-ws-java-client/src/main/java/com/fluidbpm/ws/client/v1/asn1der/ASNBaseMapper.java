@@ -153,7 +153,7 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
         vo.setRequestUuid(asGeneralTxt(seq.getObjectAt(ASNBaseMapper.Map.REQ_UUID), ABaseFluidGSONObject.JSONMapping.REQUEST_UUID));
         vo.setEcho(asGeneralTxt(seq.getObjectAt(ASNBaseMapper.Map.ECHO), ABaseFluidGSONObject.JSONMapping.ECHO));
 
-        ASN1Sequence seqUser = ASN1Sequence.getInstance(seq.getObjectAt(ASNBaseMapper.Map.USER));
+        ASN1Sequence seqUser = asSeq(seq.getObjectAt(ASNBaseMapper.Map.USER), ABaseFluidGSONObject.JSONMapping.LOGGED_IN_USER);
         vo.setLoggedInUserFromTicket(new User(
                 asLong(seqUser.getObjectAt(ASNBaseMapper.Map.ID), ABaseFluidGSONObject.JSONMapping.ID)
         ));

@@ -16,53 +16,23 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
-import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransmission;
-import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperPayloadPopulate;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
-import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1Sequence;
-
-import static com.fluidbpm.ws.client.v1.asn1der.ANSGlobal.Type.*;
 
 /**
  *
  */
 public class ASNMapperFactory {
-    private ASNMapperPayloadPopulate payloadPop = null;
-    private final ASNMapperBaseTransmission baseTransmission;
-    public ASNMapperFactory() {
+    private ASNMapperBaseTransmission baseTransmission;
+    public ASNMapperFactory(int type) {
         super();
-        this.payloadPop = new ASNMapperPayloadPopulate();
-        this.baseTransmission = new ASNMapperBaseTransmission();
+        this.baseTransmission = new ASNMapperBaseTransmission(type);
     }
 
-    public ABaseFluidVO readObjectFromReceived(ASN1Sequence baseTrans, int type) {
+    public ABaseFluidVO readObjectFromReceived(ASN1Sequence baseTrans) {
         BaseTransmission bt = this.baseTransmission.decode(baseTrans);
-        PayloadPopulate payloadPopulate = bt.getPayloadPopulate(); //TODO this.payloadPop.payloadPopulate(seq);
-        ASN1Sequence transmissionObject = bt.getTransmissionObject();
-
-        // Mappers:
-        ASNMapperUser asnMapUser = new ASNMapperUser();
-        ASNMapperField asnMapField = new ASNMapperField(payloadPopulate);
-        ASNMapperForm asnMapForm = new ASNMapperForm(asnMapUser, asnMapField, payloadPopulate);
-
-        ASNBaseTaggedMapper mapper = null;
-        switch (type) {
-            case FLUID_ITEM: mapper = new ASNMapperFluidItem(asnMapForm);break;
-            case FORM: mapper = asnMapForm;break;
-            case FIELD: mapper = asnMapField;break;
-            default:
-                throw new FluidClientException("Invalid type code: " + type, FluidClientException.ErrorCode.ASN_1_ERROR);
-        }
-        assert mapper != null : "Mapper is null!";
-
-        ABaseFluidVO returnVal = mapper.decode(transmissionObject);
-        returnVal.setServiceTicket(bt.getServiceTicket());
-        returnVal.setRequestUuid(bt.getRequestUuid());
-        returnVal.setEcho(bt.getEcho());
-        returnVal.setLoggedInUserFromTicket(bt.getLoggedInUserFromTicket());
-        return returnVal;
+        return bt.getTransmissionObject();
     }
 
     public byte[] writeObjectForSend(ABaseFluidVO objVo) {

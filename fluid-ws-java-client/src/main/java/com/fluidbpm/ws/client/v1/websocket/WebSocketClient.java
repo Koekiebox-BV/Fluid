@@ -3,6 +3,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
@@ -41,6 +42,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     @Getter
     private final Mode mode;
 
+    private ASNMapperFactory asnMapperFactory;
+
     public enum Mode {
         Text,
         Binary
@@ -61,7 +64,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             URI endpointURIParam,
             Map<String, RespHandler> messageHandlersParam
     ) throws DeploymentException, IOException {
-        this(endpointURIParam, messageHandlersParam, Mode.Text);
+        this(endpointURIParam, messageHandlersParam, Mode.Text, ANSGlobal.Type.UNKNOWN);
     }
 
     /**
@@ -77,10 +80,12 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     public WebSocketClient(
             URI endpointURIParam,
             Map<String, RespHandler> messageHandlersParam,
-            Mode mode
+            Mode mode,
+            int requestAsn1Type
     ) throws DeploymentException, IOException {
         this.messageHandlers = messageHandlersParam;
         this.mode = mode;
+        this.asnMapperFactory = new ASNMapperFactory(requestAsn1Type);
 
         this.sentMessages = 0;
         this.receivedMessages = 0;
@@ -221,7 +226,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         }
 
         if (this.mode == Mode.Binary) {
-            byte[] binary = new ASNMapperFactory().writeObjectForSend(aBaseFluidJSONObject);
+            byte[] binary = this.asnMapperFactory.writeObjectForSend(aBaseFluidJSONObject);
             this.sendMessage(binary);
         } else {
             String txt = aBaseFluidJSONObject.toJsonObject().toString();

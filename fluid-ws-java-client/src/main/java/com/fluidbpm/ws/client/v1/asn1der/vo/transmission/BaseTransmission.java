@@ -20,7 +20,6 @@ import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bouncycastle.asn1.ASN1Sequence;
 
 /**
  * Represents an empty value object extending the base fluid value object.
@@ -35,7 +34,7 @@ import org.bouncycastle.asn1.ASN1Sequence;
 public class BaseTransmission extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 
-    private ASN1Sequence transmissionObject;
+    private ABaseFluidVO transmissionObject;
     private RequestObject requestObject;
     private PayloadPopulate payloadPopulate;
 
