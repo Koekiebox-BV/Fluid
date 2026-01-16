@@ -49,7 +49,7 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
      * with defined default values. This class is designed to ensure that the calling code
      * does not encounter unintended `null` values, which could lead to `NullPointerException`.
      */
-    protected static class DefWhenNull {
+    public static class DefWhenNull {
         public static final String TXT = UtilGlobal.EMPTY;
         public static final int ID = -1;
         public static final int NUMBER_INT = -1;

@@ -19,11 +19,20 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
 import lombok.Setter;
 
-/**/
+/**
+ * Represents a specific implementation of a multi-choice value object.
+ *
+ * A subclass of {@code ABaseFluidVO} that adds a fixed alias property.
+ * Commonly used where a unique identifier (id) and an alias are required for a given entity.
+ */
 @Getter
 @Setter
 public class ASNMultiChoice extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
-    private Integer value;
-    private String alias;
+    private final String alias;
+
+    public ASNMultiChoice(Long id, String alias) {
+        super(id);
+        this.alias = alias;
+    }
 }

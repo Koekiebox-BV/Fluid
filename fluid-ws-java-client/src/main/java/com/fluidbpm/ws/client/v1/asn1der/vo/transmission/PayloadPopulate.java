@@ -29,18 +29,18 @@ import java.util.Map;
 public class PayloadPopulate extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 
-    // FieldName, ChoiceId, Alias
-    private Map<String, Map<Integer, String>> multiChoicesForm;
-    private Map<String, Map<Integer, String>> multiChoicesUser;
-    private Map<String, Map<Integer, String>> multiChoicesRoute;
-    private Map<String, Map<Integer, String>> multiChoicesGlobal;
-    private Map<String, String> fieldMetaData;
-
     private List<ASNMultiChoiceField> mcFormField;
     private List<ASNMultiChoiceField> mcUserField;
     private List<ASNMultiChoiceField> mcRouteField;
     private List<ASNMultiChoiceField> mcGlobalField;
     private List<FormFieldMetaData> ffMetaData;
+
+    // FieldName, ChoiceId, Alias
+    private Map<String, Map<Long, String>> multiChoicesForm;
+    private Map<String, Map<Long, String>> multiChoicesUser;
+    private Map<String, Map<Long, String>> multiChoicesRoute;
+    private Map<String, Map<Long, String>> multiChoicesGlobal;
+    private Map<String, String> fieldMetaData;
 
     public PayloadPopulate() {
         this(
@@ -72,8 +72,8 @@ public class PayloadPopulate extends ABaseFluidVO {
         this.fieldMetaData = this.setFFMetaData(this.ffMetaData);
     }
 
-    private Map<String, Map<Integer, String>> setMCField(List<ASNMultiChoiceField> mcFields) {
-        Map<String, Map<Integer, String>> returnVal = new HashMap<>();
+    private Map<String, Map<Long, String>> setMCField(List<ASNMultiChoiceField> mcFields) {
+        Map<String, Map<Long, String>> returnVal = new HashMap<>();
         if (mcFields == null || mcFields.isEmpty()) return returnVal;
 
         mcFields.forEach(mcField -> {
@@ -81,9 +81,9 @@ public class PayloadPopulate extends ABaseFluidVO {
                     UtilGlobal.isBlank(mcField.getFieldName())) return;
 
             String fieldName = mcField.getFieldName();
-            Map<Integer, String> mcToMap = new HashMap<>();
+            Map<Long, String> mcToMap = new HashMap<>();
             mcField.getMultiChoices().forEach(mcChoice -> {
-                mcToMap.put(mcChoice.getValue(), mcChoice.getAlias());
+                mcToMap.put(mcChoice.getId(), mcChoice.getAlias());
             });
             returnVal.put(fieldName, mcToMap);
         });
@@ -98,7 +98,6 @@ public class PayloadPopulate extends ABaseFluidVO {
             if (UtilGlobal.isBlank(ffMeta.getFieldName()) || UtilGlobal.isBlank(ffMeta.getMetaData())) return;
             returnVal.put(ffMeta.getFieldName(), ffMeta.getMetaData());
         });
-
         return returnVal;
     }
 
@@ -151,19 +150,19 @@ public class PayloadPopulate extends ABaseFluidVO {
     }
 
     private List<String> getMultiChoiceValues(
-            Map<String, Map<Integer, String>> multiChoices,
+            Map<String, Map<Long, String>> multiChoices,
             String fieldName
     ) {
-        Map<Integer, String> map = multiChoices.get(fieldName);
+        Map<Long, String> map = multiChoices.get(fieldName);
         return map == null ? new ArrayList<>() : new ArrayList<>(map.values());
     }
 
     private List<String> getSelectedMultiChoiceValues(
-            Map<String, Map<Integer, String>> multiChoices,
+            Map<String, Map<Long, String>> multiChoices,
             String fieldName,
             int[] selectedIds
     ) {
-        Map<Integer, String> map = multiChoices.get(fieldName);
+        Map<Long, String> map = multiChoices.get(fieldName);
 
         List<String> selectedValues = new ArrayList<>();
         for (int id : selectedIds) selectedValues.add(map.get(id));

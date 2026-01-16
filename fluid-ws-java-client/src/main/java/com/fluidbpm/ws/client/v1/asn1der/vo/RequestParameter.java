@@ -17,13 +17,15 @@ package com.fluidbpm.ws.client.v1.asn1der.vo;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**/
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class RequestParameter extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
-    private String alias;
-    private String value;
+    private final String alias;
+    private final String value;
 }

@@ -19,10 +19,10 @@ BaseTransmission ::= SEQUENCE {
     echo                    GeneralString,
     loggedInUserFromTicket  User,
     payloadPopulate         PayloadPopulate,
-    -- The transmissionObject may be a sequence of single field values, or a sequence of sequences:
-    transmissionObject      [6] EXPLICIT SEQUENCE OPTIONAL,
     -- Payloads wrapped to support parameters.
-    requestObject           [7] EXPLICIT RequestObject OPTIONAL
+    requestObject           [6] EXPLICIT RequestObject OPTIONAL,
+    -- The transmissionObject may be a sequence of single field values, or a sequence of sequences:
+    transmissionObject      [7] EXPLICIT SEQUENCE OPTIONAL
 }
 
 -- Population object for field meta-data, and multi-choice values:

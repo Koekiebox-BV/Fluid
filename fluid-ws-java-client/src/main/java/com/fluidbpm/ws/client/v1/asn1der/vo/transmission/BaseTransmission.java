@@ -34,9 +34,9 @@ import lombok.Setter;
 public class BaseTransmission extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 
-    private ABaseFluidVO transmissionObject;
-    private RequestObject requestObject;
-    private PayloadPopulate payloadPopulate;
+    private PayloadPopulate payloadPopulate;//6
+    private RequestObject requestObject;//7
+    private ABaseFluidVO transmissionObject;//8
 
     /**
      * Sets the Id associated with any Fluid entity.
@@ -44,5 +44,13 @@ public class BaseTransmission extends ABaseFluidVO {
      */
     public BaseTransmission(Long id) {
         super(id);
+    }
+
+    /**
+     * Sets the Id associated with any Fluid entity.
+     * @param id Unique Identifier.
+     */
+    public BaseTransmission(int id) {
+        super((long) id);
     }
 }

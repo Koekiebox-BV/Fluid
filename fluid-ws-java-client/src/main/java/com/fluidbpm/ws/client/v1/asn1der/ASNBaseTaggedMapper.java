@@ -108,8 +108,16 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
             T toPopulate,
             Function<TagObj<T>, Void> decodeMappingFunc
     ) {
-        int startIndex = this.initType == InitType.ID_ONLY ? 1 : ASNBaseMapper.Map.CONTINUE;
+        int startIndex = this.getStartIndexForTaggedObjects();
         this.decodeTaggedObject(seq, toPopulate, decodeMappingFunc, startIndex);
+    }
+
+    /**
+     * Returns the starting index for decoding based on the initialization type.
+     * @return the starting index for decoding
+     */
+    protected int getStartIndexForTaggedObjects() {
+        return this.initType == InitType.ID_ONLY ? 1 : ASNBaseMapper.Map.CONTINUE;
     }
 
     /**
