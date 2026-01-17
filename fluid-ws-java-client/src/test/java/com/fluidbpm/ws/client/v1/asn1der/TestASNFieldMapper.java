@@ -59,6 +59,11 @@ public class TestASNFieldMapper extends ABaseTestCase {
         {
             item.setTypeAsEnum(Field.Type.Text);
             item.setFieldValue("field val of the th val");
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("Text: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("Text: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
         }
         
 
