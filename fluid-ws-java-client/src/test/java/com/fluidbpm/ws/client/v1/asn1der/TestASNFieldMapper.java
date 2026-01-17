@@ -16,10 +16,19 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.field.TableField;
+import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.ASNMultiChoice;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.ASNMultiChoiceField;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
 
@@ -58,9 +67,19 @@ public class TestASNFieldMapper extends ABaseTestCase {
 
     @Test
     public void testEncodeDecodeFieldValues() {
+        String fieldName = "field value testing";
         Field item = new Field();
+        item.setFieldName(fieldName);
 
-        PayloadPopulate payPop = new PayloadPopulate();
+        List<ASNMultiChoiceField> mcFormField = new ArrayList<>();
+        List<ASNMultiChoice> choices = new ArrayList<>();
+        choices.add(new ASNMultiChoice(1L, "Option 1"));
+        choices.add(new ASNMultiChoice(2L, "Option 2"));
+        choices.add(new ASNMultiChoice(3L, "Option 3"));
+        mcFormField.add(new ASNMultiChoiceField(fieldName, choices));
+        PayloadPopulate payPop = new PayloadPopulate(
+                mcFormField, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
+        );
         ASNMapperField mapper = new ASNMapperField(payPop);
 
         // Text:
@@ -93,9 +112,90 @@ public class TestASNFieldMapper extends ABaseTestCase {
             Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
 
             Assert.assertEquals("TrueFalse: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
-            Assert.assertEquals("TrueFalse: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
+            Assert.assertEquals("TrueFalse: Value is not as expected.", item.getFieldValueAsBoolean(), decodedVal.getFieldValueAsBoolean());
         }
 
+        // DateTime:
+        {
+            item.setTypeAsEnum(Field.Type.DateTime);
+            Date dateValue = new Date();
+            item.setFieldValue(dateValue);
 
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("DateTime: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("DateTime: Value is not as expected.", item.getFieldValueAsDate().toString(), decodedVal.getFieldValueAsDate().toString());
+            Assert.assertNotEquals("DateTime: Value is not as expected. Conversion issues expected.",
+                    item.getFieldValueAsDate().getTime(), decodedVal.getFieldValueAsDate().getTime());
+        }
+
+        // Decimal:
+        {
+            item.setTypeAsEnum(Field.Type.Decimal);
+            item.setFieldValue(123.45);
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("Decimal: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("Decimal: Value is not as expected.", item.getFieldValueAsBigDecimal(), decodedVal.getFieldValueAsBigDecimal());
+        }
+
+        // MultipleChoice:
+        {
+            item.setTypeAsEnum(Field.Type.MultipleChoice);
+            List<String> selected = new ArrayList<>();
+            selected.add("Option 1");
+            selected.add("Option 3");
+            MultiChoice multiChoice = new MultiChoice(selected);
+            item.setFieldValue(multiChoice);
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("MultipleChoice: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            MultiChoice decodedMultiChoice = decodedVal.getFieldValueAsMultiChoice();
+            Assert.assertEquals("MultipleChoice: Value Size is not as expected.", multiChoice.getSelectedMultiChoices().size(), decodedMultiChoice.getSelectedMultiChoices().size());
+            Assert.assertEquals("MultipleChoice: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
+        }
+
+        // ParagraphText:
+        {
+            item.setTypeAsEnum(Field.Type.ParagraphText);
+            item.setFieldValue("This is a paragraph text\nwith multiple lines\nof content.");
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("ParagraphText: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("ParagraphText: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
+        }
+
+        // Table:
+        {
+            item.setTypeAsEnum(Field.Type.Table);
+            TableField tblFld = new TableField();
+            tblFld.setSumDecimals(Boolean.TRUE);
+            tblFld.setTableRecords(new ArrayList<>());
+            Form frmRecord1 = new Form("form type", "this is title");
+            frmRecord1.setFieldValue("name", "benny", Field.Type.Text);
+            tblFld.getTableRecords().add(frmRecord1);
+
+            item.setFieldValue(tblFld);
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("Table: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+
+            TableField decodedTblFld = decodedVal.getFieldValueAsTableField();
+            Assert.assertEquals("Table: Value is not as expected.", item.getFieldValueAsString(), decodedTblFld);
+        }
+
+        // Label:
+        {
+            item.setTypeAsEnum(Field.Type.Label);
+            item.setFieldValue("Label text for visual purposes");
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("Label: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("Label: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
+        }
     }
 }

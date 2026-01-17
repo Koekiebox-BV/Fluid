@@ -120,13 +120,11 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                 toPop.setTypeAsEnum(Field.Type.MultipleChoice);
                 ASN1Sequence seqOfIntegers = asSeq(obj, Field.JSONMapping.FIELD_VALUE);
                 Enumeration<ASN1Encodable> intEnums = seqOfIntegers.getObjects();
-                List<String> selectedChoices = new ArrayList<>();
+                List<Long> selectedIds = new ArrayList<>();
                 while (intEnums.hasMoreElements()) {
-                    int intVal = asInt(intEnums.nextElement(), Field.JSONMapping.FIELD_VALUE);
-                    String valTxtSelected =
-                            this.payloadPopulate.getSelectedMultiChoiceFormValue(fieldName, intVal);
-                    if (valTxtSelected != null) selectedChoices.add(valTxtSelected);
+                    selectedIds.add(asLong(intEnums.nextElement(), Field.JSONMapping.FIELD_VALUE));
                 }
+                List<String> selectedChoices = this.payloadPopulate.getSelectedMultiChoiceFormValues(toPop.getFieldName(), selectedIds);
                 List<String> availChoices = this.payloadPopulate.getAvailableMultiChoicesForm(fieldName);
                 toPop.setFieldValue(new MultiChoice(selectedChoices, availChoices));
                 break;
@@ -201,10 +199,8 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                     MultiChoice mcValue = item.getFieldValueAsMultiChoice();
                     if (mcValue != null) {
                         List<String> selectedChoices = mcValue.getSelectedMultiChoices();
-                        int[] selectedInts = this.payloadPopulate.getMultiChoiceFormValues(fieldName, selectedChoices);
-                        if (selectedInts != null) {
-                            for (int selectedInt : selectedInts) vectOfInts.add(new ASN1Integer(selectedInt));
-                        }
+                        long[] selects = this.payloadPopulate.getMultiChoiceFormValues(fieldName, selectedChoices);
+                        for (long selected : selects) vectOfInts.add(new ASN1Integer(selected));
                     }
                     vect.add(new DERTaggedObject(true, Map.VALUE_4_MULTI, new DERSequence(vectOfInts)));
                     break;

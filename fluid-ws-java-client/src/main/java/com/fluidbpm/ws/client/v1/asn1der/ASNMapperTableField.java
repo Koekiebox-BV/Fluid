@@ -42,13 +42,14 @@ public class ASNMapperTableField extends ASNBaseMapper<TableField> {
     public TableField decode(ASN1Sequence sequence) {
         TableField returnVal = new TableField();
 
-        //TODO ssdf
+        //TODO Complete!
 
         return returnVal;
     }
 
     @Override
     public DERSequence encode(TableField vo) {
+        //TODO Complete!
         return null;
     }
 }

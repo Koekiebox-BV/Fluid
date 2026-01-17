@@ -32,29 +32,44 @@ public class TestPayloadPopulate extends ABaseTestCase {
     public void testFetch() {
         PayloadPopulate pop = testPayloadPopulate();
 
+        // Meta-data:
         String ffValNe = pop.getMetaDataValue("not-exist");
         Assert.assertNull(ffValNe);
 
         String ffValCool = pop.getMetaDataValue("cool-field");
         Assert.assertNotNull(ffValCool);
 
-        
+        // Multi Choice Form:
+        long[] selectedFieldNotKnown = pop.getMultiChoiceFormValues("ff-mc-not-known", new ArrayList<>());
+        Assert.assertEquals(0, selectedFieldNotKnown.length);
+
+        List<String> selectedMCNotKnown = new ArrayList<>();
+        selectedMCNotKnown.add("mc-opt-not-known");
+        long[] selectedFieldMCNotKnown = pop.getMultiChoiceFormValues("ff-mc", selectedMCNotKnown);
+        Assert.assertEquals(0, selectedFieldMCNotKnown.length);
+
+        List<String> selectedMCForms = new ArrayList<>();
+        selectedMCForms.add("ff-mc-opt-1");
+        selectedMCForms.add("ff-mc-opt-3");
+        long[] selectedLongs = pop.getMultiChoiceFormValues("ff-mc", selectedMCForms);
+        Assert.assertArrayEquals(new long[]{123L, 789L}, selectedLongs);
     }
 
     private PayloadPopulate testPayloadPopulate() {
 
-        List<ASNMultiChoice> mcList = new ArrayList<>();
-        mcList.add(new ASNMultiChoice(123L, "mc-opt-1"));
-        mcList.add(new ASNMultiChoice(456L, "mc-opt-2"));
+        List<ASNMultiChoice> mcListForm = new ArrayList<>();
+        mcListForm.add(new ASNMultiChoice(123L, "ff-mc-opt-1"));
+        mcListForm.add(new ASNMultiChoice(456L, "ff-mc-opt-2"));
+        mcListForm.add(new ASNMultiChoice(789L, "ff-mc-opt-3"));
 
         List<ASNMultiChoiceField> mcForm = new ArrayList<>();
-        mcForm.add(new ASNMultiChoiceField("ff-mc", mcList));
+        mcForm.add(new ASNMultiChoiceField("ff-mc", mcListForm));
         List<ASNMultiChoiceField> mcUser = new ArrayList<>();
-        mcUser.add(new ASNMultiChoiceField("uf-mc", mcList));
+        mcUser.add(new ASNMultiChoiceField("uf-mc", mcListForm));
         List<ASNMultiChoiceField> mcRoute = new ArrayList<>();
-        mcRoute.add(new ASNMultiChoiceField("rf-mc", mcList));
+        mcRoute.add(new ASNMultiChoiceField("rf-mc", mcListForm));
         List<ASNMultiChoiceField> mcGlobal = new ArrayList<>();
-        mcGlobal.add(new ASNMultiChoiceField("gf-mc", mcList));
+        mcGlobal.add(new ASNMultiChoiceField("gf-mc", mcListForm));
         List<FormFieldMetaData> ffmd = new ArrayList<>();
         ffmd.add(new FormFieldMetaData("cool-field", "Meta-Deee[:]"));
         ffmd.add(new FormFieldMetaData("cool-field2", "Meta-Deee[:]"));

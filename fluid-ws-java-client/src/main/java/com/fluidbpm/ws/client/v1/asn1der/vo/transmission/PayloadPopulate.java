@@ -19,10 +19,8 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * PayloadPopulate is a data object used to model and manage the processing
@@ -62,6 +60,12 @@ public class PayloadPopulate extends ABaseFluidVO {
     private Map<String, Map<Long, String>> multiChoicesUser;
     private Map<String, Map<Long, String>> multiChoicesRoute;
     private Map<String, Map<Long, String>> multiChoicesGlobal;
+    // Reverse....
+    private Map<String, Map<String, Long>> multiChoicesFormRev;
+    private Map<String, Map<String, Long>> multiChoicesUserRev;
+    private Map<String, Map<String, Long>> multiChoicesRouteRev;
+    private Map<String, Map<String, Long>> multiChoicesGlobalRev;
+
     private Map<String, String> fieldMetaData;
 
     public PayloadPopulate() {
@@ -91,24 +95,51 @@ public class PayloadPopulate extends ABaseFluidVO {
         this.multiChoicesUser = this.setMCField(this.mcUserField);
         this.multiChoicesRoute = this.setMCField(this.mcRouteField);
         this.multiChoicesGlobal = this.setMCField(this.mcGlobalField);
+        // Reverse....
+        this.multiChoicesFormRev = this.setMCFieldRev(this.mcFormField);
+        this.multiChoicesUserRev = this.setMCFieldRev(this.mcUserField);
+        this.multiChoicesRouteRev = this.setMCFieldRev(this.mcRouteField);
+        this.multiChoicesGlobalRev = this.setMCFieldRev(this.mcGlobalField);
         this.fieldMetaData = this.setFFMetaData(this.ffMetaData);
     }
 
     private Map<String, Map<Long, String>> setMCField(List<ASNMultiChoiceField> mcFields) {
+        if (mcFields == null || mcFields.isEmpty()) return Collections.emptyMap();
+
         Map<String, Map<Long, String>> returnVal = new HashMap<>();
-        if (mcFields == null || mcFields.isEmpty()) return returnVal;
+        for (ASNMultiChoiceField mcField : mcFields) {
+            if (mcField.getMultiChoices() == null || mcField.getMultiChoices().isEmpty() ||
+                    UtilGlobal.isBlank(mcField.getFieldName())) {
+                continue;
+            }
 
-        mcFields.forEach(mcField -> {
-            if ((mcField.getMultiChoices() == null || mcField.getMultiChoices().isEmpty()) ||
-                    UtilGlobal.isBlank(mcField.getFieldName())) return;
+            Map<Long, String> mcToMap = mcField.getMultiChoices().stream()
+                    .collect(Collectors.toMap(
+                            ASNMultiChoice::getId,
+                            ASNMultiChoice::getAlias
+                    ));
+            returnVal.put(mcField.getFieldName(), mcToMap);
+        }
+        return returnVal;
+    }
 
-            String fieldName = mcField.getFieldName();
-            Map<Long, String> mcToMap = new HashMap<>();
-            mcField.getMultiChoices().forEach(mcChoice -> {
-                mcToMap.put(mcChoice.getId(), mcChoice.getAlias());
-            });
-            returnVal.put(fieldName, mcToMap);
-        });
+    private Map<String, Map<String, Long>> setMCFieldRev(List<ASNMultiChoiceField> mcFields) {
+        if (mcFields == null || mcFields.isEmpty()) return Collections.emptyMap();
+
+        Map<String, Map<String, Long>> returnVal = new HashMap<>();
+        for (ASNMultiChoiceField mcField : mcFields) {
+            if (mcField.getMultiChoices() == null || mcField.getMultiChoices().isEmpty() ||
+                    UtilGlobal.isBlank(mcField.getFieldName())) {
+                continue;
+            }
+
+            Map<String, Long> mcToMap = mcField.getMultiChoices().stream()
+                    .collect(Collectors.toMap(
+                            ASNMultiChoice::getAlias,
+                            ASNMultiChoice::getId
+                    ));
+            returnVal.put(mcField.getFieldName(), mcToMap);
+        }
         return returnVal;
     }
 
@@ -160,26 +191,37 @@ public class PayloadPopulate extends ABaseFluidVO {
         return getMultiChoiceValues(this.multiChoicesForm, fieldName);
     }
 
-    public String getSelectedMultiChoiceFormValue(
-            String fieldName, int selectedId
+    public List<String> getSelectedMultiChoiceFormValues(
+            String fieldName, List<Long> selectedIds
     ) {
-        return null;//TODO 
+        Map<String, Long> forField = this.multiChoicesFormRev.get(fieldName);
+        if (forField == null) return new ArrayList<>();
+
+        return forField.entrySet().stream()
+                .filter(entry -> selectedIds.contains(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     public List<String> getAvailableMultiChoicesForm(String fieldName) {
-        return null;
+        if (this.multiChoicesFormRev == null) return new ArrayList<>();
+        Map<String, ?> choices = this.multiChoicesFormRev.get(fieldName);
+        return choices != null ? new ArrayList<>(choices.keySet()) : new ArrayList<>();
     }
 
-    public List<String> getSelectedMultiChoiceFormValues(
-            String fieldName, int[] selectedIds
-    ) {
-        return getSelectedMultiChoiceValues(this.multiChoicesForm, fieldName, selectedIds);
-    }
-
-    public int[] getMultiChoiceFormValues(
+    public long[] getMultiChoiceFormValues(
             String fieldName, List<String> selectedAliases
     ) {
-        return new int[]{};
+        if (selectedAliases == null || selectedAliases.isEmpty()) return new long[]{};
+
+        Map<String, Long> forField = this.multiChoicesFormRev.get(fieldName);
+        if (forField == null) return new long[]{};
+
+        return selectedAliases.stream()
+                .map(forField::get)
+                .filter(Objects::nonNull)
+                .mapToLong(Long::longValue)
+                .toArray();
     }
 
     private List<String> getMultiChoiceValues(
