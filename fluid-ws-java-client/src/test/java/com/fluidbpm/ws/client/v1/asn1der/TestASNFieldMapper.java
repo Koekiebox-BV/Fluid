@@ -43,7 +43,7 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  */
 public class TestASNFieldMapper extends ABaseTestCase {
     @Test
-    public void testEncodeDecode() {
+    public void testEncodeDecodeBasic() {
         Field item = new Field(765L);
         item.setFieldName("field name");
 
@@ -54,6 +54,14 @@ public class TestASNFieldMapper extends ABaseTestCase {
         Field decoded = mapper.decode(raw);
         Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
         Assert.assertEquals("Decoded field name is not as expected.", item.getFieldName(), decoded.getFieldName());
+    }
+
+    @Test
+    public void testEncodeDecodeFieldValues() {
+        Field item = new Field();
+
+        PayloadPopulate payPop = new PayloadPopulate();
+        ASNMapperField mapper = new ASNMapperField(payPop);
 
         // Text:
         {
@@ -65,7 +73,29 @@ public class TestASNFieldMapper extends ABaseTestCase {
             Assert.assertEquals("Text: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
             Assert.assertEquals("Text: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
         }
-        
+
+        // Text Encrypted:
+        {
+            item.setTypeAsEnum(Field.Type.TextEncrypted);
+            item.setFieldValue("field val of the th val");
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("TextEnc: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("TextEnc: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
+        }
+
+        // True False:
+        {
+            item.setTypeAsEnum(Field.Type.TrueFalse);
+            item.setFieldValue(Boolean.TRUE);
+
+            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+            Assert.assertEquals("TrueFalse: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+            Assert.assertEquals("TrueFalse: Value is not as expected.", item.getFieldValueAsString(), decodedVal.getFieldValueAsString());
+        }
+
 
     }
 }
