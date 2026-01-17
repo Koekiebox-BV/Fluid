@@ -42,18 +42,25 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  * - Uses Assert for validation of expected outcomes.
  */
 public class TestASNFieldMapper extends ABaseTestCase {
-	@Test
-	public void testEncodeDecode() {
-		Field item = new Field(765L);
-		item.setFieldName("field name");
+    @Test
+    public void testEncodeDecode() {
+        Field item = new Field(765L);
+        item.setFieldName("field name");
 
-		PayloadPopulate payPop = new PayloadPopulate();
-		ASNMapperForm mapForm = new ASNMapperForm(payPop);
-		ASNMapperField mapper = new ASNMapperField(payPop);
+        PayloadPopulate payPop = new PayloadPopulate();
+        ASNMapperField mapper = new ASNMapperField(payPop);
 
-		byte[] raw = seqBytes(mapper.encode(item));
-		Field decoded = mapper.decode(raw);
-		Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
-		Assert.assertEquals("Decoded field name is not as expected.", item.getFieldName(), decoded.getFieldName());
-	}
+        byte[] raw = seqBytes(mapper.encode(item));
+        Field decoded = mapper.decode(raw);
+        Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
+        Assert.assertEquals("Decoded field name is not as expected.", item.getFieldName(), decoded.getFieldName());
+
+        // Text:
+        {
+            item.setTypeAsEnum(Field.Type.Text);
+            item.setFieldValue("field val of the th val");
+        }
+        
+
+    }
 }

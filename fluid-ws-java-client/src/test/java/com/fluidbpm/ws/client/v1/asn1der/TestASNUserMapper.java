@@ -36,22 +36,22 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  */
 public class TestASNUserMapper extends ABaseTestCase {
 
-	@Test
-	public void testEncodeDecode() {
-		User item = new User();
-		item.setId(453L);
-		ASNMapperUser mapper = new ASNMapperUser();
+    @Test
+    public void testEncodeDecode() {
+        User item = new User();
+        item.setId(453L);
+        ASNMapperUser mapper = new ASNMapperUser();
 
-		byte[] raw = seqBytes(mapper.encode(item));
-		User decoded = mapper.decode(raw);
-		Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
-		Assert.assertNull(decoded.getUsername());
+        byte[] raw = seqBytes(mapper.encode(item));
+        User decoded = mapper.decode(raw);
+        Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
+        Assert.assertNull(decoded.getUsername());
 
-		item.setUsername("bb");
+        item.setUsername("bb");
 
-		raw = seqBytes(mapper.encode(item));
-		decoded = mapper.decode(raw);
-		Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
-		Assert.assertEquals("Decoded username is not as expected.", item.getUsername(), decoded.getUsername());
-	}
+        raw = seqBytes(mapper.encode(item));
+        decoded = mapper.decode(raw);
+        Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
+        Assert.assertEquals("Decoded username is not as expected.", item.getUsername(), decoded.getUsername());
+    }
 }

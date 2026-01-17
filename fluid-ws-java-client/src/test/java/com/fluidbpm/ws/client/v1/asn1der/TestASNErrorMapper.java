@@ -33,18 +33,18 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  */
 public class TestASNErrorMapper extends ABaseTestCase {
 
-	@Test
-	public void testEncodeDecode() {
-		Error error = new Error();
-		error.setErrorCode(123);
-		error.setErrorMessage("This is an error message");
+    @Test
+    public void testEncodeDecode() {
+        Error error = new Error();
+        error.setErrorCode(123);
+        error.setErrorMessage("This is an error message");
 
-		ASNMapperError mapper = new ASNMapperError();
+        ASNMapperError mapper = new ASNMapperError();
 
-		byte[] raw = seqBytes(mapper.encode(error));
-		Error decoded = mapper.decode(raw);
+        byte[] raw = seqBytes(mapper.encode(error));
+        Error decoded = mapper.decode(raw);
 
-		Assert.assertEquals("Decoded error code is not as expected.", error.getErrorCode(), decoded.getErrorCode());
-		Assert.assertEquals("Decoded error message in user is not as expected.", error.getErrorMessage(), decoded.getErrorMessage());
-	}
+        Assert.assertEquals("Decoded error code is not as expected.", error.getErrorCode(), decoded.getErrorCode());
+        Assert.assertEquals("Decoded error message in user is not as expected.", error.getErrorMessage(), decoded.getErrorMessage());
+    }
 }

@@ -32,7 +32,13 @@ import java.util.List;
 import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
 
 /**
+ * Unit test class for validating the functionality of ASNMapperBaseTransmission class.
+ * This test class extends the base test case functionality from {@code ABaseTestCase}.
+ * It provides test cases to verify the encoding and decoding of {@code BaseTransmission} objects
+ * using the {@code ASNMapperBaseTransmission} class.
  *
+ * The tests ensure the correctness of encoding into ASN.1 format and decoding back to the original object,
+ * while also evaluating performance for repeated encode-decode cycles.
  */
 public class TestASNMapperBaseTransmission extends ABaseTestCase {
     @Test

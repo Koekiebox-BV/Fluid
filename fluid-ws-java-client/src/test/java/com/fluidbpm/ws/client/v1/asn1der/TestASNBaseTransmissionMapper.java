@@ -35,23 +35,23 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  */
 public class TestASNBaseTransmissionMapper extends ABaseTestCase {
 
-	@Test
-	public void testEncodeDecode() {
-		BaseTransmission error = new BaseTransmission(121212L);
-		error.setEcho("echo");
-		error.setRequestUuid("ReReq");
-		error.setServiceTicket("Srv");
-		error.setLoggedInUserFromTicket(new User(1L, "user"));
+    @Test
+    public void testEncodeDecode() {
+        BaseTransmission error = new BaseTransmission(121212L);
+        error.setEcho("echo");
+        error.setRequestUuid("ReReq");
+        error.setServiceTicket("Srv");
+        error.setLoggedInUserFromTicket(new User(1L, "user"));
 
-		ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FLUID_ITEM);
+        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FLUID_ITEM);
 
-		byte[] raw = seqBytes(mapper.encode(error));
-		BaseTransmission decoded = mapper.decode(raw);
-		Assert.assertEquals("Decoded error id is not as expected.", error.getId(), decoded.getId());
-		Assert.assertEquals("Decoded error logged in user is not as expected.", error.getLoggedInUserFromTicket().getId(), decoded.getLoggedInUserFromTicket().getId());
-		Assert.assertEquals("Decoded error logged in user (username) is not as expected.", error.getLoggedInUserFromTicket().getUsername(), decoded.getLoggedInUserFromTicket().getUsername());
-		Assert.assertEquals("Decoded error service ticket is not as expected.", error.getServiceTicket(), decoded.getServiceTicket());
-		Assert.assertEquals("Decoded error request id is not as expected.", error.getRequestUuid(), decoded.getRequestUuid());
-		Assert.assertEquals("Decoded error echo is not as expected.", error.getEcho(), decoded.getEcho());
-	}
+        byte[] raw = seqBytes(mapper.encode(error));
+        BaseTransmission decoded = mapper.decode(raw);
+        Assert.assertEquals("Decoded error id is not as expected.", error.getId(), decoded.getId());
+        Assert.assertEquals("Decoded error logged in user is not as expected.", error.getLoggedInUserFromTicket().getId(), decoded.getLoggedInUserFromTicket().getId());
+        Assert.assertEquals("Decoded error logged in user (username) is not as expected.", error.getLoggedInUserFromTicket().getUsername(), decoded.getLoggedInUserFromTicket().getUsername());
+        Assert.assertEquals("Decoded error service ticket is not as expected.", error.getServiceTicket(), decoded.getServiceTicket());
+        Assert.assertEquals("Decoded error request id is not as expected.", error.getRequestUuid(), decoded.getRequestUuid());
+        Assert.assertEquals("Decoded error echo is not as expected.", error.getEcho(), decoded.getEcho());
+    }
 }

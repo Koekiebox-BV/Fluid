@@ -24,7 +24,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**/
+/**
+ * PayloadPopulate is a data object used to model and manage the processing
+ * of various multi-choice fields and metadata related to forms, users,
+ * routes, and global entities. This class extends {@code ABaseFluidVO}
+ * and inherits its base properties.
+ *
+ * The primary purpose of this class is to:
+ * - Store and process information associated with multi-choice fields.
+ * - Convert and map multi-choice data into structured formats.
+ * - Provide methods to retrieve available and selected values from multi-choice fields.
+ * - Handle metadata for form fields and enable metadata retrieval.
+ *
+ * Key responsibilities include:
+ * - Mapping multi-choice fields into a structured {@code Map<String, Map<Long, String>>} format.
+ * - Extracting available and selected values for multi-choice fields.
+ * - Handling associated metadata for form fields and mapping them for easy access.
+ *
+ * The class supports multiple types of multi-choice fields:
+ * - Form fields
+ * - User fields
+ * - Route fields
+ * - Global fields
+ */
 @Getter
 public class PayloadPopulate extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
@@ -101,11 +123,22 @@ public class PayloadPopulate extends ABaseFluidVO {
         return returnVal;
     }
 
+    /**
+     * Retrieves the metadata value associated with the specified field name.
+     *
+     * @param fieldName the name of the field for which the metadata value is to be retrieved
+     * @return the metadata value associated with the given field name, or null if no such value exists
+     */
     public String getMetaDataValue(String fieldName) {
-        if (true) return null;//TODO fix
         return this.fieldMetaData.get(fieldName);
     }
 
+    /**
+     * Retrieves a list of multi-choice route values associated with the specified field name.
+     *
+     * @param fieldName the name of the field for which multi-choice route values are to be retrieved
+     * @return a list of multi-choice route values associated with the given field name, or an empty list if no values exist
+     */
     public List<String> getMultiChoiceRouteValues(String fieldName) {
         return getMultiChoiceValues(this.multiChoicesRoute, fieldName);
     }

@@ -57,72 +57,72 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
 public class TestASNBaseMapper extends ABaseTestCase {
     private ASNBaseMapper<Error> base;
 
-	@Before
-	public void setup() {
-		this.base = new ASNBaseMapper<Error>(ASNBaseMapper.InitType.NONE) {
-			@Override
-			public Error decode(byte[] der) {
-				ASN1Sequence seq = this.initSeq(der);
-				Error returnVal = new Error();
-				this.popBaseFields(returnVal, seq);
-				return returnVal;
-			}
-
-			@Override
-			public DERSequence encode(Error vo) {
-				return new DERSequence(initVector(vo));
+    @Before
+    public void setup() {
+        this.base = new ASNBaseMapper<Error>(ASNBaseMapper.InitType.NONE) {
+            @Override
+            public Error decode(byte[] der) {
+                ASN1Sequence seq = this.initSeq(der);
+                Error returnVal = new Error();
+                this.popBaseFields(returnVal, seq);
+                return returnVal;
             }
 
-			@Override
-			public void popBaseFields(Error vo, ASN1Sequence seq) {
-				super.popBaseFields(vo, seq);
-			}
-		};
-	}
+            @Override
+            public DERSequence encode(Error vo) {
+                return new DERSequence(initVector(vo));
+            }
 
-	@Test
-	public void testInitVector() throws IOException {
-		Error error = new Error();
-		ASN1Sequence seq = new DERSequence(this.base.initVector(error));
-		byte[] encoded = seq.getEncoded(ASN1Encoding.DER);
-		String asciiHex = BaseEncoding.base16().encode(encoded);
+            @Override
+            public void popBaseFields(Error vo, ASN1Sequence seq) {
+                super.popBaseFields(vo, seq);
+            }
+        };
+    }
 
-		Assert.assertEquals("Expected ASN1Seq!", "30", asciiHex.substring(0,2));
-		Assert.assertEquals("Initial vector size is not as expected.", ASNBaseMapper.Map.START, seq.size());
-	}
+    @Test
+    public void testInitVector() throws IOException {
+        Error error = new Error();
+        ASN1Sequence seq = new DERSequence(this.base.initVector(error));
+        byte[] encoded = seq.getEncoded(ASN1Encoding.DER);
+        String asciiHex = BaseEncoding.base16().encode(encoded);
+
+        Assert.assertEquals("Expected ASN1Seq!", "30", asciiHex.substring(0,2));
+        Assert.assertEquals("Initial vector size is not as expected.", ASNBaseMapper.Map.START, seq.size());
+    }
 
     @Test
     public void testPopBaseFieldsEncodeDecode() throws IOException {
-		Error error = new Error();
-		User u = new User(3L, "kb");
-		error.setLoggedInUserFromTicket(u);
-		error.setId(33L);
-		String servTicket = UUID.randomUUID().toString();
-		String reqId = UUID.randomUUID().toString();
-		String echo = "EchO";
-		error.setServiceTicket(servTicket);
-		error.setRequestUuid(reqId);
-		error.setEcho(echo);
-		ASN1Sequence seq = new DERSequence(this.base.initVector(error));
+        Error error = new Error();
+        User u = new User(3L, "kb");
+        error.setLoggedInUserFromTicket(u);
+        error.setId(33L);
+        String servTicket = UUID.randomUUID().toString();
+        String reqId = UUID.randomUUID().toString();
+        String echo = "EchO";
+        error.setServiceTicket(servTicket);
+        error.setRequestUuid(reqId);
+        error.setEcho(echo);
+        ASN1Sequence seq = new DERSequence(this.base.initVector(error));
 
-		this.base.popBaseFields(error, seq);
+        this.base.popBaseFields(error, seq);
 
-		byte[] encoded = seq.getEncoded(ASN1Encoding.DER);
-		String asciiHex = BaseEncoding.base16().encode(encoded);
+        byte[] encoded = seq.getEncoded(ASN1Encoding.DER);
+        String asciiHex = BaseEncoding.base16().encode(encoded);
 
-		Assert.assertEquals("Expected ASN1Seq!", "30", asciiHex.substring(0,2));
+        Assert.assertEquals("Expected ASN1Seq!", "30", asciiHex.substring(0,2));
         Assert.assertEquals("Initial vector size is not as expected.", ASNBaseMapper.Map.START, seq.size());
 
-		Error decoded = this.base.decode(encoded);
-		Assert.assertEquals("Decoded error id is not as expected.", error.getId(), decoded.getId());
-		Assert.assertEquals("Decoded error logged in user is not as expected.", error.getLoggedInUserFromTicket().getId(), decoded.getLoggedInUserFromTicket().getId());
-		Assert.assertEquals("Decoded error logged in user (username) is not as expected.", error.getLoggedInUserFromTicket().getUsername(), decoded.getLoggedInUserFromTicket().getUsername());
-		Assert.assertEquals("Decoded error service ticket is not as expected.", error.getServiceTicket(), decoded.getServiceTicket());
-		Assert.assertEquals("Decoded error request id is not as expected.", error.getRequestUuid(), decoded.getRequestUuid());
-		Assert.assertEquals("Decoded error echo is not as expected.", error.getEcho(), decoded.getEcho());
+        Error decoded = this.base.decode(encoded);
+        Assert.assertEquals("Decoded error id is not as expected.", error.getId(), decoded.getId());
+        Assert.assertEquals("Decoded error logged in user is not as expected.", error.getLoggedInUserFromTicket().getId(), decoded.getLoggedInUserFromTicket().getId());
+        Assert.assertEquals("Decoded error logged in user (username) is not as expected.", error.getLoggedInUserFromTicket().getUsername(), decoded.getLoggedInUserFromTicket().getUsername());
+        Assert.assertEquals("Decoded error service ticket is not as expected.", error.getServiceTicket(), decoded.getServiceTicket());
+        Assert.assertEquals("Decoded error request id is not as expected.", error.getRequestUuid(), decoded.getRequestUuid());
+        Assert.assertEquals("Decoded error echo is not as expected.", error.getEcho(), decoded.getEcho());
 
-		byte[] encodedAgain = seqBytes(this.base.encode(decoded));
-		String asciiHexEncoded = BaseEncoding.base16().encode(encodedAgain);
-		Assert.assertEquals("Encoding and decoding does not match.", asciiHex, asciiHexEncoded);
+        byte[] encodedAgain = seqBytes(this.base.encode(decoded));
+        String asciiHexEncoded = BaseEncoding.base16().encode(encodedAgain);
+        Assert.assertEquals("Encoding and decoding does not match.", asciiHex, asciiHexEncoded);
     }
 }
