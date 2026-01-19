@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.fluidbpm.program.api.util.UtilGlobal.isWhole;
+import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.POSITIVE_INFINITY;
 
 /**
  * The ASNMapperField class is responsible for mapping, decoding, and encoding operations
@@ -54,11 +56,16 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
         public static final int VALUE_3_PARA_TEXT = 4;
         public static final int VALUE_4_MULTI = 5;
         public static final int VALUE_5_DATE_TIME = 6;
+
         public static final int VALUE_6_DECIMAL_INT = 7;
         public static final int VALUE_6_DECIMAL_REAL = 8;
-        public static final int VALUE_7_TABLE = 9;
-        public static final int VALUE_8_ENCRYPTED = 10;
-        public static final int VALUE_9_LABEL = 11;
+        public static final int VALUE_6_DECIMAL_NAN = 9;
+        public static final int VALUE_6_DECIMAL_INFINITE = 10;
+        public static final int VALUE_6_DECIMAL_INFINITE_NEGATIVE = 11;
+
+        public static final int VALUE_7_TABLE = 12;
+        public static final int VALUE_8_ENCRYPTED = 13;
+        public static final int VALUE_9_LABEL = 14;
     }
 
     public ASNMapperField(PayloadPopulate payloadPopulate) {
@@ -138,6 +145,18 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                 toPop.setTypeAsEnum(Field.Type.Decimal);
                 toPop.setFieldValue(asReal(obj, Field.JSONMapping.FIELD_VALUE));
                 break;
+            case Map.VALUE_6_DECIMAL_NAN:
+                toPop.setTypeAsEnum(Field.Type.Decimal);
+                toPop.setFieldValue(Double.NaN);
+                break;
+            case Map.VALUE_6_DECIMAL_INFINITE:
+                toPop.setTypeAsEnum(Field.Type.Decimal);
+                toPop.setFieldValue(POSITIVE_INFINITY);
+                break;
+            case Map.VALUE_6_DECIMAL_INFINITE_NEGATIVE:
+                toPop.setTypeAsEnum(Field.Type.Decimal);
+                toPop.setFieldValue(Double.NEGATIVE_INFINITY);
+                break;
             case Map.VALUE_7_TABLE:
                 toPop.setTypeAsEnum(Field.Type.Table);
                 ASN1Sequence decSeqTbl = asSeq(obj, Field.JSONMapping.FIELD_VALUE);
@@ -209,14 +228,26 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                     vect.add(new DERTaggedObject(true, Map.VALUE_5_DATE_TIME, new ASN1GeneralizedTime(dateVal)));
                     break;
                 case Decimal:
-                    BigDecimal bdVal = item.getFieldValueAsBigDecimal();
-                    if (bdVal == null) bdVal = BigDecimal.ZERO;
-                    if (isWhole(bdVal)) {
-                        long longVal = bdVal.longValue();
-                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_INT, new ASN1Integer(longVal)));
+                    Double doubleVal = item.getFieldValueAsDouble();
+                    if (doubleVal == null) doubleVal = 0.0;
+                    if (Double.isNaN(doubleVal)) {
+                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_NAN, new ASN1Integer(0)));
+                    } else if (POSITIVE_INFINITY == doubleVal) {
+                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_INFINITE, new ASN1Integer(0)));
+                    } else if (NEGATIVE_INFINITY == doubleVal) {
+                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_INFINITE_NEGATIVE, new ASN1Integer(0)));
                     } else {
-                        String bdTxtVal = bdVal.toString();
-                        vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_REAL, new DERGeneralString(bdTxtVal)));
+                        BigDecimal bdVal = item.getFieldValueAsBigDecimal();
+                        if (bdVal == null) bdVal = BigDecimal.ZERO;
+                        if (Double.isNaN(bdVal.doubleValue())) {
+                            vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_NAN, new ASN1Integer(0)));
+                        } else if (isWhole(bdVal)) {
+                            long longVal = bdVal.longValue();
+                            vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_INT, new ASN1Integer(longVal)));
+                        } else {
+                            String bdTxtVal = bdVal.toString();
+                            vect.add(new DERTaggedObject(true, Map.VALUE_6_DECIMAL_REAL, new DERGeneralString(bdTxtVal)));
+                        }
                     }
                     break;
                 case Table:

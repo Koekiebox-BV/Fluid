@@ -135,17 +135,42 @@ public class TestASNFieldMapper extends ABaseTestCase {
         // Decimal:
         {
             double[] dblVals = new double[] {
-                    123.45
+                    12345,
+                    123.45,
+                    11122123.45123311122111,
+                    0.0,
+                    -0.0,
+                    1.0,
+                    -1.0,
+                    Double.POSITIVE_INFINITY,
+                    Double.NEGATIVE_INFINITY,
+                    Double.NaN,
+                    1.7973631212121211236212121D,
+                    -1.7976931348623157,
+                    4.9E-324,
+                    2.2250738585072014E-308,
+                    Long.MIN_VALUE + 1L,
+                    Long.MAX_VALUE - 1000L,
+                    0L,
+                    1L,
+                    -1L,
+                    1000000000000L,
+                    -1000000000000L
             };
 
-            for (double dblVal : dblVals) {
+            for (int i = 0; i < dblVals.length; i++) {
+                double dblVal = dblVals[i];
+                System.out.println("["+i+"] -> ["+dblVal + "]");
                 item.setTypeAsEnum(Field.Type.Decimal);
-                item.setFieldValue(123.45);
+                item.setFieldValue(dblVal);
 
                 Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
-
                 Assert.assertEquals("Decimal: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
-                Assert.assertEquals("Decimal: Value is not as expected.", item.getFieldValueAsBigDecimal(), decodedVal.getFieldValueAsBigDecimal());
+                if (Double.isNaN(dblVal) || Double.isInfinite(dblVal)) {
+                    Assert.assertEquals("Decimal: Value is not as expected.", item.getFieldValueAsDouble(), decodedVal.getFieldValueAsDouble());
+                } else {
+                    Assert.assertEquals("Decimal: Value is not as expected.", item.getFieldValueAsBigDecimal(), decodedVal.getFieldValueAsBigDecimal());
+                }
             }
         }
 
