@@ -43,7 +43,7 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
 
     @Getter
     @Setter
-    private ASNMapperTableField asnMapTableField;
+    private ASNTableFieldMapper mapTableField;
 
     public static class Map extends ASNBaseMapper.Map {
         public static final int NAME = 1;
@@ -61,9 +61,7 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
         public static final int VALUE_9_LABEL = 11;
     }
 
-    public ASNMapperField(
-            PayloadPopulate payloadPopulate
-    ) {
+    public ASNMapperField(PayloadPopulate payloadPopulate) {
         super(InitType.ID_ONLY);
         this.payloadPopulate = payloadPopulate;
     }
@@ -143,7 +141,8 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
             case Map.VALUE_7_TABLE:
                 toPop.setTypeAsEnum(Field.Type.Table);
                 ASN1Sequence decSeqTbl = asSeq(obj, Field.JSONMapping.FIELD_VALUE);
-                toPop.setFieldValue(this.asnMapTableField.decode(decSeqTbl));
+                assert this.mapTableField != null : "Table field mapper is null!";
+                toPop.setFieldValue(this.mapTableField.decode(decSeqTbl));
                 break;
             case Map.VALUE_8_ENCRYPTED:
                 toPop.setTypeAsEnum(Field.Type.TextEncrypted);
@@ -222,7 +221,9 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                     break;
                 case Table:
                     TableField tblFieldVal = item.getFieldValueAsTableField();
-                    DERSequence tblSeq = this.asnMapTableField.encode(tblFieldVal);
+                    assert this.mapTableField != null : "Table field mapper is null!";
+
+                    DERSequence tblSeq = this.mapTableField.encode(tblFieldVal);
                     vect.add(new DERTaggedObject(true, Map.VALUE_7_TABLE, tblSeq));
                     break;
                 case TextEncrypted:

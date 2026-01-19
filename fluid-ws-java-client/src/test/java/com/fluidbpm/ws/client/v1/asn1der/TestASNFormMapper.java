@@ -30,7 +30,32 @@ import java.util.Date;
 import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
 
 /**
+ * Test class for verifying the ability of ASNMapperForm to encode and decode Form objects.
+ * This class extends {@code ABaseTestCase} and uses JUnit for testing.
  *
+ * The test ensures that the encoded byte array produced by {@code ASNMapperForm.encode(Form)}
+ * can be properly decoded back into a {@code Form} object using {@code ASNMapperForm.decode(byte[])}.
+ * All relevant fields of the Form object, including nested fields like {@code formFields},
+ * are verified for consistency between the original and decoded objects.
+ *
+ * Methods tested:
+ * - {@code ASNMapperForm.encode(Form)}
+ * - {@code ASNMapperForm.decode(byte[])}
+ *
+ * Assertions:
+ * - Validates that primary fields such as ID, title, and state match between the original
+ *   and the decoded Form object.
+ * - Checks that nested and complex fields, including {@code formFields} and {@code currentUser},
+ *   are correctly encoded and decoded.
+ * - Ensures nullability behavior for fields like {@code formDescription} remains consistent.
+ *
+ * Dependencies:
+ * - ASNMapperForm for encoding/decoding operations.
+ * - PayloadPopulate for populating necessary dependencies of {@code ASNMapperForm}.
+ * - BaseEncoding for byte array representation.
+ *
+ * Output:
+ * - Prints the encoded byte array in Base16 format for debugging purposes.
  */
 public class TestASNFormMapper extends ABaseTestCase {
 

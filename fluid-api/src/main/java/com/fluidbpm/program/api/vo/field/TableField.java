@@ -21,6 +21,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class TableField extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
     private List<Form> tableRecords;
@@ -55,19 +57,22 @@ public class TableField extends ABaseFluidGSONObject {
     }
 
     /**
-     * Default constructor.
-     */
-    public TableField() {
-        super();
-    }
-
-    /**
      * Constructor to create {@code TableField} with records.
      * @param tableRecordsParam The records to create.
      */
     public TableField(List<Form> tableRecordsParam) {
         super();
         this.setTableRecords(tableRecordsParam);
+    }
+
+    /**
+     * Constructor to create {@code TableField} with sum-decimals and records.
+     * @param sumDecimals should decimal fields for records be summed?
+     * @param tableRecords The records to create.
+     */
+    public TableField(boolean sumDecimals, List<Form> tableRecords) {
+        this(tableRecords);
+        this.setSumDecimals(sumDecimals);
     }
 
     /**

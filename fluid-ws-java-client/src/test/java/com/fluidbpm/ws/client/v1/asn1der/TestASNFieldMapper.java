@@ -81,6 +81,9 @@ public class TestASNFieldMapper extends ABaseTestCase {
                 mcFormField, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()
         );
         ASNMapperField mapper = new ASNMapperField(payPop);
+        ASNMapperForm mapForm = new ASNMapperForm(payPop);
+        ASNTableFieldMapper tblFieldMapper = new ASNTableFieldMapper(mapForm);
+        mapper.setMapTableField(tblFieldMapper);
 
         // Text:
         {
@@ -131,13 +134,19 @@ public class TestASNFieldMapper extends ABaseTestCase {
 
         // Decimal:
         {
-            item.setTypeAsEnum(Field.Type.Decimal);
-            item.setFieldValue(123.45);
+            double[] dblVals = new double[] {
+                    123.45
+            };
 
-            Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+            for (double dblVal : dblVals) {
+                item.setTypeAsEnum(Field.Type.Decimal);
+                item.setFieldValue(123.45);
 
-            Assert.assertEquals("Decimal: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
-            Assert.assertEquals("Decimal: Value is not as expected.", item.getFieldValueAsBigDecimal(), decodedVal.getFieldValueAsBigDecimal());
+                Field decodedVal = mapper.decode(seqBytes(mapper.encode(item)));
+
+                Assert.assertEquals("Decimal: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
+                Assert.assertEquals("Decimal: Value is not as expected.", item.getFieldValueAsBigDecimal(), decodedVal.getFieldValueAsBigDecimal());
+            }
         }
 
         // MultipleChoice:
@@ -175,7 +184,9 @@ public class TestASNFieldMapper extends ABaseTestCase {
             tblFld.setSumDecimals(Boolean.TRUE);
             tblFld.setTableRecords(new ArrayList<>());
             Form frmRecord1 = new Form("form type", "this is title");
+            frmRecord1.setId(-1L);
             frmRecord1.setFieldValue("name", "benny", Field.Type.Text);
+            frmRecord1.getFormFields().get(0).setId(-1L);
             tblFld.getTableRecords().add(frmRecord1);
 
             item.setFieldValue(tblFld);
@@ -184,7 +195,9 @@ public class TestASNFieldMapper extends ABaseTestCase {
             Assert.assertEquals("Table: Value type is not as expected.", item.getTypeAsEnum(), decodedVal.getTypeAsEnum());
 
             TableField decodedTblFld = decodedVal.getFieldValueAsTableField();
-            Assert.assertEquals("Table: Value is not as expected.", item.getFieldValueAsString(), decodedTblFld);
+            TableField itemTblFld = item.getFieldValueAsTableField();
+            Assert.assertEquals("Table: SumDecimals is not as expected.", itemTblFld.getSumDecimals(), decodedTblFld.getSumDecimals());
+            Assert.assertEquals("Table: Value is not as expected.", itemTblFld.toString(), decodedTblFld.toString());
         }
 
         // Label:

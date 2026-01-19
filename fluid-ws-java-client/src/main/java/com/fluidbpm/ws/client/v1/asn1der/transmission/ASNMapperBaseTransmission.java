@@ -187,8 +187,8 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
 
         this.asnMapField = new ASNMapperField(this.payloadPopulate);
         this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate);
-        this.asnMapField.setAsnMapTableField(
-                new ASNMapperTableField(new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate))
+        this.asnMapField.setMapTableField(
+                new ASNTableFieldMapper(new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate))
         );
 
         // [5] -> Payment Populate:
@@ -356,8 +356,8 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
 
         this.asnMapField = new ASNMapperField(this.payloadPopulate);
         this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate);
-        this.asnMapField.setAsnMapTableField(
-                new ASNMapperTableField(new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate))
+        this.asnMapField.setMapTableField(
+                new ASNTableFieldMapper(new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate))
         );
 
         assert this.payloadPopulate != null : "Payload Populate is null!";
