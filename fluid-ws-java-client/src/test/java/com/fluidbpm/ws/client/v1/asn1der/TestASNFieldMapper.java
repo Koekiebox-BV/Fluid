@@ -160,7 +160,7 @@ public class TestASNFieldMapper extends ABaseTestCase {
 
             for (int i = 0; i < dblVals.length; i++) {
                 double dblVal = dblVals[i];
-                System.out.println("["+i+"] -> ["+dblVal + "]");
+                //System.out.println("["+i+"] -> ["+dblVal + "]");
                 item.setTypeAsEnum(Field.Type.Decimal);
                 item.setFieldValue(dblVal);
 
