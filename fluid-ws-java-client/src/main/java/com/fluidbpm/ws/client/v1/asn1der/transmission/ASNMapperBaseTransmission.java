@@ -50,6 +50,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
     private ASNMapperUser asnMapUser;
     private ASNMapperField asnMapField;
     private ASNMapperForm asnMapForm;
+    private ASNMapperAttachment asnMapAtt;
 
     /**
      * Constructs an instance of the ASNMapperBaseTransmission class.
@@ -185,6 +186,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         this.payloadPopulate = item.getPayloadPopulate();
         if (this.payloadPopulate == null) this.payloadPopulate = new PayloadPopulate();
 
+        this.asnMapAtt = new ASNMapperAttachment();
         this.asnMapField = new ASNMapperField(this.payloadPopulate);
         this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate);
         this.asnMapField.setMapTableField(
@@ -232,7 +234,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     seqTransObj = this.asnMapForm.encode((Form)transObj);
                     break;
                 case FLUID_ITEM:
-                    ASNMapperFluidItem mapFI = new ASNMapperFluidItem(this.asnMapForm);
+                    ASNMapperFluidItem mapFI = new ASNMapperFluidItem(this.asnMapForm, this.asnMapAtt);
                     seqTransObj = mapFI.encode((FluidItem) transObj);
                     break;
                 default:
@@ -354,6 +356,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         this.payloadPopulate = new PayloadPopulate(mcFormField, mcUserField, mcRouteField, mcGlobalField, ffMetaData);
         vo.setPayloadPopulate(this.payloadPopulate);
 
+        this.asnMapAtt = new ASNMapperAttachment();
         this.asnMapField = new ASNMapperField(this.payloadPopulate);
         this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate);
         this.asnMapField.setMapTableField(
@@ -472,7 +475,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 switch (this.transmissionObjectType) {
                     case FIELD: mapper = this.asnMapField;break;
                     case FORM: mapper = this.asnMapForm;break;
-                    case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm);break;
+                    case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapAtt);break;
                     default:
                         throw new FluidClientException(
                                 "Invalid type code: " + this.transmissionObjectType,

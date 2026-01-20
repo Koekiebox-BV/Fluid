@@ -39,10 +39,54 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.*;
  * of {@code Form}-related data is essential for interoperability or persistence.
  */
 public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
+    /**
+     * The {@code Map} class extends {@code ASNBaseMapper.Map} and provides a set of static constants
+     * to represent field identifiers for mapping ASN.1 sequences specific to Form objects.
+     * These constants facilitate the identification and mapping of fields during encoding
+     * and decoding operations between ASN.1 sequences and internal data structures.
+     *
+     * Field Identifiers:
+     * - {@code FORM_TYPE}: Identifier for the "formType" field.
+     * - {@code FORM_TYPE_ID}: Identifier for the "formTypeId" field.
+     * - {@code TITLE}: Identifier for the "title" field.
+     * - {@code FLOW_STATE}: Identifier for the "flowState" field.
+     * - {@code STATE}: Identifier for the "state" field.
+     * - {@code CURRENT_USER}: Identifier for the "currentUser" field.
+     * - {@code DATE_CREATED}: Identifier for the "dateCreated" field.
+     * - {@code DATE_LAST_UPDATED}: Identifier for the "dateLastUpdated" field.
+     * - {@code FORM_FIELDS}: Identifier for the "formFields" field.
+     *
+     * This class enables developers to work with tagged ASN.1 data by associating each
+     * field in a Form object with a unique constant, simplifying the mapping process.
+     */
+    public static class Map extends ASNBaseMapper.Map {
+        public static final int FORM_TYPE = 1;
+        public static final int FORM_TYPE_ID = 2;
+        public static final int TITLE = 3;
+        public static final int FLOW_STATE = 4;
+        public static final int STATE = 5;
+        public static final int CURRENT_USER = 6;
+
+        public static final int DATE_CREATED = 7;
+        public static final int DATE_LAST_UPDATED = 8;
+        public static final int FORM_FIELDS = 9;
+    }
+
     private final ASNMapperUser asnMapUser;
     private final ASNMapperField asnMapField;
     private final PayloadPopulate payloadPopulate;
 
+    /**
+     * Constructs an instance of the ASNMapperForm class using the specified user, field,
+     * and payload populate parameters.
+     *
+     * @param user an instance of {@code ASNMapperUser} representing the user-related
+     *             mappings for ASN.1 encoding and decoding.
+     * @param field an instance of {@code ASNMapperField} containing the field-related mappings
+     *              for handling ASN.1 structured data.
+     * @param payloadPopulate an instance of {@code PayloadPopulate} responsible for populating
+     *                        payload data during encoding or decoding operations.
+     */
     public ASNMapperForm(
             ASNMapperUser user,
             ASNMapperField field,
@@ -56,19 +100,6 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
 
     public ASNMapperForm(PayloadPopulate payloadPopulate) {
         this(new ASNMapperUser(), new ASNMapperField(payloadPopulate), payloadPopulate);
-    }
-
-    public static class Map extends ASNBaseMapper.Map {
-        public static final int FORM_TYPE = 1;
-        public static final int FORM_TYPE_ID = 2;
-        public static final int TITLE = 3;
-        public static final int FLOW_STATE = 4;
-        public static final int STATE = 5;
-        public static final int CURRENT_USER = 6;
-
-        public static final int DATE_CREATED = 7;
-        public static final int DATE_LAST_UPDATED = 8;
-        public static final int FORM_FIELDS = 9;
     }
 
     /**

@@ -34,35 +34,39 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperFluidItem.Map.FORM;
  * representation.
  */
 public class ASNMapperFluidItem extends ASNBaseTaggedMapper<FluidItem> {
-    private final ASNMapperForm asnMapForm;
-
-    /**
-     * Constructs a new instance of {@code ASNMapperFluidItem} with the specified {@code ASNMapperForm}.
-     *
-     * @param asnMapForm the {@code ASNMapperForm} instance used for configuring the mapper. This parameter
-     *                   provides the mapping logic and form-specific settings necessary for processing fluid
-     *                   item data in ASN.1 DER format.
-     */
-    public ASNMapperFluidItem(ASNMapperForm asnMapForm) {
-        super(InitType.ID_ONLY);
-        this.asnMapForm = asnMapForm;
-    }
-
-    /**
-     * The {@code Map} class is a specialized extension of the {@code ASNBaseMapper.Map} class.
-     * It introduces additional static constants catering specifically to the mapping requirements
-     * defined within its context. These constants represent additional field identifiers used for
-     * encoding and decoding ASN.1 sequences or records.
-     *
-     * Constants:
-     * - {@code START}: Inherits the value of {@code CONTINUE} from the parent {@code ASNBaseMapper.Map},
-     *   serving as the starting index for defining new mappings in this class.
-     * - {@code FORM}: Represents an identifier for mapping a specific "form" field.
-     * - {@code STEP_ENTERED_TIME}: Represents an identifier for mapping a "step entered time" field.
-     */
+    /**/
     public static class Map extends ASNBaseMapper.Map {
         public static final int FORM = 1;
         public static final int STEP_ENTERED_TIME = 2;
+        public static final int USER_FIELDS = 3;
+        public static final int ROUTE_FIELDS = 4;
+        public static final int GLOBAL_FIELDS = 5;
+        public static final int ATTACHMENTS = 6;
+        public static final int CUSTOM_PROPERTIES = 7;
+        public static final int FLOW_STATE = 8;
+        public static final int FLOW = 9;
+        public static final int STEP = 10;
+        public static final int IN_CASE_OF_CREATE_LINK_TO_PARENT = 11;
+        public static final int TABLE_FIELD_PARENT_FORM = 12;
+        public static final int TABLE_FIELD_NAME_ON_PARENT_FORM = 13;
+    }
+
+    private final ASNMapperForm asnMapForm;
+    private final ASNMapperAttachment asnMapAttachment;
+
+    /**
+     * Constructs a new {@code ASNMapperFluidItem} instance, initializing it with the specified
+     * ASN.1 mapping form and ASN.1 mapping attachment objects.
+     *
+     * @param asnMapForm an instance of {@code ASNMapperForm} used for handling ASN.1 form mappings.
+     *                   Must not be null.
+     * @param asnMapAttachment an instance of {@code ASNMapperAttachment} used for managing ASN.1
+     *                          attachment mappings. Must not be null.
+     */
+    public ASNMapperFluidItem(ASNMapperForm asnMapForm, ASNMapperAttachment asnMapAttachment) {
+        super(InitType.ID_ONLY);
+        this.asnMapForm = asnMapForm;
+        this.asnMapAttachment = asnMapAttachment;
     }
 
     /**

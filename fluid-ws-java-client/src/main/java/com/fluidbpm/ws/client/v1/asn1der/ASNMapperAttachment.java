@@ -27,6 +27,31 @@ import java.util.function.Supplier;
  * instances and encoding {@code Attachment} instances into ASN.1 tagged representations.
  */
 public class ASNMapperAttachment extends ASNBaseTaggedMapper<Attachment> {
+    /**
+     * The {@code Map} class provides a collection of static constants representing field identifiers
+     * that can be used in the mapping of ASN.1 sequences or structures with specific fields
+     * associated with an {@code Attachment} instance. These constants serve as tags facilitating
+     * encoding and decoding operations.
+     *
+     * This class extends the {@code ASNBaseMapper.Map} class, inheriting its mapping capabilities
+     * and defining additional field constants relevant to the {@code Attachment} domain. Each constant
+     * corresponds to a unique field within the {@code Attachment} model, allowing efficient field
+     * identification and manipulation.
+     *
+     * Fields:
+     * - {@code NAME}: Identifier for the "name" field.
+     * - {@code VERSION}: Identifier for the "version" field.
+     * - {@code PATH}: Identifier for the "path" field.
+     * - {@code CONTENT_TYPE}: Identifier for the "contentType" field.
+     * - {@code DATE_LAST_UPDATED}: Identifier for the "dateLastUpdated" field.
+     * - {@code DATE_CREATED}: Identifier for the "dateCreated" field.
+     * - {@code ATTACHMENT_DATA}: Identifier for the "attachmentData" field.
+     * - {@code FORM_ID}: Identifier for the "formId" field.
+     *
+     * These constants support extensibility and consistency in operations involving ASN.1
+     * encoded data. By associating specific fields in the {@code Attachment} with unique
+     * tag identifiers, the class simplifies encoding, decoding, and data transformation activities.
+     */
     public static class Map extends ASNBaseMapper.Map {
         public static final int NAME = 1;
         public static final int VERSION = 2;
