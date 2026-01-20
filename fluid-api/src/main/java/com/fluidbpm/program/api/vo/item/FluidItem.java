@@ -86,6 +86,9 @@ public class FluidItem extends ABaseFluidGSONObject {
         public static final String FLOW_STATE = "flowState";
         public static final String FLOW = "flow";
         public static final String STEP = "step";
+        public static final String IN_CASE_OF_CREATE_LINK_TO_PARENT = "inCaseOfCreateLinkToParent";
+        public static final String TABLE_FIELD_PARENT_FORM = "tableFieldParentForm";
+        public static final String TABLE_FIELD_NAME_ON_PARENT_FORM = "tableFieldNameOnParentForm";
     }
 
     /**

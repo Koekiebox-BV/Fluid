@@ -41,12 +41,31 @@ import static java.lang.Double.POSITIVE_INFINITY;
  * {@code Field} instances.
  */
 public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
-    private final PayloadPopulate payloadPopulate;
-
-    @Getter
-    @Setter
-    private ASNMapperTableField mapTableField;
-
+    /**
+     * The Map class defines a set of static constants that serve as field identifiers
+     * for mapping data to specific tag values in ASN.1 sequences. These constants
+     * can be used for field-level operations, encoding, and decoding when translating
+     * between ASN.1 representations and Java data structures.
+     *
+     * This class extends ASNBaseMapper.Map, leveraging its foundational identifiers
+     * while adding additional mappings specific to its use case.
+     *
+     * Field Identifiers:
+     * - NAME: Represents the tag for the "name" field.
+     * - VALUE_1_TEXT: Represents a textual value mapping.
+     * - VALUE_2_TRUE_FALSE: Represents a boolean true/false value mapping.
+     * - VALUE_3_PARA_TEXT: Represents paragraph text content mapping.
+     * - VALUE_4_MULTI: Represents a multi-value field mapping.
+     * - VALUE_5_DATE_TIME: Represents a date-time value mapping.
+     * - VALUE_6_DECIMAL_INT: Represents an integer decimal value mapping.
+     * - VALUE_6_DECIMAL_REAL: Represents a real (floating-point) decimal value mapping.
+     * - VALUE_6_DECIMAL_NAN: Represents a decimal value for "Not a Number" (NaN).
+     * - VALUE_6_DECIMAL_INFINITE: Represents a decimal value for positive infinity.
+     * - VALUE_6_DECIMAL_INFINITE_NEGATIVE: Represents a decimal value for negative infinity.
+     * - VALUE_7_TABLE: Represents a table-structured field mapping.
+     * - VALUE_8_ENCRYPTED: Represents an encrypted field mapping.
+     * - VALUE_9_LABEL: Represents a label or identifier field mapping.
+     */
     public static class Map extends ASNBaseMapper.Map {
         public static final int NAME = 1;
 
@@ -67,6 +86,12 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
         public static final int VALUE_8_ENCRYPTED = 13;
         public static final int VALUE_9_LABEL = 14;
     }
+
+    private final PayloadPopulate payloadPopulate;
+
+    @Getter
+    @Setter
+    private ASNMapperTableField mapTableField;
 
     public ASNMapperField(PayloadPopulate payloadPopulate) {
         super(InitType.ID_ONLY);

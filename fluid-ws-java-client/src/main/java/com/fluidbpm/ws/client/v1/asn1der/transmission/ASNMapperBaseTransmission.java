@@ -234,7 +234,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     seqTransObj = this.asnMapForm.encode((Form)transObj);
                     break;
                 case FLUID_ITEM:
-                    ASNMapperFluidItem mapFI = new ASNMapperFluidItem(this.asnMapForm, this.asnMapAtt);
+                    ASNMapperFluidItem mapFI = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);
                     seqTransObj = mapFI.encode((FluidItem) transObj);
                     break;
                 default:
@@ -475,7 +475,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 switch (this.transmissionObjectType) {
                     case FIELD: mapper = this.asnMapField;break;
                     case FORM: mapper = this.asnMapForm;break;
-                    case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapAtt);break;
+                    case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);break;
                     default:
                         throw new FluidClientException(
                                 "Invalid type code: " + this.transmissionObjectType,

@@ -15,15 +15,11 @@
 
 package com.fluidbpm.ws.client.v1.asn1der;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.item.FluidItem;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.*;
 
 import java.util.function.Supplier;
-
-import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperFluidItem.Map.FORM;
 
 /**
  * ASNMapperFluidItem is a mapper class responsible for encoding and decoding
@@ -52,21 +48,24 @@ public class ASNMapperFluidItem extends ASNBaseTaggedMapper<FluidItem> {
     }
 
     private final ASNMapperForm asnMapForm;
+    private final ASNMapperField asnMapField;
     private final ASNMapperAttachment asnMapAttachment;
+    private final ASNMapperFluidItemCustomProperty asnMapCusProp;
 
     /**
-     * Constructs a new {@code ASNMapperFluidItem} instance, initializing it with the specified
-     * ASN.1 mapping form and ASN.1 mapping attachment objects.
-     *
-     * @param asnMapForm an instance of {@code ASNMapperForm} used for handling ASN.1 form mappings.
-     *                   Must not be null.
-     * @param asnMapAttachment an instance of {@code ASNMapperAttachment} used for managing ASN.1
-     *                          attachment mappings. Must not be null.
+     * 
+     * @param asnMapForm
+     * @param asnMapField
      */
-    public ASNMapperFluidItem(ASNMapperForm asnMapForm, ASNMapperAttachment asnMapAttachment) {
+    public ASNMapperFluidItem(
+            ASNMapperForm asnMapForm,
+            ASNMapperField asnMapField
+    ) {
         super(InitType.ID_ONLY);
         this.asnMapForm = asnMapForm;
-        this.asnMapAttachment = asnMapAttachment;
+        this.asnMapField = asnMapField;
+        this.asnMapAttachment = new ASNMapperAttachment();
+        this.asnMapCusProp = new ASNMapperFluidItemCustomProperty();
     }
 
     /**
@@ -106,13 +105,61 @@ public class ASNMapperFluidItem extends ASNBaseTaggedMapper<FluidItem> {
         assert toPop != null && obj != null : "TagObj instances cannot be null.";
 
         switch (tag.getTagNo()) {
-            case FORM:
-                toPop.setForm(
-                        this.asnMapForm.decode(asSeq(obj, FluidItem.JSONMapping.FORM))
-                );
+            case Map.FORM:
+                toPop.setForm(this.asnMapForm.decode(asSeq(obj, FluidItem.JSONMapping.FORM)));
                 break;
             case Map.STEP_ENTERED_TIME:
                 toPop.setStepEnteredTime(asDate(obj, FluidItem.JSONMapping.STEP_ENTERED_TIME));
+                break;
+            case Map.USER_FIELDS:
+                toPop.setUserFields(
+                        this.asnMapField.decodeAsList(asSeq(obj, FluidItem.JSONMapping.USER_FIELDS), FluidItem.JSONMapping.USER_FIELDS)
+                );
+                break;
+            case Map.ROUTE_FIELDS:
+                toPop.setRouteFields(
+                        this.asnMapField.decodeAsList(asSeq(obj, FluidItem.JSONMapping.ROUTE_FIELDS), FluidItem.JSONMapping.ROUTE_FIELDS)
+                );
+                break;
+            case Map.GLOBAL_FIELDS:
+                toPop.setGlobalFields(
+                        this.asnMapField.decodeAsList(asSeq(obj, FluidItem.JSONMapping.GLOBAL_FIELDS), FluidItem.JSONMapping.GLOBAL_FIELDS)
+                );
+                break;
+            case Map.ATTACHMENTS:
+                toPop.setAttachments(
+                        this.asnMapAttachment.decodeAsList(asSeq(obj, FluidItem.JSONMapping.ATTACHMENTS),
+                                FluidItem.JSONMapping.ATTACHMENTS)
+                );
+                break;
+            case Map.CUSTOM_PROPERTIES:
+                toPop.setCustomProperties(
+                        this.asnMapCusProp.decodeAsList(asSeq(obj, FluidItem.JSONMapping.CUSTOM_PROPERTIES),
+                                FluidItem.JSONMapping.CUSTOM_PROPERTIES)
+                );
+                break;
+            case Map.FLOW_STATE:
+                FluidItem.FlowState flowState = FluidItem.FlowState.valueOfSafe(
+                        asGeneralTxt(obj, FluidItem.JSONMapping.FLOW_STATE)
+                );
+                toPop.setFlowState(flowState);
+                break;
+            case Map.FLOW:
+                toPop.setFlow(asUtf8(obj, FluidItem.JSONMapping.FLOW));
+                break;
+            case Map.STEP:
+                toPop.setStep(asUtf8(obj, FluidItem.JSONMapping.STEP));
+                break;
+            case Map.IN_CASE_OF_CREATE_LINK_TO_PARENT:
+                toPop.setInCaseOfCreateLinkToParent(asBool(obj, FluidItem.JSONMapping.IN_CASE_OF_CREATE_LINK_TO_PARENT));
+                break;
+            case Map.TABLE_FIELD_PARENT_FORM:
+                toPop.setTableFieldParentForm(
+                        this.asnMapForm.decode(asSeq(obj, FluidItem.JSONMapping.TABLE_FIELD_PARENT_FORM))
+                );
+                break;
+            case Map.TABLE_FIELD_NAME_ON_PARENT_FORM:
+                toPop.setTableFieldNameOnParentForm(asGeneralTxt(obj, FluidItem.JSONMapping.TABLE_FIELD_NAME_ON_PARENT_FORM));
                 break;
         }
         return null;
@@ -134,13 +181,68 @@ public class ASNMapperFluidItem extends ASNBaseTaggedMapper<FluidItem> {
         assert vect.size() > 0 : "Vector size should be greater than zero.";
 
         if (item.getForm() != null) {
-            vect.add(new DERTaggedObject(true, FORM, this.asnMapForm.encode(item.getForm())));
+            vect.add(new DERTaggedObject(true, Map.FORM, this.asnMapForm.encode(item.getForm())));
         }
 
         if (item.getStepEnteredTime() != null) {
             vect.add(new DERTaggedObject(true, Map.STEP_ENTERED_TIME, new ASN1GeneralizedTime(item.getStepEnteredTime())));
         }
+
+        if (item.getUserFields() != null && !item.getUserFields().isEmpty()) {
+            this.asnMapField.setAsList(item.getUserFields(), vect, Map.USER_FIELDS);
+        }
+
+        if (item.getRouteFields() != null && !item.getRouteFields().isEmpty()) {
+            this.asnMapField.setAsList(item.getRouteFields(), vect, Map.ROUTE_FIELDS);
+        }
+
+        if (item.getGlobalFields() != null && !item.getGlobalFields().isEmpty()) {
+            this.asnMapField.setAsList(item.getGlobalFields(), vect, Map.GLOBAL_FIELDS);
+        }
+
+        if (item.getAttachments() != null && !item.getAttachments().isEmpty()) {
+            this.asnMapAttachment.setAsList(item.getAttachments(), vect, Map.ATTACHMENTS);
+        }
+
+        if (item.getCustomProperties() != null && !item.getCustomProperties().isEmpty()) {
+            ASN1EncodableVector propsVector = new ASN1EncodableVector();
+            item.getCustomProperties().forEach(prop -> {
+                if (UtilGlobal.isBlank(prop.getName(), prop.getValue())) return;
+
+                propsVector.add(this.asnMapCusProp.encode(prop));
+            });
+            vect.add(new DERTaggedObject(true, Map.CUSTOM_PROPERTIES, new DERSequence(propsVector)));
+        }
+
+        if (item.getFlowState() != null) {
+            vect.add(new DERTaggedObject(true, Map.FLOW_STATE, new DERGeneralString(
+                    item.getFlowState().name()
+            )));
+        }
+
+        if (item.getFlow() != null) {
+            vect.add(new DERTaggedObject(true, Map.FLOW, new DERGeneralString(item.getFlow())));
+        }
+
+        if (item.getStep() != null) {
+            vect.add(new DERTaggedObject(true, Map.STEP, new DERGeneralString(item.getStep())));
+        }
+
+        if (item.getInCaseOfCreateLinkToParent() != null) {
+            boolean boolPrim = item.getInCaseOfCreateLinkToParent();
+            vect.add(new DERTaggedObject(true, Map.IN_CASE_OF_CREATE_LINK_TO_PARENT,
+                    boolPrim ? ASN1Boolean.TRUE : ASN1Boolean.FALSE));
+        }
+
+        if (item.getTableFieldParentForm() != null) {
+            vect.add(new DERTaggedObject(true, Map.TABLE_FIELD_PARENT_FORM,
+                    this.asnMapForm.encode(item.getTableFieldParentForm())));
+        }
+
+        if (item.getTableFieldNameOnParentForm() != null) {
+            vect.add(new DERTaggedObject(true, Map.TABLE_FIELD_NAME_ON_PARENT_FORM, new DERGeneralString(
+                    item.getTableFieldNameOnParentForm())
+            ));
+        }
     }
-
-
 }
