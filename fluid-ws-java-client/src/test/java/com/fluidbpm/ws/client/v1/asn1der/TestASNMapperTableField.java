@@ -58,7 +58,7 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  * Output:
  * - Prints the encoded byte array in Base16 format for debugging purposes.
  */
-public class TestASNTableFieldMapper extends ABaseTestCase {
+public class TestASNMapperTableField extends ABaseTestCase {
 
     @Test
     public void testEncodeDecode() {
@@ -79,7 +79,7 @@ public class TestASNTableFieldMapper extends ABaseTestCase {
         form.getFormFields().add(new Field(222L, "surname"));
 
         ASNMapperForm mapForm = new ASNMapperForm(new PayloadPopulate());
-        ASNTableFieldMapper mapper = new ASNTableFieldMapper(mapForm);
+        ASNMapperTableField mapper = new ASNMapperTableField(mapForm);
 
         List<Form> forms = new ArrayList<>();
         forms.add(form);

@@ -45,8 +45,8 @@ import java.util.Date;
 @Setter
 public class Attachment extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
-    private String version;
     private String name;
+    private String version;
     private String path;
     private String contentType;
 
@@ -54,6 +54,7 @@ public class Attachment extends ABaseFluidGSONObject {
     private Date dateCreated;
 
     private String attachmentDataBase64;
+    private byte[] attachmentData;
     private Long formId;
 
     /**
@@ -119,12 +120,12 @@ public class Attachment extends ABaseFluidGSONObject {
 
     /**
      * Create a clone from {@code toClone}
-     *
      * @param toClone
      */
     private Attachment(Attachment toClone) {
         if (toClone == null) return;
         this.setAttachmentDataBase64(toClone.getAttachmentDataBase64());
+        this.setAttachmentData(toClone.getAttachmentData());
         this.setContentType(toClone.getContentType());
         this.setDateCreated(toClone.getDateCreated() == null ? null : new Date(toClone.getDateCreated().getTime()));
         this.setDateLastUpdated(toClone.getDateLastUpdated() == null ? null : new Date(toClone.getDateLastUpdated().getTime()));
@@ -308,6 +309,10 @@ public class Attachment extends ABaseFluidGSONObject {
     @XmlTransient
     @JsonIgnore
     public byte[] getAttachmentDataRAW() {
+        if (this.getAttachmentData() != null && this.getAttachmentData().length > 0) {
+            return this.getAttachmentData();
+        }
+
         if (UtilGlobal.isBlank(this.getAttachmentDataBase64())) return null;
         return BaseEncoding.base64().decode(this.getAttachmentDataBase64());
     }

@@ -31,7 +31,7 @@ import java.util.List;
  * The mapping definition is encapsulated in an inner static class `Map`, which defines
  * constants for field indices and their corresponding aliases used in the ASN.1 structure.
  */
-public class ASNTableFieldMapper extends ASNBaseMapper<TableField> {
+public class ASNMapperTableField extends ASNBaseMapper<TableField> {
     private final ASNMapperForm asnMapForm;
 
     /**
@@ -42,7 +42,7 @@ public class ASNTableFieldMapper extends ASNBaseMapper<TableField> {
      * @param asnMapForm an instance of ASNMapperForm that provides mapping functionality
      *                   for Form objects contained within the TableField.
      */
-    public ASNTableFieldMapper(ASNMapperForm asnMapForm) {
+    public ASNMapperTableField(ASNMapperForm asnMapForm) {
         super(InitType.NONE);
         this.asnMapForm = asnMapForm;
     }

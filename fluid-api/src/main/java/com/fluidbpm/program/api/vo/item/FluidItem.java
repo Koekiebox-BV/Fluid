@@ -63,7 +63,6 @@ public class FluidItem extends ABaseFluidGSONObject {
     private String flow;
     private String step;
 
-
     private Boolean inCaseOfCreateLinkToParent;
 
     private Form tableFieldParentForm;

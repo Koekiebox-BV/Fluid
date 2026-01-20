@@ -45,7 +45,7 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
 
     @Getter
     @Setter
-    private ASNTableFieldMapper mapTableField;
+    private ASNMapperTableField mapTableField;
 
     public static class Map extends ASNBaseMapper.Map {
         public static final int NAME = 1;

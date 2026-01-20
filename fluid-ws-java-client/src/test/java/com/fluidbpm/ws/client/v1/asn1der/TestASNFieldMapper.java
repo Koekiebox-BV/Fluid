@@ -82,7 +82,7 @@ public class TestASNFieldMapper extends ABaseTestCase {
         );
         ASNMapperField mapper = new ASNMapperField(payPop);
         ASNMapperForm mapForm = new ASNMapperForm(payPop);
-        ASNTableFieldMapper tblFieldMapper = new ASNTableFieldMapper(mapForm);
+        ASNMapperTableField tblFieldMapper = new ASNMapperTableField(mapForm);
         mapper.setMapTableField(tblFieldMapper);
 
         // Text:
