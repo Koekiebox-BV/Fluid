@@ -80,7 +80,6 @@ public class TestASNFluidItemMapper extends ABaseTestCase {
         att1.setFormId(4442L);
         att1.setVersion("v1");
         att1.setAttachmentDataBase64(BaseEncoding.base64().encode("some data".getBytes()));
-        //make use of the attachement mapper for the above
 
         attachments.add(att1);
         item.setAttachments(attachments);
@@ -93,5 +92,144 @@ public class TestASNFluidItemMapper extends ABaseTestCase {
         byte[] raw = seqBytes(mapper.encode(item));
         FluidItem decoded = mapper.decode(raw);
         Assert.assertEquals("Decoded id is not as expected.", Long.valueOf(-1L), decoded.getId());
+    }
+
+    @Test
+    public void testEncodeDecodeWithCustomProperties() {
+        Form form = new Form();
+        form.setId(100L);
+        form.setFormType("test form");
+
+        FluidItem item = new FluidItem(form);
+
+        List<FluidItem.FluidItemProperty> customProps = new ArrayList<>();
+        customProps.add(new FluidItem.FluidItemProperty("prop1", "value1"));
+        customProps.add(new FluidItem.FluidItemProperty("prop2", "value2"));
+        item.setCustomProperties(customProps);
+
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+
+        byte[] raw = seqBytes(mapper.encode(item));
+        FluidItem decoded = mapper.decode(raw);
+
+        Assert.assertNotNull("Custom properties should not be null", decoded.getCustomProperties());
+        Assert.assertEquals("Custom properties count", 2, decoded.getCustomProperties().size());
+        Assert.assertEquals("First property name", "prop1", decoded.getCustomProperties().get(0).getName());
+        Assert.assertEquals("First property value", "value1", decoded.getCustomProperties().get(0).getValue());
+    }
+
+    @Test
+    public void testEncodeDecodeWithAllFlowStates() {
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+
+        for (FluidItem.FlowState flowState : FluidItem.FlowState.values()) {
+            Form form = new Form();
+            form.setId(100L);
+
+            FluidItem item = new FluidItem(form);
+            item.setFlowState(flowState);
+
+            byte[] raw = seqBytes(mapper.encode(item));
+            FluidItem decoded = mapper.decode(raw);
+
+            Assert.assertEquals("Flow state should match for " + flowState, flowState, decoded.getFlowState());
+        }
+    }
+
+    @Test
+    public void testEncodeDecodeWithTableFieldParent() {
+        Form parentForm = new Form();
+        parentForm.setId(999L);
+        parentForm.setFormType("parent form");
+        parentForm.setTitle("Parent Form Title");
+
+        Form childForm = new Form();
+        childForm.setId(100L);
+        childForm.setFormType("child form");
+
+        FluidItem item = new FluidItem(childForm);
+        item.setTableFieldParentForm(parentForm);
+        item.setTableFieldNameOnParentForm("child_table_field");
+        item.setInCaseOfCreateLinkToParent(true);
+
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+
+        byte[] raw = seqBytes(mapper.encode(item));
+        FluidItem decoded = mapper.decode(raw);
+
+        Assert.assertNotNull("Table field parent form should not be null", decoded.getTableFieldParentForm());
+        Assert.assertEquals("Parent form ID", Long.valueOf(999L), decoded.getTableFieldParentForm().getId());
+        Assert.assertEquals("Table field name", "child_table_field", decoded.getTableFieldNameOnParentForm());
+        Assert.assertTrue("Link to parent flag", decoded.getInCaseOfCreateLinkToParent());
+    }
+
+    @Test
+    public void testEncodeDecodeWithEmptyLists() {
+        Form form = new Form();
+        form.setId(100L);
+
+        FluidItem item = new FluidItem(form);
+        item.setUserFields(new ArrayList<>());
+        item.setRouteFields(new ArrayList<>());
+        item.setGlobalFields(new ArrayList<>());
+        item.setAttachments(new ArrayList<>());
+        item.setCustomProperties(new ArrayList<>());
+
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+
+        byte[] raw = seqBytes(mapper.encode(item));
+        FluidItem decoded = mapper.decode(raw);
+
+        Assert.assertNotNull("Decoded item should not be null", decoded);
+        Assert.assertNotNull("Form should not be null", decoded.getForm());
+    }
+
+    @Test
+    public void testEncodeDecodeWithNullForm() {
+        FluidItem item = new FluidItem();
+        item.setFlow("test-flow");
+        item.setStep("test-step");
+
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+
+        byte[] raw = seqBytes(mapper.encode(item));
+        FluidItem decoded = mapper.decode(raw);
+
+        Assert.assertEquals("Flow should match", "test-flow", decoded.getFlow());
+        Assert.assertEquals("Step should match", "test-step", decoded.getStep());
+    }
+
+    @Test
+    public void testEncodeDecodeInCaseOfCreateLinkToParentFalse() {
+        Form form = new Form();
+        form.setId(100L);
+
+        FluidItem item = new FluidItem(form);
+        item.setInCaseOfCreateLinkToParent(false);
+
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+
+        byte[] raw = seqBytes(mapper.encode(item));
+        FluidItem decoded = mapper.decode(raw);
+
+        Assert.assertFalse("Link to parent should be false", decoded.getInCaseOfCreateLinkToParent());
     }
 }
