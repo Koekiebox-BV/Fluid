@@ -33,7 +33,22 @@ import java.util.List;
 import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
 
 /**
+ * Test class for the {@code ASNMapperFluidItem} which verifies the encoding
+ * and decoding of {@code FluidItem} objects using ASN (Abstract Syntax Notation).
+ * The test suite includes scenarios for various configurations and edge cases.
  *
+ * The primary objective of this test class is to ensure that serialized data generated
+ * by the {@code ASNMapperFluidItem} can be correctly deserialized back into Java objects
+ * with expected properties.
+ *
+ * Test cases include:
+ * - Encoding and decoding of a {@code FluidItem} with basic properties.
+ * - Validation of custom properties applied to {@code FluidItem}.
+ * - Support for all flow states available in {@code FluidItem.FlowState}.
+ * - Handling and validation of parent-child relationships using table field parents.
+ * - Behavior with empty lists for fields, attachments, and other collections.
+ * - Handling of {@code FluidItem} objects with a {@code null} form.
+ * - Proper behavior when the "createLinkToParent" flag is explicitly set or unset.
  */
 public class TestASNFluidItemMapper extends ABaseTestCase {
 
