@@ -49,6 +49,7 @@ public class ANSGlobal {
         public static final int FLUID_ITEM = -2;//-1 is reserved for not set.
         public static final int FORM = -3;
         public static final int FIELD = -4;
+        public static final int FORM_HISTORIC_DATA_LISTING = -5;
     }
 
     /**

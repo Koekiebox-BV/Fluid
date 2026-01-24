@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.*;
@@ -188,9 +189,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
 
         this.asnMapAtt = new ASNMapperAttachment();
         this.asnMapField = new ASNMapperField(this.payloadPopulate);
-        this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate);
+        this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField);
         this.asnMapField.setMapTableField(
-                new ASNMapperTableField(new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate))
+                new ASNMapperTableField(new ASNMapperForm(this.asnMapUser, this.asnMapField))
         );
 
         // [5] -> Payment Populate:
@@ -236,6 +237,15 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case FLUID_ITEM:
                     ASNMapperFluidItem mapFI = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);
                     seqTransObj = mapFI.encode((FluidItem) transObj);
+                    break;
+                case FORM_HISTORIC_DATA_LISTING:
+                    ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
+                            this.asnMapUser, this.asnMapField, this.asnMapForm, this.payloadPopulate
+                    );
+                    ASNMapperFormHistoricDataListing mapFormHistDataList = new ASNMapperFormHistoricDataListing(
+                            mapFormHistData, this.payloadPopulate
+                    );
+                    seqTransObj = mapFormHistDataList.encode((FormHistoricDataListing)transObj);
                     break;
                 default:
                     throw new FluidClientException(
@@ -358,9 +368,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
 
         this.asnMapAtt = new ASNMapperAttachment();
         this.asnMapField = new ASNMapperField(this.payloadPopulate);
-        this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate);
+        this.asnMapForm = new ASNMapperForm(this.asnMapUser, this.asnMapField);
         this.asnMapField.setMapTableField(
-                new ASNMapperTableField(new ASNMapperForm(this.asnMapUser, this.asnMapField, this.payloadPopulate))
+                new ASNMapperTableField(new ASNMapperForm(this.asnMapUser, this.asnMapField))
         );
 
         assert this.payloadPopulate != null : "Payload Populate is null!";
@@ -476,6 +486,15 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     case FIELD: mapper = this.asnMapField;break;
                     case FORM: mapper = this.asnMapForm;break;
                     case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);break;
+                    case FORM_HISTORIC_DATA_LISTING:
+                        ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
+                                this.asnMapUser, this.asnMapField, this.asnMapForm, this.payloadPopulate
+                        );
+                        ASNMapperFormHistoricDataListing mapFormHistDataList = new ASNMapperFormHistoricDataListing(
+                                mapFormHistData, this.payloadPopulate
+                        );
+                        mapper = mapFormHistDataList;
+                        break;
                     default:
                         throw new FluidClientException(
                                 "Invalid type code: " + this.transmissionObjectType,

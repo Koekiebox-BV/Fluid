@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
@@ -112,5 +113,33 @@ public class TestASNMapperBaseTransmission extends ABaseTestCase {
         Field to = new Field(765L);
         to.setFieldName("field name testing as transmission obj!");
         return this.testBaseTransmission(to);
+    }
+
+    @Test
+    public void testEncodeDecodeFormHistoricDataListing() {
+        FormHistoricDataListing to = new FormHistoricDataListing();
+        to.setId(890L);
+        to.setListingCount(10);
+        to.setListingIndex(1);
+        to.setListingPage(1);
+
+        BaseTransmission item = testBaseTransmission(to);
+        PayloadPopulate pop = item.getPayloadPopulate();
+
+        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FORM_HISTORIC_DATA_LISTING);
+
+        DERSequence seqEnc = mapper.encode(item);
+        byte[] raw = seqBytes(seqEnc);
+        BaseTransmission decoded = mapper.decode(raw);
+        Assert.assertEquals("Decoded id is not as expected.", item.getId(), decoded.getId());
+
+        // Payload Populate:
+        Assert.assertEquals("Decoded payload populate is not as expected.",
+                pop.getMcFormField().get(0).getId(), decoded.getPayloadPopulate().getMcFormField().get(0).getId());
+
+        // Transmission Object:
+        FormHistoricDataListing decodedTo = (FormHistoricDataListing) decoded.getTransmissionObject();
+        Assert.assertEquals("Decoded transmission object id is not as expected.", to.getId(), decodedTo.getId());
+        Assert.assertEquals("Decoded transmission object listing count is not as expected.", to.getListingCount(), decodedTo.getListingCount());
     }
 }
