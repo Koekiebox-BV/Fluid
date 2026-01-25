@@ -43,156 +43,156 @@ import java.util.concurrent.TimeoutException;
  * @see Form
  */
 public class WebSocketSendToFlowClient extends
-		ABaseClientWebSocket<WebSocketSendToFlowClient.SendToFlowMessageHandler> {
+        ABaseClientWebSocket<WebSocketSendToFlowClient.SendToFlowMessageHandler, FluidItem> {
 
-	/**
-	 * Constructor that sets the Service Ticket from authentication.
-	 *
-	 * @param endpointBaseUrl URL to base endpoint.
-	 *
-	 * @param messageReceivedCallback Callback for when a message is received.
-	 *
-	 * @param serviceTicketAsHex The Server issued Service Ticket.
-	 * @param timeoutInMillis The timeout of the request in millis.
-	 * @param waitForRuleExecComplete Wait for all the program rules to finish execution
-	 *                                     before returning web socket message is sent.
-	 *                                     The response message will include the result.
-	 */
-	public WebSocketSendToFlowClient(
-			String endpointBaseUrl,
-			IMessageReceivedCallback<FluidItem> messageReceivedCallback,
-			String serviceTicketAsHex,
-			long timeoutInMillis,
-			boolean waitForRuleExecComplete
-	) {
-		super(endpointBaseUrl, messageReceivedCallback, timeoutInMillis,
-				WS.Path.FlowItem.Version1.sendToFlowWebSocket(waitForRuleExecComplete, serviceTicketAsHex)
-		);
-		this.setServiceTicket(serviceTicketAsHex);
-	}
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     *
+     * @param endpointBaseUrl URL to base endpoint.
+     *
+     * @param messageReceivedCallback Callback for when a message is received.
+     *
+     * @param serviceTicketAsHex The Server issued Service Ticket.
+     * @param timeoutInMillis The timeout of the request in millis.
+     * @param waitForRuleExecComplete Wait for all the program rules to finish execution
+     *                                     before returning web socket message is sent.
+     *                                     The response message will include the result.
+     */
+    public WebSocketSendToFlowClient(
+            String endpointBaseUrl,
+            IMessageReceivedCallback<FluidItem> messageReceivedCallback,
+            String serviceTicketAsHex,
+            long timeoutInMillis,
+            boolean waitForRuleExecComplete
+    ) {
+        super(endpointBaseUrl, messageReceivedCallback, timeoutInMillis,
+                WS.Path.FlowItem.Version1.sendToFlowWebSocket(waitForRuleExecComplete, serviceTicketAsHex)
+        );
+        this.setServiceTicket(serviceTicketAsHex);
+    }
 
-	/**
-	 * Sends the {@code formToSendToFlowParam} to a {@code Flow} in Fluid.
-	 * The return value is the {@code FluidItem} created as a result.
-	 *
-	 * The Web socket has the ability to wait for the workflow to finish
-	 * and then only respond with the final result of the item.
-	 *
-	 * @param formToSendToFlow The Fluid Form to send to flow.
-	 * @param destinationFlow The destination flow.
-	 *
-	 * @return The {@code formToSendToFlowParam} created as {@code FluidItem}.
-	 */
-	public FluidItem sendToFlowSynchronized(Form formToSendToFlow, String destinationFlow) {
-		if (formToSendToFlow == null) return null;
-		if (destinationFlow == null || destinationFlow.trim().isEmpty()) {
-			throw new FluidClientException(
-					"No destination Flow provided.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE
-			);
-		}
+    /**
+     * Sends the {@code formToSendToFlowParam} to a {@code Flow} in Fluid.
+     * The return value is the {@code FluidItem} created as a result.
+     *
+     * The Web socket has the ability to wait for the workflow to finish
+     * and then only respond with the final result of the item.
+     *
+     * @param formToSendToFlow The Fluid Form to send to flow.
+     * @param destinationFlow The destination flow.
+     *
+     * @return The {@code formToSendToFlowParam} created as {@code FluidItem}.
+     */
+    public FluidItem sendToFlowSynchronized(Form formToSendToFlow, String destinationFlow) {
+        if (formToSendToFlow == null) return null;
+        if (destinationFlow == null || destinationFlow.trim().isEmpty()) {
+            throw new FluidClientException(
+                    "No destination Flow provided.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE
+            );
+        }
 
-		FluidItem itemToSend = new FluidItem();
-		itemToSend.setFlow(destinationFlow);
-		itemToSend.setForm(formToSendToFlow);
+        FluidItem itemToSend = new FluidItem();
+        itemToSend.setFlow(destinationFlow);
+        itemToSend.setForm(formToSendToFlow);
 
-		//Send all the messages...
-		itemToSend.setEcho(UtilGlobal.randomUUID());
+        //Send all the messages...
+        itemToSend.setEcho(UtilGlobal.randomUUID());
 
-		//Start a new request...
-		String uniqueReqId = this.initNewRequest();
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
 
-		//Send the actual message...
-		this.sendMessage(itemToSend, uniqueReqId);
+        //Send the actual message...
+        this.sendMessage(itemToSend, uniqueReqId);
 
-		try {
-			List<FluidItem> returnValue = this.getHandler(uniqueReqId).getCF().get(
-					this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
+        try {
+            List<FluidItem> returnValue = this.getHandler(uniqueReqId).getCF().get(
+                    this.getTimeoutInMillis(),TimeUnit.MILLISECONDS);
 
-			//Connection was closed.. this is a problem....
-			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
-				throw new FluidClientException(
-						"WebSocket-SendToFlow: " +
-								"The connection was closed by the server prior to the response received.",
-						FluidClientException.ErrorCode.IO_ERROR);
-			}
-			if (returnValue == null || returnValue.isEmpty()) return null;
-			return returnValue.get(0);
-		} catch (InterruptedException exceptParam) {
-			throw new FluidClientException(
-					"WebSocket-Interrupted-SendToFlow: " + exceptParam.getMessage(),
-					exceptParam,
-					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR
-			);
-		} catch (ExecutionException executeProblem) {
-			//Error on the web-socket...
-			Throwable cause = executeProblem.getCause();
-			if (cause instanceof FluidClientException) {
-				throw (FluidClientException)cause;
-			} else throw new FluidClientException(
-						"WebSocket-SendToFlow: " + cause.getMessage(),
-						cause,
-						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-		} catch (TimeoutException eParam) {
-			String errMessage = this.getExceptionMessageVerbose(
-					"WebSocket-SendToFlow",
-					uniqueReqId,
-					itemToSend);
-			throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
-		}
-		finally {
-			this.removeHandler(uniqueReqId);
-		}
-	}
+            //Connection was closed.. this is a problem....
+            if (this.getHandler(uniqueReqId).isConnectionClosed()) {
+                throw new FluidClientException(
+                        "WebSocket-SendToFlow: " +
+                                "The connection was closed by the server prior to the response received.",
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
+            if (returnValue == null || returnValue.isEmpty()) return null;
+            return returnValue.get(0);
+        } catch (InterruptedException exceptParam) {
+            throw new FluidClientException(
+                    "WebSocket-Interrupted-SendToFlow: " + exceptParam.getMessage(),
+                    exceptParam,
+                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR
+            );
+        } catch (ExecutionException executeProblem) {
+            //Error on the web-socket...
+            Throwable cause = executeProblem.getCause();
+            if (cause instanceof FluidClientException) {
+                throw (FluidClientException)cause;
+            } else throw new FluidClientException(
+                        "WebSocket-SendToFlow: " + cause.getMessage(),
+                        cause,
+                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+        } catch (TimeoutException eParam) {
+            String errMessage = this.getExceptionMessageVerbose(
+                    "WebSocket-SendToFlow",
+                    uniqueReqId,
+                    itemToSend);
+            throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
+        }
+        finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
 
-	/**
-	 * Create a new instance of the handler class for {@code this} client.
-	 *
-	 * @return new instance of {@code SendToFlowMessageHandler}
-	 */
-	@Override
-	public SendToFlowMessageHandler getNewHandlerInstance() {
-		return new SendToFlowMessageHandler(this.messageReceivedCallback, this.webSocketClient);
-	}
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code SendToFlowMessageHandler}
+     */
+    @Override
+    public SendToFlowMessageHandler getNewHandlerInstance() {
+        return new SendToFlowMessageHandler(this.messageReceivedCallback, this.webSocketClient);
+    }
 
-	/**
-	 * Gets the single {@link FluidItem}. Still relying on a single session.
-	 */
-	public static class SendToFlowMessageHandler extends AGenericListMessageHandler<FluidItem> {
-		private FluidItem returnedFluidItem;
+    /**
+     * Gets the single {@link FluidItem}. Still relying on a single session.
+     */
+    public static class SendToFlowMessageHandler extends AGenericListMessageHandler<FluidItem> {
+        private FluidItem returnedFluidItem;
 
-		/**
-		 * The default constructor that sets a ancestor message handler.
-		 *
-		 * @param messageReceivedCallback The optional message callback.
-		 * @param webSocketClient The web-socket client.
-		 */
-		public SendToFlowMessageHandler(
-				IMessageReceivedCallback<FluidItem> messageReceivedCallback,
-				WebSocketClient webSocketClient
-		) {
-			super(messageReceivedCallback, webSocketClient);
-		}
+        /**
+         * The default constructor that sets a ancestor message handler.
+         *
+         * @param messageReceivedCallback The optional message callback.
+         * @param webSocketClient The web-socket client.
+         */
+        public SendToFlowMessageHandler(
+                IMessageReceivedCallback<FluidItem> messageReceivedCallback,
+                WebSocketClient webSocketClient
+        ) {
+            super(messageReceivedCallback, webSocketClient);
+        }
 
-		/**
-		 * New {@code Form} by {@code jsonObjectParam}
-		 *
-		 * @param jsonObject The JSON Object to parse.
-		 * @return new {@code Form}.
-		 */
-		@Override
-		public FluidItem getNewInstanceBy(JsonObject jsonObject) {
-			this.returnedFluidItem = new FluidItem(jsonObject);
-			return this.returnedFluidItem;
-		}
+        /**
+         * New {@code Form} by {@code jsonObjectParam}
+         *
+         * @param jsonObject The JSON Object to parse.
+         * @return new {@code Form}.
+         */
+        @Override
+        public FluidItem getNewInstanceBy(JsonObject jsonObject) {
+            this.returnedFluidItem = new FluidItem(jsonObject);
+            return this.returnedFluidItem;
+        }
 
-		/**
-		 * Gets the value from that was returned after the WS call.
-		 *
-		 * @return The returned Fluid item.
-		 */
-		public FluidItem getReturnedFluidItem() {
-			return this.returnedFluidItem;
-		}
-	}
+        /**
+         * Gets the value from that was returned after the WS call.
+         *
+         * @return The returned Fluid item.
+         */
+        public FluidItem getReturnedFluidItem() {
+            return this.returnedFluidItem;
+        }
+    }
 }

@@ -40,7 +40,7 @@ import java.util.concurrent.TimeoutException;
  * @see FluidItem
  */
 public class SQLUtilWebSocketGetFormFieldsClient extends
-		ABaseClientWebSocket<AGenericListMessageHandler<FormFieldListing>> {
+		ABaseClientWebSocket<AGenericListMessageHandler<FormFieldListing>, FormFieldListing> {
 
 	/**
 	 * Constructor that sets the Service Ticket from authentication.

@@ -69,6 +69,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<!--WEB SOCKET USING TYRUS-->
 		<!--Tyrus Grizzly Client-->
 		<dependency>

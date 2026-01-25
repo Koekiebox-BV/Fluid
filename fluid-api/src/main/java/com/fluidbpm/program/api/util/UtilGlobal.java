@@ -30,6 +30,7 @@ import com.google.gson.JsonParser;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -90,6 +91,59 @@ public class UtilGlobal {
         public static final int _7_TABLE_FIELD = 7;
         public static final int _8_TEXT_ENCRYPTED = 8;
         public static final int _9_LABEL = 9;
+
+        /**
+         * Converts an integer value to its corresponding {@link Field.Type}.
+         *
+         * @param val the integer identifier representing the field type
+         * @return the corresponding {@link Field.Type} if the identifier is valid,
+         *         or null if the identifier does not match any predefined mappings
+         */
+        public static Field.Type intToType(int val) {
+            switch (val) {
+                case _1_TEXT:
+                    return Field.Type.Text;
+                case _2_TRUE_FALSE:
+                    return Field.Type.TrueFalse;
+                case _3_PARAGRAPH_TEXT:
+                    return Field.Type.ParagraphText;
+                case _4_MULTI_CHOICE:
+                    return Field.Type.MultipleChoice;
+                case _5_DATE_TIME:
+                    return Field.Type.DateTime;
+                case _6_DECIMAL:
+                    return Field.Type.Decimal;
+                case _7_TABLE_FIELD:
+                    return Field.Type.Table;
+                case _8_TEXT_ENCRYPTED:
+                    return Field.Type.TextEncrypted;
+                case _9_LABEL:
+                    return Field.Type.Label;
+                default: return null;
+            }
+        }
+
+        /**
+         * Converts a field type to its corresponding integer identifier.
+         *
+         * @param type the field type to be converted
+         * @return the integer identifier corresponding to the given field type,
+         *         or 0 if the type does not match any predefined mappings
+         */
+        public static int typeToInt(Field.Type type) {
+            switch (type) {
+                case Text: return _1_TEXT;
+                case TrueFalse: return _2_TRUE_FALSE;
+                case ParagraphText: return _3_PARAGRAPH_TEXT;
+                case MultipleChoice: return _4_MULTI_CHOICE;
+                case DateTime: return _5_DATE_TIME;
+                case Decimal: return _6_DECIMAL;
+                case Table: return _7_TABLE_FIELD;
+                case TextEncrypted: return _8_TEXT_ENCRYPTED;
+                case Label: return _9_LABEL;
+                default: return 0;
+            }
+        }
     }
 
     /**
@@ -886,5 +940,16 @@ public class UtilGlobal {
                         fieldNameLower.equals(itm.getFieldName().toLowerCase()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Determines whether the given BigDecimal represents a whole number.
+     *
+     * @param bd the BigDecimal to check; may be null
+     * @return true if the BigDecimal is a whole number, or false if it is null or not a whole number
+     */
+    public static boolean isWhole(BigDecimal bd) {
+        if (bd == null) return false;
+        return bd.stripTrailingZeros().scale() <= 0;
     }
 }

@@ -49,20 +49,19 @@ import java.util.Properties;
 @Setter
 public class FluidItem extends ABaseFluidGSONObject {
     private static final long serialVersionUID = 1L;
+    private Form form;
+    private Date stepEnteredTime;
 
     private List<Field> userFields;
     private List<Field> routeFields;
     private List<Field> globalFields;
 
-    private Form form;
     private List<Attachment> attachments;
     private List<FluidItemProperty> customProperties;
 
     private FlowState flowState;
     private String flow;
     private String step;
-
-    private Date stepEnteredTime;
 
     private Boolean inCaseOfCreateLinkToParent;
 
@@ -87,6 +86,9 @@ public class FluidItem extends ABaseFluidGSONObject {
         public static final String FLOW_STATE = "flowState";
         public static final String FLOW = "flow";
         public static final String STEP = "step";
+        public static final String IN_CASE_OF_CREATE_LINK_TO_PARENT = "inCaseOfCreateLinkToParent";
+        public static final String TABLE_FIELD_PARENT_FORM = "tableFieldParentForm";
+        public static final String TABLE_FIELD_NAME_ON_PARENT_FORM = "tableFieldNameOnParentForm";
     }
 
     /**
@@ -902,76 +904,6 @@ public class FluidItem extends ABaseFluidGSONObject {
      */
     public Boolean getInCaseOfCreateLinkToParent() {
         return this.inCaseOfCreateLinkToParent;
-    }
-
-    /**
-     * If {@code this} is a newly created {@code FluidItem} as part of the
-     * {@code Flow} {@code ICustomProgram}. This will be used as a "flag" to
-     * make {@code this} {@code FluidItem} a descendant for the "parent"
-     * {@code FluidItem}.
-     *
-     * @param inCaseOfCreateLinkToParentParam Whether {@code this} {@code FluidItem} should be linked to the "parent"
-     * @see Form
-     * @see com.fluidbpm.program.api.ICustomProgram
-     */
-    public void setInCaseOfCreateLinkToParent(Boolean inCaseOfCreateLinkToParentParam) {
-        this.inCaseOfCreateLinkToParent = inCaseOfCreateLinkToParentParam;
-    }
-
-    /**
-     * If {@code this} {@code FluidItem.getForm} is a {@code Field.Type.Table} {@code Field},
-     * the parent {@code Form} / Electronic Form needs to be set to indicate which {@code Form} is
-     * the container {@code Form}.
-     *
-     * @return The Table containing {@code Form}.
-     * @see Field.Type#Table
-     * @see Form
-     */
-    public Form getTableFieldParentForm() {
-        return this.tableFieldParentForm;
-    }
-
-    /**
-     * If {@code this} {@code FluidItem.getForm} is a {@code Field.Type.Table} {@code Field},
-     * the parent {@code Form} / Electronic Form needs to be set to indicate which {@code Form} is
-     * the container {@code Form}.
-     *
-     * @param tableFieldParentFormParam The Table containing {@code Form}.
-     * @see Field.Type#Table
-     * @see Form
-     */
-    public void setTableFieldParentForm(Form tableFieldParentFormParam) {
-        this.tableFieldParentForm = tableFieldParentFormParam;
-    }
-
-    /**
-     * If {@code this} {@code TableFieldParentForm} is set.
-     * The name of the {@code Field.Type.Table} {@code Field} also needs to be
-     * provided.
-     * <p>
-     * Sets the name of the Table Field.
-     *
-     * @return The Table containing {@code Form}.
-     * @see Field.Type#Table
-     * @see Form
-     */
-    public String getTableFieldNameOnParentForm() {
-        return this.tableFieldNameOnParentForm;
-    }
-
-    /**
-     * If {@code this} {@code TableFieldParentForm} is set.
-     * The name of the {@code Field.Type.Table} {@code Field} also needs to be
-     * provided.
-     * <p>
-     * Sets the name of the Table Field.
-     *
-     * @param tableFieldNameParam The Table containing {@code Form}.
-     * @see Field.Type#Table
-     * @see Form
-     */
-    public void setTableFieldNameOnParentForm(String tableFieldNameParam) {
-        this.tableFieldNameOnParentForm = tableFieldNameParam;
     }
 
     /**

@@ -41,7 +41,7 @@ import java.util.concurrent.TimeoutException;
  * @see JsonObject
  * @see Form
  */
-public class SQLUtilWebSocketExecuteSQLClient extends ABaseClientWebSocket<AGenericListMessageHandler<FormListing>> {
+public class SQLUtilWebSocketExecuteSQLClient extends ABaseClientWebSocket<AGenericListMessageHandler<FormListing>,FormListing> {
 
 	/**
 	 * Constructor that sets the Service Ticket from authentication.

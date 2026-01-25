@@ -15,12 +15,11 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
-import com.google.gson.JsonObject;
-
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
+import com.google.gson.JsonObject;
 
 /**
  * A Form Listing handler for {@code FormListing}'s.
@@ -39,7 +38,7 @@ public class GenericFormListingMessageHandler extends AGenericListMessageHandler
 	 */
 	public GenericFormListingMessageHandler(
 			IMessageReceivedCallback<FormListing> messageReceivedCallbackParam,
-			WebSocketClient webSocketClientParam,
+			WebSocketClient<?> webSocketClientParam,
 			boolean compressedResponseParam) {
 
 		super(messageReceivedCallbackParam, webSocketClientParam, compressedResponseParam);

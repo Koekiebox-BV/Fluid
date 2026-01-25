@@ -1,0 +1,102 @@
+Base ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           GeneralString,
+    requestUuid             GeneralString,
+    echo                    GeneralString,
+    loggedInUserFromTicket  User
+}
+
+User ::= SEQUENCE {
+    id                      INTEGER,
+    username                [1] EXPLICIT UTF8String OPTIONAL
+}
+
+-- Base object for single valued SEQUENCE transmission objects:
+BaseTransmission ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           GeneralString,
+    requestUuid             GeneralString,
+    echo                    GeneralString,
+    loggedInUserFromTicket  User,
+    payloadPopulate         PayloadPopulate,
+    -- Payloads wrapped to support parameters.
+    requestObject           [6] EXPLICIT RequestObject OPTIONAL,
+    -- The transmissionObject may be a sequence of single field values, or a sequence of sequences:
+    transmissionObject      [7] EXPLICIT SEQUENCE OPTIONAL
+}
+
+-- Population object for field meta-data, and multi-choice values:
+PayloadPopulate ::= SEQUENCE {
+    multiChoicesForm        SEQUENCE OF MultiChoiceField,
+    multiChoicesUser        SEQUENCE OF MultiChoiceField,
+    multiChoicesRoute       SEQUENCE OF MultiChoiceField,
+    multiChoicesGlobal      SEQUENCE OF MultiChoiceField,
+    fieldMetaData           SEQUENCE OF FormFieldMetaData
+}
+
+MultiChoiceField ::= SEQUENCE {
+    fieldName               GeneralString,
+    multiChoices            SEQUENCE OF MultiChoice
+}
+
+MultiChoice ::= SEQUENCE {
+    id                      INTEGER,
+    description             GeneralString
+}
+
+FormFieldMetaData ::= SEQUENCE {
+    fieldName               GeneralString,
+    metaData                GeneralString
+}
+
+RequestObject ::= SEQUENCE {
+    path                    GeneralString,
+    parameters              [1] EXPLICIT SEQUENCE OF RequestParameter OPTIONAL
+}
+
+RequestParameter ::= SEQUENCE {
+    alias                   GeneralString,
+    value                   GeneralString
+}
+
+Error ::= SEQUENCE {
+    id                      INTEGER,
+    serviceTicket           GeneralString,
+    requestUuid             GeneralString,
+    echo                    GeneralString,
+    loggedInUserFromTicket  User,
+    errorCode               INTEGER,
+    errorMessage            UTF8String
+}
+
+Table ::= SEQUENCE {
+    tableRecords            [1] EXPLICIT SEQUENCE OF Form OPTIONAL
+}
+
+Field ::= SEQUENCE {
+    id                      INTEGER,
+    fieldName               [1] EXPLICIT GeneralString OPTIONAL,
+    fieldValText            [2] EXPLICIT UTF8String OPTIONAL,
+    fieldValBoolean         [3] EXPLICIT ASN1Boolean OPTIONAL,
+    fieldValParagraphText   [4] EXPLICIT UTF8String OPTIONAL,
+    fieldValMultiChoice     [5] EXPLICIT SEQUENCE OF INTEGER OPTIONAL,
+    fieldValDateTime        [6] EXPLICIT GeneralizedTime OPTIONAL,
+    fieldValDecimalInt      [7] EXPLICIT INTEGER OPTIONAL,
+    fieldValDecimalReal     [8] EXPLICIT GeneralString OPTIONAL,
+    fieldValTable           [9] EXPLICIT Table OPTIONAL,
+    fieldValEncrypted       [10] EXPLICIT UTF8String OPTIONAL,
+    fieldValLabel           [11] EXPLICIT UTF8String OPTIONAL
+}
+
+Form ::= SEQUENCE {
+    id                      INTEGER,
+    formType                [1] EXPLICIT UTF8String OPTIONAL,
+    formTypeId              [2] EXPLICIT INTEGER OPTIONAL,
+    title                   [3] EXPLICIT UTF8String OPTIONAL,
+    flowState               [4] EXPLICIT GeneralString OPTIONAL,
+    state                   [5] EXPLICIT GeneralString OPTIONAL,
+    currentUser             [6] EXPLICIT User OPTIONAL,
+    dateCreated             [7] EXPLICIT GeneralizedTime OPTIONAL,
+    dateLastUpdated         [8] EXPLICIT GeneralizedTime OPTIONAL,
+    formFields              [9] EXPLICIT SEQUENCE OF Field OPTIONAL
+}
