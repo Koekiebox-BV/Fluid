@@ -48,7 +48,7 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
 
     /**
      * Example of decoder implementation:
-     * decoders.put(Map.FORM_TYPE, (f, p) -> f.setFormType(asUtf8(p, Form.JSONMapping.FORM_TYPE)));
+     * decoders.put(Map.FORM_TYPE, (f, p) to f.setFormType(asUtf8(p, Form.JSONMapping.FORM_TYPE)));
      * Maps and decodes tagged fields from the given {@link ASN1Sequence} into the provided object {@code obj}.
      * The decoding is handled by looking up field-specific decoder functions in the {@code decoders} map.
      *

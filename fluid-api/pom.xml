@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.fluidbpm</groupId>
         <artifactId>fluid-root</artifactId>
-        <version>1.15</version>
+        <version>10.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

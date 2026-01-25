@@ -6,7 +6,7 @@
     <groupId>com.fluidbpm</groupId>
     <artifactId>fluid-root</artifactId>
     <packaging>pom</packaging>
-    <version>1.15</version>
+    <version>10.0</version>
     <name>Fluid Root</name>
     <description>Parent pom providing default setups for all application and admin servers modules.</description>
     <url>https://github.com/Koekiebox-BV/Fluid</url>
