@@ -240,10 +240,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     break;
                 case FORM_HISTORIC_DATA_LISTING:
                     ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
-                            this.asnMapUser, this.asnMapField, this.asnMapForm, this.payloadPopulate
+                            this.asnMapUser, this.asnMapField, this.asnMapForm
                     );
                     ASNMapperFormHistoricDataListing mapFormHistDataList = new ASNMapperFormHistoricDataListing(
-                            mapFormHistData, this.payloadPopulate
+                            mapFormHistData
                     );
                     seqTransObj = mapFormHistDataList.encode((FormHistoricDataListing)transObj);
                     break;
@@ -488,12 +488,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);break;
                     case FORM_HISTORIC_DATA_LISTING:
                         ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
-                                this.asnMapUser, this.asnMapField, this.asnMapForm, this.payloadPopulate
+                                this.asnMapUser, this.asnMapField, this.asnMapForm
                         );
-                        ASNMapperFormHistoricDataListing mapFormHistDataList = new ASNMapperFormHistoricDataListing(
-                                mapFormHistData, this.payloadPopulate
-                        );
-                        mapper = mapFormHistDataList;
+                        ASNMapperFormHistoricDataListing mapFrmHistDataList = new ASNMapperFormHistoricDataListing(mapFormHistData);
+                        mapper = mapFrmHistDataList;
                         break;
                     default:
                         throw new FluidClientException(

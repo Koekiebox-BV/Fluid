@@ -102,7 +102,13 @@ public class TestASNFormHistoricDataListingMapper extends ABaseTestCase {
         item.getListing().add(data1);
         item.getListing().add(data2);
 
-        ASNMapperFormHistoricDataListing mapper = new ASNMapperFormHistoricDataListing(new PayloadPopulate());
+        PayloadPopulate payPop = new PayloadPopulate();
+        ASNMapperFormHistoricData mapHistData = new ASNMapperFormHistoricData(
+                new ASNMapperUser(),
+                new ASNMapperField(payPop),
+                new ASNMapperForm(payPop)
+        );
+        ASNMapperFormHistoricDataListing mapper = new ASNMapperFormHistoricDataListing(mapHistData);
 
         byte[] raw = seqBytes(mapper.encode(item));
         FormHistoricDataListing decoded = mapper.decode(raw);

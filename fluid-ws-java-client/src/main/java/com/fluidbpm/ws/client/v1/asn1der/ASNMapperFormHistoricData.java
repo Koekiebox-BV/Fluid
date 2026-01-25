@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
-import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.*;
 
 import java.util.function.Supplier;
@@ -82,7 +81,6 @@ public class ASNMapperFormHistoricData extends ASNBaseTaggedMapper<FormHistoricD
     private final ASNMapperUser asnMapUser;
     private final ASNMapperField asnMapField;
     private final ASNMapperForm asnMapForm;
-    private final PayloadPopulate payloadPopulate;
 
     /**
      * Constructs an instance of the ASNMapperFormHistoricData class using the specified user, field,
@@ -94,29 +92,16 @@ public class ASNMapperFormHistoricData extends ASNBaseTaggedMapper<FormHistoricD
      *              for handling ASN.1 structured data.
      * @param form an instance of {@code ASNMapperForm} representing the form-related
      *             mappings for ASN.1 encoding and decoding.
-     * @param payloadPopulate an instance of {@code PayloadPopulate} responsible for populating
-     *                        payload data during encoding or decoding operations.
      */
     public ASNMapperFormHistoricData(
             ASNMapperUser user,
             ASNMapperField field,
-            ASNMapperForm form,
-            PayloadPopulate payloadPopulate
+            ASNMapperForm form
     ) {
         super(InitType.ID_ONLY);
         this.asnMapUser = user;
         this.asnMapField = field;
         this.asnMapForm = form;
-        this.payloadPopulate = payloadPopulate;
-    }
-
-    public ASNMapperFormHistoricData(PayloadPopulate payloadPopulate) {
-        this(
-                new ASNMapperUser(),
-                new ASNMapperField(payloadPopulate),
-                new ASNMapperForm(payloadPopulate),
-                payloadPopulate
-        );
     }
 
     /**

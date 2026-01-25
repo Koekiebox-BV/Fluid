@@ -16,7 +16,6 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
-import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Object;
@@ -71,24 +70,12 @@ public class ASNMapperFormHistoricDataListing extends ASNBaseTaggedMapper<FormHi
      * Constructs an instance of the ASNMapperFormHistoricDataListing class using the specified
      * form historic data mapper and payload populate parameters.
      *
-     * @param formHistoricData an instance of {@code ASNMapperFormHistoricData} representing the
+     * @param mapHistData an instance of {@code ASNMapperFormHistoricData} representing the
      *                         form historic data mappings for ASN.1 encoding and decoding.
-     * @param payloadPopulate  an instance of {@code PayloadPopulate} responsible for populating
-     *                         payload data during encoding or decoding operations.
      */
-    public ASNMapperFormHistoricDataListing(
-            ASNMapperFormHistoricData formHistoricData,
-            PayloadPopulate payloadPopulate
-    ) {
+    public ASNMapperFormHistoricDataListing(ASNMapperFormHistoricData mapHistData) {
         super(InitType.ID_ONLY);
-        this.asnMapFormHistoricData = formHistoricData;
-    }
-
-    public ASNMapperFormHistoricDataListing(PayloadPopulate payloadPopulate) {
-        this(
-                new ASNMapperFormHistoricData(payloadPopulate),
-                payloadPopulate
-        );
+        this.asnMapFormHistoricData = mapHistData;
     }
 
     /**
