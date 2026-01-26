@@ -27,6 +27,7 @@ import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.bouncycastle.asn1.*;
 
 import java.util.ArrayList;
@@ -46,7 +47,9 @@ import static com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransm
  */
 public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmission> {
     @Getter
-    private final int transmissionObjectType;
+    @Setter
+    private int transmissionObjectType;
+
     private PayloadPopulate payloadPopulate;
     private ASNMapperUser asnMapUser;
     private ASNMapperField asnMapField;

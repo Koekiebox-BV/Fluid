@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
@@ -151,5 +152,14 @@ public class WebSocketGetFormHistoryByFormClient extends
     @Override
     public GenericFormHistoryListingMessageHandler getNewHandlerInstance() {
         return new GenericFormHistoryListingMessageHandler(this.messageReceivedCallback, this.webSocketClient);
+    }
+
+    /**
+     * Retrieves the ASN (Advanced Service Notification) request type for this WebSocket client.
+     * @return The request type identifier, represented as {@code ANSGlobal.Type.FORM}.
+     */
+    @Override
+    protected int getASNReqType() {
+        return ANSGlobal.Type.FORM;
     }
 }

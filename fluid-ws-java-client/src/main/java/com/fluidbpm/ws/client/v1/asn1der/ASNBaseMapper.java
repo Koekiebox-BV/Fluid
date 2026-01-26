@@ -322,7 +322,7 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
             return ASN1TaggedObject.getInstance(e);
         }
         throw new FluidClientException(
-                "Field " + field + " expected ASN1TaggedObject, got " +
+                "Field '" + field + "' expected ASN1TaggedObject, got " +
                         e.getClass().getSimpleName(),
                 FluidClientException.ErrorCode.ASN_1_ERROR
         );
