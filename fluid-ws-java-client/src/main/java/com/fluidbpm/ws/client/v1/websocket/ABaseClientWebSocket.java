@@ -16,9 +16,12 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.*;
+import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
+import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
@@ -81,6 +84,21 @@ public abstract class ABaseClientWebSocket
         this.compressResponse = compressResponseParam;
     }
 
+    public ABaseClientWebSocket(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback<CallBackType> messageReceivedCallbackParam,
+            long timeoutInMillisParam,
+            String postFixForUrlParam
+    ) {
+        this(
+                endpointBaseUrlParam,
+                messageReceivedCallbackParam,
+                timeoutInMillisParam,
+                postFixForUrlParam,
+                WebSocketClient.Mode.Text
+        );
+    }
+
     /**
      * Default constructor.
      *
@@ -88,12 +106,14 @@ public abstract class ABaseClientWebSocket
      * @param messageReceivedCallbackParam Optional callback object (observer).
      * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
      * @param postFixForUrlParam The URL Postfix.
+     * @param mode The WebSocket mode.
      */
     public ABaseClientWebSocket(
             String endpointBaseUrlParam,
             IMessageReceivedCallback<CallBackType> messageReceivedCallbackParam,
             long timeoutInMillisParam,
-            String postFixForUrlParam
+            String postFixForUrlParam,
+            WebSocketClient.Mode mode
     ) {
         super(endpointBaseUrlParam);
 
@@ -127,7 +147,8 @@ public abstract class ABaseClientWebSocket
 
         try {
             this.webSocketClient = new WebSocketClient<>(
-                    new URI(completeUrl), this.messageHandler);
+                    new URI(completeUrl), this.messageHandler, mode, ANSGlobal.Type.FORM_HISTORIC_DATA_LISTING
+            );
         } catch (DeploymentException e) {
             //Deploy...
             throw new FluidClientException(

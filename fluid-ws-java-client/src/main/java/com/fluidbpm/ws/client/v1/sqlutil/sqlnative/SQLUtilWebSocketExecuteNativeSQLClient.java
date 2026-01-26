@@ -43,150 +43,150 @@ import java.util.concurrent.TimeoutException;
  * @see SQLResultSet
  */
 public class SQLUtilWebSocketExecuteNativeSQLClient extends
-		ABaseClientWebSocket<AGenericListMessageHandler<SQLResultSet>, SQLResultSet> {
+        ABaseClientWebSocket<AGenericListMessageHandler<SQLResultSet>, SQLResultSet> {
 
-	/**
-	 * Constructor that sets the Service Ticket from authentication.
-	 * The ResultSet will not be compressed.
-	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param messageReceivedCallbackParam Callback for when a message is received.
-	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
-	 * @param timeoutInMillisParam The timeout of the request in millis.
-	 *
-	 * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
-	 */
-	public SQLUtilWebSocketExecuteNativeSQLClient(
-		String endpointBaseUrlParam,
-		IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
-		String serviceTicketAsHexParam,
-		long timeoutInMillisParam
-	) {
-		this(endpointBaseUrlParam,
-				messageReceivedCallbackParam,
-				serviceTicketAsHexParam,
-				timeoutInMillisParam,
-				false,
-				UtilGlobal.EMPTY);
-	}
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     * The ResultSet will not be compressed.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Callback for when a message is received.
+     * @param serviceTicketAsHexParam The Server issued Service Ticket.
+     * @param timeoutInMillisParam The timeout of the request in millis.
+     *
+     * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
+     */
+    public SQLUtilWebSocketExecuteNativeSQLClient(
+        String endpointBaseUrlParam,
+        IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
+        String serviceTicketAsHexParam,
+        long timeoutInMillisParam
+    ) {
+        this(endpointBaseUrlParam,
+                messageReceivedCallbackParam,
+                serviceTicketAsHexParam,
+                timeoutInMillisParam,
+                false,
+                UtilGlobal.EMPTY);
+    }
 
-	/**
-	 * Constructor that sets the Service Ticket from authentication.
-	 *
-	 * @param endpointBaseUrlParam URL to base endpoint.
-	 * @param messageReceivedCallbackParam Callback for when a message is received.
-	 * @param serviceTicketAsHexParam The Server issued Service Ticket.
-	 * @param timeoutInMillisParam The timeout of the request in millis.
-	 * @param compressResponseParam Compress the SQL Result in Base-64.
-	 * @param compressResponseCharsetParam Compress response using provided charset.
-	 *
-	 * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
-	 */
-	public SQLUtilWebSocketExecuteNativeSQLClient(
-		String endpointBaseUrlParam,
-		IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
-		String serviceTicketAsHexParam,
-		long timeoutInMillisParam,
-		boolean compressResponseParam,
-		String compressResponseCharsetParam
-	) {
-		super(endpointBaseUrlParam,
-				messageReceivedCallbackParam,
-				timeoutInMillisParam,
-				WS.Path.SQLUtil.Version1.getExecuteNativeSQLWebSocket(
-						serviceTicketAsHexParam,
-						compressResponseParam,
-						compressResponseCharsetParam),
-				compressResponseParam);
+    /**
+     * Constructor that sets the Service Ticket from authentication.
+     *
+     * @param endpointBaseUrlParam URL to base endpoint.
+     * @param messageReceivedCallbackParam Callback for when a message is received.
+     * @param serviceTicketAsHexParam The Server issued Service Ticket.
+     * @param timeoutInMillisParam The timeout of the request in millis.
+     * @param compressResponseParam Compress the SQL Result in Base-64.
+     * @param compressResponseCharsetParam Compress response using provided charset.
+     *
+     * @see com.fluidbpm.program.api.vo.compress.CompressedResponse
+     */
+    public SQLUtilWebSocketExecuteNativeSQLClient(
+        String endpointBaseUrlParam,
+        IMessageReceivedCallback<SQLResultSet> messageReceivedCallbackParam,
+        String serviceTicketAsHexParam,
+        long timeoutInMillisParam,
+        boolean compressResponseParam,
+        String compressResponseCharsetParam
+    ) {
+        super(endpointBaseUrlParam,
+                messageReceivedCallbackParam,
+                timeoutInMillisParam,
+                WS.Path.SQLUtil.Version1.getExecuteNativeSQLWebSocket(
+                        serviceTicketAsHexParam,
+                        compressResponseParam,
+                        compressResponseCharsetParam),
+                compressResponseParam);
 
-		this.setServiceTicket(serviceTicketAsHexParam);
-	}
+        this.setServiceTicket(serviceTicketAsHexParam);
+    }
 
-	/**
-	 * Executes a native SQL query on the remote Fluid instance.
-	 *
-	 * The relevant access must exist.
-	 *
-	 * @param nativeSQLQueriesParam The SQL Queries to execute.
-	 *
-	 * @return The SQL Execution result as {@code SQLResultSet}'s.
-	 *
-	 * @throws FluidClientException if data-source name is not set.
-	 */
-	public List<SQLResultSet> executeNativeSQLSynchronized(NativeSQLQuery ... nativeSQLQueriesParam) {
-		if (nativeSQLQueriesParam == null) return null;
+    /**
+     * Executes a native SQL query on the remote Fluid instance.
+     *
+     * The relevant access must exist.
+     *
+     * @param nativeSQLQueriesParam The SQL Queries to execute.
+     *
+     * @return The SQL Execution result as {@code SQLResultSet}'s.
+     *
+     * @throws FluidClientException if data-source name is not set.
+     */
+    public List<SQLResultSet> executeNativeSQLSynchronized(NativeSQLQuery ... nativeSQLQueriesParam) {
+        if (nativeSQLQueriesParam == null) return null;
 
-		//Start a new request...
-		String uniqueReqId = this.initNewRequest();
-		//Send all the messages...
-		for (NativeSQLQuery queryToExec : nativeSQLQueriesParam) {
-			if (queryToExec.getDatasourceName() == null || queryToExec.getDatasourceName().isEmpty()) {
-				throw new FluidClientException(
-					"No data-source name provided. Not allowed.",
-					FluidClientException.ErrorCode.FIELD_VALIDATE
-				);
-			}
-			
-			this.setEchoIfNotSet(queryToExec);
+        //Start a new request...
+        String uniqueReqId = this.initNewRequest();
+        //Send all the messages...
+        for (NativeSQLQuery queryToExec : nativeSQLQueriesParam) {
+            if (queryToExec.getDatasourceName() == null || queryToExec.getDatasourceName().isEmpty()) {
+                throw new FluidClientException(
+                    "No data-source name provided. Not allowed.",
+                    FluidClientException.ErrorCode.FIELD_VALIDATE
+                );
+            }
 
-			//Send the actual message...
-			this.sendMessage(queryToExec, uniqueReqId);
-		}
+            this.setEchoIfNotSet(queryToExec);
 
-		try {
-			List<SQLResultSet> returnValue =
-					this.getHandler(uniqueReqId).getCF().get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
+            //Send the actual message...
+            this.sendMessage(queryToExec, uniqueReqId);
+        }
 
-			//Connection was closed.. this is a problem....
-			if (this.getHandler(uniqueReqId).isConnectionClosed()) {
-				throw new FluidClientException(
-						"SQLUtil-WebSocket-ExecuteNativeSQL: " +
-								"The connection was closed by the server prior to the response received.",
-						FluidClientException.ErrorCode.IO_ERROR);
-			}
+        try {
+            List<SQLResultSet> returnValue =
+                    this.getHandler(uniqueReqId).getCF().get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
-			return returnValue;
-		} catch (InterruptedException exceptParam) {
-			//Interrupted...
-			throw new FluidClientException(
-					"SQLUtil-WebSocket-ExecuteNativeSQL: " +
-							exceptParam.getMessage(),
-					exceptParam,
-					FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-		} catch (ExecutionException executeProblem) {
-			//Error on the web-socket...
-			Throwable cause = executeProblem.getCause();
-			//Fluid client exception...
-			if (cause instanceof FluidClientException) {
-				throw (FluidClientException)cause;
-			} else {
-				throw new FluidClientException(
-						"SQLUtil-WebSocket-ExecuteNativeSQL: " +
-								cause.getMessage(), cause,
-						FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
-			}
-		} catch (TimeoutException eParam) {
-			//Timeout...
-			String errMessage = this.getExceptionMessageVerbose(
-					"SQLUtil-WebSocket-ExecuteNativeSQL",
-					uniqueReqId, (Object[]) nativeSQLQueriesParam);
-			throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
-		} finally {
-			this.removeHandler(uniqueReqId);
-		}
-	}
+            //Connection was closed.. this is a problem....
+            if (this.getHandler(uniqueReqId).isConnectionClosed()) {
+                throw new FluidClientException(
+                        "SQLUtil-WebSocket-ExecuteNativeSQL: " +
+                                "The connection was closed by the server prior to the response received.",
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
 
-	/**
-	 * Create a new instance of the handler class for {@code this} client.
-	 *
-	 * @return new instance of {@code CreateFormContainerMessageHandler}
-	 */
-	@Override
-	public SQLResultSetMessageHandler getNewHandlerInstance() {
-		return new SQLResultSetMessageHandler(
-				this.messageReceivedCallback,
-				this.webSocketClient,
-				this.compressResponse
-		);
-	}
+            return returnValue;
+        } catch (InterruptedException exceptParam) {
+            //Interrupted...
+            throw new FluidClientException(
+                    "SQLUtil-WebSocket-ExecuteNativeSQL: " +
+                            exceptParam.getMessage(),
+                    exceptParam,
+                    FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+        } catch (ExecutionException executeProblem) {
+            //Error on the web-socket...
+            Throwable cause = executeProblem.getCause();
+            //Fluid client exception...
+            if (cause instanceof FluidClientException) {
+                throw (FluidClientException)cause;
+            } else {
+                throw new FluidClientException(
+                        "SQLUtil-WebSocket-ExecuteNativeSQL: " +
+                                cause.getMessage(), cause,
+                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+            }
+        } catch (TimeoutException eParam) {
+            //Timeout...
+            String errMessage = this.getExceptionMessageVerbose(
+                    "SQLUtil-WebSocket-ExecuteNativeSQL",
+                    uniqueReqId, (Object[]) nativeSQLQueriesParam);
+            throw new FluidClientException(errMessage, FluidClientException.ErrorCode.IO_ERROR);
+        } finally {
+            this.removeHandler(uniqueReqId);
+        }
+    }
+
+    /**
+     * Create a new instance of the handler class for {@code this} client.
+     *
+     * @return new instance of {@code CreateFormContainerMessageHandler}
+     */
+    @Override
+    public SQLResultSetMessageHandler getNewHandlerInstance() {
+        return new SQLResultSetMessageHandler(
+                this.messageReceivedCallback,
+                this.webSocketClient,
+                this.compressResponse
+        );
+    }
 }
