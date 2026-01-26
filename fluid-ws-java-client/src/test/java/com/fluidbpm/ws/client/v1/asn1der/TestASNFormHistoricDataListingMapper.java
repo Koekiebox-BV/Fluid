@@ -64,6 +64,10 @@ public class TestASNFormHistoricDataListingMapper extends ABaseTestCase {
     public void testEncodeDecode() {
         FormHistoricDataListing item = new FormHistoricDataListing();
         item.setId(789L);
+        item.setServiceTicket("svc-ticket-123");
+        item.setRequestUuid("req-uuid-456");
+        item.setEcho("echo-789");
+        item.setLoggedInUserFromTicket(new User(88L, "ticket-user"));
         item.setListingCount(2);
         item.setListingIndex(0);
         item.setListingPage(1);
@@ -117,6 +121,11 @@ public class TestASNFormHistoricDataListingMapper extends ABaseTestCase {
         Assert.assertEquals("Decoded listing count is not as expected.", item.getListingCount(), decoded.getListingCount());
         Assert.assertEquals("Decoded listing index is not as expected.", item.getListingIndex(), decoded.getListingIndex());
         Assert.assertEquals("Decoded listing page is not as expected.", item.getListingPage(), decoded.getListingPage());
+        Assert.assertEquals("Decoded service ticket is not as expected.", item.getServiceTicket(), decoded.getServiceTicket());
+        Assert.assertEquals("Decoded request uuid is not as expected.", item.getRequestUuid(), decoded.getRequestUuid());
+        Assert.assertEquals("Decoded echo is not as expected.", item.getEcho(), decoded.getEcho());
+        Assert.assertEquals("Decoded logged in user id is not as expected.", item.getLoggedInUserFromTicket().getId(), decoded.getLoggedInUserFromTicket().getId());
+        Assert.assertEquals("Decoded logged in user username is not as expected.", item.getLoggedInUserFromTicket().getUsername(), decoded.getLoggedInUserFromTicket().getUsername());
 
         Assert.assertNotNull("Decoded listing should not be null.", decoded.getListing());
         Assert.assertEquals("Decoded listing size is not as expected.", 2, decoded.getListing().size());

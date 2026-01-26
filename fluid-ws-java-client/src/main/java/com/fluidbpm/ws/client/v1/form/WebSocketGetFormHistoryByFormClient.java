@@ -22,6 +22,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -50,6 +51,7 @@ public class WebSocketGetFormHistoryByFormClient extends
      * @param timeoutInMillis The timeout of the request in millis.
      * @param includeCurrent Include the current field values.
      * @param labelFieldName Make use of label field names.
+     * @param mode The WebSocket mode.
      */
     public WebSocketGetFormHistoryByFormClient(
             String endpointBaseUrl,
@@ -57,7 +59,8 @@ public class WebSocketGetFormHistoryByFormClient extends
             String serviceTicketAsHex,
             long timeoutInMillis,
             boolean includeCurrent,
-            boolean labelFieldName
+            boolean labelFieldName,
+            WebSocketClient.Mode mode
     ) {
         super(
                 endpointBaseUrl,
@@ -67,7 +70,8 @@ public class WebSocketGetFormHistoryByFormClient extends
                         serviceTicketAsHex,
                         includeCurrent,
                         labelFieldName
-                )
+                ),
+                mode
         );
         this.setServiceTicket(serviceTicketAsHex);
     }

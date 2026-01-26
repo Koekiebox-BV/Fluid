@@ -74,7 +74,7 @@ public class ASNMapperFormHistoricDataListing extends ASNBaseTaggedMapper<FormHi
      *                         form historic data mappings for ASN.1 encoding and decoding.
      */
     public ASNMapperFormHistoricDataListing(ASNMapperFormHistoricData mapHistData) {
-        super(InitType.ID_ONLY);
+        super(InitType.ALL);
         this.asnMapFormHistoricData = mapHistData;
     }
 

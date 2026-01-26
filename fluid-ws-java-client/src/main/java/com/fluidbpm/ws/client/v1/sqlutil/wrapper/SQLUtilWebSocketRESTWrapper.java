@@ -31,6 +31,7 @@ import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.WebSocketGetFormHistoryByFormClient;
 import com.fluidbpm.ws.client.v1.sqlutil.*;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -67,8 +68,10 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
 
     //Mode...
     private Mode mode = null;
+    private WebSocketClient.Mode wsClientMode = null;
 
     public static boolean DISABLE_WS;
+    public static boolean IS_MODE_WS_BINARY;
 
     /**
      * Aliases for properties used by the {@code SQLUtilWebSocketRESTWrapper}.
@@ -78,6 +81,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
          * Keep Web Sockets disabled.
          */
         public static final String FLUID_API_DISABLE_WEB_SOCKETS = "FluidAPIDisableWebSocket";
+        public static final String FLUID_API_WEB_SOCKET_BINARY = "FluidAPIWebSocketBinary";
     }
 
     //Assign the property whether ti dis
@@ -89,6 +93,15 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             );
         } catch (NumberFormatException nfe) {
             DISABLE_WS = false;
+        }
+
+        try {
+            IS_MODE_WS_BINARY = Boolean.parseBoolean(System.getProperty(
+                    PropName.FLUID_API_WEB_SOCKET_BINARY,
+                    String.valueOf(false)).trim()
+            );
+        } catch (NumberFormatException nfe) {
+            IS_MODE_WS_BINARY = false;
         }
     }
 
@@ -463,7 +476,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
                         this.loggedInUser.getServiceTicketAsHexUpper(),
                         this.timeoutMillis,
                         includeCurrent,
-                        labelFieldName
+                        labelFieldName,
+                        this.wsClientMode
                 );
                 this.mode = Mode.WebSocketActive;
             }
@@ -698,6 +712,9 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             this.closeAndClean();
             this.mode = Mode.RESTfulActive;
         }
+
+        this.wsClientMode = WebSocketClient.Mode.Text;
+        if (IS_MODE_WS_BINARY) this.wsClientMode = WebSocketClient.Mode.Binary;
     }
 
     /**

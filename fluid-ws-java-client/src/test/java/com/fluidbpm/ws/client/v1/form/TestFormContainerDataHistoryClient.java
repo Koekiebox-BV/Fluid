@@ -26,6 +26,7 @@ import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import junit.framework.TestCase;
@@ -100,7 +101,8 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                         user.getServiceTicketAsHexUpper(),
                         TimeUnit.SECONDS.toMillis(15),
                         false,
-                        false)
+                        false,
+                        WebSocketClient.Mode.Text)
         ) {
             this.formDefCreate = createFormDef(fdClient, ffClient, "Employee Val Create History", null, fields());
             TestCase.assertNotNull(this.formDefCreate);
@@ -184,7 +186,9 @@ public class TestFormContainerDataHistoryClient extends ABaseLoggedInTestCase {
                      user.getServiceTicketAsHexUpper(),
                         TimeUnit.SECONDS.toMillis(15),
                      false,
-                     false)
+                     false,
+                        WebSocketClient.Mode.Text
+                )
         ) {
             this.formDef = createFormDef(fdClient, ffClient, "Employee Val History", null, fields());
             TestCase.assertNotNull(this.formDef);
