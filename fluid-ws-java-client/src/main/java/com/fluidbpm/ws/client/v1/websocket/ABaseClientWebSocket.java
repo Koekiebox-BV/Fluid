@@ -147,7 +147,7 @@ public abstract class ABaseClientWebSocket
 
         try {
             this.webSocketClient = new WebSocketClient<>(
-                    new URI(completeUrl), this.messageHandler, mode, ANSGlobal.Type.FORM_HISTORIC_DATA_LISTING
+                    new URI(completeUrl), this.messageHandler, mode, this.getASNReqType()
             );
         } catch (DeploymentException e) {
             //Deploy...
@@ -166,6 +166,18 @@ public abstract class ABaseClientWebSocket
                     "Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
                     e, FluidClientException.ErrorCode.WEB_SOCKET_URI_SYNTAX_ERROR);
         }
+    }
+
+    /**
+     * Retrieves the ASN (Abstract Syntax Notation) request type.
+     * This method returns a constant representing the type of the ASN request.
+     *
+     * @return An integer value corresponding to the ASN request type.
+     *         The default return value is {@code ANSGlobal.Type.UNKNOWN} (-777),
+     *         indicating that the request type is unknown.
+     */
+    protected int getASNReqType() {
+        return ANSGlobal.Type.UNKNOWN;
     }
 
     /**

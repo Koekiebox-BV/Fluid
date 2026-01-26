@@ -230,9 +230,26 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
             TestCase.assertEquals(ITEM_COUNT_PER_SUB, createdForms.size());
 
             SQLUtilWebSocketRESTWrapper.DISABLE_WS = false;
-            this.testMethods(wClient, createdForms, trCreateCount);// with WebSockets enabled.
+            long now = System.currentTimeMillis();
+            this.testMethods(wClient, createdForms, trCreateCount);// with WebSockets enabled (TEXT).
+            System.out.println("Time taken for WebSocket-TEXT: " + (System.currentTimeMillis() - now));
+            now = System.currentTimeMillis();
+
+            SQLUtilWebSocketRESTWrapper.IS_MODE_WS_BINARY = true;
+            SQLUtilWebSocketRESTWrapper wClientBin = new SQLUtilWebSocketRESTWrapper(
+                    BASE_URL,
+                    ADMIN_SERVICE_TICKET,
+                    TimeUnit.SECONDS.toMillis(60));
+            this.testMethods(wClientBin, createdForms, trCreateCount);// with WebSockets enabled (BINARY).
+            wClientBin.closeAndClean();
+
+            System.out.println("Time taken for WebSocket-BINARY: " + (System.currentTimeMillis() - now));
+            now = System.currentTimeMillis();
+            SQLUtilWebSocketRESTWrapper.IS_MODE_WS_BINARY = false;
+
             SQLUtilWebSocketRESTWrapper.DISABLE_WS = true;
             this.testMethods(wClient, createdForms, trCreateCount);// with REST enabled.
+            System.out.println("Time taken for REST: " + (System.currentTimeMillis() - now));
         }
     }
 
