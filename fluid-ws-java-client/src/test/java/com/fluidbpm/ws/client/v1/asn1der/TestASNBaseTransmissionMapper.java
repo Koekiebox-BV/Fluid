@@ -43,7 +43,7 @@ public class TestASNBaseTransmissionMapper extends ABaseTestCase {
         error.setServiceTicket("Srv");
         error.setLoggedInUserFromTicket(new User(1L, "user"));
 
-        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FLUID_ITEM);
+        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ASNGlobal.Type.FLUID_ITEM);
 
         byte[] raw = seqBytes(mapper.encode(error));
         BaseTransmission decoded = mapper.decode(raw);

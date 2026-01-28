@@ -21,7 +21,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
-import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
@@ -64,15 +64,6 @@ public abstract class ABaseClientWebSocket
         public static final String COLON = ":";
     }
 
-    /**
-     * Default constructor.
-     *
-     * @param endpointBaseUrlParam URL to base endpoint.
-     * @param messageReceivedCallbackParam Optional callback object (observer).
-     * @param timeoutInMillisParam The timeout for the Web Socket response in millis.
-     * @param postFixForUrlParam The URL Postfix.
-     * @param compressResponseParam Expect the response to be compressed.
-     */
     public ABaseClientWebSocket(
             String endpointBaseUrlParam,
             IMessageReceivedCallback<CallBackType> messageReceivedCallbackParam,
@@ -80,7 +71,31 @@ public abstract class ABaseClientWebSocket
             String postFixForUrlParam,
             boolean compressResponseParam
     ) {
-        this(endpointBaseUrlParam, messageReceivedCallbackParam, timeoutInMillisParam, postFixForUrlParam);
+        this(
+                endpointBaseUrlParam,
+                messageReceivedCallbackParam,
+                timeoutInMillisParam,
+                postFixForUrlParam,
+                compressResponseParam,
+                WebSocketClient.Mode.Text
+        );
+    }
+
+    public ABaseClientWebSocket(
+            String endpointBaseUrlParam,
+            IMessageReceivedCallback<CallBackType> messageReceivedCallbackParam,
+            long timeoutInMillisParam,
+            String postFixForUrlParam,
+            boolean compressResponseParam,
+            WebSocketClient.Mode mode
+    ) {
+        this(
+                endpointBaseUrlParam,
+                messageReceivedCallbackParam,
+                timeoutInMillisParam,
+                postFixForUrlParam,
+                mode
+        );
         this.compressResponse = compressResponseParam;
     }
 
@@ -177,7 +192,7 @@ public abstract class ABaseClientWebSocket
      *         indicating that the request type is unknown.
      */
     protected int getASNReqType() {
-        return ANSGlobal.Type.UNKNOWN;
+        return ASNGlobal.Type.UNKNOWN;
     }
 
     /**

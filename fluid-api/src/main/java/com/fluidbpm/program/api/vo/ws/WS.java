@@ -65,6 +65,7 @@ public class WS {
 
         //The intent of the action...
         public static final String INTENT = "intent";
+        public static final String WEB_SOCKET_ENCODING_MODE = "web_socket_encoding_mode";
     }
 
     /**
@@ -2535,20 +2536,24 @@ public class WS {
                  * @param serviceTicket  The service ticket in hex-decimal text format.
                  * @param includeCurrent Include the current field values for historic data.
                  * @param labelFieldName Make use of label field names.
+                 * @param encodingMode The encoding mode to use.
                  * @return {@code /web_socket/v1/form_history_by_form_container}
                  */
                 public static final String getByFormContainerWebSocket(
                         String serviceTicket,
                         boolean includeCurrent,
-                        boolean labelFieldName
+                        boolean labelFieldName,
+                        String encodingMode
                 ) {
-                    return String.format("%s/%s?%s=%s&%s=%s",
+                    return String.format("%s/%s?%s=%s&%s=%s&%s=%s",
                             BY_FORM_CONTAINER_WEB_SOCKET,
                             serviceTicket,
                             INCLUDE_CURRENT,
                             includeCurrent,
                             LABEL_FIELD_NAME,
-                            labelFieldName
+                            labelFieldName,
+                            WS.QueryParam.WEB_SOCKET_ENCODING_MODE,
+                            encodingMode
                     );
                 }
 
@@ -3849,8 +3854,9 @@ public class WS {
                  * @param includeFieldDataParam        Does field data need to be included.
                  * @param serviceTicketParam           The service ticket in hex-decimal text format.
                  * @param compressResponseParam        Compress the Descendant result in Base-64.
-                 * @param compressResponseCharsetParam Compress response using provided charset.
+                 * @param compressResponseCharsetParam Compress response using the provided charset.
                  * @param formDefinitionId             Optional Form Definition Id filter.
+                 * @param encodingMode                 The encoding mode to use.
                  * @return {@code /web_socket/v1/sql_util/form/get_table_forms_by_electronic_form_id}
                  */
                 public static final String getTableFormsWebSocket(
@@ -3858,7 +3864,8 @@ public class WS {
                         String serviceTicketParam,
                         boolean compressResponseParam,
                         String compressResponseCharsetParam,
-                        Long formDefinitionId
+                        Long formDefinitionId,
+                        String encodingMode
                 ) {
                     String returnVal = ROOT_WEB_SOCKET
                             .concat(SQL_UTIL_FORM_GET_TABLE_FORMS)
@@ -3870,7 +3877,12 @@ public class WS {
                         returnVal += ("&" + QueryParam.FORM_DEFINITION + "=" + formDefinitionId);
                     }
 
-                    return returnVal;
+                    return String.format(
+                            "%s&%s=%s",
+                            returnVal,
+                            WS.QueryParam.WEB_SOCKET_ENCODING_MODE,
+                            encodingMode
+                    );
                 }
 
                 /**

@@ -309,10 +309,14 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
      *
      * @return The {@code formsToGetDescForParam} Descendants as {@code Form}'s.
      */
-    public List<FormListing> getTableForms(boolean includeFieldData, Long formDefFilter, Form ... formsToGetTableFormsFor) {
+    public List<FormListing> getTableForms(
+            boolean includeFieldData,
+            Long formDefFilter,
+            Form ... formsToGetTableFormsFor
+    ) {
         this.clearClientsIfRest();
 
-        //DESCENDANTS...
+        //TABLE FORMS...
         try {
             //When mode is null or [WebSocketActive]...
             if (this.getTableFormsClient == null && Mode.RESTfulActive != this.mode) {
@@ -324,7 +328,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
                         includeFieldData,
                         formDefFilter,
                         COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET
+                        COMPRESS_RSP_CHARSET,
+                        this.wsClientMode
                 );
                 this.mode = Mode.WebSocketActive;
             }

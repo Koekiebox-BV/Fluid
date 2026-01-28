@@ -47,7 +47,7 @@ public class TestASNMapperBaseTransmission extends ABaseTestCase {
         BaseTransmission item = testBaseTransmission();
         PayloadPopulate pop = item.getPayloadPopulate();
 
-        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FIELD);
+        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ASNGlobal.Type.FIELD);
 
         DERSequence seqEnc = mapper.encode(item);
         byte[] raw = seqBytes(seqEnc);
@@ -63,7 +63,7 @@ public class TestASNMapperBaseTransmission extends ABaseTestCase {
     @Test
     public void testEncodeDecodeLightPerformance() {
         BaseTransmission item = testBaseTransmission();
-        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FIELD);
+        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ASNGlobal.Type.FIELD);
         long start = System.currentTimeMillis();
         int count = 1000;
         for (int i = 0;i < count;i++) {
@@ -79,7 +79,7 @@ public class TestASNMapperBaseTransmission extends ABaseTestCase {
     }
 
     private BaseTransmission testBaseTransmission(ABaseFluidVO to) {
-        BaseTransmission item = new BaseTransmission(ANSGlobal.Type.FIELD);
+        BaseTransmission item = new BaseTransmission(ASNGlobal.Type.FIELD);
 
         List<ASNMultiChoice> mcList = new ArrayList<>();
         mcList.add(new ASNMultiChoice(123L, "mc-opt-1"));
@@ -126,7 +126,7 @@ public class TestASNMapperBaseTransmission extends ABaseTestCase {
         BaseTransmission item = testBaseTransmission(to);
         PayloadPopulate pop = item.getPayloadPopulate();
 
-        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ANSGlobal.Type.FORM_HISTORIC_DATA_LISTING);
+        ASNMapperBaseTransmission mapper = new ASNMapperBaseTransmission(ASNGlobal.Type.FORM_HISTORIC_DATA_LISTING);
 
         DERSequence seqEnc = mapper.encode(item);
         byte[] raw = seqBytes(seqEnc);

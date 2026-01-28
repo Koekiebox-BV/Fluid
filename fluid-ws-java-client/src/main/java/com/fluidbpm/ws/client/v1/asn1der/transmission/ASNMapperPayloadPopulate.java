@@ -15,7 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.asn1der.transmission;
 
-import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -41,7 +41,7 @@ public class ASNMapperPayloadPopulate {
             ASN1Object obj = enumeration.nextElement();
             if (obj instanceof ASN1TaggedObject) {
                 ASN1TaggedObject taggedObject = (ASN1TaggedObject) obj;
-                if (taggedObject.getTagNo() == ANSGlobal.Tag.TAG_PAYLOAD_POPULATE) {
+                if (taggedObject.getTagNo() == ASNGlobal.Tag.TAG_PAYLOAD_POPULATE) {
                     this.populate(payloadPopulate, ASN1TaggedObject.getInstance(taggedObject));
                     break;
                 }

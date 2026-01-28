@@ -19,7 +19,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
@@ -70,7 +70,8 @@ public class WebSocketGetFormHistoryByFormClient extends
                 WS.Path.FormHistory.Version1.getByFormContainerWebSocket(
                         serviceTicketAsHex,
                         includeCurrent,
-                        labelFieldName
+                        labelFieldName,
+                        mode.name()
                 ),
                 mode
         );
@@ -160,6 +161,6 @@ public class WebSocketGetFormHistoryByFormClient extends
      */
     @Override
     protected int getASNReqType() {
-        return ANSGlobal.Type.FORM;
+        return ASNGlobal.Type.FORM;
     }
 }
