@@ -31,7 +31,7 @@ package com.fluidbpm.ws.client.v1.asn1der;
  *   of {@code -100000}, enabling components to manage or flag
  *   payloads distinctly during processing.
  */
-public class ANSGlobal {
+public class ASNGlobal {
     /**
      * The Type class defines a collection of constant values used for identifying
      * specific categories or conditions within the system.
@@ -50,6 +50,7 @@ public class ANSGlobal {
         public static final int FORM = -3;
         public static final int FIELD = -4;
         public static final int FORM_HISTORIC_DATA_LISTING = -5;
+        public static final int FORM_LISTING = -6;
     }
 
     /**

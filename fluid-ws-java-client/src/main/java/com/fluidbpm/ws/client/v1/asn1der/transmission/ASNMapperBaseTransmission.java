@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -35,8 +36,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.fluidbpm.ws.client.v1.asn1der.ANSGlobal.Type.*;
 import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.DefWhenNull.nullSafeTxt;
+import static com.fluidbpm.ws.client.v1.asn1der.ASNGlobal.Type.*;
 import static com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransmission.Map.PAYLOAD_POPULATE;
 
 /**
@@ -250,6 +251,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     );
                     seqTransObj = mapFormHistDataList.encode((FormHistoricDataListing)transObj);
                     break;
+                case FORM_LISTING:
+                    ASNMapperFormListing mapFormList = new ASNMapperFormListing(this.asnMapForm);
+                    seqTransObj = mapFormList.encode((FormListing)transObj);
+                    break;
                 default:
                     throw new FluidClientException(
                             "Transmission Object '"+ transObj +"' not supported!",
@@ -407,6 +412,13 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         return returnVal;
     }
 
+    /**
+     * Maps an ASN1Sequence object to an ASNMultiChoiceField instance.
+     *
+     * @param seq the ASN1Sequence object containing the data to map. The sequence is expected
+     *            to include fields for the name and a sequence of multi-choice options.
+     * @return an ASNMultiChoiceField instance constructed using the data extracted from the provided sequence.
+     */
     private ASNMultiChoiceField mapAsASNMultiChoiceField(ASN1Sequence seq) {
         String fieldName = this.asUtf8(
                 seq.getObjectAt(Map.PayloadPopulate.MultiChoiceField.NAME),
@@ -433,6 +445,17 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         return new ASNMultiChoiceField(fieldName, choices);
     }
 
+    /**
+     * Maps the provided {@link ASN1Sequence} into a {@link FormFieldMetaData} object by extracting
+     * field name and metadata from the sequence using predefined indexes and aliases.
+     *
+     * @param seq The {@link ASN1Sequence} containing the encoded data from which the field name
+     *            and metadata will be extracted. Must not be {@code null} and should conform
+     *            to the expected structure for mapping.
+     * @return A {@link FormFieldMetaData} object containing the extracted field name and metadata
+     *         values. If the sequence does not have valid data at the expected indexes, the
+     *         resulting values in the {@link FormFieldMetaData} object might be {@code null}.
+     */
     private FormFieldMetaData mapAsFormFieldMetaData(ASN1Sequence seq) {
         String fieldName = this.asUtf8(
                 seq.getObjectAt(Map.PayloadPopulate.FormFieldMetaData.NAME),
@@ -456,6 +479,18 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         return start;
     }
 
+    /**
+     * Processes a decoded tagged ASN.1 object and maps its content to a corresponding
+     * {@code BaseTransmission} instance based on the tag number and associated logic.
+     *
+     * @param tag An instance of {@code TagObj<BaseTransmission>} containing the tag number,
+     *            the ASN.1 object, and the object to be populated. Must not be null.
+     * @return Always returns {@code null} after successfully handling the tagged object.
+     * @throws AssertionError If the provided {@code tag}, its associated {@code BaseTransmission},
+     *                        or {@code ASN1Object} is null.
+     * @throws FluidClientException If the tag number is invalid or no appropriate mapping logic
+     *                              is found for the given transmission object type.
+     */
     @Override
     protected Void mapDecodedTaggedObject(TagObj<BaseTransmission> tag) {
         assert tag != null : "TagObj cannot be null.";
@@ -493,8 +528,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                         ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
                                 this.asnMapUser, this.asnMapField, this.asnMapForm
                         );
-                        ASNMapperFormHistoricDataListing mapFrmHistDataList = new ASNMapperFormHistoricDataListing(mapFormHistData);
-                        mapper = mapFrmHistDataList;
+                        mapper = new ASNMapperFormHistoricDataListing(mapFormHistData);
+                        break;
+                    case FORM_LISTING:
+                        mapper = new ASNMapperFormListing(this.asnMapForm);
                         break;
                     default:
                         throw new FluidClientException(

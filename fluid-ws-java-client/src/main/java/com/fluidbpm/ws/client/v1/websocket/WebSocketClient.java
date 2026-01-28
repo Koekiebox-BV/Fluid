@@ -1,9 +1,10 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
+import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.asn1der.ANSGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
@@ -64,7 +65,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             URI endpointURIParam,
             Map<String, RespHandler> messageHandlersParam
     ) throws DeploymentException, IOException {
-        this(endpointURIParam, messageHandlersParam, Mode.Text, ANSGlobal.Type.UNKNOWN);
+        this(endpointURIParam, messageHandlersParam, Mode.Text, ASNGlobal.Type.UNKNOWN);
     }
 
     /**
@@ -181,7 +182,11 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
             if (qualifyObj instanceof Error) {
                 handler.handleMessage(qualifyObj);
-            } else if (qualifyObj instanceof JsonObject) {//TOOD will be handling ANS.1 DER format here.
+            } else if (qualifyObj instanceof ABaseFluidVO) {
+                handler.handleMessage(qualifyObj);
+                handlerFoundForMsg = true;
+                break;
+            } else if (qualifyObj instanceof JsonObject) {
                 handler.handleMessage(qualifyObj);
                 handlerFoundForMsg = true;
                 break;
