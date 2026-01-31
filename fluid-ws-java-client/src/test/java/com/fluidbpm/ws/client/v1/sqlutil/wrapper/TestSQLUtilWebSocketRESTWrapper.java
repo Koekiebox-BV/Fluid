@@ -253,50 +253,50 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
         }
     }
 
-    private void testMethods(SQLUtilWebSocketRESTWrapper wClient, List<Form> createdForms, int trCreateCount) {
+    private void testMethods(SQLUtilWebSocketRESTWrapper wsClient, List<Form> createdForms, int trCreateCount) {
         // Single Form:
-        List<FormListing> formListing = wClient.getTableForms(false, createdForms.get(0));
+        List<FormListing> formListing = wsClient.getTableForms(false, createdForms.get(0));
         TestCase.assertNotNull(formListing);
 
         // Fetch the table forms:
-        formListing = wClient.getTableForms(true, createdForms);
+        formListing = wsClient.getTableForms(true, createdForms);
         TestCase.assertEquals(createdForms.size(), formListing.size());
         formListing.forEach(listing -> TestCase.assertEquals(trCreateCount, listing.getListingCount().intValue()));
-        formListing = wClient.getTableForms(false, createdForms);
+        formListing = wsClient.getTableForms(false, createdForms);
         TestCase.assertEquals(createdForms.size(), formListing.size());
         formListing.forEach(listing -> TestCase.assertEquals(trCreateCount, listing.getListingCount().intValue()));
 
         // Fetch the table forms using Form Def Filter:
-        formListing = wClient.getTableForms(true, this.formTimesheetEntry.getFormTypeId(), createdForms);
+        formListing = wsClient.getTableForms(true, this.formTimesheetEntry.getFormTypeId(), createdForms);
         TestCase.assertEquals(createdForms.size(), formListing.size());
         formListing.forEach(listing -> TestCase.assertEquals(trCreateCount, listing.getListingCount().intValue()));
-        formListing = wClient.getTableForms(false, this.formTimesheetEntry.getFormTypeId(), createdForms);
+        formListing = wsClient.getTableForms(false, this.formTimesheetEntry.getFormTypeId(), createdForms);
         TestCase.assertEquals(createdForms.size(), formListing.size());
         formListing.forEach(listing -> TestCase.assertEquals(trCreateCount, listing.getListingCount().intValue()));
 
         // Fetch the Form Fields:
         formListing.forEach(listing -> {
             // Fetch Single:
-            List<FormFieldListing> fieldListingFromSingle = wClient.getFormFields(true, listing.getListing().get(0));
+            List<FormFieldListing> fieldListingFromSingle = wsClient.getFormFields(true, listing.getListing().get(0));
             TestCase.assertNotNull(fieldListingFromSingle);
-            fieldListingFromSingle = wClient.getFormFields(false, listing.getListing().get(0));
+            fieldListingFromSingle = wsClient.getFormFields(false, listing.getListing().get(0));
             TestCase.assertNotNull(fieldListingFromSingle);
 
             // Fetch All:
-            List<FormFieldListing> fieldListing = wClient.getFormFields(true, listing.getListing());
+            List<FormFieldListing> fieldListing = wsClient.getFormFields(true, listing.getListing());
             TestCase.assertNotNull(fieldListing);
             TestCase.assertEquals(trCreateCount, fieldListing.size());
 
-            fieldListing = wClient.getFormFields(false, listing.getListing());
+            fieldListing = wsClient.getFormFields(false, listing.getListing());
             TestCase.assertNotNull(fieldListing);
             TestCase.assertEquals(trCreateCount, fieldListing.size());
 
             listing.getListing().forEach(form -> {
-                List<FormFieldListing> fieldListingInner = wClient.getFormFields(true, form);
+                List<FormFieldListing> fieldListingInner = wsClient.getFormFields(true, form);
                 TestCase.assertNotNull(fieldListingInner);
                 TestCase.assertEquals(1, fieldListingInner.size());
 
-                fieldListingInner = wClient.getFormFields(false, form);
+                fieldListingInner = wsClient.getFormFields(false, form);
                 TestCase.assertNotNull(fieldListingInner);
                 TestCase.assertEquals(1, fieldListingInner.size());
             });
@@ -305,28 +305,28 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
         // Test Fetching the History for Form:
         formListing.forEach(listing -> {
             // Fetch Single:
-            List<FormHistoricDataListing> histListingFromSingle = wClient.getFormHistoryByForm(
+            List<FormHistoricDataListing> histListingFromSingle = wsClient.getFormHistoryByForm(
                     true, false, listing.getListing().get(0));
             TestCase.assertNotNull(histListingFromSingle);
             TestCase.assertFalse(histListingFromSingle.get(0).isListingEmpty());
 
-            List<FormHistoricDataListing> histListing = wClient.getFormHistoryByForm(
+            List<FormHistoricDataListing> histListing = wsClient.getFormHistoryByForm(
                     false, false, listing.getListing().get(0));
             TestCase.assertNotNull(histListing);
             TestCase.assertFalse(histListing.get(0).isListingEmpty());
 
             // Fetch All:
-            histListing = wClient.getFormHistoryByForm(
+            histListing = wsClient.getFormHistoryByForm(
                     true, true, listing.getListing());
             TestCase.assertNotNull(histListing);
             TestCase.assertEquals(trCreateCount, histListing.size());
 
             listing.getListing().forEach(form -> {
-                List<FormFieldListing> fieldListingInner = wClient.getFormFields(true, form);
+                List<FormFieldListing> fieldListingInner = wsClient.getFormFields(true, form);
                 TestCase.assertNotNull(fieldListingInner);
                 TestCase.assertEquals(1, fieldListingInner.size());
 
-                fieldListingInner = wClient.getFormFields(false, form);
+                fieldListingInner = wsClient.getFormFields(false, form);
                 TestCase.assertNotNull(fieldListingInner);
                 TestCase.assertEquals(1, fieldListingInner.size());
             });
@@ -344,7 +344,7 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
         TestCase.assertEquals(subCount, emptyFieldForms.size());
         emptyFieldForms.forEach(form -> TestCase.assertNull(form.getFormFields()));
 
-        wClient.massPopulateFormFields(false, emptyFieldForms);
+        wsClient.massPopulateFormFields(false, emptyFieldForms);
         emptyFieldForms.forEach(form -> {
             TestCase.assertEquals(3, form.getFormFields().size());
             form.getFormFields().forEach(field -> {
@@ -355,7 +355,7 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
         });
         emptyFieldForms.forEach(form -> form.setFormFields(null));
 
-        wClient.massPopulateFormFields(true, emptyFieldForms);
+        wsClient.massPopulateFormFields(true, emptyFieldForms);
         emptyFieldForms.forEach(form -> {
             TestCase.assertEquals(3, form.getFormFields().size());
             form.getFormFields().forEach(field -> {
