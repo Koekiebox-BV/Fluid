@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -254,6 +255,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case FORM_LISTING:
                     ASNMapperFormListing mapFormList = new ASNMapperFormListing(this.asnMapForm);
                     seqTransObj = mapFormList.encode((FormListing)transObj);
+                    break;
+                case FORM_FIELD_LISTING:
+                    ASNMapperFormFieldListing mapFormFldList = new ASNMapperFormFieldListing(this.asnMapField);
+                    seqTransObj = mapFormFldList.encode((FormFieldListing) transObj);
                     break;
                 default:
                     throw new FluidClientException(
@@ -532,6 +537,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                         break;
                     case FORM_LISTING:
                         mapper = new ASNMapperFormListing(this.asnMapForm);
+                        break;
+                    case FORM_FIELD_LISTING:
+                        mapper = new ASNMapperFormFieldListing(this.asnMapField);
                         break;
                     default:
                         throw new FluidClientException(
