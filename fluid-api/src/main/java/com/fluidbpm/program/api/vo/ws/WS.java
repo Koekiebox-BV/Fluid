@@ -3999,18 +3999,26 @@ public class WS {
                  * @param serviceTicketParam           The service ticket in hex-decimal text format.
                  * @param compressResponseParam        Compress the Form Field Result in Base-64.
                  * @param compressResponseCharsetParam Compress response using provided charset.
+                 * @param encodingMode The encoding mode to use.
                  * @return {@code /web_socket/v1/sql_util/form_field/get_fields_by_electronic_form_id}
                  */
                 public static final String getFormFieldsWebSocket(
                         boolean includeTableFieldsParam,
                         String serviceTicketParam,
                         boolean compressResponseParam,
-                        String compressResponseCharsetParam) {
+                        String compressResponseCharsetParam,
+                        String encodingMode
+                ) {
                     String returnVal = ROOT_WEB_SOCKET.concat(SQL_UTIL_FORM_FIELDS_GET_BY_CONTAINER).concat("/" + serviceTicketParam + "?" + QueryParam.INCLUDE_TABLE_FIELDS + "="
                             + includeTableFieldsParam + "&" + QueryParam.COMPRESS_RESPONSE + "=" + compressResponseParam +
                             "&" + QueryParam.COMPRESS_RESPONSE_CHARSET + "=" + compressResponseCharsetParam);
 
-                    return returnVal;
+                    return String.format(
+                            "%s&%s=%s",
+                            returnVal,
+                            WS.QueryParam.WEB_SOCKET_ENCODING_MODE,
+                            encodingMode
+                    );
                 }
 
                 /**

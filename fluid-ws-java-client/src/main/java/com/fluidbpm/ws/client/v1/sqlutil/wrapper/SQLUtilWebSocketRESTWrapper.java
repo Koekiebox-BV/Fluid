@@ -403,7 +403,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
                         this.timeoutMillis,
                         includeTableFieldData,
                         COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET
+                        COMPRESS_RSP_CHARSET,
+                        this.wsClientMode
                 );
                 this.mode = Mode.WebSocketActive;
             }
@@ -628,7 +629,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
                         this.timeoutMillis,
                         includeFieldData,
                         COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET
+                        COMPRESS_RSP_CHARSET,
+                        this.wsClientMode
                 );
                 this.mode = Mode.WebSocketActive;
             }
