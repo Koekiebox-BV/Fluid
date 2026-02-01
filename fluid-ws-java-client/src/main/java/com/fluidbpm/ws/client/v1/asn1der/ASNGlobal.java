@@ -76,7 +76,7 @@ public class ASNGlobal {
      * represent various elements and entities in the application.
      */
     public static final class Path {
-        public static final String WS_TRANSMISSION = "web_socket/v1/transmission/";
+        public static final String WS_TRANSMISSION = "/web_socket/v1/transmission/";
 
         public static String transmissionPath(String servTicketHex) {
             return WS_TRANSMISSION.concat(servTicketHex).concat(
