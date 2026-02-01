@@ -225,17 +225,21 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      *
      * @param aBaseFluidJSONObject The JSON Object to send.
      */
-    public void sendMessage(ABaseFluidGSONObject aBaseFluidJSONObject) {
+    public void sendMessage(ABaseFluidVO aBaseFluidJSONObject) {
         if (aBaseFluidJSONObject == null) {
-            throw new FluidClientException("No JSON Object to send.", FluidClientException.ErrorCode.IO_ERROR);
+            throw new FluidClientException("No Object to send!", FluidClientException.ErrorCode.IO_ERROR);
         }
 
         if (this.mode == Mode.Binary) {
-            byte[] binary = this.asnMapperFactory.writeObjectForSend(aBaseFluidJSONObject);
-            this.sendMessage(binary);
+            this.sendMessage(this.asnMapperFactory.writeObjectForSend(aBaseFluidJSONObject));
+        } else if (aBaseFluidJSONObject instanceof ABaseFluidGSONObject) {
+            ABaseFluidGSONObject casted = (ABaseFluidGSONObject)aBaseFluidJSONObject;
+            this.sendMessage(casted.toJsonObject().toString());
         } else {
-            String txt = aBaseFluidJSONObject.toJsonObject().toString();
-            this.sendMessage(txt);
+            throw new FluidClientException(
+                    "Unable to process '"+aBaseFluidJSONObject+"'.",
+                    FluidClientException.ErrorCode.ASN_1_ERROR
+            );
         }
     }
 

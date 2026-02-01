@@ -302,7 +302,24 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
             ASN1Integer i = (ASN1Integer) e;
             return i.getValue().longValueExact();
         }
-        throw new FluidClientException("Field " + field + " expected INTEGER, got " + e.getClass().getSimpleName(),
+        throw new FluidClientException("Field (as long) " + field + " expected INTEGER, got " + e.getClass().getSimpleName(),
+                FluidClientException.ErrorCode.ASN_1_ERROR);
+    }
+
+    /**
+     * Converts an ASN1Encodable to an integer if it is an instance of ASN1Integer.
+     *
+     * @param e the ASN1Encodable object to be converted.
+     * @param field the name of the field being processed, used in the exception message if conversion fails.
+     * @return the integer value of the ASN1Integer object.
+     * @throws FluidClientException if the given ASN1Encodable is not an instance of ASN1Integer.
+     */
+    protected int asInteger(ASN1Encodable e, String field) {
+        if (e instanceof ASN1Integer) {
+            ASN1Integer i = (ASN1Integer) e;
+            return i.getValue().intValueExact();
+        }
+        throw new FluidClientException("Field (as int) " + field + " expected INTEGER, got " + e.getClass().getSimpleName(),
                 FluidClientException.ErrorCode.ASN_1_ERROR);
     }
 
