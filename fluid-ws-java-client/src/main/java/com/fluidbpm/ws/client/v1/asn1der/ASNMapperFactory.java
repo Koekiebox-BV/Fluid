@@ -78,10 +78,9 @@ public class ASNMapperFactory {
      */
     public BaseTransmission readBaseTransmission(byte[] derBytes) {
         try {
-            BaseTransmission bt = this.baseTransmission.decode(
+            return this.baseTransmission.decode(
                     (ASN1Sequence)ASN1Primitive.fromByteArray(derBytes)
             );
-            return bt;
         } catch (
                 IOException ioErr) {
             throw new FluidClientException(ioErr.getMessage(), ioErr,
