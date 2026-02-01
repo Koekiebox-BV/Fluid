@@ -64,6 +64,32 @@ public class ASNMapperFactory {
     }
 
     /**
+     * Decodes the provided byte array into a {@link BaseTransmission} object.
+     * This method interprets the byte array as ASN.1 data, converts it into
+     * an {@link ASN1Sequence}, and then uses the {@code baseTransmission}
+     * instance to decode the sequence into a {@link BaseTransmission} object.
+     *
+     * @param derBytes The byte array representing ASN.1 encoded data to be
+     *                 decoded into a {@link BaseTransmission} object.
+     * @return The decoded {@link BaseTransmission} object populated with the
+     *         data from the provided byte array.
+     * @throws FluidClientException If the byte array is invalid or cannot be
+     *                              parsed as ASN.1 data.
+     */
+    public BaseTransmission readBaseTransmission(byte[] derBytes) {
+        try {
+            BaseTransmission bt = this.baseTransmission.decode(
+                    (ASN1Sequence)ASN1Primitive.fromByteArray(derBytes)
+            );
+            return bt;
+        } catch (
+                IOException ioErr) {
+            throw new FluidClientException(ioErr.getMessage(), ioErr,
+                    FluidClientException.ErrorCode.ASN_1_ERROR);
+        }
+    }
+
+    /**
      * Decodes the provided byte array into an {@link ABaseFluidVO} object by converting the
      * byte array into an {@link ASN1Sequence} and delegating the decoding process to an
      * overloaded {@code readObjectFromReceived} method.
