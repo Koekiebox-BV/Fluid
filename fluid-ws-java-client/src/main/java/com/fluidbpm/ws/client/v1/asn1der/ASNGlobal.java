@@ -15,6 +15,8 @@
 
 package com.fluidbpm.ws.client.v1.asn1der;
 
+import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
+
 /**
  * The GlobalIDSpecial class provides special purpose constants
  * used for identifying error types and payload-related tags
@@ -69,9 +71,49 @@ public class ASNGlobal {
         public static final int TAG_PAYLOAD_POPULATE = -100000;
     }
 
+    /**
+     * This class serves as a namespace for organizing static nested classes that
+     * represent various elements and entities in the application.
+     */
     public static final class Path {
-        public static final class Form {
+        public static final String WS_TRANSMISSION = "web_socket/v1/transmission/";
+
+        public static String transmissionPath(String servTicketHex) {
+            return WS_TRANSMISSION.concat(servTicketHex).concat(
+                    "&web_socket_encoding_mode=".concat(WebSocketClient.Mode.Binary.name())
+            );
+        }
+
+        public static final class Attachment {
+            
+        }
+
+        public static final class FlowItem {
+            
+        }
+
+        public static final class FormContainer {
             public static final String FORM = "";
+        }
+
+        public static final class FormDefinition {
+
+        }
+
+        public static final class FormField {
+
+        }
+
+        public static final class Role {
+
+        }
+
+        public static final class PersonalInventory {
+
+        }
+
+        public static final class UserQuery {
+            
         }
     }
 }

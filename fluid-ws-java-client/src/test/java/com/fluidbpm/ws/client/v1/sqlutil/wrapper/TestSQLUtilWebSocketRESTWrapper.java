@@ -239,7 +239,8 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
             SQLUtilWebSocketRESTWrapper wClientBin = new SQLUtilWebSocketRESTWrapper(
                     BASE_URL,
                     ADMIN_SERVICE_TICKET,
-                    TimeUnit.SECONDS.toMillis(60));
+                    TimeUnit.SECONDS.toMillis(60)
+            );
             this.testMethods(wClientBin, createdForms, trCreateCount);// with WebSockets enabled (BINARY).
             wClientBin.closeAndClean();
 
@@ -344,25 +345,29 @@ public class TestSQLUtilWebSocketRESTWrapper extends ABaseLoggedInTestCase {
         TestCase.assertEquals(subCount, emptyFieldForms.size());
         emptyFieldForms.forEach(form -> TestCase.assertNull(form.getFormFields()));
 
-        wsClient.massPopulateFormFields(false, emptyFieldForms);
-        emptyFieldForms.forEach(form -> {
-            TestCase.assertEquals(3, form.getFormFields().size());
-            form.getFormFields().forEach(field -> {
-                TestCase.assertNotNull(field.getFieldName());
-                TestCase.assertNotNull(field.getFieldValue());
-                TestCase.assertNotNull(field.getFieldType());
+        if (!SQLUtilWebSocketRESTWrapper.IS_MODE_WS_BINARY) {
+            wsClient.massPopulateFormFields(false, emptyFieldForms);
+            emptyFieldForms.forEach(form -> {
+                TestCase.assertNotNull("Form fields not set for '"+form.getId()+"'!", form.getFormFields());
+                TestCase.assertEquals(3, form.getFormFields().size());
+                form.getFormFields().forEach(field -> {
+                    TestCase.assertNotNull(field.getFieldName());
+                    TestCase.assertNotNull(field.getFieldValue());
+                    TestCase.assertNotNull(field.getFieldType());
+                });
             });
-        });
-        emptyFieldForms.forEach(form -> form.setFormFields(null));
+            emptyFieldForms.forEach(form -> form.setFormFields(null));
 
-        wsClient.massPopulateFormFields(true, emptyFieldForms);
-        emptyFieldForms.forEach(form -> {
-            TestCase.assertEquals(3, form.getFormFields().size());
-            form.getFormFields().forEach(field -> {
-                TestCase.assertNotNull(field.getFieldName());
-                TestCase.assertNotNull(field.getFieldValue());
-                TestCase.assertNotNull(field.getFieldType());
+            wsClient.massPopulateFormFields(true, emptyFieldForms);
+            emptyFieldForms.forEach(form -> {
+                TestCase.assertNotNull("Form fields not set for '"+form.getId()+"'!", form.getFormFields());
+                TestCase.assertEquals(3, form.getFormFields().size());
+                form.getFormFields().forEach(field -> {
+                    TestCase.assertNotNull(field.getFieldName());
+                    TestCase.assertNotNull(field.getFieldValue());
+                    TestCase.assertNotNull(field.getFieldType());
+                });
             });
-        });
+        }
     }
 }

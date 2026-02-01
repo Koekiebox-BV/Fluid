@@ -21,6 +21,7 @@ import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
@@ -76,7 +77,8 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
                         compressResponseCharset,
                         mode.name()
                 ),
-                compressResponse
+                compressResponse,
+                mode
         );
         this.setServiceTicket(serviceTicketAsHex);
     }
@@ -109,7 +111,8 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
                         false,
                         UtilGlobal.EMPTY,
                         mode.name()
-                )
+                ),
+                mode
         );
         this.setServiceTicket(serviceTicketAsHex);
     }
@@ -193,5 +196,14 @@ public class SQLUtilWebSocketGetFormFieldsClient extends
                 this.webSocketClient,
                 this.compressResponse
         );
+    }
+
+    /**
+     * Retrieves the ASN (Advanced Service Notification) request type for this WebSocket client.
+     * @return The request type identifier, represented as {@code ANSGlobal.Type.FORM}.
+     */
+    @Override
+    protected int getASNReqType() {
+        return ASNGlobal.Type.FORM;
     }
 }

@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * @see ABaseClientWS
  */
 public abstract class ABaseClientWebSocket
-        <RespHandler extends IMessageResponseHandler, CallBackType extends ABaseFluidGSONObject>
+        <RespHandler extends IMessageResponseHandler, CallBackType extends ABaseFluidVO>
         extends ABaseClientWS {
     protected String webSocketEndpointUrl;
     protected WebSocketClient<RespHandler> webSocketClient;
@@ -201,10 +201,7 @@ public abstract class ABaseClientWebSocket
      * @param baseFluidJSONObject The JsonObject to send.
      * @param requestIdParam The unique request id.
      */
-    public void sendMessage(
-        ABaseFluidGSONObject baseFluidJSONObject,
-        String requestIdParam
-    ) {
+    public void sendMessage(ABaseFluidVO baseFluidJSONObject, String requestIdParam) {
         if (baseFluidJSONObject != null) {
             baseFluidJSONObject.setServiceTicket(this.serviceTicket);
 
