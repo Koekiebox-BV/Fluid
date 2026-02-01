@@ -85,11 +85,18 @@ public class ASNGlobal {
         }
 
         public static final class Attachment {
-            
+            public static final String ATTACHMENT_IMAGES_BY_FORM = "attachments/image_by_form";
+            public static final String ATTACHMENTS_BY_FORM = "attachments/by_form";
+            public static final String ATTACHMENT_CREATE = "attachments/create";
+            public static final String ATTACHMENT_DELETE = "attachments/delete";
+            public static final String ATTACHMENT_UPDATE = "attachments/update";
         }
 
         public static final class FlowItem {
-            
+            public static final String ITEMS_FOR_VIEW = "flow_item/items_for_view";
+            public static final String ITEM_BY_FORM_ID = "flow_item/by_form_id";
+            public static final String ITEM_SEND_ON = "flow_item/send_on";
+            public static final String ITEM_SEND_TO_FLOW = "flow_item/send_to_flow";
         }
 
         public static final class FormContainer {
