@@ -537,7 +537,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             //When mode is null or [WebSocketActive]...
             this.initGetNativeSQLClient();
         } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) throw clientExcept;
+            if (clientExcept.getErrorCode() !=
+                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) throw clientExcept;
             this.mode = Mode.RESTfulActive;
         }
 

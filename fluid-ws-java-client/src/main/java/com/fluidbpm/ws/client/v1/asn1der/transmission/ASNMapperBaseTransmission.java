@@ -260,9 +260,18 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     ASNMapperFormFieldListing mapFormFldList = new ASNMapperFormFieldListing(this.asnMapField);
                     seqTransObj = mapFormFldList.encode((FormFieldListing) transObj);
                     break;
+                case UNKNOWN:
+                    throw new FluidClientException(
+                            "Transmission Object type is unknown! ':" +
+                                    (transObj == null ? "<null>" : transObj.getClass().getSimpleName()) + ":"+
+                                    transObj +"'!",
+                            FluidClientException.ErrorCode.ASN_1_ERROR
+                    );
                 default:
                     throw new FluidClientException(
-                            "Transmission Object '"+ transObj +"' not supported!",
+                            "Transmission Object '"+this.transmissionObjectType+ ":" +
+                                    (transObj == null ? "<null>" : transObj.getClass().getSimpleName()) + ":"+
+                                    transObj +"' not supported!",
                             FluidClientException.ErrorCode.ASN_1_ERROR
                     );
             }
