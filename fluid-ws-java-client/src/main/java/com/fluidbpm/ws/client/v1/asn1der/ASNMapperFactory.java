@@ -158,4 +158,18 @@ public class ASNMapperFactory {
     public void setType(int type) {
         this.baseTransmission.setTransmissionObjectType(type);
     }
+
+    /**
+     * Delegates the processing of a transmission object to the underlying {@code baseTransmission}
+     * instance without specifying an additional {@code ASN1Object}.
+     *
+     * @param type an integer representing the type of the transmission object to be processed.
+     *             This parameter influences how the transmission object is handled internally.
+     * @param toPop the {@link BaseTransmission} object that will be utilized for the
+     *              processing. It may contain the payload, request object, and other data
+     *              related to the transmission.
+     */
+    public void proceedWithTransmissionObject(int type, BaseTransmission toPop) {
+        this.baseTransmission.proceedWithTransmissionObject(type, toPop, null);
+    }
 }
