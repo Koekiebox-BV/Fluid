@@ -55,7 +55,8 @@ public class ASNGlobal {
         public static final int FORM_HISTORIC_DATA_LISTING = -5;
         public static final int FORM_LISTING = -6;
         public static final int FORM_FIELD_LISTING = -7;
-        public static final int ATTACHMENT_LISTING = -8;
+        public static final int ATTACHMENT = -8;
+        public static final int ATTACHMENT_LISTING = -9;
     }
 
     /**
