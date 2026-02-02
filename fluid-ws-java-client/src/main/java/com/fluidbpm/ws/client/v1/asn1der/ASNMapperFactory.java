@@ -169,7 +169,7 @@ public class ASNMapperFactory {
      *              processing. It may contain the payload, request object, and other data
      *              related to the transmission.
      */
-    public void proceedWithTransmissionObject(int type, BaseTransmission toPop) {
-        this.baseTransmission.proceedWithTransmissionObject(type, toPop, null);
+    public ABaseFluidVO proceedWithTransmissionObject(int type, BaseTransmission toPop) {
+        return this.baseTransmission.proceedWithTransmissionObject(type, toPop, null);
     }
 }
