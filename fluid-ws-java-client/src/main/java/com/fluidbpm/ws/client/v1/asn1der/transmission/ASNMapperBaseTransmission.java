@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.asn1der.transmission;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.fluidbpm.program.api.vo.attachment.AttachmentListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
@@ -265,11 +266,11 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     );
                     break;
                 case ATTACHMENT:
-                    ASNMapperFormHistoricDataListing
                     seqTransObj = this.asnMapAtt.encode((Attachment) transObj);
                     break;
                 case ATTACHMENT_LISTING:
-                    seqTransObj = this.asnMapAtt.encode((Attachment) transObj);
+                    ASNMapperAttachmentListing asnMapAtt = new ASNMapperAttachmentListing(this.asnMapAtt);
+                    seqTransObj = asnMapAtt.encode((AttachmentListing) transObj);
                     break;
                 case UNKNOWN:
                     throw new FluidClientException(
@@ -605,8 +606,11 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
             case FORM_FIELD_LISTING:
                 mapper = new ASNMapperFormFieldListing(this.asnMapField);
                 break;
-            case ATTACHMENT_LISTING:
+            case ATTACHMENT:
                 mapper = this.asnMapAtt;
+                break;
+            case ATTACHMENT_LISTING:
+                mapper = new ASNMapperAttachmentListing(this.asnMapAtt);
                 break;
             default:
                 throw new FluidClientException(
