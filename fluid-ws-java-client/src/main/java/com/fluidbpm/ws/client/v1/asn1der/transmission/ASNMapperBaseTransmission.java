@@ -264,6 +264,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                             (FormFieldListing) transObj
                     );
                     break;
+                case ATTACHMENT:
+                    ASNMapperFormHistoricDataListing
+                    seqTransObj = this.asnMapAtt.encode((Attachment) transObj);
+                    break;
                 case ATTACHMENT_LISTING:
                     seqTransObj = this.asnMapAtt.encode((Attachment) transObj);
                     break;
