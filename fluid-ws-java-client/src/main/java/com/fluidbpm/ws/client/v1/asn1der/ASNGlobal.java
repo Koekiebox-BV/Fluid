@@ -46,6 +46,7 @@ public class ASNGlobal {
     public static final class Type {
         public static final int UNKNOWN = -777;
         public static final int ERROR_TYPE = -666;
+        public static final int SKIP_TRANSMISSION_OBJ = -555;
 
         // Valid return types:
         public static final int FLUID_ITEM = -2;//-1 is reserved for not set.
@@ -54,6 +55,7 @@ public class ASNGlobal {
         public static final int FORM_HISTORIC_DATA_LISTING = -5;
         public static final int FORM_LISTING = -6;
         public static final int FORM_FIELD_LISTING = -7;
+        public static final int ATTACHMENT_LISTING = -8;
     }
 
     /**

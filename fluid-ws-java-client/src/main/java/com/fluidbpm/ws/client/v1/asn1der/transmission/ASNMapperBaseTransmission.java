@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.asn1der.transmission;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
@@ -57,6 +58,8 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
     private ASNMapperField asnMapField;
     private ASNMapperForm asnMapForm;
     private ASNMapperAttachment asnMapAtt;
+
+    private ASN1Object asn1ObjSkipped;
 
     /**
      * Constructs an instance of the ASNMapperBaseTransmission class.
@@ -230,7 +233,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
 
         // [7] -> Transmission Object:
         ABaseFluidVO transObj = item.getTransmissionObject();
-        if (transObj != null) {
+        if (transObj != null && this.getTransmissionObjectType() != SKIP_TRANSMISSION_OBJ) {
             DERSequence seqTransObj = null;
             switch (this.transmissionObjectType) {
                 case FIELD:
@@ -257,8 +260,12 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     seqTransObj = mapFormList.encode((FormListing)transObj);
                     break;
                 case FORM_FIELD_LISTING:
-                    ASNMapperFormFieldListing mapFormFldList = new ASNMapperFormFieldListing(this.asnMapField);
-                    seqTransObj = mapFormFldList.encode((FormFieldListing) transObj);
+                    seqTransObj = new ASNMapperFormFieldListing(this.asnMapField).encode(
+                            (FormFieldListing) transObj
+                    );
+                    break;
+                case ATTACHMENT_LISTING:
+                    seqTransObj = this.asnMapAtt.encode((Attachment) transObj);
                     break;
                 case UNKNOWN:
                     throw new FluidClientException(
@@ -533,33 +540,11 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 toPop.setRequestObject(new RequestObject(formPath, params));
                 break;
             case Map.TRANSMISSION_OBJECT:
-                ASNBaseTaggedMapper mapper = null;
-                switch (this.transmissionObjectType) {
-                    case FIELD: mapper = this.asnMapField;break;
-                    case FORM: mapper = this.asnMapForm;break;
-                    case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);break;
-                    case FORM_HISTORIC_DATA_LISTING:
-                        ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
-                                this.asnMapUser, this.asnMapField, this.asnMapForm
-                        );
-                        mapper = new ASNMapperFormHistoricDataListing(mapFormHistData);
-                        break;
-                    case FORM_LISTING:
-                        mapper = new ASNMapperFormListing(this.asnMapForm);
-                        break;
-                    case FORM_FIELD_LISTING:
-                        mapper = new ASNMapperFormFieldListing(this.asnMapField);
-                        break;
-                    default:
-                        throw new FluidClientException(
-                                "Invalid type code: " + this.transmissionObjectType,
-                                FluidClientException.ErrorCode.ASN_1_ERROR
-                        );
+                if (this.getTransmissionObjectType() == SKIP_TRANSMISSION_OBJ) {
+                    this.asn1ObjSkipped = obj;
+                    return null;
                 }
-                assert mapper != null : "Mapper is null!";
-
-                ABaseFluidVO returnVal = mapper.decode(this.asSeq(obj, Map.TRANSMISSION_OBJECT_ALIAS));
-                toPop.setTransmissionObject(returnVal);
+                this.proceedWithTransmissionObject(toPop, obj);
                 break;
             default:
                 throw new FluidClientException(
@@ -568,5 +553,69 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 );
         }
         return null;
+    }
+
+    /**
+     * Processes the specified transmission object by setting its type and
+     * delegating to another method for further processing.
+     *
+     * @param type the type of the transmission object to be processed
+     * @param toPop the BaseTransmission object to be utilized in the process
+     * @param obj the ASN1Object associated with the transmission process
+     */
+    public ABaseFluidVO proceedWithTransmissionObject(
+            int type,
+            BaseTransmission toPop,
+            ASN1Object obj
+    ) {
+        this.setTransmissionObjectType(type);
+        this.proceedWithTransmissionObject(toPop, obj);
+
+        return toPop.getTransmissionObject();
+    }
+
+    /**
+     * Processes the given BaseTransmission object and updates it with a decoded transmission object
+     * generated based on the provided ASN1Object. The method uses an appropriate mapper instance
+     * determined by the type of transmission object.
+     *
+     * @param toPop The BaseTransmission object to populate with a decoded transmission object.
+     * @param obj   The ASN1Object to decode. If null, a default ASN1Object is used for decoding.
+     * @throws FluidClientException If the transmission object type is invalid or not recognized.
+     */
+    public void proceedWithTransmissionObject(BaseTransmission toPop, ASN1Object obj) {
+        ASNBaseTaggedMapper mapper = null;
+        switch (this.transmissionObjectType) {
+            case FIELD: mapper = this.asnMapField;break;
+            case FORM: mapper = this.asnMapForm;break;
+            case FLUID_ITEM: mapper = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);break;
+            case FORM_HISTORIC_DATA_LISTING:
+                ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
+                        this.asnMapUser, this.asnMapField, this.asnMapForm
+                );
+                mapper = new ASNMapperFormHistoricDataListing(mapFormHistData);
+                break;
+            case FORM_LISTING:
+                mapper = new ASNMapperFormListing(this.asnMapForm);
+                break;
+            case FORM_FIELD_LISTING:
+                mapper = new ASNMapperFormFieldListing(this.asnMapField);
+                break;
+            case ATTACHMENT_LISTING:
+                mapper = this.asnMapAtt;
+                break;
+            default:
+                throw new FluidClientException(
+                        "Invalid type code: " + this.transmissionObjectType,
+                        FluidClientException.ErrorCode.ASN_1_ERROR
+                );
+        }
+        assert mapper != null : "Mapper is null!";
+
+        ABaseFluidVO returnVal = mapper.decode(this.asSeq(
+                obj == null ? this.asn1ObjSkipped : obj,
+                Map.TRANSMISSION_OBJECT_ALIAS)
+        );
+        toPop.setTransmissionObject(returnVal);
     }
 }
