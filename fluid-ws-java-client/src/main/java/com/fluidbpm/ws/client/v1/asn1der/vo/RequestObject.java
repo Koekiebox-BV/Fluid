@@ -33,8 +33,21 @@ public class RequestObject extends ABaseFluidVO {
     private final String path;
     private final List<RequestParameter> requestParameters;
 
+    /**
+     * Constructs a new {@code RequestObject} with default values for its fields.
+     * The {@code path} is initialized to an empty string, and the {@code requestParameters}
+     * is initialized as an empty {@code ArrayList}.
+     */
     public RequestObject() {
         this(UtilGlobal.EMPTY, new ArrayList<>());
+    }
+
+    /**
+     * Constructs a new {@code RequestObject} with the specified path.
+     * @param path the request path to initialize the {@code RequestObject}; must not be null or blank
+     */
+    public RequestObject(String path) {
+        this(path, new ArrayList<>());
     }
 
     /**

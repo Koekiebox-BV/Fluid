@@ -119,9 +119,7 @@ public class ASNMapperFactory {
      * @param objVo The instance of {@link ABaseFluidVO} to be serialized and prepared for transmission.
      * @return A byte array representing the serialized form of the provided {@link ABaseFluidVO} instance.
      */
-    public byte[] writeObjectForSend(
-            ABaseFluidVO objVo
-    ) {
+    public byte[] writeObjectForSend(ABaseFluidVO objVo) {
         PayloadPopulate payPop = new PayloadPopulate();
         RequestObject reqObj = new RequestObject();
         return this.writeObjectForSend(payPop, reqObj, objVo);
@@ -145,6 +143,18 @@ public class ASNMapperFactory {
         bt.setPayloadPopulate(payloadPopulate);
         bt.setRequestObject(reqObj);
         bt.setTransmissionObject(objVo);
+        return this.writeObjectForSend(bt);
+    }
+
+    /**
+     * Serializes the provided {@link BaseTransmission} instance into a byte array for transmission.
+     * This method encodes the given transmission object using the encoding functionality
+     * available in the {@code baseTransmission} instance.
+     *
+     * @param bt The {@link BaseTransmission} object to be serialized and prepared for transmission.
+     * @return A byte array representing the serialized form of the provided {@link BaseTransmission} object.
+     */
+    public byte[] writeObjectForSend(BaseTransmission bt) {
         return seqBytes(this.baseTransmission.encode(bt));
     }
 

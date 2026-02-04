@@ -83,7 +83,7 @@ public class ASNGlobal {
 
         public static String transmissionPath(String servTicketHex) {
             return WS_TRANSMISSION.concat(servTicketHex).concat(
-                    "&web_socket_encoding_mode=".concat(WebSocketClient.Mode.Binary.name())
+                    "?web_socket_encoding_mode=".concat(WebSocketClient.Mode.Binary.name())
             );
         }
 
