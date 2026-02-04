@@ -6,6 +6,7 @@ import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -223,21 +224,26 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     /**
      * Send a message.
      *
-     * @param aBaseFluidJSONObject The JSON Object to send.
+     * @param aFluidVo The JSON Object to send.
      */
-    public void sendMessage(ABaseFluidVO aBaseFluidJSONObject) {
-        if (aBaseFluidJSONObject == null) {
+    public void sendMessage(ABaseFluidVO aFluidVo) {
+        if (aFluidVo == null) {
             throw new FluidClientException("No Object to send!", FluidClientException.ErrorCode.IO_ERROR);
         }
 
         if (this.mode == Mode.Binary) {
-            this.sendMessage(this.asnMapperFactory.writeObjectForSend(aBaseFluidJSONObject));
-        } else if (aBaseFluidJSONObject instanceof ABaseFluidGSONObject) {
-            ABaseFluidGSONObject casted = (ABaseFluidGSONObject)aBaseFluidJSONObject;
+            if (aFluidVo instanceof BaseTransmission) {
+                BaseTransmission bt = (BaseTransmission)aFluidVo;
+                this.sendMessage(this.asnMapperFactory.writeObjectForSend(bt));
+            } else {
+                this.sendMessage(this.asnMapperFactory.writeObjectForSend(aFluidVo));
+            }
+        } else if (aFluidVo instanceof ABaseFluidGSONObject) {
+            ABaseFluidGSONObject casted = (ABaseFluidGSONObject)aFluidVo;
             this.sendMessage(casted.toJsonObject().toString());
         } else {
             throw new FluidClientException(
-                    "Unable to process '"+aBaseFluidJSONObject+"'.",
+                    "Unable to process '"+aFluidVo+"'.",
                     FluidClientException.ErrorCode.ASN_1_ERROR
             );
         }
@@ -319,5 +325,17 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     public String getSessionId(){
         if (this.userSession == null) return null;
         return this.userSession.getId();
+    }
+
+    /**
+     * Sets the type of the ASN (Abstract Syntax Notation) mapper factory.
+     * If the {@code asnMapperFactory} is {@code null}, the method does nothing.
+     *
+     * @param type an integer representing the desired configuration type
+     *             for the {@code asnMapperFactory}.
+     */
+    public void setAsnMapperFactoryType(int type) {
+        if (this.asnMapperFactory == null) return;
+        this.asnMapperFactory.setType(type);
     }
 }

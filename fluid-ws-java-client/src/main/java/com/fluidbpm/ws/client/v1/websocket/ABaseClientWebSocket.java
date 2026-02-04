@@ -198,21 +198,20 @@ public abstract class ABaseClientWebSocket
     /**
      * Send the {@code baseFluidJSONObjectParam} via Web Socket.
      *
-     * @param baseFluidJSONObject The JsonObject to send.
+     * @param vo The JsonObject to send.
      * @param requestIdParam The unique request id.
      */
-    public void sendMessage(ABaseFluidVO baseFluidJSONObject, String requestIdParam) {
-        if (baseFluidJSONObject != null) {
-            baseFluidJSONObject.setServiceTicket(this.serviceTicket);
-
+    public void sendMessage(ABaseFluidVO vo, String requestIdParam) {
+        if (vo != null) {
+            vo.setServiceTicket(this.serviceTicket);
             //Add the echo to the listing if [GenericListMessageHandler].
             RespHandler handler = this.getHandler(requestIdParam);
             if (handler instanceof AGenericListMessageHandler) {
                 AGenericListMessageHandler listHandler = (AGenericListMessageHandler)handler;
-                listHandler.addExpectedMessage(baseFluidJSONObject.getEcho());
+                listHandler.addExpectedMessage(vo.getEcho());
             }
         }
-        this.webSocketClient.sendMessage(baseFluidJSONObject);
+        this.webSocketClient.sendMessage(vo);
     }
 
     /**

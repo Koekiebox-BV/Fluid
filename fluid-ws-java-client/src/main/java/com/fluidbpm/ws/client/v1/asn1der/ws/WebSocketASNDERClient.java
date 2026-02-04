@@ -134,12 +134,17 @@ public class WebSocketASNDERClient extends
         //Start a new request...
         String uniqueReqId = this.initNewRequest();
 
+        if (req.getId() != null) {
+            this.webSocketClient.setAsnMapperFactoryType(req.getId().intValue());
+        }
+
         //Send the actual message...
         this.sendMessage(req, uniqueReqId);
 
         try {
             List<BaseTransmission> returnValue = this.getHandler(
-                    uniqueReqId).getCF().get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
+                    uniqueReqId).getCF().get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS
+            );
 
             //Connection was closed.. this is a problem....
             if (this.getHandler(uniqueReqId).isConnectionClosed()) {
