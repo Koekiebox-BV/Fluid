@@ -17,7 +17,10 @@ package com.fluidbpm.ws.client.v1.asn1der.ws;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
+import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
@@ -25,11 +28,14 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static com.fluidbpm.ws.client.v1.asn1der.ASNGlobal.Type.ERROR_TYPE;
 
 /**
  * A WebSocket client implementation for handling ASNDER-based transmissions.
@@ -143,7 +149,8 @@ public class WebSocketASNDERClient extends
 
         try {
             List<BaseTransmission> returnValue = this.getHandler(
-                    uniqueReqId).getCF().get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS
+                    uniqueReqId).getCF().get(this.getTimeoutInMillis(),
+                    TimeUnit.MILLISECONDS
             );
 
             //Connection was closed.. this is a problem....
@@ -219,6 +226,32 @@ public class WebSocketASNDERClient extends
         public BaseTransmission getNewInstanceBy(JsonObject jsonObject) {
             this.returnedBT = new BaseTransmission();
             return this.returnedBT;
+        }
+
+        /**
+         * Determines whether the handler qualifies for processing based on the given DER-encoded data.
+         * The method decodes the provided ASN.1 DER sequence and determines if it corresponds to an error
+         * object or creates a BaseTransmission object for further processing.
+         *
+         * @param der the byte array containing the DER-encoded data to be evaluated.
+         *            This data is expected to represent an ASN.1 sequence that can be parsed
+         *            to determine its type and content.
+         * @return an {@code Object} representing the result of processing. If the data corresponds
+         *         to an error, an error-related object is returned. If it corresponds to a BaseTransmission
+         *         or other type, the appropriate object is created and returned.
+         */
+        @Override
+        public Object doesHandlerQualifyForProcessing(byte[] der) {
+            ASNMapperError initial = new ASNMapperError();
+            final ASN1Sequence asn1Seq = initial.initSeq(der);
+
+            int typeCode = initial.asInt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ID), "Type Code");
+            if (typeCode == ERROR_TYPE) {
+                return initial.decode(asn1Seq);
+            } else {
+                // We want the [BaseTransmission] object:
+                return new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
+            }
         }
     }
 }

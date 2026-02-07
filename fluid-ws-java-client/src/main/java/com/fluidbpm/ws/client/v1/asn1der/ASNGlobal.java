@@ -92,7 +92,6 @@ public class ASNGlobal {
             public static final String ATTACHMENTS_BY_FORM = "attachments/by_form";
             public static final String ATTACHMENT_CREATE = "attachments/create";
             public static final String ATTACHMENT_DELETE = "attachments/delete";
-            public static final String ATTACHMENT_UPDATE = "attachments/update";
         }
 
         public static final class FlowItem {
