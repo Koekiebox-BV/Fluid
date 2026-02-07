@@ -57,6 +57,8 @@ public class ASNGlobal {
         public static final int FORM_FIELD_LISTING = -7;
         public static final int ATTACHMENT = -8;
         public static final int ATTACHMENT_LISTING = -9;
+        public static final int JOB_VIEW = -10;
+        public static final int JOB_VIEW_LISTING = -11;
     }
 
     /**

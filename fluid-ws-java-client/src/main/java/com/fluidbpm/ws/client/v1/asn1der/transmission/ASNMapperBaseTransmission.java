@@ -20,6 +20,8 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.attachment.AttachmentListing;
 import com.fluidbpm.program.api.vo.field.Field;
+import com.fluidbpm.program.api.vo.flow.JobView;
+import com.fluidbpm.program.api.vo.flow.JobViewListing;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
@@ -272,6 +274,13 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case ATTACHMENT_LISTING:
                     ASNMapperAttachmentListing asnMapAtt = new ASNMapperAttachmentListing(this.asnMapAtt);
                     seqTransObj = asnMapAtt.encode((AttachmentListing) transObj);
+                    break;
+                case JOB_VIEW:
+                    seqTransObj = new ASNMapperJobView().encode((JobView) transObj);
+                    break;
+                case JOB_VIEW_LISTING:
+                    ASNMapperJobViewListing asnMapJobViewList = new ASNMapperJobViewListing(new ASNMapperJobView());
+                    seqTransObj = asnMapJobViewList.encode((JobViewListing) transObj);
                     break;
                 case ERROR_TYPE:
                     ASNMapperError asnMapErr = new ASNMapperError();
@@ -616,6 +625,12 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 break;
             case ATTACHMENT_LISTING:
                 mapper = new ASNMapperAttachmentListing(this.asnMapAtt);
+                break;
+            case JOB_VIEW:
+                mapper = new ASNMapperJobView();
+                break;
+            case JOB_VIEW_LISTING:
+                mapper = new ASNMapperJobViewListing(new ASNMapperJobView());
                 break;
             case ERROR_TYPE:
                 ASNMapperError asnMapErr = new ASNMapperError();
