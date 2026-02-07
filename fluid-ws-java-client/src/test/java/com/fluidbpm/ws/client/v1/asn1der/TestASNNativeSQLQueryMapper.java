@@ -18,7 +18,6 @@ package com.fluidbpm.ws.client.v1.asn1der;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
-import com.google.common.io.BaseEncoding;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -71,8 +70,6 @@ public class TestASNNativeSQLQueryMapper extends ABaseTestCase {
         Assert.assertEquals("Decoded datasource name is not as expected.", item.getDatasourceName(), decoded.getDatasourceName());
         Assert.assertEquals("Decoded query is not as expected.", item.getQuery(), decoded.getQuery());
         Assert.assertNull("Decoded stored procedure should be null.", decoded.getStoredProcedure());
-
-        System.out.println("Basic: " + BaseEncoding.base16().encode(raw));
     }
 
     @Test
@@ -91,8 +88,6 @@ public class TestASNNativeSQLQueryMapper extends ABaseTestCase {
         Assert.assertEquals("Decoded datasource name is not as expected.", item.getDatasourceName(), decoded.getDatasourceName());
         Assert.assertEquals("Decoded stored procedure is not as expected.", item.getStoredProcedure(), decoded.getStoredProcedure());
         Assert.assertNull("Decoded query should be null.", decoded.getQuery());
-
-        System.out.println("StoredProc: " + BaseEncoding.base16().encode(raw));
     }
 
     @Test
@@ -144,8 +139,6 @@ public class TestASNNativeSQLQueryMapper extends ABaseTestCase {
         SQLColumn input3 = decoded.getSqlInputs().get(3);
         Assert.assertEquals("Input[3]: Column name is not as expected.", "created_at", input3.getColumnName());
         Assert.assertTrue("Input[3]: SQL value should be a Date.", input3.getSqlValue() instanceof Date);
-
-        System.out.println("WithInputs: " + BaseEncoding.base16().encode(raw));
     }
 
     @Test
@@ -181,8 +174,6 @@ public class TestASNNativeSQLQueryMapper extends ABaseTestCase {
             Assert.assertEquals("Complex: Input[" + i + "] SQL type is not as expected.",
                     original.getSqlType(), decodedInput.getSqlType());
         }
-
-        System.out.println("Complex: " + BaseEncoding.base16().encode(raw));
     }
 
     @Test

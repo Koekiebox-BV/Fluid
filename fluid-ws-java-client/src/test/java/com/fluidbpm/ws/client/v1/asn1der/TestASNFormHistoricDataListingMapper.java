@@ -22,7 +22,6 @@ import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
-import com.google.common.io.BaseEncoding;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -160,7 +159,5 @@ public class TestASNFormHistoricDataListingMapper extends ABaseTestCase {
         Assert.assertEquals("Decoded data2 description is not as expected.", data2.getDescription(), decodedData2.getDescription());
         Assert.assertEquals("Decoded data2 user id is not as expected.", data2.getUser().getId(), decodedData2.getUser().getId());
         Assert.assertEquals("Decoded data2 user username is not as expected.", data2.getUser().getUsername(), decodedData2.getUser().getUsername());
-
-        System.out.println(BaseEncoding.base16().encode(raw));
     }
 }
