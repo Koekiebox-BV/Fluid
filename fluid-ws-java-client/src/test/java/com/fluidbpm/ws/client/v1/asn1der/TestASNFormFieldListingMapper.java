@@ -20,7 +20,6 @@ import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.v1.ABaseTestCase;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
-import com.google.common.io.BaseEncoding;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -97,7 +96,5 @@ public class TestASNFormFieldListingMapper extends ABaseTestCase {
         Assert.assertEquals("Decoded field2 name is not as expected.", field2.getFieldName(), decodedField2.getFieldName());
         Assert.assertEquals("Decoded field2 type is not as expected.", field2.getTypeAsEnum(), decodedField2.getTypeAsEnum());
         Assert.assertEquals("Decoded field2 value is not as expected.", field2.getFieldValueAsBoolean(), decodedField2.getFieldValueAsBoolean());
-
-        System.out.println(BaseEncoding.base16().encode(raw));
     }
 }

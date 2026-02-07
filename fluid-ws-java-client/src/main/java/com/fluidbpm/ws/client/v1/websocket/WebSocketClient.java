@@ -183,6 +183,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
             if (qualifyObj instanceof Error) {
                 handler.handleMessage(qualifyObj);
+                handlerFoundForMsg = true;
             } else if (qualifyObj instanceof ABaseFluidVO) {
                 handler.handleMessage(qualifyObj);
                 handlerFoundForMsg = true;

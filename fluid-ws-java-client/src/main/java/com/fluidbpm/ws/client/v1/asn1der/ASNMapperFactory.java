@@ -58,9 +58,21 @@ public class ASNMapperFactory {
      * @param baseTrans The {@link ASN1Sequence} representing the encoded transmission data.
      * @return An instance of {@link ABaseFluidVO} populated with the decoded data.
      */
-    public ABaseFluidVO readObjectFromReceived(ASN1Sequence baseTrans) {
+    public ABaseFluidVO readObjectFromReceivedTransMisObj(ASN1Sequence baseTrans) {
         BaseTransmission bt = this.baseTransmission.decode(baseTrans);
         return bt.getTransmissionObject();
+    }
+
+    /**
+     * Decodes the provided {@link ASN1Sequence} into a {@link BaseTransmission} object.
+     * This method utilizes the {@code baseTransmission} instance to perform the decoding.
+     *
+     * @param baseTrans The {@link ASN1Sequence} representing the encoded data to be decoded
+     *                  into a {@link BaseTransmission} object.
+     * @return An instance of {@link BaseTransmission} populated with the decoded data.
+     */
+    public BaseTransmission readObjectFromReceived(ASN1Sequence baseTrans) {
+        return this.baseTransmission.decode(baseTrans);
     }
 
     /**
@@ -104,6 +116,29 @@ public class ASNMapperFactory {
     public ABaseFluidVO readObjectFromReceived(byte[] derBytes) {
         try {
             return this.readObjectFromReceived((ASN1Sequence)ASN1Primitive.fromByteArray(derBytes));
+        } catch (
+                IOException ioErr) {
+            throw new FluidClientException(ioErr.getMessage(), ioErr,
+                    FluidClientException.ErrorCode.ASN_1_ERROR);
+        }
+    }
+
+    /**
+     * Decodes the provided byte array into an {@link ABaseFluidVO} object by converting the
+     * byte array into an {@link ASN1Sequence} and delegating the decoding process
+     * to another overloaded method.
+     *
+     * @param derBytes The byte array representing the encoded data to be decoded into an
+     *                 {@link ABaseFluidVO} object. This byte array is expected to contain
+     *                 ASN.1 encoded data.
+     * @return An instance of {@link ABaseFluidVO} populated with the decoded data.
+     * @throws FluidClientException If an error occurs during the decoding process, such as
+     *                              when the byte array is invalid or cannot be parsed as
+     *                              ASN.1 data.
+     */
+    public ABaseFluidVO readObjectFromReceivedTransMisObj(byte[] derBytes) {
+        try {
+            return this.readObjectFromReceivedTransMisObj((ASN1Sequence)ASN1Primitive.fromByteArray(derBytes));
         } catch (
                 IOException ioErr) {
             throw new FluidClientException(ioErr.getMessage(), ioErr,

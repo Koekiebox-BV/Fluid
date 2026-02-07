@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.asn1der.ws;
 
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.fluidbpm.program.api.vo.attachment.AttachmentListing;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.ws.client.v1.ABaseLoggedInTestCase;
@@ -30,6 +31,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class TestWebSocketASNDERClient extends ABaseLoggedInTestCase {
 
     @Test
-    public void testAttachment() {
+    public void testAllMethodsForWebKitHighFreq() {
         if (this.isConnectionInValid) return;
 
         try (WebSocketASNDERClient wClient = new WebSocketASNDERClient(
@@ -59,18 +61,57 @@ public class TestWebSocketASNDERClient extends ABaseLoggedInTestCase {
             Form createdForm = formContainerClient.createFormContainer(toCreate);
 
             Attachment attCreate = new Attachment();
-            attCreate.setName("Test Attachment.json");
+            attCreate.setName("Test Attachment("+ UUID.randomUUID() +").json");
             attCreate.setContentType("application/json");
             attCreate.setFormId(createdForm.getId());
             attCreate.setAttachmentData("{'name':'cool'}".getBytes());
 
-            BaseTransmission bt = new BaseTransmission(ASNGlobal.Type.ATTACHMENT);
-            bt.setRequestObject(new RequestObject(ASNGlobal.Path.Attachment.ATTACHMENT_CREATE));
-            bt.setTransmissionObject(attCreate);
+            // Create attachments:
+            BaseTransmission btCreateAtt = new BaseTransmission(ASNGlobal.Type.ATTACHMENT);
+            btCreateAtt.setRequestObject(new RequestObject(ASNGlobal.Path.Attachment.ATTACHMENT_CREATE));
+            btCreateAtt.setTransmissionObject(attCreate);
 
-            BaseTransmission btAttCreated = wClient.request(bt);
+            BaseTransmission btAttCreatedWarmup = wClient.request(btCreateAtt);
+            TestCase.assertNotNull(btAttCreatedWarmup);
 
-            TestCase.assertNotNull(btAttCreated);
+            int count = 100;
+            long duration = 0;
+            List<Attachment> attachmentsToDel = new ArrayList<>();
+            for (int i = 0;i < count;i++) {
+                long now = System.currentTimeMillis();
+                BaseTransmission btRsp = wClient.request(btCreateAtt);
+                attachmentsToDel.add((Attachment) btRsp.getTransmissionObject());
+                duration += (System.currentTimeMillis() - now);
+            }
+
+            // List all the attachments:
+            BaseTransmission btListAtt = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
+            btListAtt.setRequestObject(new RequestObject(ASNGlobal.Path.Attachment.ATTACHMENTS_BY_FORM));
+            btListAtt.setTransmissionObject(new Form(createdForm.getId()));
+
+            BaseTransmission btAttList = wClient.request(btListAtt);
+            AttachmentListing listing = (AttachmentListing) btAttList.getTransmissionObject();
+            TestCase.assertNotNull(listing);
+            TestCase.assertEquals(count+1, listing.getListing().size());
+
+            // Delete all attachments:
+            for (int i = 0;i < attachmentsToDel.size();i++) {
+                BaseTransmission btDelAtt = new BaseTransmission(ASNGlobal.Type.ATTACHMENT);
+                btDelAtt.setRequestObject(new RequestObject(ASNGlobal.Path.Attachment.ATTACHMENT_DELETE));
+                btDelAtt.setTransmissionObject(attachmentsToDel.get(i));
+
+                wClient.request(btDelAtt);
+            }
+
+            BaseTransmission btAttListAfterDel = wClient.request(btListAtt);
+            AttachmentListing listingAfterDel = (AttachmentListing) btAttListAfterDel.getTransmissionObject();
+            TestCase.assertNotNull(listingAfterDel);
+            TestCase.assertEquals(1, listingAfterDel.getListing().size());
+
+            long avg = duration/count;
+            TestCase.assertTrue("Avg time for request is way to much!", avg < 100);
+
+            System.out.println("Avg. for "+count+" requests: "+(avg)+"ms, total: "+duration+"ms");
         }
     }
 }
