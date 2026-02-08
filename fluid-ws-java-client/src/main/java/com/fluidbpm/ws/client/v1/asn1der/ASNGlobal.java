@@ -104,11 +104,25 @@ public class ASNGlobal {
         }
 
         public static final class FormContainer {
-            public static final String FORM = "";
+            public static final String FORM_CONT_HISTORIC_DATA = "form_container/historic_data_by_form";
+            public static final String FORM_CONT_BY_TITLE = "form_container/by_title";
+            public static final String FORM_CONT_ANCESTOR = "form_container/ancestor";
+            public static final String FORM_CONT_PRINT = "form_container/print";
+            public static final String FORM_CONT_LOCK = "form_container/lock";
+            public static final String FORM_CONT_UNLOCK = "form_container/unlock";
+            public static final String FORM_CONT_CREATE = "form_container/create";
+            public static final String FORM_CONT_UPDATE = "form_container/update";
+            public static final String FORM_CONT_DELETE = "form_container/delete";
+            public static final String FORM_CONT_EXEC_CUSTOM_ACTION = "form_container/exec_custom_action";
+            public static final String FORM_CONT_CREATE_TABLE_RECORD = "form_container/create_table_record";
         }
 
         public static final class FormDefinition {
-
+            public static final String FORM_DEF_BY_LOGGED_IN_USER_CREATE_INST_OF = "form_definition/by_logged_in_user_create_inst_of";
+            public static final String FORM_DEF_BY_LOGGED_IN_USER_VIEW_ATTACHMENTS = "form_definition/by_logged_in_user_view_attachments";
+            public static final String FORM_DEF_BY_LOGGED_IN_USER_EDIT_ATTACHMENTS = "form_definition/by_logged_in_user_edit_attachments";
+            public static final String FORM_DEF_BY_LOGGED_IN_USER = "form_definition/by_logged_in_user";
+            public static final String FORM_DEF_BY_ID = "form_definition/by_id";
         }
 
         public static final class FormField {
