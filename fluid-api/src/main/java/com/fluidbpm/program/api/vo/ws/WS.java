@@ -180,6 +180,8 @@ public class WS {
                     public static final String INCLUDE_ANCESTOR = "include_ancestor";
                     public static final String INCLUDE_DESCENDANTS = "include_descendants";
                     public static final String INCLUDE_FORM_PROPERTIES = "include_form_properties";
+                    public static final String TABLE_LAYOUT = "table_layout";
+
                     public static final String LOCK_FOR_USER_ID = "lock_for_user_id";
                     public static final String ADD_TO_PERSONAL_INVENTORY = "add_to_personal_inventory";
                     public static final String REMOVE_LOCK_AFTER_CREATE = "remove_lock_after_create";

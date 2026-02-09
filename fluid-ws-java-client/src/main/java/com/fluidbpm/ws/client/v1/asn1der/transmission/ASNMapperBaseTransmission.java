@@ -25,7 +25,9 @@ import com.fluidbpm.program.api.vo.flow.JobViewListing;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
+import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -281,6 +283,15 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case JOB_VIEW_LISTING:
                     ASNMapperJobViewListing asnMapJobViewList = new ASNMapperJobViewListing(new ASNMapperJobView());
                     seqTransObj = asnMapJobViewList.encode((JobViewListing) transObj);
+                    break;
+                case TABLE_RECORD:
+                    seqTransObj = new ASNMapperTableRecord(this.asnMapForm, this.asnMapField).encode(
+                            (TableRecord) transObj
+                    );
+                    break;
+                case CUSTOM_WEB_ACTION:
+                    ASNMapperCustomWebAction asnMapWebAction = new ASNMapperCustomWebAction(this.asnMapForm);
+                    seqTransObj = asnMapWebAction.encode((CustomWebAction) transObj);
                     break;
                 case ERROR_TYPE:
                     ASNMapperError asnMapErr = new ASNMapperError();
@@ -632,9 +643,11 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
             case JOB_VIEW_LISTING:
                 mapper = new ASNMapperJobViewListing(new ASNMapperJobView());
                 break;
-            case ERROR_TYPE:
-                ASNMapperError asnMapErr = new ASNMapperError();
-                //TODO test
+            case TABLE_RECORD:
+                mapper = new ASNMapperTableRecord(this.asnMapForm, this.asnMapField);
+                break;
+            case CUSTOM_WEB_ACTION:
+                mapper = new ASNMapperCustomWebAction(this.asnMapForm);
                 break;
             default:
                 throw new FluidClientException(
