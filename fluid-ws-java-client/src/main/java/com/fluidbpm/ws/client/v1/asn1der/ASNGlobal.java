@@ -59,6 +59,8 @@ public class ASNGlobal {
         public static final int ATTACHMENT_LISTING = -9;
         public static final int JOB_VIEW = -10;
         public static final int JOB_VIEW_LISTING = -11;
+        public static final int TABLE_RECORD = -12;
+        public static final int CUSTOM_WEB_ACTION = -13;
     }
 
     /**
