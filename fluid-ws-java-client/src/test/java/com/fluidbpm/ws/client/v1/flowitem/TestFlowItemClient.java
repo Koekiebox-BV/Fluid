@@ -201,13 +201,13 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                     flowItmClient, viewWorkView, itemCount, 100
             );
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
-            long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
-            log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
+            long timeTakenInMs = (System.currentTimeMillis() - itmCreate);
+            log.info(String.format("TOOK [%d] seconds to create [%d] items.", timeTakenInMs, itemCount));
             //TODO @jason Tweaked from [10] to [15].
             TestCase.assertTrue(
                     String.format(
                             "Performance is too slow! [%d] seconds to create [%d] items!",
-                            timeTakenInS, itemCount), timeTakenInS < 15
+                            timeTakenInMs, itemCount), TimeUnit.MILLISECONDS.toSeconds(timeTakenInMs) < 15
             );
 
             // Lock each item and send it on:
@@ -372,10 +372,10 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(fiClient, viewWorkView, itemCount, 100);
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
-            long timeTakenInS = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - itmCreate);
-            log.info(String.format("Took [%d] seconds to create [%d] items.", timeTakenInS, itemCount));
+            long timeTaken = System.currentTimeMillis() - itmCreate;
+            log.info(String.format("TOOK [%d]ms to create [%d] items.", timeTaken, itemCount));
             TestCase.assertTrue(String.format("Performance is too slow! [%d] seconds to create [%d] items!",
-                    timeTakenInS, itemCount), timeTakenInS < 40);
+                    timeTaken, itemCount), TimeUnit.MILLISECONDS.toSeconds(timeTaken) < 40);
 
             // ensure the correct steps have taken place and within a timely fashion:
             AtomicLong alAll = new AtomicLong(), alPerRule  = new AtomicLong();

@@ -100,6 +100,7 @@ public class ASNGlobal {
         }
 
         public static final class FlowItem {
+            public static final String ITEM_CREATE = "flow_item/create";
             public static final String ITEMS_FOR_VIEW = "flow_item/items_for_view";
             public static final String ITEM_BY_FORM_ID = "flow_item/by_form_id";
             public static final String ITEM_SEND_ON = "flow_item/send_on";
