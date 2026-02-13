@@ -203,12 +203,12 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
         FluidItem toCreate = new FluidItem(frm);
 
         //2. Attachments...
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        List<Attachment> attachments = new ArrayList<>();
 
         JsonObject jsonObject = new JsonObject();
         JsonObject jsonMemberObject = new JsonObject();
-        jsonMemberObject.addProperty("firstname","Jason"+identifier);
-        jsonMemberObject.addProperty("lastname", "Bruwer"+identifier);
+        jsonMemberObject.addProperty("firstname","Jackson"+identifier);
+        jsonMemberObject.addProperty("lastname", "Brown"+identifier);
         jsonMemberObject.addProperty("id_number","81212211122");
         jsonMemberObject.addProperty("cellphone","1111");
         jsonMemberObject.addProperty("member_number","ZOOOOL");
