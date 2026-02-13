@@ -44,6 +44,7 @@ import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import com.fluidbpm.ws.client.v1.form.TestFormContainerClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Test;
 
@@ -58,6 +59,7 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  */
+@Log
 public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
     private Form formDef;
     private Flow flow;
@@ -140,7 +142,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             long avg = duration/count;
             TestCase.assertTrue("Avg time for request is way to much!", avg < 100);
 
-            System.out.println("Avg. for "+count+" requests: "+(avg)+"ms, total: "+duration+"ms");
+            log.info("Avg. for "+count+" requests: "+(avg)+"ms, total: "+duration+"ms");
 
             // create the flow:
             final String flowName = "ASN1DER JUnit Assign Flow Test";
@@ -190,27 +192,36 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
             // create the work-items:
             int itemCount = 50;
-            ExecutorService executor = Executors.newFixedThreadPool(6);
+            ExecutorService executor = Executors.newFixedThreadPool(3);
             long itmCreate = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
                 executor.submit(() -> {
-                    FluidItem toCreate = flowItmClient.createFlowItem(
+                    BaseTransmission btFldItm = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
+                    btFldItm.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
+
+                    FluidItem termItm = terminalItem(UUID.randomUUID().toString());
+                    termItm.setFlow(flowName);
+                    btFldItm.setTransmissionObject(termItm);
+
+                    BaseTransmission btCreatedItm = derClient.request(btListAtt);
+                    FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
+
+                    /*FluidItem toCreate = flowItmClient.createFlowItem(
                             terminalItem(UUID.randomUUID().toString()), flowName
-                    );
+                    );*/
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
                 });
             }
-
             // Fetch items from View:
             List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
-                    derClient, viewWorkView, itemCount, 100
+                    derClient, viewWorkView, itemCount, 30
             );
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
 
-            // cleanup:
-            if (flow == null) flow = flowClient.getFlowByName(flowName);
-            flowClient.forceDeleteFlow(flow);
+            log.info(String.format("TOOK [%d]ms to create [%d] items.",
+                    (System.currentTimeMillis() - itmCreate), itemCount)
+            );
         }
     }
 

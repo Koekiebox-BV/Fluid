@@ -105,15 +105,10 @@ public class FlowItemClient extends ABaseClientWS {
      * @return The created Fluid item.
      */
     public FluidItem createFlowItem(FluidItem flowJobItem, String flowName) {
-        if (flowJobItem != null && this.serviceTicket != null) {
-            flowJobItem.setServiceTicket(this.serviceTicket);
-        }
-
-        //Flow Job Item Step etc...
         if (flowJobItem != null) {
+            flowJobItem.setServiceTicket(this.serviceTicket);
             flowJobItem.setFlow(flowName);
         }
-
         return new FluidItem(this.putJson(flowJobItem, WS.Path.FlowItem.Version1.flowItemCreate()));
     }
 
