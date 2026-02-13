@@ -236,7 +236,7 @@ public class TestFormFieldClientInvalids extends ABaseLoggedInTestCase {
 
         //2. Create...
         try {
-            formFieldClient.createFieldMultiChoicePlain(toCreate, new ArrayList<String>());
+            formFieldClient.createFieldMultiChoicePlain(toCreate, new ArrayList<>());
 
             TestCase.fail("Should not be allowed to create a Multi Choice with no selections.");
         }

@@ -29,6 +29,7 @@ import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.*;
@@ -251,6 +252,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case FLUID_ITEM:
                     ASNMapperFluidItem mapFI = new ASNMapperFluidItem(this.asnMapForm, this.asnMapField);
                     seqTransObj = mapFI.encode((FluidItem) transObj);
+                    break;
+                case FLUID_ITEM_LISTING:
+                    ASNMapperFluidItemListing asnMapFluidItemList = new ASNMapperFluidItemListing(new ASNMapperFluidItem(this.asnMapForm, this.asnMapField));
+                    seqTransObj = asnMapFluidItemList.encode((FluidItemListing) transObj);
                     break;
                 case FORM_HISTORIC_DATA_LISTING:
                     ASNMapperFormHistoricData mapFormHistData = new ASNMapperFormHistoricData(
@@ -627,6 +632,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 break;
             case FORM_LISTING:
                 mapper = new ASNMapperFormListing(this.asnMapForm);
+                break;
+            case FLUID_ITEM_LISTING:
+                mapper = new ASNMapperFluidItemListing(new ASNMapperFluidItem(this.asnMapForm, this.asnMapField));
                 break;
             case FORM_FIELD_LISTING:
                 mapper = new ASNMapperFormFieldListing(this.asnMapField);

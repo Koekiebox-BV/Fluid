@@ -431,7 +431,7 @@ public class TestFormContainerClient extends ABaseLoggedInTestCase {
                     fieldToCreate, TestFormFieldClient.TestStatics.MultiChoice.CREATE_LIST);
         }
 
-        List<Field> createdFields = new ArrayList();
+        List<Field> createdFields = new ArrayList<>();
         createdFields.add(createdField);
 
         //Create Form Definition...
@@ -442,7 +442,6 @@ public class TestFormContainerClient extends ABaseLoggedInTestCase {
 
         FormDefinitionClient formDefinitionClient = new FormDefinitionClient(BASE_URL, serviceTicket);
         Form createdFormDef = null;
-
         try {
             createdFormDef = formDefinitionClient.getFormDefinitionByName(
                     TestFormDefinitionClient.TestStatics.FORM_TYPE);

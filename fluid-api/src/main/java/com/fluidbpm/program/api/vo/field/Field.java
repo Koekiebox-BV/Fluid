@@ -260,6 +260,34 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Constructs a Field object with the specified field name, field type, and metadata.
+     *
+     * @param fieldName    the name of the field
+     * @param fieldType    the type of the field as a Type enumeration
+     * @param typeMetaData additional metadata related to the field's type
+     */
+    public Field(String fieldName, Type fieldType, String typeMetaData) {
+        this.setFieldName(fieldName);
+        this.setTypeAsEnum(fieldType);
+        this.setTypeMetaData(typeMetaData);
+    }
+
+    /**
+     * Constructs a new Field object with the specified parameters.
+     *
+     * @param fieldName The name of the field.
+     * @param fieldType The type of the field, represented as an enum.
+     * @param typeMetaData Metadata associated with the type of the field.
+     * @param value The value associated with the field.
+     */
+    public Field(String fieldName, Type fieldType, String typeMetaData, Object value) {
+        this.setFieldName(fieldName);
+        this.setTypeAsEnum(fieldType);
+        this.setTypeMetaData(typeMetaData);
+        this.setFieldValue(value);
+    }
+
+    /**
      * Constructor to set the Field Name, Value.
      *
      * @param fieldName  Sets Field Name.

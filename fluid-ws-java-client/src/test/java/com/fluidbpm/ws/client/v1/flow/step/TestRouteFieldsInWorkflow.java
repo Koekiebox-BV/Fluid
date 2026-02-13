@@ -264,7 +264,8 @@ public class TestRouteFieldsInWorkflow extends ABaseTestFlowStep {
         ) {
             // ensure the correct steps have taken place:
             UserQuery uqCleanup = userQueryForFormType(uqClient, this.formDef.getFormType(),
-                    this.formDef.getFormFields().get(0).getFieldName());
+                    this.formDef.getFormFields().get(0).getFieldName()
+            );
             deleteFormContainersAndUserQuery(
                     uqClient,
                     fcClient,

@@ -100,6 +100,9 @@ public class ABaseLoggedInTestCase extends ABaseTestCase {
 
             List<Field> fieldsCreated = new ArrayList<>();
             Stream.of(fields).forEach(itm -> {
+                if (UtilGlobal.isBlank(itm.getFieldDescription())) {
+                    itm.setFieldDescription(String.format("%s for %s.", itm.getFieldName(), formDef));
+                }
                 try {
                     switch (itm.getTypeAsEnum()) {
                         case MultipleChoice:
