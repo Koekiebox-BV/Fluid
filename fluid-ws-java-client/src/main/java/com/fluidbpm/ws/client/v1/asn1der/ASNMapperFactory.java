@@ -52,6 +52,18 @@ public class ASNMapperFactory {
     }
 
     /**
+     * Sets the payload populate object for the underlying transmission mechanism.
+     * This method delegates the payload populate configuration to the base transmission instance.
+     *
+     * @param payloadPopulate An instance of {@link PayloadPopulate} that provides
+     *                        the logic or data required to populate the payload
+     *                        for a transmission object.
+     */
+    public void setPayloadPopulate(PayloadPopulate payloadPopulate) {
+        this.baseTransmission.setPayloadPopulate(payloadPopulate);
+    }
+
+    /**
      * Decodes the provided {@link ASN1Sequence} into a {@link BaseTransmission} object and
      * retrieves its transmission object of type {@link ABaseFluidVO}.
      *
