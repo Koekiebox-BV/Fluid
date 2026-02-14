@@ -60,7 +60,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
     @Setter
     private int transmissionObjectType;
 
+    @Getter
+    @Setter
     private PayloadPopulate payloadPopulate;
+
     private ASNMapperUser asnMapUser;
     private ASNMapperField asnMapField;
     private ASNMapperForm asnMapForm;
@@ -427,7 +430,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 this::mapAsFormFieldMetaData
         );
 
-        this.payloadPopulate = new PayloadPopulate(mcFormField, mcUserField, mcRouteField, mcGlobalField, ffMetaData);
+        if (this.payloadPopulate == null) {
+            this.payloadPopulate = new PayloadPopulate(mcFormField, mcUserField, mcRouteField, mcGlobalField, ffMetaData);
+        }
         vo.setPayloadPopulate(this.payloadPopulate);
 
         this.asnMapAtt = new ASNMapperAttachment();

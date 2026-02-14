@@ -46,6 +46,7 @@ import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -65,6 +66,26 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
     private Form formDef;
     private Flow flow;
+
+    public static final class PerfStats {
+        public static final AtomicLong ASN_PARSING = new AtomicLong(0);
+
+        public static void reset() {
+            ASN_PARSING.set(0);
+        }
+
+        public static void increment(AtomicLong counter, long addition) {
+            long existing = counter.get();
+            counter.set(existing + addition);
+        }
+    }
+
+    @Override
+    @Before
+    public void init() {
+        super.init();
+        PerfStats.reset();
+    }
 
     @Test
     public void testAllMethodsForWebKitHighASNDERFreq() {
