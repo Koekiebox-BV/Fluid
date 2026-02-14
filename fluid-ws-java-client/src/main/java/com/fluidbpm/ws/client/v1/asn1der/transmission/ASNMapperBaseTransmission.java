@@ -403,34 +403,33 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         // Populate the base fields, then the [PayloadPopulate]:
         super.popBaseFields(vo, seq);
 
-        ASN1Sequence seqPayloadPop = asSeq(seq.getObjectAt(PAYLOAD_POPULATE), Map.PAYLOAD_POPULATE_ALIAS);
-        List<ASNMultiChoiceField> mcFormField = this.extractInnerSeqForPayPop(
-                Map.PayloadPopulate.MC_FORM_ALIAS,
-                asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_FORM), Map.PayloadPopulate.MC_FORM_ALIAS),
-                this::mapAsASNMultiChoiceField
-        );
-        List<ASNMultiChoiceField> mcUserField = this.extractInnerSeqForPayPop(
-                Map.PayloadPopulate.MC_USER_ALIAS,
-                asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_USER), Map.PayloadPopulate.MC_USER_ALIAS),
-                this::mapAsASNMultiChoiceField
-        );
-        List<ASNMultiChoiceField> mcRouteField = this.extractInnerSeqForPayPop(
-                Map.PayloadPopulate.MC_ROUTE_ALIAS,
-                asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_ROUTE), Map.PayloadPopulate.MC_ROUTE_ALIAS),
-                this::mapAsASNMultiChoiceField
-        );
-        List<ASNMultiChoiceField> mcGlobalField = this.extractInnerSeqForPayPop(
-                Map.PayloadPopulate.MC_GLOBAL_ALIAS,
-                asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_GLOBAL), Map.PayloadPopulate.MC_GLOBAL_ALIAS),
-                this::mapAsASNMultiChoiceField
-        );
-        List<FormFieldMetaData> ffMetaData = this.extractInnerSeqForPayPop(
-                Map.PayloadPopulate.FIELD_META_DATA_ALIAS,
-                asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.FIELD_META_DATA), Map.PayloadPopulate.FIELD_META_DATA_ALIAS),
-                this::mapAsFormFieldMetaData
-        );
-
         if (this.payloadPopulate == null) {
+            ASN1Sequence seqPayloadPop = asSeq(seq.getObjectAt(PAYLOAD_POPULATE), Map.PAYLOAD_POPULATE_ALIAS);
+            List<ASNMultiChoiceField> mcFormField = this.extractInnerSeqForPayPop(
+                    Map.PayloadPopulate.MC_FORM_ALIAS,
+                    asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_FORM), Map.PayloadPopulate.MC_FORM_ALIAS),
+                    this::mapAsASNMultiChoiceField
+            );
+            List<ASNMultiChoiceField> mcUserField = this.extractInnerSeqForPayPop(
+                    Map.PayloadPopulate.MC_USER_ALIAS,
+                    asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_USER), Map.PayloadPopulate.MC_USER_ALIAS),
+                    this::mapAsASNMultiChoiceField
+            );
+            List<ASNMultiChoiceField> mcRouteField = this.extractInnerSeqForPayPop(
+                    Map.PayloadPopulate.MC_ROUTE_ALIAS,
+                    asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_ROUTE), Map.PayloadPopulate.MC_ROUTE_ALIAS),
+                    this::mapAsASNMultiChoiceField
+            );
+            List<ASNMultiChoiceField> mcGlobalField = this.extractInnerSeqForPayPop(
+                    Map.PayloadPopulate.MC_GLOBAL_ALIAS,
+                    asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.MC_GLOBAL), Map.PayloadPopulate.MC_GLOBAL_ALIAS),
+                    this::mapAsASNMultiChoiceField
+            );
+            List<FormFieldMetaData> ffMetaData = this.extractInnerSeqForPayPop(
+                    Map.PayloadPopulate.FIELD_META_DATA_ALIAS,
+                    asSeq(seqPayloadPop.getObjectAt(Map.PayloadPopulate.FIELD_META_DATA), Map.PayloadPopulate.FIELD_META_DATA_ALIAS),
+                    this::mapAsFormFieldMetaData
+            );
             this.payloadPopulate = new PayloadPopulate(mcFormField, mcUserField, mcRouteField, mcGlobalField, ffMetaData);
         }
         vo.setPayloadPopulate(this.payloadPopulate);
