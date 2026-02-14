@@ -160,28 +160,28 @@
                 <groupId>org.glassfish.tyrus</groupId>
                 <artifactId>tyrus-container-grizzly-client</artifactId>
                 <scope>provided</scope>
-                <version>1.21</version>
+                <version>1.22</version>
             </dependency>
 
             <dependency>
                 <groupId>org.glassfish.tyrus</groupId>
                 <artifactId>tyrus-client</artifactId>
                 <scope>provided</scope>
-                <version>1.21</version>
+                <version>1.22</version>
             </dependency>
 
             <dependency>
                 <groupId>org.glassfish.tyrus</groupId>
                 <artifactId>tyrus-core</artifactId>
                 <scope>provided</scope>
-                <version>1.21</version>
+                <version>1.22</version>
             </dependency>
 
             <dependency>
                 <groupId>org.glassfish.tyrus</groupId>
                 <artifactId>tyrus-spi</artifactId>
                 <scope>provided</scope>
-                <version>1.21</version>
+                <version>1.22</version>
             </dependency>
 
             <!--GlassFish Grizzly-->
