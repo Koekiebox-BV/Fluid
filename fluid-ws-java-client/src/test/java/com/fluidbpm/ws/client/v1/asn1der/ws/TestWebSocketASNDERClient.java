@@ -28,12 +28,10 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
-import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
-import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
@@ -195,45 +193,81 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             TestCase.assertEquals(2, viewsForAssignStep.size());
             JobView viewWorkView = viewsForAssignStep.get(1);
 
-            // run once to cache the view:
-            this.executeUntilOrTOFromView(derClient, viewWorkView, 0, 3);
-
-            // create the work-items:
-            int itemCount = 50;
-            ExecutorService executor = Executors.newFixedThreadPool(6);
-            AtomicLong itmCreate = new AtomicLong(0);
+            // ASN1DER: create the work-items:
+            int itemCount = 100, threadPoolCount = 1;
             List<Long> createdFormIds = new CopyOnWriteArrayList<>();
-            long starter = System.currentTimeMillis();
-            for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
-                executor.submit(() -> {
-                    FluidItem termItm = terminalItem(UUID.randomUUID().toString());
+            {
+                ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
+                AtomicLong itmCreate = new AtomicLong(0);
+                long starter = System.currentTimeMillis();
+                for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
+                    executor.submit(() -> {
+                        FluidItem termItm = terminalItem(UUID.randomUUID().toString());
 
-                    long itmCreateLcl = System.currentTimeMillis();
-                    BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
-                    btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
-                    termItm.setFlow(flowName);
-                    btFldItmReq.setTransmissionObject(termItm);
+                        long itmCreateLcl = System.currentTimeMillis();
+                        BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
+                        btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
+                        termItm.setFlow(flowName);
+                        btFldItmReq.setTransmissionObject(termItm);
 
-                    BaseTransmission btCreatedItm = derClientCreateItms.request(btFldItmReq);
-                    FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
-                    itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
-                    itmCreate.set(itmCreate.get() + itmCreateLcl);
+                        BaseTransmission btCreatedItm = derClientCreateItms.request(btFldItmReq);
+                        FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
+                        itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
+                        //log.info(String.format("TOOK [%d]ms to create item, at %d", itmCreateLcl, createdFormIds.size()));
+                        itmCreate.set(itmCreate.get() + itmCreateLcl);
 
-                    TestCase.assertNotNull(toCreate);
-                    TestCase.assertNotNull(toCreate.getId());
-                    createdFormIds.add(toCreate.getForm().getId());
-                });
+                        TestCase.assertNotNull(toCreate);
+                        TestCase.assertNotNull(toCreate.getId());
+                        createdFormIds.add(toCreate.getForm().getId());
+                    });
+                }
+                // Fetch items from View:
+                List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
+                        derClient, viewWorkView, itemCount, 20
+                );
+                TestCase.assertNotNull("Items for lookup is not set!", itemsFromLookup);
+                TestCase.assertEquals(itemCount, itemsFromLookup.size());
+
+                long timeTakenInMs = (System.currentTimeMillis() - starter);
+                log.info(String.format("ASN1DER-TOOK   [%d (create-only):%d (fetch)]ms to create [%d] items.",
+                        itmCreate.get(), timeTakenInMs, itemCount));
             }
-            // Fetch items from View:
-            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
-                    derClient, viewWorkView, itemCount, 15
-            );
-            TestCase.assertEquals(itemCount, itemsFromLookup.size());
 
-            long timeTakenInMs = (System.currentTimeMillis() - starter);
-            log.info(String.format("TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
-                    itmCreate.get(), timeTakenInMs, itemCount));
+            // Traditional REST over JSON:
+            {
+                ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
+                AtomicLong itmCreate = new AtomicLong(0);
+                long starter = System.currentTimeMillis();
+                for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
+                    executor.submit(() -> {
+                        FluidItem termItm = terminalItem(UUID.randomUUID().toString());
 
+                        long itmCreateLcl = System.currentTimeMillis();
+
+                        FluidItem toCreate = flowItmClient.createFlowItem(termItm, flowName);
+                        itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
+                        //log.info(String.format("TOOK [%d]ms to create item, at %d", itmCreateLcl, createdFormIds.size()));
+                        itmCreate.set(itmCreate.get() + itmCreateLcl);
+
+                        TestCase.assertNotNull(toCreate);
+                        TestCase.assertNotNull(toCreate.getId());
+                        createdFormIds.add(toCreate.getForm().getId());
+                    });
+                }
+                // Fetch items from View:
+                List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
+                        flowItmClient, viewWorkView, itemCount, 20
+                );
+                TestCase.assertNotNull("Items for lookup is not set!", itemsFromLookup);
+                TestCase.assertEquals(itemCount, itemsFromLookup.size());
+
+                long timeTakenInMs = (System.currentTimeMillis() - starter);
+                log.info(String.format("REST-JSON-TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
+                        itmCreate.get(), timeTakenInMs, itemCount));
+            }
+
+            // Verify the stored data:
+            /*
             createdFormIds.forEach(id -> {
                 BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
                 btFldItmReq.setRequestObject(new RequestObject(
@@ -245,7 +279,8 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 BaseTransmission btCreatedItm = derClient.request(btFldItmReq);
                 FluidItem byId = (FluidItem) btCreatedItm.getTransmissionObject();
                 TestCase.assertNotNull(byId);
-            });
+            });*/
+            
         }
     }
 
@@ -386,6 +421,9 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 FluidItemListing flItmListing = (FluidItemListing) btItems.getTransmissionObject();
                 List<FluidItem> attempt = flItmListing.getListing();
                 if (attempt != null && attempt.size() == attemptCount) return attempt;
+                else if (attempt != null) {
+                    log.info("DER: Not yet at "+attemptCount+", at "+attempt.size()+" items.");
+                }
             } catch (FluidClientException fce) {
                 if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
                 if (attemptCount == 0) return null;

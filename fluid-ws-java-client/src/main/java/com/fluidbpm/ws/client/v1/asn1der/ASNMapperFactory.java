@@ -173,7 +173,11 @@ public class ASNMapperFactory {
      * @return A byte array that represents the serialized and encoded transmission data
      *         ready for sending.
      */
-    public byte[] writeObjectForSend(PayloadPopulate payloadPopulate, RequestObject reqObj, ABaseFluidVO objVo) {
+    public byte[] writeObjectForSend(
+            PayloadPopulate payloadPopulate,
+            RequestObject reqObj,
+            ABaseFluidVO objVo
+    ) {
         BaseTransmission bt = new BaseTransmission(this.baseTransmission.getTransmissionObjectType());
         bt.setPayloadPopulate(payloadPopulate);
         bt.setRequestObject(reqObj);

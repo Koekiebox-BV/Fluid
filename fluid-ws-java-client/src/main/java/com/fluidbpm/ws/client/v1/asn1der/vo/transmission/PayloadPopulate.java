@@ -224,6 +224,26 @@ public class PayloadPopulate extends ABaseFluidVO {
                 .toArray();
     }
 
+    /**
+     * Checks if all the relevant fields in the current object instance are empty.
+     *
+     * This method evaluates the emptiness of multiple fields, including:
+     * mcFormField, mcUserField, mcRouteField, mcGlobalField, and ffMetaData.
+     * If all specified fields are empty, the method returns true; otherwise,
+     * it returns false.
+     *
+     * @return true if all the fields being checked are empty; false otherwise
+     */
+    public boolean isEmpty() {
+        return UtilGlobal.isAllTrue(
+                this.mcFormField.isEmpty(),
+                this.mcUserField.isEmpty(),
+                this.mcRouteField.isEmpty(),
+                this.mcGlobalField.isEmpty(),
+                this.ffMetaData.isEmpty()
+        );
+    }
+
     private List<String> getMultiChoiceValues(
             Map<String, Map<Long, String>> multiChoices,
             String fieldName
