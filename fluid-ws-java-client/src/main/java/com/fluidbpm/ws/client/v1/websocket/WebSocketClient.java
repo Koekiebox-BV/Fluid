@@ -1,5 +1,6 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.ws.Error;
@@ -7,6 +8,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
+import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -228,6 +230,10 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     public void sendMessage(ABaseFluidVO aFluidVo) {
         if (aFluidVo == null) {
             throw new FluidClientException("No Object to send!", FluidClientException.ErrorCode.IO_ERROR);
+        }
+
+        if (UtilGlobal.isNotBlank(aFluidVo.getEcho())) {
+            PerfStats.timedStart(aFluidVo.getEcho());
         }
 
         if (this.mode == Mode.Binary) {

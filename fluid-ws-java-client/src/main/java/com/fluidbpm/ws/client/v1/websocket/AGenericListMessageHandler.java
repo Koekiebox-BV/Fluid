@@ -9,6 +9,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
+import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.Getter;
@@ -130,6 +131,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
             return initial.decode(asn1Seq);
         } else {
             String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
+            PerfStats.timedStop(PerfStats.Label.Asn1DerWebSocketReqRspRaw, echo);
             if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
                 return new ASNMapperFactory(typeCode).readObjectFromReceivedTransMisObj(asn1Seq);
             }
