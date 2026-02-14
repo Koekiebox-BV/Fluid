@@ -148,10 +148,9 @@ public class WebSocketASNDERClient extends
         this.sendMessage(req, uniqueReqId);
 
         try {
-            List<BaseTransmission> returnValue = this.getHandler(
-                    uniqueReqId).getCF().get(this.getTimeoutInMillis(),
-                    TimeUnit.MILLISECONDS
-            );
+            List<BaseTransmission> returnValue = this.getHandler(uniqueReqId)
+                    .getCF()
+                    .get(this.getTimeoutInMillis(), TimeUnit.MILLISECONDS);
 
             //Connection was closed.. this is a problem....
             if (this.getHandler(uniqueReqId).isConnectionClosed()) {
@@ -250,7 +249,11 @@ public class WebSocketASNDERClient extends
                 return initial.decode(asn1Seq);
             } else {
                 // We want the [BaseTransmission] object:
-                return new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
+                String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
+                if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
+                    return new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
+                }
+                return null;
             }
         }
     }

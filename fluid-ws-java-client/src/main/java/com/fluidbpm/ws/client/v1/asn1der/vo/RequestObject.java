@@ -51,6 +51,18 @@ public class RequestObject extends ABaseFluidVO {
     }
 
     /**
+     * Constructs a new {@code RequestObject} with the specified path and request parameters.
+     * The {@code params} argument is converted into a safe list and used to initialize
+     * the request parameters of this object.
+     *
+     * @param path the request path to initialize the {@code RequestObject}; must not be null or blank
+     * @param params the request parameters to initialize the {@code RequestObject}; may be empty or null
+     */
+    public RequestObject(String path, RequestParameter ... params) {
+        this(path, UtilGlobal.toListSafe(params));
+    }
+
+    /**
      * Retrieves the value of a request parameter identified by its alias.
      * If no parameter is found for the given alias, an empty string is returned.
      *

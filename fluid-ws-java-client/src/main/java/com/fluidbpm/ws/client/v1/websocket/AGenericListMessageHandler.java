@@ -46,7 +46,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
     private boolean isConnectionClosed;
 
     @Getter
-    private final Set<String> expectedEchoMessagesBeforeComplete;
+    protected final Set<String> expectedEchoMessagesBeforeComplete;
+
     private CompletableFuture<List<T>> completableFuture;
 
     private boolean compressedResponse;
@@ -101,6 +102,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
      *         a {@code JsonObject} if the message matches expected echo messages,
      *         or {@code null} if no condition is met.
      */
+    @Override
     public Object doesHandlerQualifyForProcessing(String message) {
         JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
         Error fluidError = new Error(jsonObject);
@@ -109,7 +111,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
         String echo = fluidError.getEcho();
         if (this.expectedEchoMessagesBeforeComplete.contains(echo)) return jsonObject;
 
-        return null;
+        return null;// Will not be processed, since the response doesn't belong here.
     }
 
     /**
@@ -127,7 +129,11 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
         if (typeCode == ERROR_TYPE) {
             return initial.decode(asn1Seq);
         } else {
-            return new ASNMapperFactory(typeCode).readObjectFromReceivedTransMisObj(asn1Seq);
+            String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
+            if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
+                return new ASNMapperFactory(typeCode).readObjectFromReceivedTransMisObj(asn1Seq);
+            }
+            return null;
         }
     }
 

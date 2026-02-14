@@ -30,6 +30,10 @@ public class RequestParameter extends ABaseFluidVO {
     private final String alias;
     private final String value;
 
+    public RequestParameter(String alias, Object value) {
+        this(alias, value == null ? null : value.toString());
+    }
+
     /**
      * Converts the value of this parameter to a boolean safely.
      *

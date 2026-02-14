@@ -30,34 +30,34 @@ import java.util.concurrent.TimeUnit;
  */
 @Log
 public class ABaseTestCase {
-	public static String FLUID_DS = "flow-job";
-	public static String BASE_URL = getTestBASE_URL();
-	public static String USERNAME = getTestUsername();
-	public static String PASSWORD = getTestPassword();
+    public static String FLUID_DS = "flow-job";
+    public static String BASE_URL = getTestBASE_URL();
+    public static String USERNAME = getTestUsername();
+    public static String PASSWORD = getTestPassword();
 
-	private static String getTestBASE_URL() {
-		return System.getProperty(
-				"FLUID_WS_URL",
-				"http://localhost:8080/fluid-ws/");
-	}
+    private static String getTestBASE_URL() {
+        return System.getProperty(
+                "FLUID_WS_URL",
+                "http://localhost:8080/fluid-ws/");
+    }
 
-	private static String getTestUsername() {
-		return System.getProperty(
-				"FLUID_WS_USERNAME",
-				"admin");
-	}
+    private static String getTestUsername() {
+        return System.getProperty(
+                "FLUID_WS_USERNAME",
+                "admin");
+    }
 
-	private static String getTestPassword() {
-		return System.getProperty(
-				"FLUID_WS_PASSWORD",
-				"12345");
-	}
+    private static String getTestPassword() {
+        return System.getProperty(
+                "FLUID_WS_PASSWORD",
+                "12345");
+    }
 
-	public void sleepForSeconds(int secondsToMillisParam) {
-		try {
-			Thread.sleep(TimeUnit.SECONDS.toMillis(secondsToMillisParam));
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+    public void sleepForSeconds(int secondsToSleep) {
+        try {
+            Thread.sleep(TimeUnit.SECONDS.toMillis(secondsToSleep));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

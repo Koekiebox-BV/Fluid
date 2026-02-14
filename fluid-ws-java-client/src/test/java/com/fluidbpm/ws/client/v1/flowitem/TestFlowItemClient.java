@@ -172,7 +172,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                     new FlowStepRule(flow, introductionStep, String.format("ROUTE TO '%s'", assignStepName))
             );
             flowStepRuleClient.createFlowStepExitRule(
-                    new FlowStepRule(flow, assignStep, String.format("ROUTE TO 'Exit'"))
+                    new FlowStepRule(flow, assignStep, "ROUTE TO 'Exit'")
             );
 
             List<JobView> viewsForAssignStep =
@@ -186,11 +186,17 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
-            long itmCreate = System.currentTimeMillis();
+            AtomicLong itmCreate = new AtomicLong(0);
+            long starter = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
                 executor.submit(() -> {
-                    FluidItem toCreate = flowItmClient.createFlowItem(
-                            emailItem(UUID.randomUUID().toString()), flowName);
+                    FluidItem mailItm = emailItem(UUID.randomUUID().toString());
+
+                    long itmCreateLcl = System.currentTimeMillis();
+                    FluidItem toCreate = flowItmClient.createFlowItem(mailItm, flowName);
+                    itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
+                    itmCreate.set(itmCreate.get() + itmCreateLcl);
+
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
                 });
@@ -201,9 +207,9 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                     flowItmClient, viewWorkView, itemCount, 100
             );
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
-            long timeTakenInMs = (System.currentTimeMillis() - itmCreate);
-            log.info(String.format("TOOK [%d] seconds to create [%d] items.", timeTakenInMs, itemCount));
-            //TODO @jason Tweaked from [10] to [15].
+            long timeTakenInMs = (System.currentTimeMillis() - starter);
+            log.info(String.format("TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
+                    itmCreate.get(), timeTakenInMs, itemCount));
             TestCase.assertTrue(
                     String.format(
                             "Performance is too slow! [%d] seconds to create [%d] items!",

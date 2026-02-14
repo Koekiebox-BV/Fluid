@@ -184,15 +184,13 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             if (qualifyObj instanceof Error) {
                 handler.handleMessage(qualifyObj);
                 handlerFoundForMsg = true;
+                break;
             } else if (qualifyObj instanceof ABaseFluidVO) {
                 handler.handleMessage(qualifyObj);
                 handlerFoundForMsg = true;
                 break;
-            } else if (qualifyObj instanceof JsonObject) {
-                handler.handleMessage(qualifyObj);
-                handlerFoundForMsg = true;
-                break;
             }
+            // JSON is not supported.
         }
 
         if (!handlerFoundForMsg) {
