@@ -114,6 +114,11 @@ public class ASNMapperError extends ASNBaseMapper<Error> {
         return super.asInt(e, field);
     }
 
+    @Override
+    public String asGeneralTxt(ASN1Encodable e, String field) {
+        return super.asGeneralTxt(e, field);
+    }
+
     /**
      * Encodes an {@code Error} object into an ASN.1 DER sequence.
      * This method maps the properties of the provided {@code Error} object

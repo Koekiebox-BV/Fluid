@@ -178,6 +178,7 @@ public class ASNMapperFactory {
         bt.setPayloadPopulate(payloadPopulate);
         bt.setRequestObject(reqObj);
         bt.setTransmissionObject(objVo);
+        bt.setEcho(objVo.getEcho());
         return this.writeObjectForSend(bt);
     }
 
