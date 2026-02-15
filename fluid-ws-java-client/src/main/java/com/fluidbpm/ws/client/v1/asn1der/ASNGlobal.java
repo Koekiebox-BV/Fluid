@@ -92,6 +92,10 @@ public class ASNGlobal {
             );
         }
 
+        public static final class General {
+            public static final String GENERAL_PAYLOAD_POPULATE = "general/payload_populate";
+        }
+
         public static final class Attachment {
             public static final String ATTACHMENT_IMAGES_BY_FORM = "attachments/image_by_form";
             public static final String ATTACHMENTS_BY_FORM = "attachments/by_form";

@@ -200,7 +200,10 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                 }
             }
         } else {
-            if (UtilGlobal.isNotBlank(echo)) handler = this.messageHandlers.get(echo);
+            if (UtilGlobal.isNotBlank(echo)) {
+                PerfStats.timedStop(PerfStats.Label.Asn1Der_RoundRobin, echo);
+                handler = this.messageHandlers.get(echo);
+            }
             if (handler == null) {
                 throw new FluidClientException(
                         "(Binary): No handler found for message ("+typeCode+");\n"+ BaseEncoding.base16().encode(message),

@@ -185,7 +185,6 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
             public static final String DECODE_REQUEST_DURATION_MS_ALIAS = "Decode Request Duration Ms";
             public static final int ENCODE_RESPONSE_DURATION_MS = 4;
             public static final String ENCODE_RESPONSE_DURATION_MS_ALIAS = "Encode Response Duration Ms";
-            public static final int FIELD_COUNT = 5;
         }
     }
 

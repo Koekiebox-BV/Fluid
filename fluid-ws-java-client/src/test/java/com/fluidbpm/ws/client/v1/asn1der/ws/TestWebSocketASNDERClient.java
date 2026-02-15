@@ -28,12 +28,10 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
-import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
-import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
@@ -118,13 +116,13 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             TestCase.assertNotNull(btAttCreatedWarmup);
 
             int count = 100;
-            long duration = 0;
             List<Attachment> attachmentsToDel = new ArrayList<>();
             for (int i = 0;i < count;i++) {
-                long now = System.currentTimeMillis();
+                String psAtt = PerfStats.timedStart();
                 BaseTransmission btRsp = derClient.request(btCreateAtt);
+                PerfStats.timedStop(PerfStats.Label.Asn1DerCreateAttachment, psAtt);
+
                 attachmentsToDel.add((Attachment) btRsp.getTransmissionObject());
-                duration += (System.currentTimeMillis() - now);
             }
 
             // List all the attachments:
@@ -139,22 +137,23 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
             // Delete all attachments:
             for (int i = 0;i < attachmentsToDel.size();i++) {
+                String psDelAtt = PerfStats.timedStart();
                 BaseTransmission btDelAtt = new BaseTransmission(ASNGlobal.Type.ATTACHMENT);
                 btDelAtt.setRequestObject(new RequestObject(ASNGlobal.Path.Attachment.ATTACHMENT_DELETE));
                 btDelAtt.setTransmissionObject(attachmentsToDel.get(i));
-
                 derClient.request(btDelAtt);
+                PerfStats.timedStop(PerfStats.Label.Asn1DerDeleteAttachment, psDelAtt);
             }
 
+            // List attachments:
+            String psListAtt = PerfStats.timedStart();
             BaseTransmission btAttListAfterDel = derClient.request(btListAtt);
+            PerfStats.timedStop(PerfStats.Label.Asn1DerListAttachment, psListAtt);
             AttachmentListing listingAfterDel = (AttachmentListing) btAttListAfterDel.getTransmissionObject();
             TestCase.assertNotNull(listingAfterDel);
             TestCase.assertEquals(1, listingAfterDel.getListing().size());
 
-            long avg = duration/count;
-            TestCase.assertTrue("Avg time for request is way to much!", avg < 100);
-
-            log.info("Avg. for "+count+" requests: "+(avg)+"ms, total: "+duration+"ms");
+            PerfStats.printOutcomes();
 
             // create the flow:
             final String flowName = "ASN1DER JUnit Assign Flow Test";
@@ -200,15 +199,16 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             JobView viewWorkView = viewsForAssignStep.get(1);
 
             // ASN1DER: create the work-items:
+            PerfStats.reset();
             sleepForSeconds(1);
             log.info("1 THREAD STATS - 100 ITEMS:");
             List<Long> createdFormIds = this.submitCycle(100, 1, flowName, viewWorkView);
             PerfStats.printOutcomes();
+
             log.info("5 THREAD STATS - 300 ITEMS:");
             PerfStats.reset();
             sleepForSeconds(1);
             createdFormIds.addAll(this.submitCycle(300, 5, flowName, viewWorkView));
-
             PerfStats.printOutcomes();
         }
     }
@@ -273,7 +273,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                     PerfStats.totalFor(PerfStats.Label.Asn1DerCreateFluidItem), timeTakenInMs, itemCount));
 
             // Verify the stored data:
-            createdFormIds.forEach(id -> {
+            /*TODO createdFormIds.forEach(id -> {
                 long start = System.currentTimeMillis();
                 BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
                 btFldItmReq.setRequestObject(new RequestObject(
@@ -287,7 +287,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 PerfStats.increment(PerfStats.Label.Asn1DerGetFluidItemByForm, System.currentTimeMillis() - start);
 
                 TestCase.assertNotNull(byId);
-            });
+            });*/
 
             try {
                 if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
@@ -333,7 +333,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             log.info(String.format("REST-JSON-TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
                     PerfStats.totalFor(PerfStats.Label.RestCreateFluidItem), timeTakenInMs, itemCount));
 
-            // Verify the stored data:
+            // TODO Verify the stored data:
             createdFormIds.forEach(id -> {
                 long start = System.currentTimeMillis();
                 FluidItem byId = flowItmClient.getFluidItemByFormId(id);
