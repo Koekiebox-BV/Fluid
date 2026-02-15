@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.asn1der;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.*;
@@ -179,11 +180,14 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
      * @return An object of type {@code T} populated with data from the decoded {@link ASN1Sequence}.
      */
     public final T decode(ASN1Sequence seq) {
+        String tsDec = PerfStats.timedStart();
+
         T returnVal = this.supplierForInstance().get();
         this.popBaseFields(returnVal, seq);
 
         // Populate all the tagged values.
         this.decodeTaggedObject(seq, returnVal, this.decodeMapTagsMethod());
+        PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_BTDecode, tsDec);
         return returnVal;
     }
 
@@ -217,10 +221,13 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
      */
     @Override
     public final DERSequence encode(T vo) {
+        String tsEnc = PerfStats.timedStart();
         ASN1EncodableVector vect = initVector(vo);
         this.encodeTaggedObject(vo, vect);
 
-        return new DERSequence(vect);
+        DERSequence returnVal = new DERSequence(vect);
+        PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_BTEncode, tsEnc);
+        return returnVal;
     }
 
     /**

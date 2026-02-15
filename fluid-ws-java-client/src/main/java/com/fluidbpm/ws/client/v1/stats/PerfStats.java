@@ -44,17 +44,23 @@ public class PerfStats {
     public static boolean ENABLED = true;
 
     public enum Label {
-        Asn1DerParsing,
-        Asn1DerWebSocketReqRspRaw,
-        Asn1DerWebSocketReqRspSerialized,
-        // ASN1DER
+        // ASN1DER - Parsing
+        Asn1DerMapper_InitSeq,
+        Asn1DerMapper_DoesHandlerQualify,
+        Asn1DerMapper_HandleMessage,
+        Asn1DerMapper_BTEncode,
+        Asn1DerMapper_BTDecode,
+        // ASN1DER - Business Methods
         Asn1DerCreateAttachment,
         Asn1DerCreateFluidItem,
         Asn1DerCreateFormContainer,
         Asn1DerGetFluidItemByForm,
+        // ASN1DER - Server Side:
+        
         // REST
         RestCreateFormContainer,
-        RestCreateFluidItem
+        RestCreateFluidItem,
+        RestGetFluidItemByForm,
     }
 
     public static void reset() {
@@ -66,29 +72,49 @@ public class PerfStats {
     }
 
     public static void printOutcomes() {
+        class Outcome {
+            private final Label label;
+            private final long total;
+            private final long calls;
+
+            Outcome(Label label, long total, long calls) {
+                this.label = label;
+                this.total = total;
+                this.calls = calls;
+            }
+        }
+
+        java.util.List<Outcome> outcomes = new java.util.ArrayList<>();
         int maxLabelLength = 0;
         for (Map.Entry<Label, AtomicLong> entry : stats.asMap().entrySet()) {
-            String labelText = String.valueOf(entry.getKey());
-            if (labelText.length() > maxLabelLength) {
-                maxLabelLength = labelText.length();
-            }
+            long total = entry.getValue().get();
+            if (total == 0) continue;
+
+            Label label = entry.getKey();
+            AtomicLong callsCounter = statsCallCounter.getIfPresent(label);
+            long calls = callsCounter == null ? 0 : callsCounter.get();
+
+            String labelText = String.valueOf(label);
+            if (labelText.length() > maxLabelLength) maxLabelLength = labelText.length();
+
+            outcomes.add(new Outcome(label, total, calls));
         }
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n===> PERFORMANCE STATS <===\n\n");
-        for (Map.Entry<Label, AtomicLong> entry : stats.asMap().entrySet()) {
-            String labelText = String.valueOf(entry.getKey());
-            long val = entry.getValue().get();
-            if (val == 0) continue;
-
-            long timesCalled = statsCallCounter.getIfPresent(entry.getKey()).get();
+        outcomes.sort((left, right) -> Long.compare(right.total, left.total));
+        for (Outcome outcome : outcomes) {
+            String labelText = String.valueOf(outcome.label);
+            long total = outcome.total;
+            long timesCalled = outcome.calls;
+            long avg = timesCalled == 0 ? 0 : (total / timesCalled);
 
             sb.append(String.format(
                     "%-" + maxLabelLength + "s : %dms avg. after being called '%s' times. Total %dms.%n",
                     labelText,
-                    (val / timesCalled),
+                    avg,
                     timesCalled,
-                    val
+                    total
             ));
         }
         sb.append("\n===> END <===\n\n");

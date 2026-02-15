@@ -27,7 +27,10 @@ import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,7 +48,9 @@ public abstract class ABaseClientWebSocket
     protected WebSocketClient<RespHandler> webSocketClient;
 
     private final long timeoutInMillis;
-    private Map<String, RespHandler> messageHandler;
+    private Map<String, RespHandler> messageHandlerByRequestId;
+    private Map<String, RespHandler> messageHandlerByEcho;
+    private Map<String, Set<String>> requestIdToEchoes;
 
     protected IMessageReceivedCallback<CallBackType> messageReceivedCallback;
     protected boolean compressResponse;
@@ -132,8 +137,9 @@ public abstract class ABaseClientWebSocket
     ) {
         super(endpointBaseUrlParam);
 
-        this.messageHandler = new HashMap<>();
-        this.messageHandler = Collections.synchronizedMap(this.messageHandler);
+        this.messageHandlerByRequestId = new ConcurrentHashMap<>();
+        this.messageHandlerByEcho = new ConcurrentHashMap<>();
+        this.requestIdToEchoes = new ConcurrentHashMap<>();
 
         this.timeoutInMillis = timeoutInMillisParam;
         this.messageReceivedCallback = messageReceivedCallbackParam;
@@ -162,7 +168,7 @@ public abstract class ABaseClientWebSocket
 
         try {
             this.webSocketClient = new WebSocketClient<>(
-                    new URI(completeUrl), this.messageHandler, mode, this.getASNReqType()
+                    new URI(completeUrl), this.messageHandlerByEcho, mode, this.getASNReqType()
             );
         } catch (DeploymentException e) {
             //Deploy...
@@ -210,6 +216,7 @@ public abstract class ABaseClientWebSocket
                 AGenericListMessageHandler listHandler = (AGenericListMessageHandler)handler;
                 listHandler.addExpectedMessage(vo.getEcho());
             }
+            this.registerEchoHandler(requestIdParam, vo.getEcho(), handler);
         }
         this.webSocketClient.sendMessage(vo);
     }
@@ -246,7 +253,7 @@ public abstract class ABaseClientWebSocket
      */
     public synchronized String initNewRequest() {
         String returnVal = UtilGlobal.randomUUID();
-        this.messageHandler.put(returnVal, this.getNewHandlerInstance());
+        this.messageHandlerByRequestId.put(returnVal, this.getNewHandlerInstance());
 
         return returnVal;
     }
@@ -268,7 +275,7 @@ public abstract class ABaseClientWebSocket
      * @return The message handler.
      */
     protected RespHandler getHandler(String requestUniqueIdParam) {
-        return this.messageHandler.get(requestUniqueIdParam);
+        return this.messageHandlerByRequestId.get(requestUniqueIdParam);
     }
 
     /**
@@ -276,7 +283,29 @@ public abstract class ABaseClientWebSocket
      * @param requestUniqueIdParam The unique request id.
      */
     protected void removeHandler(String requestUniqueIdParam){
-        this.messageHandler.remove(requestUniqueIdParam);
+        RespHandler handler = this.messageHandlerByRequestId.remove(requestUniqueIdParam);
+        Set<String> echoes = this.requestIdToEchoes.remove(requestUniqueIdParam);
+        if (echoes == null || echoes.isEmpty()) return;
+
+        if (handler == null) {
+            for (String echo : echoes) {
+                this.messageHandlerByEcho.remove(echo);
+            }
+            return;
+        }
+
+        for (String echo : echoes) {
+            this.messageHandlerByEcho.remove(echo, handler);
+        }
+    }
+
+    private void registerEchoHandler(String requestIdParam, String echo, RespHandler handler) {
+        if (handler == null || echo == null || echo.trim().isEmpty()) return;
+
+        this.messageHandlerByEcho.put(echo, handler);
+        this.requestIdToEchoes
+                .computeIfAbsent(requestIdParam, id -> ConcurrentHashMap.newKeySet())
+                .add(echo);
     }
 
     /**

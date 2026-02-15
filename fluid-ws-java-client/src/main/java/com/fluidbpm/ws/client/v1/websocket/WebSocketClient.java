@@ -5,13 +5,16 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.ws.Error;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
@@ -179,28 +182,44 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     @OnMessage
     public void onMessage(byte[] message) {
         this.receivedMessages++;
+        String on = PerfStats.timedStart();
 
-        boolean handlerFoundForMsg = false;
-        for (IMessageResponseHandler handler : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
-            Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
-            if (qualifyObj instanceof Error) {
-                handler.handleMessage(qualifyObj);
-                handlerFoundForMsg = true;
-                break;
-            } else if (qualifyObj instanceof ABaseFluidVO) {
-                handler.handleMessage(qualifyObj);
-                handlerFoundForMsg = true;
-                break;
+        ASNMapperError initial = new ASNMapperError();
+        ASN1Sequence asn1Seq = initial.initSeq(message);
+        int typeCode = initial.asInt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ID), "Type Code");
+        String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
+
+        Object qualifyObj = null;
+        IMessageResponseHandler handler = null;
+        if (typeCode == ASNGlobal.Type.ERROR_TYPE) {
+            for (IMessageResponseHandler handlerErr : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
+                qualifyObj = handlerErr.doesHandlerQualifyForProcessing(message);
+                if (qualifyObj != null) {
+                    handler = handlerErr;
+                    break;
+                }
             }
-            // JSON is not supported.
+        } else {
+            if (UtilGlobal.isNotBlank(echo)) handler = this.messageHandlers.get(echo);
+            if (handler == null) {
+                throw new FluidClientException(
+                        "(Binary): No handler found for message ("+typeCode+");\n"+ BaseEncoding.base16().encode(message),
+                        FluidClientException.ErrorCode.IO_ERROR);
+            }
+            qualifyObj = handler.doesHandlerQualifyForProcessing(message);
         }
 
-        if (!handlerFoundForMsg) {
+        if (qualifyObj == null) {
             throw new FluidClientException(
-                    "(Binary): No handler found for message;\n"+ BaseEncoding.base16().encode(message),
+                    "(Binary): No qualified object found;\n"+ BaseEncoding.base16().encode(message),
                     FluidClientException.ErrorCode.IO_ERROR
             );
         }
+
+        PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_DoesHandlerQualify, on);
+        String tsHandleMsg = PerfStats.timedStart();
+        handler.handleMessage(qualifyObj);
+        PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_HandleMessage, tsHandleMsg);
     }
 
     /**

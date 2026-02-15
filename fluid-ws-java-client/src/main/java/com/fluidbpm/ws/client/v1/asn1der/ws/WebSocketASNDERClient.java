@@ -22,7 +22,6 @@ import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
-import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
@@ -251,7 +250,6 @@ public class WebSocketASNDERClient extends
             } else {
                 // We want the [BaseTransmission] object:
                 String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
-                PerfStats.timedStop(PerfStats.Label.Asn1DerWebSocketReqRspRaw, echo);
                 if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
                     return new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
                 }
