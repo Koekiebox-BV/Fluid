@@ -28,13 +28,13 @@ public class ServerProcessStats extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 
     // Timestamp received and responded timestamps:
-    private final Long appLogicTsReceived;
-    private final Long appLogicTsResponded;
+    private final long appLogicTsReceived;
+    private final long appLogicTsResponded;
 
     // Processing Duration:
-    private final Long processingDurationMs;
+    private final long processingDurationMs;
 
     // Parsing of the request and response:
-    private final Long decodeRequestDurationMs;
-    private final Long encodeResponseDurationMs;
+    private final long decodeRequestDurationMs;
+    private final long encodeResponseDurationMs;
 }

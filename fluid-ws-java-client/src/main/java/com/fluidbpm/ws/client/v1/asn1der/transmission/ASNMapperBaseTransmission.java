@@ -107,6 +107,8 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
         public static final String REQUEST_OBJECT_ALIAS = "Request Object";
         public static final int TRANSMISSION_OBJECT = 7;
         public static final String TRANSMISSION_OBJECT_ALIAS = "Transmission Object";
+        public static final int SERVER_PROCESS_STATISTICS = 8;
+        public static final String SERVER_PROCESS_STATISTICS_ALIAS = "Server Process Statistics";
 
         /**
          * The {@code PayloadPopulate} class defines constants and their corresponding aliases
@@ -170,6 +172,20 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 public static final int VALUE = 1;
                 public static final String VALUE_ALIAS = "Value";
             }
+        }
+
+        public static class ServerProcessStatistics {
+            public static final int APP_LOGIC_TS_RECEIVED = 0;
+            public static final String APP_LOGIC_TS_RECEIVED_ALIAS = "App Logic TS Received";
+            public static final int APP_LOGIC_TS_RESPONDED = 1;
+            public static final String APP_LOGIC_TS_RESPONDED_ALIAS = "App Logic TS Responded";
+            public static final int PROCESSING_DURATION_MS = 2;
+            public static final String PROCESSING_DURATION_MS_ALIAS = "Processing Duration Ms";
+            public static final int DECODE_REQUEST_DURATION_MS = 3;
+            public static final String DECODE_REQUEST_DURATION_MS_ALIAS = "Decode Request Duration Ms";
+            public static final int ENCODE_RESPONSE_DURATION_MS = 4;
+            public static final String ENCODE_RESPONSE_DURATION_MS_ALIAS = "Encode Response Duration Ms";
+            public static final int FIELD_COUNT = 5;
         }
     }
 
@@ -321,6 +337,18 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     );
             }
             vect.add(new DERTaggedObject(true, Map.TRANSMISSION_OBJECT, seqTransObj));
+        }
+
+        // [8] -> Pr:
+        ServerProcessStats servProcStats = item.getServerProcessStats();
+        if (servProcStats != null) {
+            ASN1EncodableVector vecServProcStats = new ASN1EncodableVector();
+            vecServProcStats.add(new ASN1Integer(servProcStats.getAppLogicTsReceived()));
+            vecServProcStats.add(new ASN1Integer(servProcStats.getAppLogicTsResponded()));
+            vecServProcStats.add(new ASN1Integer(servProcStats.getProcessingDurationMs()));
+            vecServProcStats.add(new ASN1Integer(servProcStats.getDecodeRequestDurationMs()));
+            vecServProcStats.add(new ASN1Integer(servProcStats.getEncodeResponseDurationMs()));
+            vect.add(new DERTaggedObject(true, Map.SERVER_PROCESS_STATISTICS, new DERSequence(vecServProcStats)));
         }
     }
 
@@ -584,6 +612,27 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     return null;
                 }
                 this.proceedWithTransmissionObject(toPop, obj);
+                break;
+            case Map.SERVER_PROCESS_STATISTICS:
+                ASN1Sequence seqProcessStats = asSeq(obj, Map.SERVER_PROCESS_STATISTICS_ALIAS);
+                long statLogRec = this.asLong(seqProcessStats.getObjectAt(
+                        Map.ServerProcessStatistics.APP_LOGIC_TS_RECEIVED), Map.ServerProcessStatistics.APP_LOGIC_TS_RECEIVED_ALIAS);
+                long statLogRsp = this.asLong(seqProcessStats.getObjectAt(
+                        Map.ServerProcessStatistics.APP_LOGIC_TS_RESPONDED), Map.ServerProcessStatistics.APP_LOGIC_TS_RESPONDED_ALIAS);
+                long statProcessingDuration = this.asLong(seqProcessStats.getObjectAt(
+                        Map.ServerProcessStatistics.PROCESSING_DURATION_MS), Map.ServerProcessStatistics.PROCESSING_DURATION_MS_ALIAS);
+                long statDecode = this.asLong(seqProcessStats.getObjectAt(
+                        Map.ServerProcessStatistics.DECODE_REQUEST_DURATION_MS), Map.ServerProcessStatistics.DECODE_REQUEST_DURATION_MS_ALIAS);
+                long statEncode = this.asLong(seqProcessStats.getObjectAt(
+                        Map.ServerProcessStatistics.ENCODE_RESPONSE_DURATION_MS), Map.ServerProcessStatistics.ENCODE_RESPONSE_DURATION_MS_ALIAS);
+
+                toPop.setServerProcessStats(new ServerProcessStats(
+                        statLogRec,
+                        statLogRsp,
+                        statProcessingDuration,
+                        statDecode,
+                        statEncode)
+                );
                 break;
             default:
                 throw new FluidClientException(
