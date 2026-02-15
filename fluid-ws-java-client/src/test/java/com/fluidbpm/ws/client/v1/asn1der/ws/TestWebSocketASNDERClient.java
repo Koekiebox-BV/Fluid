@@ -28,11 +28,14 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
+import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepRuleClient;
@@ -90,6 +93,8 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
              FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormFieldClient ffc = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
             Form toCreateFormDef = new Form(TestFormContainerClient.TestStatics.FORM_DEFINITION);
             toCreateFormDef.setTitle(TestFormContainerClient.TestStatics.FORM_TITLE_PREFIX+new Date().toString());
 
@@ -202,18 +207,19 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             PerfStats.reset();
             sleepForSeconds(1);
             log.info("1 THREAD STATS - 100 ITEMS:");
-            List<Long> createdFormIds = this.submitCycle(100, 1, flowName, viewWorkView);
+            List<Long> createdFormIds = this.submitCycle(payPop, 100, 1, flowName, viewWorkView);
             PerfStats.printOutcomes();
 
             log.info("5 THREAD STATS - 300 ITEMS:");
             PerfStats.reset();
             sleepForSeconds(1);
-            createdFormIds.addAll(this.submitCycle(300, 5, flowName, viewWorkView));
+            createdFormIds.addAll(this.submitCycle(payPop,300, 5, flowName, viewWorkView));
             PerfStats.printOutcomes();
         }
     }
 
     private List<Long> submitCycle(
+            PayloadPopulate pop,
             int itemCount,
             int threadPoolCount,
             String flowName,
@@ -247,6 +253,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
                     String ref = PerfStats.timedStart();
                     BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
+                    btFldItmReq.setPayloadPopulate(pop);
                     btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
                     termItm.setFlow(flowName);
                     btFldItmReq.setTransmissionObject(termItm);
@@ -273,7 +280,8 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                     PerfStats.totalFor(PerfStats.Label.Asn1DerCreateFluidItem), timeTakenInMs, itemCount));
 
             // Verify the stored data:
-            /*TODO createdFormIds.forEach(id -> {
+            AtomicInteger maxCount = new AtomicInteger(0);
+            createdFormIds.forEach(id -> {
                 long start = System.currentTimeMillis();
                 BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
                 btFldItmReq.setRequestObject(new RequestObject(
@@ -287,7 +295,10 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 PerfStats.increment(PerfStats.Label.Asn1DerGetFluidItemByForm, System.currentTimeMillis() - start);
 
                 TestCase.assertNotNull(byId);
-            });*/
+                TestCase.assertTrue("The min amount is not reached!", byId.getForm().getFormFields().size() >= 6);
+                maxCount.set(Math.max(maxCount.get(), byId.getForm().getFormFields().size()));
+            });
+            TestCase.assertEquals("Not all fields set!", this.formDef.getFormFields().size(), maxCount.get());
 
             try {
                 if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
@@ -333,7 +344,6 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             log.info(String.format("REST-JSON-TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
                     PerfStats.totalFor(PerfStats.Label.RestCreateFluidItem), timeTakenInMs, itemCount));
 
-            // TODO Verify the stored data:
             createdFormIds.forEach(id -> {
                 long start = System.currentTimeMillis();
                 FluidItem byId = flowItmClient.getFluidItemByFormId(id);

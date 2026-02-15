@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.asn1der.ws;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
@@ -209,6 +210,7 @@ public class WebSocketASNDERClient extends
     public PayloadPopulate requestFullPayloadPopulate() {
         BaseTransmission btPayPop = new BaseTransmission(ASNGlobal.Type.SKIP_TRANSMISSION_OBJ);
         btPayPop.setRequestObject(new RequestObject(ASNGlobal.Path.General.GENERAL_PAYLOAD_POPULATE));
+        btPayPop.setTransmissionObject(new Attachment());
 
         BaseTransmission rsp = this.request(btPayPop);
         return rsp.getPayloadPopulate();
