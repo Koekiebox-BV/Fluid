@@ -16,25 +16,40 @@
 package com.fluidbpm.ws.client.v1.asn1der.vo.transmission;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-/**/
+/**
+ * Represents statistics relevant to the processing of server-side logic.
+ *
+ * This class extends {@code ABaseFluidVO}, inheriting properties like {@code id}, {@code serviceTicket},
+ * and {@code requestUuid}, while adding specific metrics associated with the server's request and response processing.
+ * It provides detailed time measurements for various stages of the request-response lifecycle, making it useful
+ * for performance analysis and optimization.
+ *
+ * Key metrics include:
+ * - Timestamps for when the application logic received and responded to a request.
+ * - Duration taken by the server to process the request.
+ * - Time spent decoding the incoming request and encoding the outgoing response.
+ *
+ * These metrics can be used to diagnose bottlenecks, analyze performance trends, and improve the overall
+ * efficiency of the server's processing workflow.
+ */
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ServerProcessStats extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 
     // Timestamp received and responded timestamps:
-    private final long appLogicTsReceived;
-    private final long appLogicTsResponded;
+    private long appLogicTsReceived;
+    private long appLogicTsResponded;
 
     // Processing Duration:
-    private final long processingDurationMs;
+    private long processingDurationMs;
 
     // Parsing of the request and response:
-    private final long decodeRequestDurationMs;
-    private final long encodeResponseDurationMs;
+    private long decodeRequestDurationMs;
+    private long encodeResponseDurationMs;
 }

@@ -217,6 +217,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
     protected void encodeTaggedObject(BaseTransmission item, ASN1EncodableVector vect) {
         assert item != null && vect != null : "Arguments cannot be null.";
         assert vect.size() > 0 : "Vector size should be greater than zero.";
+        long start = System.currentTimeMillis();
 
         this.payloadPopulate = item.getPayloadPopulate();
         if (this.payloadPopulate == null) this.payloadPopulate = new PayloadPopulate();
@@ -347,7 +348,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
             vecServProcStats.add(new ASN1Integer(servProcStats.getAppLogicTsResponded()));
             vecServProcStats.add(new ASN1Integer(servProcStats.getProcessingDurationMs()));
             vecServProcStats.add(new ASN1Integer(servProcStats.getDecodeRequestDurationMs()));
-            vecServProcStats.add(new ASN1Integer(servProcStats.getEncodeResponseDurationMs()));
+            vecServProcStats.add(new ASN1Integer(System.currentTimeMillis() - start));
             vect.add(new DERTaggedObject(true, Map.SERVER_PROCESS_STATISTICS, new DERSequence(vecServProcStats)));
         }
     }
