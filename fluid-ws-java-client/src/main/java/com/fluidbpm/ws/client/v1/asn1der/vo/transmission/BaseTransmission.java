@@ -37,6 +37,7 @@ public class BaseTransmission extends ABaseFluidVO {
     private PayloadPopulate payloadPopulate;//6
     private RequestObject requestObject;//7
     private ABaseFluidVO transmissionObject;//8
+    private ServerProcessStats serverProcessStats;//9
 
     /**
      * Sets the Id associated with any Fluid entity.

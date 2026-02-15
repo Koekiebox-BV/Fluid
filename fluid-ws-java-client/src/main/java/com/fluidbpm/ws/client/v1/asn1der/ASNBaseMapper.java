@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.ws.client.FluidClientException;
+import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import lombok.RequiredArgsConstructor;
 import org.bouncycastle.asn1.*;
 
@@ -226,11 +227,14 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
      *         the provided byte array is invalid
      */
     public ASN1Sequence initSeq(byte[] der) {
+        String req = PerfStats.timedStart();
         try {
             return (ASN1Sequence)ASN1Primitive.fromByteArray(der);
         } catch (IOException ioErr) {
             throw new FluidClientException(ioErr.getMessage(), ioErr,
                     FluidClientException.ErrorCode.ASN_1_ERROR);
+        } finally {
+            PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_InitSeq, req);
         }
     }
 

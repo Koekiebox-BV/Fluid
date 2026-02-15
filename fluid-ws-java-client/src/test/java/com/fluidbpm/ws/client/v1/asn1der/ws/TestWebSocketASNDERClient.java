@@ -28,10 +28,12 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
+import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
@@ -42,6 +44,7 @@ import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.form.FormFieldClient;
 import com.fluidbpm.ws.client.v1.form.TestFormContainerClient;
+import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
@@ -57,7 +60,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -66,19 +69,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
     private Form formDef;
     private Flow flow;
-
-    public static final class PerfStats {
-        public static final AtomicLong ASN_PARSING = new AtomicLong(0);
-
-        public static void reset() {
-            ASN_PARSING.set(0);
-        }
-
-        public static void increment(AtomicLong counter, long addition) {
-            long existing = counter.get();
-            counter.set(existing + addition);
-        }
-    }
 
     @Override
     @Before
@@ -95,15 +85,10 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 BASE_URL,
                 ADMIN_SERVICE_TICKET_HEX,
                 TimeUnit.SECONDS.toMillis(60));
-             WebSocketASNDERClient derClientCreateItms = new WebSocketASNDERClient(
-                     BASE_URL,
-                     ADMIN_SERVICE_TICKET_HEX,
-                     TimeUnit.SECONDS.toMillis(60));
              FormContainerClient formContainerClient = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FlowClient flowClient = new FlowClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FlowStepRuleClient flowStepRuleClient = new FlowStepRuleClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormFieldClient ffc = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
@@ -215,81 +200,81 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             JobView viewWorkView = viewsForAssignStep.get(1);
 
             // ASN1DER: create the work-items:
-            int itemCount = 100, threadPoolCount = 1;
-            List<Long> createdFormIds = new CopyOnWriteArrayList<>();
-            {
-                ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
-                AtomicLong itmCreate = new AtomicLong(0);
-                long starter = System.currentTimeMillis();
-                for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
-                    executor.submit(() -> {
-                        FluidItem termItm = terminalItem(UUID.randomUUID().toString());
+            sleepForSeconds(1);
+            log.info("1 THREAD STATS - 100 ITEMS:");
+            List<Long> createdFormIds = this.submitCycle(100, 1, flowName, viewWorkView);
+            PerfStats.printOutcomes();
+            log.info("5 THREAD STATS - 300 ITEMS:");
+            PerfStats.reset();
+            sleepForSeconds(1);
+            createdFormIds.addAll(this.submitCycle(300, 5, flowName, viewWorkView));
 
-                        long itmCreateLcl = System.currentTimeMillis();
-                        BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
-                        btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
-                        termItm.setFlow(flowName);
-                        btFldItmReq.setTransmissionObject(termItm);
+            PerfStats.printOutcomes();
+        }
+    }
 
-                        BaseTransmission btCreatedItm = derClientCreateItms.request(btFldItmReq);
-                        FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
-                        itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
-                        //log.info(String.format("TOOK [%d]ms to create item, at %d", itmCreateLcl, createdFormIds.size()));
-                        itmCreate.set(itmCreate.get() + itmCreateLcl);
+    private List<Long> submitCycle(
+            int itemCount,
+            int threadPoolCount,
+            String flowName,
+            JobView viewWorkView
+    ) {
+        List<Long> createdFormIds = new CopyOnWriteArrayList<>();
+        List<WebSocketASNDERClient> wsClients = new ArrayList<>(threadPoolCount);
+        for (int idx = 0; idx < threadPoolCount; idx++) {
+            wsClients.add(new WebSocketASNDERClient(
+                    BASE_URL,
+                    ADMIN_SERVICE_TICKET_HEX,
+                    TimeUnit.SECONDS.toMillis(60)));
+        }
+        AtomicInteger rrIndex = new AtomicInteger(0);
+        ThreadLocal<WebSocketASNDERClient> wsClientLocal = ThreadLocal.withInitial(() ->
+                wsClients.get(Math.floorMod(rrIndex.getAndIncrement(), wsClients.size())));
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60))
+        ) {
+            ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
+            long starter = System.currentTimeMillis();
+            int currentCount = this.getCurrentViewCount(derClient, viewWorkView);
+            int newExpected = currentCount + itemCount;
 
-                        TestCase.assertNotNull(toCreate);
-                        TestCase.assertNotNull(toCreate.getId());
-                        createdFormIds.add(toCreate.getForm().getId());
-                    });
-                }
-                // Fetch items from View:
-                List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
-                        derClient, viewWorkView, itemCount, 20
-                );
-                TestCase.assertNotNull("Items for lookup is not set!", itemsFromLookup);
-                TestCase.assertEquals(itemCount, itemsFromLookup.size());
+            for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
+                executor.submit(() -> {
+                    WebSocketASNDERClient wsClient = wsClientLocal.get();
+                    FluidItem termItm = terminalItem(UUID.randomUUID().toString());
 
-                long timeTakenInMs = (System.currentTimeMillis() - starter);
-                log.info(String.format("ASN1DER-TOOK   [%d (create-only):%d (fetch)]ms to create [%d] items.",
-                        itmCreate.get(), timeTakenInMs, itemCount));
+                    String ref = PerfStats.timedStart();
+                    BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
+                    btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
+                    termItm.setFlow(flowName);
+                    btFldItmReq.setTransmissionObject(termItm);
+
+                    BaseTransmission btCreatedItm = wsClient.request(btFldItmReq);
+                    FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
+                    PerfStats.timedStop(PerfStats.Label.Asn1DerCreateFluidItem, ref);
+
+                    TestCase.assertNotNull(toCreate);
+                    TestCase.assertNotNull(toCreate.getId());
+                    createdFormIds.add(toCreate.getForm().getId());
+                });
             }
+            executor.shutdown();
+            // Fetch items from View:
+            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
+                    derClient, viewWorkView, newExpected, 20
+            );
+            TestCase.assertNotNull("Items for lookup is not set!", itemsFromLookup);
+            TestCase.assertEquals(newExpected, itemsFromLookup.size());
 
-            // Traditional REST over JSON:
-            {
-                ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
-                AtomicLong itmCreate = new AtomicLong(0);
-                long starter = System.currentTimeMillis();
-                for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
-                    executor.submit(() -> {
-                        FluidItem termItm = terminalItem(UUID.randomUUID().toString());
-
-                        long itmCreateLcl = System.currentTimeMillis();
-
-                        FluidItem toCreate = flowItmClient.createFlowItem(termItm, flowName);
-                        itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
-                        //log.info(String.format("TOOK [%d]ms to create item, at %d", itmCreateLcl, createdFormIds.size()));
-                        itmCreate.set(itmCreate.get() + itmCreateLcl);
-
-                        TestCase.assertNotNull(toCreate);
-                        TestCase.assertNotNull(toCreate.getId());
-                        createdFormIds.add(toCreate.getForm().getId());
-                    });
-                }
-                // Fetch items from View:
-                List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
-                        flowItmClient, viewWorkView, itemCount, 20
-                );
-                TestCase.assertNotNull("Items for lookup is not set!", itemsFromLookup);
-                TestCase.assertEquals(itemCount, itemsFromLookup.size());
-
-                long timeTakenInMs = (System.currentTimeMillis() - starter);
-                log.info(String.format("REST-JSON-TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
-                        itmCreate.get(), timeTakenInMs, itemCount));
-            }
+            long timeTakenInMs = (System.currentTimeMillis() - starter);
+            log.info(String.format("ASN1DER-TOOK   [%d (create-only):%d (fetch)]ms to create [%d] items.",
+                    PerfStats.totalFor(PerfStats.Label.Asn1DerCreateFluidItem), timeTakenInMs, itemCount));
 
             // Verify the stored data:
-            /*
             createdFormIds.forEach(id -> {
+                long start = System.currentTimeMillis();
                 BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
                 btFldItmReq.setRequestObject(new RequestObject(
                         ASNGlobal.Path.FlowItem.ITEM_BY_FORM_ID,
@@ -299,10 +284,65 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
                 BaseTransmission btCreatedItm = derClient.request(btFldItmReq);
                 FluidItem byId = (FluidItem) btCreatedItm.getTransmissionObject();
+                PerfStats.increment(PerfStats.Label.Asn1DerGetFluidItemByForm, System.currentTimeMillis() - start);
+
                 TestCase.assertNotNull(byId);
-            });*/
-            
+            });
+
+            try {
+                if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            wsClients.forEach(WebSocketASNDERClient::close);
         }
+
+        sleepForSeconds(1);
+
+        // Traditional REST over JSON:
+        try (FlowItemClient flowItmClient = new FlowItemClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
+            ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
+            long starter = System.currentTimeMillis();
+
+            int currentCount = this.getCurrentViewCount(flowItmClient, viewWorkView);
+            int newExpected = currentCount + itemCount;
+
+            for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
+                executor.submit(() -> {
+                    FluidItem termItm = terminalItem(UUID.randomUUID().toString());
+
+                    String ref = PerfStats.timedStart();
+                    FluidItem toCreate = flowItmClient.createFlowItem(termItm, flowName);
+                    PerfStats.timedStop(PerfStats.Label.RestCreateFluidItem, ref);
+
+                    TestCase.assertNotNull(toCreate);
+                    TestCase.assertNotNull(toCreate.getId());
+                });
+            }
+            // Fetch items from View:
+            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
+                    flowItmClient, viewWorkView, newExpected, 20
+            );
+            TestCase.assertNotNull("Items for lookup is not set!", itemsFromLookup);
+            TestCase.assertEquals(newExpected, itemsFromLookup.size());
+
+            long timeTakenInMs = (System.currentTimeMillis() - starter);
+            log.info(String.format("REST-JSON-TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
+                    PerfStats.totalFor(PerfStats.Label.RestCreateFluidItem), timeTakenInMs, itemCount));
+
+            // Verify the stored data:
+            createdFormIds.forEach(id -> {
+                long start = System.currentTimeMillis();
+                FluidItem byId = flowItmClient.getFluidItemByFormId(id);
+                PerfStats.increment(PerfStats.Label.RestGetFluidItemByForm, System.currentTimeMillis() - start);
+
+                TestCase.assertNotNull(byId);
+            });
+        }
+        return createdFormIds;
     }
 
     private static FluidItem terminalItem(String identifier) {
@@ -451,5 +491,38 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             }
         }
         return null;
+    }
+
+    private int getCurrentViewCount(WebSocketASNDERClient derClient, JobView view) {
+        BaseTransmission btListAtt = new BaseTransmission(ASNGlobal.Type.JOB_VIEW);// <= Req Type
+        btListAtt.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEMS_FOR_VIEW));
+        btListAtt.setTransmissionObject(view);
+
+        try {
+            BaseTransmission btItems = derClient.request(btListAtt);
+            FluidItemListing flItmListing = (FluidItemListing) btItems.getTransmissionObject();
+            return extractListingCount(flItmListing);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
+            return 0;
+        }
+    }
+
+    private int getCurrentViewCount(FlowItemClient flowItmClient, JobView view) {
+        try {
+            FluidItemListing flItmListing = flowItmClient.getFluidItemsForView(view, 10_000, 0);
+            return extractListingCount(flItmListing);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
+            return 0;
+        }
+    }
+
+    private int extractListingCount(FluidItemListing listing) {
+        if (listing == null) return 0;
+        Integer count = listing.getListingCount();
+        if (count != null) return count;
+        List<FluidItem> items = listing.getListing();
+        return items == null ? 0 : items.size();
     }
 }
