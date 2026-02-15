@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents statistics relevant to the processing of server-side logic.
@@ -39,6 +40,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class ServerProcessStats extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 

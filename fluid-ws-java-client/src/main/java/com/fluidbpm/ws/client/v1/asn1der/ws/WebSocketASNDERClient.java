@@ -21,7 +21,11 @@ import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
+import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.ServerProcessStats;
+import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 import com.fluidbpm.ws.client.v1.websocket.AGenericListMessageHandler;
 import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
@@ -195,6 +199,22 @@ public class WebSocketASNDERClient extends
     }
 
     /**
+     * Constructs and sends a {@code BaseTransmission} request to populate the full payload,
+     * processes the response, and extracts the {@code PayloadPopulate} object from it.
+     * This method communicates with a predefined endpoint path for general payload population.
+     *
+     * @return The populated {@code PayloadPopulate} object extracted from the response,
+     *         or {@code null} if the response does not contain the expected payload.
+     */
+    public PayloadPopulate requestFullPayloadPopulate() {
+        BaseTransmission btPayPop = new BaseTransmission(ASNGlobal.Type.SKIP_TRANSMISSION_OBJ);
+        btPayPop.setRequestObject(new RequestObject(ASNGlobal.Path.General.GENERAL_PAYLOAD_POPULATE));
+
+        BaseTransmission rsp = this.request(btPayPop);
+        return rsp.getPayloadPopulate();
+    }
+
+    /**
      * Creates and returns a new instance of the {@code TransmissionMessageHandler}.
      * This handler is initialized with the provided message received callback and WebSocket client,
      * enabling it to handle incoming {@code BaseTransmission} messages and manage message processing.
@@ -241,6 +261,7 @@ public class WebSocketASNDERClient extends
          */
         @Override
         public Object doesHandlerQualifyForProcessing(byte[] der) {
+            long ts = System.currentTimeMillis();
             ASNMapperError initial = new ASNMapperError();
             final ASN1Sequence asn1Seq = initial.initSeq(der);
 
@@ -251,7 +272,17 @@ public class WebSocketASNDERClient extends
                 // We want the [BaseTransmission] object:
                 String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
                 if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
-                    return new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
+                    BaseTransmission bt = new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
+                    ServerProcessStats servStats = bt.getServerProcessStats();
+                    if (servStats != null) {
+                        long serverRespondedAt = servStats.getAppLogicTsResponded();
+
+                        PerfStats.increment(PerfStats.Label.Asn1Der_Latency, ts - serverRespondedAt);
+                        PerfStats.increment(PerfStats.Label.Asn1Der_ServerAppProcessDuration, servStats.getProcessingDurationMs());
+                        PerfStats.increment(PerfStats.Label.Asn1Der_ServerAppDecodeDuration, servStats.getDecodeRequestDurationMs());
+                        PerfStats.increment(PerfStats.Label.Asn1Der_ServerAppEncodeDuration, servStats.getEncodeResponseDurationMs());
+                    }
+                    return bt;
                 }
                 return null;
             }

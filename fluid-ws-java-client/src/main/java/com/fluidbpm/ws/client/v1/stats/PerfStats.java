@@ -50,13 +50,20 @@ public class PerfStats {
         Asn1DerMapper_HandleMessage,
         Asn1DerMapper_BTEncode,
         Asn1DerMapper_BTDecode,
+        // ASN1DER - Network and Latency:
+        Asn1Der_RoundRobin,
+        Asn1Der_Latency,
+        // ASN1DER - Server Side:
+        Asn1Der_ServerAppProcessDuration,
+        Asn1Der_ServerAppEncodeDuration,
+        Asn1Der_ServerAppDecodeDuration,
         // ASN1DER - Business Methods
+        Asn1DerDeleteAttachment,
+        Asn1DerListAttachment,
         Asn1DerCreateAttachment,
         Asn1DerCreateFluidItem,
         Asn1DerCreateFormContainer,
         Asn1DerGetFluidItemByForm,
-        // ASN1DER - Server Side:
-        
         // REST
         RestCreateFormContainer,
         RestCreateFluidItem,
