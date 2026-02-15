@@ -21,6 +21,7 @@ import com.fluidbpm.ws.client.v1.asn1der.transmission.ASNMapperBaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.ServerProcessStats;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 
@@ -169,32 +170,36 @@ public class ASNMapperFactory {
     public byte[] writeObjectForSend(ABaseFluidVO objVo) {
         PayloadPopulate payPop = new PayloadPopulate();
         RequestObject reqObj = new RequestObject();
-        return this.writeObjectForSend(payPop, reqObj, objVo);
+        return this.writeObjectForSend(payPop, reqObj, objVo, null);
     }
 
     /**
-     * Serializes the provided transmission data into a byte array for transmission.
-     * This method processes and encodes the payload, request object, and the transmission object.
+     * Serializes the provided objects into a byte array for transmission. This involves preparing
+     * a {@link BaseTransmission} instance to encapsulate the provided payload, request object,
+     * transmission object, and server process stats before delegating the serialization process.
      *
-     * @param payloadPopulate An instance of {@link PayloadPopulate} which contains
-     *                        information about the payload to be included in the transmission.
-     * @param reqObj          An instance of {@link RequestObject} representing the metadata
-     *                        or details associated with the current request.
-     * @param objVo           An instance of {@link ABaseFluidVO} which holds the data
-     *                        to be transmitted as the primary object.
-     * @return A byte array that represents the serialized and encoded transmission data
-     *         ready for sending.
+     * @param payloadPopulate An instance of {@link PayloadPopulate} that contains the logic or data
+     *                        required to populate the payload for the transmission.
+     * @param reqObj An instance of {@link RequestObject} representing the request details or metadata
+     *               associated with the transmission.
+     * @param objVo The {@link ABaseFluidVO} transmission object to be serialized and included in the
+     *              {@link BaseTransmission}.
+     * @param serverProcessStats An instance of {@link ServerProcessStats} containing server-side
+     *                           processing statistics to be included in the transmission.
+     * @return A byte array representing the serialized form of the configured {@link BaseTransmission} object.
      */
     public byte[] writeObjectForSend(
             PayloadPopulate payloadPopulate,
             RequestObject reqObj,
-            ABaseFluidVO objVo
+            ABaseFluidVO objVo,
+            ServerProcessStats serverProcessStats
     ) {
         BaseTransmission bt = new BaseTransmission(this.baseTransmission.getTransmissionObjectType());
         bt.setPayloadPopulate(payloadPopulate);
         bt.setRequestObject(reqObj);
         bt.setTransmissionObject(objVo);
         bt.setEcho(objVo.getEcho());
+        bt.setServerProcessStats(serverProcessStats);
         return this.writeObjectForSend(bt);
     }
 
