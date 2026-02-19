@@ -204,12 +204,12 @@ public class WebKitForm extends ABaseFluidGSONObject {
         }
 
         // Basic properties
-        this.setInputLayout(this.getAsStringNullSafe(JSONMapping.INPUT_LAYOUT));
+        this.setInputLayout(this.getAsStringNullSafe(JSONMapping.INPUT_LAYOUT, InputLayout.VERTICAL));
         this.setDisplayFormDescription(this.getAsBooleanNullSafe(JSONMapping.DISPLAY_FORM_DESCRIPTION));
         this.setDisplayFieldDescription(this.getAsBooleanNullSafe(JSONMapping.DISPLAY_FIELD_DESCRIPTION));
         this.setAttachmentSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_SIZE));
         this.setAttachmentDisplayLocation(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_LOCATION));
-        this.setAttachmentDisplayType(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_TYPE));
+        this.setAttachmentDisplayType(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_TYPE, AttachmentDisplayType.GRID));
         this.setDisplayWidth(this.getAsIntegerNullSafeStrictVal(JSONMapping.DISPLAY_WIDTH));
         this.setDisplayHeight(this.getAsIntegerNullSafe(JSONMapping.DISPLAY_HEIGHT));
         this.setVisibleSectionsDisplayBehaviour(this.getAsStringNullSafe(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR));
@@ -221,8 +221,8 @@ public class WebKitForm extends ABaseFluidGSONObject {
         this.setEnableCalculatedLabels(this.getAsBooleanNullSafe(JSONMapping.ENABLE_CALCULATED_LABELS));
         this.setEnableFormFieldHistory(this.getAsBooleanNullSafe(JSONMapping.ENABLE_FORM_FIELD_HISTORY));
         this.setNewFormTitleFormula(this.getAsStringNullSafe(JSONMapping.NEW_FORM_TITLE_FORMULA));
-        this.setCreateNewInstanceIcon(this.getAsStringNullSafe(JSONMapping.CREATE_NEW_INSTANCE_ICON));
-        this.setCreateNewInstanceGroup(this.getAsStringNullSafe(JSONMapping.CREATE_NEW_INSTANCE_GROUP));
+        this.setCreateNewInstanceIcon(this.getAsStringNullSafe(JSONMapping.CREATE_NEW_INSTANCE_ICON, DEF_NEW_INSTANCE));
+        this.setCreateNewInstanceGroup(this.getAsStringNullSafe(JSONMapping.CREATE_NEW_INSTANCE_GROUP, DEF_GROUP));
 
         // String arrays
         this.setVisibleSections(this.extractStrings(JSONMapping.VISIBLE_SECTIONS));
