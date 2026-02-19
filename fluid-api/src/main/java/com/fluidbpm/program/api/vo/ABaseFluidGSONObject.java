@@ -147,6 +147,22 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     }
 
     /**
+     * Retrieves the value of a specified property from a JSON object as a string. If the property is
+     * not present or its value is null, a default value is returned instead.
+     *
+     * @param propertyName the name of the property to retrieve from the JSON object
+     * @param valueIfNull the default value to return if the property is not present or its value is null
+     * @return the property value as a string, or the default value if the property is absent or null
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected String getAsStringNullSafe(String propertyName, String valueIfNull) {
+        JsonElement jsonElement = this.jsonObject.get(propertyName);
+        if (jsonElement == null || jsonElement.isJsonNull()) return valueIfNull;
+        return jsonElement.getAsString();
+    }
+
+    /**
      * Safely retrieves the boolean value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
      *
