@@ -17,6 +17,7 @@ package com.fluidbpm.ws.client.v1.stats;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 import java.util.Map;
@@ -43,31 +44,47 @@ public class PerfStats {
 
     public static boolean ENABLED = true;
 
+    public enum Group {
+        RestBusinessWS,
+        ASN1Der_Parsing,
+        ASN1Der_NetworkAndLatency,
+        ASN1Der_ServerSide,
+        ASN1Der_Business
+    }
+
+    @Getter
     public enum Label {
         // ASN1DER - Parsing
-        Asn1DerMapper_InitSeq,
-        Asn1DerMapper_DoesHandlerQualify,
-        Asn1DerMapper_HandleMessage,
-        Asn1DerMapper_BTEncode,
-        Asn1DerMapper_BTDecode,
+        Asn1DerMapper_InitSeq(Group.ASN1Der_Parsing),
+        Asn1DerMapper_DoesHandlerQualify(Group.ASN1Der_Parsing),
+        Asn1DerMapper_HandleMessage(Group.ASN1Der_Parsing),
+        Asn1DerMapper_BTEncode(Group.ASN1Der_Parsing),
+        Asn1DerMapper_BTDecode(Group.ASN1Der_Parsing),
         // ASN1DER - Network and Latency:
-        Asn1Der_RoundRobin,
-        Asn1Der_Latency,
+        Asn1Der_RoundRobin(Group.ASN1Der_NetworkAndLatency),
+        Asn1Der_Latency(Group.ASN1Der_NetworkAndLatency),
+        Asn1Der_BytesSent(Group.ASN1Der_NetworkAndLatency),
+        Asn1Der_BytesReceive(Group.ASN1Der_NetworkAndLatency),
         // ASN1DER - Server Side:
-        Asn1Der_ServerAppProcessDuration,
-        Asn1Der_ServerAppEncodeDuration,
-        Asn1Der_ServerAppDecodeDuration,
+        Asn1Der_ServerAppProcessDuration(Group.ASN1Der_ServerSide),
+        Asn1Der_ServerAppEncodeDuration(Group.ASN1Der_ServerSide),
+        Asn1Der_ServerAppDecodeDuration(Group.ASN1Der_ServerSide),
         // ASN1DER - Business Methods
-        Asn1DerDeleteAttachment,
-        Asn1DerListAttachment,
-        Asn1DerCreateAttachment,
-        Asn1DerCreateFluidItem,
-        Asn1DerCreateFormContainer,
-        Asn1DerGetFluidItemByForm,
+        Asn1DerDeleteAttachment(Group.ASN1Der_Business),
+        Asn1DerListAttachment(Group.ASN1Der_Business),
+        Asn1DerCreateAttachment(Group.ASN1Der_Business),
+        Asn1DerCreateFluidItem(Group.ASN1Der_Business),
+        Asn1DerCreateFormContainer(Group.ASN1Der_Business),
+        Asn1DerGetFluidItemByForm(Group.ASN1Der_Business),
         // REST
-        RestCreateFormContainer,
-        RestCreateFluidItem,
-        RestGetFluidItemByForm,
+        RestCreateFormContainer(Group.RestBusinessWS),
+        RestCreateFluidItem(Group.RestBusinessWS),
+        RestGetFluidItemByForm(Group.RestBusinessWS);
+
+        private final Group group;
+        private Label(Group group) {
+            this.group = group;
+        }
     }
 
     public static void reset() {
@@ -91,7 +108,14 @@ public class PerfStats {
             }
         }
 
-        java.util.List<Outcome> outcomes = new java.util.ArrayList<>();
+        java.util.Map<Group, java.util.List<Outcome>> outcomesByGroup = new java.util.EnumMap<>(Group.class);
+        java.util.Map<Group, Long> groupCallTotals = new java.util.EnumMap<>(Group.class);
+        java.util.Map<Group, Long> groupTimeTotals = new java.util.EnumMap<>(Group.class);
+        for (Group group : Group.values()) {
+            outcomesByGroup.put(group, new java.util.ArrayList<>());
+            groupCallTotals.put(group, 0L);
+            groupTimeTotals.put(group, 0L);
+        }
         int maxLabelLength = 0;
         for (Map.Entry<Label, AtomicLong> entry : stats.asMap().entrySet()) {
             long total = entry.getValue().get();
@@ -104,25 +128,50 @@ public class PerfStats {
             String labelText = String.valueOf(label);
             if (labelText.length() > maxLabelLength) maxLabelLength = labelText.length();
 
-            outcomes.add(new Outcome(label, total, calls));
+            java.util.List<Outcome> groupOutcomes = outcomesByGroup.get(label.getGroup());
+            if (groupOutcomes != null) {
+                groupOutcomes.add(new Outcome(label, total, calls));
+                groupCallTotals.put(label.getGroup(), groupCallTotals.get(label.getGroup()) + calls);
+                groupTimeTotals.put(label.getGroup(), groupTimeTotals.get(label.getGroup()) + total);
+            }
         }
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n===> PERFORMANCE STATS <===\n\n");
-        outcomes.sort((left, right) -> Long.compare(right.total, left.total));
-        for (Outcome outcome : outcomes) {
-            String labelText = String.valueOf(outcome.label);
-            long total = outcome.total;
-            long timesCalled = outcome.calls;
-            long avg = timesCalled == 0 ? 0 : (total / timesCalled);
+        java.util.List<Group> orderedGroups = new java.util.ArrayList<>(outcomesByGroup.keySet());
+        orderedGroups.removeIf(group -> outcomesByGroup.get(group).isEmpty());
+        orderedGroups.sort((left, right) -> {
+            long leftAvg = groupCallTotals.get(left) == 0 ? 0 : groupTimeTotals.get(left) / groupCallTotals.get(left);
+            long rightAvg = groupCallTotals.get(right) == 0 ? 0 : groupTimeTotals.get(right) / groupCallTotals.get(right);
+            int compare = Long.compare(rightAvg, leftAvg);
+            if (compare != 0) return compare;
+            compare = Long.compare(groupTimeTotals.get(right), groupTimeTotals.get(left));
+            if (compare != 0) return compare;
+            return Integer.compare(left.ordinal(), right.ordinal());
+        });
 
-            sb.append(String.format(
-                    "%-" + maxLabelLength + "s : %dms avg. after being called '%s' times. Total %dms.%n",
-                    labelText,
-                    avg,
-                    timesCalled,
-                    total
-            ));
+        for (Group group : orderedGroups) {
+            java.util.List<Outcome> outcomes = outcomesByGroup.get(group);
+            if (outcomes.isEmpty()) continue;
+
+            sb.append(group).append(":\n");
+            sb.append("========================\n");
+            outcomes.sort((left, right) -> Long.compare(right.total, left.total));
+            for (Outcome outcome : outcomes) {
+                String labelText = String.valueOf(outcome.label);
+                long total = outcome.total;
+                long timesCalled = outcome.calls;
+                long avg = timesCalled == 0 ? 0 : (total / timesCalled);
+
+                sb.append(String.format(
+                        "%-" + maxLabelLength + "s : %dms avg. after being called '%s' times. Total %dms.%n",
+                        labelText,
+                        avg,
+                        timesCalled,
+                        total
+                ));
+            }
+            sb.append('\n');
         }
         sb.append("\n===> END <===\n\n");
 

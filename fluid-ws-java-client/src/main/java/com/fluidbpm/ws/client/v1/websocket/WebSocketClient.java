@@ -182,6 +182,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     @OnMessage
     public void onMessage(byte[] message) {
         this.receivedMessages++;
+        PerfStats.increment(PerfStats.Label.Asn1Der_BytesReceive, message.length);
+
         String on = PerfStats.timedStart();
 
         ASNMapperError initial = new ASNMapperError();
@@ -316,6 +318,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                     "(send-binary) Remote Session is not set. Verify if connection is open.",
                     FluidClientException.ErrorCode.IO_ERROR);
         }
+        PerfStats.increment(PerfStats.Label.Asn1Der_BytesSent, messageToSend.length);
         asyncRemote.sendBinary(ByteBuffer.wrap(messageToSend));
         this.sentMessages++;
     }
