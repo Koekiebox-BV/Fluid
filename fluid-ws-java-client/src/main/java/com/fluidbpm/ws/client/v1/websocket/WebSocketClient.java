@@ -1,29 +1,10 @@
 package com.fluidbpm.ws.client.v1.websocket;
 
-import com.fluidbpm.program.api.util.UtilGlobal;
-import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
-import com.fluidbpm.program.api.vo.ws.Error;
-import com.fluidbpm.ws.client.FluidClientException;
-import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
-import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
-import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
-import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
-import com.fluidbpm.ws.client.v1.stats.PerfStats;
-import com.google.common.io.BaseEncoding;
-import com.google.gson.JsonObject;
 import lombok.Getter;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.glassfish.tyrus.client.ClientManager;
-import org.glassfish.tyrus.client.ClientProperties;
-import org.glassfish.tyrus.container.grizzly.client.GrizzlyClientContainer;
 
-import javax.websocket.*;
-import java.io.IOException;
 import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -31,25 +12,18 @@ import java.util.Map;
  * This class includes methods to handle connection lifecycle events, processing received messages,
  * and sending messages through the WebSocket.
  *
+ * This implementation uses Netty for production-ready WebSocket communication.
+ *
  * @param <RespHandler> Type extending {@link IMessageResponseHandler} for handling server responses.
  *
  * @author jasonbruwer on 2016/03/11.
  * @since 1.1
  */
-@ClientEndpoint()
 public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
-    private Session userSession = null;
-    private final Map<String, RespHandler> messageHandlers;
-
-    @Getter
-    protected int sentMessages = 0;
-    @Getter
-    protected int receivedMessages = 0;
+    private final com.fluidbpm.ws.client.v1.netty.websocket.WebSocketClient<RespHandler> nettyClient;
 
     @Getter
     private final Mode mode;
-
-    private ASNMapperFactory asnMapperFactory;
 
     public enum Mode {
         Text,
@@ -64,13 +38,12 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param messageHandlersParam A map of message handlers, where the keys represent
      *                              specific message types and the values are responsible
      *                              for handling corresponding messages.
-     * @throws DeploymentException If there is an error establishing the web socket connection.
-     * @throws IOException If an I/O error occurs during the connection process.
+     * @throws Exception If there is an error establishing the web socket connection.
      */
     public WebSocketClient(
             URI endpointURIParam,
             Map<String, RespHandler> messageHandlersParam
-    ) throws DeploymentException, IOException {
+    ) throws Exception {
         this(endpointURIParam, messageHandlersParam, Mode.Text, ASNGlobal.Type.UNKNOWN);
     }
 
@@ -81,170 +54,24 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param endpointURIParam The Endpoint URI.
      * @param messageHandlersParam Map of message handlers.
      * @param mode Mode to use.
-     * @throws DeploymentException If there is a connection problem.
-     * @throws IOException If there is a I/O problem.
+     * @param requestAsn1Type ASN.1 type for the request.
+     * @throws Exception If there is a connection problem.
      */
     public WebSocketClient(
             URI endpointURIParam,
             Map<String, RespHandler> messageHandlersParam,
             Mode mode,
             int requestAsn1Type
-    ) throws DeploymentException, IOException {
-        this.messageHandlers = messageHandlersParam;
+    ) {
         this.mode = mode;
-        this.asnMapperFactory = new ASNMapperFactory(requestAsn1Type);
-
-        this.sentMessages = 0;
-        this.receivedMessages = 0;
-
-        //ContainerProvider.getWebSocketContainer()
-        ClientManager clMng = ClientManager.createClient(GrizzlyClientContainer.class.getName());
-
-        clMng.getProperties().put(ClientProperties.HANDSHAKE_TIMEOUT, String.valueOf(15000));
-        WebSocketContainer container = clMng;
-
-        //WebSocketContainer container = GrizzlyContainerProvider.getWebSocketContainer();
-        //WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-
-        int tenMB = (1000000 * 10);
-        int oneGB = (tenMB * 100);
-
-        container.setDefaultMaxTextMessageBufferSize(oneGB);
-        container.setDefaultMaxBinaryMessageBufferSize(oneGB);
-
-        container.connectToServer(this, endpointURIParam);
+        this.nettyClient = new com.fluidbpm.ws.client.v1.netty.websocket.WebSocketClient<>(
+                endpointURIParam,
+                messageHandlersParam,
+                com.fluidbpm.ws.client.v1.netty.websocket.WebSocketClient.Mode.valueOf(mode.name()),
+                requestAsn1Type
+        );
     }
 
-    /**
-     * Callback hook for Connection open events.
-     *
-     * @param userSession the userSession which is opened.
-     */
-    @OnOpen
-    public void onOpen(Session userSession) {
-        this.userSession = userSession;
-        // No session timeout:
-        this.userSession.setMaxIdleTimeout(0L);
-        this.receivedMessages = 0;
-        this.sentMessages = 0;
-    }
-
-    /**
-     * Callback hook for Connection close events.
-     *
-     * @param userSession The userSession which is getting closed.
-     * @param reason The reason for connection close.
-     *
-     */
-    @OnClose
-    public void onClose(Session userSession, CloseReason reason) {
-        this.userSession = null;
-
-        if (this.messageHandlers != null) {
-            this.messageHandlers.values().forEach(IMessageResponseHandler::connectionClosed);
-        }
-    }
-
-    /**
-     * Callback hook for Message Events. This method will be invoked when
-     * a client sends a message.
-     * @param message The text message.
-     */
-    @OnMessage
-    public void onMessage(String message) {
-        this.receivedMessages++;
-
-        boolean handlerFoundForMsg = false;
-        for (IMessageResponseHandler handler : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
-            Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
-            if (qualifyObj instanceof Error) {
-                handler.handleMessage(qualifyObj);
-            } else if (qualifyObj instanceof JsonObject) {
-                handler.handleMessage(qualifyObj);
-                handlerFoundForMsg = true;
-                break;
-            }
-        }
-
-        if (!handlerFoundForMsg) {
-            throw new FluidClientException(
-                    "(Text): No handler found for message;\n"+message,
-                    FluidClientException.ErrorCode.IO_ERROR
-            );
-        }
-    }
-
-    /**
-     * Callback hook for receiving binary message events.
-     * Invoked when the server sends a binary message to the client.
-     * @param message The binary message payload received from the server.
-     */
-    @OnMessage
-    public void onMessage(byte[] message) {
-        this.receivedMessages++;
-        PerfStats.increment(PerfStats.Label.Asn1Der_BytesReceive, message.length);
-
-        String on = PerfStats.timedStart();
-
-        ASNMapperError initial = new ASNMapperError();
-        ASN1Sequence asn1Seq = initial.initSeq(message);
-        int typeCode = initial.asInt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ID), "Type Code");
-        String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
-
-        Object qualifyObj = null;
-        IMessageResponseHandler handler = null;
-        if (typeCode == ASNGlobal.Type.ERROR_TYPE) {
-            for (IMessageResponseHandler handlerErr : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
-                qualifyObj = handlerErr.doesHandlerQualifyForProcessing(message);
-                if (qualifyObj != null) {
-                    handler = handlerErr;
-                    break;
-                }
-            }
-        } else {
-            if (UtilGlobal.isNotBlank(echo)) {
-                PerfStats.timedStop(PerfStats.Label.Asn1Der_RoundRobin, echo);
-                handler = this.messageHandlers.get(echo);
-            }
-            if (handler == null) {
-                throw new FluidClientException(
-                        "(Binary): No handler found for message ("+typeCode+");\n"+ BaseEncoding.base16().encode(message),
-                        FluidClientException.ErrorCode.IO_ERROR);
-            }
-            qualifyObj = handler.doesHandlerQualifyForProcessing(message);
-        }
-
-        if (qualifyObj == null) {
-            throw new FluidClientException(
-                    "(Binary): No qualified object found;\n"+ BaseEncoding.base16().encode(message),
-                    FluidClientException.ErrorCode.IO_ERROR
-            );
-        }
-
-        PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_DoesHandlerQualify, on);
-        String tsHandleMsg = PerfStats.timedStart();
-        handler.handleMessage(qualifyObj);
-        PerfStats.timedStop(PerfStats.Label.Asn1DerMapper_HandleMessage, tsHandleMsg);
-    }
-
-    /**
-     * Callback hook for handling errors that occur during WebSocket communication.
-     * This method is invoked when an error is encountered either due to a session issue
-     * or other exceptions during WebSocket events.
-     *
-     * @param session The WebSocket session during which the error occurred.
-     *                It may be {@code null} if the session is unavailable.
-     * @param t The {@code Throwable} error or exception that was encountered.
-     */
-    @OnError
-    public void onError(Session session, Throwable t) {
-        System.err.println("WS error: " + (session != null ? session.getId() : "n/a") + " -> ");
-        t.printStackTrace();
-        for (IMessageResponseHandler handler : new ArrayList<IMessageResponseHandler>(this.messageHandlers.values())) {
-            Error err = new Error(FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR, t.getMessage());
-            handler.handleMessage(err);
-        }
-    }
 
     /**
      * Send a message.
@@ -252,30 +79,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param aFluidVo The JSON Object to send.
      */
     public void sendMessage(ABaseFluidVO aFluidVo) {
-        if (aFluidVo == null) {
-            throw new FluidClientException("No Object to send!", FluidClientException.ErrorCode.IO_ERROR);
-        }
-
-        if (UtilGlobal.isNotBlank(aFluidVo.getEcho())) {
-            PerfStats.timedStart(aFluidVo.getEcho());
-        }
-
-        if (this.mode == Mode.Binary) {
-            if (aFluidVo instanceof BaseTransmission) {
-                BaseTransmission bt = (BaseTransmission)aFluidVo;
-                this.sendMessage(this.asnMapperFactory.writeObjectForSend(bt));
-            } else {
-                this.sendMessage(this.asnMapperFactory.writeObjectForSend(aFluidVo));
-            }
-        } else if (aFluidVo instanceof ABaseFluidGSONObject) {
-            ABaseFluidGSONObject casted = (ABaseFluidGSONObject)aFluidVo;
-            this.sendMessage(casted.toJsonObject().toString());
-        } else {
-            throw new FluidClientException(
-                    "Unable to process '"+aFluidVo+"'.",
-                    FluidClientException.ErrorCode.ASN_1_ERROR
-            );
-        }
+        this.nettyClient.sendMessage(aFluidVo);
     }
 
     /**
@@ -283,58 +87,22 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param messageToSend The text message to send.
      */
     public void sendMessage(String messageToSend) {
-        if (this.userSession == null) {
-            throw new FluidClientException(
-                    "User Session is not set. Verify if connection is open.",
-                    FluidClientException.ErrorCode.SESSION_EXPIRED
-            );
-        }
-
-        RemoteEndpoint.Async asyncRemote = null;
-        if ((asyncRemote = this.userSession.getAsyncRemote()) == null) {
-            throw new FluidClientException(
-                    "Remote Session is not set. Verify if connection is open.",
-                    FluidClientException.ErrorCode.IO_ERROR);
-        }
-        asyncRemote.sendText(messageToSend);
-        this.sentMessages++;
+        this.nettyClient.sendMessage(messageToSend);
     }
 
     /**
-     * Send a message as text.
-     * @param messageToSend The text message to send.
+     * Send a message as binary.
+     * @param messageToSend The binary message to send.
      */
     public void sendMessage(byte[] messageToSend) {
-        if (this.userSession == null) {
-            throw new FluidClientException(
-                    "(send-binary) User Session is not set. Verify if connection is open.",
-                    FluidClientException.ErrorCode.SESSION_EXPIRED
-            );
-        }
-
-        RemoteEndpoint.Async asyncRemote = null;
-        if ((asyncRemote = this.userSession.getAsyncRemote()) == null) {
-            throw new FluidClientException(
-                    "(send-binary) Remote Session is not set. Verify if connection is open.",
-                    FluidClientException.ErrorCode.IO_ERROR);
-        }
-        PerfStats.increment(PerfStats.Label.Asn1Der_BytesSent, messageToSend.length);
-        asyncRemote.sendBinary(ByteBuffer.wrap(messageToSend));
-        this.sentMessages++;
+        this.nettyClient.sendMessage(messageToSend);
     }
 
     /**
      * Closes the Web Socket User session.
      */
     public void closeSession() {
-        if (this.userSession == null) return;
-
-        try {
-            this.userSession.close();
-        } catch (IOException e) {
-            throw new FluidClientException(
-                    "Unable to close session. "+e.getMessage(), e, FluidClientException.ErrorCode.IO_ERROR);
-        }
+        this.nettyClient.closeSession();
     }
 
     /**
@@ -343,8 +111,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @return {@code true} if session is open, otherwise {@code false}.
      */
     public boolean isSessionOpen() {
-        if (this.userSession == null) return false;
-        return this.userSession.isOpen();
+        return this.nettyClient.isSessionOpen();
     }
 
     /**
@@ -353,8 +120,25 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @return {@code Session ID} if session is open, otherwise {@code null}.
      */
     public String getSessionId(){
-        if (this.userSession == null) return null;
-        return this.userSession.getId();
+        return this.nettyClient.getSessionId();
+    }
+
+    /**
+     * Gets the count of sent messages.
+     *
+     * @return The number of messages sent
+     */
+    public int getSentMessages() {
+        return this.nettyClient.getSentMessages();
+    }
+
+    /**
+     * Gets the count of received messages.
+     *
+     * @return The number of messages received
+     */
+    public int getReceivedMessages() {
+        return this.nettyClient.getReceivedMessages();
     }
 
     /**
@@ -365,7 +149,6 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      *             for the {@code asnMapperFactory}.
      */
     public void setAsnMapperFactoryType(int type) {
-        if (this.asnMapperFactory == null) return;
-        this.asnMapperFactory.setType(type);
+        this.nettyClient.setAsnMapperFactoryType(type);
     }
 }

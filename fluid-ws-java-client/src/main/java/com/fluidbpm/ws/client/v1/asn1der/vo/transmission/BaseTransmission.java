@@ -20,6 +20,7 @@ import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents an empty value object extending the base fluid value object.
@@ -31,6 +32,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class BaseTransmission extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 

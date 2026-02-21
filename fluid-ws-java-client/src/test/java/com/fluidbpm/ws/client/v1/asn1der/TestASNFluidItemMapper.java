@@ -99,14 +99,19 @@ public class TestASNFluidItemMapper extends ABaseTestCase {
         attachments.add(att1);
         item.setAttachments(attachments);
 
-        PayloadPopulate pp = new PayloadPopulate();
-        ASNMapperForm mapForm = new ASNMapperForm(pp);
-        ASNMapperField mapField = new ASNMapperField(pp);
-        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+        ASNMapperFluidItem mapper = mapperFluidItem();
 
         byte[] raw = seqBytes(mapper.encode(item));
         FluidItem decoded = mapper.decode(raw);
         Assert.assertEquals("Decoded id is not as expected.", Long.valueOf(-1L), decoded.getId());
+    }
+
+    private static ASNMapperFluidItem mapperFluidItem() {
+        PayloadPopulate pp = new PayloadPopulate();
+        ASNMapperForm mapForm = new ASNMapperForm(pp);
+        ASNMapperField mapField = new ASNMapperField(pp);
+        ASNMapperFluidItem mapper = new ASNMapperFluidItem(mapForm, mapField);
+        return mapper;
     }
 
     @Test

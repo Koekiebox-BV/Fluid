@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.asn1der.vo.transmission;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ import java.util.stream.Collectors;
  * - Global fields
  */
 @Getter
+@ToString
 public class PayloadPopulate extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
 

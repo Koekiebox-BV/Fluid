@@ -207,7 +207,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             PerfStats.reset();
             sleepForSeconds(1);
             log.info("1 THREAD STATS - 100 ITEMS:");
-            List<Long> createdFormIds = this.submitCycle(payPop, 100, 20, flowName, viewWorkView);
+            List<Long> createdFormIds = this.submitCycle(payPop, 100, 1, flowName, viewWorkView);
             PerfStats.printOutcomes();
 
             log.info("5 THREAD STATS - 300 ITEMS:");

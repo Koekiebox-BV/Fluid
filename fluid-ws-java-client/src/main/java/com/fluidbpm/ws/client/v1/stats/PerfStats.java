@@ -163,13 +163,26 @@ public class PerfStats {
                 long timesCalled = outcome.calls;
                 long avg = timesCalled == 0 ? 0 : (total / timesCalled);
 
-                sb.append(String.format(
-                        "%-" + maxLabelLength + "s : %dms avg. after being called '%s' times. Total %dms.%n",
-                        labelText,
-                        avg,
-                        timesCalled,
-                        total
-                ));
+                switch (outcome.label) {
+                    case Asn1Der_BytesSent:
+                    case Asn1Der_BytesReceive:
+                        sb.append(String.format(
+                                "%-" + maxLabelLength + "s : %d bytes avg. after being called '%s' times. Total %d KB's.%n",
+                                labelText,
+                                avg,
+                                timesCalled,
+                                total
+                        ));
+                        break;
+                    default:
+                        sb.append(String.format(
+                                "%-" + maxLabelLength + "s : %dms avg. after being called '%s' times. Total %dms.%n",
+                                labelText,
+                                avg,
+                                timesCalled,
+                                total % 1024//Kilobytes.
+                        ));
+                }
             }
             sb.append('\n');
         }

@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.asn1der.vo.transmission;
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Represents a specific implementation of a multi-choice value object.
@@ -27,6 +28,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class ASNMultiChoice extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
     private final String alias;
