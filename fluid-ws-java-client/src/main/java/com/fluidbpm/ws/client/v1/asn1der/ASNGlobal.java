@@ -123,6 +123,9 @@ public class ASNGlobal {
             public static final String FORM_CONT_DELETE = "form_container/delete";
             public static final String FORM_CONT_EXEC_CUSTOM_ACTION = "form_container/exec_custom_action";
             public static final String FORM_CONT_CREATE_TABLE_RECORD = "form_container/create_table_record";
+
+            public static final String FORM_CONT_GET_TABLE_FORMS = "form_container/get_table_forms";
+            public static final String FORM_CONT_EXEC_NATIVE_SQL = "form_container/exec_native_sql";
         }
 
         public static final class FormDefinition {
@@ -134,19 +137,26 @@ public class ASNGlobal {
         }
 
         public static final class FormField {
-
+            public static final String FORM_FIELD_BY_FORM_NAMES_AND_LOGGED_IN_USER = "form_field/by_form_names_and_logged_in_user";
+            public static final String FORM_FIELD_BY_USER_QUERIES = "form_field/by_user_queries";
+            public static final String FORM_FIELD_BY_NAME = "form_field/by_name";
+            public static final String FORM_FIELD_BY_ID = "form_field/by_id";
         }
 
         public static final class Role {
-
+            public static final String ROLE_BY_NAME = "role/by_name";
         }
 
         public static final class PersonalInventory {
-
+            public static final String PI_BY_USER = "personal_inventory/by_user";
+            public static final String PI_REMOVE_FORM = "personal_inventory/remove_form";
+            public static final String PI_CLEAR_FORMS = "personal_inventory/clear_forms";
         }
 
         public static final class UserQuery {
-            
+            public static final String UQ_BY_LOGGED_IN_USER = "user_query/by_logged_in_user";
+            public static final String UQ_BY_NAME = "user_query/by_name";
+            public static final String UQ_EXEC = "user_query/exec_query";
         }
     }
 }

@@ -151,7 +151,7 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
         this.receivedMessages++;
         PerfStats.increment(PerfStats.Label.Asn1Der_BytesReceive, message.length);
 
-        System.out.println("Zool-Receive (b64): "+ message.length);
+        //TODO System.out.println("Zool-Receive (b64): "+ message.length);
 
         String on = PerfStats.timedStart();
 

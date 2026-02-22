@@ -70,16 +70,16 @@ public class PerfStats {
         Asn1Der_ServerAppEncodeDuration(Group.ASN1Der_ServerSide),
         Asn1Der_ServerAppDecodeDuration(Group.ASN1Der_ServerSide),
         // ASN1DER - Business Methods
-        Asn1DerDeleteAttachment(Group.ASN1Der_Business),
-        Asn1DerListAttachment(Group.ASN1Der_Business),
-        Asn1DerCreateAttachment(Group.ASN1Der_Business),
-        Asn1DerCreateFluidItem(Group.ASN1Der_Business),
-        Asn1DerCreateFormContainer(Group.ASN1Der_Business),
-        Asn1DerGetFluidItemByForm(Group.ASN1Der_Business),
+        Asn1Der_DeleteAttachment(Group.ASN1Der_Business),
+        Asn1Der_ListAttachment(Group.ASN1Der_Business),
+        Asn1Der_CreateAttachment(Group.ASN1Der_Business),
+        Asn1Der_CreateFluidItem(Group.ASN1Der_Business),
+        Asn1Der_CreateFormContainer(Group.ASN1Der_Business),
+        Asn1Der_GetFluidItemByForm(Group.ASN1Der_Business),
         // REST
-        RestCreateFormContainer(Group.RestBusinessWS),
-        RestCreateFluidItem(Group.RestBusinessWS),
-        RestGetFluidItemByForm(Group.RestBusinessWS);
+        Rest_CreateFormContainer(Group.RestBusinessWS),
+        Rest_CreateFluidItem(Group.RestBusinessWS),
+        Rest_GetFluidItemByForm(Group.RestBusinessWS);
 
         private final Group group;
         private Label(Group group) {

@@ -33,6 +33,7 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageReceivedCallback;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import lombok.Setter;
 import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.util.List;
@@ -74,19 +75,60 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNGlobal.Type.ERROR_TYPE;
 public class WebSocketASNDERClient extends
         ABaseClientWebSocket<WebSocketASNDERClient.TransmissionMessageHandler, BaseTransmission> {
 
+    @Getter
+    @Setter
+    private PayloadPopulate payloadPopulate;
+
     /**
-     * Constructs a new instance of the WebSocketASNDERClient. This client is designed to
-     * initialize and manage a WebSocket connection for transmitting and receiving
-     * {@code BaseTransmission} messages. It extends the functionality of
-     * {@code ABaseClientWebSocket} and supports handling specific messaging operations
-     * related to ASN transmission.
+     * Constructs a new instance of the WebSocketASNDERClient. This constructor initializes
+     * the client with the necessary parameters to manage a WebSocket connection for
+     * transmitting and receiving {@code BaseTransmission} messages. It provides flexibility
+     * to configure timeout, message handling, authentication, and payload population.
      *
      * @param endpointBase The base URL endpoint for the WebSocket connection.
-     * @param msgRecCallback The callback implementation to handle received messages and errors.
-     *                        It processes {@code BaseTransmission} objects.
+     * @param msgRecCallback The callback interface to handle messages received and error messages.
+     *                       This facilitates processing of incoming {@code BaseTransmission} messages.
      * @param serviceTicketAsHex A hexadecimal string representation of the service ticket, used
-     *                           to authenticate and generate the connection URL.
-     * @param timeoutInMillis The timeout value in milliseconds for the WebSocket connection.
+     *                           to authenticate and generate the connection URL. Provides security
+     *                           for establishing the WebSocket connection.
+     * @param timeoutInMillis The timeout value in milliseconds for the WebSocket connection. This
+     *                        governs the duration for which the client waits for a response.
+     * @param payloadPopulate An instance of {@code PayloadPopulate} used to request and manage
+     *                        data population within the WebSocket client.
+     */
+    public WebSocketASNDERClient(
+            String endpointBase,
+            IMessageReceivedCallback<BaseTransmission> msgRecCallback,
+            String serviceTicketAsHex,
+            long timeoutInMillis,
+            PayloadPopulate payloadPopulate
+    ) {
+        super(
+                endpointBase,
+                msgRecCallback,
+                timeoutInMillis,
+                ASNGlobal.Path.transmissionPath(serviceTicketAsHex),
+                WebSocketClient.Mode.Binary
+        );
+        this.setServiceTicket(serviceTicketAsHex);
+        this.setPayloadPopulate(payloadPopulate);
+    }
+
+    /**
+     * Constructs a new instance of the WebSocketASNDERClient with the specified parameters.
+     * This constructor initializes the client with the necessary values to establish
+     * a WebSocket connection for transmitting and receiving {@code BaseTransmission} messages.
+     * It provides configuration options for timeout, authentication, and message handling.
+     *
+     * @param endpointBase The base URL endpoint for the WebSocket connection. This is the primary URL
+     *                     used to communicate with the WebSocket server.
+     * @param msgRecCallback The callback interface to handle incoming {@code BaseTransmission} messages
+     *                       and errors. Used for processing messages received from the WebSocket server.
+     * @param serviceTicketAsHex A hexadecimal string representation of the service ticket used for
+     *                           authentication. This is utilized to secure the WebSocket connection and
+     *                           generate the connection URL.
+     * @param timeoutInMillis The timeout value in milliseconds for establishing the WebSocket connection.
+     *                        Defines the duration the client waits for a response before timing out.
      */
     public WebSocketASNDERClient(
             String endpointBase,
@@ -105,22 +147,48 @@ public class WebSocketASNDERClient extends
     }
 
     /**
-     * Constructs a new instance of the WebSocketASNDERClient. This constructor is a simplified
-     * version that initializes the client with mandatory parameters to manage a WebSocket
-     * connection for transmitting and receiving {@code BaseTransmission} messages.
-     * It utilizes default configurations for message handling and connection initialization.
+     * Constructs a new instance of the WebSocketASNDERClient with the specified parameters.
+     * This constructor initializes the client with the necessary values to establish a WebSocket
+     * connection and manage payload population while authenticating with a service ticket.
+     *
+     * @param endpointBase The base URL endpoint for the WebSocket connection. This is the primary URL
+     *                     used to establish communication with the WebSocket server.
+     * @param serviceTicketAsHex A hexadecimal string representation of the service ticket, used to
+     *                           authenticate the client and generate the connection URL. Ensures security
+     *                           for the WebSocket connection.
+     * @param timeoutInMillis The timeout value in milliseconds for the WebSocket connection. Specifies
+     *                        the duration the client waits for a response before timing out.
+     * @param payloadPopulate An instance of {@code PayloadPopulate} used for requesting and managing
+     *                        data population within the WebSocket client.
+     */
+    public WebSocketASNDERClient(
+            String endpointBase,
+            String serviceTicketAsHex,
+            long timeoutInMillis,
+            PayloadPopulate payloadPopulate
+    ) {
+        this(endpointBase, null, serviceTicketAsHex, timeoutInMillis, payloadPopulate);
+    }
+
+    /**
+     * Constructs a new instance of the {@code WebSocketASNDERClient} with the specified parameters.
+     * This constructor initializes the client with essential configurations to establish a WebSocket
+     * connection for transmitting and receiving messages, as well as facilitating timeout configuration
+     * and authentication.
      *
      * @param endpointBase The base URL endpoint for the WebSocket connection.
-     * @param serviceTicketAsHex A hexadecimal string representation of the service ticket, used
-     *                           to authenticate and generate the connection URL.
+     *                     This is the primary address used to initiate communication with the WebSocket server.
+     * @param serviceTicketAsHex A hexadecimal string representation of the service ticket,
+     *                           used for authentication and establishing a secure connection.
      * @param timeoutInMillis The timeout value in milliseconds for the WebSocket connection.
+     *                        This specifies the duration the client will wait for a response.
      */
     public WebSocketASNDERClient(
             String endpointBase,
             String serviceTicketAsHex,
             long timeoutInMillis
     ) {
-        this(endpointBase, null, serviceTicketAsHex, timeoutInMillis);
+        this(endpointBase, null, serviceTicketAsHex, timeoutInMillis, null);
     }
 
     /**
@@ -213,7 +281,10 @@ public class WebSocketASNDERClient extends
         btPayPop.setTransmissionObject(new Attachment());
 
         BaseTransmission rsp = this.request(btPayPop);
-        return rsp.getPayloadPopulate();
+
+        PayloadPopulate returnVal =  rsp.getPayloadPopulate();
+        this.payloadPopulate = returnVal;
+        return returnVal;
     }
 
     /**
@@ -226,7 +297,11 @@ public class WebSocketASNDERClient extends
      */
     @Override
     public TransmissionMessageHandler getNewHandlerInstance() {
-        return new TransmissionMessageHandler(this.messageReceivedCallback, this.webSocketClient);
+        return new TransmissionMessageHandler(
+                this.messageReceivedCallback,
+                this.webSocketClient,
+                this
+        );
     }
 
     /**
@@ -235,12 +310,15 @@ public class WebSocketASNDERClient extends
     @Getter
     public static class TransmissionMessageHandler extends AGenericListMessageHandler<BaseTransmission> {
         private BaseTransmission returnedBT;
+        private WebSocketASNDERClient derClient;
 
         public TransmissionMessageHandler(
                 IMessageReceivedCallback<BaseTransmission> messageReceivedCallback,
-                WebSocketClient<?> webSocketClient
+                WebSocketClient<?> webSocketClient,
+                WebSocketASNDERClient derClient
         ) {
             super(messageReceivedCallback, webSocketClient);
+            this.derClient = derClient;
         }
 
         @Override
@@ -274,7 +352,11 @@ public class WebSocketASNDERClient extends
                 // We want the [BaseTransmission] object:
                 String echo = initial.asGeneralTxt(asn1Seq.getObjectAt(ASNBaseMapper.Map.ECHO), "Echo");
                 if (this.expectedEchoMessagesBeforeComplete.contains(echo)) {
-                    BaseTransmission bt = new ASNMapperFactory(typeCode).readObjectFromReceived(asn1Seq);
+                    ASNMapperFactory factory = new ASNMapperFactory(typeCode);
+                    if (this.derClient.getPayloadPopulate() != null) {
+                        factory.setPayloadPopulate(this.derClient.getPayloadPopulate());
+                    }
+                    BaseTransmission bt = factory.readObjectFromReceived(asn1Seq);
                     ServerProcessStats servStats = bt.getServerProcessStats();
                     if (servStats != null) {
                         long serverRespondedAt = servStats.getAppLogicTsResponded();

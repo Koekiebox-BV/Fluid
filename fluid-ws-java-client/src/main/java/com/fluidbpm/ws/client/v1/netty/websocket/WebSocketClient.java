@@ -180,8 +180,10 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         if (this.mode == Mode.Binary) {
             if (aFluidVo instanceof BaseTransmission) {
                 BaseTransmission bt = (BaseTransmission) aFluidVo;
+
+                // Do not write the Payload Populate to the host:
                 this.asnMapperFactory.setSkipPPForEncDec(true);
-                System.out.println("Zool-Send: "+bt.getRequestObject().getPath());
+                //TODO System.out.println("Zool-Send: "+bt.getRequestObject().getPath());
 
                 this.sendMessage(this.asnMapperFactory.writeObjectForSend(bt));
             } else {
@@ -228,7 +230,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             );
         }
 
-        System.out.println("Zool-Send (b64): "+ messageToSend.length /*+ "\n" + BaseEncoding.base64().encode(messageToSend)*/);
+        //TODO System.out.println("Zool-Send (b64): "+ messageToSend.length /*+ "\n" + BaseEncoding.base64().encode(messageToSend)*/);
 
         PerfStats.increment(PerfStats.Label.Asn1Der_BytesSent, messageToSend.length);
         channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(messageToSend)));

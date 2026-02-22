@@ -124,7 +124,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             for (int i = 0;i < count;i++) {
                 String psAtt = PerfStats.timedStart();
                 BaseTransmission btRsp = derClient.request(btCreateAtt);
-                PerfStats.timedStop(PerfStats.Label.Asn1DerCreateAttachment, psAtt);
+                PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateAttachment, psAtt);
 
                 attachmentsToDel.add((Attachment) btRsp.getTransmissionObject());
             }
@@ -146,13 +146,13 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 btDelAtt.setRequestObject(new RequestObject(ASNGlobal.Path.Attachment.ATTACHMENT_DELETE));
                 btDelAtt.setTransmissionObject(attachmentsToDel.get(i));
                 derClient.request(btDelAtt);
-                PerfStats.timedStop(PerfStats.Label.Asn1DerDeleteAttachment, psDelAtt);
+                PerfStats.timedStop(PerfStats.Label.Asn1Der_DeleteAttachment, psDelAtt);
             }
 
             // List attachments:
             String psListAtt = PerfStats.timedStart();
             BaseTransmission btAttListAfterDel = derClient.request(btListAtt);
-            PerfStats.timedStop(PerfStats.Label.Asn1DerListAttachment, psListAtt);
+            PerfStats.timedStop(PerfStats.Label.Asn1Der_ListAttachment, psListAtt);
             AttachmentListing listingAfterDel = (AttachmentListing) btAttListAfterDel.getTransmissionObject();
             TestCase.assertNotNull(listingAfterDel);
             TestCase.assertEquals(1, listingAfterDel.getListing().size());
@@ -213,7 +213,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             log.info("5 THREAD STATS - 300 ITEMS:");
             PerfStats.reset();
             sleepForSeconds(1);
-            //TODO createdFormIds.addAll(this.submitCycle(payPop,300, 5, flowName, viewWorkView));
+            createdFormIds.addAll(this.submitCycle(payPop,200, 5, flowName, viewWorkView));
             PerfStats.printOutcomes();
         }
     }
@@ -260,7 +260,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
                     String ref = PerfStats.timedStart();
                     BaseTransmission btCreatedItm = wsClient.request(btFldItmReq);
-                    PerfStats.timedStop(PerfStats.Label.Asn1DerCreateFluidItem, ref);
+                    PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateFluidItem, ref);
                     FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
 
                     TestCase.assertNotNull(toCreate);
@@ -278,7 +278,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
             long timeTakenInMs = (System.currentTimeMillis() - starter);
             log.info(String.format("ASN1DER-TOOK   [%d (create-only):%d (fetch)]ms to create [%d] items.",
-                    PerfStats.totalFor(PerfStats.Label.Asn1DerCreateFluidItem), timeTakenInMs, itemCount));
+                    PerfStats.totalFor(PerfStats.Label.Asn1Der_CreateFluidItem), timeTakenInMs, itemCount));
 
             // Verify the stored data:
             AtomicInteger maxCount = new AtomicInteger(0);
@@ -328,7 +328,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
                     String ref = PerfStats.timedStart();
                     FluidItem toCreate = flowItmClient.createFlowItem(termItm, flowName);
-                    PerfStats.timedStop(PerfStats.Label.RestCreateFluidItem, ref);
+                    PerfStats.timedStop(PerfStats.Label.Rest_CreateFluidItem, ref);
 
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
@@ -343,7 +343,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
             long timeTakenInMs = (System.currentTimeMillis() - starter);
             log.info(String.format("REST-JSON-TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
-                    PerfStats.totalFor(PerfStats.Label.RestCreateFluidItem), timeTakenInMs, itemCount));
+                    PerfStats.totalFor(PerfStats.Label.Rest_CreateFluidItem), timeTakenInMs, itemCount));
             /*
             createdFormIds.forEach(id -> {
                 long start = System.currentTimeMillis();
