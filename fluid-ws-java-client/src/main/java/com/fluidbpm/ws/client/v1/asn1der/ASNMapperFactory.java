@@ -36,7 +36,7 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
  * to facilitate the encoding and decoding process of transmission objects.
  */
 public class ASNMapperFactory {
-    private ASNMapperBaseTransmission baseTransmission;
+    private ASNMapperBaseTransmission mapperBaseTransmission;
 
     /**
      * Constructs an instance of {@code ASNMapperFactory}. This constructor initializes
@@ -49,7 +49,7 @@ public class ASNMapperFactory {
      */
     public ASNMapperFactory(int type) {
         super();
-        this.baseTransmission = new ASNMapperBaseTransmission(type);
+        this.mapperBaseTransmission = new ASNMapperBaseTransmission(type);
     }
 
     /**
@@ -61,7 +61,7 @@ public class ASNMapperFactory {
      *                        for a transmission object.
      */
     public void setPayloadPopulate(PayloadPopulate payloadPopulate) {
-        this.baseTransmission.setPayloadPopulate(payloadPopulate);
+        this.mapperBaseTransmission.setPayloadPopulate(payloadPopulate);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ASNMapperFactory {
      * @return An instance of {@link ABaseFluidVO} populated with the decoded data.
      */
     public ABaseFluidVO readObjectFromReceivedTransMisObj(ASN1Sequence baseTrans) {
-        BaseTransmission bt = this.baseTransmission.decode(baseTrans);
+        BaseTransmission bt = this.mapperBaseTransmission.decode(baseTrans);
         return bt.getTransmissionObject();
     }
 
@@ -85,7 +85,7 @@ public class ASNMapperFactory {
      * @return An instance of {@link BaseTransmission} populated with the decoded data.
      */
     public BaseTransmission readObjectFromReceived(ASN1Sequence baseTrans) {
-        return this.baseTransmission.decode(baseTrans);
+        return this.mapperBaseTransmission.decode(baseTrans);
     }
 
     /**
@@ -103,7 +103,7 @@ public class ASNMapperFactory {
      */
     public BaseTransmission readBaseTransmission(byte[] derBytes) {
         try {
-            return this.baseTransmission.decode(
+            return this.mapperBaseTransmission.decode(
                     (ASN1Sequence)ASN1Primitive.fromByteArray(derBytes)
             );
         } catch (
@@ -194,7 +194,7 @@ public class ASNMapperFactory {
             ABaseFluidVO objVo,
             ServerProcessStats serverProcessStats
     ) {
-        BaseTransmission bt = new BaseTransmission(this.baseTransmission.getTransmissionObjectType());
+        BaseTransmission bt = new BaseTransmission(this.mapperBaseTransmission.getTransmissionObjectType());
         bt.setPayloadPopulate(payloadPopulate);
         bt.setRequestObject(reqObj);
         bt.setTransmissionObject(objVo);
@@ -212,7 +212,7 @@ public class ASNMapperFactory {
      * @return A byte array representing the serialized form of the provided {@link BaseTransmission} object.
      */
     public byte[] writeObjectForSend(BaseTransmission bt) {
-        return seqBytes(this.baseTransmission.encode(bt));
+        return seqBytes(this.mapperBaseTransmission.encode(bt));
     }
 
     /**
@@ -223,7 +223,17 @@ public class ASNMapperFactory {
      *             transmission object in the {@code baseTransmission} component.
      */
     public void setType(int type) {
-        this.baseTransmission.setTransmissionObjectType(type);
+        this.mapperBaseTransmission.setTransmissionObjectType(type);
+    }
+
+    /**
+     * Sets the flag to skip post-processing for encoding and decoding operations.
+     *
+     * @param skipPPForEncDec a boolean value indicating whether
+     *                        to skip post-processing (true to skip, false otherwise)
+     */
+    public void setSkipPPForEncDec(boolean skipPPForEncDec) {
+        this.mapperBaseTransmission.setSkipPPForEncDec(skipPPForEncDec);
     }
 
     /**
@@ -237,6 +247,6 @@ public class ASNMapperFactory {
      *              related to the transmission.
      */
     public ABaseFluidVO proceedWithTransmissionObject(int type, BaseTransmission toPop) {
-        return this.baseTransmission.proceedWithTransmissionObject(type, toPop, null);
+        return this.mapperBaseTransmission.proceedWithTransmissionObject(type, toPop, null);
     }
 }

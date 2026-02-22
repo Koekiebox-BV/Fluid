@@ -64,6 +64,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
     @Setter
     private PayloadPopulate payloadPopulate;
 
+    @Getter
+    @Setter
+    private boolean skipPPForEncDec = false;
+
     private ASNMapperUser asnMapUser;
     private ASNMapperField asnMapField;
     private ASNMapperForm asnMapForm;
@@ -366,7 +370,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
      *         If no valid entries exist in the list, an empty {@link DERSequence} is returned.
      */
     private DERSequence mcSeqEncodeMC(List<ASNMultiChoiceField> mcFields) {
-        if (mcFields == null || mcFields.isEmpty()) return new DERSequence();
+        if (this.skipPPForEncDec || (mcFields == null || mcFields.isEmpty())) {
+            return new DERSequence();
+        }
 
         ASN1EncodableVector vecMcSeqObjs = new ASN1EncodableVector();
         for (ASNMultiChoiceField field : mcFields) {
@@ -404,7 +410,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
      *         in the list, an empty {@link DERSequence} is returned.
      */
     private DERSequence mcSeqEncodeFieldMeta(List<FormFieldMetaData> ffMetaDatas) {
-        if (ffMetaDatas == null || ffMetaDatas.isEmpty()) return new DERSequence();
+        if (this.skipPPForEncDec || (ffMetaDatas == null || ffMetaDatas.isEmpty())) return new DERSequence();
 
         ASN1EncodableVector vecMetaDatas = new ASN1EncodableVector();
         for (FormFieldMetaData field : ffMetaDatas) {

@@ -83,7 +83,7 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!--dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-container-grizzly-client</artifactId>
 			<scope>provided</scope>
@@ -116,6 +116,14 @@
 		<dependency>
 			<groupId>org.glassfish.tyrus</groupId>
 			<artifactId>tyrus-spi</artifactId>
+			<scope>provided</scope>
+		</dependency-->
+
+		<!--Netty WebSocket Client-->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.2.10.Final</version>
 			<scope>provided</scope>
 		</dependency>
 

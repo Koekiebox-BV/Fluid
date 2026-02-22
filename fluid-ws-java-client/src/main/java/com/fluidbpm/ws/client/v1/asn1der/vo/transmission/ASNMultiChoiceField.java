@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@ToString
 public class ASNMultiChoiceField extends ABaseFluidVO {
     private static final long serialVersionUID = 1L;
     private final String fieldName;

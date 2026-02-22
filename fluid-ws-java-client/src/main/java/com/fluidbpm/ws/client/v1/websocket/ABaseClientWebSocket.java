@@ -23,8 +23,6 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseClientWS;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 
-import javax.websocket.DeploymentException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -170,18 +168,7 @@ public abstract class ABaseClientWebSocket
             this.webSocketClient = new WebSocketClient<>(
                     new URI(completeUrl), this.messageHandlerByEcho, mode, this.getASNReqType()
             );
-        } catch (DeploymentException e) {
-            //Deploy...
-            throw new FluidClientException(
-                    "Unable to create Web Socket client (Deployment). URL ["+ completeUrl+"]: "
-                            +e.getMessage(),
-                    e, FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR);
-        } catch (IOException e) {
-            //I/O...
-            throw new FluidClientException(
-                    "Unable to create Web Socket client (I/O). URL ["+ completeUrl+"]:"+e.getMessage(),
-                    e, FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
-        } catch (URISyntaxException e) {
+        }  catch (URISyntaxException e) {
             //URI Syntax...
             throw new FluidClientException(
                     "Unable to create Web Socket client (URI). URL ["+completeUrl+"]: "+e.getMessage(),
