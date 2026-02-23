@@ -14,6 +14,7 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
+import lombok.Getter;
 import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.util.ArrayList;
@@ -32,7 +33,9 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
     private ChannelPromise handshakeFuture;
     private final WebSocketClient.Mode mode;
 
+    @Getter
     private int sentMessages = 0;
+    @Getter
     private int receivedMessages = 0;
 
     /**
@@ -212,25 +215,7 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
 
         ctx.close();
     }
-
-    /**
-     * Gets the count of sent messages.
-     *
-     * @return The number of messages sent
-     */
-    public int getSentMessages() {
-        return sentMessages;
-    }
-
-    /**
-     * Gets the count of received messages.
-     *
-     * @return The number of messages received
-     */
-    public int getReceivedMessages() {
-        return receivedMessages;
-    }
-
+    
     /**
      * Increments the sent messages counter.
      */

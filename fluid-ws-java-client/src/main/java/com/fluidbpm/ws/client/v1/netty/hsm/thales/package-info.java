@@ -118,8 +118,8 @@
  *
  * @author jasonbruwer
  * @since 1.14
- * @see com.fluidbpm.ws.client.v1.netty.hsm.ThalesHSMClient
- * @see com.fluidbpm.ws.client.v1.netty.hsm.ThalesCommand
- * @see com.fluidbpm.ws.client.v1.netty.hsm.ThalesResponse
+ * @see com.fluidbpm.ws.client.v1.netty.hsm.thales.ThalesHSMClient
+ * @see com.fluidbpm.ws.client.v1.netty.hsm.thales.ThalesCommand
+ * @see com.fluidbpm.ws.client.v1.netty.hsm.thales.ThalesResponse
  */
-package com.fluidbpm.ws.client.v1.netty.hsm;
+package com.fluidbpm.ws.client.v1.netty.hsm.thales;

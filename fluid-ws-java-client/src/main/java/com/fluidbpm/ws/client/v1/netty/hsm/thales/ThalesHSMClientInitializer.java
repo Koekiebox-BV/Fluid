@@ -1,4 +1,4 @@
-package com.fluidbpm.ws.client.v1.netty.hsm;
+package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

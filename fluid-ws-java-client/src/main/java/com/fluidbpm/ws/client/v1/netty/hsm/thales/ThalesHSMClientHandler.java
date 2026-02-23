@@ -1,6 +1,5 @@
-package com.fluidbpm.ws.client.v1.netty.hsm;
+package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
-import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.java.Log;

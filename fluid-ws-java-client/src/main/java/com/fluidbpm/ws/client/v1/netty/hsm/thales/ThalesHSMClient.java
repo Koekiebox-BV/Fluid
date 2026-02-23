@@ -1,4 +1,4 @@
-package com.fluidbpm.ws.client.v1.netty.hsm;
+package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
 import com.fluidbpm.ws.client.FluidClientException;
 import io.netty.bootstrap.Bootstrap;
