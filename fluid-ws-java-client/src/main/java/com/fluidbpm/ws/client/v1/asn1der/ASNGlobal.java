@@ -62,6 +62,8 @@ public class ASNGlobal {
         public static final int TABLE_RECORD = -12;
         public static final int CUSTOM_WEB_ACTION = -13;
         public static final int FLUID_ITEM_LISTING = -14;
+        public static final int USER_QUERY = -15;
+        public static final int USER_QUERY_LISTING = -16;
     }
 
     /**

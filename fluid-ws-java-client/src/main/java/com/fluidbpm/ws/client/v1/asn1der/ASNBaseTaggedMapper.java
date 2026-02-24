@@ -207,6 +207,23 @@ public abstract class ASNBaseTaggedMapper<T extends ABaseFluidVO> extends ASNBas
     }
 
     /**
+     * Decodes the given ASN1Sequence into a list of strings by interpreting each element as a general string.
+     *
+     * @param fieldsSeq the ASN1Sequence containing the fields to decode
+     * @param fieldName the name of the field used for error context in decoding
+     * @return a list of strings decoded from the provided ASN1Sequence
+     */
+    public final List<String> decodeAsGeneralStringList(ASN1Sequence fieldsSeq, String fieldName) {
+        List<String> rulesList = new ArrayList<>();
+        ASN1Sequence seqRules = asSeq(fieldsSeq, fieldName);
+        for (int j = 0; j < seqRules.size(); j++) {
+            String rule = asGeneralTxt(seqRules.getObjectAt(j), fieldName);
+            rulesList.add(rule);
+        }
+        return rulesList;
+    }
+
+    /**
      * Encodes the provided object of type {@code T} into a DER-encoded ASN.1 sequence.
      *
      * This method performs the encoding of the input object by initializing an {@link ASN1EncodableVector}
