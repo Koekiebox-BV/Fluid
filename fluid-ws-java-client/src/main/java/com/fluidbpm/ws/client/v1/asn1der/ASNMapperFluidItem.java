@@ -53,9 +53,12 @@ public class ASNMapperFluidItem extends ASNBaseTaggedMapper<FluidItem> {
     private final ASNMapperFluidItemCustomProperty asnMapCusProp;
 
     /**
-     * 
-     * @param asnMapForm
-     * @param asnMapField
+     * Constructs an instance of ASNMapperFluidItem using the specified form and field objects.
+     * This constructor initializes the associated form, field, attachment,
+     * and custom property mappings for the fluid item.
+     *
+     * @param asnMapForm The ASNMapperForm instance associated with this fluid item. Must not be null.
+     * @param asnMapField The ASNMapperField instance associated with this fluid item. Must not be null.
      */
     public ASNMapperFluidItem(
             ASNMapperForm asnMapForm,
@@ -128,9 +131,10 @@ public class ASNMapperFluidItem extends ASNBaseTaggedMapper<FluidItem> {
                 break;
             case Map.ATTACHMENTS:
                 toPop.setAttachments(
-                        this.asnMapAttachment.decodeAsList(asSeq(obj, FluidItem.JSONMapping.ATTACHMENTS),
-                                FluidItem.JSONMapping.ATTACHMENTS)
-                );
+                        this.asnMapAttachment.decodeAsList(
+                                asSeq(obj, FluidItem.JSONMapping.ATTACHMENTS),
+                                FluidItem.JSONMapping.ATTACHMENTS
+                        ));
                 break;
             case Map.CUSTOM_PROPERTIES:
                 toPop.setCustomProperties(

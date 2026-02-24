@@ -15,6 +15,9 @@
 
 package com.fluidbpm.ws.client.v1.netty.hsm;
 
+import com.fluidbpm.ws.client.v1.netty.hsm.thales.ThalesCommand;
+import com.fluidbpm.ws.client.v1.netty.hsm.thales.ThalesHSMClient;
+import com.fluidbpm.ws.client.v1.netty.hsm.thales.ThalesResponse;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.Test;

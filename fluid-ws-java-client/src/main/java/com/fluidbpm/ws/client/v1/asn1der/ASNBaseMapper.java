@@ -509,4 +509,20 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
             primVector.add(new DERTaggedObject(true, index, new DERSequence(fieldsVect)));
         }
     }
+
+    /**
+     * Populates the provided ASN1EncodableVector with a DERTaggedObject containing
+     * the encoded representations of the elements in the provided list.
+     *
+     * @param list the list of elements to be encoded and added to the vector
+     * @param primVector the ASN1EncodableVector where the DERTaggedObject will be added
+     * @param index the tag number used to create the DERTaggedObject
+     */
+    protected void setAsGeneralStringList(List<String> list, ASN1EncodableVector primVector, int index) {
+        if (list != null && !list.isEmpty()) {
+            ASN1EncodableVector fieldsVect = new ASN1EncodableVector();
+            for (String field : list) fieldsVect.add(new DERGeneralString(field));
+            primVector.add(new DERTaggedObject(true, index, new DERSequence(fieldsVect)));
+        }
+    }
 }
