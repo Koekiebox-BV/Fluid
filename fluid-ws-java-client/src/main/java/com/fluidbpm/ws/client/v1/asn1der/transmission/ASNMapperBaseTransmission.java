@@ -30,6 +30,7 @@ import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
+import com.fluidbpm.program.api.vo.role.Role;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.userquery.UserQueryListing;
 import com.fluidbpm.program.api.vo.ws.Error;
@@ -325,6 +326,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case USER_QUERY_LISTING:
                     ASNMapperUserQuery mapUserQuery = new ASNMapperUserQuery(this.asnMapField);
                     seqTransObj = new ASNMapperUserQueryListing(mapUserQuery).encode((UserQueryListing) transObj);
+                    break;
+                case ROLE:
+                    seqTransObj = new ASNMapperRole().encode((Role) transObj);
                     break;
                 case CUSTOM_WEB_ACTION:
                     ASNMapperCustomWebAction asnMapWebAction = new ASNMapperCustomWebAction(this.asnMapForm);
@@ -718,6 +722,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 break;
             case USER_QUERY:
                 mapper = new ASNMapperUserQuery(this.asnMapField);
+                break;
+            case ROLE:
+                mapper = new ASNMapperRole();
                 break;
             case USER_QUERY_LISTING:
                 ASNMapperUserQuery mapperUQ = new ASNMapperUserQuery(this.asnMapField);

@@ -84,15 +84,19 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
      * @param field an instance of {@code ASNMapperField} containing the field-related mappings
      *              for handling ASN.1 structured data.
      */
-    public ASNMapperForm(
-            ASNMapperUser user,
-            ASNMapperField field
-    ) {
+    public ASNMapperForm(ASNMapperUser user, ASNMapperField field) {
         super(InitType.ID_ONLY);
         this.asnMapUser = user;
         this.asnMapField = field;
     }
 
+    /**
+     * Constructs an instance of the ASNMapperForm class using the specified {@code PayloadPopulate} object.
+     * This constructor initializes the {@code ASNMapperForm} with default instances of {@code ASNMapperUser}
+     * and a new {@code ASNMapperField} initialized with the provided {@code PayloadPopulate}.
+     *
+     * @param payloadPopulate an instance of {@code PayloadPopulate} used to initialize the {@code ASNMapperField}.
+     */
     public ASNMapperForm(PayloadPopulate payloadPopulate) {
         this(new ASNMapperUser(), new ASNMapperField(payloadPopulate));
     }
