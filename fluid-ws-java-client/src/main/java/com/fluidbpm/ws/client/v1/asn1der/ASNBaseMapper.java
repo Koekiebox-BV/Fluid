@@ -130,6 +130,14 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
     public abstract T decode(byte[] der);
 
     /**
+     * Decodes the provided ASN1Sequence into an instance of type T.
+     *
+     * @param seq the ASN1Sequence to be decoded
+     * @return the decoded instance of type T
+     */
+    public abstract T decode(ASN1Sequence seq);
+
+    /**
      * Encodes a given value object of type {@code T} into a {@code DERSequence}.
      *
      * @param vo the value object of type {@code T} that needs to be encoded.

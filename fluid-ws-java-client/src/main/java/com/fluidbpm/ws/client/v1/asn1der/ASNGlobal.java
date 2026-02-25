@@ -65,6 +65,7 @@ public class ASNGlobal {
         public static final int USER_QUERY = -15;
         public static final int USER_QUERY_LISTING = -16;
         public static final int ROLE = -17;
+        public static final int USER = -18;
     }
 
     /**
