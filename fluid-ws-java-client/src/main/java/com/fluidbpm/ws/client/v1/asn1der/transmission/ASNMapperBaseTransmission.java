@@ -31,6 +31,7 @@ import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.role.Role;
+import com.fluidbpm.program.api.vo.user.User;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.userquery.UserQueryListing;
 import com.fluidbpm.program.api.vo.ws.Error;
@@ -329,6 +330,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                     break;
                 case ROLE:
                     seqTransObj = new ASNMapperRole().encode((Role) transObj);
+                    break;
+                case USER:
+                    seqTransObj = this.asnMapUser.encode((User) transObj);
                     break;
                 case CUSTOM_WEB_ACTION:
                     ASNMapperCustomWebAction asnMapWebAction = new ASNMapperCustomWebAction(this.asnMapForm);
@@ -691,7 +695,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
      * @throws FluidClientException If the transmission object type is invalid or not recognized.
      */
     public void proceedWithTransmissionObject(BaseTransmission toPop, ASN1Object obj) {
-        ASNBaseTaggedMapper mapper = null;
+        ASNBaseMapper mapper = null;
         switch (this.transmissionObjectType) {
             case FIELD: mapper = this.asnMapField;break;
             case FORM: mapper = this.asnMapForm;break;
@@ -725,6 +729,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 break;
             case ROLE:
                 mapper = new ASNMapperRole();
+                break;
+            case USER:
+                mapper = this.asnMapUser;
                 break;
             case USER_QUERY_LISTING:
                 ASNMapperUserQuery mapperUQ = new ASNMapperUserQuery(this.asnMapField);

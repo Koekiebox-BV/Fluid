@@ -63,6 +63,11 @@ public class TestASNBaseMapper extends ABaseTestCase {
             @Override
             public Error decode(byte[] der) {
                 ASN1Sequence seq = this.initSeq(der);
+                return this.decode(seq);
+            }
+
+            @Override
+            public Error decode(ASN1Sequence seq) {
                 Error returnVal = new Error();
                 this.popBaseFields(returnVal, seq);
                 return returnVal;
