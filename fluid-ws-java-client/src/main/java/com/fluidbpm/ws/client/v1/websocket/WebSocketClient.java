@@ -55,7 +55,6 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param messageHandlersParam Map of message handlers.
      * @param mode Mode to use.
      * @param requestAsn1Type ASN.1 type for the request.
-     * @throws Exception If there is a connection problem.
      */
     public WebSocketClient(
             URI endpointURIParam,

@@ -163,6 +163,17 @@ public class UtilGlobal {
     }
 
     /**
+     * Formats the display text by combining a descriptive string and a field value.
+     *
+     * @param fieldDisplayVal the value of the field to be displayed
+     * @param fieldDesc the description associated with the field
+     * @return a formatted string containing the description and the field value in a predefined format
+     */
+    public static String formatForDisplayText(String fieldDisplayVal, String fieldDesc) {
+        return String.format("%s. [[%s]]", fieldDesc, fieldDisplayVal);
+    }
+
+    /**
      * Extracts the field name from description.
      *
      * @param text The Field value to extract the field name from.
