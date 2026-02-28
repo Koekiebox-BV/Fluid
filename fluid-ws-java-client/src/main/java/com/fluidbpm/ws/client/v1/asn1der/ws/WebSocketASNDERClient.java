@@ -217,6 +217,12 @@ public class WebSocketASNDERClient extends
             this.webSocketClient.setAsnMapperFactoryType(req.getId().intValue());
         }
 
+        /*
+         Since we rely on client/server to retain the PayloadPopulate, we need to
+         set it for encode/decode, but we skip it when we set the payload for payload populate.
+         */
+        //this.webSocketClient.setPPOnAsnFactory(this.payloadPopulate);
+
         //Send the actual message...
         this.sendMessage(req, uniqueReqId);
 
@@ -284,6 +290,7 @@ public class WebSocketASNDERClient extends
 
         PayloadPopulate returnVal =  rsp.getPayloadPopulate();
         this.payloadPopulate = returnVal;
+        this.webSocketClient.setPPOnAsnFactory(this.payloadPopulate);
         return returnVal;
     }
 

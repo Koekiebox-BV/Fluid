@@ -39,6 +39,9 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNMapperForm.Map.*;
  * of {@code Form}-related data is essential for interoperability or persistence.
  */
 public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
+    private final ASNMapperUser asnMapUser;
+    private final ASNMapperField asnMapField;
+
     /**
      * The {@code Map} class extends {@code ASNBaseMapper.Map} and provides a set of static constants
      * to represent field identifiers for mapping ASN.1 sequences specific to Form objects.
@@ -71,9 +74,6 @@ public class ASNMapperForm extends ASNBaseTaggedMapper<Form> {
         public static final int DATE_LAST_UPDATED = 8;
         public static final int FORM_FIELDS = 9;
     }
-
-    private final ASNMapperUser asnMapUser;
-    private final ASNMapperField asnMapField;
 
     /**
      * Constructs an instance of the ASNMapperForm class using the specified user and field
