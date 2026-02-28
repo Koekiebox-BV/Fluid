@@ -275,6 +275,18 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
                     TestCase.assertNotNull(created);
                     TestCase.assertNotNull(created.getId());
+                    TestCase.assertNotNull(created.getForm().getId());
+                    TestCase.assertNotNull(created.getForm().getFormFields());
+                    TestCase.assertEquals(fldCount, created.getForm().getFormFields().size());
+
+                    created.getForm().getFormFields().forEach(fld -> {
+                        if (fld.getFieldValueAsMultiChoice() instanceof MultiChoice) {
+                            MultiChoice mc = fld.getFieldValueAsMultiChoice();
+                            List<String> selected = mc.getSelectedMultiChoices();
+                            TestCase.assertNotNull(selected);
+                            TestCase.assertFalse(selected.isEmpty());
+                        }
+                    });
                     createdFormIds.add(created.getForm().getId());
                 });
             }
@@ -306,11 +318,13 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 PerfStats.increment(PerfStats.Label.Asn1Der_GetFluidItemByForm, System.currentTimeMillis() - start);
 
                 TestCase.assertNotNull(byId);
-                TestCase.assertTrue("The min amount is not reached ("+fldMinCreate.get()+") ! At "+byId.getForm().getFormFields().size(), byId.getForm().getFormFields().size() >= fldMinCreate.get());
+                TestCase.assertTrue(
+                        "The min amount is not reached ("+fldMinCreate.get()+") ! At "+byId.getForm().getFormFields().size() + " ->\n"+ byId.getForm(),
+                        byId.getForm().getFormFields().size() >= fldMinCreate.get()
+                );
                 maxCount.set(Math.max(maxCount.get(), byId.getForm().getFormFields().size()));
             });
             TestCase.assertEquals("Not all fields set!", this.formDefTerminal.getFormFields().size(), maxCount.get());
-            
 
             try {
                 if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {

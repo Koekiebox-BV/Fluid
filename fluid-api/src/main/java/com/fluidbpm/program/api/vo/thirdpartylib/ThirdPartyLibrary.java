@@ -48,6 +48,18 @@ public class ThirdPartyLibrary extends ABaseFluidGSONObject {
     private Date dateLastUpdated;
 
     /**
+     * Represents the types of runners that can be used in the system.
+     *
+     * This class defines constants that specify whether an external or internal custom runner
+     * is being utilized. These constants can be referenced to distinguish between the two types
+     * of runner configurations.
+     */
+    public static class CustomRunnerType {
+        public static final String INTERNAL = "Internal Custom Runner";
+        public static final String EXTERNAL = "External Custom Runner";
+    }
+
+    /**
      * The JSON mapping for the {@code ThirdPartyLibrary} object.
      */
     public static class JSONMapping {
