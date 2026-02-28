@@ -7,6 +7,7 @@ import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.websocket.IMessageResponseHandler;
 import io.netty.bootstrap.Bootstrap;
@@ -40,7 +41,6 @@ import java.util.Map;
 public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     private Channel channel;
     private final EventLoopGroup group;
-    private final Map<String, RespHandler> messageHandlers;
     private final NettyWebSocketClientHandler handler;
 
     @Getter
@@ -85,7 +85,6 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             Mode mode,
             int requestAsn1Type
     ) {
-        this.messageHandlers = messageHandlersParam;
         this.mode = mode;
         this.asnMapperFactory = new ASNMapperFactory(requestAsn1Type);
 
@@ -140,7 +139,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                     1024 * 1024 * 1024 // 1GB max frame size
             );
 
-            handler = new NettyWebSocketClientHandler(handshaker, messageHandlersParam, mode);
+            this.handler = new NettyWebSocketClientHandler(handshaker, messageHandlersParam, mode);
 
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
@@ -149,11 +148,10 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                     .option(ChannelOption.TCP_NODELAY, true)
                     .handler(new NettyWebSocketClientInitializer(sslCtx, handshaker, handler));
 
-            channel = bootstrap.connect(host, port).sync().channel();
-            handler.handshakeFuture().sync();
-
+            this.channel = bootstrap.connect(host, port).sync().channel();
+            this.handler.handshakeFuture().sync();
         } catch (Exception e) {
-            group.shutdownGracefully();
+            this.group.shutdownGracefully();
             throw new FluidClientException(
                     "Failed to connect to WebSocket: " + e.getMessage(),
                     e,
@@ -296,5 +294,16 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     public void setAsnMapperFactoryType(int type) {
         if (this.asnMapperFactory == null) return;
         this.asnMapperFactory.setType(type);
+    }
+
+    /**
+     * Sets the provided {@code PayloadPopulate} instance on the {@code asnMapperFactory}.
+     * If the {@code asnMapperFactory} is {@code null}, the method does nothing.
+     *
+     * @param payloadPopulate An instance of {@code PayloadPopulate} to be set on the {@code asnMapperFactory}.
+     */
+    public void setPPOnAsnFactory(PayloadPopulate payloadPopulate) {
+        if (this.asnMapperFactory == null) return;
+        this.asnMapperFactory.setPayloadPopulate(payloadPopulate);
     }
 }

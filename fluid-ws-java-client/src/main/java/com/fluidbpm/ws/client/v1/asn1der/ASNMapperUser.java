@@ -29,6 +29,18 @@ import org.bouncycastle.asn1.*;
  * are correctly serialized and deserialized according to the specified ASN.1 structure.
  */
 public class ASNMapperUser extends ASNBaseMapper<User> {
+    /**
+     * The Map class provides constants to define field mappings within
+     * ASN.1 data structures for decoding or encoding operations.
+     *
+     * <ul>
+     * <li>{@code ID} represents the mapping key for an identifier field.</li>
+     * <li>{@code USERNAME} represents the mapping key for a username field.</li>
+     * </ul>
+     *
+     * These constants are intended to assist in defining field mappings
+     * when working with ASN.1 DER-encoded objects.
+     */
     public static class Map {
         public static final int ID = 0;
         public static final int USERNAME = 1;

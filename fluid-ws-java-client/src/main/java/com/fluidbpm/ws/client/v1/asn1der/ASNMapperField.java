@@ -41,6 +41,13 @@ import static java.lang.Double.POSITIVE_INFINITY;
  * {@code Field} instances.
  */
 public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
+    @Setter
+    private PayloadPopulate payloadPopulate;
+
+    @Getter
+    @Setter
+    private ASNMapperTableField mapTableField;
+
     /**
      * The Map class defines a set of static constants that serve as field identifiers
      * for mapping data to specific tag values in ASN.1 sequences. These constants
@@ -86,12 +93,6 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
         public static final int VALUE_8_ENCRYPTED = 13;
         public static final int VALUE_9_LABEL = 14;
     }
-
-    private final PayloadPopulate payloadPopulate;
-
-    @Getter
-    @Setter
-    private ASNMapperTableField mapTableField;
 
     public ASNMapperField(PayloadPopulate payloadPopulate) {
         super(InitType.ID_ONLY);
@@ -243,6 +244,8 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                     if (mcValue != null) {
                         List<String> selectedChoices = mcValue.getSelectedMultiChoices();
                         long[] selects = this.payloadPopulate.getMultiChoiceFormValues(fieldName, selectedChoices);
+                        assert selectedChoices.size() == selects.length : "Selected choices and selects should be same size.";
+
                         for (long selected : selects) vectOfInts.add(new ASN1Integer(selected));
                     }
                     vect.add(new DERTaggedObject(true, Map.VALUE_4_MULTI, new DERSequence(vectOfInts)));

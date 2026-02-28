@@ -65,7 +65,6 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
     private int transmissionObjectType;
 
     @Getter
-    @Setter
     private PayloadPopulate payloadPopulate;
 
     @Getter
@@ -182,6 +181,24 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
             }
         }
 
+        /**
+         * Represents a collection of constants and associated aliases used to define
+         * various metrics and timestamps related to server processing statistics.
+         * The class provides identifiers for specific timestamps and durations
+         * involved in processing requests and responses on the server.
+         *
+         * The constants provided in this class are typically used as indices or keys
+         * for accessing corresponding data in server process statistics structures
+         * or sequences. Aliases are provided for more descriptive usage in mappings
+         * or logs.
+         *
+         * Definitions:
+         * - APP_LOGIC_TS_RECEIVED: A timestamp indicating when the application logic first received the request.
+         * - APP_LOGIC_TS_RESPONDED: A timestamp indicating when the application logic generated a response.
+         * - PROCESSING_DURATION_MS: The total duration in milliseconds taken by the application logic to process the request.
+         * - DECODE_REQUEST_DURATION_MS: The duration in milliseconds taken to decode the incoming request.
+         * - ENCODE_RESPONSE_DURATION_MS: The duration in milliseconds taken to encode the outgoing response.
+         */
         public static class ServerProcessStatistics {
             public static final int APP_LOGIC_TS_RECEIVED = 0;
             public static final String APP_LOGIC_TS_RECEIVED_ALIAS = "App Logic TS Received";
@@ -494,6 +511,18 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
 
         assert this.payloadPopulate != null : "Payload Populate is null!";
         assert vo.getPayloadPopulate() != null : "Payload Populate is null in VO!";
+    }
+
+    /**
+     * Sets the payloadPopulate instance and updates the associated asnMapField if it is not null.
+     *
+     * @param payloadPopulate the PayloadPopulate instance to set
+     */
+    public void setPayloadPopulate(PayloadPopulate payloadPopulate) {
+        this.payloadPopulate = payloadPopulate;
+        if (this.asnMapField != null) {
+            this.asnMapField.setPayloadPopulate(this.payloadPopulate);
+        }
     }
 
     /**

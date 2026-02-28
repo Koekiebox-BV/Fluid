@@ -2,6 +2,7 @@ package com.fluidbpm.ws.client.v1.websocket;
 
 import com.fluidbpm.program.api.vo.ABaseFluidVO;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
+import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import lombok.Getter;
 
 import java.net.URI;
@@ -149,5 +150,17 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      */
     public void setAsnMapperFactoryType(int type) {
         this.nettyClient.setAsnMapperFactoryType(type);
+    }
+
+    /**
+     * Sets the PayloadPopulate instance for the ASN factory on the underlying Netty client.
+     * This method is used to configure the factory with the provided PayloadPopulate object,
+     * enabling specific payload population behavior.
+     *
+     * @param payloadPopulate an instance of PayloadPopulate, used to configure the ASN factory
+     *                        on the Netty client
+     */
+    public void setPPOnAsnFactory(PayloadPopulate payloadPopulate) {
+        this.nettyClient.setPPOnAsnFactory(payloadPopulate);
     }
 }

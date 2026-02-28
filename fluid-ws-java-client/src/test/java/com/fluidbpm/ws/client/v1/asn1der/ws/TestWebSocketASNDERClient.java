@@ -28,10 +28,12 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.ABaseFieldClient;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
+import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.fluidbpm.ws.client.v1.flow.FlowClient;
@@ -92,8 +94,6 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
              FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormFieldClient ffc = new FormFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
         ) {
-            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
-
             Form toCreateFormDef = new Form(TestFormContainerClient.TestStatics.FORM_DEFINITION);
             toCreateFormDef.setTitle(TestFormContainerClient.TestStatics.FORM_TITLE_PREFIX+new Date().toString());
 
@@ -204,16 +204,18 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             JobView viewWorkView = viewsForAssignStep.get(1);
 
             // ASN1DER: create the work-items:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
             PerfStats.reset();
             sleepForSeconds(1);
-            log.info("1 THREAD STATS - 100 ITEMS:");
-            List<Long> createdFormIds = this.submitCycle(payPop, 100, 1, flowName, viewWorkView);
+            log.info("1 THREAD STATS - 50 ITEMS:");
+            List<Long> createdFormIds = this.submitCycle(payPop, 50, 1, flowName, viewWorkView);
             PerfStats.printOutcomes();
 
-            log.info("5 THREAD STATS - 300 ITEMS:");
+            log.info("5 THREAD STATS - 100 ITEMS:");
             PerfStats.reset();
             sleepForSeconds(1);
-            createdFormIds.addAll(this.submitCycle(payPop,200, 5, flowName, viewWorkView));
+            createdFormIds.addAll(this.submitCycle(payPop,100, 5, flowName, viewWorkView));
             PerfStats.printOutcomes();
         }
     }
@@ -229,10 +231,13 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
         List<WebSocketASNDERClient> wsClients = new ArrayList<>(threadPoolCount);
         int itemWaitSeconds = 240;
         for (int idx = 0; idx < threadPoolCount; idx++) {
-            wsClients.add(new WebSocketASNDERClient(
+            WebSocketASNDERClient asnDerClient = new WebSocketASNDERClient(
                     BASE_URL,
                     ADMIN_SERVICE_TICKET_HEX,
-                    TimeUnit.SECONDS.toMillis(60)));
+                    TimeUnit.SECONDS.toMillis(60)
+            );
+            asnDerClient.setPayloadPopulate(pop);
+            wsClients.add(asnDerClient);
         }
         AtomicInteger rrIndex = new AtomicInteger(0);
         ThreadLocal<WebSocketASNDERClient> wsClientLocal = ThreadLocal.withInitial(() ->
@@ -247,10 +252,15 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
             int currentCount = this.getCurrentViewCount(derClient, viewWorkView);
             int newExpected = currentCount + itemCount;
 
+            AtomicInteger fldMaxCreate = new AtomicInteger(), fldMinCreate = new AtomicInteger(10000);
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
                 executor.submit(() -> {
                     WebSocketASNDERClient wsClient = wsClientLocal.get();
+
                     FluidItem termItm = terminalItem(UUID.randomUUID().toString());
+                    int fldCount = termItm.getForm().getFormFields().size();
+                    fldMaxCreate.set(Math.max(fldMaxCreate.get(), fldCount));
+                    fldMinCreate.set(Math.min(fldMinCreate.get(), fldCount));
 
                     BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
                     btFldItmReq.setPayloadPopulate(pop);
@@ -261,11 +271,11 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                     String ref = PerfStats.timedStart();
                     BaseTransmission btCreatedItm = wsClient.request(btFldItmReq);
                     PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateFluidItem, ref);
-                    FluidItem toCreate = (FluidItem) btCreatedItm.getTransmissionObject();
+                    FluidItem created = (FluidItem) btCreatedItm.getTransmissionObject();
 
-                    TestCase.assertNotNull(toCreate);
-                    TestCase.assertNotNull(toCreate.getId());
-                    createdFormIds.add(toCreate.getForm().getId());
+                    TestCase.assertNotNull(created);
+                    TestCase.assertNotNull(created.getId());
+                    createdFormIds.add(created.getForm().getId());
                 });
             }
             executor.shutdown();
@@ -282,7 +292,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
             // Verify the stored data:
             AtomicInteger maxCount = new AtomicInteger(0);
-            /*createdFormIds.forEach(id -> {
+            createdFormIds.forEach(id -> {
                 long start = System.currentTimeMillis();
                 BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
                 btFldItmReq.setRequestObject(new RequestObject(
@@ -293,13 +303,14 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
 
                 BaseTransmission btCreatedItm = derClient.request(btFldItmReq);
                 FluidItem byId = (FluidItem) btCreatedItm.getTransmissionObject();
-                PerfStats.increment(PerfStats.Label.Asn1DerGetFluidItemByForm, System.currentTimeMillis() - start);
+                PerfStats.increment(PerfStats.Label.Asn1Der_GetFluidItemByForm, System.currentTimeMillis() - start);
 
                 TestCase.assertNotNull(byId);
-                TestCase.assertTrue("The min amount is not reached!", byId.getForm().getFormFields().size() >= 6);
+                TestCase.assertTrue("The min amount is not reached ("+fldMinCreate.get()+") ! At "+byId.getForm().getFormFields().size(), byId.getForm().getFormFields().size() >= fldMinCreate.get());
                 maxCount.set(Math.max(maxCount.get(), byId.getForm().getFormFields().size()));
-            });*/
-            //TODO TestCase.assertEquals("Not all fields set!", this.formDefTerminal.getFormFields().size(), maxCount.get());
+            });
+            TestCase.assertEquals("Not all fields set!", this.formDefTerminal.getFormFields().size(), maxCount.get());
+            
 
             try {
                 if (!executor.awaitTermination(5, TimeUnit.MINUTES)) {
