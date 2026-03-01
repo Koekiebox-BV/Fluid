@@ -80,14 +80,19 @@ public class MigratorFlow {
     }
 
     /**
-     * Migrates a flow by creating or retrieving the necessary flow and its steps, and then
-     * configuring entry, view, and exit rules based on the provided migration options.
+     * Migrates a flow by creating or updating the specified flow, its steps,
+     * and associated rules. The method ensures that all components of the flow
+     * (steps and rules) are properly set up based on the provided migration
+     * options.
      *
-     * @param fc The {@code FlowClient} used to manage flows.
-     * @param fsc The {@code FlowStepClient} used to manage steps within a flow.
-     * @param fsrc The {@code FlowStepRuleClient} used to manage rules associated with steps.
-     * @param opts The {@code MigrateOptFlow} object containing migration options such as flow name,
-     *             description, steps, step properties, and rules.
+     * @param fc the FlowClient used to manage flows, including creating and
+     *           fetching flow definitions
+     * @param fsc the FlowStepClient used to create and retrieve individual
+     *            steps within a flow
+     * @param fsrc the FlowStepRuleClient used to manage rules associated
+     *             with specific flow steps
+     * @param opts the migration options containing details about the flow
+     *             and its steps, including their configurations and rules
      */
     public static void migrateFlow(
             FlowClient fc,
@@ -144,6 +149,9 @@ public class MigratorFlow {
                 break;
                 case SendMail:
                     mergeEntryRules(fsrc, step, stepToMigrate.flowRulesEntry);
+                    mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
+                break;
+                case ItemClone:
                     mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
                 break;
                 default: throw new FluidClientException(
@@ -206,6 +214,20 @@ public class MigratorFlow {
         Entry, Exit, View
     }
 
+    /**
+     * Merges given rules into the existing rules for a specific flow step
+     * based on the provided rule type. This includes creating new rules,
+     * updating existing rules, and deleting rules that are no longer needed.
+     *
+     * @param ruleType the type of rules to manage (Entry, Exit, or View).
+     * @param fsrc the FlowStepRuleClient to be used for fetching and updating rules.
+     * @param step the flow step for which the rules are being managed.
+     * @param actionDelete a consumer to handle deletion of unnecessary rules.
+     * @param actionUpdate a consumer to handle updates to existing rules.
+     * @param actionCreate a consumer to handle creation of new rules.
+     * @param toCreate a variable-length array of rule definitions to be compared
+     *                 with the existing rules and applied to the specified step.
+     */
     private static void mergeRules(
             RuleType ruleType,
             FlowStepRuleClient fsrc,
