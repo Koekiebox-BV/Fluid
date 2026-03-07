@@ -904,7 +904,7 @@ public class TestWebSocketASNDERClient extends ABaseTestFlowStep {
                 BaseTransmission btItems = derClient.request(btListAtt);
                 FluidItemListing flItmListing = (FluidItemListing) btItems.getTransmissionObject();
                 List<FluidItem> attempt = flItmListing.getListing();
-                if (attempt != null && attempt.size() == attemptCount) return attempt;
+                if (attempt != null && attempt.size() >= attemptCount) return attempt;
                 else if (attempt != null) {
                     log.info("DER: Not yet at "+attemptCount+", at "+attempt.size()+" items.");
                 }

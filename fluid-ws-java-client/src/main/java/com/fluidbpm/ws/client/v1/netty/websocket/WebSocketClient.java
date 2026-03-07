@@ -180,11 +180,16 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 
                 // Do not write the Payload Populate to the host:
                 this.asnMapperFactory.setSkipPPForEncDec(true);
-                //TODO System.out.println("Zool-Send: "+bt.getRequestObject().getPath());
 
-                this.sendMessage(this.asnMapperFactory.writeObjectForSend(bt));
+                //System.out.println("------------");
+                //System.out.println("Zool (1) -> "+bt.getRequestObject().getPath() + " -> "+bt.getTransmissionObject().getClass().getSimpleName());
+                byte[] bytesToSend = this.asnMapperFactory.writeObjectForSend(bt);
+                //System.out.println("Zool (2) -> "+bytesToSend.length);
+                this.sendMessage(bytesToSend);
+                //System.out.println("Zool (3) -> Sent! "+bt.getRequestObject().getPath());
             } else {
-                this.sendMessage(this.asnMapperFactory.writeObjectForSend(aFluidVo));
+                byte[] bytesToSend = this.asnMapperFactory.writeObjectForSend(aFluidVo);
+                this.sendMessage(bytesToSend);
             }
         } else if (aFluidVo instanceof ABaseFluidGSONObject) {
             ABaseFluidGSONObject casted = (ABaseFluidGSONObject) aFluidVo;
@@ -226,8 +231,6 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                     FluidClientException.ErrorCode.SESSION_EXPIRED
             );
         }
-
-        //TODO System.out.println("Zool-Send (b64): "+ messageToSend.length /*+ "\n" + BaseEncoding.base64().encode(messageToSend)*/);
 
         PerfStats.increment(PerfStats.Label.Asn1Der_BytesSent, messageToSend.length);
         channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(messageToSend)));

@@ -69,7 +69,6 @@ public class ASNMapperAttachment extends ASNBaseTaggedMapper<Attachment> {
 
     /**
      * Provides a supplier for creating new instances of the {@code Attachment} class.
-     *
      * @return a {@code Supplier} that supplies new instances of {@code Attachment}.
      */
     @Override
@@ -166,8 +165,9 @@ public class ASNMapperAttachment extends ASNBaseTaggedMapper<Attachment> {
             vect.add(new DERTaggedObject(true, Map.DATE_CREATED, new ASN1GeneralizedTime(item.getDateCreated())));
         }
 
-        if (item.getAttachmentData() != null && item.getAttachmentData().length > 0) {
-            vect.add(new DERTaggedObject(true, Map.ATTACHMENT_DATA, new DEROctetString(item.getAttachmentData())));
+        byte[] attDataRaw = item.getAttachmentDataRAW();
+        if (attDataRaw != null && attDataRaw.length > 0) {
+            vect.add(new DERTaggedObject(true, Map.ATTACHMENT_DATA, new DEROctetString(attDataRaw)));
         }
 
         if (item.getFormId() != null) {

@@ -76,6 +76,10 @@ public class PerfStats {
         Asn1Der_CreateFluidItem(Group.ASN1Der_Business),
         Asn1Der_CreateFormContainer(Group.ASN1Der_Business),
         Asn1Der_GetFluidItemByForm(Group.ASN1Der_Business),
+        Asn1Der_SendOn(Group.ASN1Der_Business),
+        Asn1Der_ClearPI(Group.ASN1Der_Business),
+        Asn1Der_LockForm(Group.ASN1Der_Business),
+        Asn1Der_UpdateForm(Group.ASN1Der_Business),
         // REST
         Rest_CreateFormContainer(Group.RestBusinessWS),
         Rest_CreateFluidItem(Group.RestBusinessWS),

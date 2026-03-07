@@ -104,6 +104,21 @@ public class Attachment extends ABaseFluidGSONObject {
     }
 
     /**
+     * Constructs a new {@code Attachment} object with the specified attachment data,
+     * name, and content type.
+     *
+     * @param attBytes The binary data of the attachment as a {@code byte[]} array.
+     * @param name The name of the attachment.
+     * @param contentType The MIME type of the attachment content.
+     */
+    public Attachment(byte[] attBytes, String name, String contentType) {
+        super();
+        this.setAttachmentData(attBytes);
+        this.setName(name);
+        this.setContentType(contentType);
+    }
+
+    /**
      * Sets the Path {@code this} {@code Attachment}.
      *
      * @param attachmentPath The path to the {@code Attachment}.

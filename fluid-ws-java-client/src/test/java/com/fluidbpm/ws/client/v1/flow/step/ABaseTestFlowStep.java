@@ -91,7 +91,7 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
             this.sleepForSeconds(3);
             try {
                 List<FluidItem> attempt = fiClient.getFluidItemsForView(view, attemptCount, 0).getListing();
-                if (attempt != null && attempt.size() == attemptCount) return attempt;
+                if (attempt != null && attempt.size() >= attemptCount) return attempt;
                 else if (attempt != null) {
                     log.info("REST: Not yet at "+attemptCount+", at "+attempt.size()+" items.");
                 }

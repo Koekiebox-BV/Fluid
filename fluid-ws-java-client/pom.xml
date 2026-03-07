@@ -75,6 +75,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk18on</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!--WEB SOCKET USING TYRUS-->
 		<!--Tyrus Grizzly Client-->
 		<dependency>

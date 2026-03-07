@@ -161,8 +161,12 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
 
             //If complete future is provided...
             if (this.completableFuture != null) {
+                String errorMsg = fluidError.getErrorMessage();
+                if (errorMsg == null || errorMsg.trim().isEmpty()) {
+                    errorMsg = "Error occurred with code: " + fluidError.getErrorCode();
+                }
                 this.completableFuture.completeExceptionally(
-                        new FluidClientException(fluidError.getErrorMessage(), fluidError.getErrorCode()));
+                        new FluidClientException(errorMsg, fluidError.getErrorCode()));
             }
             messageForm = null;
         } else if (objectToProcess instanceof ABaseFluidVO) {
@@ -237,8 +241,12 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
             } else {
                 //there was an error...
                 Error firstFluidError = this.getErrors().get(0);
+                String errorMsg = firstFluidError.getErrorMessage();
+                if (errorMsg == null || errorMsg.trim().isEmpty()) {
+                    errorMsg = "Error occurred with code: " + firstFluidError.getErrorCode();
+                }
                 this.completableFuture.completeExceptionally(new FluidClientException(
-                        firstFluidError.getErrorMessage(),
+                        errorMsg,
                         firstFluidError.getErrorCode()));
             }
         }

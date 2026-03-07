@@ -800,10 +800,8 @@ public abstract class ABaseClientWS implements AutoCloseable {
 
             return responseBody;
         } catch (FluidClientException fluidClientExcept) {
-            //Fluid Client Exception...
             throw fluidClientExcept;
         } catch (Exception otherExcept) {
-            //Other Exceptions...
             throw new FluidClientException(otherExcept.getMessage(),
                     otherExcept, FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR);
         }
