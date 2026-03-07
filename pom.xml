@@ -122,6 +122,13 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!--Bouncy Castle PKIX for X.509 certificate generation - https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>1.83</version>
+            </dependency>
+
             <!--ElasticSearch-->
             <!-- https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-high-level-client -->
             <dependency>
