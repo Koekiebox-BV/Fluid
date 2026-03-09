@@ -283,9 +283,11 @@ public class WebSocketASNDERClient extends
      */
     public PayloadPopulate requestFullPayloadPopulate() {
         BaseTransmission btPayPop = new BaseTransmission(ASNGlobal.Type.SKIP_TRANSMISSION_OBJ);
+        btPayPop.setPayloadPopulate(new PayloadPopulate());
         btPayPop.setRequestObject(new RequestObject(ASNGlobal.Path.General.GENERAL_PAYLOAD_POPULATE));
         btPayPop.setTransmissionObject(new Attachment());
 
+        this.setPayloadPopulate(null);//Set null to not used cached version.
         BaseTransmission rsp = this.request(btPayPop);
 
         PayloadPopulate returnVal =  rsp.getPayloadPopulate();
