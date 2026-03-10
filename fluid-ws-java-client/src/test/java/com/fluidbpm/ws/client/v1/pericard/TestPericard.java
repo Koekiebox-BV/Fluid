@@ -108,7 +108,6 @@ public class TestPericard extends ABaseTestASNDER {
             PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
             int orgsPPBefore = payPop.getAvailableMultiChoicesForm("Organisation").size();
 
-
             sleepForSeconds(1);
             int itemCount = 1, threadCount = 1;
             log.info("Onboard Request!: "+itemCount+", Thread Count: "+threadCount);
@@ -163,6 +162,27 @@ public class TestPericard extends ABaseTestASNDER {
             );
             TestCase.assertNotNull(createdFormIdsKS);
             TestCase.assertEquals(itemCount, createdFormIdsKS.size());
+
+            // Verify the created keystore:
+            FluidItem byId = this.fluidItemByFormId(derClient, createdFormIdsKS.get(0));
+            TestCase.assertNotNull(byId);
+            Form form = byId.getForm();
+            TestCase.assertNotNull(form);
+            TestCase.assertNotNull(form.getFieldValueAsString("Alias"));
+            TestCase.assertNotNull(form.getFieldValueAsString("Organisation"));
+            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Type"));
+            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Provider"));
+            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Password"));
+            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Private Key Password"));
+
+            List<Form> tableRecords = this.tableRecords(derClient, byId.getForm(), null);
+            TestCase.assertNotNull(tableRecords);
+
+            
+
+            
+
+
 
             // Approve the Request:
             createdFormIdsKS.forEach(id -> {

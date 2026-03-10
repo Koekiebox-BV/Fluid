@@ -15,15 +15,16 @@
 
 package com.fluidbpm.ws.client.v1.crypto;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility class for working with Java KeyStore operations.
@@ -34,55 +35,25 @@ public class KeystoreUtil {
     /**
      * Represents a private-public key pair extracted from a keystore.
      */
+    @Getter
+    @RequiredArgsConstructor
     public static class KeyPairEntry {
         private final String alias;
         private final PrivateKey privateKey;
         private final PublicKey publicKey;
         private final Certificate[] certificateChain;
-
-        public KeyPairEntry(String alias, PrivateKey privateKey, PublicKey publicKey, Certificate[] certificateChain) {
-            this.alias = alias;
-            this.privateKey = privateKey;
-            this.publicKey = publicKey;
-            this.certificateChain = certificateChain;
-        }
-
-        public String getAlias() {
-            return alias;
-        }
-
-        public PrivateKey getPrivateKey() {
-            return privateKey;
-        }
-
-        public PublicKey getPublicKey() {
-            return publicKey;
-        }
-
-        public Certificate[] getCertificateChain() {
-            return certificateChain;
-        }
+        private final Date creationDate;
     }
 
     /**
      * Represents a trust entry extracted from a keystore.
      */
+    @Getter
+    @RequiredArgsConstructor
     public static class TrustEntry {
         private final String alias;
         private final X509Certificate certificate;
-
-        public TrustEntry(String alias, X509Certificate certificate) {
-            this.alias = alias;
-            this.certificate = certificate;
-        }
-
-        public String getAlias() {
-            return alias;
-        }
-
-        public X509Certificate getCertificate() {
-            return certificate;
-        }
+        private final Date creationDate;
     }
 
     /**
@@ -97,8 +68,11 @@ public class KeystoreUtil {
      * @throws NoSuchAlgorithmException If the algorithm used to check the integrity of the keystore cannot be found
      * @throws CertificateException If any of the certificates in the keystore could not be loaded
      */
-    public static KeyStore loadKeystore(byte[] keystoreBytes, char[] password, String keystoreType)
-            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    public static KeyStore loadKeystore(
+            byte[] keystoreBytes,
+            char[] password,
+            String keystoreType
+    ) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(keystoreType);
         try (ByteArrayInputStream bais = new ByteArrayInputStream(keystoreBytes)) {
             keyStore.load(bais, password);
@@ -136,8 +110,9 @@ public class KeystoreUtil {
         }
 
         PublicKey publicKey = certificateChain[0].getPublicKey();
+        Date creationDate = keyStore.getCreationDate(alias);
         
-        return new KeyPairEntry(alias, privateKey, publicKey, certificateChain);
+        return new KeyPairEntry(alias, privateKey, publicKey, certificateChain, creationDate);
     }
 
     /**
@@ -187,8 +162,8 @@ public class KeystoreUtil {
         if (!(certificate instanceof X509Certificate)) {
             throw new KeyStoreException("Certificate for alias '" + alias + "' is not an X509 certificate");
         }
-
-        return new TrustEntry(alias, (X509Certificate) certificate);
+        Date creationDate = keyStore.getCreationDate(alias);
+        return new TrustEntry(alias, (X509Certificate) certificate, creationDate);
     }
 
     /**
@@ -244,24 +219,29 @@ public class KeystoreUtil {
         }
 
         // Inspect keystore content using magic bytes/signatures
-        String detectedType = detectKeystoreTypeBySignature(keystoreBytes);
-        if (detectedType != null) {
-            // Verify the detected type can actually load the keystore
-            try {
-                KeyStore keyStore = KeyStore.getInstance(detectedType);
-                try (ByteArrayInputStream bais = new ByteArrayInputStream(keystoreBytes)) {
-                    keyStore.load(bais, password);
-                    return detectedType;
-                }
-            } catch (Exception e) {
-                // Signature matched but loading failed, fall through to iteration
+        List<String> signatureTypes = detectKeystoreTypeBySignature(keystoreBytes);
+        List<String> potentialTypes = new ArrayList<>();
+        if (!signatureTypes.isEmpty()) {
+            potentialTypes.addAll(signatureTypes);
+        }
+
+        // Add common types that weren't already detected
+        String[] commonTypes = {"PKCS12", "JKS", "JCEKS"};
+        for (String type : commonTypes) {
+            if (!potentialTypes.contains(type)) {
+                potentialTypes.add(type);
             }
         }
 
-        // Fallback: iterate through common types
-        String[] commonTypes = {"PKCS12", "JKS", "JCEKS"};
+        // Add BouncyCastle types if provider is available
+        if (isProviderAvailable("BC")) {
+            potentialTypes.add("BKS");
+            potentialTypes.add("BCFKS");
+            potentialTypes.add("UBER");
+        }
 
-        for (String type : commonTypes) {
+        Map<String, String> typeAndError = new HashMap<>();
+        for (String type : potentialTypes) {
             try {
                 KeyStore keyStore = KeyStore.getInstance(type);
                 try (ByteArrayInputStream bais = new ByteArrayInputStream(keystoreBytes)) {
@@ -269,23 +249,22 @@ public class KeystoreUtil {
                     return type;
                 }
             } catch (Exception e) {
-                // Try next type
+                typeAndError.put(type, e.getMessage());
             }
         }
-
-        throw new KeyStoreException("Unable to detect keystore type. Tried: PKCS12, JKS, JCEKS");
+        throw new KeyStoreException("Unable to detect Keystore type. Tried: "+
+                String.join(", ", potentialTypes)+". Errors: "+typeAndError.values()+".");
     }
 
     /**
      * Detects keystore type by inspecting file signature/magic bytes.
      *
      * @param keystoreBytes The keystore data as byte array
-     * @return The detected keystore type or null if unable to detect from signature
+     * @return List of detected keystore types based on signature (empty if unable to detect)
      */
-    private static String detectKeystoreTypeBySignature(byte[] keystoreBytes) {
-        if (keystoreBytes == null || keystoreBytes.length < 4) {
-            return null;
-        }
+    private static List<String> detectKeystoreTypeBySignature(byte[] keystoreBytes) {
+        List<String> detectedTypes = new ArrayList<>();
+        if (keystoreBytes == null || keystoreBytes.length < 4) return detectedTypes;
 
         // JKS/JCEKS magic number: 0xFEEDFEED (big-endian)
         if (keystoreBytes.length >= 4) {
@@ -296,25 +275,29 @@ public class KeystoreUtil {
 
             if (magic == 0xFEEDFEED) {
                 // JKS and JCEKS both use the same magic number
-                // Try JKS first as it's more common
-                return "JKS";
+                // Try both, JKS first as it's more common
+                detectedTypes.add("JKS");
+                detectedTypes.add("JCEKS");
+                return detectedTypes;
             }
         }
 
-        // PKCS12 starts with ASN.1 SEQUENCE tag (0x30) followed by length encoding
-        if (keystoreBytes[0] == 0x30 && (keystoreBytes[1] & 0xFF) >= 0x80) {
+        // PKCS12 starts with ASN.1 SEQUENCE tag (0x30)
+        if (keystoreBytes[0] == 0x30) {
             // This is likely a PKCS12 file (ASN.1 DER encoded)
-            return "PKCS12";
+            detectedTypes.add("PKCS12");
         }
 
-        // Check for PEM-encoded PKCS12 (begins with "-----BEGIN")
-        if (keystoreBytes.length >= 10) {
-            String prefix = new String(keystoreBytes, 0, Math.min(10, keystoreBytes.length));
-            if (prefix.startsWith("-----BEGIN")) {
-                return "PKCS12";
-            }
-        }
+        return detectedTypes;
+    }
 
-        return null;
+    /**
+     * Checks if a security provider is available.
+     *
+     * @param providerName The name of the provider (e.g., "BC" for BouncyCastle)
+     * @return true if the provider is available, false otherwise
+     */
+    private static boolean isProviderAvailable(String providerName) {
+        return Security.getProvider(providerName) != null;
     }
 }
