@@ -244,6 +244,10 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                     if (mcValue != null) {
                         List<String> selectedChoices = mcValue.getSelectedMultiChoices();
                         long[] selects = this.payloadPopulate.getMultiChoiceFormValues(fieldName, selectedChoices);
+                        if (selectedChoices.size() != selects.length) {
+                            System.err.println("Selected choices and selects should be same size. See: '" +
+                                    fieldName + "' field with selected choices: " + selectedChoices);
+                        }
                         assert selectedChoices.size() == selects.length : "Selected choices and selects should be same size.";
 
                         for (long selected : selects) vectOfInts.add(new ASN1Integer(selected));

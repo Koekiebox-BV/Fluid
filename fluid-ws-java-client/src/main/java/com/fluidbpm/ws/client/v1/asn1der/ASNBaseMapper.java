@@ -513,7 +513,11 @@ public abstract class ASNBaseMapper<T extends ABaseFluidVO> {
     protected void setAsList(List<T> list, ASN1EncodableVector primVector, int index) {
         if (list != null && !list.isEmpty()) {
             ASN1EncodableVector fieldsVect = new ASN1EncodableVector();
-            for (T field : list) fieldsVect.add(this.encode(field));
+            for (T itm : list) {
+                DERSequence seq = this.encode(itm);
+                assert seq != null : "Sequence is null!";
+                fieldsVect.add(seq);
+            }
             primVector.add(new DERTaggedObject(true, index, new DERSequence(fieldsVect)));
         }
     }

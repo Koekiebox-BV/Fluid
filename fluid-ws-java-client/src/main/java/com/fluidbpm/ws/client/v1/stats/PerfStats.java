@@ -80,6 +80,7 @@ public class PerfStats {
         Asn1Der_ClearPI(Group.ASN1Der_Business),
         Asn1Der_LockForm(Group.ASN1Der_Business),
         Asn1Der_UpdateForm(Group.ASN1Der_Business),
+        Asn1Der_FormHistory(Group.ASN1Der_Business),
         // REST
         Rest_CreateFormContainer(Group.RestBusinessWS),
         Rest_CreateFluidItem(Group.RestBusinessWS),

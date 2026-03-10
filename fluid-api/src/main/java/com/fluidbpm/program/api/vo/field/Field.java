@@ -555,6 +555,20 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Retrieves the value of a field as a character array.
+     * Converts the field value to its string representation and then returns it as an array of characters.
+     * If the field value is null, this method returns null.
+     *
+     * @return a character array representation of the field value, or null if the field value is null.
+     */
+    @XmlTransient
+    @JsonIgnore
+    public char[] getFieldValueAsCharArray() {
+        Object returnObj = this.getFieldValue();
+        return (returnObj == null) ? null : returnObj.toString().toCharArray();
+    }
+
+    /**
      * Converts the {@code getFieldName} to upper_camel_case.
      *
      * @return {@code getFieldName()} as upper_camel_case.
