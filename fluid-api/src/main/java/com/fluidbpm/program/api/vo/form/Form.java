@@ -322,6 +322,20 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Retrieves the value of a specified field as a character array.
+     *
+     * @param fieldName the name of the field whose value is to be retrieved
+     * @return a character array representing the value of the specified field,
+     *         or null if the field does not exist
+     */
+    @XmlTransient
+    @JsonIgnore
+    public char[] getFieldValueAsCharArray(String fieldName) {
+        Field fieldWithName = this.getField(fieldName);
+        return (fieldWithName == null) ? null : fieldWithName.getFieldValueAsCharArray();
+    }
+
+    /**
      * <p>
      * Returns the value of the {@code fieldNameParam} requested.
      *
