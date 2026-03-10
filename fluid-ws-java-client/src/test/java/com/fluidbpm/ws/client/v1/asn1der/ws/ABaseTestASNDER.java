@@ -18,6 +18,7 @@ package com.fluidbpm.ws.client.v1.asn1der.ws;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -256,6 +257,27 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
         FluidItem byId = (FluidItem) btCreatedItm.getTransmissionObject();
         PerfStats.increment(PerfStats.Label.Asn1Der_GetFluidItemByForm, System.currentTimeMillis() - start);
         return byId;
+    }
+
+    protected List<Form> tableRecords(
+            WebSocketASNDERClient derClient,
+            Form form,
+            Long formDefFilter
+    ) {
+        long start = System.currentTimeMillis();
+        BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
+        btFldItmReq.setRequestObject(new RequestObject(
+                ASNGlobal.Path.FormContainer.FORM_CONT_GET_TABLE_FORMS,
+                new RequestParameter(WS.Path.SQLUtil.Version1.QueryParam.INCLUDE_FIELD_DATA, Boolean.TRUE),
+                new RequestParameter(WS.Path.SQLUtil.Version1.QueryParam.FORM_DEFINITION,
+                        formDefFilter == null ? -1 : formDefFilter))
+        );
+        btFldItmReq.setTransmissionObject(new Form(form.getId()));
+
+        BaseTransmission btCreatedItm = derClient.request(btFldItmReq);
+        FormListing byId = (FormListing) btCreatedItm.getTransmissionObject();
+        PerfStats.increment(PerfStats.Label.Asn1Der_GetTableForms, System.currentTimeMillis() - start);
+        return byId.getListing();
     }
 
     /**
