@@ -2263,6 +2263,7 @@ public class WS {
                     public static final String EXECUTE_CALCULATED_LABELS = "execute_calculated_labels";
                     public static final String POPULATE_FORM = "populate_form";
                     public static final String POPULATE_FLOW_PROGRESS = "populate_flow_progress";
+                    public static final String POPULATE_ROUTE_FIELDS = "populate_route_fields";
                 }
 
                 /**
@@ -2351,10 +2352,11 @@ public class WS {
                 public static String getByForm(
                         boolean populateForm,
                         boolean executeCalculatedLabels,
-                        boolean populateStepProgress
+                        boolean populateStepProgress,
+                        boolean populateRouteFields
                 ) {
                     return String.format(
-                            "%s%s%s?%s=%s&%s=%s&%s=%s",
+                            "%s%s%s?%s=%s&%s=%s&%s=%s&%s=%s",
                             Version.VERSION_1,
                             ROOT,
                             READ_BY_FORM,
@@ -2364,7 +2366,9 @@ public class WS {
                             QueryParam.POPULATE_FORM,
                             populateForm,
                             QueryParam.POPULATE_FLOW_PROGRESS,
-                            populateStepProgress
+                            populateStepProgress,
+                            QueryParam.POPULATE_ROUTE_FIELDS,
+                            populateRouteFields
                     );
                 }
 

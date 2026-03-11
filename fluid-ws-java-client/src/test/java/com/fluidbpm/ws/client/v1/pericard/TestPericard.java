@@ -32,6 +32,7 @@ import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.fluidbpm.ws.client.v1.asn1der.ws.ABaseTestASNDER;
 import com.fluidbpm.ws.client.v1.asn1der.ws.WebSocketASNDERClient;
 import com.fluidbpm.ws.client.v1.crypto.KeystoreTestUtil;
+import com.fluidbpm.ws.client.v1.crypto.KeystoreUtil;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
@@ -126,12 +127,16 @@ public class TestPericard extends ABaseTestASNDER {
             });
 
             // 2. REQUEST KEYSTORE:
-            String ksType = "JKS", ksPass = "testpass", ksKeyPass = "testkey";
+            String ksType = "PKCS12", ksPass = "testpass", keyPass = "testkey";
             byte[] keystoreBytes;
             try {
+                char[] ksPassChars = ksPass.toCharArray();
                 keystoreBytes = KeystoreTestUtil.testKeystore(
-                        ksType, ksKeyPass.toCharArray(), ksPass.toCharArray()
+                        ksType, ksPassChars, keyPass.toCharArray()
                 );
+
+                String type = KeystoreUtil.detectKeystoreType(keystoreBytes, ksPassChars);
+                TestCase.assertEquals(ksType, type);
             } catch (Exception e) {
                 log.severe("Failed to create keystore: "+e.getMessage());
                 throw new RuntimeException(e);
@@ -152,7 +157,7 @@ public class TestPericard extends ABaseTestASNDER {
                     ksType,
                     PROVIDER_NAME,
                     ksPass,
-                    ksKeyPass,
+                    keyPass,
                     UUID.randomUUID().toString(),
                     keystoreBytes
             );
