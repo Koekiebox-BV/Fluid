@@ -80,7 +80,7 @@ public class FlowItemClient extends ABaseClientWS {
         Form form = new Form(formIdParam);
         form.setServiceTicket(this.serviceTicket);
         return new FluidItem(this.postJson(form, WS.Path.FlowItem.Version1.getByForm(
-                populateForm, executeCalculatedLabels, populateStepProgress)));
+                populateForm, executeCalculatedLabels, populateStepProgress, false)));
     }
 
     /**
@@ -93,7 +93,7 @@ public class FlowItemClient extends ABaseClientWS {
     public FluidItem getFluidItemByFormId(Long formIdParam) {
         Form form = new Form(formIdParam);
         form.setServiceTicket(this.serviceTicket);
-        return new FluidItem(this.postJson(form, WS.Path.FlowItem.Version1.getByForm(false, false, false)));
+        return new FluidItem(this.postJson(form, WS.Path.FlowItem.Version1.getByForm(false, false, false, false)));
     }
 
     /**

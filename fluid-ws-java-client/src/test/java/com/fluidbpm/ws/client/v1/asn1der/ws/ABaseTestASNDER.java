@@ -249,7 +249,8 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
         BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
         btFldItmReq.setRequestObject(new RequestObject(
                 ASNGlobal.Path.FlowItem.ITEM_BY_FORM_ID,
-                new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.POPULATE_FORM, Boolean.TRUE))
+                new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.POPULATE_FORM, Boolean.TRUE),
+                new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.EXECUTE_CALCULATED_LABELS, Boolean.FALSE))
         );
         btFldItmReq.setTransmissionObject(new Form(id));
 

@@ -68,11 +68,8 @@ public class KeystoreUtil {
      * @throws NoSuchAlgorithmException If the algorithm used to check the integrity of the keystore cannot be found
      * @throws CertificateException If any of the certificates in the keystore could not be loaded
      */
-    public static KeyStore loadKeystore(
-            byte[] keystoreBytes,
-            char[] password,
-            String keystoreType
-    ) throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    public static KeyStore loadKeystore(byte[] keystoreBytes, char[] password, String keystoreType)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(keystoreType);
         try (ByteArrayInputStream bais = new ByteArrayInputStream(keystoreBytes)) {
             keyStore.load(bais, password);
@@ -215,17 +212,15 @@ public class KeystoreUtil {
      */
     public static String detectKeystoreType(byte[] keystoreBytes, char[] password) throws KeyStoreException {
         if (keystoreBytes == null || keystoreBytes.length < 4) {
-            throw new KeyStoreException("Invalid keystore bytes");
+            throw new KeyStoreException("Invalid keystore bytes.");
         }
 
         // Inspect keystore content using magic bytes/signatures
         List<String> signatureTypes = detectKeystoreTypeBySignature(keystoreBytes);
         List<String> potentialTypes = new ArrayList<>();
-        if (!signatureTypes.isEmpty()) {
-            potentialTypes.addAll(signatureTypes);
-        }
+        if (!signatureTypes.isEmpty()) potentialTypes.addAll(signatureTypes);
 
-        // Add common types that weren't already detected
+        // Add common types that weren't already detected:
         String[] commonTypes = {"PKCS12", "JKS", "JCEKS"};
         for (String type : commonTypes) {
             if (!potentialTypes.contains(type)) {
@@ -233,14 +228,14 @@ public class KeystoreUtil {
             }
         }
 
-        // Add BouncyCastle types if provider is available
+        // Add BouncyCastle types if provider is available:
         if (isProviderAvailable("BC")) {
             potentialTypes.add("BKS");
             potentialTypes.add("BCFKS");
             potentialTypes.add("UBER");
         }
 
-        Map<String, String> typeAndError = new HashMap<>();
+        Map<String, String> typeAndError = new LinkedHashMap<>();
         for (String type : potentialTypes) {
             try {
                 KeyStore keyStore = KeyStore.getInstance(type);
@@ -252,8 +247,12 @@ public class KeystoreUtil {
                 typeAndError.put(type, e.getMessage());
             }
         }
-        throw new KeyStoreException("Unable to detect Keystore type. Tried: "+
-                String.join(", ", potentialTypes)+". Errors: "+typeAndError.values()+".");
+
+        StringBuilder errorMsg = new StringBuilder("Unable to detect keystore type. Attempts:\n");
+        for (Map.Entry<String, String> entry : typeAndError.entrySet()) {
+            errorMsg.append("  - ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        throw new KeyStoreException(errorMsg.toString().trim());
     }
 
     /**
