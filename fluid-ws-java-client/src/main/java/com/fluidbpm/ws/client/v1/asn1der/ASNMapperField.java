@@ -241,11 +241,11 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
                 case MultipleChoice:
                     ASN1EncodableVector vectOfInts = new ASN1EncodableVector();
                     MultiChoice mcValue = item.getFieldValueAsMultiChoice();
-                    if (mcValue != null) {
+                    if (mcValue != null && mcValue.getSelectedMultiChoices() != null) {
                         List<String> selectedChoices = mcValue.getSelectedMultiChoices();
                         long[] selects = this.payloadPopulate.getMultiChoiceFormValues(fieldName, selectedChoices);
                         if (selectedChoices.size() != selects.length) {
-                            System.err.println("Selected choices and selects should be same size. See: '" +
+                            System.err.println("Encoding: Selected choices and selects should be same size. See: '" +
                                     fieldName + "' field with selected choices: " + selectedChoices);
                         }
                         assert selectedChoices.size() == selects.length : "Selected choices and selects should be same size.";

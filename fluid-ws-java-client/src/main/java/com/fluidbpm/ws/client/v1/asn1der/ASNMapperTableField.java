@@ -82,13 +82,12 @@ public class ASNMapperTableField extends ASNBaseMapper<TableField> {
      */
     @Override
     public DERSequence encode(TableField vo) {
-        ASN1EncodableVector vecTblFld = new ASN1EncodableVector();
-
         ASN1EncodableVector recordsVector = new ASN1EncodableVector();
-        List<Form> records = vo.getTableRecords();
+        List<Form> records = (vo == null) ? null : vo.getTableRecords();
         if (records != null) records.forEach(form -> recordsVector.add(this.asnMapForm.encode(form)));
 
-        Boolean boolVal = vo.getSumDecimals();
+        Boolean boolVal = (vo == null) ? null : vo.getSumDecimals();
+        ASN1EncodableVector vecTblFld = new ASN1EncodableVector();
         vecTblFld.add((boolVal != null && boolVal) ? ASN1Boolean.TRUE : ASN1Boolean.FALSE);//0
         vecTblFld.add(new DERSequence(recordsVector));//1
         return new DERSequence(vecTblFld);

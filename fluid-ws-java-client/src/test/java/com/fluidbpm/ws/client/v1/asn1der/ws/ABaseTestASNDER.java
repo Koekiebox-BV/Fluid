@@ -19,8 +19,10 @@ import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
+import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.user.User;
@@ -159,16 +161,9 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
                         fldMaxCreate.set(Math.max(fldMaxCreate.get(), fldCount));
                         fldMinCreate.set(Math.min(fldMinCreate.get(), fldCount));
 
-                        BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
-                        btFldItmReq.setPayloadPopulate(pop);
-                        btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
                         itm.setFlow(flowName);
-                        btFldItmReq.setTransmissionObject(itm);
 
-                        String ref = PerfStats.timedStart();
-                        BaseTransmission btCreatedItm = wsClient.request(btFldItmReq);
-                        PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateFluidItem, ref);
-                        FluidItem created = (FluidItem) btCreatedItm.getTransmissionObject();
+                        FluidItem created = createFluidItem(wsClient, pop, itm);;
 
                         TestCase.assertNotNull(created);
                         TestCase.assertNotNull(created.getId());
@@ -207,7 +202,7 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
             // Verify the stored data:
             AtomicInteger maxCount = new AtomicInteger(0);
             createdFormIds.forEach(id -> {
-                FluidItem byId = this.fluidItemByFormId(derClient, id);
+                FluidItem byId = this.fluidItemByFormId(derClient, id, false);
 
                 TestCase.assertNotNull(byId);
                 TestCase.assertTrue(
@@ -244,13 +239,20 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
      * @param id        The ID of the form for which the FluidItem needs to be fetched.
      * @return The FluidItem associated with the given form ID.
      */
-    protected FluidItem fluidItemByFormId(WebSocketASNDERClient derClient, Long id) {
+    protected FluidItem fluidItemByFormId(
+            WebSocketASNDERClient derClient,
+            Long id,
+            boolean includeRouteFieldData
+    ) {
         long start = System.currentTimeMillis();
         BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
-        btFldItmReq.setRequestObject(new RequestObject(
-                ASNGlobal.Path.FlowItem.ITEM_BY_FORM_ID,
-                new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.POPULATE_FORM, Boolean.TRUE),
-                new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.EXECUTE_CALCULATED_LABELS, Boolean.FALSE))
+        btFldItmReq.setRequestObject(
+                new RequestObject(
+                        ASNGlobal.Path.FlowItem.ITEM_BY_FORM_ID,
+                        new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.POPULATE_FORM, Boolean.TRUE),
+                        new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.EXECUTE_CALCULATED_LABELS, Boolean.FALSE),
+                        new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.POPULATE_ROUTE_FIELDS, includeRouteFieldData)
+                )
         );
         btFldItmReq.setTransmissionObject(new Form(id));
 
@@ -391,6 +393,109 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
         PerfStats.increment(PerfStats.Label.Asn1Der_UpdateForm, System.currentTimeMillis() - start);
         return formRet;
     }
+
+    /**
+     * Creates a new FluidItem by sending a request to the provided WebSocketASNDERClient.
+     * The method utilizes a PayloadPopulate object and an initial FluidItem to construct
+     * the request and retrieve the created FluidItem.
+     *
+     * @param derClient The WebSocketASNDERClient used to send the request.
+     * @param pop The PayloadPopulate object used to populate the request payload.
+     * @param itm The initial FluidItem used as part of the request construction.
+     * @return The created FluidItem object received from the server.
+     */
+    protected FluidItem createFluidItem(
+            WebSocketASNDERClient derClient,
+            PayloadPopulate pop,
+            FluidItem itm
+    ) {
+        BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FLUID_ITEM);// <= Req Type
+        btFldItmReq.setPayloadPopulate(pop);
+        btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FlowItem.ITEM_CREATE));
+        btFldItmReq.setTransmissionObject(itm);
+
+        String ref = PerfStats.timedStart();
+        BaseTransmission btCreatedItm = derClient.request(btFldItmReq);
+        PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateFluidItem, ref);
+        return (FluidItem) btCreatedItm.getTransmissionObject();
+    }
+
+    /**
+     * Creates a form container by sending a request to the WebSocketASNDERClient.
+     * The method prepares and sends a BaseTransmission object with the necessary request
+     * details and payload, processes the response, and returns the created form container.
+     *
+     * @param derClient The WebSocketASNDERClient used to handle the communication.
+     * @param pop The payload populate object used for configuring the transmission payload.
+     * @param itm The form object to be transmitted for creation.
+     * @return The created form container object.
+     */
+    protected Form createFormContainer(
+            WebSocketASNDERClient derClient,
+            PayloadPopulate pop,
+            Form itm
+    ) {
+        BaseTransmission btFldItmReq = new BaseTransmission(ASNGlobal.Type.FORM);// <= Req Type
+        btFldItmReq.setPayloadPopulate(pop);
+        btFldItmReq.setRequestObject(new RequestObject(ASNGlobal.Path.FormContainer.FORM_CONT_CREATE));
+        btFldItmReq.setTransmissionObject(itm);
+
+        String ref = PerfStats.timedStart();
+        BaseTransmission btCreatedItm = derClient.request(btFldItmReq);
+        PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateFormContainer, ref);
+        Form created = (Form) btCreatedItm.getTransmissionObject();
+        return created;
+    }
+
+    /**
+     * Creates a new table record by sending a request to the provided WebSocket client
+     * with the specified payload population and table record input.
+     *
+     * @param derClient the WebSocket client used to send the request
+     * @param pop the payload population object containing the data for the request
+     * @param tblRecord the initial table record object to be processed
+     * @return a TableRecord object representing the result of the request
+     */
+    protected TableRecord createTableRecord(
+            WebSocketASNDERClient derClient,
+            PayloadPopulate pop,
+            TableRecord tblRecord
+    ) {
+        BaseTransmission req = new BaseTransmission(ASNGlobal.Type.TABLE_RECORD);// <= Req Type
+        req.setPayloadPopulate(pop);
+        req.setRequestObject(new RequestObject(ASNGlobal.Path.FormContainer.FORM_CONT_CREATE_TABLE_RECORD));
+        req.setTransmissionObject(tblRecord);
+
+        String ref = PerfStats.timedStart();
+        BaseTransmission btCreatedItm = derClient.request(req);
+        PerfStats.timedStop(PerfStats.Label.Asn1Der_CreateTableRecord, ref);
+        return (TableRecord) btCreatedItm.getTransmissionObject();
+    }
+
+    /**
+     * Executes a custom web action using the provided WebSocket ASN DER client.
+     *
+     * @param derClient The WebSocket client used to perform the action.
+     * @param pop The payload information to populate in the request.
+     * @param webAction The custom web action to be executed.
+     * @return The executed custom web action with updated transmission details.
+     */
+    protected CustomWebAction execCustomAction(
+            WebSocketASNDERClient derClient,
+            PayloadPopulate pop,
+            CustomWebAction webAction
+    ) {
+        BaseTransmission req = new BaseTransmission(ASNGlobal.Type.CUSTOM_WEB_ACTION);// <= Req Type
+        req.setPayloadPopulate(pop);
+        req.setRequestObject(new RequestObject(ASNGlobal.Path.FormContainer.FORM_CONT_EXEC_CUSTOM_ACTION));
+        req.setTransmissionObject(webAction);
+
+        String ref = PerfStats.timedStart();
+        BaseTransmission btExecItm = derClient.request(req);
+        PerfStats.timedStop(PerfStats.Label.Asn1Der_ExecCustomWebAction, ref);
+        return (CustomWebAction) btExecItm.getTransmissionObject();
+    }
+
 
     /**
      * Retrieves the historical data listing for the specified form using the given WebSocketASNDERClient.

@@ -243,7 +243,7 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
                 Error firstFluidError = this.getErrors().get(0);
                 String errorMsg = firstFluidError.getErrorMessage();
                 if (errorMsg == null || errorMsg.trim().isEmpty()) {
-                    errorMsg = "Error occurred with code: " + firstFluidError.getErrorCode();
+                    errorMsg = "Error occurred with code (on close): " + firstFluidError.getErrorCode();
                 }
                 this.completableFuture.completeExceptionally(new FluidClientException(
                         errorMsg,
