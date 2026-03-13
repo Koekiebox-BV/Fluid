@@ -15,13 +15,16 @@
 
 package com.fluidbpm.ws.client.v1.pericard;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
+import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.ws.client.FluidClientException;
@@ -36,6 +39,7 @@ import com.fluidbpm.ws.client.v1.crypto.KeystoreUtil;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
+import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilClient;
 import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.user.UserClient;
 import junit.framework.TestCase;
@@ -57,6 +61,9 @@ import static org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
  */
 @Log
 public class TestPericard extends ABaseTestASNDER {
+    private String lastKeystoreOrg;
+    private String lastKeystoreAlias;
+    private String lastHostAlias;
 
     @Override
     @Before
@@ -76,7 +83,8 @@ public class TestPericard extends ABaseTestASNDER {
              FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
              UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             String flowNameOrg = "Organisation Onboard", flowNameKeystore = "Keystore Load";
             this.formDefsToCleanup.add(fdc.getFormDefinitionByName("Organisation Onboard Request"));
@@ -147,6 +155,7 @@ public class TestPericard extends ABaseTestASNDER {
             payPop = derClient.requestFullPayloadPopulate();
 
             String newOrgName = flItmOrgOnReq.getForm().getFieldValueAsString("Entity Name");
+            this.lastKeystoreOrg = newOrgName;
             List<String> orgsPP = payPop.getAvailableMultiChoicesForm("Organisation");
 
             TestCase.assertTrue("New Org '"+newOrgName+"' not found in PayloadPopulate! Only have("+
@@ -169,32 +178,85 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertEquals(itemCount, createdFormIdsKS.size());
 
             // Verify the created keystore:
-            FluidItem byId = this.fluidItemByFormId(derClient, createdFormIdsKS.get(0));
-            TestCase.assertNotNull(byId);
-            Form form = byId.getForm();
-            TestCase.assertNotNull(form);
-            TestCase.assertNotNull(form.getFieldValueAsString("Alias"));
-            TestCase.assertNotNull(form.getFieldValueAsString("Organisation"));
-            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Type"));
-            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Provider"));
-            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Password"));
-            TestCase.assertNotNull(form.getFieldValueAsString("Keystore Private Key Password"));
+            FluidItem ksReqById = this.fluidItemByFormId(
+                    derClient, createdFormIdsKS.get(0),
+                    true// Include route fields.
+            );
+            TestCase.assertNotNull(ksReqById);
+            Form ksReqForm = ksReqById.getForm();
+            TestCase.assertNotNull(ksReqForm);
+            String keyAlias = ksReqForm.getFieldValueAsString("Alias");
+            TestCase.assertNotNull(keyAlias);
+            this.lastKeystoreAlias = keyAlias;
+            TestCase.assertNotNull(ksReqForm.getFieldValueAsString("Organisation"));
+            TestCase.assertNotNull(ksReqForm.getFieldValueAsString("Keystore Type"));
+            TestCase.assertNotNull(ksReqForm.getFieldValueAsString("Keystore Provider"));
+            TestCase.assertNotNull(ksReqForm.getFieldValueAsString("Keystore Password"));
+            TestCase.assertNotNull(ksReqForm.getFieldValueAsString("Keystore Private Key Password"));
 
-            List<Form> tableRecords = this.tableRecords(derClient, byId.getForm(), null);
+            List<Form> tableRecords = this.tableRecords(derClient, ksReqById.getForm(), null);
             TestCase.assertNotNull(tableRecords);
+            TestCase.assertEquals(3, tableRecords.size());
 
-            
+            // Now we have an approved Keystore.
+            List<Form> descKSReq = sqlUtl.getDescendants(
+                    ksReqForm,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descKSReq);
+            TestCase.assertEquals("No Keystore yet!",0, descKSReq.size());
 
-            
-
-
-
-            // Approve the Request:
+            // Approve the Request to create the keystore!:
             createdFormIdsKS.forEach(id -> {
                 approveFormId(derClient, uc, fcc, id, viewCheckerKS, viewProcResultKS);
             });
+
+            // Once approved, we have the request linked to the Keystore:
+            descKSReq = sqlUtl.getDescendants(
+                    ksReqForm,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descKSReq);
+            TestCase.assertEquals("Expected one descendant. The Keystore!",1, descKSReq.size());
         }
         PerfStats.printOutcomes();
+    }
+
+    @Test
+    public void testHSMHostConfigRequest() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastKeystoreOrg, lastKeystoreAlias)) {
+            this.testOrgAndKeystoreOnboardRequest();
+        }
+
+        if (UtilGlobal.isBlank(this.lastKeystoreOrg, lastKeystoreAlias)) {
+            TestCase.fail("Org. and Keystore not yet created!");
+            return;
+        }
+
+        String host = String.format("Host-%s", UUID.randomUUID().toString());
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60))
+        ) {
+            PayloadPopulate pop = derClient.requestFullPayloadPopulate();
+            Form hsmHost = this.createHostWithEntriesAndExec(
+                    derClient,
+                    pop,
+                    host,
+                    this.lastKeystoreOrg,
+                    this.lastKeystoreAlias
+            );
+            TestCase.assertNotNull(hsmHost);
+            TestCase.assertNotNull(host, hsmHost.getFieldValueAsString("Alias"));
+            this.lastHostAlias = host;
+        }
     }
 
     private void approveFormId(
@@ -205,7 +267,7 @@ public class TestPericard extends ABaseTestASNDER {
             JobView viewChecker,
             JobView viewProcResult
     ) {
-        FluidItem byId = this.fluidItemByFormId(derClient, id);
+        FluidItem byId = this.fluidItemByFormId(derClient, id, false);
         TestCase.assertNotNull(byId);
 
         Form form = byId.getForm();
@@ -259,7 +321,6 @@ public class TestPericard extends ABaseTestASNDER {
         return new FluidItem(frm);
     }
 
-
     private static FluidItem ksLoadItem(
             String org,
             String keystoreType,
@@ -282,6 +343,75 @@ public class TestPericard extends ABaseTestASNDER {
         fldItm.setAttachments(new ArrayList<>());
         fldItm.getAttachments().add(new Attachment(keystoreBytes, "thestore.jks", "application/octet-stream"));
         return fldItm;
+    }
+
+    public static final String[] HSM_COMMAND_TYPES = {"Thales Host Command Set", "Atalla Command Language","Futurex Cryptographic Command Language"};
+
+    private Form createHostWithEntriesAndExec(
+            WebSocketASNDERClient derClient,
+            PayloadPopulate payPop,
+            String hostAlias,
+            String existingOrg,
+            String existingKSAlias
+    ) {
+        // 1. Create Host form:
+        Form frmHost = new Form("HSM Host", new Date().toString());
+
+        frmHost.setFieldValue("Alias", hostAlias, Field.Type.Text);
+        frmHost.setFieldValue("Organisation", new MultiChoice(existingOrg), Field.Type.Text);
+        frmHost.setFieldValue("HSM Command Type", new MultiChoice(
+                HSM_COMMAND_TYPES[(int) (Math.random() * HSM_COMMAND_TYPES.length)]
+        ), Field.Type.MultipleChoice);
+
+        Form createdHostForm = this.createFormContainer(
+                derClient,
+                payPop,
+                frmHost
+        );
+        Form parentForm = new Form(createdHostForm.getId());
+
+        // 2. Create table records:
+        // TB - Keystore
+        Form tbFormHostCommsKs = new Form("Host Communication Keystore", "Host Comms "+new Date().toString());
+        tbFormHostCommsKs.setFieldValue("Keystore Alias", new MultiChoice(existingKSAlias), Field.Type.MultipleChoice);
+        tbFormHostCommsKs.setFieldValue("Use Until", new Date(
+                System.currentTimeMillis() + TimeUnit.DAYS.toMillis(31)
+        ), Field.Type.DateTime);
+
+        createdHostForm.setFieldValue(
+                "Host Communication Keystore Entries",
+                this.createTableRecord(
+                        derClient,
+                        payPop,
+                        new TableRecord(
+                                tbFormHostCommsKs,
+                                parentForm,
+                                new Field("Host Communication Keystore Entries")
+                        )
+                ),
+                Field.Type.Table
+        );
+
+        // TB - Host Endpoint
+        Form tbFormHostEndpoint = new Form("HSM Host Endpoint", "Host Endpoint "+new Date().toString());
+        tbFormHostEndpoint.setFieldValue("HSM Host", "127.0.0.1", Field.Type.Text);
+        tbFormHostEndpoint.setFieldValue("HSM Port", 21121, Field.Type.Decimal);
+        createdHostForm.setFieldValue(
+                "Host Endpoint Entries", this.createTableRecord(
+                        derClient,
+                        payPop,
+                        new TableRecord(tbFormHostEndpoint, parentForm, new Field("Host Endpoint Entries"))
+                ), Field.Type.Table
+        );
+
+        // 3. Save to create the alias.
+        CustomWebAction cwAct = this.execCustomAction(
+                derClient, payPop, new CustomWebAction(createdHostForm, "Save")
+        );
+        Form execResultForm = cwAct.getForm();
+        TestCase.assertNotNull(execResultForm);
+
+        return createdHostForm;
     }
 
     protected List<FluidItem> executeUntilOrTOFromView(
