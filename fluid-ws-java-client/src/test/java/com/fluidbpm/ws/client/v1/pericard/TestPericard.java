@@ -223,7 +223,6 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertNotNull(descKSReq);
             TestCase.assertEquals("Expected one descendant. The Keystore!",1, descKSReq.size());
         }
-        PerfStats.printOutcomes();
     }
 
     @Test
@@ -445,6 +444,8 @@ public class TestPericard extends ABaseTestASNDER {
     @Override
     @After
     public void destroy() {
+        PerfStats.printOutcomes();
+
         log.info("Pericard: Destroying test and cleaning up...");
         super.destroy();
     }

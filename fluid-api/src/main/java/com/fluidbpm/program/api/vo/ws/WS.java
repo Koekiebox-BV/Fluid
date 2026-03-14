@@ -3452,6 +3452,10 @@ public class WS {
          * @see com.fluidbpm.program.api.vo.config.Configuration
          */
         public static final class Configuration {
+            public static final class QueryParam {
+                public static final String UPSERT_FROM_EXTERNAL_RUNNER = "upsert_from_external_runner";
+            }
+
             /**
              * Role mappings.
              */
