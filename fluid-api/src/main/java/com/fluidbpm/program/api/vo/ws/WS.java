@@ -3536,12 +3536,25 @@ public class WS {
                 }
 
                 /**
-                 * URL Path for uploading third party libraries.
+                 * Constructs a URL path for upserting third-party tasks, with an optional flag
+                 * indicating whether the upsert is triggered by an external runner.
                  *
-                 * @return {@code v1/configuration/third_party_library_upsert}
+                 * {@code v1/configuration/third_party_library_upsert}
+                 *
+                 * @param upsertFromExternalRunner A boolean flag specifying whether the upsert
+                 *                                 operation is initiated by an external runner.
+                 *                                 True if initiated externally, otherwise false.
+                 * @return A string representing the constructed URL path for the upsert operation.
                  */
-                public static String thirdPartyTaskUpsert() {
-                    return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_UPSERT);
+                public static String thirdPartyTaskUpsert(boolean upsertFromExternalRunner) {
+                    return String.format(
+                            "%s%s%s?%s=%s",
+                            Version.VERSION_1,
+                            ROOT,
+                            THIRD_PARTY_LIB_UPSERT,
+                            QueryParam.UPSERT_FROM_EXTERNAL_RUNNER,
+                            upsertFromExternalRunner
+                    );
                 }
 
                 /**

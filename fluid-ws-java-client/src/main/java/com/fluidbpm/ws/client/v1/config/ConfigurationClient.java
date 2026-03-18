@@ -180,12 +180,25 @@ public class ConfigurationClient extends ABaseClientWS {
 	 * @return stored third party library.
 	 * @see ThirdPartyLibrary
 	 */
+	public ThirdPartyLibrary upsertThirdPartyLibrary(ThirdPartyLibrary library) {
+		return this.upsertThirdPartyLibrary(library, false);
+	}
+
+	/**
+	 * Inserts a third party library if it doesn't exist,
+	 * update a configuration if it exists based on {@code id} being set.
+	 *
+	 * @param library The library to create or update.
+	 * @return stored third party library.
+	 * @see ThirdPartyLibrary
+	 */
 	public ThirdPartyLibrary upsertThirdPartyLibrary(
-			ThirdPartyLibrary library
+			ThirdPartyLibrary library,
+			boolean upsertFromExternalRunner
 	) {
 		library.setServiceTicket(this.serviceTicket);
 		return new ThirdPartyLibrary(this.putJson(
-				library, WS.Path.Configuration.Version1.thirdPartyTaskUpsert())
+				library, WS.Path.Configuration.Version1.thirdPartyTaskUpsert(upsertFromExternalRunner))
 		);
 	}
 
