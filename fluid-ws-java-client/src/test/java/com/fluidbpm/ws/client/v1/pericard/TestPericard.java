@@ -27,6 +27,7 @@ import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
+import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
@@ -34,6 +35,8 @@ import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.fluidbpm.ws.client.v1.asn1der.ws.ABaseTestASNDER;
 import com.fluidbpm.ws.client.v1.asn1der.ws.WebSocketASNDERClient;
+import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
+import com.fluidbpm.ws.client.v1.config.GlobalFieldClient;
 import com.fluidbpm.ws.client.v1.crypto.KeystoreTestUtil;
 import com.fluidbpm.ws.client.v1.crypto.KeystoreUtil;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
@@ -54,6 +57,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static com.fluidbpm.ws.client.FluidClientException.ErrorCode.NO_RESULT;
 import static org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
 
 /**
@@ -71,7 +75,6 @@ public class TestPericard extends ABaseTestASNDER {
         super.init();
     }
 
-    //@Ignore
     @Test
     public void testOrgAndKeystoreOnboardRequest() {
         if (this.isConnectionInValid) return;
@@ -84,8 +87,14 @@ public class TestPericard extends ABaseTestASNDER {
              FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
              UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET)
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
+            if (!isPericardEnabled(gfc)) {
+                log.info("Pericard is not enabled. Skipping test.");
+                return;
+            }
+
             String flowNameOrg = "Organisation Onboard", flowNameKeystore = "Keystore Load";
             this.formDefsToCleanup.add(fdc.getFormDefinitionByName("Organisation Onboard Request"));
             this.formDefsToCleanup.add(fdc.getFormDefinitionByName("Organisation"));
@@ -233,18 +242,32 @@ public class TestPericard extends ABaseTestASNDER {
             this.testOrgAndKeystoreOnboardRequest();
         }
 
-        if (UtilGlobal.isBlank(this.lastKeystoreOrg, lastKeystoreAlias)) {
-            TestCase.fail("Org. and Keystore not yet created!");
-            return;
-        }
-
         String host = String.format("Host-%s", UUID.randomUUID().toString());
         try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
                 BASE_URL,
                 ADMIN_SERVICE_TICKET_HEX,
-                TimeUnit.SECONDS.toMillis(60))
+                TimeUnit.SECONDS.toMillis(60));
+             ConfigurationClient confClient = new ConfigurationClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
+            if (!isPericardEnabled(gfc)) {
+                log.info("Pericard is not enabled. Skipping test.");
+                return;
+            }
+
+            if (UtilGlobal.isBlank(this.lastKeystoreOrg, lastKeystoreAlias)) {
+                TestCase.fail("Org. and Keystore not yet created!");
+                return;
+            }
+
             PayloadPopulate pop = derClient.requestFullPayloadPopulate();
+
+            //Update 3rd Part Lib:
+            ThirdPartyLibrary _3rdPL = new ThirdPartyLibrary();
+            _3rdPL.setDescription("Updated via Pericard module at "+new Date().toString()+"!");
+            confClient.upsertThirdPartyLibrary(_3rdPL, true);
+
+            // Host with entries:
             Form hsmHost = this.createHostWithEntriesAndExec(
                     derClient,
                     pop,
@@ -449,4 +472,46 @@ public class TestPericard extends ABaseTestASNDER {
         log.info("Pericard: Destroying test and cleaning up...");
         super.destroy();
     }
+
+    public static final String IS_ENABLED_PERICARD = "Is Enabled Pericard";
+    private boolean isPericardEnabled(GlobalFieldClient gfc) {
+        String sysPropVal = UtilGlobal.getProperty(
+                System.getProperties(),
+                IS_ENABLED_PERICARD,
+                UtilGlobal.EMPTY
+        );
+        if (UtilGlobal.isNotBlank(sysPropVal)) {
+            log.info("SystemProperty: Field enabled exists and of type Text: "+IS_ENABLED_PERICARD);
+            return isModeEnabled(sysPropVal.trim().toLowerCase());
+        }
+
+        try {
+            Field enabled = gfc.getFieldValueByName(IS_ENABLED_PERICARD);
+            if (enabled == null) {
+                return false;
+            }
+            Boolean boolVal = enabled.getFieldValueAsBoolean();
+            if (boolVal != null && boolVal) return true;
+
+            String asTxt = enabled.getFieldValueAsString();
+            if (UtilGlobal.isNotBlank(asTxt)) {
+                return isModeEnabled(asTxt.trim().toLowerCase());
+            }
+            else return false;
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != NO_RESULT) {
+                throw fce;
+            }
+            return false;
+        }
+    }
+
+    private static boolean isModeEnabled(String fieldValue) {
+        return (UtilGlobal.isAnyTrue(
+                "true".equals(fieldValue),
+                "1".equals(fieldValue),
+                "yes".equals(fieldValue)
+        ));
+    }
+
 }

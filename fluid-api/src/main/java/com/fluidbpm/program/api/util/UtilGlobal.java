@@ -961,4 +961,18 @@ public class UtilGlobal {
         if (bd == null) return false;
         return bd.stripTrailingZeros().scale() <= 0;
     }
+
+    /**
+     * Combines two arrays of strings into a single array.
+     *
+     * @param base the first array of strings to be combined
+     * @param extra the second array of strings to be combined
+     * @return a new array containing all elements from the base array followed by all elements from the extra array
+     */
+    public static String[] combine(String[] base, String ... extra) {
+        String[] all = new String[base.length + extra.length];
+        System.arraycopy(base, 0, all, 0, base.length);
+        System.arraycopy(extra, 0, all, base.length, extra.length);
+        return all;
+    }
 }
