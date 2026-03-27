@@ -288,6 +288,7 @@ public class FluidItem extends ABaseFluidGSONObject {
         this.setFlowStateString(this.getAsStringNullSafe(JSONMapping.FLOW_STATE));
         this.setStep(this.getAsStringNullSafe(JSONMapping.STEP));
         this.setStepEnteredTime(this.getDateFieldValueFromFieldWithName(JSONMapping.STEP_ENTERED_TIME));
+        this.setInCaseOfCreateLinkToParent(this.getAsBooleanNullSafe(JSONMapping.IN_CASE_OF_CREATE_LINK_TO_PARENT));
     }
 
     /**
@@ -312,6 +313,8 @@ public class FluidItem extends ABaseFluidGSONObject {
         this.setAsObjArray(JSONMapping.GLOBAL_FIELDS, returnVal, this::getGlobalFields);
         this.setAsObjArray(JSONMapping.ATTACHMENTS, returnVal, this::getAttachments);
         this.setAsProperty(JSONMapping.FLOW_STATE, returnVal, this.getFlowState() == null ? null : this.getFlowState().toString());
+        this.setAsProperty(JSONMapping.IN_CASE_OF_CREATE_LINK_TO_PARENT, returnVal, this.getInCaseOfCreateLinkToParent() == null ?
+                null : this.getInCaseOfCreateLinkToParent());
 
         return returnVal;
     }
