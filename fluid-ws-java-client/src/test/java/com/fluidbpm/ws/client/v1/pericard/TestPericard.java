@@ -28,6 +28,7 @@ import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.item.FluidItemListing;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
+import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
@@ -45,6 +46,7 @@ import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
 import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilClient;
 import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.user.UserClient;
+import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.After;
@@ -91,7 +93,7 @@ public class TestPericard extends ABaseTestASNDER {
              GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             if (!isPericardEnabled(gfc)) {
-                log.info("Pericard is not enabled. Skipping test.");
+                log.warning("Pericard is not enabled. Skipping test. (testOrgAndKeystoreOnboardRequest)");
                 return;
             }
 
@@ -140,7 +142,7 @@ public class TestPericard extends ABaseTestASNDER {
 
             // Approve the Request:
             createdFormIdsOrg.forEach(id -> {
-                approveFormId(derClient, uc, fcc, id, viewCheckerOrg, viewProcResultOrg);
+                this.approveFormId(derClient, uc, fcc, id, viewCheckerOrg, viewProcResultOrg);
             });
 
             // 2. REQUEST KEYSTORE:
@@ -156,7 +158,8 @@ public class TestPericard extends ABaseTestASNDER {
                 TestCase.assertEquals(ksType, type);
             } catch (Exception e) {
                 log.severe("Failed to create keystore: "+e.getMessage());
-                throw new RuntimeException(e);
+                TestCase.fail("Failed to create keystore: "+e.getMessage());
+                return;
             }
             log.info("Keystore: "+keystoreBytes.length+" bytes.");
 
@@ -170,6 +173,7 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertTrue("New Org '"+newOrgName+"' not found in PayloadPopulate! Only have("+
                     orgsPP.size()+", before "+orgsPPBefore+"): "+orgsPP, orgsPP.contains(newOrgName));
 
+            // Keystore Request (Load Keystore):
             FluidItem flItmKSLoadReq = ksLoadItem(
                     newOrgName,
                     ksType,
@@ -207,7 +211,7 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertNotNull(tableRecords);
             TestCase.assertEquals(3, tableRecords.size());
 
-            // Now we have an approved Keystore.
+            // Now we have to approve the Keystore.
             List<Form> descKSReq = sqlUtl.getDescendants(
                     ksReqForm,
                     true,
@@ -251,7 +255,7 @@ public class TestPericard extends ABaseTestASNDER {
              GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET)
         ) {
             if (!isPericardEnabled(gfc)) {
-                log.info("Pericard is not enabled. Skipping test.");
+                log.warning("Pericard is not enabled. Skipping test. (testHSMHostConfigRequest)");
                 return;
             }
 
@@ -278,6 +282,131 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertNotNull(hsmHost);
             TestCase.assertNotNull(host, hsmHost.getFieldValueAsString("Alias"));
             this.lastHostAlias = host;
+        }
+    }
+
+    @Test
+    public void testGenerateHSMKeyRequest() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastHostAlias)) {
+            this.testHSMHostConfigRequest();
+        }
+        TestCase.assertNotNull("Expected 'Key Generation Host'!!!", this.lastHostAlias);
+
+        int itemCount = 1, threadCount = 1;
+        String flowNameGenHsmKey = "Generate HSM Key";
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testGenerateHSMKeyRequest)");
+                return;
+            }
+            
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Checker",
+                    "Generate HSM Key Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Processed Result",
+                    "Generate HSM Key Processed Result"
+            );
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+            
+            FluidItem generateKeyRequest = generateHsmKeyRequestItem(
+                    UUID.randomUUID().toString(),
+                    this.lastHostAlias,
+                    "Zone Master Key"
+            );
+
+            List<Long> createdIdsGenHsmKeyReq = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameGenHsmKey, viewCheckerGenKey,
+                    () -> generateKeyRequest
+            );
+            TestCase.assertNotNull(createdIdsGenHsmKeyReq);
+            TestCase.assertEquals(itemCount, createdIdsGenHsmKeyReq.size());
+
+            FluidItem keyGenReqById = this.fluidItemByFormId(
+                    derClient, createdIdsGenHsmKeyReq.get(0),
+                    true// Include route fields.
+            );
+            TestCase.assertNotNull(keyGenReqById);
+            Form keyGenReqForm = keyGenReqById.getForm();
+            TestCase.assertNotNull(keyGenReqForm);
+            TestCase.assertEquals(FluidItem.FlowState.WorkInProgress, keyGenReqById.getFlowState());
+            TestCase.assertEquals("Generate HSM Key Request", keyGenReqForm.getFormType());
+            TestCase.assertEquals("admin", keyGenReqForm.getFieldValueAsString("User Maker"));
+            String keyAlias = keyGenReqForm.getFieldValueAsString("Alias");
+            TestCase.assertNotNull(keyAlias);
+            String keyReqType = "Zone Master Key";
+            TestCase.assertNotNull(keyGenReqForm.getFieldValueAsString("Key Generation Host"));
+            TestCase.assertEquals(keyReqType, keyGenReqForm.getFieldValueAsString("HSM Key Type or Usage"));
+            TestCase.assertNotNull(keyGenReqForm.getFieldValueAsString("Key Purpose"));
+            TestCase.assertEquals("Thales Key Block", keyGenReqForm.getFieldValueAsString("HSM Key Scheme"));
+            TestCase.assertEquals("Triple Length DES Key", keyGenReqForm.getFieldValueAsString("HSM Key Algorithm"));
+            TestCase.assertEquals("None (No Restrictions)", keyGenReqForm.getFieldValueAsString("HSM Key Mode of Use"));
+            TestCase.assertEquals(1, keyGenReqForm.getFieldValueAsInt("HSM Key Version Number").intValue());
+            TestCase.assertEquals("Exported in a Trusted Key Block", keyGenReqForm.getFieldValueAsString("HSM Key Exportability"));
+
+            List<Form> descGenKeyReq = sqlUtl.getDescendants(
+                    keyGenReqForm,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descGenKeyReq);
+            TestCase.assertEquals("No Key Generation request yet!",0, descGenKeyReq.size());
+
+            // Approve the Key Gen Request:
+            createdIdsGenHsmKeyReq.forEach(id -> {
+                this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
+            });
+
+            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
+            TestCase.assertNotNull(keysWithAlias);
+            TestCase.assertEquals("No ZMK on alias "+keyAlias+"!",1, keysWithAlias.size());
+
+            // Wait for the workflow to create the ZMK:
+            sleepForSeconds(3);
+
+            FluidItem zmk = this.fluidItemByFormId(
+                    derClient, keysWithAlias.get(0).getForm().getId(),
+                    false// No route fields.
+            );
+            TestCase.assertNotNull(zmk);
+            Form zmkForm = zmk.getForm();
+            TestCase.assertNotNull(zmkForm);
+            TestCase.assertEquals(keyReqType, zmkForm.getFormType());
+            //Ensure the item is done being created.
+            TestCase.assertEquals(FluidItem.FlowState.NotInFlow, zmk.getFlowState());
+            TestCase.assertEquals("Open", zmkForm.getState());
+            TestCase.assertEquals(FluidItem.FlowState.NotInFlow.name(), zmkForm.getFlowState());
+            TestCase.assertNotNull(zmkForm.getFieldValueAsString("Key Check Value"));
+            TestCase.assertNotNull(zmkForm.getFieldValueAsString("HSM Key Block Cryptogram LMK MFK"));
+            TestCase.assertEquals(this.lastHostAlias, zmkForm.getFieldValueAsString("Key Generation Host"));
+
+            // Once approved, we have the request linked to the Keystore:
+            descGenKeyReq = sqlUtl.getDescendants(
+                    keyGenReqForm,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descGenKeyReq);
+            TestCase.assertEquals("Expected one descendant. The Generated ZMK!",1, descGenKeyReq.size());
         }
     }
 
@@ -376,7 +505,6 @@ public class TestPericard extends ABaseTestASNDER {
             String existingOrg,
             String existingKSAlias
     ) {
-        // 1. Create Host form:
         Form frmHost = new Form("HSM Host", new Date().toString());
 
         frmHost.setFieldValue("Alias", hostAlias, Field.Type.Text);
@@ -392,7 +520,6 @@ public class TestPericard extends ABaseTestASNDER {
         );
         Form parentForm = new Form(createdHostForm.getId());
 
-        // 2. Create table records:
         // TB - Keystore
         Form tbFormHostCommsKs = new Form("Host Communication Keystore", "Host Comms "+new Date().toString());
         tbFormHostCommsKs.setFieldValue("Keystore Alias", new MultiChoice(existingKSAlias), Field.Type.MultipleChoice);
@@ -436,6 +563,25 @@ public class TestPericard extends ABaseTestASNDER {
         return createdHostForm;
     }
 
+    private static FluidItem generateHsmKeyRequestItem(
+            String identifier,
+            String keyGenerationHost,
+            String keyUsage
+    ) {
+        Form frm = new Form("Generate HSM Key Request", new Date().toString()+ " "+identifier);
+        frm.setFieldValue("Alias", String.format("AliasGenZMK-%s", identifier), Field.Type.Text);
+        frm.setFieldValue("Key Purpose", String.format("This is purpose. ID: %s", identifier), Field.Type.ParagraphText);
+        frm.setFieldValue("Key Generation Host", new MultiChoice(keyGenerationHost), Field.Type.MultipleChoice);
+        frm.setFieldValue("HSM Key Type or Usage", new MultiChoice(keyUsage), Field.Type.MultipleChoice);
+        frm.setFieldValue("HSM Key Scheme", new MultiChoice("Thales Key Block"), Field.Type.MultipleChoice);
+        frm.setFieldValue("HSM Key Algorithm", new MultiChoice("Triple Length DES Key"), Field.Type.MultipleChoice);
+        frm.setFieldValue("HSM Key Mode of Use", new MultiChoice("None (No Restrictions)"), Field.Type.MultipleChoice);
+        frm.setFieldValue("HSM Key Version Number", 1, Field.Type.Decimal);
+        frm.setFieldValue("HSM Key Exportability", new MultiChoice("Exported in a Trusted Key Block"), Field.Type.MultipleChoice);
+
+        return new FluidItem(frm);
+    }
+
     protected List<FluidItem> executeUntilOrTOFromView(
             WebSocketASNDERClient derClient,
             JobView view,
@@ -462,6 +608,27 @@ public class TestPericard extends ABaseTestASNDER {
             }
         }
         return null;
+    }
+
+    private List<FluidItem> formsByAliasAndType(
+            UserQueryClient uqClient,
+            String alias,
+            String formType
+    ) {
+        UserQuery uq = new UserQuery();
+        uq.setName("Form Type by Alias");
+        uq.setInputs(UtilGlobal.toListSafe(
+                new Field("Alias", alias),
+                new Field("Form Type", new MultiChoice(formType))
+        ));
+        return uqClient.executeUserQuery(
+                uq,
+                true,//Ancestor
+                true,//Calc Labels
+                100,
+                0,
+                false// Force DB
+        );
     }
 
     @Override
