@@ -79,6 +79,7 @@ public class PerfStats {
         Asn1Der_SendOn(Group.ASN1Der_Business),
         Asn1Der_ClearPI(Group.ASN1Der_Business),
         Asn1Der_LockForm(Group.ASN1Der_Business),
+        Asn1Der_UnlockForm(Group.ASN1Der_Business),
         Asn1Der_UpdateForm(Group.ASN1Der_Business),
         Asn1Der_FormHistory(Group.ASN1Der_Business),
         Asn1Der_GetTableForms(Group.ASN1Der_Business),
