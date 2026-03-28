@@ -193,6 +193,18 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
     }
 
     /**
+     * Constructs a new Form with the specified form type, title, and form fields.
+     *
+     * @param formType the type of the form, specifying its purpose or category
+     * @param title the title of the form, providing a descriptive label
+     * @param formFields an optional array of Field objects representing the fields contained in the form
+     */
+    public Form(String formType, String title, Field ... formFields) {
+        this(formType, title);
+        this.setFormFields(UtilGlobal.toListSafe(formFields));
+    }
+
+    /**
      * Populates local variables with {@code jsonObjectParam}.
      *
      * @param jsonObjectParam The JSON Object.
@@ -1171,5 +1183,45 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
             if (!itm.isFieldValueEmpty()) allEmpty.set(false);
         });
         return allEmpty.get();
+    }
+
+    /**
+     * Copies the values of specified fields from the source form to the current form.
+     * The method supports various field types such as text, boolean, date, decimal, and multiple choice.
+     * Field values are updated in the current form only if they exist in the source form.
+     *
+     * @param source      The source form from which field values are copied. If null, no changes are made.
+     * @param fieldNames  The names of the fields to copy from the source form. If null or empty, no fields are copied.
+     */
+    @XmlTransient
+    @JsonIgnore
+    private void copyFieldValueFromSource(Form source, String ... fieldNames) {
+        if (fieldNames == null || fieldNames.length < 1) return;
+        if (source == null) return;
+
+        for (String fieldName : fieldNames) {
+            if (source.getField(fieldName) == null) continue;
+
+            Field.Type fldType = source.getField(fieldName).getTypeAsEnum();
+            switch (fldType) {
+                case Text:
+                case ParagraphText:
+                case TextEncrypted:
+                    this.setFieldValue(fieldName, source.getFieldValueAsString(fieldName), fldType);
+                    break;
+                case TrueFalse:
+                    this.setFieldValue(fieldName, source.getFieldValueAsBoolean(fieldName), fldType);
+                    break;
+                case DateTime:
+                    this.setFieldValue(fieldName, source.getFieldValueAsDate(fieldName), fldType);
+                    break;
+                case Decimal:
+                    this.setFieldValue(fieldName, source.getFieldValueAsDouble(fieldName), fldType);
+                    break;
+                case MultipleChoice:
+                    this.setFieldValue(fieldName, new MultiChoice(source.getFieldValueAsString(fieldName)), fldType);
+                    break;
+            }
+        }
     }
 }

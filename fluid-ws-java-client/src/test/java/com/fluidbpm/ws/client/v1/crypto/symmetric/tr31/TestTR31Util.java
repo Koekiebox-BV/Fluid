@@ -29,11 +29,11 @@ import static junit.framework.TestCase.*;
 @Log
 public class TestTR31Util {
 
-    // AES-128 KBPK (Key Block Protection Key)
+    // AES-128 KBPK (Key Block Protection Key) — 16 bytes (same size as 3DES-112)
     private static final byte[] AES128_KBPK = hexToBytes("89ABCDEF0123456789ABCDEF01234567");
     // AES-256 KBPK
     private static final byte[] AES256_KBPK = hexToBytes("89ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF01234567");
-    // 3DES KBPK
+    // 3DES KBPK — 16 bytes (same size as AES-128, disambiguated via isAesKbpk=false)
     private static final byte[] TDES_KBPK = hexToBytes("0123456789ABCDEF0123456789ABCDEF");
 
     // A 128-bit AES key to wrap
@@ -45,6 +45,7 @@ public class TestTR31Util {
     public void testWrapUnwrapAESKey() throws GeneralSecurityException {
         TR31KeyBlock block = TR31Util.wrap(
                 AES128_KBPK,
+                true,   // isAesKbpk
                 AES_KEY_TO_WRAP,
                 TR31KeyBlock.KeyUsage.PIN_ENCRYPTION,
                 TR31KeyBlock.Algorithm.AES,
@@ -56,7 +57,7 @@ public class TestTR31Util {
         assertNotNull("MAC should not be null", block.getMac());
         assertEquals("MAC should be 8 bytes", 8, block.getMac().length);
 
-        byte[] recovered = TR31Util.unwrap(AES128_KBPK, block);
+        byte[] recovered = TR31Util.unwrap(AES128_KBPK, true, block);
         assertTrue("Unwrapped key should match original", Arrays.equals(AES_KEY_TO_WRAP, recovered));
     }
 
@@ -64,6 +65,7 @@ public class TestTR31Util {
     public void testWrapUnwrapTDESKey() throws GeneralSecurityException {
         TR31KeyBlock block = TR31Util.wrap(
                 TDES_KBPK,
+                false,  // isAesKbpk — TDES_KBPK is 3DES despite being 16 bytes
                 TDES_KEY_TO_WRAP,
                 TR31KeyBlock.KeyUsage.ZPK,
                 TR31KeyBlock.Algorithm.TDES,
@@ -72,7 +74,7 @@ public class TestTR31Util {
         );
         assertNotNull("Wrapped 3DES block should not be null", block);
 
-        byte[] recovered = TR31Util.unwrap(TDES_KBPK, block);
+        byte[] recovered = TR31Util.unwrap(TDES_KBPK, false, block);
         assertTrue("Unwrapped 3DES key should match original", Arrays.equals(TDES_KEY_TO_WRAP, recovered));
     }
 
@@ -80,6 +82,7 @@ public class TestTR31Util {
     public void testEncodeDecodeRoundTrip() throws GeneralSecurityException {
         TR31KeyBlock block = TR31Util.wrap(
                 AES128_KBPK,
+                true,
                 AES_KEY_TO_WRAP,
                 TR31KeyBlock.KeyUsage.DATA_ENCRYPTION,
                 TR31KeyBlock.Algorithm.AES,
@@ -91,7 +94,6 @@ public class TestTR31Util {
         assertNotNull("Encoded block should not be null", encoded);
         assertTrue("Encoded block should not be empty", encoded.length() > 0);
 
-        // Parse back
         TR31KeyBlock parsed = TR31Util.parse(encoded);
         assertEquals("Version should survive encode/parse", block.getVersion(), parsed.getVersion());
         assertEquals("Key usage should survive encode/parse", block.getKeyUsageRaw(), parsed.getKeyUsageRaw());
@@ -104,6 +106,7 @@ public class TestTR31Util {
     public void testEncodeParseUnwrapRoundTrip() throws GeneralSecurityException {
         TR31KeyBlock block = TR31Util.wrap(
                 AES256_KBPK,
+                true,
                 AES_KEY_TO_WRAP,
                 TR31KeyBlock.KeyUsage.BDK,
                 TR31KeyBlock.Algorithm.AES,
@@ -112,7 +115,7 @@ public class TestTR31Util {
         );
 
         String encoded = TR31Util.encode(block);
-        byte[] recovered = TR31Util.unwrap(AES256_KBPK, encoded);
+        byte[] recovered = TR31Util.unwrap(AES256_KBPK, true, encoded);
         assertTrue("Full encode-parse-unwrap round-trip should recover key", Arrays.equals(AES_KEY_TO_WRAP, recovered));
     }
 
@@ -120,6 +123,7 @@ public class TestTR31Util {
     public void testMACVerificationFailsWithWrongKBPK() throws GeneralSecurityException {
         TR31KeyBlock block = TR31Util.wrap(
                 AES128_KBPK,
+                true,
                 AES_KEY_TO_WRAP,
                 TR31KeyBlock.KeyUsage.PIN_ENCRYPTION,
                 TR31KeyBlock.Algorithm.AES,
@@ -129,7 +133,7 @@ public class TestTR31Util {
 
         byte[] wrongKbpk = hexToBytes("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
         try {
-            TR31Util.unwrap(wrongKbpk, block);
+            TR31Util.unwrap(wrongKbpk, true, block);
             fail("Should throw SecurityException for wrong KBPK (MAC mismatch)");
         } catch (SecurityException e) {
             assertTrue("Exception should mention MAC verification", e.getMessage().contains("MAC"));
@@ -137,25 +141,55 @@ public class TestTR31Util {
     }
 
     @Test
-    public void testBlockVersionIsSet() throws GeneralSecurityException {
+    public void testBlockVersionIsSetAES() throws GeneralSecurityException {
         TR31KeyBlock block = TR31Util.wrap(
                 AES128_KBPK,
+                true,
                 AES_KEY_TO_WRAP,
                 TR31KeyBlock.KeyUsage.PIN_ENCRYPTION,
                 TR31KeyBlock.Algorithm.AES,
                 TR31KeyBlock.ModeOfUse.ENCRYPT_DECRYPT,
                 TR31KeyBlock.Exportability.EXPORTABLE
         );
-        assertNotNull("Version should be set", block.getVersion());
         assertEquals("AES KBPK should produce version D", TR31KeyBlock.Version.D, block.getVersion());
     }
 
     @Test
+    public void testBlockVersionIsSet3DES() throws GeneralSecurityException {
+        TR31KeyBlock block = TR31Util.wrap(
+                TDES_KBPK,
+                false,
+                TDES_KEY_TO_WRAP,
+                TR31KeyBlock.KeyUsage.ZPK,
+                TR31KeyBlock.Algorithm.TDES,
+                TR31KeyBlock.ModeOfUse.ENCRYPT_DECRYPT,
+                TR31KeyBlock.Exportability.EXPORTABLE
+        );
+        assertEquals("3DES KBPK should produce version B", TR31KeyBlock.Version.B, block.getVersion());
+    }
+
+    @Test
+    public void testSameSizeAESAndTDESProduceDifferentBlocks() throws GeneralSecurityException {
+        // AES128_KBPK and TDES_KBPK are both 16 bytes but different algorithms
+        TR31KeyBlock aesBlock = TR31Util.wrap(
+                AES128_KBPK, true, AES_KEY_TO_WRAP,
+                TR31KeyBlock.KeyUsage.DATA_ENCRYPTION, TR31KeyBlock.Algorithm.AES,
+                TR31KeyBlock.ModeOfUse.ENCRYPT_DECRYPT, TR31KeyBlock.Exportability.EXPORTABLE
+        );
+        TR31KeyBlock tdesBlock = TR31Util.wrap(
+                TDES_KBPK, false, TDES_KEY_TO_WRAP,
+                TR31KeyBlock.KeyUsage.ZPK, TR31KeyBlock.Algorithm.TDES,
+                TR31KeyBlock.ModeOfUse.ENCRYPT_DECRYPT, TR31KeyBlock.Exportability.NON_EXPORTABLE
+        );
+        assertEquals("AES block should be version D", TR31KeyBlock.Version.D, aesBlock.getVersion());
+        assertEquals("3DES block should be version B", TR31KeyBlock.Version.B, tdesBlock.getVersion());
+        assertFalse("AES and 3DES blocks should differ",
+                Arrays.equals(aesBlock.getEncryptedKeyData(), tdesBlock.getEncryptedKeyData()));
+    }
+
+    @Test
     public void testParseMinimalHeader() {
-        // Construct a minimal parseable header string with known content
-        // Format: V(1) + Len(4) + Usage(2) + Algo(1) + Mode(1) + KVN(2) + Export(1) + NumOpt(2) + Res(2) + encData + MAC
-        // We'll just test that parse does not throw for a valid-format string
-        String fakeEncAndMac = "00000000000000000000000000000000" + "0000000000000000"; // 32 hex enc + 16 hex mac
+        String fakeEncAndMac = "00000000000000000000000000000000" + "0000000000000000";
         int len = 16 + fakeEncAndMac.length();
         String header = "D" + String.format("%04d", len) + "P0" + "A" + "E" + "00" + "E" + "00" + "00";
         String blockStr = header + fakeEncAndMac;

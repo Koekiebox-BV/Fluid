@@ -409,12 +409,13 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
+            sleepForSeconds(3);
+
             List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
             TestCase.assertNotNull(keysWithAlias);
             TestCase.assertEquals("No ZMK on alias "+keyAlias+"!",1, keysWithAlias.size());
 
             // Wait for the workflow to create the ZMK:
-            sleepForSeconds(3);
             FluidItem zmk = this.fluidItemByFormId(
                     derClient, keysWithAlias.get(0).getForm().getId(),
                     false// No route fields.
@@ -495,11 +496,12 @@ public class TestPericard extends ABaseTestASNDER {
             // Refresh payload populate for the HSM key req:
             PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
 
+            String keyUsage = "Data Encryption using DEK";
             FluidItem generateKeyRequest = generateHsmKeyRequestItem(
                     "AliasGenDEK",
                     UUID.randomUUID().toString(),
                     this.lastHostAlias,
-                    "Data Encryption using DEK"
+                    keyUsage
             );
 
             List<Long> createdIdsGenHsmKeyReq = this.submitCycle(
@@ -521,12 +523,13 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
+            // Wait for the DEK to be created:
+            sleepForSeconds(3);
+
             List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
             TestCase.assertNotNull(keysWithAlias);
             TestCase.assertEquals("No DEK on alias "+keyAlias+"!",1, keysWithAlias.size());
 
-            // Wait for the workflow to create the DEK:
-            sleepForSeconds(3);
             FluidItem dekItm = this.fluidItemByFormId(
                     derClient, keysWithAlias.get(0).getForm().getId(),
                     false// No route fields.
@@ -540,6 +543,8 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertNotNull(dekForm.getFieldValueAsString("HSM Key Block Cryptogram LMK MFK"));
             TestCase.assertEquals(this.lastHostAlias, dekForm.getFieldValueAsString("Key Generation Host"));
             TestCase.assertEquals(this.lastKeystoreOrg, dekForm.getFieldValueAsString("Organisation"));
+            // Data Key has usage:
+            TestCase.assertEquals(keyUsage, dekForm.getFieldValueAsString("HSM Key Type or Usage"));
 
             // Once approved, we have the request linked to the ZMK:
             List<Form> descGenKeyReq = sqlUtl.getDescendants(
@@ -570,7 +575,7 @@ public class TestPericard extends ABaseTestASNDER {
         TestCase.assertNotNull("Expected 'HSM Data Key (DEK)'!!!", this.lastDek);
 
         int itemCount = 1, threadCount = 1;
-        String flowNameImportTmks = "Import TMK";
+        String flowNameGenHsmKey = "Generate HSM Key";
         try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
                 BASE_URL,
                 ADMIN_SERVICE_TICKET_HEX,
@@ -587,6 +592,78 @@ public class TestPericard extends ABaseTestASNDER {
                 log.warning("Pericard is not enabled. Skipping test. (testGenerateHSMProtectedSoftwareDataKey)");
                 return;
             }
+
+            String
+                    keyReqType = "Generate Software Data Encryption Key Request",
+                    resultType = "Software Data Encryption Key";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyReqType));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(resultType));
+
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Checker",
+                    "Generate HSM Key Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Processed Result",
+                    "Generate HSM Key Processed Result"
+            );
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            String keyUsage = "Software DEK Protected under LMK";
+            String identifier = UUID.randomUUID().toString();
+            Form frm = new Form(keyReqType, new Date().toString()+ " "+identifier);
+            frm.setFieldValue("Alias", String.format("GenSoftDataKey-%s", identifier), Field.Type.Text);
+            frm.setFieldValue("Data Encryption Key", new MultiChoice(this.lastDek), Field.Type.MultipleChoice);
+            frm.setFieldValue("Key Purpose", String.format("Encrypting... Duh. ID: %s", identifier), Field.Type.ParagraphText);
+            frm.setFieldValue("Software Key Cycle Interval", new MultiChoice("Weekly"), Field.Type.MultipleChoice);
+            frm.setFieldValue("Software Key Type", new MultiChoice("AES 256 bits (32 bytes)"), Field.Type.MultipleChoice);
+            frm.setFieldValue("Software Key Cipher Mode", new MultiChoice("GCM (Galois/Counter Mode)"), Field.Type.MultipleChoice);
+            frm.setFieldValue("Encrypted Data Padding", new MultiChoice("PKCS5"), Field.Type.MultipleChoice);
+
+            FluidItem generateSOftKeyRequest = new FluidItem(frm);
+
+            List<Long> createdIdsGenHsmKeyReq = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameGenHsmKey, viewCheckerGenKey,
+                    () -> generateSOftKeyRequest
+            );
+            TestCase.assertNotNull(createdIdsGenHsmKeyReq);
+            TestCase.assertEquals(itemCount, createdIdsGenHsmKeyReq.size());
+
+            FluidItem keyGenReqById = this.fluidItemByFormId(
+                    derClient, createdIdsGenHsmKeyReq.get(0),
+                    true// Include route fields.
+            );
+
+            Form genDEKReqForm = keyGenReqById.getForm();
+            String keyAlias = genDEKReqForm.getFieldValueAsString("Alias");
+
+            // Approve the Gen Soft Key Request (Gen the SDEK):
+            createdIdsGenHsmKeyReq.forEach(id -> {
+                this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
+            });
+
+            // Wait for the DEK to be created:
+            sleepForSeconds(3);
+
+            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, resultType);
+            TestCase.assertNotNull(keysWithAlias);
+            TestCase.assertEquals("No SDEK on alias "+keyAlias+"!",1, keysWithAlias.size());
+
+            FluidItem dekItm = this.fluidItemByFormId(
+                    derClient, keysWithAlias.get(0).getForm().getId(),
+                    false// No route fields.
+            );
+            TestCase.assertNotNull(dekItm);
+            Form dekForm = dekItm.getForm();
+            TestCase.assertNotNull(dekForm);
+
+            // HSM Invoked:
+            //TODO [Key Block Protection Key]
+            
         }
     }
 

@@ -27,17 +27,14 @@ import static junit.framework.TestCase.*;
  */
 public class TestSymmetricCryptoUtil {
 
+    // AES-128 key (16 bytes — same size as 3DES-112; algorithm selected by method choice)
+    private static final byte[] AES128_KEY = hexToBytes("0123456789ABCDEF0123456789ABCDEF");
     // AES-192 key (24 bytes)
     private static final byte[] AES192_KEY = hexToBytes(
             "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF");
     // AES-256 key (32 bytes)
     private static final byte[] AES256_KEY = hexToBytes(
             "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF");
-    // AES-512 key (64 bytes — double-AES-256)
-    private static final byte[] AES512_KEY = hexToBytes(
-            "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF" +
-            "FEDCBA9876543210FEDCBA9876543210FEDCBA9876543210FEDCBA9876543210");
-
     // 3DES 112-bit key (16 bytes)
     private static final byte[] TDES112_KEY = hexToBytes("0123456789ABCDEF0123456789ABCDEF");
     // 3DES 192-bit key (24 bytes)
@@ -55,12 +52,12 @@ public class TestSymmetricCryptoUtil {
 
     @Test
     public void testUnsupportedAESKeySizeThrows() {
-        byte[] badKey = hexToBytes("0123456789ABCDEF0123456789ABCDEF"); // 16 bytes — not supported
+        byte[] badKey = hexToBytes("0123456789ABCDEF"); // 8 bytes — not supported
         try {
             SymmetricCryptoUtil.encryptAES(badKey, PLAINTEXT);
             fail("Should throw IllegalArgumentException for unsupported key size");
         } catch (IllegalArgumentException e) {
-            assertTrue("Exception should mention key size", e.getMessage().contains("16"));
+            assertTrue("Exception should mention key size", e.getMessage().contains("8"));
         } catch (GeneralSecurityException e) {
             fail("Should throw IllegalArgumentException, not GeneralSecurityException");
         }
@@ -81,12 +78,12 @@ public class TestSymmetricCryptoUtil {
 
     @Test
     public void testAesKeySizeEnum() {
+        assertEquals(16, SymmetricCryptoUtil.AesKeySize.AES_128.getBytes());
         assertEquals(24, SymmetricCryptoUtil.AesKeySize.AES_192.getBytes());
         assertEquals(32, SymmetricCryptoUtil.AesKeySize.AES_256.getBytes());
-        assertEquals(64, SymmetricCryptoUtil.AesKeySize.AES_512.getBytes());
+        assertEquals(SymmetricCryptoUtil.AesKeySize.AES_128, SymmetricCryptoUtil.AesKeySize.fromKey(AES128_KEY));
         assertEquals(SymmetricCryptoUtil.AesKeySize.AES_192, SymmetricCryptoUtil.AesKeySize.fromKey(AES192_KEY));
         assertEquals(SymmetricCryptoUtil.AesKeySize.AES_256, SymmetricCryptoUtil.AesKeySize.fromKey(AES256_KEY));
-        assertEquals(SymmetricCryptoUtil.AesKeySize.AES_512, SymmetricCryptoUtil.AesKeySize.fromKey(AES512_KEY));
     }
 
     @Test
@@ -100,6 +97,30 @@ public class TestSymmetricCryptoUtil {
     // -------------------------------------------------------------------------
     // AES — ECB
     // -------------------------------------------------------------------------
+
+    @Test
+    public void testAES128EncryptDecryptECB() throws GeneralSecurityException {
+        byte[] encrypted = SymmetricCryptoUtil.encryptAES(AES128_KEY, PLAINTEXT);
+        assertNotNull("AES-128 ECB encrypted data should not be null", encrypted);
+        assertFalse("AES-128 ECB encrypted data should differ from plaintext", Arrays.equals(encrypted, PLAINTEXT));
+
+        byte[] decrypted = SymmetricCryptoUtil.decryptAES(AES128_KEY, encrypted);
+        assertTrue("AES-128 ECB round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
+    }
+
+    @Test
+    public void testAES128EncryptDecryptCBC() throws GeneralSecurityException {
+        byte[] encrypted = SymmetricCryptoUtil.encryptAESCBC(AES128_KEY, AES_IV, PLAINTEXT);
+        byte[] decrypted = SymmetricCryptoUtil.decryptAESCBC(AES128_KEY, AES_IV, encrypted);
+        assertTrue("AES-128 CBC round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
+    }
+
+    @Test
+    public void testAES128EncryptDecryptGCM() throws GeneralSecurityException {
+        byte[] encrypted = SymmetricCryptoUtil.encryptAESGCM(AES128_KEY, GCM_NONCE, PLAINTEXT);
+        byte[] decrypted = SymmetricCryptoUtil.decryptAESGCM(AES128_KEY, GCM_NONCE, encrypted);
+        assertTrue("AES-128 GCM round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
+    }
 
     @Test
     public void testAES192EncryptDecryptECB() throws GeneralSecurityException {
@@ -116,16 +137,6 @@ public class TestSymmetricCryptoUtil {
         byte[] encrypted = SymmetricCryptoUtil.encryptAES(AES256_KEY, PLAINTEXT);
         byte[] decrypted = SymmetricCryptoUtil.decryptAES(AES256_KEY, encrypted);
         assertTrue("AES-256 ECB round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
-    }
-
-    @Test
-    public void testAES512EncryptDecryptECB() throws GeneralSecurityException {
-        byte[] encrypted = SymmetricCryptoUtil.encryptAES(AES512_KEY, PLAINTEXT);
-        assertNotNull("AES-512 encrypted data should not be null", encrypted);
-        assertFalse("AES-512 encrypted data should differ from plaintext", Arrays.equals(encrypted, PLAINTEXT));
-
-        byte[] decrypted = SymmetricCryptoUtil.decryptAES(AES512_KEY, encrypted);
-        assertTrue("AES-512 ECB round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
     }
 
     // -------------------------------------------------------------------------
@@ -146,13 +157,6 @@ public class TestSymmetricCryptoUtil {
         byte[] encrypted = SymmetricCryptoUtil.encryptAESCBC(AES256_KEY, AES_IV, PLAINTEXT);
         byte[] decrypted = SymmetricCryptoUtil.decryptAESCBC(AES256_KEY, AES_IV, encrypted);
         assertTrue("AES-256 CBC round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
-    }
-
-    @Test
-    public void testAES512EncryptDecryptCBC() throws GeneralSecurityException {
-        byte[] encrypted = SymmetricCryptoUtil.encryptAESCBC(AES512_KEY, AES_IV, PLAINTEXT);
-        byte[] decrypted = SymmetricCryptoUtil.decryptAESCBC(AES512_KEY, AES_IV, encrypted);
-        assertTrue("AES-512 CBC round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
     }
 
     @Test
@@ -183,13 +187,6 @@ public class TestSymmetricCryptoUtil {
         byte[] encrypted = SymmetricCryptoUtil.encryptAESGCM(AES256_KEY, GCM_NONCE, PLAINTEXT);
         byte[] decrypted = SymmetricCryptoUtil.decryptAESGCM(AES256_KEY, GCM_NONCE, encrypted);
         assertTrue("AES-256 GCM round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
-    }
-
-    @Test
-    public void testAES512EncryptDecryptGCM() throws GeneralSecurityException {
-        byte[] encrypted = SymmetricCryptoUtil.encryptAESGCM(AES512_KEY, GCM_NONCE, PLAINTEXT);
-        byte[] decrypted = SymmetricCryptoUtil.decryptAESGCM(AES512_KEY, GCM_NONCE, encrypted);
-        assertTrue("AES-512 GCM round-trip should recover plaintext", Arrays.equals(PLAINTEXT, decrypted));
     }
 
     @Test
@@ -289,7 +286,8 @@ public class TestSymmetricCryptoUtil {
     @Test
     public void testWrongKeyDecryptionFails() throws GeneralSecurityException {
         byte[] wrongKey = hexToBytes(
-                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+        );
         byte[] encrypted = SymmetricCryptoUtil.encryptAES(AES256_KEY, PLAINTEXT);
         try {
             byte[] decrypted = SymmetricCryptoUtil.decryptAES(wrongKey, encrypted);

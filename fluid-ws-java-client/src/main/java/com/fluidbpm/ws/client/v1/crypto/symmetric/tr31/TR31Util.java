@@ -61,25 +61,29 @@ public class TR31Util {
     /**
      * Wraps (encrypts) a key into a TR-31 key block.
      *
-     * @param kbpk         Key Block Protection Key (AES-128, AES-192, AES-256, or 3DES-128/192)
-     * @param keyToWrap    The clear key to protect
-     * @param keyUsage     Intended usage of the wrapped key
-     * @param algorithm    Algorithm of the key being wrapped
-     * @param modeOfUse    Mode of use for the wrapped key
+     * <p>The {@code isAesKbpk} flag is required to disambiguate 16-byte (AES-128 vs 3DES-112)
+     * and 24-byte (AES-192 vs 3DES-192) KBPKs.
+     *
+     * @param kbpk          Key Block Protection Key (AES-128/192/256 or 3DES-112/192)
+     * @param isAesKbpk     {@code true} if the KBPK is an AES key, {@code false} for 3DES
+     * @param keyToWrap     The clear key to protect
+     * @param keyUsage      Intended usage of the wrapped key
+     * @param algorithm     Algorithm of the key being wrapped
+     * @param modeOfUse     Mode of use for the wrapped key
      * @param exportability Exportability flag
      * @return Populated {@link TR31KeyBlock} with encrypted key and MAC
      * @throws GeneralSecurityException on crypto failure
      */
     public static TR31KeyBlock wrap(
             byte[] kbpk,
+            boolean isAesKbpk,
             byte[] keyToWrap,
             TR31KeyBlock.KeyUsage keyUsage,
             TR31KeyBlock.Algorithm algorithm,
             TR31KeyBlock.ModeOfUse modeOfUse,
             TR31KeyBlock.Exportability exportability
     ) throws GeneralSecurityException {
-        boolean isAes = (kbpk.length == 16 || kbpk.length == 24 || kbpk.length == 32);
-        TR31KeyBlock.Version version = isAes ? TR31KeyBlock.Version.D : TR31KeyBlock.Version.B;
+        TR31KeyBlock.Version version = isAesKbpk ? TR31KeyBlock.Version.D : TR31KeyBlock.Version.B;
 
         TR31KeyBlock block = new TR31KeyBlock();
         block.setVersion(version);
@@ -90,24 +94,24 @@ public class TR31Util {
 
         // Build header to compute lengths and derive keys
         String optionalBlocksStr = encodeOptionalBlocks(block.getOptionalBlocks());
-        int payloadBlocks = computePayloadBlocks(keyToWrap.length, isAes);
-        int totalLength = HEADER_LENGTH + optionalBlocksStr.length() + (payloadBlocks * (isAes ? 16 : 8) * 2) + MAC_LENGTH_HEX;
+        int payloadBlocks = computePayloadBlocks(keyToWrap.length, isAesKbpk);
+        int totalLength = HEADER_LENGTH + optionalBlocksStr.length() + (payloadBlocks * (isAesKbpk ? 16 : 8) * 2) + MAC_LENGTH_HEX;
         String header = buildHeader(block, totalLength, optionalBlocksStr);
 
         // Derive encryption and MAC keys from KBPK
-        byte[] kenc = deriveKey(kbpk, KD_USAGE_ENC, isAes);
-        byte[] kmac = deriveKey(kbpk, KD_USAGE_MAC, isAes);
+        byte[] kenc = deriveKey(kbpk, KD_USAGE_ENC, isAesKbpk);
+        byte[] kmac = deriveKey(kbpk, KD_USAGE_MAC, isAesKbpk);
 
         // Pad and encrypt key material
-        byte[] padded = padKeyMaterial(keyToWrap, isAes);
-        byte[] encrypted = isAes
+        byte[] padded = padKeyMaterial(keyToWrap, isAesKbpk);
+        byte[] encrypted = isAesKbpk
                 ? aesEcbEncrypt(kenc, padded)
-                : SymmetricCryptoUtil.encryptTDES(kenc, padded);
+                : tdesEcbEncrypt(kenc, padded);
         block.setEncryptedKeyData(encrypted);
 
         // Compute MAC over header + encrypted key
         String macInput = header + bytesToHex(encrypted);
-        byte[] mac = computeMAC(kmac, macInput.getBytes(StandardCharsets.US_ASCII), isAes);
+        byte[] mac = computeMAC(kmac, macInput.getBytes(StandardCharsets.US_ASCII), isAesKbpk);
         block.setMac(mac);
 
         return block;
@@ -116,22 +120,29 @@ public class TR31Util {
     /**
      * Parses (decrypts) a TR-31 key block string and recovers the clear key.
      *
+     * <p>The {@code isAesKbpk} flag is required to disambiguate 16-byte and 24-byte KBPKs.
+     *
      * @param kbpk        Key Block Protection Key
+     * @param isAesKbpk   {@code true} if the KBPK is an AES key, {@code false} for 3DES
      * @param keyBlockStr The TR-31 key block string to parse
      * @return The clear key bytes
-     * @throws GeneralSecurityException   on crypto failure
-     * @throws IllegalArgumentException   if the key block format is invalid or MAC verification fails
+     * @throws GeneralSecurityException on crypto failure
+     * @throws IllegalArgumentException if the key block format is invalid or MAC verification fails
      */
-    public static byte[] unwrap(byte[] kbpk, String keyBlockStr) throws GeneralSecurityException {
+    public static byte[] unwrap(byte[] kbpk, boolean isAesKbpk, String keyBlockStr) throws GeneralSecurityException {
         TR31KeyBlock block = parse(keyBlockStr);
-        return unwrap(kbpk, block);
+        return unwrap(kbpk, isAesKbpk, block);
     }
 
     /**
      * Decrypts the key material from an already-parsed {@link TR31KeyBlock}.
+     *
+     * @param kbpk      Key Block Protection Key
+     * @param isAesKbpk {@code true} if the KBPK is an AES key, {@code false} for 3DES
+     * @param block     Parsed key block
      */
-    public static byte[] unwrap(byte[] kbpk, TR31KeyBlock block) throws GeneralSecurityException {
-        boolean isAes = kbpk.length == 16 || kbpk.length == 24 || kbpk.length == 32;
+    public static byte[] unwrap(byte[] kbpk, boolean isAesKbpk, TR31KeyBlock block) throws GeneralSecurityException {
+        boolean isAes = isAesKbpk;
 
         byte[] kenc = deriveKey(kbpk, KD_USAGE_ENC, isAes);
         byte[] kmac = deriveKey(kbpk, KD_USAGE_MAC, isAes);
@@ -152,7 +163,7 @@ public class TR31Util {
         // Decrypt
         byte[] decrypted = isAes
                 ? aesEcbDecrypt(kenc, block.getEncryptedKeyData())
-                : SymmetricCryptoUtil.decryptTDES(kenc, block.getEncryptedKeyData());
+                : tdesEcbDecrypt(kenc, block.getEncryptedKeyData());
 
         // Strip the 2-byte length prefix and padding
         return stripPadding(decrypted);
@@ -268,32 +279,51 @@ public class TR31Util {
 
     /**
      * Derives a working key from KBPK using TR-31 key derivation.
-     * Uses CMAC-based KDF: derived key = CMAC(KBPK, usage_indicator || counter || separator || key_length)
+     *
+     * <p>Runs one derivation pass per output block needed to match the KBPK length,
+     * incrementing the counter byte for each additional block.
+     *
+     * <ul>
+     *   <li>AES: 16-byte block per pass → 1 pass for 16-byte key, 2 for 32-byte, etc.</li>
+     *   <li>3DES: 8-byte block per pass → 2 passes for 16-byte key, 3 for 24-byte key.</li>
+     * </ul>
      */
     private static byte[] deriveKey(byte[] kbpk, byte[] usageIndicator, boolean isAes) throws GeneralSecurityException {
-        // Build derivation data: usage(2) + 0x00(1) + key_type(1) + 0x0000(2) + key_len(2)
-        int keyLen = kbpk.length * 8; // key length in bits
-        byte[] derivationData = new byte[8];
-        derivationData[0] = usageIndicator[0];
-        derivationData[1] = usageIndicator[1];
-        derivationData[2] = 0x00; // counter
-        derivationData[3] = isAes ? AES_KEY_TYPE : TDES_KEY_TYPE;
-        derivationData[4] = 0x00;
-        derivationData[5] = 0x00;
-        derivationData[6] = (byte) ((keyLen >> 8) & 0xFF);
-        derivationData[7] = (byte) (keyLen & 0xFF);
+        int keyLenBits = kbpk.length * 8;
+        int blockSize = isAes ? 16 : 8;
+        int passes = kbpk.length / blockSize; // how many encryption blocks to produce
 
-        if (isAes) {
-            // For AES: use AES-CMAC derivation
-            byte[] padded = new byte[16];
-            System.arraycopy(derivationData, 0, padded, 0, 8);
-            return SymmetricCryptoUtil.encryptAESBlock(kbpk, padded);
-        } else {
-            // For 3DES: use 3DES encryption
-            byte[] padded = new byte[8];
-            System.arraycopy(derivationData, 0, padded, 0, 8);
-            return SymmetricCryptoUtil.encryptTDESBlock(kbpk, padded);
+        byte[] derived = new byte[kbpk.length];
+        for (int counter = 1; counter <= passes; counter++) {
+            // Derivation data: usage(2) + counter(1) + key_type(1) + 0x0000(2) + key_len_bits(2)
+            byte[] block;
+            if (isAes) {
+                byte[] data = new byte[16];
+                data[0] = usageIndicator[0];
+                data[1] = usageIndicator[1];
+                data[2] = (byte) counter;
+                data[3] = AES_KEY_TYPE;
+                data[4] = 0x00;
+                data[5] = 0x00;
+                data[6] = (byte) ((keyLenBits >> 8) & 0xFF);
+                data[7] = (byte) (keyLenBits & 0xFF);
+                // bytes 8-15 remain 0x00
+                block = SymmetricCryptoUtil.encryptAESBlock(kbpk, data);
+            } else {
+                byte[] data = new byte[8];
+                data[0] = usageIndicator[0];
+                data[1] = usageIndicator[1];
+                data[2] = (byte) counter;
+                data[3] = TDES_KEY_TYPE;
+                data[4] = 0x00;
+                data[5] = 0x00;
+                data[6] = (byte) ((keyLenBits >> 8) & 0xFF);
+                data[7] = (byte) (keyLenBits & 0xFF);
+                block = SymmetricCryptoUtil.encryptTDESBlock(kbpk, data);
+            }
+            System.arraycopy(block, 0, derived, (counter - 1) * blockSize, blockSize);
         }
+        return derived;
     }
 
     /**
@@ -376,6 +406,38 @@ public class TR31Util {
         Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
         return cipher.doFinal(data);
+    }
+
+    /**
+     * 3DES-ECB encryption (NoPadding) for TR-31 internal use.
+     * The caller must ensure {@code data} is already aligned to an 8-byte boundary.
+     * Accepts 16- or 24-byte keys without going through {@link SymmetricCryptoUtil}'s
+     * supported-size validation.
+     */
+    private static byte[] tdesEcbEncrypt(byte[] key, byte[] data) throws GeneralSecurityException {
+        byte[] key24 = to24ByteKey(key);
+        Cipher cipher = Cipher.getInstance("DESede/ECB/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key24, "DESede"));
+        return cipher.doFinal(data);
+    }
+
+    /**
+     * 3DES-ECB decryption (NoPadding) for TR-31 internal use.
+     */
+    private static byte[] tdesEcbDecrypt(byte[] key, byte[] data) throws GeneralSecurityException {
+        byte[] key24 = to24ByteKey(key);
+        Cipher cipher = Cipher.getInstance("DESede/ECB/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key24, "DESede"));
+        return cipher.doFinal(data);
+    }
+
+    /** Expands a 16-byte 3DES key to 24 bytes (K1=K3); leaves 24-byte keys unchanged. */
+    private static byte[] to24ByteKey(byte[] key) {
+        if (key.length == 24) return key;
+        byte[] k24 = new byte[24];
+        System.arraycopy(key, 0, k24, 0, 16);
+        System.arraycopy(key, 0, k24, 16, 8);
+        return k24;
     }
 
     private static String bytesToHex(byte[] bytes) {
