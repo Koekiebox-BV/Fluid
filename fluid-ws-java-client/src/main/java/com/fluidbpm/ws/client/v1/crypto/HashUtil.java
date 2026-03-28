@@ -22,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
  * Utility class for hashing operations
  */
 public class HashUtil {
-
     /**
      * Computes SHA-1 hash of the input byte array
      * @param input The byte array to hash
@@ -78,13 +77,10 @@ public class HashUtil {
     private static String bytesToHex(byte[] bytes, boolean readable) {
         StringBuilder hexString = new StringBuilder();
         for (int i = 0; i < bytes.length; i++) {
-            if (readable && i > 0) {
-                hexString.append(':');
-            }
+            if (readable && i > 0) hexString.append(':');
+
             String hex = Integer.toHexString(0xff & bytes[i]);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
+            if (hex.length() == 1) hexString.append('0');
             hexString.append(hex);
         }
         return hexString.toString().toUpperCase();

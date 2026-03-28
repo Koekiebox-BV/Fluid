@@ -371,6 +371,47 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
     }
 
     /**
+     * Unlocks a form container, allowing it to be released from a locked state. The operation
+     * can be performed asynchronously or synchronously, and it can optionally remove
+     * the form from the user's personal inventory.
+     *
+     * @param derClient The WebSocket client used to send the unlock request.
+     * @param formToUnLock The form container that needs to be unlocked.
+     * @param async If true, the unlock operation is performed asynchronously.
+     * @param remFromPI If true, the form is removed from the user's personal inventory after unlocking.
+     * @param lockAs The user for whom the form was locked; can be null if no specific user is applicable.
+     *               If null, a default ID of -1 is passed.
+     * @return The unlocked form container as returned by the server.
+     */
+    protected Form unLockFormContainer(
+            WebSocketASNDERClient derClient,
+            Form formToUnLock,
+            boolean async,
+            boolean remFromPI,
+            User lockAs
+    ) {
+        long lockAsId = lockAs == null ? -1 : lockAs.getId();
+
+        long start = System.currentTimeMillis();
+        BaseTransmission btUsrReq = new BaseTransmission(ASNGlobal.Type.FORM);
+        btUsrReq.setRequestObject(
+                new RequestObject(
+                        ASNGlobal.Path.FormContainer.FORM_CONT_UNLOCK,
+                        new RequestParameter(WS.QueryParam.ASYNC, async),
+                        new RequestParameter(WS.Path.FormContainer.Version1.QueryParam.REMOVE_FROM_PERSONAL_INVENTORY, remFromPI),
+                        new RequestParameter(WS.Path.FormContainer.Version1.QueryParam.LOCK_FOR_USER_ID, lockAsId)
+                )
+        );
+        btUsrReq.setTransmissionObject(formToUnLock);
+        btUsrReq.setPayloadPopulate(derClient.getPayloadPopulate());
+
+        BaseTransmission btCreatedItm = derClient.request(btUsrReq);
+        Form formRet = (Form) btCreatedItm.getTransmissionObject();
+        PerfStats.increment(PerfStats.Label.Asn1Der_UnlockForm, System.currentTimeMillis() - start);
+        return formRet;
+    }
+
+    /**
      * Updates a specific form in the system through the provided WebSocketASNDERClient.
      * Constructs a transmission object containing the form to be updated, sends the request,
      * and returns the updated form as received from the backend service.
