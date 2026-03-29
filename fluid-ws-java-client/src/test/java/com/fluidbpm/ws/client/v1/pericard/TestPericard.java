@@ -593,8 +593,7 @@ public class TestPericard extends ABaseTestASNDER {
                 return;
             }
 
-            String
-                    keyReqType = "Generate Software Data Encryption Key Request",
+            String keyReqType = "Generate Software Data Encryption Key Request",
                     resultType = "Software Data Encryption Key";
             this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyReqType));
             this.formDefsToCleanup.add(fdc.getFormDefinitionByName(resultType));
