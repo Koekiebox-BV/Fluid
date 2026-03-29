@@ -178,6 +178,8 @@ public class MigratorField {
             MigratorField.migrateFieldMultiChoicePlainOptionExists(
                     rfc, (MigratorField.MigrateOptFieldMultiChoicePlain) itm
             );
+        } else if (itm instanceof MigratorField.MigrateOptFieldTrueFalse) {
+            MigratorField.migrateFieldTrueFalse(rfc, (MigratorField.MigrateOptFieldTrueFalse) itm);
         } else {
             throw new FluidClientException(
                     String.format("Route: Type '%s' is not supported.", itm),
@@ -280,6 +282,23 @@ public class MigratorField {
             Field toCreate = new Field(opts.fieldName, null, Field.Type.TrueFalse);
             toCreate.setFieldDescription(opts.fieldDescription);
             gfc.createFieldTrueFalse(toCreate);
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
+     * Migrates a field to a True/False type with the specified options.
+     * If the field already exists, the method handles the exception for duplicate fields.
+     *
+     * @param rfc  The RouteFieldClient instance used to create the field.
+     * @param opts The options for migrating the field, including field name and description.
+     */
+    public static void migrateFieldTrueFalse(RouteFieldClient rfc, MigrateOptFieldTrueFalse opts) {
+        try {
+            Field toCreate = new Field(opts.fieldName, null, Field.Type.TrueFalse);
+            toCreate.setFieldDescription(opts.fieldDescription);
+            rfc.createFieldTrueFalse(toCreate);
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
         }

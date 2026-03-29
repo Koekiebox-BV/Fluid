@@ -27,7 +27,6 @@ import java.security.GeneralSecurityException;
  * </ul>
  */
 public class KCVUtil {
-
     private static final int KCV_LENGTH = 3;
 
     /**
