@@ -72,6 +72,7 @@ public class TestPericard extends ABaseTestASNDER {
     private String lastHostAlias;
     private String lastZmk;
     private String lastDek;
+    private String lastSdek;
 
     @Override
     @Before
@@ -582,7 +583,6 @@ public class TestPericard extends ABaseTestASNDER {
                 TimeUnit.SECONDS.toMillis(60));
              FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
              GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
              UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
              UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
              FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
@@ -594,9 +594,11 @@ public class TestPericard extends ABaseTestASNDER {
             }
 
             String keyReqType = "Generate Software Data Encryption Key Request",
-                    resultType = "Software Data Encryption Key";
+                    resultSoftKeyFrmType = "Software Data Encryption Key",
+                    keyRecordFOrmType = "Software Data Key Version History";
             this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyReqType));
-            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(resultType));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(resultSoftKeyFrmType));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyRecordFOrmType));
 
             JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
                     flowNameGenHsmKey,
@@ -615,7 +617,8 @@ public class TestPericard extends ABaseTestASNDER {
             String keyUsage = "Software DEK Protected under LMK";
             String identifier = UUID.randomUUID().toString();
             Form frm = new Form(keyReqType, new Date().toString()+ " "+identifier);
-            frm.setFieldValue("Alias", String.format("GenSoftDataKey-%s", identifier), Field.Type.Text);
+            String aliasToCreateForSdek = String.format("GenSoftDataKey-%s", identifier);
+            frm.setFieldValue("Alias", aliasToCreateForSdek, Field.Type.Text);
             frm.setFieldValue("Data Encryption Key", new MultiChoice(this.lastDek), Field.Type.MultipleChoice);
             frm.setFieldValue("Key Purpose", String.format("Encrypting... Duh. ID: %s", identifier), Field.Type.ParagraphText);
             frm.setFieldValue("Software Key Cycle Interval", new MultiChoice("Weekly"), Field.Type.MultipleChoice);
@@ -648,7 +651,7 @@ public class TestPericard extends ABaseTestASNDER {
             // Wait for the DEK to be created:
             sleepForSeconds(3);
 
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, resultType);
+            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, resultSoftKeyFrmType);
             TestCase.assertNotNull(keysWithAlias);
             TestCase.assertEquals("No SDEK on alias "+keyAlias+"!",1, keysWithAlias.size());
 
@@ -657,14 +660,128 @@ public class TestPericard extends ABaseTestASNDER {
                     false// No route fields.
             );
             TestCase.assertNotNull(dekItm);
-            Form dekForm = dekItm.getForm();
-            TestCase.assertNotNull(dekForm);
+            Form sdekForm = dekItm.getForm();
+            TestCase.assertNotNull(sdekForm);
+            TestCase.assertEquals("Software Data Encryption Key", sdekForm.getFormType());
+            TestCase.assertEquals("Open", sdekForm.getState());
+            TestCase.assertEquals("NotInFlow", sdekForm.getFlowState());
+            TestCase.assertNull(sdekForm.getCurrentUser());
+            TestCase.assertEquals(1, sdekForm.getFieldValueAsInt("Software Key Version").intValue());
+            String sdekAlias = sdekForm.getFieldValueAsString("Alias");
+            TestCase.assertEquals(aliasToCreateForSdek, sdekAlias);
+            this.lastSdek = sdekAlias;
+            TestCase.assertEquals(keyUsage, sdekForm.getFieldValueAsString("HSM Key Type or Usage"));
+            TestCase.assertNotNull(sdekForm.getFieldValueAsString("Key Purpose"));
+            TestCase.assertEquals(this.lastDek, sdekForm.getFieldValueAsString("Data Encryption Key"));
+            TestCase.assertEquals("Weekly", sdekForm.getFieldValueAsString("Software Key Cycle Interval"));
+            TestCase.assertEquals(frm.getFieldValueAsString("Software Key Type"), sdekForm.getFieldValueAsString("Software Key Type"));
+            TestCase.assertEquals(frm.getFieldValueAsString("Software Key Cipher Mode"), sdekForm.getFieldValueAsString("Software Key Cipher Mode"));
+            TestCase.assertEquals(frm.getFieldValueAsString("Encrypted Data Padding"), sdekForm.getFieldValueAsString("Encrypted Data Padding"));
 
             // HSM Invoked:
-            //TODO [Key Block Protection Key]
-            
+            TestCase.assertNotNull(sdekForm.getFieldValueAsString("Key Check Value"));
+            TestCase.assertNotNull(sdekForm.getFieldValueAsString("Key Block Protection Key"));
+
+            List<Form> tableRecords = this.tableRecords(derClient, dekItm.getForm(), null);
+            TestCase.assertNotNull(tableRecords);
+            TestCase.assertEquals(1, tableRecords.size());
+
+            Form firstKey = tableRecords.get(0);
+            TestCase.assertNotNull(firstKey.getTitle());
+            TestCase.assertEquals(keyRecordFOrmType, firstKey.getFormType());
+            TestCase.assertNotNull(firstKey.getFieldValueAsString("Key Check Value"));
+            TestCase.assertEquals(1, firstKey.getFieldValueAsInt("Software Key Version").intValue());
+            TestCase.assertNotNull(firstKey.getFieldValueAsString("Software Encrypted Key Block"));
         }
     }
+
+    @Test
+    public void testUsingSoftwareDataKeyHSMProtected() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastSdek)) {
+            // We need an HSM Data Key!
+            this.testGenerateHSMProtectedSoftwareDataKey();
+        }
+        TestCase.assertNotNull("Expected 'HSM Protected Data Key (SDEK)'!!!", this.lastSdek);
+
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testUsingSoftwareDataKeyHSMProtected)");
+                return;
+            }
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            // Obtain Clear SDEK Key:
+            Form frm = new Form("Software Data Encryption Key", new Date().toString());
+            frm.setFieldValue("Alias", this.lastSdek, Field.Type.Text);
+
+            CustomWebAction cwAct = this.execCustomAction(
+                    derClient, payPop, new CustomWebAction(frm, "Obtain Cleartext Key")
+            );
+            Form execResultForm = cwAct.getForm();
+            TestCase.assertNotNull(execResultForm);
+
+            // TODO Obtain Clear Key (when version is supplied)
+            // TODO Encrypt
+            // TODO Decrypt
+            // TODO HMAC
+        }
+    }
+
+    //TODO 1. import TMK
+
+    //TODO 2.1. Gen BDK-1
+    //TODO 2.2. Gen BDK-2
+            /*
+             Alias
+             KCV
+             Key Serial Identifier (KSI): 303950 (6)
+             */
+
+    //TODO 2.3. Gen IPEK (SRED/PIN)
+
+    //TODO 3. Gen PGP
+    //TODO 4. Add PGP for Organization
+
+    //TODO 5. TMK Import
+
+    /*
+    |---> POS Device:
+           - Serial No
+           - Device ID (DID): 12342468
+           - Manufacturer
+           - Model
+                |---> IPEK
+                        - Key under TMK
+                        - Key under LMK
+                        - KCV
+                        - IPEK Purpose (PIN / SRED)
+                        - BDK Alias (we will get the KSI (Key Serial Identifier/KSI) from this)
+                        - Device ID/DID
+                        - TMK KCV
+                        - The KSN would be KSI+DID with F left-padded: F30395012342468
+                |---> TMK
+                        - Key under ZMK
+                        - Key under LMK
+                        - KCV
+        Actions |====>>>
+                -> Translate PIN -> (Manufacturer/Model/ Serial/PAN/PinBlock/PinBlockFormat)
+                -> DUKPT Decrypt -> (Manufacturer/Model/ Serial+Counter)
+                -> DUKPT Encrypt -> (Manufacturer/Model/ Serial+Counter)
+     */
 
     @Test
     public void testImportKeyTMKs() {
