@@ -16,16 +16,11 @@
 package com.fluidbpm.ws.client.v1.crypto.asymmetric.pgp;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bouncycastle.bcpg.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.*;
-import org.bouncycastle.openpgp.api.OpenPGPCertificate;
-import org.bouncycastle.openpgp.api.OpenPGPDetachedSignatureGenerator;
-import org.bouncycastle.openpgp.api.OpenPGPDetachedSignatureProcessor;
-import org.bouncycastle.openpgp.api.OpenPGPKey;
-import org.bouncycastle.openpgp.api.OpenPGPSignature;
-import org.bouncycastle.openpgp.api.SignatureParameters;
-import org.bouncycastle.openpgp.api.SignatureSubpacketsFunction;
+import org.bouncycastle.openpgp.api.*;
 import org.bouncycastle.openpgp.api.jcajce.JcaOpenPGPImplementation;
 import org.bouncycastle.openpgp.api.jcajce.JcaOpenPGPKeyGenerator;
 import org.bouncycastle.openpgp.operator.PGPKeyPairGenerator;
@@ -73,25 +68,12 @@ public class PGPUtil {
      * Holds a generated PGP secret key ring, its corresponding public key ring,
      * and the original {@link OpenPGPKey} (required for signing).
      */
+    @Getter
+    @RequiredArgsConstructor
     public static class PGPKeyPairResult {
         private final PGPSecretKeyRing secretKeyRing;
         private final PGPPublicKeyRing publicKeyRing;
         private final OpenPGPKey openPGPKey;
-
-        PGPKeyPairResult(PGPSecretKeyRing secretKeyRing, PGPPublicKeyRing publicKeyRing, OpenPGPKey openPGPKey) {
-            this.secretKeyRing = secretKeyRing;
-            this.publicKeyRing = publicKeyRing;
-            this.openPGPKey = openPGPKey;
-        }
-
-        /** @return The secret (private) key ring containing master key and encryption subkey. */
-        public PGPSecretKeyRing getSecretKeyRing() { return secretKeyRing; }
-
-        /** @return The public key ring containing master key and encryption subkey. */
-        public PGPPublicKeyRing getPublicKeyRing() { return publicKeyRing; }
-
-        /** @return The original {@link OpenPGPKey} — needed for signing operations. */
-        public OpenPGPKey getOpenPGPKey() { return openPGPKey; }
     }
 
     // -------------------------------------------------------------------------
@@ -127,12 +109,9 @@ public class PGPUtil {
         SignatureParameters.Callback primaryKeySignFlags = new SignatureParameters.Callback() {
             @Override
             public SignatureParameters apply(SignatureParameters params) {
-                return params.setHashedSubpacketsFunction(new SignatureSubpacketsFunction() {
-                    @Override
-                    public PGPSignatureSubpacketGenerator apply(PGPSignatureSubpacketGenerator subpkts) {
-                        subpkts.setKeyFlags(false, PGPKeyFlags.CAN_CERTIFY | PGPKeyFlags.CAN_SIGN);
-                        return subpkts;
-                    }
+                return params.setHashedSubpacketsFunction(subpkts -> {
+                    subpkts.setKeyFlags(false, PGPKeyFlags.CAN_CERTIFY | PGPKeyFlags.CAN_SIGN);
+                    return subpkts;
                 });
             }
         };
@@ -394,9 +373,16 @@ public class PGPUtil {
         private final boolean encryptionKey;
         private final List<String> userIds;
 
-        KeyInfo(long keyId, String fingerprint, int algorithm, String algorithmName,
-                int bitStrength, Date creationDate, boolean masterKey,
-                boolean encryptionKey, List<String> userIds
+        KeyInfo(
+                long keyId,
+                String fingerprint,
+                int algorithm,
+                String algorithmName,
+                int bitStrength,
+                Date creationDate,
+                boolean masterKey,
+                boolean encryptionKey,
+                List<String> userIds
         ) {
             this.keyId = keyId;
             this.keyIdHex = String.format("%016X", keyId);
