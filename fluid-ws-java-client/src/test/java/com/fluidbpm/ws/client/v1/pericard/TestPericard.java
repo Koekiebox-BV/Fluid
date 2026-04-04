@@ -47,6 +47,7 @@ import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilClient;
 import com.fluidbpm.ws.client.v1.stats.PerfStats;
 import com.fluidbpm.ws.client.v1.user.UserClient;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
+import com.google.common.io.BaseEncoding;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.After;
@@ -73,6 +74,7 @@ public class TestPericard extends ABaseTestASNDER {
     private String lastZmk;
     private String lastDek;
     private String lastSdek;
+    private String lastBdk;
 
     @Override
     @Before
@@ -329,7 +331,8 @@ public class TestPericard extends ABaseTestASNDER {
         try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
                 BASE_URL,
                 ADMIN_SERVICE_TICKET_HEX,
-                TimeUnit.SECONDS.toMillis(60));
+                TimeUnit.SECONDS.toMillis(60)
+        );
              FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
              GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
              SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
@@ -728,16 +731,151 @@ public class TestPericard extends ABaseTestASNDER {
             Form frm = new Form("Software Data Encryption Key", new Date().toString());
             frm.setFieldValue("Alias", this.lastSdek, Field.Type.Text);
 
+            // Obtain clear key (KBPK):
             CustomWebAction cwAct = this.execCustomAction(
                     derClient, payPop, new CustomWebAction(frm, "Obtain Cleartext Key")
             );
             Form execResultForm = cwAct.getForm();
             TestCase.assertNotNull(execResultForm);
+            TestCase.assertNotNull(execResultForm.getTitle());
+            TestCase.assertEquals(frm.getFormType(), execResultForm.getFormType());
+            TestCase.assertNotNull(execResultForm.getFieldValueAsString("Cleartext Key"));
 
-            // TODO Obtain Clear Key (when version is supplied)
+            // Obtain clear key for Key Version:
+            frm.setFieldValue("Software Key Version", 1, Field.Type.Decimal);
+            cwAct = this.execCustomAction(
+                    derClient, payPop, new CustomWebAction(frm, "Obtain Cleartext Key")
+            );
+            execResultForm = cwAct.getForm();
+
             // TODO Encrypt
+            frm.setFieldValue("Clear Payload",
+                    BaseEncoding.base64().encode(new byte[] {0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7}), Field.Type.Text
+            );
+            frm.setFieldValue("Initialization Vector",
+                    BaseEncoding.base16().encode(new byte[] {0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7}), Field.Type.Text
+            );
+            cwAct = this.execCustomAction(
+                    derClient, payPop, new CustomWebAction(frm, "Software Protected Encrypt Data")
+            );
+            execResultForm = cwAct.getForm();
+
             // TODO Decrypt
             // TODO HMAC
+        }
+    }
+
+    @Test
+    public void testGenerateKeyBDK() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastZmk)) {
+            // We need a ZMK!
+            this.testGenerateHSMZoneMasterKeyRequest();
+        }
+        TestCase.assertNotNull("Expected 'ZMK'!!!", this.lastZmk);
+
+        int itemCount = 1, threadCount = 1;
+        String flowNameGenHsmKey = "Generate HSM Key";
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testGenerateKeyBDK)");
+                return;
+            }
+
+            String keyReqType = "DUKPT Base Derivation Key";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyReqType));
+
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Checker",
+                    "Generate HSM Key Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Processed Result",
+                    "Generate HSM Key Processed Result"
+            );
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            String keyUsage = "DUKPT Base Derivation Key (BDK-1)";
+            FluidItem generateKeyRequest = generateHsmKeyRequestItem(
+                    "AliasGenBDK",
+                    UUID.randomUUID().toString(),
+                    this.lastHostAlias,
+                    keyUsage
+            );
+
+            List<Long> createdIdsGenHsmKeyReq = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameGenHsmKey, viewCheckerGenKey,
+                    () -> generateKeyRequest
+            );
+            TestCase.assertNotNull(createdIdsGenHsmKeyReq);
+            TestCase.assertEquals(itemCount, createdIdsGenHsmKeyReq.size());
+
+            FluidItem keyGenReqById = this.fluidItemByFormId(
+                    derClient, createdIdsGenHsmKeyReq.get(0),
+                    true// Include route fields.
+            );
+            Form genBDKReqForm = keyGenReqById.getForm();
+            String keyAlias = genBDKReqForm.getFieldValueAsString("Alias");
+
+            // Approve the Key Gen Request (Gen the BDK):
+            createdIdsGenHsmKeyReq.forEach(id -> {
+                this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
+            });
+
+            // Wait for the BDK to be created:
+            sleepForSeconds(3);
+
+            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
+            TestCase.assertNotNull(keysWithAlias);
+            TestCase.assertEquals("No BDK on alias "+keyAlias+"!",1, keysWithAlias.size());
+
+            FluidItem bdkItm = this.fluidItemByFormId(
+                    derClient, keysWithAlias.get(0).getForm().getId(),
+                    false// No route fields.
+            );
+            TestCase.assertNotNull(bdkItm);
+            Form bdkForm = bdkItm.getForm();
+            TestCase.assertNotNull(bdkForm);
+
+            // HSM Invoked:
+            TestCase.assertNotNull(bdkForm.getFieldValueAsString("Key Check Value"));
+            TestCase.assertNotNull(bdkForm.getFieldValueAsString("HSM Key Block Cryptogram LMK MFK"));
+            TestCase.assertEquals(this.lastHostAlias, bdkForm.getFieldValueAsString("Key Generation Host"));
+            TestCase.assertEquals(this.lastKeystoreOrg, bdkForm.getFieldValueAsString("Organisation"));
+            // Data Key has usage:
+            TestCase.assertEquals(keyUsage, bdkForm.getFieldValueAsString("HSM Key Type or Usage"));
+
+            // Once approved, we have the request linked to the BDK:
+            List<Form> descGenKeyReq = sqlUtl.getDescendants(
+                    genBDKReqForm,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descGenKeyReq);
+            TestCase.assertEquals("Expected one descendant. The Generated BDK!",1, descGenKeyReq.size());
+            Form bdkFormFinal = descGenKeyReq.get(0);
+            TestCase.assertTrue(
+                    "Expected BDK to be active.",
+                    bdkFormFinal.getFieldValueAsBoolean("Is Active")
+            );
+            this.lastBdk = bdkFormFinal.getFieldValueAsString("Alias");
         }
     }
 
@@ -748,7 +886,7 @@ public class TestPericard extends ABaseTestASNDER {
             /*
              Alias
              KCV
-             Key Serial Identifier (KSI): 303950 (6)
+             Key Set Identifier (KSI): [303950] (6)
              */
 
     //TODO 2.3. Gen IPEK (SRED/PIN)
@@ -759,24 +897,27 @@ public class TestPericard extends ABaseTestASNDER {
     //TODO 5. TMK Import
 
     /*
-    |---> POS Device:
+    |---> POS Terminal Device:
            - Serial No
-           - Device ID (DID): 12342468
+           - Device ID (DID): 12342468              (Later during RKI)
            - Manufacturer
            - Model
-                |---> IPEK
+                ------------------
+                |---> IPEK                          (Later during RKI)
                         - Key under TMK
                         - Key under LMK
+                        - TMK KCV (if more, we know which one imported it)
                         - KCV
                         - IPEK Purpose (PIN / SRED)
-                        - BDK Alias (we will get the KSI (Key Serial Identifier/KSI) from this)
+                        - BDK Alias (we will get the KSI (Key Set Identifier/KSI) from this)
                         - Device ID/DID
-                        - TMK KCV
                         - The KSN would be KSI+DID with F left-padded: F30395012342468
+                ------------------
                 |---> TMK
-                        - Key under ZMK
+                        - Key under ZMK (TR-31/TR-34)
+                        - ZMK Alias (set on CSV import/load)
                         - Key under LMK
-                        - KCV
+                        - KCV (same for both)
         Actions |====>>>
                 -> Translate PIN -> (Manufacturer/Model/ Serial/PAN/PinBlock/PinBlockFormat)
                 -> DUKPT Decrypt -> (Manufacturer/Model/ Serial+Counter)

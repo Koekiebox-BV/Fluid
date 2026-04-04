@@ -127,6 +127,15 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk18on</artifactId>
                 <version>1.83</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Source: https://mvnrepository.com/artifact/org.bouncycastle/bcpg-jdk18on -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpg-jdk18on</artifactId>
+                <version>1.83</version>
+                <scope>provided</scope>
             </dependency>
 
             <!--ElasticSearch-->
