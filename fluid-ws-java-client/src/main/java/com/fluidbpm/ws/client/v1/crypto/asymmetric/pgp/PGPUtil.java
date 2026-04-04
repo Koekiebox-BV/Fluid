@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.crypto.asymmetric.pgp;
 
+import lombok.Getter;
 import org.bouncycastle.bcpg.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.*;
@@ -27,6 +28,7 @@ import org.bouncycastle.openpgp.api.SignatureParameters;
 import org.bouncycastle.openpgp.api.SignatureSubpacketsFunction;
 import org.bouncycastle.openpgp.api.jcajce.JcaOpenPGPImplementation;
 import org.bouncycastle.openpgp.api.jcajce.JcaOpenPGPKeyGenerator;
+import org.bouncycastle.openpgp.operator.PGPKeyPairGenerator;
 import org.bouncycastle.openpgp.operator.jcajce.*;
 import org.bouncycastle.util.io.Streams;
 
@@ -142,9 +144,9 @@ public class PGPUtil {
                     .addEncryptionSubkey(g -> g.generateRsaKeyPair(RSA_KEY_SIZE))
                     .build(passphrase);
         } else {
-            key = gen.withPrimaryKey(g -> g.generateEd25519KeyPair(), primaryKeySignFlags)
+            key = gen.withPrimaryKey(PGPKeyPairGenerator::generateEd25519KeyPair, primaryKeySignFlags)
                     .addUserId(userId)
-                    .addEncryptionSubkey(g -> g.generateX25519KeyPair())
+                    .addEncryptionSubkey(PGPKeyPairGenerator::generateX25519KeyPair)
                     .build(passphrase);
         }
 
@@ -379,6 +381,7 @@ public class PGPUtil {
     /**
      * Metadata extracted from a single PGP public key.
      */
+    @Getter
     public static class KeyInfo {
         private final long keyId;
         private final String keyIdHex;
@@ -406,17 +409,6 @@ public class PGPUtil {
             this.encryptionKey = encryptionKey;
             this.userIds = userIds;
         }
-
-        public long getKeyId()           { return keyId; }
-        public String getKeyIdHex()      { return keyIdHex; }
-        public String getFingerprint()   { return fingerprint; }
-        public int getAlgorithm()        { return algorithm; }
-        public String getAlgorithmName() { return algorithmName; }
-        public int getBitStrength()      { return bitStrength; }
-        public Date getCreationDate()    { return creationDate; }
-        public boolean isMasterKey()     { return masterKey; }
-        public boolean isEncryptionKey() { return encryptionKey; }
-        public List<String> getUserIds() { return userIds; }
     }
 
     /**
