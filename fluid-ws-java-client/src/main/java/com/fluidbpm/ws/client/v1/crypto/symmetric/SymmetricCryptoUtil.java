@@ -25,7 +25,7 @@ import java.security.GeneralSecurityException;
 /**
  * Utility class for symmetric encryption and decryption using 3DES and AES.
  *
- * <h3>Supported Key Sizes</h3>
+ * <h2>Supported Key Sizes</h2>
  * <pre>
  *   AES 128-bit  (16 bytes)
  *   AES 192-bit  (24 bytes)
@@ -39,7 +39,7 @@ import java.security.GeneralSecurityException;
  *   (encryptAES* vs encryptTDES*).
  * </pre>
  *
- * <h3>Supported Modes</h3>
+ * <h2>Supported Modes</h2>
  * <pre>
  *   ECB - Electronic Codebook      (no IV; not recommended for real data)
  *   CBC - Cipher Block Chaining    (IV required; secure for real data)
