@@ -28,6 +28,7 @@ import org.bouncycastle.openpgp.operator.jcajce.*;
 import org.bouncycastle.util.io.Streams;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -410,6 +411,36 @@ public class PGPUtil {
         while (it.hasNext()) infos.add(toKeyInfo(it.next()));
 
         return infos;
+    }
+
+    /**
+     * Converts the given PGP public key ring into an ASCII-armored string representation.
+     *
+     * @param publicKeyRing The PGP public key ring to be armored.
+     * @return An ASCII-armored string of the public key ring.
+     * @throws IOException If an error occurs during encoding.
+     */
+    public static String armor(PGPPublicKeyRing publicKeyRing) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ArmoredOutputStream aos = new ArmoredOutputStream(baos)) {
+            publicKeyRing.encode(aos);
+        }
+        return baos.toString(StandardCharsets.UTF_8.name());
+    }
+
+    /**
+     * Converts the given PGP secret key ring into an ASCII-armored string representation.
+     *
+     * @param secretKeyRing The PGP secret key ring to be armored.
+     * @return An ASCII-armored string representation of the secret key ring.
+     * @throws IOException If an error occurs during encoding.
+     */
+    public static String armor(PGPSecretKeyRing secretKeyRing) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ArmoredOutputStream aos = new ArmoredOutputStream(baos)) {
+            secretKeyRing.encode(aos);
+        }
+        return baos.toString(StandardCharsets.UTF_8.name());
     }
 
     // -------------------------------------------------------------------------

@@ -16,6 +16,8 @@
 package com.fluidbpm.ws.client.v1.crypto.asymmetric.pgp;
 
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -401,6 +403,92 @@ public class TestPGPUtil {
         String expectedKeyId = fp.substring(0, 16);
         assertEquals("Key ID hex should match first 16 chars of fingerprint",
                 expectedKeyId, master.getKeyIdHex());
+    }
+
+    // --------- armor() ---------
+
+    @Test
+    public void testArmorPublicKeyRingContainsHeader() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+        assertNotNull("Armored public key should not be null", armored);
+        assertTrue("Armored public key should start with PGP header",
+                armored.contains("BEGIN PGP PUBLIC KEY BLOCK"));
+        assertTrue("Armored public key should end with PGP footer",
+                armored.contains("END PGP PUBLIC KEY BLOCK"));
+    }
+
+    @Test
+    public void testArmorSecretKeyRingContainsHeader() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getSecretKeyRing());
+        assertNotNull("Armored secret key should not be null", armored);
+        assertTrue("Armored secret key should start with PGP header",
+                armored.contains("BEGIN PGP PRIVATE KEY BLOCK"));
+        assertTrue("Armored secret key should end with PGP footer",
+                armored.contains("END PGP PRIVATE KEY BLOCK"));
+
+        PGPSecretKeyRing secRing = keys.getSecretKeyRing();
+        assertNotNull("Sec ring should not be null", secRing);
+
+        Iterator<PGPSecretKey> secKeys = secRing.getSecretKeys();
+        secKeys.forEachRemaining(it -> {
+            assertNotNull("Secret key should not be null", it);
+
+            Iterator<String> uIds = it.getUserIDs();
+            String userIds = "";
+            while (uIds.hasNext()) userIds += ("," + uIds.next());
+
+            System.out.println("Secret key: " + it.getKeyIdentifier().toPrettyPrint()+ ", Is Master: "+ it.isMasterKey() + ", Is Sign: "+it.isSigningKey() + ", User ID: "+userIds + "");
+        });
+
+        Iterator<PGPPublicKey> pubKeys = secRing.getPublicKeys();
+        System.out.println("---");
+        pubKeys.forEachRemaining(it -> {
+            assertNotNull("Secret key should not be null", it);
+
+            Iterator<String> uIds = it.getUserIDs();
+            String userIds = "";
+            while (uIds.hasNext()) userIds += ("," + uIds.next());
+            
+            System.out.println(
+                    "Pub key: " + it.getKeyIdentifier().toString() + "|" + it.getKeyIdentifier().toPrettyPrint()+
+                            ", Is Master: "+ it.isMasterKey() + ", Is Enc: "+it.isEncryptionKey() + ", User ID: "+userIds + ""
+            );
+        });
+    }
+
+    @Test
+    public void testArmorEd25519PublicKeyRing() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+        assertTrue("Ed25519 armored public key should contain PGP header",
+                armored.contains("BEGIN PGP PUBLIC KEY BLOCK"));
+    }
+
+    @Test
+    public void testArmorEd25519SecretKeyRing() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getSecretKeyRing());
+        assertTrue("Ed25519 armored secret key should contain PGP header",
+                armored.contains("BEGIN PGP PRIVATE KEY BLOCK"));
+    }
+
+    @Test
+    public void testArmorPublicKeyRingIsValidUtf8String() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+        // Round-trip: re-encode the same ring and compare
+        String armored2 = PGPUtil.armor(keys.getPublicKeyRing());
+        assertEquals("armor() should be deterministic for the same key ring", armored, armored2);
+    }
+
+    @Test
+    public void testArmorSecretKeyDiffersFromPublicKey() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String pub = PGPUtil.armor(keys.getPublicKeyRing());
+        String sec = PGPUtil.armor(keys.getSecretKeyRing());
+        assertFalse("Armored public and secret key blocks should differ", pub.equals(sec));
     }
 
     // --------- Encrypt-then-Sign round-trip ---------
