@@ -440,6 +440,8 @@ public class TestPGPUtil {
             while (uIds.hasNext()) userIds += ("," + uIds.next());
 
             System.out.println("Secret key: " + it.getKeyIdentifier().toPrettyPrint()+ ", Is Master: "+ it.isMasterKey() + ", Is Sign: "+it.isSigningKey() + ", User ID: "+userIds + "");
+
+            it.getFingerprint();
         });
 
         Iterator<PGPPublicKey> pubKeys = secRing.getPublicKeys();
@@ -450,10 +452,13 @@ public class TestPGPUtil {
             Iterator<String> uIds = it.getUserIDs();
             String userIds = "";
             while (uIds.hasNext()) userIds += ("," + uIds.next());
-            
+
+            PGPUtil.KeyInfo info = PGPUtil.toKeyInfo(it);
+
             System.out.println(
                     "Pub key: " + it.getKeyIdentifier().toString() + "|" + it.getKeyIdentifier().toPrettyPrint()+
-                            ", Is Master: "+ it.isMasterKey() + ", Is Enc: "+it.isEncryptionKey() + ", User ID: "+userIds + ""
+                            ", Is Master: "+ it.isMasterKey() + ", Is Enc: "+it.isEncryptionKey() + ", User ID: "+userIds + ", Fingerprint: "+
+                            info.getFingerprint()+", BitStrength: "+ info.getBitStrength()
             );
         });
     }

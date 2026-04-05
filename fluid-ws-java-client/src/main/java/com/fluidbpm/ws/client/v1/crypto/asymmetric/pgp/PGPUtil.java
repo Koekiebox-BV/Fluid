@@ -446,8 +446,7 @@ public class PGPUtil {
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
-
-    private static KeyInfo toKeyInfo(PGPPublicKey key) {
+    public static KeyInfo toKeyInfo(PGPPublicKey key) {
         List<String> userIds = new ArrayList<>();
         Iterator<String> uidIt = key.getUserIDs();
         while (uidIt.hasNext()) userIds.add(uidIt.next());

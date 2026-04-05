@@ -1195,7 +1195,7 @@ public class Form extends ABaseFluidElasticSearchJSONObject {
      */
     @XmlTransient
     @JsonIgnore
-    private void copyFieldValueFromSource(Form source, String ... fieldNames) {
+    public void copyFieldValueFromSource(Form source, String ... fieldNames) {
         if (fieldNames == null || fieldNames.length < 1) return;
         if (source == null) return;
 
