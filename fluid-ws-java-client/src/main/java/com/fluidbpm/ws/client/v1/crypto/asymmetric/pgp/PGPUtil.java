@@ -396,6 +396,11 @@ public class PGPUtil {
             this.encryptionKey = encryptionKey;
             this.userIds = userIds;
         }
+
+        public String getUserId() {
+            if (this.userIds == null || this.userIds.isEmpty()) return null;
+            return String.join(", ", this.userIds);
+        }
     }
 
     /**
@@ -446,6 +451,14 @@ public class PGPUtil {
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
+
+    /**
+     * Converts a PGP public key into a {@link KeyInfo} object containing metadata about the key.
+     *
+     * @param key The PGP public key to be converted.
+     * @return A {@link KeyInfo} object containing extracted metadata such as key ID, fingerprint,
+     *         algorithm details, creation date, user IDs, and key flags.
+     */
     public static KeyInfo toKeyInfo(PGPPublicKey key) {
         List<String> userIds = new ArrayList<>();
         Iterator<String> uidIt = key.getUserIDs();
@@ -463,7 +476,38 @@ public class PGPUtil {
         );
     }
 
-    private static String fingerprintHex(byte[] fingerprint) {
+    /**
+     * Converts the given PGP secret key into a {@link KeyInfo} object containing metadata about the key.
+     *
+     * @param key The PGP secret key to be converted.
+     * @return A {@link KeyInfo} object containing information such as key ID, fingerprint, algorithm details,
+     *         and other metadata extracted from the given secret key.
+     */
+    public static KeyInfo toKeyInfo(PGPSecretKey key) {
+        List<String> userIds = new ArrayList<>();
+        Iterator<String> uidIt = key.getUserIDs();
+        while (uidIt.hasNext()) userIds.add(uidIt.next());
+
+        return new KeyInfo(
+                key.getKeyID(),
+                fingerprintHex(key.getFingerprint()),
+                key.getKeyEncryptionAlgorithm(),
+                algorithmName(key.getKeyEncryptionAlgorithm()),
+                key.getKeyEncryptionAlgorithm(),
+                null,
+                key.isMasterKey(),
+                key.isSigningKey(),
+                userIds
+        );
+    }
+
+    /**
+     * Converts a fingerprint byte array into its corresponding hexadecimal string representation.
+     *
+     * @param fingerprint The fingerprint byte array to be converted.
+     * @return The uppercase hexadecimal string representation of the fingerprint.
+     */
+    public static String fingerprintHex(byte[] fingerprint) {
         StringBuilder sb = new StringBuilder();
         for (byte b : fingerprint) {
             String hex = Integer.toHexString(0xFF & b);

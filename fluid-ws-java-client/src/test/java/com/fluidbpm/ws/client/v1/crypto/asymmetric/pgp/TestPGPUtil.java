@@ -439,6 +439,8 @@ public class TestPGPUtil {
             String userIds = "";
             while (uIds.hasNext()) userIds += ("," + uIds.next());
 
+            PGPUtil.KeyInfo info = PGPUtil.toKeyInfo(it);
+
             System.out.println("Secret key: " + it.getKeyIdentifier().toPrettyPrint()+ ", Is Master: "+ it.isMasterKey() + ", Is Sign: "+it.isSigningKey() + ", User ID: "+userIds + "");
 
             it.getFingerprint();
