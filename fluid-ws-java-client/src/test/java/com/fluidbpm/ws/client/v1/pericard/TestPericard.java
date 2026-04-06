@@ -75,7 +75,8 @@ public class TestPericard extends ABaseTestASNDER {
     private String lastDek;
     private String lastSdek;
     private String lastBdk;
-    private String lastPgp;
+    private String lastPgpKeypair;
+    private String lastPgpPublicKey;
 
     @Override
     @Before
@@ -881,7 +882,7 @@ public class TestPericard extends ABaseTestASNDER {
     }
 
     @Test
-    public void testGeneratePGP() {
+    public void testGenerateAndImportPGP() {
         if (this.isConnectionInValid) return;
 
         if (UtilGlobal.isBlank(this.lastDek)) {
@@ -962,7 +963,7 @@ public class TestPericard extends ABaseTestASNDER {
             });
 
             // Wait for the PGP to be created:
-            sleepForSeconds(3);
+            sleepForSeconds(5);
 
             List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, "PGP Keypair");
             TestCase.assertNotNull(keysWithAlias);
@@ -979,30 +980,42 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertEquals("Open", pgpForm.getState());
             TestCase.assertEquals("NotInFlow", pgpForm.getFlowState());
             TestCase.assertNull(pgpForm.getCurrentUser());
-            TestCase.assertEquals(1, pgpForm.getFieldValueAsInt("Software Key Version").intValue());
             String pgpAlias = pgpForm.getFieldValueAsString("Alias");
             TestCase.assertEquals(aliasToCreateForPgp, pgpAlias);
-            this.lastPgp = pgpAlias;
+            this.lastPgpKeypair = pgpAlias;
 
-            TestCase.assertNotNull(pgpForm.getFieldValueAsString("Key Purpose"));
-            TestCase.assertEquals(this.lastDek, pgpForm.getFieldValueAsString("Data Encryption Key"));
-            TestCase.assertEquals("Weekly", pgpForm.getFieldValueAsString("Software Key Cycle Interval"));
-            TestCase.assertEquals(frm.getFieldValueAsString("Software Key Type"), pgpForm.getFieldValueAsString("Software Key Type"));
-            TestCase.assertEquals(frm.getFieldValueAsString("Software Key Cipher Mode"), pgpForm.getFieldValueAsString("Software Key Cipher Mode"));
-            TestCase.assertEquals(frm.getFieldValueAsString("Encrypted Data Padding"), pgpForm.getFieldValueAsString("Encrypted Data Padding"));
-
+            TestCase.assertTrue(pgpForm.getFieldValueAsBoolean("Is Active"));
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("Alias").startsWith("GenPGPKeypair-"));
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("Organisation").startsWith("OrgName-"));
+            TestCase.assertEquals("RSA", pgpForm.getFieldValueAsString("PGP Algorithm"));
+            TestCase.assertEquals("Roger Waters", pgpForm.getFieldValueAsString("PGP Name"));
+            TestCase.assertEquals("roger@floyd.org", pgpForm.getFieldValueAsString("PGP Email"));
             // PGP Key Created:
-            TestCase.assertNotNull(pgpForm.getFieldValueAsString("Key Check Value"));
-            TestCase.assertNotNull(pgpForm.getFieldValueAsString("Key Block Protection Key"));
+            TestCase.assertEquals("Roger Waters <roger@floyd.org>", pgpForm.getFieldValueAsString("PGP User ID"));
+            TestCase.assertNotNull(pgpForm.getFieldValueAsString("PGP Key ID"));
+            TestCase.assertNotNull(pgpForm.getFieldValueAsString("PGP Fingerprint"));
+            TestCase.assertEquals(4096, pgpForm.getFieldValueAsInt("PGP Bit Strength").intValue());
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("PGP Public Key Armored").startsWith("-----BEGIN PGP PUBLIC KEY BLOCK-----"));
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("PGP Secret Key Armored").startsWith("-----BEGIN PGP PRIVATE KEY BLOCK-----"));
 
             List<Form> tableRecords = this.tableRecords(derClient, pgpItm.getForm(), null);
             TestCase.assertNotNull(tableRecords);
-            TestCase.assertEquals(1, tableRecords.size());
+            TestCase.assertEquals(4, tableRecords.size());
 
-            Form firstKey = tableRecords.get(0);
-            TestCase.assertNotNull(firstKey.getTitle());
-            TestCase.assertEquals("PGP Subkey", firstKey.getFormType());
-            TestCase.assertNotNull(firstKey.getFieldValueAsString("Key Check Value"));
+            tableRecords.forEach(subItm -> {
+                TestCase.assertNotNull(subItm.getTitle());
+                TestCase.assertEquals(pgpSubkey, subItm.getFormType());
+
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Key ID"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Fingerprint"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Master Key"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Signing Key"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Encryption Key"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Key Type"));
+            });
+
+            // Public Key Import:
+
         }
     }
 
