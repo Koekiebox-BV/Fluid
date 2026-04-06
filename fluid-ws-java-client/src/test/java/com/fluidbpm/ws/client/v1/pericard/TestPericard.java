@@ -75,6 +75,7 @@ public class TestPericard extends ABaseTestASNDER {
     private String lastDek;
     private String lastSdek;
     private String lastBdk;
+    private String lastPgp;
 
     @Override
     @Before
@@ -876,6 +877,132 @@ public class TestPericard extends ABaseTestASNDER {
                     bdkFormFinal.getFieldValueAsBoolean("Is Active")
             );
             this.lastBdk = bdkFormFinal.getFieldValueAsString("Alias");
+        }
+    }
+
+    @Test
+    public void testGeneratePGP() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastDek)) {
+            // We need an HSM Data Key!
+            this.testGenerateKeyDEK();
+        }
+        TestCase.assertNotNull("Expected 'Data Key (DEK)'!!!", this.lastDek);
+
+        String flowNameProv = "Cryptographic Key Provisioning";
+        int itemCount = 1, threadCount = 1;
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testGeneratePGP)");
+                return;
+            }
+
+            String genPgpReq = "Generate PGP Keypair Request",
+                    pgpKeypair = "PGP Keypair",
+                    pgpSubkey = "PGP Subkey";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(genPgpReq));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(pgpKeypair));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(pgpSubkey));
+
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Checker",
+                    "Key Provisioning Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Processed Result",
+                    "Key Provisioning Processed Result"
+            );
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            String identifier = UUID.randomUUID().toString();
+            Form frm = new Form(genPgpReq, new Date().toString()+ " "+identifier);
+            String aliasToCreateForPgp = String.format("GenPGPKeypair-%s", identifier);
+            frm.setFieldValue("Alias", aliasToCreateForPgp, Field.Type.Text);
+            frm.setFieldValue("Organisation", new MultiChoice(this.lastKeystoreOrg), Field.Type.MultipleChoice);
+            frm.setFieldValue("PGP Algorithm", new MultiChoice("RSA"), Field.Type.MultipleChoice);
+            frm.setFieldValue("PGP Name", "Roger Waters", Field.Type.Text);
+            frm.setFieldValue("PGP Email", "roger@floyd.org", Field.Type.Text);
+            frm.setFieldValue("Data Encryption Key", new MultiChoice(this.lastDek), Field.Type.MultipleChoice);
+            frm.setFieldValue("Publish Public Key", Boolean.TRUE, Field.Type.TrueFalse);
+
+            FluidItem genPgpKeyReq = new FluidItem(frm);
+            List<Long> createdIdsGenPgpReq = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameProv, viewCheckerGenKey,
+                    () -> genPgpKeyReq
+            );
+            TestCase.assertNotNull(createdIdsGenPgpReq);
+            TestCase.assertEquals(itemCount, createdIdsGenPgpReq.size());
+
+            FluidItem keyGenReqById = this.fluidItemByFormId(
+                    derClient, createdIdsGenPgpReq.get(0),
+                    true// Include route fields.
+            );
+
+            Form genPgpReqForm = keyGenReqById.getForm();
+            String keyAlias = genPgpReqForm.getFieldValueAsString("Alias");
+
+            // Approve the Gen Soft Key Request (Gen the SDEK):
+            createdIdsGenPgpReq.forEach(id -> {
+                this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
+            });
+
+            // Wait for the PGP to be created:
+            sleepForSeconds(3);
+
+            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, "PGP Keypair");
+            TestCase.assertNotNull(keysWithAlias);
+            TestCase.assertEquals("No PGP on alias "+keyAlias+"!",1, keysWithAlias.size());
+
+            FluidItem pgpItm = this.fluidItemByFormId(
+                    derClient, keysWithAlias.get(0).getForm().getId(),
+                    false// No route fields.
+            );
+            TestCase.assertNotNull(pgpItm);
+            Form pgpForm = pgpItm.getForm();
+            TestCase.assertNotNull(pgpForm);
+            TestCase.assertEquals("PGP Keypair", pgpForm.getFormType());
+            TestCase.assertEquals("Open", pgpForm.getState());
+            TestCase.assertEquals("NotInFlow", pgpForm.getFlowState());
+            TestCase.assertNull(pgpForm.getCurrentUser());
+            TestCase.assertEquals(1, pgpForm.getFieldValueAsInt("Software Key Version").intValue());
+            String pgpAlias = pgpForm.getFieldValueAsString("Alias");
+            TestCase.assertEquals(aliasToCreateForPgp, pgpAlias);
+            this.lastPgp = pgpAlias;
+
+            TestCase.assertNotNull(pgpForm.getFieldValueAsString("Key Purpose"));
+            TestCase.assertEquals(this.lastDek, pgpForm.getFieldValueAsString("Data Encryption Key"));
+            TestCase.assertEquals("Weekly", pgpForm.getFieldValueAsString("Software Key Cycle Interval"));
+            TestCase.assertEquals(frm.getFieldValueAsString("Software Key Type"), pgpForm.getFieldValueAsString("Software Key Type"));
+            TestCase.assertEquals(frm.getFieldValueAsString("Software Key Cipher Mode"), pgpForm.getFieldValueAsString("Software Key Cipher Mode"));
+            TestCase.assertEquals(frm.getFieldValueAsString("Encrypted Data Padding"), pgpForm.getFieldValueAsString("Encrypted Data Padding"));
+
+            // PGP Key Created:
+            TestCase.assertNotNull(pgpForm.getFieldValueAsString("Key Check Value"));
+            TestCase.assertNotNull(pgpForm.getFieldValueAsString("Key Block Protection Key"));
+
+            List<Form> tableRecords = this.tableRecords(derClient, pgpItm.getForm(), null);
+            TestCase.assertNotNull(tableRecords);
+            TestCase.assertEquals(1, tableRecords.size());
+
+            Form firstKey = tableRecords.get(0);
+            TestCase.assertNotNull(firstKey.getTitle());
+            TestCase.assertEquals("PGP Subkey", firstKey.getFormType());
+            TestCase.assertNotNull(firstKey.getFieldValueAsString("Key Check Value"));
         }
     }
 
