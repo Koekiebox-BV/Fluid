@@ -138,6 +138,14 @@
                 <scope>provided</scope>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcutil-jdk18on -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcutil-jdk18on</artifactId>
+                <version>1.83</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!--ElasticSearch-->
             <!-- https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-high-level-client -->
             <dependency>
