@@ -434,6 +434,27 @@ public class PGPUtil {
     }
 
     /**
+     * Parses a {@link PGPPublicKeyRing} from an ASCII-armored public key block string.
+     *
+     * @param armoredPublicKey ASCII-armored string (starts with {@code -----BEGIN PGP PUBLIC KEY BLOCK-----})
+     * @return The decoded {@link PGPPublicKeyRing}
+     * @throws IOException  if the input cannot be read or decoded
+     * @throws PGPException if the decoded data does not contain a valid public key ring
+     */
+    public static PGPPublicKeyRing publicKeyRingFromArmor(String armoredPublicKey) throws IOException, PGPException {
+        byte[] bytes = armoredPublicKey.getBytes(StandardCharsets.UTF_8);
+        try (InputStream decoderStream = org.bouncycastle.openpgp.PGPUtil.getDecoderStream(
+                new ByteArrayInputStream(bytes))) {
+            PGPObjectFactory factory = new PGPObjectFactory(decoderStream, new JcaKeyFingerprintCalculator());
+            Object obj;
+            while ((obj = factory.nextObject()) != null) {
+                if (obj instanceof PGPPublicKeyRing) return (PGPPublicKeyRing) obj;
+            }
+        }
+        throw new PGPException("No PGPPublicKeyRing found in armored input");
+    }
+
+    /**
      * Converts the given PGP secret key ring into an ASCII-armored string representation.
      *
      * @param secretKeyRing The PGP secret key ring to be armored.
