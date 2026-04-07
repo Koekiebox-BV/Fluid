@@ -16,6 +16,7 @@
 package com.fluidbpm.ws.client.v1.crypto.asymmetric.pgp;
 
 import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.junit.Test;
@@ -496,6 +497,61 @@ public class TestPGPUtil {
         String pub = PGPUtil.armor(keys.getPublicKeyRing());
         String sec = PGPUtil.armor(keys.getSecretKeyRing());
         assertFalse("Armored public and secret key blocks should differ", pub.equals(sec));
+    }
+
+    // --------- publicKeyRingFromArmor() ---------
+
+    @Test
+    public void testPublicKeyRingFromArmorRsa() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+
+        PGPPublicKeyRing parsed = PGPUtil.publicKeyRingFromArmor(armored);
+
+        assertNotNull("Parsed public key ring should not be null", parsed);
+        assertEquals("Parsed ring fingerprint should match original",
+                keys.getPublicKeyRing().getPublicKey().getKeyID(),
+                parsed.getPublicKey().getKeyID());
+    }
+
+    @Test
+    public void testPublicKeyRingFromArmorEd25519() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+
+        PGPPublicKeyRing parsed = PGPUtil.publicKeyRingFromArmor(armored);
+
+        assertNotNull("Parsed Ed25519 public key ring should not be null", parsed);
+        assertEquals("Parsed Ed25519 ring key ID should match original",
+                keys.getPublicKeyRing().getPublicKey().getKeyID(),
+                parsed.getPublicKey().getKeyID());
+    }
+
+    @Test
+    public void testPublicKeyRingFromArmorPreservesSubkeys() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+
+        PGPPublicKeyRing parsed = PGPUtil.publicKeyRingFromArmor(armored);
+
+        List<PGPUtil.KeyInfo> infos = PGPUtil.getKeyInfo(parsed);
+        assertEquals("Parsed ring should have 2 keys (master + subkey)", 2, infos.size());
+        assertTrue("First key should be master key", infos.get(0).isMasterKey());
+        assertTrue("Second key should be encryption subkey", infos.get(1).isEncryptionKey());
+    }
+
+    @Test
+    public void testPublicKeyRingFromArmorCanEncrypt() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        String armored = PGPUtil.armor(keys.getPublicKeyRing());
+
+        PGPPublicKeyRing parsed = PGPUtil.publicKeyRingFromArmor(armored);
+
+        byte[] plaintext = "Encrypt after armor round-trip".getBytes("UTF-8");
+        byte[] encrypted = PGPUtil.encrypt(plaintext, parsed);
+        byte[] decrypted = PGPUtil.decrypt(encrypted, keys.getSecretKeyRing(), PASSPHRASE);
+
+        assertTrue("Decrypted data should match original plaintext", Arrays.equals(plaintext, decrypted));
     }
 
     // --------- Encrypt-then-Sign round-trip ---------
