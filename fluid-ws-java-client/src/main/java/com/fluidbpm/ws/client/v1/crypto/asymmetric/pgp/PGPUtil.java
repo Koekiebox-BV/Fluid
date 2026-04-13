@@ -290,7 +290,7 @@ public class PGPUtil {
      * (starts with {@code -----BEGIN PGP SIGNATURE-----}).
      *
      * @param data       The data to sign
-     * @param openPGPKey The signer's key (obtained from {@link PGPKeyPairResult#getOpenPGPKey()})
+     * @param openPGPKey The signer's key
      * @param passphrase Passphrase to unlock the secret signing key
      * @return ASCII-armored detached PGP signature
      * @throws PGPException if signing fails
