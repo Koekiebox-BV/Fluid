@@ -660,4 +660,36 @@ public class TestPGPUtil {
         assertTrue("Plaintext should still be recovered", Arrays.equals(message, result.getPlaintext()));
         assertFalse("Signature should NOT verify against Eve's key", result.isSignatureValid());
     }
+
+    // --------- encryptAndSign(OpenPGPKey) overload ---------
+
+    @Test
+    public void testEncryptAndSignWithOpenPGPKey_RSA() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "RSA: encrypted and signed via OpenPGPKey".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getOpenPGPKey(), PASSPHRASE);
+
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Embedded signature should verify against Alice's key", result.isSignatureValid());
+    }
+
+    @Test
+    public void testEncryptAndSignWithOpenPGPKey_Ed25519() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "Ed25519: encrypted and signed via OpenPGPKey".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getOpenPGPKey(), PASSPHRASE);
+
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Embedded signature should verify against Alice's key", result.isSignatureValid());
+    }
 }
