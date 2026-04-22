@@ -56,7 +56,6 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -1196,7 +1195,6 @@ public class TestPericard extends ABaseTestASNDER {
     }
 
     @Test
-    @Ignore
     public void testImportTerminalMasterKeyUnderZoneMasterKeyUsingPGP() {
         if (this.isConnectionInValid) return;
 
@@ -1237,13 +1235,18 @@ public class TestPericard extends ABaseTestASNDER {
             }
 
             PGPPublicKeyRing pub = PGPUtil.publicKeyRingFromArmor(this.receiverPgpPublicKey);
+            String receiverUserId = pub.getPublicKey().getUserIDs().next();
+            TestCase.assertEquals("Roger Waters <roger@floyd.org>", receiverUserId);
+
+            String senderUserId = this.senderPgpKey.getPublicKeyRing().getPublicKey().getUserIDs().next();
+            TestCase.assertEquals("Peter Pan <peter.pan@neverland.com>", senderUserId);
 
             byte[] rawDataToEncAndSign = this.generateCSVTMK();
             byte[] encryptedAndSigned = PGPUtil.encryptAndSign(
                     rawDataToEncAndSign,
                     pub,
-                    senderPgpKey.getSecretKeyRing(),
-                    senderPasswordForPgpKP
+                    this.senderPgpKey.getOpenPGPKey(),
+                    this.senderPasswordForPgpKP
             );
             String asciiArmored = PGPUtil.armorMessage(encryptedAndSigned);
 
@@ -1283,43 +1286,14 @@ public class TestPericard extends ABaseTestASNDER {
                     derClient, createdIdsTmkImport.get(0),
                     true// Include route fields.
             );
-            Form genBDKReqForm = tmkImportReqById.getForm();
-
-            // TODO 1. Now
-            /*
-            FluidItem bdkItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
-            TestCase.assertNotNull(bdkItm);
-            Form bdkForm = bdkItm.getForm();
-            TestCase.assertNotNull(bdkForm);
+            Form importTmkForm = tmkImportReqById.getForm();
 
             // HSM Invoked:
-            TestCase.assertNotNull(bdkForm.getFieldValueAsString("Key Check Value"));
-            TestCase.assertNotNull(bdkForm.getFieldValueAsString("HSM Key Block Cryptogram LMK MFK"));
-            TestCase.assertEquals(this.lastHostAlias, bdkForm.getFieldValueAsString("Key Generation Host"));
-            TestCase.assertEquals(this.lastKeystoreOrg, bdkForm.getFieldValueAsString("Organisation"));
-            // Data Key has usage:
-            TestCase.assertEquals(keyUsage, bdkForm.getFieldValueAsString("HSM Key Type or Usage"));
+            TestCase.assertNotNull(importTmkForm.getFieldValueAsString("Key Check Value"));
 
-            // Once approved, we have the request linked to the BDK:
-            List<Form> descGenKeyReq = sqlUtl.getDescendants(
-                    genBDKReqForm,
-                    true,
-                    true,
-                    true
-            );
-            TestCase.assertNotNull(descGenKeyReq);
-            TestCase.assertEquals("Expected one descendant. The Generated BDK!",1, descGenKeyReq.size());
-            Form bdkFormFinal = descGenKeyReq.get(0);
-            TestCase.assertTrue(
-                    "Expected BDK to be active.",
-                    bdkFormFinal.getFieldValueAsBoolean("Is Active")
-            );
-            this.lastBdk = bdkFormFinal.getFieldValueAsString("Alias");
-             */
+            //TODO Need to approve from the provisioning flow...
         } catch (IOException | PGPException err) {
+            err.printStackTrace();
             TestCase.fail("IO-Err: "+err.getMessage());
         }
     }
