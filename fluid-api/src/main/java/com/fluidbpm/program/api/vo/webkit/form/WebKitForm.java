@@ -207,10 +207,10 @@ public class WebKitForm extends ABaseFluidGSONObject {
         this.setInputLayout(this.getAsStringNullSafe(JSONMapping.INPUT_LAYOUT, InputLayout.VERTICAL));
         this.setDisplayFormDescription(this.getAsBooleanNullSafe(JSONMapping.DISPLAY_FORM_DESCRIPTION));
         this.setDisplayFieldDescription(this.getAsBooleanNullSafe(JSONMapping.DISPLAY_FIELD_DESCRIPTION));
-        this.setAttachmentSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_SIZE));
+        this.setAttachmentSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_SIZE, this.attachmentSize));
         this.setAttachmentDisplayLocation(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_LOCATION));
-        this.setAttachmentDisplayType(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_TYPE, AttachmentDisplayType.GRID));
-        this.setDisplayWidth(this.getAsIntegerNullSafeStrictVal(JSONMapping.DISPLAY_WIDTH));
+        this.setAttachmentDisplayType(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_DISPLAY_TYPE, this.attachmentDisplayType));
+        this.setDisplayWidth(this.getAsIntegerNullSafeStrictVal(JSONMapping.DISPLAY_WIDTH, this.displayWidth));
         this.setDisplayHeight(this.getAsIntegerNullSafe(JSONMapping.DISPLAY_HEIGHT));
         this.setVisibleSectionsDisplayBehaviour(this.getAsStringNullSafe(JSONMapping.VISIBLE_SECTIONS_DISPLAY_BEHAVIOUR));
         this.setFormDisplayBehaviour(this.getAsStringNullSafe(JSONMapping.FORM_DISPLAY_BEHAVIOUR));

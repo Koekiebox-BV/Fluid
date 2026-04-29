@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.field.MultiChoice;
+import com.fluidbpm.program.api.vo.field.TableField;
 import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
@@ -40,6 +41,7 @@ import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
 import com.fluidbpm.ws.client.v1.config.GlobalFieldClient;
 import com.fluidbpm.ws.client.v1.crypto.KeystoreTestUtil;
 import com.fluidbpm.ws.client.v1.crypto.KeystoreUtil;
+import com.fluidbpm.ws.client.v1.crypto.asymmetric.pgp.PGPUtil;
 import com.fluidbpm.ws.client.v1.flow.FlowStepClient;
 import com.fluidbpm.ws.client.v1.form.FormContainerClient;
 import com.fluidbpm.ws.client.v1.form.FormDefinitionClient;
@@ -50,14 +52,15 @@ import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import com.google.common.io.BaseEncoding;
 import junit.framework.TestCase;
 import lombok.extern.java.Log;
+import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.fluidbpm.ws.client.FluidClientException.ErrorCode.NO_RESULT;
@@ -77,6 +80,14 @@ public class TestPericard extends ABaseTestASNDER {
     private String lastBdk;
     private String lastPgpKeypair;
     private String lastPgpPublicKey;
+
+    // Sender:
+    private PGPUtil.PGPKeyPairResult senderPgpKey;
+    private char[] senderPasswordForPgpKP;
+
+    // Receiver:
+    private String receiverPgpPublicKey;
+
 
     @Override
     @Before
@@ -813,7 +824,7 @@ public class TestPericard extends ABaseTestASNDER {
             // Refresh payload populate for the HSM key req:
             PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
 
-            String keyUsage = "DUKPT Base Derivation Key (BDK-1)";
+            String keyUsage = "DUKPT Base Derivation Key PIN";//DUKPT Base Derivation Key (BDK-1)
             FluidItem generateKeyRequest = generateHsmKeyRequestItem(
                     "AliasGenBDK",
                     UUID.randomUUID().toString(),
@@ -995,7 +1006,8 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertNotNull(pgpForm.getFieldValueAsString("PGP Key ID"));
             TestCase.assertNotNull(pgpForm.getFieldValueAsString("PGP Fingerprint"));
             TestCase.assertEquals(4096, pgpForm.getFieldValueAsInt("PGP Bit Strength").intValue());
-            TestCase.assertTrue(pgpForm.getFieldValueAsString("PGP Public Key Armored").startsWith("-----BEGIN PGP PUBLIC KEY BLOCK-----"));
+            this.receiverPgpPublicKey = pgpForm.getFieldValueAsString("PGP Public Key Armored");
+            TestCase.assertTrue(this.receiverPgpPublicKey.startsWith("-----BEGIN PGP PUBLIC KEY BLOCK-----"));
             TestCase.assertTrue(pgpForm.getFieldValueAsString("PGP Secret Key Armored").startsWith("-----BEGIN PGP PRIVATE KEY BLOCK-----"));
 
             List<Form> tableRecords = this.tableRecords(derClient, pgpItm.getForm(), null);
@@ -1011,12 +1023,286 @@ public class TestPericard extends ABaseTestASNDER {
                 TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Master Key"));
                 TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Signing Key"));
                 TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Encryption Key"));
+                // TODO @kb, the multi choice is empty (not set / empty string <"">)
                 TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Key Type"));
             });
-
-            // Public Key Import:
-
         }
+    }
+
+    @Test
+    public void testImportAndTrustPGPPublicKey() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastDek)) {
+            // We need an HSM Data Key!
+            this.testGenerateKeyDEK();
+        }
+        TestCase.assertNotNull("Expected 'Data Key (DEK)'!!!", this.lastDek);
+
+        String flowNameProv = "Cryptographic Key Provisioning";
+        int itemCount = 1, threadCount = 1;
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testImportAndTrustPGPPublicKey)");
+                return;
+            }
+
+            String importPgpKeyReq = "PGP Public Key Import Request",
+                    pgpTrustPub = "PGP Trusted Public Key",
+                    pgpSubkey = "PGP Subkey";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(importPgpKeyReq));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(pgpTrustPub));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(pgpSubkey));
+
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Checker",
+                    "Key Provisioning Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Processed Result",
+                    "Key Provisioning Processed Result"
+            );
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            String identifier = UUID.randomUUID().toString();
+            Form frm = new Form(importPgpKeyReq, new Date().toString()+ " "+identifier);
+            String aliasToCreateForPgp = String.format("ImportPGPPubKey-%s", identifier);
+            frm.setFieldValue("Alias", aliasToCreateForPgp, Field.Type.Text);
+            frm.setFieldValue("Organisation", new MultiChoice(this.lastKeystoreOrg), Field.Type.MultipleChoice);
+
+            this.senderPasswordForPgpKP = null;
+
+            //TODO Need to test with a password in the test case:::
+            //TODO this.senderPasswordForPgpKP = "zool".toCharArray();
+            String pgpPubArmored = null;
+            try {
+                this.senderPgpKey = PGPUtil.generateKeyPair(
+                        PGPUtil.KeyType.RSA,
+                        "Peter Pan <peter.pan@neverland.com>",
+                        this.senderPasswordForPgpKP
+                );
+                TestCase.assertNotNull("No keypair generated!", this.senderPgpKey);
+                TestCase.assertNotNull("No public key!", this.senderPgpKey.getPublicKeyRing());
+                pgpPubArmored = PGPUtil.armor(this.senderPgpKey.getPublicKeyRing());
+            } catch (PGPException e) {
+                TestCase.fail("PGP-Err: Failed to generate PGP Keypair: "+e.getMessage());
+            } catch (GeneralSecurityException e) {
+                TestCase.fail("GenSec-Err: Failed to generate PGP Keypair: "+e.getMessage());
+            } catch (IOException e) {
+                TestCase.fail("IO-Err: Failed to generate PGP Keypair: "+e.getMessage());
+            }
+            frm.setFieldValue("PGP Public Key Armored", pgpPubArmored, Field.Type.ParagraphText);
+
+            FluidItem genPgpKeyReq = new FluidItem(frm);
+            List<Long> createdIdsImportPgpReq = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameProv, viewCheckerGenKey,
+                    () -> genPgpKeyReq
+            );
+            TestCase.assertNotNull(createdIdsImportPgpReq);
+            TestCase.assertEquals(itemCount, createdIdsImportPgpReq.size());
+
+            FluidItem keyImportReqById = this.fluidItemByFormId(
+                    derClient, createdIdsImportPgpReq.get(0),
+                    true// Include route fields.
+            );
+
+            Form importPgpReqForm = keyImportReqById.getForm();
+            String keyAlias = importPgpReqForm.getFieldValueAsString("Alias");
+            TestCase.assertNotNull(importPgpReqForm);
+            TestCase.assertEquals(importPgpKeyReq, importPgpReqForm.getFormType());
+            TestCase.assertEquals("Open", importPgpReqForm.getState());
+            TestCase.assertEquals("WorkInProgress", importPgpReqForm.getFlowState());
+
+            TestCase.assertNotNull(keyAlias);
+            TestCase.assertNotNull(importPgpReqForm.getFieldValueAsString("User Maker"));
+            TestCase.assertEquals(this.lastKeystoreOrg, importPgpReqForm.getFieldValueAsString("Organisation"));
+            TestCase.assertEquals("RSA", importPgpReqForm.getFieldValueAsString("PGP Algorithm"));
+            TestCase.assertNotNull(importPgpReqForm.getFieldValueAsString("PGP Key ID"));
+            TestCase.assertNotNull(importPgpReqForm.getFieldValueAsString("PGP Public Key Armored"));
+            TableField pubReqPubFields = importPgpReqForm.getFieldValueAsTableField("PGP Subkeys");
+            TestCase.assertNotNull(pubReqPubFields);
+            TestCase.assertEquals("Expected 2 Pub Keys from keyring.", 2, pubReqPubFields.getTableRecords().size());
+
+            // Approve the PGP Public Key:
+            createdIdsImportPgpReq.forEach(id -> {
+                this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
+            });
+
+            // Wait for the PGP to be created:
+            sleepForSeconds(6);
+
+            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, pgpTrustPub);
+            TestCase.assertNotNull(keysWithAlias);
+            TestCase.assertEquals("No PGP Public Key on alias "+keyAlias+"!",1, keysWithAlias.size());
+
+            FluidItem pgpItm = this.fluidItemByFormId(
+                    derClient, keysWithAlias.get(0).getForm().getId(),
+                    false// No route fields.
+            );
+            TestCase.assertNotNull(pgpItm);
+            Form pgpForm = pgpItm.getForm();
+            TestCase.assertNotNull(pgpForm);
+            TestCase.assertEquals(pgpTrustPub, pgpForm.getFormType());
+            TestCase.assertEquals("Open", pgpForm.getState());
+            TestCase.assertEquals("NotInFlow", pgpForm.getFlowState());
+            TestCase.assertNull(pgpForm.getCurrentUser());
+            String pgpAlias = pgpForm.getFieldValueAsString("Alias");
+            TestCase.assertEquals(aliasToCreateForPgp, pgpAlias);
+            this.lastPgpPublicKey = pgpAlias;
+
+            TestCase.assertTrue(pgpForm.getFieldValueAsBoolean("Is Active"));
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("Alias").startsWith("ImportPGPPubKey-"));
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("Organisation").startsWith("OrgName-"));
+            TestCase.assertEquals("RSA", pgpForm.getFieldValueAsString("PGP Algorithm"));
+            TestCase.assertEquals("Peter Pan", pgpForm.getFieldValueAsString("PGP Name"));
+            TestCase.assertEquals("peter.pan@neverland.com", pgpForm.getFieldValueAsString("PGP Email"));
+            // PGP Key Created:
+            TestCase.assertEquals("Peter Pan <peter.pan@neverland.com>", pgpForm.getFieldValueAsString("PGP User ID"));
+            TestCase.assertNotNull(pgpForm.getFieldValueAsString("PGP Key ID"));
+            TestCase.assertTrue(pgpForm.getFieldValueAsString("PGP Public Key Armored").startsWith("-----BEGIN PGP PUBLIC KEY BLOCK-----"));
+
+            List<Form> tableRecords = this.tableRecords(derClient, pgpForm, null);
+            TestCase.assertNotNull(tableRecords);
+            TestCase.assertEquals(2, tableRecords.size());
+
+            tableRecords.forEach(subItm -> {
+                TestCase.assertNotNull(subItm.getTitle());
+                TestCase.assertEquals(pgpSubkey, subItm.getFormType());
+
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Key ID"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Fingerprint"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Master Key"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Signing Key"));
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Is Encryption Key"));
+                // TODO @kb, the multi choice is empty (not set / empty string <"">)
+                TestCase.assertNotNull(subItm.getFieldValueAsString("PGP Key Type"));
+            });
+        }
+    }
+
+    @Test
+    public void testImportTerminalMasterKeyUnderZoneMasterKeyUsingPGP() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastZmk)) {
+            // 1. We need a BDK
+            this.testGenerateHSMZoneMasterKeyRequest();
+        }
+        if (UtilGlobal.isBlank(this.lastPgpKeypair)) {
+            // 2. We need a PGP Keypair
+            this.testGenerateAndImportPGP();
+        }
+        if (UtilGlobal.isBlank(this.lastPgpPublicKey)) {
+            // 3. We need a PGP Public Key
+            this.testImportAndTrustPGPPublicKey();
+        }
+
+        TestCase.assertNotNull("Expected 'ZMK'!!!", this.lastZmk);
+        TestCase.assertNotNull("Expected 'PGP Keypair'!!!", this.lastPgpKeypair);
+        TestCase.assertNotNull("Expected 'PGP Public Key'!!!", this.lastPgpPublicKey);
+
+        int itemCount = 1, threadCount = 1;
+        String flowNameContIngest = "Content Ingestion";
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testImportTerminalMasterKeyUnderZoneMasterKeyUsingPGP)");
+                return;
+            }
+
+            PGPPublicKeyRing pub = PGPUtil.publicKeyRingFromArmor(this.receiverPgpPublicKey);
+            String receiverUserId = pub.getPublicKey().getUserIDs().next();
+            TestCase.assertEquals("Roger Waters <roger@floyd.org>", receiverUserId);
+
+            String senderUserId = this.senderPgpKey.getPublicKeyRing().getPublicKey().getUserIDs().next();
+            TestCase.assertEquals("Peter Pan <peter.pan@neverland.com>", senderUserId);
+
+            byte[] rawDataToEncAndSign = this.generateCSVTMK();
+            byte[] encryptedAndSigned = PGPUtil.encryptAndSign(
+                    rawDataToEncAndSign,
+                    pub,
+                    this.senderPgpKey.getOpenPGPKey(),
+                    this.senderPasswordForPgpKP
+            );
+            String asciiArmored = PGPUtil.armorMessage(encryptedAndSigned);
+
+            String emailType = "Email";
+            //TODO this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyReqType));
+            JobView viewProcResultContIngest = flowStepClient.getStandardJobViewBy(
+                    flowNameContIngest,
+                    "Content Ingestion Processed Result",
+                    "Content Ingestion Processed Result"
+            );
+
+            // Refresh payload populate for the HSM key req:
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            String identifier = UUID.randomUUID().toString();
+            Form frmEmail = new Form(emailType, new Date().toString()+ " "+identifier);
+            frmEmail.setFieldValue("Email From Address", "test@example.com", Field.Type.Text);
+            frmEmail.setFieldValue("Email To Address", "recipient@example.com", Field.Type.Text);
+            frmEmail.setFieldValue("Email Subject", "Test Email Subject", Field.Type.Text);
+            frmEmail.setFieldValue("Email Sent Date", new Date(), Field.Type.DateTime);
+            frmEmail.setFieldValue("Email Received Date", new Date(), Field.Type.DateTime);
+            frmEmail.setFieldValue("Email Unique Identifier", Math.random(), Field.Type.Decimal);
+
+            FluidItem tmksEmail = new FluidItem(frmEmail);
+            tmksEmail.setAttachments(UtilGlobal.toListSafe(
+                    new Attachment(rawDataToEncAndSign, "tmk_content.csv", "text/csv"),
+                    new Attachment(asciiArmored.getBytes(), "tmk_content.csv.enc", "text/csv")
+            ));
+            List<Long> createdIdsTmkImport = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameContIngest, viewProcResultContIngest,
+                    () -> tmksEmail
+            );
+            TestCase.assertNotNull(createdIdsTmkImport);
+            TestCase.assertEquals(itemCount, createdIdsTmkImport.size());
+
+            FluidItem tmkImportReqById = this.fluidItemByFormId(
+                    derClient, createdIdsTmkImport.get(0),
+                    true// Include route fields.
+            );
+            Form importTmkForm = tmkImportReqById.getForm();
+
+            // HSM Invoked:
+            TestCase.assertEquals("Email", importTmkForm.getFormType());
+            //TODO Need to approve from the KEY PROVISIONING flow... (We expect the TMK Request would be created)
+        } catch (IOException | PGPException err) {
+            err.printStackTrace();
+            TestCase.fail("IO-Err: "+err.getMessage());
+        }
+    }
+
+    private byte[] generateCSVTMK() {
+        String content =
+                "'Serial No', 'TMK Under ZMK', 'KCV'\n" +
+                "'SN123'    , 'KB123'        , 'AABBCC'\n"+
+                "'SN456'    , 'KB456'        , '112233'";
+        return content.getBytes();
     }
 
     //TODO 1. import TMK
@@ -1037,13 +1323,29 @@ public class TestPericard extends ABaseTestASNDER {
     //TODO 5. TMK Import
 
     /*
-    |---> POS Terminal Device:
+
+.
+A Key Set Identifier and Device ID for deriving the Initial Key. Right justified and
+padded with 'F's. (NOTE: there is no Transaction Counter, as there would be with
+a KSN sent in transaction data from a terminal.)
+For a 3DES BDK except BDK5, the KSN is 15 H.
+Example: For a KSI + DID of 303950 + 12342468 (14 hex characters), the KSN field would be "F30395012342468".
+The last hex character (8) must be even.
+
+For an AES BDK and a 3DES BDK5, the KSN is 16 H.
+AES Example: For BDK ID + DID of 30395059 + 12345678 (16 hex characters),
+the KSN field would be 3039505912345678. There is no need for the last
+character to be even.
+     */
+
+    /*
+    |---> POS Terminal:
            - Serial No
            - Device ID (DID): 12342468              (Later during RKI)
            - Manufacturer
            - Model
                 ------------------
-                |---> IPEK                          (Later during RKI)
+                |---> IPEK/IKEY                          (Later during RKI)
                         - Key under TMK
                         - Key under LMK
                         - TMK KCV (if more, we know which one imported it)

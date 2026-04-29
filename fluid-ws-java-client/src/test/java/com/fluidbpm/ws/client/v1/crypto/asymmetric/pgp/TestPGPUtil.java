@@ -554,7 +554,46 @@ public class TestPGPUtil {
         assertTrue("Decrypted data should match original plaintext", Arrays.equals(plaintext, decrypted));
     }
 
-    // --------- Encrypt-then-Sign round-trip ---------
+    // --------- armorMessage ---------
+
+    @Test
+    public void testArmorMessage_encryptOutput() throws Exception {
+        PGPUtil.PGPKeyPairResult keys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, USER_ID, PASSPHRASE);
+        byte[] plaintext = "Armored message test".getBytes("UTF-8");
+
+        byte[] encrypted = PGPUtil.encrypt(plaintext, keys.getPublicKeyRing());
+        String armored = PGPUtil.armorMessage(encrypted);
+
+        assertTrue("Armored output should start with PGP MESSAGE header",
+                armored.contains("-----BEGIN PGP MESSAGE-----"));
+
+        // decrypt handles armored input transparently
+        byte[] decrypted = PGPUtil.decrypt(armored.getBytes("UTF-8"), keys.getSecretKeyRing(), PASSPHRASE);
+        assertTrue("Decrypted result should match original plaintext", Arrays.equals(plaintext, decrypted));
+    }
+
+    @Test
+    public void testArmorMessage_encryptAndSignOutput() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "Armored encrypt-and-sign test".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getSecretKeyRing(), PASSPHRASE);
+        String armored = PGPUtil.armorMessage(pgpMessage);
+
+        assertTrue("Armored output should start with PGP MESSAGE header",
+                armored.contains("-----BEGIN PGP MESSAGE-----"));
+
+        // decryptAndVerify handles armored input transparently
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(
+                armored.getBytes("UTF-8"), bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Signature should verify", result.isSignatureValid());
+    }
+
+    // --------- Encrypt-then-Sign round-trip (separate operations) ---------
 
     @Test
     public void testEncryptThenSignRoundtrip() throws Exception {
@@ -571,5 +610,86 @@ public class TestPGPUtil {
         assertTrue("Alice's signature over ciphertext should verify", PGPUtil.verify(encrypted, signature, aliceKeys.getPublicKeyRing()));
         byte[] decrypted = PGPUtil.decrypt(encrypted, bobKeys.getSecretKeyRing(), PASSPHRASE);
         assertTrue("Bob should recover Alice's original message", Arrays.equals(message, decrypted));
+    }
+
+    // --------- encryptAndSign / decryptAndVerify round-trip ---------
+
+    @Test
+    public void testEncryptAndSignRoundtrip_RSA() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "RSA: encrypted and signed in one pass".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getSecretKeyRing(), PASSPHRASE);
+
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Embedded signature should verify against Alice's key", result.isSignatureValid());
+    }
+
+    @Test
+    public void testEncryptAndSignRoundtrip_Ed25519() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "Ed25519: encrypted and signed in one pass".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getSecretKeyRing(), PASSPHRASE);
+
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Embedded signature should verify against Alice's key", result.isSignatureValid());
+    }
+
+    @Test
+    public void testEncryptAndSign_WrongSignerKeyFails() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Bob <bob@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult eveKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Eve <eve@example.com>", PASSPHRASE);
+
+        byte[] message = "Message signed by Alice".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getSecretKeyRing(), PASSPHRASE);
+
+        // Bob verifies with Eve's key — should not validate
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, eveKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should still be recovered", Arrays.equals(message, result.getPlaintext()));
+        assertFalse("Signature should NOT verify against Eve's key", result.isSignatureValid());
+    }
+
+    // --------- encryptAndSign(OpenPGPKey) overload ---------
+
+    @Test
+    public void testEncryptAndSignWithOpenPGPKey_RSA() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.RSA, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "RSA: encrypted and signed via OpenPGPKey".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getOpenPGPKey(), PASSPHRASE);
+
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Embedded signature should verify against Alice's key", result.isSignatureValid());
+    }
+
+    @Test
+    public void testEncryptAndSignWithOpenPGPKey_Ed25519() throws Exception {
+        PGPUtil.PGPKeyPairResult aliceKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, "Alice <alice@example.com>", PASSPHRASE);
+        PGPUtil.PGPKeyPairResult bobKeys = PGPUtil.generateKeyPair(PGPUtil.KeyType.Ed25519, "Bob <bob@example.com>", PASSPHRASE);
+
+        byte[] message = "Ed25519: encrypted and signed via OpenPGPKey".getBytes("UTF-8");
+
+        byte[] pgpMessage = PGPUtil.encryptAndSign(message, bobKeys.getPublicKeyRing(), aliceKeys.getOpenPGPKey(), PASSPHRASE);
+
+        PGPUtil.DecryptVerifyResult result = PGPUtil.decryptAndVerify(pgpMessage, bobKeys.getSecretKeyRing(), PASSPHRASE, aliceKeys.getPublicKeyRing());
+
+        assertTrue("Plaintext should match original", Arrays.equals(message, result.getPlaintext()));
+        assertTrue("Embedded signature should verify against Alice's key", result.isSignatureValid());
     }
 }
