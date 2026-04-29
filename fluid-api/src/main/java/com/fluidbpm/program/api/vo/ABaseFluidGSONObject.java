@@ -208,6 +208,22 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     }
 
     /**
+     * Retrieves the value of the specified property as an integer in a null-safe manner.
+     * If the property is not set or its value is null, a default value is returned.
+     *
+     * @param propertyName the name of the property whose value is to be retrieved
+     * @param defaultIfNotSet the default integer value to return if the property is not set or its value is null
+     * @return the value of the specified property as an integer, or the provided default value if the property is not set or is null
+     */
+    @XmlTransient
+    @JsonIgnore
+    protected int getAsIntegerNullSafeStrictVal(String propertyName, int defaultIfNotSet) {
+        Integer intVal = this.getAsIntegerNullSafe(propertyName);
+        if (intVal == null) return defaultIfNotSet;
+        return intVal;
+    }
+
+    /**
      * Safely retrieves the float value of the specified property from a given JSON object.
      * Returns null if the property does not exist or its value is null.
      *

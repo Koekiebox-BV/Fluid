@@ -165,13 +165,13 @@ public class WebKitViewGroup extends ABaseFluidGSONObject {
         this.setJobViewGroupId(this.getAsLongNullSafe(JSONMapping.JOB_VIEW_GROUP_ID));
         this.setJobViewGroupName(this.getAsStringNullSafe(JSONMapping.JOB_VIEW_GROUP_NAME));
         this.setJobViewGroupIcon(this.getAsStringNullSafe(JSONMapping.JOB_VIEW_GROUP_ICON));
-        this.setTableGenerateMode(this.getAsStringNullSafe(JSONMapping.TABLE_GENERATE_MODE));
-        this.setAttachmentColumnLabel(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LABEL));
+        this.setTableGenerateMode(this.getAsStringNullSafe(JSONMapping.TABLE_GENERATE_MODE, this.tableGenerateMode));
+        this.setAttachmentColumnLabel(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LABEL, this.attachmentColumnLabel));
         this.setAttachmentColumnLayout(this.getAsStringNullSafe(JSONMapping.ATTACHMENT_COLUMN_LAYOUT));
 
-        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE));
-        this.setAttachmentPreviewSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_PREVIEW_SIZE));
-        this.setAttachmentColumnMaxImageCount(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT));
+        this.setAttachmentThumbnailSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_THUMBNAIL_SIZE, this.attachmentThumbnailSize));
+        this.setAttachmentPreviewSize(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_PREVIEW_SIZE, this.attachmentPreviewSize));
+        this.setAttachmentColumnMaxImageCount(this.getAsIntegerNullSafeStrictVal(JSONMapping.ATTACHMENT_COLUMN_MAX_IMAGE_COUNT, this.attachmentColumnMaxImageCount));
 
         this.setEnableRenderEmptyTable(this.getAsBooleanNullSafe(JSONMapping.ENABLE_RENDER_EMPTY_TABLE));
         this.setEnableBulkEdit(this.getAsBooleanNullSafe(JSONMapping.ENABLE_BULK_EDIT));
