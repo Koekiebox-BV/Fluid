@@ -541,6 +541,29 @@ public class FluidItem extends ABaseFluidGSONObject {
     }
 
     /**
+     * Retrieves the value of the specified route field by its field name as an Integer.
+     * The method checks the type of the value and attempts to convert it to an Integer if possible.
+     * If the field value is null or cannot be converted, the method returns null.
+     *
+     * @param fieldNameParam the name of the field whose value is to be retrieved
+     * @return the value of the specified field as an Integer, or null if the value is null or cannot
+     *         be converted to an Integer
+     */
+    @XmlTransient
+    @JsonIgnore
+    public Integer getRouteFieldValueAsInteger(String fieldNameParam) {
+        Object obj = this.getRouteFieldValue(fieldNameParam);
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof Integer) {
+            return ((Integer) obj);
+        } else if (obj instanceof Number) {
+            return ((Number) obj).intValue();
+        }
+        return null;
+    }
+
+    /**
      * <p>
      * Returns the value of the {@code fieldNameParam} requested.
      *
