@@ -551,7 +551,7 @@ public class FluidItem extends ABaseFluidGSONObject {
      */
     @XmlTransient
     @JsonIgnore
-    public Integer getRouteFieldValueAsInteger(String fieldNameParam) {
+    public Integer getRouteFieldValueAsInt(String fieldNameParam) {
         Object obj = this.getRouteFieldValue(fieldNameParam);
         if (obj == null) {
             return null;

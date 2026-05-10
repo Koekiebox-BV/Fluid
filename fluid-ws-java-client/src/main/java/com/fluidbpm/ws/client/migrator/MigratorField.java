@@ -180,6 +180,8 @@ public class MigratorField {
             );
         } else if (itm instanceof MigratorField.MigrateOptFieldTrueFalse) {
             MigratorField.migrateFieldTrueFalse(rfc, (MigratorField.MigrateOptFieldTrueFalse) itm);
+        } else if (itm instanceof MigratorField.MigrateOptFieldDecimal) {
+            MigratorField.migrateFieldDecimal(rfc, (MigratorField.MigrateOptFieldDecimal) itm);
         } else {
             throw new FluidClientException(
                     String.format("Route: Type '%s' is not supported.", itm),
@@ -434,7 +436,7 @@ public class MigratorField {
     }
 
     /**
-     * Migrate a Date field. Date field may or may not include time.
+     * Migrate a Decimal field.
      *
      * @param ffc {@code FormFieldClient}
      * @param opts {@code OptFieldDateMigrate}
@@ -451,6 +453,36 @@ public class MigratorField {
                 ffc.createFieldDecimalSpinner(toMigrate, opts.valMin, opts.valMax, opts.valStepFactor, opts.prefix);
             } else {
                 ffc.createFieldDecimalPlain(toMigrate);
+            }
+        } catch (FluidClientException fce) {
+            if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
+        }
+    }
+
+    /**
+     * Migrate a Decimal field.
+     *
+     * @param rfc {@code RouteFieldClient}
+     * @param opts {@code OptFieldDateMigrate}
+     */
+    public static void migrateFieldDecimal(
+            RouteFieldClient rfc, MigrateOptFieldDecimal opts
+    ) {
+        try {
+            Field toMigrate = new Field(opts.fieldName, null, Field.Type.DateTime);
+            toMigrate.setFieldDescription(opts.fieldDescription);
+            if (opts.spinner) {
+                throw new FluidClientException(
+                        "Route: Type 'Decimal for Spinner' is not supported.",
+                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+                );
+            } else if (opts.currency) {
+                throw new FluidClientException(
+                        "Route: Type 'Decimal for Currency' is not supported.",
+                        FluidClientException.ErrorCode.ILLEGAL_STATE_ERROR
+                );
+            } else {
+                rfc.createFieldDecimalPlain(toMigrate);
             }
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
