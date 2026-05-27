@@ -45,6 +45,19 @@ public class WebKitFormLayoutAdvance extends ABaseFluidGSONObject {
     /**
      * Set the field.
      *
+     * @param fieldName The field to set for advance.
+     * @param colSpan The span for the field.
+     */
+    public WebKitFormLayoutAdvance(String fieldName, int colSpan) {
+        this();
+        Field toAdd = new Field(fieldName);
+        this.setField(toAdd);
+        this.setColSpan(colSpan);
+    }
+
+    /**
+     * Set the field.
+     *
      * @param field The field to set for advance.
      */
     public WebKitFormLayoutAdvance(Field field) {
