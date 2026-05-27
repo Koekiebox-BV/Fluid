@@ -60,8 +60,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.fluidbpm.ws.client.FluidClientException.ErrorCode.NO_RESULT;
 import static org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
@@ -1216,7 +1220,7 @@ public class TestPericard extends ABaseTestASNDER {
         TestCase.assertNotNull("Expected 'PGP Public Key'!!!", this.lastPgpPublicKey);
 
         int itemCount = 1, threadCount = 1;
-        String flowNameContIngest = "Content Ingestion";
+        String flowNameContIngest = "Content Ingestion", flowNameProv = "Cryptographic Key Provisioning";
         try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
                 BASE_URL,
                 ADMIN_SERVICE_TICKET_HEX,
@@ -1233,6 +1237,13 @@ public class TestPericard extends ABaseTestASNDER {
                 log.warning("Pericard is not enabled. Skipping test. (testImportTerminalMasterKeyUnderZoneMasterKeyUsingPGP)");
                 return;
             }
+
+            String formDefTMKImportReq = "Import Terminal Master Keys Request",
+                    formDefPOSTerminal = "POS Terminal",
+                    formDefTMKUnderZMKImport = "TMK Under ZMK Import";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(formDefTMKImportReq));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(formDefPOSTerminal));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(formDefTMKUnderZMKImport));
 
             PGPPublicKeyRing pub = PGPUtil.publicKeyRingFromArmor(this.receiverPgpPublicKey);
             String receiverUserId = pub.getPublicKey().getUserIDs().next();
@@ -1251,7 +1262,6 @@ public class TestPericard extends ABaseTestASNDER {
             String asciiArmored = PGPUtil.armorMessage(encryptedAndSigned);
 
             String emailType = "Email";
-            //TODO this.formDefsToCleanup.add(fdc.getFormDefinitionByName(keyReqType));
             JobView viewProcResultContIngest = flowStepClient.getStandardJobViewBy(
                     flowNameContIngest,
                     "Content Ingestion Processed Result",
@@ -1275,6 +1285,7 @@ public class TestPericard extends ABaseTestASNDER {
                     new Attachment(rawDataToEncAndSign, "tmk_content.csv", "text/csv"),
                     new Attachment(asciiArmored.getBytes(), "tmk_content.csv.enc", "text/csv")
             ));
+            // 1. TMK REQ CREATED FROM EMAIL CONTENT:
             List<Long> createdIdsTmkImport = this.submitCycle(
                     payPop, itemCount, threadCount, flowNameContIngest, viewProcResultContIngest,
                     () -> tmksEmail
@@ -1282,15 +1293,140 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertNotNull(createdIdsTmkImport);
             TestCase.assertEquals(itemCount, createdIdsTmkImport.size());
 
-            FluidItem tmkImportReqById = this.fluidItemByFormId(
+            FluidItem emailReqById = this.fluidItemByFormId(
                     derClient, createdIdsTmkImport.get(0),
                     true// Include route fields.
             );
-            Form importTmkForm = tmkImportReqById.getForm();
+            Form emailFormCreated = emailReqById.getForm();
 
+            // Wait for the new forms to be created...
+            sleepForSeconds(4);
+
+            TestCase.assertEquals("Email", emailFormCreated.getFormType());
+            List<Form> descImportTMKReqs = sqlUtl.getDescendants(
+                    emailFormCreated,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descImportTMKReqs);
+            TestCase.assertEquals("No '"+formDefTMKImportReq+"'!",1, descImportTMKReqs.size());
+            Form descImportTMKReqForm = descImportTMKReqs.get(0);
+
+            TestCase.assertEquals(formDefTMKImportReq, descImportTMKReqForm.getFormType());
+            // 2. ENSURE EMAIL IS IMPORTED AND CONVERTED TO TMK REQUEST:
+            FluidItem tmkImpReqByIdForRecords = this.fluidItemByFormId(
+                    derClient, descImportTMKReqForm.getId(),
+                    true// Include route fields.
+            );
+            TestCase.assertNotNull(tmkImpReqByIdForRecords);
+            Form tmkImpReqByIdReqForm = tmkImpReqByIdForRecords.getForm();
+            TestCase.assertNotNull(tmkImpReqByIdReqForm);
+
+            TestCase.assertEquals(FluidItem.FlowState.WorkInProgress, tmkImpReqByIdForRecords.getFlowState());
+            TestCase.assertEquals("Open", tmkImpReqByIdReqForm.getState());
+            // TMK records from CSV:
+            int cntRecords = 2;
+            TestCase.assertEquals(cntRecords, descImportTMKReqForm.getFieldValueAsInt("Number of Unique Records").intValue());
+            TableField tblTmks = descImportTMKReqForm.getFieldValueAsTableField("Import Terminal Master Key Request Entries");
+            TestCase.assertNotNull(tblTmks);
+            TestCase.assertNotNull(tblTmks.getTableRecords());
+            List<Form> tblRecords = tblTmks.getTableRecords();
+            TestCase.assertEquals(cntRecords, tblRecords.size());
+            tblRecords.forEach(tblRcrd -> {
+                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Key Check Value"));
+                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Terminal Serial Number"));
+                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Key Under ZMK"));
+            });
+
+            JobView viewMakerKeyProv = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Maker",
+                    "Key Provisioning Maker"
+            );
+            JobView viewCheckerKeyProv = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Checker",
+                    "Key Provisioning Checker"
+            );
+
+            // 3. SET THE REQUIRED TMK IMPORT FIELDS AS MAKER:
+            this.modifyAsMakerAndSendOnFormId(
+                    derClient, uc, fcc, tmkImpReqByIdReqForm.getId(), viewMakerKeyProv, viewCheckerKeyProv,
+                    // Fields:
+                    new Field("Organisation", new MultiChoice(this.lastKeystoreOrg), Field.Type.MultipleChoice),
+                    new Field("Zone Master Key", new MultiChoice(this.lastZmk), Field.Type.MultipleChoice),
+                    new Field("Device Manufacturer", new MultiChoice("Dev"), Field.Type.MultipleChoice),
+                    new Field("Device Model", new MultiChoice("Model"), Field.Type.MultipleChoice)
+            );
+
+            JobView viewProcResultKeyProv = flowStepClient.getStandardJobViewBy(
+                    flowNameProv,
+                    "Key Provisioning Processed Result",
+                    "Key Provisioning Processed Result"
+            );
+            sleepForSeconds(1);
+
+            tmkImpReqByIdForRecords = this.fluidItemByFormId(
+                    derClient, descImportTMKReqForm.getId(),
+                    true// Include route fields.
+            );
+            TestCase.assertNotNull(tmkImpReqByIdForRecords);
+            tmkImpReqByIdReqForm = tmkImpReqByIdForRecords.getForm();
+            TestCase.assertNotNull(tmkImpReqByIdReqForm);
+            TestCase.assertNotNull(tmkImpReqByIdReqForm.getFieldValueAsString("Organisation"));
+            TestCase.assertNotNull(tmkImpReqByIdReqForm.getFieldValueAsString("Zone Master Key"));
+            TestCase.assertNotNull(tmkImpReqByIdReqForm.getFieldValueAsString("Device Manufacturer"));
+            TestCase.assertNotNull(tmkImpReqByIdReqForm.getFieldValueAsString("Device Model"));
+
+            // Approve the TMK Import Request as Checker:
+            sleepForSeconds(2);
+            descImportTMKReqs.forEach(id -> {
+                this.approveFormId(derClient, uc, fcc, id.getId(), viewCheckerKeyProv, viewProcResultKeyProv);
+            });
+
+            // 4. WAIT FOR POS TERMINALS TO BE CREATED.
+            sleepForSeconds(5);
+
+            List<Form> descTerminalDevices = sqlUtl.getDescendants(
+                    tmkImpReqByIdReqForm,
+                    true,
+                    true,
+                    true
+            );
+            TestCase.assertNotNull(descTerminalDevices);
+            //TODO Could be 2 if TMK still exists from a previous run.
+            log.info("Number of POS Terminal Devices created: "+descTerminalDevices.size());
+            TestCase.assertTrue(descTerminalDevices.size() == 2 || descTerminalDevices.size() == 4);
+
+            // Ensure the TMK under LMK is set:
             // HSM Invoked:
-            TestCase.assertEquals("Email", importTmkForm.getFormType());
-            //TODO Need to approve from the KEY PROVISIONING flow... (We expect the TMK Request would be created)
+            AtomicBoolean hsmInvoked = new AtomicBoolean(false);
+            descTerminalDevices.stream()
+                    .filter(itm -> "POS Terminal".equals(itm.getFormType()))
+                    .forEach(itm -> {
+                        log.info("POS Terminal Device created: "+itm.getFormType());
+
+                        TestCase.assertNotNull(itm.getFieldValueAsString("Terminal Serial Number"));
+                        TestCase.assertTrue(itm.getFieldValueAsBoolean("Is Active"));
+                        TestCase.assertNotNull(itm.getFieldValueAsString("Organisation"));
+                        TestCase.assertNotNull(itm.getFieldValueAsString("Device Manufacturer"));
+                        TestCase.assertNotNull(itm.getFieldValueAsString("Device Model"));
+                        TableField tblFieldTmkEntries = itm.getFieldValueAsTableField("TMK Entries");
+                        TestCase.assertNotNull(tblFieldTmkEntries);
+                        TestCase.assertNotNull(tblFieldTmkEntries.getTableRecords());
+                        tblFieldTmkEntries.getTableRecords().forEach(itmTmk -> {
+                            TestCase.assertNotNull(itmTmk.getFieldValueAsString("Key Check Value"));
+                            TestCase.assertNotNull(itmTmk.getFieldValueAsString("Key Under ZMK"));
+                            TestCase.assertNotNull(itmTmk.getFieldValueAsString("Key Under LMK"));
+
+                            hsmInvoked.set(true);
+                        });
+                    });
+            TestCase.assertTrue("HSM not Invoked! Expected TMK under LMK to be set!", hsmInvoked.get());
+
+            // TODO Need to test for duplicates, ensure that it is processed.
+
         } catch (IOException | PGPException err) {
             err.printStackTrace();
             TestCase.fail("IO-Err: "+err.getMessage());
@@ -1397,6 +1533,64 @@ character to be even.
 
 
         }
+    }
+
+    private void modifyAsMakerAndSendOnFormId(
+            WebSocketASNDERClient derClient,
+            UserClient uc,
+            FormContainerClient fcClient,
+            Long id,
+            JobView viewMaker,
+            JobView viewChecker,
+            Field ... formFieldUpdates
+    ) {
+        FluidItem byId = this.fluidItemByFormId(derClient, id, false);
+        TestCase.assertNotNull(byId);
+
+        Form form = byId.getForm();
+        // Lock and approve.
+        this.lockFormContainer(derClient, form, viewMaker, null);
+
+        if (formFieldUpdates != null) {
+            for (Field ff: formFieldUpdates) {
+                form.setFieldValue(ff.getFieldName(), ff.getFieldValue(), ff.getTypeAsEnum());
+            }
+        }
+        this.updateFormContainer(derClient, form);
+
+        // Approved to be processed!
+        this.sendOn(derClient, byId);
+
+        // Check if processed:
+        int waitTimeSec = 10;
+        List<FluidItem> processedItems = this.executeUntilOrTOFromView(
+                derClient, viewChecker, 1, waitTimeSec
+        );
+        if (processedItems == null) {
+            this.printFlowAndFieldHistory(derClient, fcClient, form);
+        }
+        TestCase.assertNotNull("Checker items is not set after '"+waitTimeSec+"s'!", processedItems);
+
+        // Clear the PI before we clean-up:
+        clearPI(derClient, uc.getLoggedInUserInformation());
+    }
+
+    private void printFlowAndFieldHistory(
+            WebSocketASNDERClient derClient,
+            FormContainerClient fcClient,
+            Form form
+    ) {
+        List<FormHistoricData> getHistory = this.getHistory(derClient, form, true);
+        List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(form);
+
+        System.out.println("-----> Field History Data:");
+        getHistory.forEach(h -> {
+            System.out.println(h.toString());
+        });
+        System.out.println("-----> Flow History Data:");
+        flowHistoryData.forEach(h -> {
+            System.out.println(h.toString());
+        });
     }
 
     private void approveFormId(
