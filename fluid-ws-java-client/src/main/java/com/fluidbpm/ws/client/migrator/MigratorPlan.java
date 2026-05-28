@@ -64,6 +64,7 @@ public class MigratorPlan {
         private MigratorField.MigrateOptField[] globalFields;
         private MigratorThirdPartyLib.MigrateOptThirdPartLib[] thirdPartyLibs;
         private MigratorFlow.MigrateOptFlow[] flows;
+        private MigratorFlow.MigrateWebKitViewGroup flowViewGroups;
         private MigratorUserQuery.MigrateOptUserQuery[] userQueries;
         private MigratorRoleAndPermissions.MigrateOptRole[] roles;
         private MigratorConfig.MigrateOptConfig config;
@@ -157,6 +158,11 @@ public class MigratorPlan {
 
             // 10. Migrate remaining configurations:
             if (migratePlan.config != null) MigratorConfig.migrateConfiguration(cc, migratePlan.config);
+
+            // 11. Perform WebKit workspace behavior updates in bulk:
+            if (migratePlan.flowViewGroups != null && migratePlan.flowViewGroups.hasGroups()) {
+                MigratorFlow.migrateWebKitViewGroups(fc, migratePlan.flowViewGroups);
+            }
         }
     }
 

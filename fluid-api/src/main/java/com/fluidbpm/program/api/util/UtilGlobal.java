@@ -933,6 +933,28 @@ public class UtilGlobal {
     }
 
     /**
+     * Merges the contents of a source JSON object into a target JSON object.
+     * Fields that exist in the source but not in the target are added to the target.
+     * Fields that exist in both the source and the target are updated with the values from the source.
+     *
+     * @param source The source JsonObject containing the fields to copy or update.
+     * @param target The target JsonObject where the fields will be added or updated.
+     */
+    public static void copyJSONFullMerge(JsonObject source, JsonObject target) {
+        // Purpose: adds any brand-new fields from the new config that didn't exist before:
+        UtilGlobal.copyJSONFieldsNotSet(source, target);
+
+        // Purpose: updates the existing/shared keys with the new values:
+        target.keySet()
+                .stream()
+                .filter(source::has)
+                .forEach(keyMatchedAtExisting -> {
+                    target.add(keyMatchedAtExisting, source.get(keyMatchedAtExisting));
+                });
+
+    }
+
+    /**
      * Retrieves the first Field object from the provided list where the field name matches the given
      * field name, ignoring case sensitivity.
      *

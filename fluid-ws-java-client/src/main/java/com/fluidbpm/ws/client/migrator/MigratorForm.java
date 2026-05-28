@@ -126,14 +126,7 @@ public class MigratorForm {
         JsonObject newJsonObj = opts.webKitForm.toJsonObject();
 
         // Copy all the new fields:
-        UtilGlobal.copyJSONFieldsNotSet(newJsonObj, existingJsonObj);
-
-        existingJsonObj.keySet()
-                .stream()
-                .filter(newJsonObj::has)
-                .forEach(keyMatchedAtExisting -> {
-                    existingJsonObj.add(keyMatchedAtExisting, newJsonObj.get(keyMatchedAtExisting));
-                });
+        UtilGlobal.copyJSONFullMerge(newJsonObj, existingJsonObj);
 
         Form newForm = new Form(form.getFormTypeId());
         newForm.setFormType(form.getFormType());
