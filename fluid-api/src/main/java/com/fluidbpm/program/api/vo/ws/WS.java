@@ -4124,6 +4124,9 @@ public class WS {
 
                 //Update...
                 public static final String UPDATE = ("/update");
+
+                public static final String UPSERT_USER_QUERIES_WEB_KIT = ("/upsert_user_queries_web_kit");
+                public static final String UPSERT_USER_QUERY_WEB_KIT = ("/upsert_user_query_web_kit");
                 public static final String UPSERT_WEB_KIT = ("/upsert_web_kit");
 
                 //Delete...
@@ -4134,6 +4137,7 @@ public class WS {
                 public static final String READ = ("/get_by_id");
                 public static final String READ_ALL = ("/get_all_user_queries");
                 public static final String READ_ALL_WEB_KIT = ("/get_all_user_queries_web_kit");
+                public static final String READ_WEB_KIT = ("/get_web_kit");
 
                 public static final String READ_ALL_USER_QUERIES_BY_LOGGED_IN_USER = ("/get_all_user_queries_by_logged_in_user");
 
@@ -4149,6 +4153,14 @@ public class WS {
                 @Override
                 public String toString() {
                     return ROOT;
+                }
+
+                /**
+                 * URL Path for User Query Web Kit.
+                 * @return {@code v1/user_query/get_web_kit}
+                 */
+                public static final String getUserQueryWebKit() {
+                    return Version.VERSION_1.concat(ROOT).concat(READ_WEB_KIT);
                 }
 
                 /**
@@ -4346,6 +4358,24 @@ public class WS {
                  */
                 public static final String userQueryWebKitUpsert() {
                     return Version.VERSION_1.concat(ROOT).concat(UPSERT_WEB_KIT);
+                }
+
+                /**
+                 * URL Path for upserting the User Query web kit.
+                 *
+                 * @return {@code v1/user_query/upsert_user_query_web_kit}
+                 */
+                public static final String uqWebKitUpsert() {
+                    return Version.VERSION_1.concat(ROOT).concat(UPSERT_USER_QUERY_WEB_KIT);
+                }
+
+                /**
+                 * URL Path for upserting the User Query web kit.
+                 *
+                 * @return {@code v1/user_query/upsert_user_queries_web_kit}
+                 */
+                public static final String userQueriesWebKitUpsert() {
+                    return Version.VERSION_1.concat(ROOT).concat(UPSERT_USER_QUERIES_WEB_KIT);
                 }
             }
         }

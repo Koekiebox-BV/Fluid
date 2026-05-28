@@ -15,10 +15,13 @@
 
 package com.fluidbpm.ws.client.migrator;
 
+import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.userquery.UserQuery;
+import com.fluidbpm.program.api.vo.webkit.userquery.WebKitUserQuery;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
+import com.google.gson.JsonObject;
 import lombok.Builder;
 
 import java.util.ArrayList;
@@ -38,6 +41,9 @@ public class MigratorUserQuery {
         private String userQueryDescription;
         private String[] userQueryResultFields;
         private String[] userQueryRules;
+
+        private boolean allowWebKitUpdate;
+        private WebKitUserQuery webKitUserQuery;
     }
 
     @Builder
@@ -53,6 +59,8 @@ public class MigratorUserQuery {
     public static void migrateUserQuery(
             UserQueryClient uqc, MigrateOptUserQuery opts
     ) {
+        boolean isCreate = false;
+        UserQuery toCreate = new UserQuery(opts.userQueryName);
         try {
             List<Field> inputs = new ArrayList<>();
             List<String> rules = new ArrayList<>();
@@ -61,13 +69,31 @@ public class MigratorUserQuery {
             }
             if (opts.userQueryRules != null) rules.addAll(Arrays.asList(opts.userQueryRules));
 
-            UserQuery toCreate = new UserQuery(opts.userQueryName, inputs);
+            toCreate.setInputs(inputs);
             toCreate.setDescription(opts.userQueryDescription);
             toCreate.setRules(rules);
             uqc.createUserQuery(toCreate);
+            isCreate = true;
         } catch (FluidClientException fce) {
             if (fce.getErrorCode() != FluidClientException.ErrorCode.DUPLICATE) throw fce;
         }
+
+        if (opts.webKitUserQuery == null) return;
+        if (!isCreate && !opts.allowWebKitUpdate) return;
+
+        // WebKit is set, and updates are allowed, or this is a create:
+        WebKitUserQuery existingWk = uqc.getUserQueryWebKit(toCreate.getName(), toCreate.getId());
+        JsonObject existingJsonObj = existingWk.toJsonObject();
+        JsonObject newJsonObj = opts.webKitUserQuery.toJsonObject();
+
+        // Copy all the new fields:
+        UtilGlobal.copyJSONFullMerge(newJsonObj, existingJsonObj);
+
+        UserQuery newForm = new UserQuery(toCreate.getId());
+        newForm.setName(toCreate.getName());
+        newForm.setDescription(toCreate.getDescription());
+
+        uqc.upsertUserQueryWebKit(new WebKitUserQuery(existingJsonObj, newForm));
     }
 
     /**Remove a user query.

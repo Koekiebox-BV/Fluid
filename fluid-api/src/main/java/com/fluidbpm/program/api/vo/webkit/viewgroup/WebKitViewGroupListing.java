@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import com.google.gson.JsonObject;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.List;
 
 /**
  * <p>
@@ -37,6 +38,16 @@ public class WebKitViewGroupListing extends ABaseGSONListing<WebKitViewGroup> {
      */
     public WebKitViewGroupListing() {
         super();
+    }
+
+    /**
+     * Constructs a {@code WebKitViewGroupListing} instance using the provided {@code List}
+     * of {@code WebKitViewGroup} objects.
+     *
+     * @param list The list of {@code WebKitViewGroup} objects to initialize the listing with.
+     */
+    public WebKitViewGroupListing(List<WebKitViewGroup> list) {
+        this.setListing(list);
     }
 
     /**

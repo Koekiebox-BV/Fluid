@@ -170,6 +170,28 @@ public class UserQueryClient extends ABaseClientWS {
     }
 
     /**
+     * Retrieves the WebKit form for the specified user query name and/or ID.
+     * @param uqName The name of the user query.
+     * @param uqId The unique identifier of the form definition.
+     * @return A WebKitForm representing the form definition.
+     *
+     * @see WebKitUserQuery
+     */
+    public WebKitUserQuery getUserQueryWebKit(String uqName, Long uqId) {
+        WebKitUserQuery wkUQReq = new WebKitUserQuery();
+        wkUQReq.setServiceTicket(this.serviceTicket);
+        wkUQReq.setUserQuery(new UserQuery(uqId));
+        wkUQReq.getUserQuery().setName(uqName);
+
+        return new WebKitUserQuery(
+                this.postJson(
+                        wkUQReq,
+                        WS.Path.UserQuery.Version1.getUserQueryWebKit()
+                )
+        );
+    }
+
+    /**
      * Update and insert the Flow View Group configuration.
      *
      * @param listing The ViewGroupWebKit listing to upsert.
@@ -183,6 +205,21 @@ public class UserQueryClient extends ABaseClientWS {
         return new WebKitUserQueryListing(
                 this.postJson(listing, WS.Path.UserQuery.Version1.userQueryWebKitUpsert())
         ).getListing();
+    }
+
+    /**
+     * Update and insert the User Query configuration.
+     * @param wkUQ The WebKitUserQuery to upsert.
+     * @return The complete user query config.
+     * @see WebKitUserQuery
+     */
+    public WebKitUserQuery upsertUserQueryWebKit(WebKitUserQuery wkUQ) {
+        if (wkUQ == null) return null;
+
+        wkUQ.setServiceTicket(this.serviceTicket);
+        return new WebKitUserQuery(
+                this.postJson(wkUQ, WS.Path.UserQuery.Version1.uqWebKitUpsert())
+        );
     }
 
     /**
