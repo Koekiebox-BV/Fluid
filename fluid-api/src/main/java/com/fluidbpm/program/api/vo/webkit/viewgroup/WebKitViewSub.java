@@ -15,6 +15,7 @@
 
 package com.fluidbpm.program.api.vo.webkit.viewgroup;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fluidbpm.program.api.vo.ABaseFluidGSONObject;
 import com.fluidbpm.program.api.vo.webkit.RowExpansion;
 import com.google.gson.JsonObject;
@@ -157,6 +158,7 @@ public class WebKitViewSub extends ABaseFluidGSONObject {
      */
     @Override
     @XmlTransient
+    @JsonIgnore
     public JsonObject toJsonObject() {
         JsonObject returnVal = super.toJsonObject();
 
@@ -188,6 +190,7 @@ public class WebKitViewSub extends ABaseFluidGSONObject {
      * @return Visible columns as {@code List<String>}.
      */
     @XmlTransient
+    @JsonIgnore
     public List<String> getVisibleColumnsAsList() {
         return VisibleColumnItems.asListFrom(this);
     }
@@ -198,6 +201,7 @@ public class WebKitViewSub extends ABaseFluidGSONObject {
      * @param listing The list
      */
     @XmlTransient
+    @JsonIgnore
     public void setVisibleColumnsAsList(List<String> listing) {
         if (listing == null) return;
 
@@ -274,6 +278,7 @@ public class WebKitViewSub extends ABaseFluidGSONObject {
      */
     @Override
     @XmlTransient
+    @JsonIgnore
     public String toString() {
         return super.toString();
     }
