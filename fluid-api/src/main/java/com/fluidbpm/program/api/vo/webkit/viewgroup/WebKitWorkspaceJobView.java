@@ -38,6 +38,7 @@ public class WebKitWorkspaceJobView extends ABaseFluidGSONObject {
     private Integer fetchLimit;
 
     @XmlTransient
+    @JsonIgnore
     private boolean selected;
 
     /**
@@ -94,6 +95,12 @@ public class WebKitWorkspaceJobView extends ABaseFluidGSONObject {
         JsonObject returnVal = super.toJsonObject();
         if (this.getJobView() != null) {
             JobView reducedView = new JobView(this.getJobView().getId());
+            if (this.jsonIncludeAll) {
+                reducedView.setViewFlowName(this.getJobView().getViewFlowName());
+                reducedView.setViewStepName(this.getJobView().getViewStepName());
+                reducedView.setViewName(this.getJobView().getViewName());
+            }
+
             returnVal.add(JSONMapping.JOB_VIEW, reducedView.toJsonObject());
         }
 

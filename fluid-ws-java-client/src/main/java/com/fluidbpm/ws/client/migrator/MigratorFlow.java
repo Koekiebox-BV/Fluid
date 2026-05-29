@@ -236,6 +236,8 @@ public class MigratorFlow {
                 if (!opts.allowWebKitUpdate) return;
 
                 //Merge:
+                exists.jsonIncludeAll = true;
+                itm.jsonIncludeAll = true;
                 JsonObject existingJsonObj = exists.toJsonObject();
                 JsonObject newJsonObj = itm.toJsonObject();
 

@@ -95,6 +95,9 @@ public class WebKitWorkspaceRouteField extends ABaseFluidGSONObject {
 
         if (this.getRouteField() != null) {
             Field reducedField = new Field(this.getRouteField().getId());
+            if (this.jsonIncludeAll) {
+                reducedField.setFieldName(this.getRouteField().getFieldName());
+            }
             returnVal.add(JSONMapping.ROUTE_FIELD, reducedField.toJsonObject());
         }
 
