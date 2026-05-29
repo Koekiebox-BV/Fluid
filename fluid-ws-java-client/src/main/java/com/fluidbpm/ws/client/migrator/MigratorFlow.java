@@ -223,8 +223,14 @@ public class MigratorFlow {
                     .findFirst()
                     .orElse(null);
             if (exists == null) {
-                 toUpsert.add(itm);
+                //Merge:
+                setFullDetailOnSubChildren(itm);
+                toUpsert.add(itm);
             } else {
+                //Merge:
+                setFullDetailOnSubChildren(exists);
+                setFullDetailOnSubChildren(itm);
+
                 List<WebKitViewSub> existingSubs = exists.getWebKitViewSubs();
                 if (existingSubs == null || existingSubs.isEmpty()) {
                     //no subs yet, use the provided
@@ -235,20 +241,19 @@ public class MigratorFlow {
                 // Existing View Group, but updates not allowed.
                 if (!opts.allowWebKitUpdate) return;
 
-                //Merge:
-                setFullDetailOnSubChildren(exists);
-                setFullDetailOnSubChildren(itm);
-
                 JsonObject existingJsonObj = exists.toJsonObject();
                 JsonObject newJsonObj = itm.toJsonObject();
 
                 // Copy all the new fields:
                 UtilGlobal.copyJSONFullMerge(newJsonObj, existingJsonObj);
 
-                toUpsert.add(new WebKitViewGroup(existingJsonObj));
+                WebKitViewGroup mergedToAdd = new WebKitViewGroup(existingJsonObj);
+                setFullDetailOnSubChildren(mergedToAdd);
+                toUpsert.add(mergedToAdd);
             }
         });
-        fc.upsertViewGroupsWebKit(new WebKitViewGroupListing(toUpsert));
+        WebKitViewGroupListing listing = new WebKitViewGroupListing(toUpsert);
+        fc.upsertViewGroupsWebKit(listing);
     }
 
     private static void setFullDetailOnSubChildren(WebKitViewGroup group) {
