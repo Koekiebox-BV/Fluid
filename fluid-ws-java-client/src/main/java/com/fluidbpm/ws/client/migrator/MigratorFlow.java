@@ -236,8 +236,9 @@ public class MigratorFlow {
                 if (!opts.allowWebKitUpdate) return;
 
                 //Merge:
-                exists.jsonIncludeAll = true;
-                itm.jsonIncludeAll = true;
+                setFullDetailOnSubChildren(exists);
+                setFullDetailOnSubChildren(itm);
+
                 JsonObject existingJsonObj = exists.toJsonObject();
                 JsonObject newJsonObj = itm.toJsonObject();
 
@@ -250,6 +251,18 @@ public class MigratorFlow {
         fc.upsertViewGroupsWebKit(new WebKitViewGroupListing(toUpsert));
     }
 
+    private static void setFullDetailOnSubChildren(WebKitViewGroup group) {
+        if (group.getWebKitViewSubs() == null) return;
+
+        group.getWebKitViewSubs().forEach(itm -> {
+            if (itm.getRouteFields() != null) {
+                itm.getRouteFields().forEach(rteFldItm -> rteFldItm.jsonIncludeAll = true);
+            }
+            if (itm.getJobViews() != null) {
+                itm.getJobViews().forEach(viewItm -> viewItm.jsonIncludeAll = true);
+            }
+        });
+    }
 
     private static void mergeExitRules(
             FlowStepRuleClient fsrc,
