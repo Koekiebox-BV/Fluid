@@ -170,6 +170,10 @@ public class UtilGlobal {
      * @return a formatted string containing the description and the field value in a predefined format
      */
     public static String formatForDisplayText(String fieldDisplayVal, String fieldDesc) {
+        if (isBlank(fieldDesc)) return null;
+        if (fieldDesc.endsWith(".")) {
+            fieldDesc = fieldDesc.substring(0, fieldDesc.length() - 1);
+        }
         return String.format("%s. [[%s]]", fieldDesc, fieldDisplayVal);
     }
 
