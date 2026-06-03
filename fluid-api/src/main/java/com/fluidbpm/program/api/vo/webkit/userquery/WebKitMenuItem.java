@@ -48,13 +48,75 @@ public class WebKitMenuItem extends ABaseFluidGSONObject {
         public static final String PARENT_MENU_ID = "parentMenuId";
     }
 
+    /**
+     * Default constructor for the WebKitMenuItem class.
+     * Initializes an instance with a new, empty JsonObject.
+     * This constructor is primarily used to create an empty WebKit menu item
+     * which can later be populated with specific attributes.
+     */
     public WebKitMenuItem() {
         this(new JsonObject());
     }
 
+    /**
+     * Constructs a new instance of the {@code WebKitMenuItem} class with the specified menu ID.
+     *
+     * This constructor initializes a {@code WebKitMenuItem} object and sets its menu ID
+     * using the provided {@code menuId} parameter. It also utilizes the default constructor
+     * to initialize the base state of the object.
+     *
+     * @param menuId The unique identifier for the menu item. This value is used
+     *               to distinguish the menu item within the application's menu hierarchy.
+     */
     public WebKitMenuItem(String menuId) {
         this();
         this.setMenuId(menuId);
+    }
+
+    /**
+     * Constructs a {@code WebKitMenuItem} instance with the specified attributes for menu ID,
+     * parent menu ID, menu label, and menu icon.
+     *
+     * This constructor initializes the object using the default constructor and then
+     * assigns the provided values to the corresponding fields. These fields represent key
+     * attributes required for defining a menu item in a WebKit-based menu system.
+     *
+     * @param menuId The unique identifier for the menu item. This is used for referencing the item
+     *               within the application's menu hierarchy.
+     * @param parentMenuId The unique identifier of the parent menu to which this menu item belongs.
+     *                     If the menu item is a top-level menu, this can be set to null or left empty.
+     * @param menuLabel The label or display text of the menu item, representing its purpose in the UI.
+     * @param menuIcon The icon associated with the menu item, typically used for visual representation
+     *                 in the application's UI.
+     */
+    public WebKitMenuItem(String menuId, String parentMenuId, String menuLabel, String menuIcon) {
+        this();
+        this.setMenuId(menuId);
+        this.setParentMenuId(parentMenuId);
+        this.setMenuLabel(menuLabel);
+        this.setMenuIcon(menuIcon);
+    }
+
+    /**
+     * Constructs a new instance of the {@code WebKitMenuItem} class with the specified menu ID,
+     * menu label, and menu icon.
+     *
+     * This constructor initializes a {@code WebKitMenuItem} object with the provided attributes
+     * and utilizes the default constructor to set up the base state of the object. It then assigns
+     * the given values to the respective properties.
+     *
+     * @param menuId The unique identifier for the menu item. This value is used to distinguish
+     *               the menu item within the application's menu hierarchy.
+     * @param menuLabel The label or display text associated with the menu item.
+     * @param menuIcon The icon representation associated with the menu item, typically used for
+     *                 visual rendering in the UI.
+     */
+    public WebKitMenuItem(String menuId, String menuLabel, String menuIcon) {
+        this();
+        this.setMenuId(menuId);
+        this.setParentMenuId(parentMenuId);
+        this.setMenuLabel(menuLabel);
+        this.setMenuIcon(menuIcon);
     }
 
     /**
