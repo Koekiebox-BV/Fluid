@@ -18,10 +18,12 @@ package com.fluidbpm.ws.client.migrator;
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.role.ICustomPermission;
+import com.fluidbpm.program.api.vo.userquery.UserQuery;
 import com.fluidbpm.program.api.vo.webkit.global.WebKitGlobal;
 import com.fluidbpm.program.api.vo.webkit.global.WebKitPersonalInventory;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.config.ConfigurationClient;
+import com.fluidbpm.ws.client.v1.userquery.UserQueryClient;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.fluidbpm.program.api.util.UtilGlobal.copyJSONFieldsNotSet;
 
@@ -64,10 +68,13 @@ public class MigratorConfig {
      * Migrate the configurations.
      *
      * @param cc {@code ConfigurationClient}
+     * @param uqc {@code UserQueryClient}
      * @param opts {@code MigrateOptConfig}
      */
     public static void migrateConfiguration(
-            ConfigurationClient cc, MigrateOptConfig opts
+            ConfigurationClient cc,
+            UserQueryClient uqc,
+            MigrateOptConfig opts
     ) {
         // Company Logo:
         byte[] compLogoContent = opts.companyLogoContent;
@@ -95,6 +102,24 @@ public class MigratorConfig {
         setConfigIfNotBlank(cc, Configuration.Key.WhiteLabel, opts.privateLabel);
         // WebKit:
         if (opts.webKitGlobal != null) {
+            if (opts.webKitGlobal.getWebKitMenuItems() != null && !opts.webKitGlobal.getWebKitMenuItems().isEmpty()) {
+                List<UserQuery> allUserQueries = new ArrayList<>();
+                try {
+                    allUserQueries.addAll(uqc.getAllUserQueries());
+                } catch (FluidClientException fce) {
+                    if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) {
+                        throw fce;
+                    }
+                }
+                opts.webKitGlobal.getWebKitMenuItems()
+                        .stream().filter(itm -> itm != null && UtilGlobal.isNotBlank(itm.getUserQueryLookupName()))
+                        .forEach(itm -> {
+                            allUserQueries.stream()
+                                    .filter(uq -> itm.getUserQueryLookupName().equalsIgnoreCase(uq.getName()))
+                                    .findFirst().ifPresent(uqByName -> itm.setId(uqByName.getId()));
+                        });
+            }
+
             Configuration existing = getConfigurationSafe(cc, Configuration.Key.WebKit);
             JsonObject wkGlobalJson = opts.webKitGlobal.toJsonObject();
             JsonObject existingJson;
@@ -103,7 +128,9 @@ public class MigratorConfig {
 
             copyJSONFieldsNotSet(existingJson, wkGlobalJson);
 
-            if (!wkGlobalJson.isEmpty()) setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkGlobalJson.toString());
+            if (!wkGlobalJson.isEmpty()) {
+                setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkGlobalJson.toString());
+            }
         }
         // WebKit: PI
         if (opts.webKitPersonalInventory != null) {

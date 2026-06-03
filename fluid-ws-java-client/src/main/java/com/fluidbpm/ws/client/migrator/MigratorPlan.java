@@ -157,7 +157,9 @@ public class MigratorPlan {
             });
 
             // 10. Migrate remaining configurations:
-            if (migratePlan.config != null) MigratorConfig.migrateConfiguration(cc, migratePlan.config);
+            if (migratePlan.config != null) {
+                MigratorConfig.migrateConfiguration(cc, uqc, migratePlan.config);
+            }
 
             // 11. Perform WebKit workspace behavior updates in bulk:
             if (migratePlan.flowViewGroups != null && migratePlan.flowViewGroups.hasGroups()) {
