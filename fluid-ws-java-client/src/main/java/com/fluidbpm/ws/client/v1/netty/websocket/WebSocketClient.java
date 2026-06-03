@@ -153,7 +153,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         } catch (Exception e) {
             this.group.shutdownGracefully();
             throw new FluidClientException(
-                    "Failed to connect to WebSocket: " + e.getMessage(),
+                    "Failed to connect to WebSocket ("+ endpointURIParam+"): " + e.getMessage(),
                     e,
                     FluidClientException.ErrorCode.IO_ERROR
             );
