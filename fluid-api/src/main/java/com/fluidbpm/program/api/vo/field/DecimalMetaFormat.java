@@ -16,6 +16,7 @@
 package com.fluidbpm.program.api.vo.field;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
+import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -59,11 +60,11 @@ public class DecimalMetaFormat {
      * @return Created
      */
     public static final DecimalMetaFormat parse(String theStringToProcessParam) {
-        if (theStringToProcessParam == null || theStringToProcessParam.isEmpty()) return new DecimalMetaFormat();
+        if (theStringToProcessParam == null || theStringToProcessParam.isEmpty()) return plainDF();
 
         String[] initialSplit = theStringToProcessParam.split("\\_");
-        if (initialSplit.length == 0) return new DecimalMetaFormat();
-        if (initialSplit.length != 5) return new DecimalMetaFormat();
+        if (initialSplit.length == 0) return plainDF();
+        if (initialSplit.length != 5) return plainDF();
 
         // Type...
         String type = initialSplit[0];
@@ -83,6 +84,8 @@ public class DecimalMetaFormat {
         Number stepFactor = UtilGlobal.toDoubleSafe(stepFactorString);
         if (isScaleNaturalNumber(stepFactor)) stepFactor = stepFactor.longValue();
 
+        if (isNumbersZero(min, max, stepFactor)) return plainDF();
+
         // Prefix...
         String prefix = getValueFrom(PREFIX, initialSplit[4]);
         Currency currency = null;
@@ -94,6 +97,17 @@ public class DecimalMetaFormat {
                     .orElse(null);
         }
         return new DecimalMetaFormat(type, prefix, min, max, stepFactor, currency);
+    }
+
+    private static DecimalMetaFormat plainDF() {
+        return new DecimalMetaFormat(
+                SyntaxFactory.PLAIN,
+                UtilGlobal.EMPTY,
+                0,
+                1_000_000_000,
+                1,
+                null
+        );
     }
 
     public static final String UNDERSCORE = "_";
@@ -153,6 +167,15 @@ public class DecimalMetaFormat {
         long valAsLong = value.longValue();
         double valAsDbl = value.doubleValue();
         return (valAsDbl == valAsLong);
+    }
+
+    private static boolean isNumbersZero(Number ... values) {
+        if (values == null || values.length == 0) return true;
+        for (Number val : values) {
+            if (val == null) continue;
+            if (val.doubleValue() != 0.0) return false;
+        }
+        return true;
     }
 
     private static boolean isPrecisionZero(Number value) {
