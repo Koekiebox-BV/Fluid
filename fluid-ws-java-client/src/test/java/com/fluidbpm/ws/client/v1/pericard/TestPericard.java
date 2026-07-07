@@ -84,6 +84,8 @@ public class TestPericard extends ABaseTestASNDER {
     private String lastBdk;
     private String lastPgpKeypair;
     private String lastPgpPublicKey;
+    private String lastAsymKeyPairAlias;
+    private String lastHsmBackedCertAlias;
 
     // Sender:
     private PGPUtil.PGPKeyPairResult senderPgpKey;
@@ -167,6 +169,24 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerOrg, viewProcResultOrg);
             });
 
+            String newOrgName = flItmOrgOnReq.getForm().getFieldValueAsString("Entity Name");
+            this.lastKeystoreOrg = newOrgName;
+
+            // The Organisation multichoice cache in PayloadPopulate is refreshed asynchronously
+            // after the org form is created. Retry until the new org appears or timeout.
+            List<String> orgsPP = null;
+            for (int attempt = 0; attempt < 10; attempt++) {
+                sleepForSeconds(2);
+                payPop = derClient.requestFullPayloadPopulate();
+                orgsPP = payPop.getAvailableMultiChoicesForm("Organisation");
+                if (orgsPP.contains(newOrgName)) break;
+                log.info("Org '"+newOrgName+"' not yet in PayloadPopulate (attempt "+(attempt+1)+"/10, have "+orgsPP.size()+")...");
+            }
+            TestCase.assertNotNull(orgsPP);
+            TestCase.assertTrue("New Org '"+newOrgName+"' not found in PayloadPopulate! Only have("+
+                    orgsPP.size()+", before "+orgsPPBefore+"): "+orgsPP, orgsPP.contains(newOrgName)
+            );
+
             // 2. REQUEST KEYSTORE:
             String ksType = "PKCS12", ksPass = "testpass", keyPass = "testkey";
             byte[] keystoreBytes;
@@ -184,17 +204,6 @@ public class TestPericard extends ABaseTestASNDER {
                 return;
             }
             log.info("Keystore: "+keystoreBytes.length+" bytes.");
-
-            // Refresh payload populate for the org:
-            payPop = derClient.requestFullPayloadPopulate();
-
-            String newOrgName = flItmOrgOnReq.getForm().getFieldValueAsString("Entity Name");
-            this.lastKeystoreOrg = newOrgName;
-            List<String> orgsPP = payPop.getAvailableMultiChoicesForm("Organisation");
-
-            TestCase.assertTrue("New Org '"+newOrgName+"' not found in PayloadPopulate! Only have("+
-                    orgsPP.size()+", before "+orgsPPBefore+"): "+orgsPP, orgsPP.contains(newOrgName)
-            );
 
             // Keystore Request (Load Keystore):
             FluidItem flItmKSLoadReq = ksLoadItem(
@@ -1533,6 +1542,272 @@ character to be even.
 
 
         }
+    }
+
+    @Test
+    public void testGenerateHSMAsymmetricKeyPairRequest() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastHostAlias)) {
+            this.testHSMHostConfigRequest();
+        }
+        TestCase.assertNotNull("Expected 'Key Generation Host'!!!", this.lastHostAlias);
+
+        int itemCount = 1, threadCount = 1;
+        String flowNameGenHsmKey = "Generate HSM Key";
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testGenerateHSMAsymmetricKeyPairRequest)");
+                return;
+            }
+
+            String reqFormType = "Generate HSM Asymmetric Key Pair Request",
+                    resultFormType = "HSM Asymmetric Key Pair";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(reqFormType));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(resultFormType));
+
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Checker",
+                    "Generate HSM Key Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Processed Result",
+                    "Generate HSM Key Processed Result"
+            );
+
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            FluidItem generateKeyRequest = generateHsmAsymKeyPairRequestItem(
+                    "AliasGenAsymKP",
+                    UUID.randomUUID().toString(),
+                    this.lastHostAlias,
+                    "RSA",
+                    "Signature Only"
+            );
+
+            List<Long> createdIds = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameGenHsmKey, viewCheckerGenKey,
+                    () -> generateKeyRequest
+            );
+            TestCase.assertNotNull(createdIds);
+            TestCase.assertEquals(itemCount, createdIds.size());
+
+            FluidItem reqById = this.fluidItemByFormId(derClient, createdIds.get(0), true);
+            TestCase.assertNotNull(reqById);
+            Form reqForm = reqById.getForm();
+            TestCase.assertNotNull(reqForm);
+            TestCase.assertEquals(FluidItem.FlowState.WorkInProgress, reqById.getFlowState());
+            TestCase.assertEquals(reqFormType, reqForm.getFormType());
+            TestCase.assertEquals("admin", reqForm.getFieldValueAsString("User Maker"));
+            String keyAlias = reqForm.getFieldValueAsString("Alias");
+            TestCase.assertNotNull(keyAlias);
+            TestCase.assertEquals(this.lastHostAlias, reqForm.getFieldValueAsString("Key Generation Host"));
+            TestCase.assertNotNull(reqForm.getFieldValueAsString("Key Purpose"));
+            TestCase.assertNotNull(reqForm.getFieldValueAsString("Asymmetric Key Algorithm"));
+            TestCase.assertNotNull(reqForm.getFieldValueAsString("Asymmetric Intended Usage"));
+
+            List<Form> descBefore = sqlUtl.getDescendants(reqForm, true, true, true);
+            TestCase.assertNotNull(descBefore);
+            TestCase.assertEquals("No Key Pair yet!", 0, descBefore.size());
+
+            // Approve to trigger key pair generation:
+            createdIds.forEach(id -> this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey));
+
+            sleepForSeconds(3);
+
+            List<FluidItem> keyPairsWithAlias = formsByAliasAndType(uqc, keyAlias, resultFormType);
+            TestCase.assertNotNull(keyPairsWithAlias);
+            TestCase.assertEquals("No HSM Asymmetric Key Pair on alias " + keyAlias + "!", 1, keyPairsWithAlias.size());
+
+            FluidItem keyPairItm = this.fluidItemByFormId(
+                    derClient, keyPairsWithAlias.get(0).getForm().getId(), false
+            );
+            TestCase.assertNotNull(keyPairItm);
+            Form keyPairForm = keyPairItm.getForm();
+            TestCase.assertNotNull(keyPairForm);
+            TestCase.assertEquals(resultFormType, keyPairForm.getFormType());
+            TestCase.assertEquals(FluidItem.FlowState.NotInFlow, keyPairItm.getFlowState());
+            TestCase.assertEquals("Open", keyPairForm.getState());
+            TestCase.assertTrue("Expected key pair to be active.", keyPairForm.getFieldValueAsBoolean("Is Active"));
+            TestCase.assertNotNull("Expected Asymmetric Public Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Public Key"));
+            TestCase.assertNotNull("Expected Asymmetric Private Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Private Key"));
+            TestCase.assertEquals(this.lastKeystoreOrg, keyPairForm.getFieldValueAsString("Organisation"));
+
+            List<Form> descAfter = sqlUtl.getDescendants(reqForm, true, true, true);
+            TestCase.assertNotNull(descAfter);
+            TestCase.assertEquals("Expected one descendant: the HSM Asymmetric Key Pair!", 1, descAfter.size());
+
+            this.lastAsymKeyPairAlias = keyAlias;
+        }
+    }
+
+    @Test
+    public void testProvisionHSMBackedCertificateRequest() {
+        if (this.isConnectionInValid) return;
+
+        if (UtilGlobal.isBlank(this.lastAsymKeyPairAlias)) {
+            this.testGenerateHSMAsymmetricKeyPairRequest();
+        }
+        TestCase.assertNotNull("Expected 'HSM Asymmetric Key Pair' alias!!!", this.lastAsymKeyPairAlias);
+
+        int itemCount = 1, threadCount = 1;
+        String flowNameGenHsmKey = "Generate HSM Key";
+        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
+                BASE_URL,
+                ADMIN_SERVICE_TICKET_HEX,
+                TimeUnit.SECONDS.toMillis(60));
+             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
+             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
+        ) {
+            if (!isPericardEnabled(gfc)) {
+                log.warning("Pericard is not enabled. Skipping test. (testProvisionHSMBackedCertificateRequest)");
+                return;
+            }
+
+            String reqFormType = "Provision HSM Backed Certificate Request",
+                    resultFormType = "HSM Backed Certificate";
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(reqFormType));
+            this.formDefsToCleanup.add(fdc.getFormDefinitionByName(resultFormType));
+
+            JobView viewCheckerGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Checker",
+                    "Generate HSM Key Checker"
+            );
+            JobView viewProcResultGenKey = flowStepClient.getStandardJobViewBy(
+                    flowNameGenHsmKey,
+                    "Generate HSM Key Processed Result",
+                    "Generate HSM Key Processed Result"
+            );
+
+            PayloadPopulate payPop = derClient.requestFullPayloadPopulate();
+
+            Date validFrom = new Date();
+            Date validTo = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365));
+
+            FluidItem certRequest = provisionHSMBackedCertRequestItem(
+                    "AliasGenCert",
+                    UUID.randomUUID().toString(),
+                    this.lastAsymKeyPairAlias,
+                    "Test Certificate CN",
+                    "Test Org",
+                    "ZA",
+                    validFrom,
+                    validTo
+            );
+
+            List<Long> createdIds = this.submitCycle(
+                    payPop, itemCount, threadCount, flowNameGenHsmKey, viewCheckerGenKey,
+                    () -> certRequest
+            );
+            TestCase.assertNotNull(createdIds);
+            TestCase.assertEquals(itemCount, createdIds.size());
+
+            FluidItem reqById = this.fluidItemByFormId(derClient, createdIds.get(0), true);
+            TestCase.assertNotNull(reqById);
+            Form reqForm = reqById.getForm();
+            TestCase.assertNotNull(reqForm);
+            TestCase.assertEquals(FluidItem.FlowState.WorkInProgress, reqById.getFlowState());
+            TestCase.assertEquals(reqFormType, reqForm.getFormType());
+            TestCase.assertEquals("admin", reqForm.getFieldValueAsString("User Maker"));
+            String certAlias = reqForm.getFieldValueAsString("Alias");
+            TestCase.assertNotNull(certAlias);
+            TestCase.assertEquals(this.lastAsymKeyPairAlias, reqForm.getFieldValueAsString("Asymmetric Key Pair"));
+            TestCase.assertNotNull(reqForm.getFieldValueAsString("Certificate Common Name"));
+
+            List<Form> descBefore = sqlUtl.getDescendants(reqForm, true, true, true);
+            TestCase.assertNotNull(descBefore);
+            TestCase.assertEquals("No Certificate yet!", 0, descBefore.size());
+
+            // Approve to trigger certificate provisioning:
+            createdIds.forEach(id -> this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey));
+
+            sleepForSeconds(3);
+
+            List<FluidItem> certsWithAlias = formsByAliasAndType(uqc, certAlias, resultFormType);
+            TestCase.assertNotNull(certsWithAlias);
+            TestCase.assertEquals("No HSM Backed Certificate on alias " + certAlias + "!", 1, certsWithAlias.size());
+
+            FluidItem certItm = this.fluidItemByFormId(
+                    derClient, certsWithAlias.get(0).getForm().getId(), false
+            );
+            TestCase.assertNotNull(certItm);
+            Form certForm = certItm.getForm();
+            TestCase.assertNotNull(certForm);
+            TestCase.assertEquals(resultFormType, certForm.getFormType());
+            TestCase.assertEquals(FluidItem.FlowState.NotInFlow, certItm.getFlowState());
+            TestCase.assertEquals("Open", certForm.getState());
+            TestCase.assertNotNull("Expected Certificate PEM!", certForm.getFieldValueAsString("Certificate PEM"));
+            TestCase.assertTrue("Expected Certificate PEM to start with '-----BEGIN'!",
+                    certForm.getFieldValueAsString("Certificate PEM").startsWith("-----BEGIN"));
+            TestCase.assertNotNull("Expected Certificate Serial Number!", certForm.getFieldValueAsString("Certificate Serial Number"));
+            TestCase.assertNotNull("Expected Fingerprint SHA One!", certForm.getFieldValueAsString("Fingerprint SHA One"));
+            TestCase.assertNotNull("Expected Fingerprint SHA Two Five Six!", certForm.getFieldValueAsString("Fingerprint SHA Two Five Six"));
+            TestCase.assertEquals(this.lastKeystoreOrg, certForm.getFieldValueAsString("Organisation"));
+            TestCase.assertEquals(this.lastAsymKeyPairAlias, certForm.getFieldValueAsString("Asymmetric Key Pair"));
+
+            List<Form> descAfter = sqlUtl.getDescendants(reqForm, true, true, true);
+            TestCase.assertNotNull(descAfter);
+            TestCase.assertEquals("Expected one descendant: the HSM Backed Certificate!", 1, descAfter.size());
+
+            this.lastHsmBackedCertAlias = certAlias;
+        }
+    }
+
+    private static FluidItem generateHsmAsymKeyPairRequestItem(
+            String identifierPrefix,
+            String identifier,
+            String keyGenerationHost,
+            String keyAlgorithm,
+            String intendedUsage
+    ) {
+        Form frm = new Form("Generate HSM Asymmetric Key Pair Request", new Date() + " " + identifier);
+        frm.setFieldValue("Alias", String.format("%s-%s", identifierPrefix, identifier), Field.Type.Text);
+        frm.setFieldValue("Key Purpose", String.format("Key pair for signing. ID: %s", identifier), Field.Type.ParagraphText);
+        frm.setFieldValue("Key Generation Host", new MultiChoice(keyGenerationHost), Field.Type.MultipleChoice);
+        frm.setFieldValue("Asymmetric Key Algorithm", new MultiChoice(keyAlgorithm), Field.Type.MultipleChoice);
+        frm.setFieldValue("Asymmetric Intended Usage", new MultiChoice(intendedUsage), Field.Type.MultipleChoice);
+        return new FluidItem(frm);
+    }
+
+    private static FluidItem provisionHSMBackedCertRequestItem(
+            String identifierPrefix,
+            String identifier,
+            String asymKeyPairAlias,
+            String commonName,
+            String orgName,
+            String country,
+            Date validFrom,
+            Date validTo
+    ) {
+        Form frm = new Form("Provision HSM Backed Certificate Request", new Date() + " " + identifier);
+        frm.setFieldValue("Alias", String.format("%s-%s", identifierPrefix, identifier), Field.Type.Text);
+        frm.setFieldValue("Asymmetric Key Pair", asymKeyPairAlias, Field.Type.Text);
+        frm.setFieldValue("Certificate Common Name", commonName, Field.Type.Text);
+        frm.setFieldValue("Certificate Organization Name", orgName, Field.Type.Text);
+        frm.setFieldValue("Certificate Country", country, Field.Type.Text);
+        frm.setFieldValue("Certificate Valid From", validFrom, Field.Type.DateTime);
+        frm.setFieldValue("Certificate Valid To", validTo, Field.Type.DateTime);
+        frm.setFieldValue("Include Issuer Certificate Chain", Boolean.FALSE, Field.Type.TrueFalse);
+        return new FluidItem(frm);
     }
 
     private void modifyAsMakerAndSendOnFormId(

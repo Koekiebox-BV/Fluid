@@ -362,7 +362,12 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
                 this.setValueBasedOnObjectType(objFromKey);
             } else {
                 Type typeEnum = this.getTypeAsEnum();
-                this.setValueBasedOnFieldType(typeEnum, objFromKey);
+                if (typeEnum == null) {
+                    // Unknown type (e.g. MultipleChoiceSelectMany) - fall back to object-type detection
+                    this.setValueBasedOnObjectType(objFromKey);
+                } else {
+                    this.setValueBasedOnFieldType(typeEnum, objFromKey);
+                }
             }
         }
     }
