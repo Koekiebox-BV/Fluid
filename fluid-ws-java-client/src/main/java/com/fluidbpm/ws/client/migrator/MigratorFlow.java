@@ -46,7 +46,14 @@ import java.util.stream.Stream;
  */
 public class MigratorFlow {
     public enum StepType {
-        Introduction, Exit, Assignment, MailCapture, SendMail, JavaProgram, ItemClone
+        Introduction,
+        Exit,
+        Assignment,
+        MailCapture,
+        SendMail,
+        JavaProgram,
+        ItemClone,
+        DocumentTemplate
     }
 
     @Builder
@@ -186,6 +193,10 @@ public class MigratorFlow {
                     mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
                 break;
                 case ItemClone:
+                    mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
+                break;
+                case DocumentTemplate:
+                    mergeEntryRules(fsrc, step, stepToMigrate.flowRulesEntry);
                     mergeExitRules(fsrc, step, stepToMigrate.flowRulesExit);
                 break;
                 default: throw new FluidClientException(
