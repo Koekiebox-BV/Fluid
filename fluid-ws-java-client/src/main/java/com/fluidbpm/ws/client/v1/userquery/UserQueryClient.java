@@ -145,7 +145,7 @@ public class UserQueryClient extends ABaseClientWS {
      * Retrieves all user query information.
      *
      * @return UserQuery information.
-     * @see List<UserQuery>
+     * @see java.util.List
      */
     public List<UserQuery> getAllUserQueries() {
         UserQuery userQueryToGetInfoFor = new UserQuery();
@@ -160,7 +160,7 @@ public class UserQueryClient extends ABaseClientWS {
      *
      * @return The complete user query config.
      * @see WebKitUserQueryListing
-     * @see List<WebKitUserQuery>
+     * @see java.util.List
      */
     public List<WebKitUserQuery> getUserQueryWebKit() {
         UserQuery userQuery = new UserQuery();
@@ -198,7 +198,7 @@ public class UserQueryClient extends ABaseClientWS {
      * @param listing The ViewGroupWebKit listing to upsert.
      * @return The complete view group config.
      * @see WebKitUserQueryListing
-     * @see List<WebKitUserQuery>
+     * @see java.util.List
      */
     public List<WebKitUserQuery> upsertUserQueryWebKit(WebKitUserQueryListing listing) {
         if (listing == null) return null;
@@ -245,7 +245,7 @@ public class UserQueryClient extends ABaseClientWS {
      * @param queryToExecuteParam The UserQuery to execute.
      * @return The UserQuery result.
      * @see FluidItemListing
-     * @see List<FluidItem>
+     * @see java.util.List
      */
     public List<FluidItem> executeUserQuery(UserQuery queryToExecuteParam) {
         return this.executeUserQuery(queryToExecuteParam, true);
@@ -376,7 +376,7 @@ public class UserQueryClient extends ABaseClientWS {
      * @param forceUseDatabaseParam   Force to use underlying database.
      * @return The UserQuery result.
      * @see FluidItemListing
-     * @see List<FluidItem>
+     * @see java.util.List
      */
     public FluidItemListing executeUserQueryReturnListing(
             UserQuery queryToExecuteParam,

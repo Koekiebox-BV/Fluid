@@ -87,7 +87,6 @@ import java.util.concurrent.TimeUnit;
  *
  * <br><br>
  * <p>
- * <p>
  * 2.1.2. If the provided {@code AuthRequest} JSON is correct, the Fluid-API will return a {@code AuthResponse} in JSON format.
  * <br>
  * <br>

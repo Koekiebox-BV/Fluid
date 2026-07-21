@@ -119,6 +119,7 @@ public class FlowClient extends ABaseClientWS {
 
 	/**
 	 * Retrieve the Flow View Group configuration by name.
+	 * @param name The name of the view group.
 	 * @return The view group config by name.
 	 * @see WebKitViewGroupListing
 	 */

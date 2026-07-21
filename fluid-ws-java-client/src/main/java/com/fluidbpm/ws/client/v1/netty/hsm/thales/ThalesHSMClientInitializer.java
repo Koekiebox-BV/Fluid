@@ -16,10 +16,10 @@ import java.util.concurrent.TimeUnit;
  * Pipeline order (inbound/outbound):
  * 1. SSL Handler (if configured)
  * 2. Idle State Handler (connection keepalive)
- * 3. Frame Decoder (inbound: bytes -> bytes with length stripped)
- * 4. Frame Encoder (outbound: bytes -> bytes with length header)
- * 5. Response Decoder (inbound: bytes -> ThalesResponse)
- * 6. Command Encoder (outbound: ThalesCommand -> bytes)
+ * 3. Frame Decoder (inbound: bytes to bytes with length stripped)
+ * 4. Frame Encoder (outbound: bytes to bytes with length header)
+ * 5. Response Decoder (inbound: bytes to ThalesResponse)
+ * 6. Command Encoder (outbound: ThalesCommand to bytes)
  * 7. Business Logic Handler (ThalesHSMClientHandler)
  *
  * @author jasonbruwer

@@ -76,6 +76,7 @@ public class ConfigurationClient extends ABaseClientWS {
 
 	/**
 	 * Retrieve the company logo as Base64 configuration.
+	 * @return The company logo configuration.
 	 */
 	public Configuration getCompanyLogo() {
 		Configuration configuration = new Configuration();
@@ -85,6 +86,7 @@ public class ConfigurationClient extends ABaseClientWS {
 
 	/**
 	 * Retrieve the small company logo as Base64 configuration.
+	 * @return The small company logo configuration.
 	 */
 	public Configuration getCompanyLogoSmall() {
 		Configuration configuration = new Configuration();
@@ -95,6 +97,7 @@ public class ConfigurationClient extends ABaseClientWS {
 	/**
 	 * Load the small company logo.
 	 * @param logoData The bytes for the logo.
+	 * @return The stored small company logo configuration.
 	 */
 	public Configuration loadCompanyLogoSmall(byte[] logoData) {
 		Configuration configuration = new Configuration();
@@ -106,6 +109,7 @@ public class ConfigurationClient extends ABaseClientWS {
 	/**
 	 * Load the large company logo.
 	 * @param logoData The bytes for the logo.
+	 * @return The stored large company logo configuration.
 	 */
 	public Configuration loadCompanyLogo(byte[] logoData) {
 		Configuration configuration = new Configuration();
@@ -173,6 +177,7 @@ public class ConfigurationClient extends ABaseClientWS {
 	 * update a configuration if it exists based on {@code id} being set.
 	 *
 	 * @param library The library to create or update.
+	 * @param upsertFromExternalRunner Whether the upsert originates from an external runner.
 	 * @return stored third party library.
 	 * @see ThirdPartyLibrary
 	 */

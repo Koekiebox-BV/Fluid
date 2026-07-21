@@ -179,6 +179,8 @@ public class TR31KeyBlock {
 
         /**
          * Encodes this optional block as: ID (2) + length in multiples of 8 (2 hex) + data + padding
+         *
+         * @return The encoded optional block.
          */
         public String encode() {
             // format: ID(2) + length(2 hex chars) + data; total must be multiple of 8
