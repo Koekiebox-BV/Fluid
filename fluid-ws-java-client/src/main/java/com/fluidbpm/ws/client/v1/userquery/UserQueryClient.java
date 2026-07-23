@@ -343,8 +343,6 @@ public class UserQueryClient extends ABaseClientWS {
      * @param offsetParam             The query offset.
      * @param forceUseDatabaseParam   Force to use underlying database.
      * @return The UserQuery result.
-     * @see FluidItemListing
-     * @see List<FluidItem>
      */
     public List<FluidItem> executeUserQuery(
             UserQuery queryToExecuteParam,
