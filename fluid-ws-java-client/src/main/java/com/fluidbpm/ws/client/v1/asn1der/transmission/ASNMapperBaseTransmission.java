@@ -702,6 +702,7 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
      * @param type the type of the transmission object to be processed
      * @param toPop the BaseTransmission object to be utilized in the process
      * @param obj the ASN1Object associated with the transmission process
+     * @return The processed {@link ABaseFluidVO} result.
      */
     public ABaseFluidVO proceedWithTransmissionObject(
             int type,

@@ -17,6 +17,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 1: Simple echo test to verify HSM connectivity.
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleEchoTest() throws Exception {
         // Connect to HSM (adjust host/port as needed)
@@ -38,6 +40,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 2: Run diagnostics to check HSM status.
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleDiagnostics() throws Exception {
         try (ThalesHSMClient client = new ThalesHSMClient("localhost", 1500, false)) {
@@ -54,6 +58,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 3: Generate a cryptographic key (ZMK/TMK/TPK).
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleGenerateKey() throws Exception {
         try (ThalesHSMClient client = new ThalesHSMClient("localhost", 1500, false)) {
@@ -72,6 +78,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 4: Asynchronous command execution.
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleAsyncCommands() throws Exception {
         try (ThalesHSMClient client = new ThalesHSMClient("localhost", 1500, false)) {
@@ -104,6 +112,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 5: Generate and verify MAC.
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleGenerateMAC() throws Exception {
         try (ThalesHSMClient client = new ThalesHSMClient("localhost", 1500, false)) {
@@ -130,6 +140,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 6: Custom command construction.
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleCustomCommand() throws Exception {
         try (ThalesHSMClient client = new ThalesHSMClient("localhost", 1500, false)) {
@@ -187,6 +199,8 @@ public class ThalesHSMExample {
 
     /**
      * Example 8: SSL/TLS connection to HSM.
+     *
+     * @throws Exception If an error occurs communicating with the HSM.
      */
     public static void exampleSecureConnection() throws Exception {
         // Connect with SSL/TLS enabled
@@ -200,6 +214,8 @@ public class ThalesHSMExample {
 
     /**
      * Main method to run examples.
+     *
+     * @param args Command line arguments (unused).
      */
     public static void main(String[] args) {
         log.info("=== Thales HSM Client Examples ===");

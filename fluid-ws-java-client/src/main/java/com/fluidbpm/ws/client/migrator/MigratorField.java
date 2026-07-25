@@ -748,15 +748,10 @@ public class MigratorField {
         });
     }
 
-    /**
-     * Migrates a field table field by creating or updating a form definition and
-     * corresponding field table as per the migration options provided.
-     *
-     * @param fdc The {@code FormDefinitionClient} used to handle form definitions.
-     * @param ffc The {@code FormFieldClient} used to create and manage field tables.
-     * @param opts The {@code MigrateOptFieldTable} object containing migration-specific options,
-     *             including the fields to migrate, form type, field and form description,
-     *             field name, and sum decimals for the table field.
+    /**Migrate a Table field.
+     * @param fdc {@code FormDefinitionClient}
+     * @param ffc {@code FormFieldClient}
+     * @param opts {@code OptFieldMultiChoiceMigrate}
      */
     public static void migrateFieldTableField(
             FormDefinitionClient fdc, FormFieldClient ffc, MigrateOptFieldTable opts

@@ -245,6 +245,7 @@ public class ASNMapperFactory {
      * @param toPop the {@link BaseTransmission} object that will be utilized for the
      *              processing. It may contain the payload, request object, and other data
      *              related to the transmission.
+     * @return The processed {@link ABaseFluidVO} result.
      */
     public ABaseFluidVO proceedWithTransmissionObject(int type, BaseTransmission toPop) {
         return this.mapperBaseTransmission.proceedWithTransmissionObject(type, toPop, null);

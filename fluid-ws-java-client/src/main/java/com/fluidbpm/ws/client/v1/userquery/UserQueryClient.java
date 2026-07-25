@@ -142,9 +142,10 @@ public class UserQueryClient extends ABaseClientWS {
     }
 
     /**
-     * Retrieves a list of all existing user queries.
+     * Retrieves all user query information.
      *
-     * @return A list of all {@code UserQuery} objects.
+     * @return UserQuery information.
+     * @see java.util.List
      */
     public List<UserQuery> getAllUserQueries() {
         UserQuery userQueryToGetInfoFor = new UserQuery();
@@ -342,8 +343,6 @@ public class UserQueryClient extends ABaseClientWS {
      * @param offsetParam             The query offset.
      * @param forceUseDatabaseParam   Force to use underlying database.
      * @return The UserQuery result.
-     * @see FluidItemListing
-     * @see java.util.List
      */
     public List<FluidItem> executeUserQuery(
             UserQuery queryToExecuteParam,

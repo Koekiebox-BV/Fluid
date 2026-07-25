@@ -140,6 +140,8 @@ public class TR31Util {
      * @param kbpk      Key Block Protection Key
      * @param isAesKbpk {@code true} if the KBPK is an AES key, {@code false} for 3DES
      * @param block     Parsed key block
+     * @return The decrypted key material.
+     * @throws GeneralSecurityException If the key material cannot be decrypted.
      */
     public static byte[] unwrap(byte[] kbpk, boolean isAesKbpk, TR31KeyBlock block) throws GeneralSecurityException {
         boolean isAes = isAesKbpk;
