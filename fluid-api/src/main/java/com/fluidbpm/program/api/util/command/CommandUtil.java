@@ -15,7 +15,8 @@
 
 package com.fluidbpm.program.api.util.command;
 
-import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
+import com.fluidbpm.program.api.vo.auth0.AccessTokenRequest;
+import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,8 +25,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fluidbpm.program.api.vo.auth0.AccessTokenRequest;
-import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
+import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
 
 /**
  * Utility class used for executing command line operations.
@@ -39,9 +39,7 @@ import com.fluidbpm.program.api.vo.auth0.NormalizedUserProfile;
  * @since v1.6
  */
 public class CommandUtil {
-
-    public static final String FLUID_CLI = "fluid-cli";
-
+    public static final String FLUID_CLI = System.getProperty("FLUID_CLI_PATH", "fluid-cli");;
 
     /**
      * Result value object when a command line operation is finish.
