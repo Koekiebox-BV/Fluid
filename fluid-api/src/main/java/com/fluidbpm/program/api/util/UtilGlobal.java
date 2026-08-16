@@ -886,6 +886,7 @@ public class UtilGlobal {
      * @param fieldName Sets Field Name.
      * @param fieldVal  Sets Field Value.
      * @param type      Sets Field Type.
+     * @return A new {@code Field} instance with the given name, value, and type.
      */
     public static Field newField(String fieldName, Object fieldVal, Field.Type type) {
         return new Field(fieldName, fieldVal, type);
@@ -896,6 +897,7 @@ public class UtilGlobal {
      *
      * @param fieldName   Sets Field Name.
      * @param multiChoice Sets Field Value as Multichoice.
+     * @return A new {@code Field} instance with the given name and multi-choice value.
      */
     public static Field newField(String fieldName, MultiChoice multiChoice) {
         return new Field(fieldName, multiChoice);

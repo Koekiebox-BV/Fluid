@@ -871,6 +871,7 @@ public class Field extends ABaseFluidElasticSearchJSONObject {
      * Sets the Type of {@code this} {@code Field} as {@code enum}.
      *
      * @param type The Field fieldType.
+     * @return {@code this} Field instance for chaining.
      * @see Type
      */
     @XmlTransient

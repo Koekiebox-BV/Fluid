@@ -2347,6 +2347,7 @@ public class WS {
                  * @param populateForm            Should the FlowItem form be populated (even if FlowItem is not found)
                  * @param executeCalculatedLabels Execute the calculated label if form should be populated {@code populateForm == true}.
                  * @param populateStepProgress    Should the flow progress be populated as FluidItem properties.
+                 * @param populateRouteFields     Should route fields be included in the response.
                  * @return {@code v1/flow_item/get_by_form}
                  */
                 public static String getByForm(

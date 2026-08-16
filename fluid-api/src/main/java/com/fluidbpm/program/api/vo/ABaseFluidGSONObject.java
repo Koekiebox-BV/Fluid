@@ -445,6 +445,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Extracts and constructs an object of type T from the specified JSON object and field name
      * using the provided factory function.
      *
+     * @param <T> the type of the object to extract, must extend ABaseFluidGSONObject
      * @param fieldName the name of the field to extract from the JSON object
      * @param factory a function that takes a JsonObject and produces an object of type T
      * @return the constructed object of type T, or null if the field is null or the JSON object is invalid
@@ -536,6 +537,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     /**
      * Converts a list of objects extending ABaseFluidGSONObject into a JsonArray.
      *
+     * @param <T> the type of objects in the list, must extend ABaseFluidGSONObject
      * @param list the list of objects to be serialized into a JsonArray. Each object in the list should extend ABaseFluidGSONObject.
      * @return a JsonArray containing the serialized objects. If the input list is null, an empty JsonArray is returned.
      */
@@ -552,6 +554,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * Populates a JSON object field with an array representation of objects
      * derived from a provided factory and returns the size of the object list.
      *
+     * @param <T> the type of objects supplied by the factory, must extend ABaseFluidGSONObject
      * @param fieldName the name of the field in the JSON object to populate with the array
      * @param jsonObject the JSON object to which the array will be added
      * @param factory a supplier for obtaining a list of objects extending ABaseFluidGSONObject

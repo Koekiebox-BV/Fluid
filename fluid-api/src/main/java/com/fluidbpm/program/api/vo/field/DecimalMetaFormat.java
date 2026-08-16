@@ -118,6 +118,7 @@ public class DecimalMetaFormat {
      * Format the {@code toFormatParam} to text.
      *
      * @param toFormat The {@code DecimalMetaFormat} to format.
+     * @param newCurrency Optional currency to derive step factor, prefix, and range from; may be null.
      * @return {@code Spinner_Min[0]_Max[1]_StepFactor[1]_Prefix[$];} formatted decimal format.
      */
     public static final String format(DecimalMetaFormat toFormat, Currency newCurrency) {
