@@ -2,32 +2,44 @@ package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
 import com.fluidbpm.ws.client.FluidClientException;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.ssl.SslHandler;
 import lombok.Getter;
 import lombok.extern.java.Log;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Netty-based Thales HSM client implementing the international command set.
- * This client provides high-performance, production-ready communication
- * with Thales Hardware Security Modules.
+ * Netty-based Thales payShield HSM client for the host command interface.
  *
- * Features:
- * - SSL/TLS support for secure communication
- * - Asynchronous command execution with CompletableFuture
- * - Connection pooling support
- * - Automatic reconnection
- * - Request/response correlation
+ * Wire protocol (payShield 10K Host Programmers Manual):
+ * <ul>
+ *   <li>Each message is prefixed with a 2-byte binary length (section 2.1.2 / 2.1.3).</li>
+ *   <li>Each command starts with the site-configured message header, which the HSM
+ *       echoes back unmodified (section 1.2). The client allocates a unique header per
+ *       in-flight command and uses it to correlate responses, so commands may be
+ *       pipelined on a single connection.</li>
+ *   <li>With a header length of 0 the client falls back to strict FIFO correlation.</li>
+ * </ul>
+ *
+ * TLS / mutual TLS is enabled by supplying an {@link SslContext} through
+ * {@link ThalesHSMClientConfig}; see {@link ThalesSslContexts}.
  *
  * @author jasonbruwer
  * @since 1.14
@@ -35,28 +47,47 @@ import java.util.concurrent.TimeUnit;
 @Log
 public class ThalesHSMClient implements AutoCloseable {
 
-    private Channel channel;
+    private static final int HEADER_ALLOCATION_ATTEMPTS = 64;
+
+    private final Channel channel;
     private final EventLoopGroup group;
     private final ThalesHSMClientHandler handler;
-    private final Map<String, CompletableFuture<ThalesResponse>> pendingRequests;
 
+    /** Pending requests keyed by message header (header mode). */
+    private final Map<String, CompletableFuture<ThalesResponse>> pendingRequests = new ConcurrentHashMap<>();
+    /** Pending requests in send order (FIFO mode, header length 0). */
+    private final Deque<CompletableFuture<ThalesResponse>> pendingFifo = new ArrayDeque<>();
+    private final Object fifoLock = new Object();
+
+    private final AtomicInteger headerSequence = new AtomicInteger();
+
+    @Getter
+    private final ThalesHSMClientConfig config;
     @Getter
     private final String host;
     @Getter
     private final int port;
     @Getter
     private final boolean useSsl;
+    @Getter
+    private final int headerLength;
 
     private final IThalesResponseHandler defaultHandler = new IThalesResponseHandler() {
         @Override
         public void handleResponse(ThalesResponse response) {
-            String requestId = response.getRequestId();
-            if (requestId != null) {
-                CompletableFuture<ThalesResponse> future = pendingRequests.remove(requestId);
-                if (future != null) {
-                    future.complete(response);
-                    return;
+            CompletableFuture<ThalesResponse> future;
+            if (headerLength == 0) {
+                synchronized (fifoLock) {
+                    future = pendingFifo.pollFirst();
                 }
+            } else {
+                String header = response.getHeader();
+                future = header == null ? null : pendingRequests.remove(header);
+            }
+
+            if (future != null) {
+                future.complete(response);
+                return;
             }
             log.warning("Received response without matching request: " + response);
         }
@@ -64,33 +95,28 @@ public class ThalesHSMClient implements AutoCloseable {
         @Override
         public void connectionClosed() {
             log.info("HSM connection closed");
-            // Complete all pending requests with error
-            pendingRequests.values().forEach(future ->
-                    future.completeExceptionally(new FluidClientException(
-                            "Connection closed",
-                            FluidClientException.ErrorCode.IO_ERROR
-                    ))
-            );
-            pendingRequests.clear();
+            failAllPending(new FluidClientException(
+                    "Connection closed",
+                    FluidClientException.ErrorCode.IO_ERROR
+            ));
         }
 
         @Override
         public void handleError(Throwable error) {
             log.severe("HSM error: " + error.getMessage());
-            // Complete all pending requests with error
-            pendingRequests.values().forEach(future ->
-                    future.completeExceptionally(error)
-            );
-            pendingRequests.clear();
+            failAllPending(error);
         }
     };
 
     /**
-     * Constructs a ThalesHSMClient and connects to the HSM.
+     * Constructs a ThalesHSMClient and connects to the HSM using no message header.
+     * When {@code useSsl} is true the server certificate is <b>not</b> verified; use
+     * {@link #ThalesHSMClient(ThalesHSMClientConfig)} with {@link ThalesSslContexts} for
+     * production connections.
      *
      * @param host The HSM host address
      * @param port The HSM port (typically 1500 for Thales)
-     * @param useSsl Whether to use SSL/TLS encryption
+     * @param useSsl Whether to use SSL/TLS encryption (insecure trust)
      * @throws Exception If connection fails
      */
     public ThalesHSMClient(String host, int port, boolean useSsl) throws Exception {
@@ -98,11 +124,12 @@ public class ThalesHSMClient implements AutoCloseable {
     }
 
     /**
-     * Constructs a ThalesHSMClient with timeout configuration.
+     * Constructs a ThalesHSMClient with timeout configuration and no message header.
+     * When {@code useSsl} is true the server certificate is <b>not</b> verified.
      *
      * @param host The HSM host address
      * @param port The HSM port
-     * @param useSsl Whether to use SSL/TLS encryption
+     * @param useSsl Whether to use SSL/TLS encryption (insecure trust)
      * @param readTimeoutSeconds Read timeout in seconds
      * @param writeTimeoutSeconds Write timeout in seconds
      * @throws Exception If connection fails
@@ -114,43 +141,65 @@ public class ThalesHSMClient implements AutoCloseable {
             int readTimeoutSeconds,
             int writeTimeoutSeconds
     ) throws Exception {
-        this.host = host;
-        this.port = port;
-        this.useSsl = useSsl;
-        this.pendingRequests = new ConcurrentHashMap<>();
+        this(legacyConfig(host, port, useSsl, readTimeoutSeconds, writeTimeoutSeconds));
+    }
 
-        // Configure SSL if needed
-        final SslContext sslCtx;
+    private static ThalesHSMClientConfig legacyConfig(
+            String host, int port, boolean useSsl, int readTimeoutSeconds, int writeTimeoutSeconds
+    ) throws Exception {
+        SslContext sslCtx = null;
         if (useSsl) {
-            sslCtx = SslContextBuilder.forClient()
-                    .trustManager(InsecureTrustManagerFactory.INSTANCE)
-                    .build();
-        } else {
-            sslCtx = null;
+            log.warning("ThalesHSMClient created with insecure TLS trust for " + host + ":" + port
+                    + "; supply an SslContext via ThalesHSMClientConfig for verified/mutual TLS.");
+            sslCtx = ThalesSslContexts.insecure();
         }
+        return ThalesHSMClientConfig.builder()
+                .host(host)
+                .port(port)
+                .headerLength(0)
+                .sslContext(sslCtx)
+                .readTimeoutSeconds(readTimeoutSeconds)
+                .writeTimeoutSeconds(writeTimeoutSeconds)
+                .build();
+    }
 
-        group = new NioEventLoopGroup();
+    /**
+     * Constructs a ThalesHSMClient from a configuration and connects to the HSM.
+     *
+     * @param config Connection configuration
+     * @throws FluidClientException If the configuration is invalid or the connection fails
+     */
+    public ThalesHSMClient(ThalesHSMClientConfig config) {
+        config.validate();
+        this.config = config;
+        this.host = config.getHost();
+        this.port = config.getPort();
+        this.useSsl = config.isTls();
+        this.headerLength = config.getHeaderLength();
 
+        this.group = new NioEventLoopGroup();
         try {
-            handler = new ThalesHSMClientHandler(defaultHandler);
+            this.handler = new ThalesHSMClientHandler(defaultHandler);
 
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeoutMillis())
                     .handler(new ThalesHSMClientInitializer(
-                            sslCtx,
+                            config.getSslContext(),
+                            config.isVerifyHostname(),
+                            host,
+                            port,
                             handler,
-                            readTimeoutSeconds,
-                            writeTimeoutSeconds
+                            headerLength,
+                            config.getReadTimeoutSeconds(),
+                            config.getWriteTimeoutSeconds()
                     ));
 
             // Connect to HSM
             ChannelFuture connectFuture = bootstrap.connect(host, port).sync();
-            channel = connectFuture.channel();
-
             if (!connectFuture.isSuccess()) {
                 throw new FluidClientException(
                         "Failed to connect to Thales HSM at " + host + ":" + port,
@@ -158,8 +207,16 @@ public class ThalesHSMClient implements AutoCloseable {
                         FluidClientException.ErrorCode.IO_ERROR
                 );
             }
+            this.channel = connectFuture.channel();
 
-            log.info("Connected to Thales HSM at " + host + ":" + port);
+            // Complete the TLS handshake before handing the channel out
+            SslHandler sslHandler = channel.pipeline().get(SslHandler.class);
+            if (sslHandler != null) {
+                sslHandler.handshakeFuture().sync();
+            }
+
+            log.info("Connected to Thales HSM at " + host + ":" + port
+                    + (useSsl ? " (TLS)" : "") + ", header length " + headerLength);
 
         } catch (Exception e) {
             group.shutdownGracefully();
@@ -178,30 +235,28 @@ public class ThalesHSMClient implements AutoCloseable {
      * @return CompletableFuture that will contain the response
      */
     public CompletableFuture<ThalesResponse> sendCommandAsync(ThalesCommand command) {
+        CompletableFuture<ThalesResponse> future = new CompletableFuture<>();
         if (channel == null || !channel.isActive()) {
-            // Java 8 compatible way to create failed future
-            CompletableFuture<ThalesResponse> failedFuture = new CompletableFuture<>();
-            failedFuture.completeExceptionally(new FluidClientException(
+            future.completeExceptionally(new FluidClientException(
                     "Channel is not active",
                     FluidClientException.ErrorCode.SESSION_EXPIRED
             ));
-            return failedFuture;
+            return future;
         }
 
-        // Generate request ID if not set
-        final String requestId = command.getRequestId() == null ?
-                UUID.randomUUID().toString() : command.getRequestId();
+        final String header;
+        try {
+            header = registerPending(command, future);
+        } catch (RuntimeException e) {
+            future.completeExceptionally(e);
+            return future;
+        }
 
-        // Create future for response
-        CompletableFuture<ThalesResponse> future = new CompletableFuture<>();
-        pendingRequests.put(requestId, future);
-
-        // Send command
         channel.writeAndFlush(command).addListener((ChannelFutureListener) channelFuture -> {
             if (channelFuture.isSuccess()) {
                 handler.incrementSentCommands();
             } else {
-                pendingRequests.remove(requestId);
+                unregisterPending(header, future);
                 future.completeExceptionally(new FluidClientException(
                         "Failed to send command: " + channelFuture.cause().getMessage(),
                         channelFuture.cause(),
@@ -211,6 +266,75 @@ public class ThalesHSMClient implements AutoCloseable {
         });
 
         return future;
+    }
+
+    /**
+     * Assigns a message header to the command and records the pending future.
+     *
+     * @return the header assigned ({@code ""} in FIFO mode)
+     */
+    private String registerPending(ThalesCommand command, CompletableFuture<ThalesResponse> future) {
+        if (headerLength == 0) {
+            synchronized (fifoLock) {
+                command.assignRequestId("");
+                pendingFifo.addLast(future);
+            }
+            return "";
+        }
+
+        String requested = command.getRequestId();
+        if (requested != null && !requested.isEmpty()) {
+            if (requested.length() != headerLength) {
+                throw new IllegalArgumentException("Request id '" + requested + "' must be "
+                        + headerLength + " characters to be used as the message header");
+            }
+            if (pendingRequests.putIfAbsent(requested, future) != null) {
+                throw new IllegalStateException("Request id '" + requested + "' is already in flight");
+            }
+            return requested;
+        }
+
+        for (int attempt = 0; attempt < HEADER_ALLOCATION_ATTEMPTS; attempt++) {
+            String header = nextHeader();
+            if (pendingRequests.putIfAbsent(header, future) == null) {
+                command.assignRequestId(header);
+                return header;
+            }
+        }
+        throw new IllegalStateException("Unable to allocate a free message header; "
+                + pendingRequests.size() + " commands in flight");
+    }
+
+    private void unregisterPending(String header, CompletableFuture<ThalesResponse> future) {
+        if (headerLength == 0) {
+            synchronized (fifoLock) {
+                pendingFifo.remove(future);
+            }
+        } else {
+            pendingRequests.remove(header, future);
+        }
+    }
+
+    /** Next header: upper-case hex sequence, zero-padded/truncated to the header length. */
+    private String nextHeader() {
+        int seq = headerSequence.getAndIncrement() & 0x7FFFFFFF;
+        String hex = Integer.toHexString(seq).toUpperCase(Locale.ROOT);
+        if (hex.length() >= headerLength) {
+            return hex.substring(hex.length() - headerLength);
+        }
+        StringBuilder sb = new StringBuilder(headerLength);
+        for (int i = hex.length(); i < headerLength; i++) sb.append('0');
+        return sb.append(hex).toString();
+    }
+
+    private void failAllPending(Throwable error) {
+        List<CompletableFuture<ThalesResponse>> toFail = new ArrayList<>(pendingRequests.values());
+        pendingRequests.clear();
+        synchronized (fifoLock) {
+            toFail.addAll(pendingFifo);
+            pendingFifo.clear();
+        }
+        toFail.forEach(f -> f.completeExceptionally(error));
     }
 
     /**
@@ -235,19 +359,24 @@ public class ThalesHSMClient implements AutoCloseable {
      */
     public ThalesResponse sendCommand(ThalesCommand command, long timeout, TimeUnit unit) throws Exception {
         CompletableFuture<ThalesResponse> future = sendCommandAsync(command);
-        return future.get(timeout, unit);
+        try {
+            return future.get(timeout, unit);
+        } catch (java.util.concurrent.TimeoutException e) {
+            unregisterPending(command.getRequestId() == null ? "" : command.getRequestId(), future);
+            future.cancel(true);
+            throw e;
+        }
     }
 
     /**
-     * Sends an echo command to test HSM connectivity.
+     * Sends an {@code NO} (HSM status) command to test HSM connectivity.
      *
-     * @param echoData The data to echo back
-     * @return ThalesResponse with echoed data
+     * @param echoData The command data
+     * @return ThalesResponse
      * @throws Exception If command fails
      */
     public ThalesResponse echo(String echoData) throws Exception {
-        ThalesCommand echoCommand = ThalesCommand.Commands.echo(echoData);
-        return sendCommand(echoCommand);
+        return sendCommand(ThalesCommand.Commands.echo(echoData));
     }
 
     /**
@@ -257,8 +386,7 @@ public class ThalesHSMClient implements AutoCloseable {
      * @throws Exception If command fails
      */
     public ThalesResponse diagnostics() throws Exception {
-        ThalesCommand diagCommand = ThalesCommand.Commands.diagnostics();
-        return sendCommand(diagCommand);
+        return sendCommand(ThalesCommand.Commands.diagnostics());
     }
 
     /**
@@ -298,6 +426,17 @@ public class ThalesHSMClient implements AutoCloseable {
     }
 
     /**
+     * Gets the number of commands awaiting a response.
+     *
+     * @return In-flight command count
+     */
+    public int getPendingCount() {
+        synchronized (fifoLock) {
+            return pendingRequests.size() + pendingFifo.size();
+        }
+    }
+
+    /**
      * Closes the connection to the HSM.
      */
     @Override
@@ -308,6 +447,7 @@ public class ThalesHSMClient implements AutoCloseable {
         if (group != null) {
             group.shutdownGracefully();
         }
-        log.info("Closed connection to Thales HSM");
+        failAllPending(new FluidClientException("Client closed", FluidClientException.ErrorCode.IO_ERROR));
+        log.info("Closed connection to Thales HSM " + host + ":" + port);
     }
 }

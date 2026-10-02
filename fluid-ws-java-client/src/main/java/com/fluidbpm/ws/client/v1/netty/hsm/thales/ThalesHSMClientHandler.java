@@ -2,10 +2,13 @@ package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.java.Log;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 /**
  * Netty channel handler for processing Thales HSM responses.
@@ -21,8 +24,8 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
     private final Map<String, IThalesResponseHandler> responseHandlers;
     private final IThalesResponseHandler defaultHandler;
 
-    private int sentCommands = 0;
-    private int receivedResponses = 0;
+    private final AtomicInteger sentCommands = new AtomicInteger();
+    private final AtomicInteger receivedResponses = new AtomicInteger();
 
     /**
      * Constructs a ThalesHSMClientHandler with response handlers.
@@ -62,13 +65,14 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
             defaultHandler.connectionClosed();
         }
         responseHandlers.values().forEach(IThalesResponseHandler::connectionClosed);
+        responseHandlers.clear();
 
         ctx.fireChannelInactive();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ThalesResponse response) {
-        this.receivedResponses++;
+        this.receivedResponses.incrementAndGet();
 
         String requestId = response.getRequestId();
 
@@ -88,7 +92,7 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
             try {
                 handler.handleResponse(response);
             } catch (Exception e) {
-                log.severe("Error handling HSM response: " + e.getMessage());
+                log.log(Level.SEVERE, "Error handling HSM response: " + e.getMessage(), e);
                 handler.handleError(e);
             }
         } else {
@@ -97,15 +101,24 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
     }
 
     @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            log.warning("Thales HSM connection idle (" + ((IdleStateEvent) evt).state() + "): "
+                    + ctx.channel().remoteAddress());
+        }
+        super.userEventTriggered(ctx, evt);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.severe("HSM communication error: " + cause.getMessage());
-        cause.printStackTrace();
+        log.log(Level.SEVERE, "HSM communication error: " + cause.getMessage(), cause);
 
         // Notify handlers of error
         if (defaultHandler != null) {
             defaultHandler.handleError(cause);
         }
         responseHandlers.values().forEach(h -> h.handleError(cause));
+        responseHandlers.clear();
 
         ctx.close();
     }
@@ -128,7 +141,7 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
      * @return The number of commands sent
      */
     public int getSentCommands() {
-        return sentCommands;
+        return sentCommands.get();
     }
 
     /**
@@ -137,13 +150,13 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
      * @return The number of responses received
      */
     public int getReceivedResponses() {
-        return receivedResponses;
+        return receivedResponses.get();
     }
 
     /**
      * Increments the sent commands counter.
      */
     public void incrementSentCommands() {
-        this.sentCommands++;
+        this.sentCommands.incrementAndGet();
     }
 }

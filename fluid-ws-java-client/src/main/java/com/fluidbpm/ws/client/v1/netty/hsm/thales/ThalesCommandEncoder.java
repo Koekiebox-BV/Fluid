@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * Encodes ThalesCommand objects into byte arrays for transmission.
- * This encoder converts the high-level ThalesCommand object into
- * the raw bytes that will be framed by ThalesFrameEncoder.
+ * The produced bytes are {@code [message header][command code][command data]};
+ * {@link ThalesFrameEncoder} then adds the binary length prefix.
  *
  * @author jasonbruwer
  * @since 1.14
@@ -16,11 +16,7 @@ import java.util.List;
 public class ThalesCommandEncoder extends MessageToMessageEncoder<ThalesCommand> {
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ThalesCommand msg, List<Object> out) throws Exception {
-        // Convert the command to bytes
-        byte[] commandBytes = msg.toBytes();
-
-        // Add to output - will be processed by ThalesFrameEncoder
-        out.add(commandBytes);
+    protected void encode(ChannelHandlerContext ctx, ThalesCommand msg, List<Object> out) {
+        out.add(msg.toWireBytes());
     }
 }
