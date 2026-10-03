@@ -9,8 +9,9 @@ import lombok.Getter;
  *
  * <ul>
  *   <li>{@code headerLength} must match the message header length configured on the HSM
- *       (payShield: 0-255, commonly 4). The client uses the header to correlate responses.
- *       With {@code 0} the client falls back to strict in-order (FIFO) correlation.</li>
+ *       (payShield: 1-255, default 4). The HSM echoes the header back unmodified and the
+ *       client relies on it to correlate responses, so a header is required; an HSM
+ *       configured with a 0-length header must be reconfigured before use.</li>
  *   <li>{@code sslContext} enables TLS. Build one with {@link ThalesSslContexts} for mutual TLS.
  *       {@code null} means plain TCP.</li>
  *   <li>{@code verifyHostname} enables endpoint identification on the TLS handshake. payShield
@@ -24,7 +25,7 @@ import lombok.Getter;
 @Builder(toBuilder = true)
 public class ThalesHSMClientConfig {
 
-    /** Default payShield host port. */
+    /** Default payShield host port. */                 
     public static final int DEFAULT_PORT = 1500;
     /** Default message header length. */
     public static final int DEFAULT_HEADER_LENGTH = 4;
@@ -63,8 +64,9 @@ public class ThalesHSMClientConfig {
         if (port < 1 || port > 65535) {
             throw new IllegalArgumentException("HSM port out of range: " + port);
         }
-        if (headerLength < 0 || headerLength > 255) {
-            throw new IllegalArgumentException("Message header length must be 0-255: " + headerLength);
+        if (headerLength < 1 || headerLength > 255) {
+            throw new IllegalArgumentException("Message header length must be 1-255 "
+                    + "(responses are correlated by the echoed header): " + headerLength);
         }
     }
 

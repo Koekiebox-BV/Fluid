@@ -40,7 +40,7 @@ public class ThalesHSMClientInitializer extends ChannelInitializer<SocketChannel
     private final int writeTimeoutSeconds;
 
     /**
-     * Constructs a ThalesHSMClientInitializer with SSL support and no message header.
+     * Constructs a ThalesHSMClientInitializer with SSL support and the default message header length.
      *
      * @param sslContext The SSL context for secure connections (can be null for unencrypted)
      * @param handler The business logic handler
@@ -50,7 +50,8 @@ public class ThalesHSMClientInitializer extends ChannelInitializer<SocketChannel
     }
 
     /**
-     * Constructs a ThalesHSMClientInitializer with SSL and timeout configuration and no message header.
+     * Constructs a ThalesHSMClientInitializer with SSL and timeout configuration and the
+     * default message header length.
      *
      * @param sslContext The SSL context for secure connections (can be null)
      * @param handler The business logic handler
@@ -63,7 +64,8 @@ public class ThalesHSMClientInitializer extends ChannelInitializer<SocketChannel
             int readTimeoutSeconds,
             int writeTimeoutSeconds
     ) {
-        this(sslContext, false, null, 0, handler, 0, readTimeoutSeconds, writeTimeoutSeconds);
+        this(sslContext, false, null, 0, handler,
+                ThalesHSMClientConfig.DEFAULT_HEADER_LENGTH, readTimeoutSeconds, writeTimeoutSeconds);
     }
 
     /**

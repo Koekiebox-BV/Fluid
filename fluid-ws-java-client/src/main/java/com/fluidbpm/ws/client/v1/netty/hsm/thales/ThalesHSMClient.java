@@ -14,9 +14,7 @@ import io.netty.handler.ssl.SslHandler;
 import lombok.Getter;
 import lombok.extern.java.Log;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,8 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *   <li>Each command starts with the site-configured message header, which the HSM
  *       echoes back unmodified (section 1.2). The client allocates a unique header per
  *       in-flight command and uses it to correlate responses, so commands may be
- *       pipelined on a single connection.</li>
- *   <li>With a header length of 0 the client falls back to strict FIFO correlation.</li>
+ *       pipelined on a single connection and responses may arrive in any order.</li>
  * </ul>
  *
  * TLS / mutual TLS is enabled by supplying an {@link SslContext} through
@@ -53,11 +50,8 @@ public class ThalesHSMClient implements AutoCloseable {
     private final EventLoopGroup group;
     private final ThalesHSMClientHandler handler;
 
-    /** Pending requests keyed by message header (header mode). */
+    /** Pending requests keyed by the message header sent with the command. */
     private final Map<String, CompletableFuture<ThalesResponse>> pendingRequests = new ConcurrentHashMap<>();
-    /** Pending requests in send order (FIFO mode, header length 0). */
-    private final Deque<CompletableFuture<ThalesResponse>> pendingFifo = new ArrayDeque<>();
-    private final Object fifoLock = new Object();
 
     private final AtomicInteger headerSequence = new AtomicInteger();
 
@@ -75,16 +69,8 @@ public class ThalesHSMClient implements AutoCloseable {
     private final IThalesResponseHandler defaultHandler = new IThalesResponseHandler() {
         @Override
         public void handleResponse(ThalesResponse response) {
-            CompletableFuture<ThalesResponse> future;
-            if (headerLength == 0) {
-                synchronized (fifoLock) {
-                    future = pendingFifo.pollFirst();
-                }
-            } else {
-                String header = response.getHeader();
-                future = header == null ? null : pendingRequests.remove(header);
-            }
-
+            String header = response.getHeader();
+            CompletableFuture<ThalesResponse> future = header == null ? null : pendingRequests.remove(header);
             if (future != null) {
                 future.complete(response);
                 return;
@@ -109,7 +95,8 @@ public class ThalesHSMClient implements AutoCloseable {
     };
 
     /**
-     * Constructs a ThalesHSMClient and connects to the HSM using no message header.
+     * Constructs a ThalesHSMClient and connects to the HSM using the default
+     * {@link ThalesHSMClientConfig#DEFAULT_HEADER_LENGTH 4-character} message header.
      * When {@code useSsl} is true the server certificate is <b>not</b> verified; use
      * {@link #ThalesHSMClient(ThalesHSMClientConfig)} with {@link ThalesSslContexts} for
      * production connections.
@@ -124,7 +111,8 @@ public class ThalesHSMClient implements AutoCloseable {
     }
 
     /**
-     * Constructs a ThalesHSMClient with timeout configuration and no message header.
+     * Constructs a ThalesHSMClient with timeout configuration and the default
+     * {@link ThalesHSMClientConfig#DEFAULT_HEADER_LENGTH 4-character} message header.
      * When {@code useSsl} is true the server certificate is <b>not</b> verified.
      *
      * @param host The HSM host address
@@ -156,7 +144,6 @@ public class ThalesHSMClient implements AutoCloseable {
         return ThalesHSMClientConfig.builder()
                 .host(host)
                 .port(port)
-                .headerLength(0)
                 .sslContext(sslCtx)
                 .readTimeoutSeconds(readTimeoutSeconds)
                 .writeTimeoutSeconds(writeTimeoutSeconds)
@@ -269,19 +256,13 @@ public class ThalesHSMClient implements AutoCloseable {
     }
 
     /**
-     * Assigns a message header to the command and records the pending future.
+     * Assigns a message header to the command and records the pending future under it.
+     * A caller-supplied header is honoured if it has the configured length and is not
+     * already in flight; otherwise a unique header is allocated.
      *
-     * @return the header assigned ({@code ""} in FIFO mode)
+     * @return the header assigned
      */
     private String registerPending(ThalesCommand command, CompletableFuture<ThalesResponse> future) {
-        if (headerLength == 0) {
-            synchronized (fifoLock) {
-                command.assignRequestId("");
-                pendingFifo.addLast(future);
-            }
-            return "";
-        }
-
         String requested = command.getRequestId();
         if (requested != null && !requested.isEmpty()) {
             if (requested.length() != headerLength) {
@@ -306,11 +287,7 @@ public class ThalesHSMClient implements AutoCloseable {
     }
 
     private void unregisterPending(String header, CompletableFuture<ThalesResponse> future) {
-        if (headerLength == 0) {
-            synchronized (fifoLock) {
-                pendingFifo.remove(future);
-            }
-        } else {
+        if (header != null) {
             pendingRequests.remove(header, future);
         }
     }
@@ -330,10 +307,6 @@ public class ThalesHSMClient implements AutoCloseable {
     private void failAllPending(Throwable error) {
         List<CompletableFuture<ThalesResponse>> toFail = new ArrayList<>(pendingRequests.values());
         pendingRequests.clear();
-        synchronized (fifoLock) {
-            toFail.addAll(pendingFifo);
-            pendingFifo.clear();
-        }
         toFail.forEach(f -> f.completeExceptionally(error));
     }
 
@@ -362,7 +335,7 @@ public class ThalesHSMClient implements AutoCloseable {
         try {
             return future.get(timeout, unit);
         } catch (java.util.concurrent.TimeoutException e) {
-            unregisterPending(command.getRequestId() == null ? "" : command.getRequestId(), future);
+            unregisterPending(command.getRequestId(), future);
             future.cancel(true);
             throw e;
         }
@@ -431,9 +404,7 @@ public class ThalesHSMClient implements AutoCloseable {
      * @return In-flight command count
      */
     public int getPendingCount() {
-        synchronized (fifoLock) {
-            return pendingRequests.size() + pendingFifo.size();
-        }
+        return pendingRequests.size();
     }
 
     /**

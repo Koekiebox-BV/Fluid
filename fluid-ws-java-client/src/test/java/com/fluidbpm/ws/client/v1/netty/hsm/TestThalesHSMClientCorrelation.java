@@ -73,15 +73,25 @@ public class TestThalesHSMClientCorrelation {
         }
     }
 
+    @Test
+    public void zeroHeaderLengthIsRejected() {
+        // Without a header there is nothing to correlate on, so FIFO matching is not offered.
+        try {
+            ThalesHSMClientConfig.builder().host("127.0.0.1").headerLength(0).build().validate();
+            fail("header length 0 must be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertTrue(expected.getMessage().contains("1-255"));
+        }
+    }
+
     @Test(timeout = 15000)
-    public void fifoModeWithoutHeader() throws Exception {
-        try (FakeThalesHsmServer hsm = new FakeThalesHsmServer(0);
-             ThalesHSMClient client = connect(hsm.getPort(), 0)) {
-            ThalesResponse a = client.echo("ONE");
-            ThalesResponse b = client.echo("TWO");
-            assertEquals("ONE", a.getResponseData());
-            assertEquals("TWO", b.getResponseData());
-            assertEquals(null, a.getRequestId());
+    public void legacyConstructorUsesDefaultHeader() throws Exception {
+        try (FakeThalesHsmServer hsm = new FakeThalesHsmServer(ThalesHSMClientConfig.DEFAULT_HEADER_LENGTH);
+             ThalesHSMClient client = new ThalesHSMClient("127.0.0.1", hsm.getPort(), false, 0, 0)) {
+            assertEquals(ThalesHSMClientConfig.DEFAULT_HEADER_LENGTH, client.getHeaderLength());
+            ThalesResponse r = client.echo("ONE");
+            assertEquals("ONE", r.getResponseData());
+            assertEquals(ThalesHSMClientConfig.DEFAULT_HEADER_LENGTH, r.getRequestId().length());
             assertEquals(0, client.getPendingCount());
         }
     }
