@@ -1,31 +1,18 @@
 package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
-import lombok.extern.java.Log;
+import com.fluidbpm.ws.client.v1.netty.hsm.common.HsmClientHandler;
+import com.fluidbpm.ws.client.v1.netty.hsm.common.IHsmResponseHandler;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 /**
- * Netty channel handler for processing Thales HSM responses.
- * This handler manages the lifecycle of HSM communication and routes
- * responses to the appropriate response handlers.
+ * Netty channel handler for processing Thales HSM responses; a typed
+ * {@link HsmClientHandler} for {@link ThalesResponse}.
  *
  * @author jasonbruwer
  * @since 1.14
  */
-@Log
-public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesResponse> {
-
-    private final Map<String, IThalesResponseHandler> responseHandlers;
-    private final IThalesResponseHandler defaultHandler;
-
-    private final AtomicInteger sentCommands = new AtomicInteger();
-    private final AtomicInteger receivedResponses = new AtomicInteger();
+public class ThalesHSMClientHandler extends HsmClientHandler<ThalesResponse> {
 
     /**
      * Constructs a ThalesHSMClientHandler with response handlers.
@@ -34,11 +21,10 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
      * @param defaultHandler Default handler for responses without a request ID
      */
     public ThalesHSMClientHandler(
-            Map<String, IThalesResponseHandler> responseHandlers,
-            IThalesResponseHandler defaultHandler
+            Map<String, IHsmResponseHandler<ThalesResponse>> responseHandlers,
+            IHsmResponseHandler<ThalesResponse> defaultHandler
     ) {
-        this.responseHandlers = responseHandlers != null ? responseHandlers : new ConcurrentHashMap<>();
-        this.defaultHandler = defaultHandler;
+        super(ThalesResponse.class, "Thales HSM", responseHandlers, defaultHandler);
     }
 
     /**
@@ -46,117 +32,7 @@ public class ThalesHSMClientHandler extends SimpleChannelInboundHandler<ThalesRe
      *
      * @param defaultHandler Default handler for all responses
      */
-    public ThalesHSMClientHandler(IThalesResponseHandler defaultHandler) {
-        this(new ConcurrentHashMap<>(), defaultHandler);
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        log.info("Connected to Thales HSM: " + ctx.channel().remoteAddress());
-        ctx.fireChannelActive();
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        log.info("Disconnected from Thales HSM: " + ctx.channel().remoteAddress());
-
-        // Notify all handlers of connection closure
-        if (defaultHandler != null) {
-            defaultHandler.connectionClosed();
-        }
-        responseHandlers.values().forEach(IThalesResponseHandler::connectionClosed);
-        responseHandlers.clear();
-
-        ctx.fireChannelInactive();
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ThalesResponse response) {
-        this.receivedResponses.incrementAndGet();
-
-        String requestId = response.getRequestId();
-
-        // Try to find specific handler for this request ID
-        IThalesResponseHandler handler = null;
-        if (requestId != null) {
-            handler = responseHandlers.remove(requestId);
-        }
-
-        // Fall back to default handler
-        if (handler == null) {
-            handler = defaultHandler;
-        }
-
-        // Handle the response
-        if (handler != null) {
-            try {
-                handler.handleResponse(response);
-            } catch (Exception e) {
-                log.log(Level.SEVERE, "Error handling HSM response: " + e.getMessage(), e);
-                handler.handleError(e);
-            }
-        } else {
-            log.warning("No handler found for HSM response: " + response);
-        }
-    }
-
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            log.warning("Thales HSM connection idle (" + ((IdleStateEvent) evt).state() + "): "
-                    + ctx.channel().remoteAddress());
-        }
-        super.userEventTriggered(ctx, evt);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.log(Level.SEVERE, "HSM communication error: " + cause.getMessage(), cause);
-
-        // Notify handlers of error
-        if (defaultHandler != null) {
-            defaultHandler.handleError(cause);
-        }
-        responseHandlers.values().forEach(h -> h.handleError(cause));
-        responseHandlers.clear();
-
-        ctx.close();
-    }
-
-    /**
-     * Registers a response handler for a specific request ID.
-     *
-     * @param requestId The request ID to track
-     * @param handler The handler to call when the response arrives
-     */
-    public void registerHandler(String requestId, IThalesResponseHandler handler) {
-        if (requestId != null && handler != null) {
-            responseHandlers.put(requestId, handler);
-        }
-    }
-
-    /**
-     * Gets the count of sent commands.
-     *
-     * @return The number of commands sent
-     */
-    public int getSentCommands() {
-        return sentCommands.get();
-    }
-
-    /**
-     * Gets the count of received responses.
-     *
-     * @return The number of responses received
-     */
-    public int getReceivedResponses() {
-        return receivedResponses.get();
-    }
-
-    /**
-     * Increments the sent commands counter.
-     */
-    public void incrementSentCommands() {
-        this.sentCommands.incrementAndGet();
+    public ThalesHSMClientHandler(IHsmResponseHandler<ThalesResponse> defaultHandler) {
+        super(ThalesResponse.class, "Thales HSM", defaultHandler);
     }
 }

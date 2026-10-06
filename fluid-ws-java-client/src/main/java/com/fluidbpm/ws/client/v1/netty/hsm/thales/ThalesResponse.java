@@ -1,5 +1,6 @@
 package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
+import com.fluidbpm.ws.client.v1.netty.hsm.common.HsmResponse;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -16,7 +17,7 @@ import java.util.Arrays;
  * @since 1.14
  */
 @Getter
-public class ThalesResponse {
+public class ThalesResponse implements HsmResponse {
     /** Error code reported when the frame is too short to carry one. */
     public static final String MALFORMED_ERROR_CODE = "99";
 

@@ -1,5 +1,6 @@
 package com.fluidbpm.ws.client.v1.netty.hsm.thales;
 
+import com.fluidbpm.ws.client.v1.netty.hsm.common.HsmCommand;
 import lombok.Getter;
 
 import java.nio.charset.Charset;
@@ -21,7 +22,7 @@ import java.util.Arrays;
  * @author jasonbruwer
  * @since 1.14
  */
-public class ThalesCommand {
+public class ThalesCommand implements HsmCommand {
 
     /** Charset used for all text/byte conversions; every byte value maps to exactly one char. */
     public static final Charset WIRE_CHARSET = StandardCharsets.ISO_8859_1;
@@ -103,6 +104,7 @@ public class ThalesCommand {
      *
      * @return The header, or {@code null} if not yet assigned
      */
+    @Override
     public String getRequestId() {
         return requestId;
     }
@@ -155,6 +157,7 @@ public class ThalesCommand {
      *
      * @return The bytes to transmit
      */
+    @Override
     public byte[] toWireBytes() {
         return toBytes(requestId == null ? "" : requestId);
     }
