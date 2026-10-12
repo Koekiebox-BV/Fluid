@@ -17,6 +17,8 @@ package com.fluidbpm.ws.client.v1.config;
 
 import com.fluidbpm.program.api.vo.config.Configuration;
 import com.fluidbpm.program.api.vo.config.ConfigurationListing;
+import com.fluidbpm.program.api.vo.config.StoredDataSource;
+import com.fluidbpm.program.api.vo.config.StoredDataSourceListing;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibrary;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifier;
 import com.fluidbpm.program.api.vo.thirdpartylib.ThirdPartyLibraryTaskIdentifierListing;
@@ -158,6 +160,22 @@ public class ConfigurationClient extends ABaseClientWS {
 		configuration.setServiceTicket(this.serviceTicket);
 		return new Configuration(this.postJson(
 				configuration, WS.Path.Configuration.Version1.configUpsert()));
+	}
+
+	/**
+	 * Creates entries without IDs and updates entries with IDs.
+	 * Null or empty passwords store an empty password. Returned entries omit passwords.
+	 *
+	 * @param dataSources Data sources to create or update.
+	 * @return Stored entries, including their IDs.
+	 */
+	public StoredDataSourceListing upsertDataSources(List<StoredDataSource> dataSources) {
+		StoredDataSourceListing listing = new StoredDataSourceListing();
+		listing.setListing(dataSources);
+		listing.setServiceTicket(this.serviceTicket);
+		return new StoredDataSourceListing(this.putJson(
+				listing, WS.Path.Configuration.Version1.upsertDataSources())
+		);
 	}
 
 	/**

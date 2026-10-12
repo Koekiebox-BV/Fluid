@@ -3478,6 +3478,7 @@ public class WS {
 
                 //Update/Insert...
                 public static final String UPSERT = "/upsert";
+                public static final String UPSERT_DATA_SOURCES = "/upsert_data_sources";
                 public static final String UPSERT_LOGO_SMALL = "/upsert_logo_small";
                 public static final String UPSERT_LOGO_LARGE = "/upsert_logo_large";
 
@@ -3565,6 +3566,14 @@ public class WS {
                  */
                 public static String thirdPartyTaskDelete() {
                     return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_DELETE);
+                }
+
+                /**
+                 * URL path for creating or updating configured JDBC data sources.
+                 * @return {@code /v1/configuration/upsert_data_sources}
+                 */
+                public static String upsertDataSources() {
+                    return Version.VERSION_1.concat(ROOT).concat(UPSERT_DATA_SOURCES);
                 }
 
                 /**
