@@ -4,67 +4,39 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Decodes Thales HSM response frames.
- * Thales protocol uses a 4-byte ASCII header containing the message length,
- * followed by the response data.
+ * Decodes payShield TCP response frames.
  *
- * Format: [4-byte length header][response data]
- * Example: "0010NPTEST DATA" means 10 bytes follow the header
+ * Per the payShield 10K Host Programmers Manual (section 2.1.3 "Returning Responses")
+ * every response is prefixed with a 2-byte binary, big-endian LENGTH field followed by
+ * the RESPONSE bytes (message header + response code + error code + data).
+ * The length prefix is stripped; the RESPONSE bytes are passed on unchanged.
  *
  * @author jasonbruwer
- * @since 1.14
+ * @since 1.15
  */
 public class ThalesFrameDecoder extends ByteToMessageDecoder {
 
-    private static final int HEADER_LENGTH = 4;
-    private static final int MAX_FRAME_LENGTH = 65535; // 64KB max message
-
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        // Wait until we have at least the header (4 bytes)
-        if (in.readableBytes() < HEADER_LENGTH) {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        // Wait until we have the 2-byte length prefix
+        if (in.readableBytes() < ThalesFrameEncoder.LENGTH_FIELD_SIZE) {
             return;
         }
 
-        // Mark the current position
         in.markReaderIndex();
+        int messageLength = in.readUnsignedShort();
 
-        // Read the length header (4 ASCII digits)
-        byte[] headerBytes = new byte[HEADER_LENGTH];
-        in.readBytes(headerBytes);
-        String lengthStr = new String(headerBytes, StandardCharsets.US_ASCII);
-
-        // Parse the length
-        int messageLength;
-        try {
-            messageLength = Integer.parseInt(lengthStr);
-        } catch (NumberFormatException e) {
-            // Invalid header - reset and skip this byte
-            in.resetReaderIndex();
-            in.readByte();
-            return;
-        }
-
-        // Validate length
-        if (messageLength < 0 || messageLength > MAX_FRAME_LENGTH) {
-            throw new IllegalStateException("Invalid frame length: " + messageLength);
-        }
-
-        // Wait until we have the complete message
+        // Wait until the complete message has arrived
         if (in.readableBytes() < messageLength) {
             in.resetReaderIndex();
             return;
         }
 
-        // Read the message data
         byte[] messageData = new byte[messageLength];
         in.readBytes(messageData);
-
-        // Add to output
         out.add(messageData);
     }
 }

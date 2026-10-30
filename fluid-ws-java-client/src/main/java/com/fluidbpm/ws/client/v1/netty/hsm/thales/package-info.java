@@ -20,16 +20,21 @@
  *
  * <h2>Protocol Details</h2>
  * <p>
- * Thales HSM protocol uses a simple frame format:
+ * Thales HSM protocol uses a simple frame format (payShield Host Programmers Manual):
  * <pre>
- * Request:  [4-byte length][2-char command code][command data]
- * Response: [4-byte length][2-char response code][2-char error code][response data]
+ * Request:  [2-byte binary length][message header][2-char command code][command data]
+ * Response: [2-byte binary length][message header][2-char response code][2-char error code][response data]
  * </pre>
  * <p>
- * Example:
+ * The message header (length configured on the HSM, default 4) is echoed back unmodified.
+ * The client assigns a unique header to every in-flight command and matches each response
+ * to its request by that header, so commands can be pipelined on one connection and
+ * responses may arrive out of order. There is no FIFO fallback; a header is required.
+ * <p>
+ * Example (header {@code 0001}):
  * <pre>
- * Request:  "0010NOTEST DATA"  (Echo "TEST DATA")
- * Response: "0010NP00TEST DATA" (Success with echoed data)
+ * Request:  0x00 0x0F "0001NOTEST DATA"  (Echo "TEST DATA")
+ * Response: 0x00 0x11 "0001NP00TEST DATA" (Success with echoed data)
  * </pre>
  *
  * <h2>Common Commands</h2>
@@ -90,13 +95,13 @@
  *      ↓
  * [Idle State Handler]
  *      ↓
- * [Frame Decoder] ← strips 4-byte length header
+ * [Frame Decoder] ← strips 2-byte binary length prefix
  *      ↓
- * [Frame Encoder] ← adds 4-byte length header
+ * [Frame Encoder] ← adds 2-byte binary length prefix
  *      ↓
- * [Response Decoder] ← bytes to ThalesResponse
+ * [Response Decoder] ← bytes to ThalesResponse (message header split off)
  *      ↓
- * [Command Encoder] ← ThalesCommand to bytes
+ * [Command Encoder] ← ThalesCommand to message header + code + data bytes
  *      ↓
  * [HSM Client Handler] ← business logic
  * </pre>

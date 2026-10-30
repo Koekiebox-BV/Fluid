@@ -15,11 +15,11 @@
 
 package com.fluidbpm.program.api.util.command.impl;
 
-import java.io.File;
-import java.io.IOException;
-
 import com.fluidbpm.program.api.util.command.CommandUtil;
 import com.fluidbpm.program.api.util.exception.UtilException;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Utility class used for executing document to pdf conversion.
@@ -107,10 +107,7 @@ public class DocumentToPDFConvert {
             }
 
             return returnVal;
-        }
-        //
-        catch (IOException eParam) {
-
+        } catch (IOException eParam) {
             throw new UtilException(
                     "Problem executing command. " + eParam.getMessage(),
                     eParam, UtilException.ErrorCode.GENERAL);

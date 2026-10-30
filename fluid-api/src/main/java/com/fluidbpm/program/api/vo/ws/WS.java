@@ -2347,6 +2347,7 @@ public class WS {
                  * @param populateForm            Should the FlowItem form be populated (even if FlowItem is not found)
                  * @param executeCalculatedLabels Execute the calculated label if form should be populated {@code populateForm == true}.
                  * @param populateStepProgress    Should the flow progress be populated as FluidItem properties.
+                 * @param populateRouteFields     Should route fields be included in the response.
                  * @return {@code v1/flow_item/get_by_form}
                  */
                 public static String getByForm(
@@ -3477,6 +3478,7 @@ public class WS {
 
                 //Update/Insert...
                 public static final String UPSERT = "/upsert";
+                public static final String UPSERT_DATA_SOURCES = "/upsert_data_sources";
                 public static final String UPSERT_LOGO_SMALL = "/upsert_logo_small";
                 public static final String UPSERT_LOGO_LARGE = "/upsert_logo_large";
 
@@ -3564,6 +3566,14 @@ public class WS {
                  */
                 public static String thirdPartyTaskDelete() {
                     return Version.VERSION_1.concat(ROOT).concat(THIRD_PARTY_LIB_DELETE);
+                }
+
+                /**
+                 * URL path for creating or updating configured JDBC data sources.
+                 * @return {@code /v1/configuration/upsert_data_sources}
+                 */
+                public static String upsertDataSources() {
+                    return Version.VERSION_1.concat(ROOT).concat(UPSERT_DATA_SOURCES);
                 }
 
                 /**

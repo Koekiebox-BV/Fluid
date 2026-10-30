@@ -150,7 +150,7 @@ public class ThalesHSMExample {
             ThalesCommand customCmd = new ThalesCommand(
                     "KQ",  // Command code
                     "0U1234567890ABCDEF1234567890ABCDE",  // Command data
-                    "REQUEST-001"  // Optional request ID for tracking
+                    "R001"  // Optional message header; must match the configured header length (default 4)
             );
 
             ThalesResponse response = client.sendCommand(customCmd);

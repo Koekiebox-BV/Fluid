@@ -537,6 +537,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
     /**
      * Converts a list of objects extending ABaseFluidGSONObject into a JsonArray.
      *
+     * @param <T> the type of objects in the list, must extend ABaseFluidGSONObject
      * @param list the list of objects to be converted; can be null, in which case, an empty JsonArray is returned
      * @return a JsonArray representing the JSON objects of the input list, or an empty JsonArray if the list is null
      */
@@ -554,6 +555,7 @@ public abstract class ABaseFluidGSONObject extends ABaseFluidVO {
      * derived from a list of ABaseFluidGSONObject instances. The list of objects
      * is supplied by the provided factory.
      *
+     * @param <T>        the type of objects supplied by the factory, must extend ABaseFluidGSONObject
      * @param fieldName  the name of the field to be added to the JsonObject
      * @param jsonObject the target JsonObject where the array should be added
      * @param factory    a supplier that provides the list of objects to be converted into the JSON array
