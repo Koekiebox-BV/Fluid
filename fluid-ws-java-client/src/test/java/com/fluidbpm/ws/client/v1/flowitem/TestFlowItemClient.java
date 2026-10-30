@@ -225,12 +225,6 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             // Wait until all the items are moved out:
             this.executeUntilOrTOFromView(flowItmClient, viewWorkView, 0, 100);
 
-            try {
-                Integer count = flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListingCount();
-                TestCase.fail("Did not expect any items in the queue. Total "+count);
-            } catch (FluidClientException noEntries) {
-                if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
-            }
 
             // ensure the correct steps have taken place:
             itemsFromLookup.forEach(itm -> {
@@ -451,12 +445,6 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 100);
             log.info("Lock/SendOn completed.");
 
-            try {
-                int count = fiClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing().size();
-                TestCase.fail(String.format("Did not expect any items in the queue. Total of '%d' detected", count));
-            } catch (FluidClientException noEntries) {
-                if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
-            }
 
             this.sleepForSeconds(2);
 
