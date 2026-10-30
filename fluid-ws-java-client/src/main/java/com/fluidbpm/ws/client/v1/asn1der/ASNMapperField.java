@@ -130,7 +130,7 @@ public class ASNMapperField extends ASNBaseTaggedMapper<Field> {
 
         assert toPop != null && obj != null : "TagObj instances cannot be null.";
 
-        String fieldName = null;
+            String fieldName = toPop.getFieldName();
         switch (tag.getTagNo()) {
             case Map.NAME:
                 toPop.setFieldName(fieldName = asGeneralTxt(obj, Field.JSONMapping.FIELD_NAME));
