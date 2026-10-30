@@ -462,6 +462,16 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
                     }
                 });
             });
+            // wait for the deletes, otherwise they race with the force delete of the flow:
+            executorDelete.shutdown();
+            try {
+                if (!executorDelete.awaitTermination(5, TimeUnit.MINUTES)) {
+                    TestCase.fail("Timed out waiting for work-items to be deleted.");
+                }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                TestCase.fail("Interrupted waiting for work-items to be deleted.");
+            }
             log.info("Removing created workflows and fields. First get flow '"+flowName+"'.");
             // Cleanup:
             flow = flowClient.getFlowByName(flowName);
