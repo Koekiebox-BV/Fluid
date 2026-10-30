@@ -198,7 +198,9 @@
 				<configuration>
 					<excludes>
 						<!--Migrator is for client runs only, run with: mvn test -Dtest=TestMigratorPlan-->
-						<exclude>**/migrator/**</exclude>
+						<exclude>com/fluidbpm/ws/client/migrator/TestMigratorPlan.java</exclude>
+						<!--Keep the Surefire default exclude for nested classes-->
+						<exclude>**/*$*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
