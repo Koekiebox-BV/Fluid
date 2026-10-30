@@ -73,7 +73,12 @@ public class ASNMapperFactory {
      */
     public ABaseFluidVO readObjectFromReceivedTransMisObj(ASN1Sequence baseTrans) {
         BaseTransmission bt = this.mapperBaseTransmission.decode(baseTrans);
-        return bt.getTransmissionObject();
+        ABaseFluidVO payload = bt.getTransmissionObject();
+        // ID-only payloads carry the request echo in the transmission envelope.
+        if (payload != null && bt.getEcho() != null && !bt.getEcho().isEmpty()) {
+            payload.setEcho(bt.getEcho());
+        }
+        return payload;
     }
 
     /**
