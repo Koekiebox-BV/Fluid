@@ -39,7 +39,7 @@ import static com.fluidbpm.program.api.util.UtilGlobal.ENCODING_UTF_8;
  * @since v1.6
  */
 public class CommandUtil {
-    public static final String FLUID_CLI = System.getProperty("FLUID_CLI_PATH", "fluid-cli");;
+    public static final String FLUID_CLI = System.getProperty("FLUID_CLI_PATH", "fluid-cli");
 
     /**
      * Result value object when a command line operation is finish.
