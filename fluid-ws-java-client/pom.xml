@@ -190,6 +190,18 @@
 	<!--Maven Build Information-->
 	<build>
 		<plugins>
+			<!--Maven Surefire Plugin-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<excludes>
+						<!--Migrator is for client runs only, run with: mvn test -Dtest=TestMigratorPlan-->
+						<exclude>**/migrator/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 			<!--Maven GPG Sign Plugin-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
