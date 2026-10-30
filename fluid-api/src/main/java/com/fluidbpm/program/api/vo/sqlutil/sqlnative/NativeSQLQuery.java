@@ -30,6 +30,13 @@ import java.util.List;
  * The Native SQL Query that will be executed on the
  * Fluid BPM Core server.
  * </p>
+ * <p>
+ * Native SQL is passed through without database dialect translation. For PostgreSQL
+ * table-returning functions, set {@code query} to
+ * {@code SELECT * FROM Fluid_GetFormFieldsForFormDefinition(?)} and leave
+ * {@code storedProcedure} unset. JDBC procedure calls such as {@code {CALL ...}}
+ * belong in {@code storedProcedure}; they are not interchangeable with function SELECTs.
+ * </p>
  *
  * @author jasonbruwer on 2018-03-13
  * @see java.sql.PreparedStatement
