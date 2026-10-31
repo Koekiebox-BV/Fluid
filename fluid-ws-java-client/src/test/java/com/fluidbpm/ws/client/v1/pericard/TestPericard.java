@@ -1223,6 +1223,10 @@ public class TestPericard extends ABaseTestASNDER {
 
     @Test
     public void testImportTerminalMasterKeyUnderZoneMasterKeyUsingPGP() {
+        runTerminalMasterKeyImport(true);
+    }
+
+    private void runTerminalMasterKeyImport(boolean encrypted) {
         if (this.isConnectionInValid) return;
 
         if (UtilGlobal.isBlank(this.lastZmk)) {
@@ -1305,8 +1309,9 @@ public class TestPericard extends ABaseTestASNDER {
 
             FluidItem tmksEmail = new FluidItem(frmEmail);
             tmksEmail.setAttachments(UtilGlobal.toListSafe(
-                    new Attachment(rawDataToEncAndSign, "tmk_content.csv", "text/csv"),
-                    new Attachment(asciiArmored.getBytes(), "tmk_content.csv.enc", "text/csv")
+                    encrypted
+                            ? new Attachment(asciiArmored.getBytes(java.nio.charset.StandardCharsets.UTF_8), "tmk_content.csv.enc", "text/csv")
+                            : new Attachment(rawDataToEncAndSign, "tmk_content.csv", "text/csv")
             ));
             // 1. TMK REQ CREATED FROM EMAIL CONTENT:
             List<Long> createdIdsTmkImport = this.submitCycle(
@@ -1459,8 +1464,8 @@ public class TestPericard extends ABaseTestASNDER {
     private byte[] generateCSVTMK() {
         String content =
                 "'Serial No', 'TMK Under ZMK', 'KCV'\n" +
-                "'SN123'    , 'KB123'        , 'AABBCC'\n"+
-                "'SN456'    , 'KB456'        , '112233'";
+                "'SN" + java.util.UUID.randomUUID() + "'    , 'U11111111111111111111111111111111'        , 'AABBCC'\n"+
+                "'SN" + java.util.UUID.randomUUID() + "'    , 'U22222222222222222222222222222222'        , '112233'";
         return content.getBytes();
     }
 
@@ -1527,33 +1532,7 @@ character to be even.
 
     @Test
     public void testImportKeyTMKs() {
-        if (this.isConnectionInValid) return;
-
-        if (UtilGlobal.isBlank(this.lastZmk)) {
-            // We need a ZMK!
-            this.testGenerateHSMZoneMasterKeyRequest();
-        }
-        TestCase.assertNotNull("Expected 'ZMK'!!!", this.lastZmk);
-
-        int itemCount = 1, threadCount = 1;
-        String flowNameImportTmks = "Import TMK";
-        try (WebSocketASNDERClient derClient = new WebSocketASNDERClient(
-                BASE_URL,
-                ADMIN_SERVICE_TICKET_HEX,
-                TimeUnit.SECONDS.toMillis(60));
-             FlowStepClient flowStepClient = new FlowStepClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             SQLUtilClient sqlUtl = new SQLUtilClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             UserClient uc = new UserClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             UserQueryClient uqc = new UserQueryClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             FormContainerClient fcc = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET);
-             FormDefinitionClient fdc = new FormDefinitionClient(BASE_URL, ADMIN_SERVICE_TICKET);
-        ) {
-            if (!isPericardEnabled(gfc)) {
-                log.warning("Pericard is not enabled. Skipping test. (testImportKeyTMKs)");
-                return;
-            }
-        }
+        runTerminalMasterKeyImport(false);
     }
 
     @Test
@@ -1772,6 +1751,15 @@ character to be even.
             TestCase.assertNotNull("Expected Certificate PEM!", certForm.getFieldValueAsString("Certificate PEM"));
             TestCase.assertTrue("Expected Certificate PEM to start with '-----BEGIN'!",
                     certForm.getFieldValueAsString("Certificate PEM").startsWith("-----BEGIN"));
+            try {
+                java.security.cert.X509Certificate certificate = (java.security.cert.X509Certificate)
+                        java.security.cert.CertificateFactory.getInstance("X.509").generateCertificate(
+                                new java.io.ByteArrayInputStream(certForm.getFieldValueAsString("Certificate PEM")
+                                        .getBytes(java.nio.charset.StandardCharsets.US_ASCII)));
+                certificate.verify(certificate.getPublicKey());
+            } catch (java.security.GeneralSecurityException error) {
+                throw new AssertionError("HSM-backed self-signed certificate has an invalid signature", error);
+            }
             TestCase.assertNotNull("Expected Certificate Serial Number!", certForm.getFieldValueAsString("Certificate Serial Number"));
             TestCase.assertNotNull("Expected Fingerprint SHA One!", certForm.getFieldValueAsString("Fingerprint SHA One"));
             TestCase.assertNotNull("Expected Fingerprint SHA Two Five Six!", certForm.getFieldValueAsString("Fingerprint SHA Two Five Six"));
