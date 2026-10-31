@@ -48,7 +48,9 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
     @Getter
     protected final Set<String> expectedEchoMessagesBeforeComplete;
 
-    private CompletableFuture<List<T>> completableFuture;
+    // Responses can arrive before the caller obtains the future via getCF().
+    private final CompletableFuture<List<T>> completableFuture = new CompletableFuture<>();
+    private volatile boolean awaitingResponses;
 
     private boolean compressedResponse;
 
@@ -200,18 +202,17 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
         //Do a message callback...
         if (this.messageReceivedCallback != null) this.messageReceivedCallback.messageReceived(messageForm);
 
-        //Completable future is set, and all response messages received...
-        if (this.completableFuture != null) {
-            String echo = messageForm.getEcho();
-            if (echo != null && !echo.trim().isEmpty()) this.expectedEchoMessagesBeforeComplete.remove(echo);
+        String echo = messageForm.getEcho();
+        if (echo != null && !echo.trim().isEmpty()) this.expectedEchoMessagesBeforeComplete.remove(echo);
+        this.completeResponseIfReady();
+    }
 
-            if (this.webSocketClient.getSentMessages() == this.webSocketClient.getReceivedMessages()) {
-                //Sent and received messages match...
-                this.completableFuture.complete(this.returnValue);
-            } else if (this.expectedEchoMessagesBeforeComplete.isEmpty()) {
-                //All expected messages received...
-                this.completableFuture.complete(this.returnValue);
-            }
+    private void completeResponseIfReady() {
+        // getCF() is called after dispatch: a batch may still be registering echoes before then.
+        if (!this.awaitingResponses || this.returnValue.isEmpty()) return;
+        if (this.webSocketClient.getSentMessages() == this.webSocketClient.getReceivedMessages()
+                || this.expectedEchoMessagesBeforeComplete.isEmpty()) {
+            this.completableFuture.complete(this.returnValue);
         }
     }
 
@@ -222,8 +223,8 @@ public abstract class AGenericListMessageHandler<T extends ABaseFluidVO> impleme
      * @see CompletableFuture
      */
     public CompletableFuture<List<T>> getCF() {
-        if (this.completableFuture == null) this.completableFuture = new CompletableFuture<>();
-
+        this.awaitingResponses = true;
+        this.completeResponseIfReady();
         return this.completableFuture;
     }
 
