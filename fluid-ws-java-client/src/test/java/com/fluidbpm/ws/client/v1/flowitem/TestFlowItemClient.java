@@ -32,7 +32,9 @@ import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.Future;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -102,6 +104,9 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             }
         }
 
+        if (!containFlowEnd || !containToNewStep || !containNewRouteItem) {
+            logWorkflowDiagnostics(flowItmClient, java.util.Collections.singletonList(createdItem));
+        }
         TestCase.assertTrue("Not all leg entries were found: " +
                 "FlowEnd["+containFlowEnd+"], ToNewStep["+containToNewStep+"], NewRouteItem["+containNewRouteItem+"]",
                 containFlowEnd && containToNewStep && containNewRouteItem);
@@ -128,7 +133,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
      * Then test whether the items may be viewed from the workflow step.
      */
     @Test(timeout = 350_000)//seconds.
-    public void testSmallWorkflowAssignStepWithConcurrency() {
+    public void testSmallWorkflowAssignStepWithConcurrency() throws Exception {
         if (this.isConnectionInValid) return;
 
         int itemCount = 50;
@@ -186,26 +191,45 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
+            List<FluidItem> createdItems = new java.util.concurrent.CopyOnWriteArrayList<>();
+            List<Future<?>> creations = new ArrayList<>();
             AtomicLong itmCreate = new AtomicLong(0);
             long starter = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
-                executor.submit(() -> {
+                creations.add(executor.submit(() -> {
                     FluidItem mailItm = emailItem(UUID.randomUUID().toString());
 
                     long itmCreateLcl = System.currentTimeMillis();
                     FluidItem toCreate = flowItmClient.createFlowItem(mailItm, flowName);
                     itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
-                    itmCreate.set(itmCreate.get() + itmCreateLcl);
+                    itmCreate.addAndGet(itmCreateLcl);
 
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
-                });
+                    createdItems.add(toCreate);
+                    log.info("WORKFLOW_DIAG created item=" + toCreate.getId()
+                            + ", form=" + toCreate.getForm().getId());
+                }));
+            }
+
+            executor.shutdown();
+            try {
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(100);
+                for (Future<?> creation : creations) {
+                    creation.get(Math.max(1, deadline - System.nanoTime()), TimeUnit.NANOSECONDS);
+                }
+            } finally {
+                executor.shutdownNow();
             }
 
             // Fetch items from View:
-            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
-                    flowItmClient, viewWorkView, itemCount, 100
-            );
+            List<FluidItem> itemsFromLookup;
+            try {
+                itemsFromLookup = this.executeUntilOrTOFromView(flowItmClient, viewWorkView, itemCount, 100);
+            } catch (AssertionError timeout) {
+                logWorkflowDiagnostics(flowItmClient, createdItems);
+                throw timeout;
+            }
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
             long timeTakenInMs = (System.currentTimeMillis() - starter);
             log.info(String.format("TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",

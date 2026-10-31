@@ -132,8 +132,29 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
             });
             if (isNotDone.get() == 0) return true;
         }
+        logWorkflowDiagnostics(fiClient, list);
         log.warning("After "+timeoutInSeconds+" seconds we still have "+isNotDone.get()+" that is not "+state+"!!!");
         return (isNotDone.get() == 0);
+    }
+
+    protected void logWorkflowDiagnostics(FlowItemClient fiClient, List<FluidItem> list) {
+        for (FluidItem item : list) {
+            try {
+                FluidItem current = fiClient.getFluidItemByFormId(item.getForm().getId(), true, false);
+                log.warning("WORKFLOW_DIAG item=" + item.getId() + ", form="
+                        + item.getForm().getId() + ", state=" + current.getFlowState());
+                try (com.fluidbpm.ws.client.v1.form.FormContainerClient forms =
+                        new com.fluidbpm.ws.client.v1.form.FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
+                    forms.getFormFlowHistoricData(item.getForm()).forEach(entry ->
+                            log.warning("WORKFLOW_DIAG form=" + item.getForm().getId()
+                                    + ", historyType=" + entry.getLogEntryType()
+                                    + ", time=" + entry.getDateCreated()));
+                }
+            } catch (Exception diagnosticFailure) {
+                log.log(java.util.logging.Level.WARNING,
+                        "WORKFLOW_DIAG lookup failed for form=" + item.getForm().getId(), diagnosticFailure);
+            }
+        }
     }
 
     protected static Field createRouteField(RouteFieldClient rfClient, String name, Field.Type type) {
