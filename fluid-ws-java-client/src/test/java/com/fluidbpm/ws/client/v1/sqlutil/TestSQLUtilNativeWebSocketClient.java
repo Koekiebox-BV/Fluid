@@ -15,6 +15,7 @@
 
 package com.fluidbpm.ws.client.v1.sqlutil;
 
+import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
@@ -101,10 +102,10 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 		long start = System.currentTimeMillis();
 		int numberOfRecords = 1;
 
-		NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
+		NativeSQLQuery nativeSQLQuery = SQLUtilTestQueries.routine(
+				ISyntax.ProcedureMapping.Field.GetFormFieldsForFormDefinition);
 
 		nativeSQLQuery.setDatasourceName(FLUID_DS);
-		nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
 
 		List<SQLColumn> inputs = new ArrayList<>();
 		inputs.add(new SQLColumn(null,1,Types.BIGINT, 1L));
@@ -140,10 +141,10 @@ public class TestSQLUtilNativeWebSocketClient extends ABaseLoggedInTestCase {
 		long start = System.currentTimeMillis();
 		int numberOfRecords = 1;
 
-		NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
+		NativeSQLQuery nativeSQLQuery = SQLUtilTestQueries.routine(
+				ISyntax.ProcedureMapping.Field.GetFormFieldsForFormDefinition);
 
 		nativeSQLQuery.setDatasourceName(FLUID_DS);
-		nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
 
 		List<SQLColumn> inputs = new ArrayList<>();
 		inputs.add(new SQLColumn(

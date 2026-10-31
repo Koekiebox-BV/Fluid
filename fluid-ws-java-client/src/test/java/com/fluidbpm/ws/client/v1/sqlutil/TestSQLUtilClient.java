@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.TableRecord;
 import com.fluidbpm.program.api.vo.item.FluidItem;
+import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLColumn;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
@@ -224,10 +225,10 @@ public class TestSQLUtilClient extends ABaseLoggedInTestCase {
             long start = System.currentTimeMillis();
             int numberOfRecords = 1;
 
-            NativeSQLQuery nativeSQLQuery = new NativeSQLQuery();
+            NativeSQLQuery nativeSQLQuery = SQLUtilTestQueries.routine(
+                    ISyntax.ProcedureMapping.Field.GetFormFieldsForFormDefinition);
 
             nativeSQLQuery.setDatasourceName(FLUID_DS);
-            nativeSQLQuery.setStoredProcedure("{call Fluid_GetFormFieldsForFormDefinition(?)}");
 
             List<SQLColumn> inputs = new ArrayList<>();
             inputs.add(new SQLColumn(null,1, Types.BIGINT, 1L));

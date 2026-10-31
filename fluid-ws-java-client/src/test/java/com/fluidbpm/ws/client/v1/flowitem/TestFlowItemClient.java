@@ -32,7 +32,9 @@ import junit.framework.TestCase;
 import lombok.extern.java.Log;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.Future;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -102,6 +104,9 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             }
         }
 
+        if (!containFlowEnd || !containToNewStep || !containNewRouteItem) {
+            logWorkflowDiagnostics(flowItmClient, java.util.Collections.singletonList(createdItem));
+        }
         TestCase.assertTrue("Not all leg entries were found: " +
                 "FlowEnd["+containFlowEnd+"], ToNewStep["+containToNewStep+"], NewRouteItem["+containNewRouteItem+"]",
                 containFlowEnd && containToNewStep && containNewRouteItem);
@@ -128,7 +133,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
      * Then test whether the items may be viewed from the workflow step.
      */
     @Test(timeout = 350_000)//seconds.
-    public void testSmallWorkflowAssignStepWithConcurrency() {
+    public void testSmallWorkflowAssignStepWithConcurrency() throws Exception {
         if (this.isConnectionInValid) return;
 
         int itemCount = 50;
@@ -186,26 +191,45 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             // create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(6);
+            List<FluidItem> createdItems = new java.util.concurrent.CopyOnWriteArrayList<>();
+            List<Future<?>> creations = new ArrayList<>();
             AtomicLong itmCreate = new AtomicLong(0);
             long starter = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
-                executor.submit(() -> {
+                creations.add(executor.submit(() -> {
                     FluidItem mailItm = emailItem(UUID.randomUUID().toString());
 
                     long itmCreateLcl = System.currentTimeMillis();
                     FluidItem toCreate = flowItmClient.createFlowItem(mailItm, flowName);
                     itmCreateLcl = (System.currentTimeMillis() - itmCreateLcl);
-                    itmCreate.set(itmCreate.get() + itmCreateLcl);
+                    itmCreate.addAndGet(itmCreateLcl);
 
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
-                });
+                    createdItems.add(toCreate);
+                    log.info("WORKFLOW_DIAG created item=" + toCreate.getId()
+                            + ", form=" + toCreate.getForm().getId());
+                }));
+            }
+
+            executor.shutdown();
+            try {
+                long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(100);
+                for (Future<?> creation : creations) {
+                    creation.get(Math.max(1, deadline - System.nanoTime()), TimeUnit.NANOSECONDS);
+                }
+            } finally {
+                executor.shutdownNow();
             }
 
             // Fetch items from View:
-            List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(
-                    flowItmClient, viewWorkView, itemCount, 100
-            );
+            List<FluidItem> itemsFromLookup;
+            try {
+                itemsFromLookup = this.executeUntilOrTOFromView(flowItmClient, viewWorkView, itemCount, 100);
+            } catch (AssertionError timeout) {
+                logWorkflowDiagnostics(flowItmClient, createdItems);
+                throw timeout;
+            }
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
             long timeTakenInMs = (System.currentTimeMillis() - starter);
             log.info(String.format("TOOK [%d (create-only):%d (fetch)]ms to create [%d] items.",
@@ -225,12 +249,6 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             // Wait until all the items are moved out:
             this.executeUntilOrTOFromView(flowItmClient, viewWorkView, 0, 100);
 
-            try {
-                Integer count = flowItmClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListingCount();
-                TestCase.fail("Did not expect any items in the queue. Total "+count);
-            } catch (FluidClientException noEntries) {
-                if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
-            }
 
             // ensure the correct steps have taken place:
             itemsFromLookup.forEach(itm -> {
@@ -271,7 +289,7 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
     }
 
     @Test(timeout = 800_000)//seconds.
-    public void testWorkflowRuleExecutionWithConcurrency() {
+    public void testWorkflowRuleExecutionWithConcurrency() throws Exception {
         if (this.isConnectionInValid) return;
 
         int
@@ -366,15 +384,18 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
 
             // Create the work-items:
             ExecutorService executor = Executors.newFixedThreadPool(tCountNewItems);
+            List<Future<?>> creationTasks = new ArrayList<>();
             long itmCreate = System.currentTimeMillis();
             for (int cycleTimes = 0; cycleTimes < itemCount; cycleTimes++) {
-                executor.submit(() -> {
+                creationTasks.add(executor.submit(() -> {
                     FluidItem toCreate = fiClient.createFlowItem(
                             emailItem(UUID.randomUUID().toString()), flowName);
                     TestCase.assertNotNull(toCreate);
                     TestCase.assertNotNull(toCreate.getId());
-                });
+                }));
             }
+
+            awaitTasks(executor, creationTasks, 100);
 
             List<FluidItem> itemsFromLookup = this.executeUntilOrTOFromView(fiClient, viewWorkView, itemCount, 100);
             TestCase.assertEquals(itemCount, itemsFromLookup.size());
@@ -437,43 +458,43 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             TestCase.assertFalse("Exec-With-Concurrency: Avg. processing per RULE is taking too long (at "+allRuleItemCount+").",
                     allRuleItemCount > 3000L);
 
-            // Send it on:
+            // Wait for every send-on request, including any worker exceptions.
             ExecutorService executorLockSendOn = Executors.newFixedThreadPool(tCountLockSendOn);
+            List<Future<?>> sendOnTasks = new ArrayList<>();
             itemsFromLookup.forEach(itm -> {
-                executorLockSendOn.submit(() -> {
+                sendOnTasks.add(executorLockSendOn.submit(() -> {
                     fcClient.lockFormContainer(itm.getForm(), viewWorkView);
                     fiClient.sendFlowItemOn(itm);
-                });
+                }));
             });
+            awaitTasks(executorLockSendOn, sendOnTasks, 100);
 
-            // wait until all the items are moved out:
-            log.info("Waiting for Lock/SendOn to complete.");
-            this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 100);
-            log.info("Lock/SendOn completed.");
-
-            try {
-                int count = fiClient.getFluidItemsForView(viewWorkView, itemCount, 0).getListing().size();
-                TestCase.fail(String.format("Did not expect any items in the queue. Total of '%d' detected", count));
-            } catch (FluidClientException noEntries) {
-                if (noEntries.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw noEntries;
+            // Leaving the assignment view is not completion: Exit rules may still be queued.
+            // Read the forms themselves so a missing workflow item cannot imply completion.
+            List<Form> pendingForms = new ArrayList<>();
+            itemsFromLookup.forEach(itm -> pendingForms.add(itm.getForm()));
+            long completionDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(100);
+            while (!pendingForms.isEmpty()) {
+                pendingForms.removeIf(form -> "NotInFlow".equals(
+                        fcClient.getFormContainerById(form.getId()).getFlowState()));
+                if (pendingForms.isEmpty()) break;
+                if (System.nanoTime() >= completionDeadline) {
+                    logWorkflowDiagnostics(fiClient, itemsFromLookup);
+                    List<Long> pendingIds = new ArrayList<>();
+                    pendingForms.forEach(form -> pendingIds.add(form.getId()));
+                    TestCase.fail("Workflow did not finish; refusing cleanup. Pending form IDs: " + pendingIds);
+                }
+                TimeUnit.SECONDS.sleep(1);
             }
+            this.executeUntilOrTOFromView(fiClient, viewWorkView, 0, 100);
+            log.info("All forms have left workflow; cleanup can begin.");
 
-            this.sleepForSeconds(2);
-
-            log.info("Cleanup all work-items.");
-            // Ensure the correct steps have taken place:
             ExecutorService executorDelete = Executors.newFixedThreadPool(tCountDelete);
-            itemsFromLookup.forEach(itm -> {
-                executorDelete.submit(() -> {
-                    try {
-                        fcClient.deleteFormContainer(itm.getForm());
-                    } catch (Exception e) {
-                        TestCase.fail(String.format("Unable to delete! %s", e.getMessage()));
-                        e.printStackTrace();
-                        log.severe("Failed to delete form container for item: "+itm.getId());
-                    }
-                });
-            });
+            List<Future<?>> deletionTasks = new ArrayList<>();
+            itemsFromLookup.forEach(itm -> deletionTasks.add(executorDelete.submit(() -> {
+                fcClient.deleteFormContainer(itm.getForm());
+            })));
+            awaitTasks(executorDelete, deletionTasks, 300);
             log.info("Removing created workflows and fields. First get flow '"+flowName+"'.");
             // Cleanup:
             flow = flowClient.getFlowByName(flowName);
@@ -486,4 +507,21 @@ public class TestFlowItemClient extends ABaseTestFlowStep {
             log.info("DONE!");
         }
     }
+    /** Await a concurrent phase with one deadline and propagate worker failures to JUnit. */
+    private static void awaitTasks(ExecutorService executor, List<Future<?>> tasks, int timeoutSeconds)
+            throws Exception {
+        executor.shutdown();
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(timeoutSeconds);
+        try {
+            for (Future<?> task : tasks) {
+                task.get(Math.max(1L, deadline - System.nanoTime()), TimeUnit.NANOSECONDS);
+            }
+        } catch (InterruptedException interrupted) {
+            Thread.currentThread().interrupt();
+            throw interrupted;
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
 }

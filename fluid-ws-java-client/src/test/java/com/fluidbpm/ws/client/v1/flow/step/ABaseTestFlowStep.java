@@ -35,8 +35,10 @@ import org.junit.After;
 import org.junit.Before;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -87,20 +89,25 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
             int attemptCount,
             int maxWaitSeconds
     ) {
-        for (int iter = 0; iter < maxWaitSeconds; iter++) {
+        long started = System.nanoTime();
+        int queryLimit = Math.max(1, attemptCount);
+        Integer lastCount = null;
+        do {
             this.sleepForSeconds(3);
             try {
-                List<FluidItem> attempt = fiClient.getFluidItemsForView(view, attemptCount, 0).getListing();
-                if (attempt != null && attempt.size() >= attemptCount) return attempt;
-                else if (attempt != null) {
-                    log.info("REST: Not yet at "+attemptCount+", at "+attempt.size()+" items.");
+                List<FluidItem> items = fiClient.getFluidItemsForView(view, queryLimit, 0).getListing();
+                lastCount = items == null ? null : items.size();
+                if (items != null && (attemptCount == 0 ? items.isEmpty() : items.size() >= attemptCount)) {
+                    return items;
                 }
             } catch (FluidClientException fce) {
                 if (fce.getErrorCode() != FluidClientException.ErrorCode.NO_RESULT) throw fce;
-                if (attemptCount == 0) return null;
+                lastCount = 0;
+                if (attemptCount == 0) return Collections.emptyList();
             }
-        }
-        return null;
+        } while (System.nanoTime() - started < TimeUnit.SECONDS.toNanos(maxWaitSeconds));
+        throw new AssertionError("Timed out waiting for " + attemptCount
+                + " queue items. Last observed count was " + lastCount);
     }
 
     protected boolean executeUntilInState(
@@ -125,8 +132,29 @@ public abstract class ABaseTestFlowStep extends ABaseLoggedInTestCase {
             });
             if (isNotDone.get() == 0) return true;
         }
+        logWorkflowDiagnostics(fiClient, list);
         log.warning("After "+timeoutInSeconds+" seconds we still have "+isNotDone.get()+" that is not "+state+"!!!");
         return (isNotDone.get() == 0);
+    }
+
+    protected void logWorkflowDiagnostics(FlowItemClient fiClient, List<FluidItem> list) {
+        for (FluidItem item : list) {
+            try {
+                FluidItem current = fiClient.getFluidItemByFormId(item.getForm().getId(), true, false);
+                log.warning("WORKFLOW_DIAG item=" + item.getId() + ", form="
+                        + item.getForm().getId() + ", state=" + current.getFlowState());
+                try (com.fluidbpm.ws.client.v1.form.FormContainerClient forms =
+                        new com.fluidbpm.ws.client.v1.form.FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
+                    forms.getFormFlowHistoricData(item.getForm()).forEach(entry ->
+                            log.warning("WORKFLOW_DIAG form=" + item.getForm().getId()
+                                    + ", historyType=" + entry.getLogEntryType()
+                                    + ", time=" + entry.getDateCreated()));
+                }
+            } catch (Exception diagnosticFailure) {
+                log.log(java.util.logging.Level.WARNING,
+                        "WORKFLOW_DIAG lookup failed for form=" + item.getForm().getId(), diagnosticFailure);
+            }
+        }
     }
 
     protected static Field createRouteField(RouteFieldClient rfClient, String name, Field.Type type) {

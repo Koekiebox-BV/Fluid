@@ -56,6 +56,7 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -99,6 +100,12 @@ public class TestPericard extends ABaseTestASNDER {
     @Before
     public void init() {
         super.init();
+        if (this.isConnectionInValid) return;
+
+        // Gate every test before nested setup methods and HSM assertions run.
+        try (GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
+            Assume.assumeTrue("Pericard is not enabled", isPericardEnabled(gfc));
+        }
     }
 
     @Test

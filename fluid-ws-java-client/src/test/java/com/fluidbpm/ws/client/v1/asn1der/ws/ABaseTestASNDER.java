@@ -146,6 +146,7 @@ public abstract class ABaseTestASNDER extends ABaseTestFlowStep {
                 ADMIN_SERVICE_TICKET_HEX,
                 TimeUnit.SECONDS.toMillis(60))
         ) {
+            derClient.setPayloadPopulate(pop);
             ExecutorService executor = Executors.newFixedThreadPool(threadPoolCount);
             long starter = System.currentTimeMillis();
             int currentCount = this.getCurrentViewCount(derClient, viewWorkView);
