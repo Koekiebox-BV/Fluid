@@ -100,11 +100,18 @@ public class TestPericard extends ABaseTestASNDER {
     @Before
     public void init() {
         super.init();
+        if (Boolean.getBoolean("fluid.test.pericard.required")) {
+            TestCase.assertFalse("Pericard CI requires a live Fluid connection", this.isConnectionInValid);
+        }
         if (this.isConnectionInValid) return;
 
         // Gate every test before nested setup methods and HSM assertions run.
         try (GlobalFieldClient gfc = new GlobalFieldClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
-            Assume.assumeTrue("Pericard is not enabled", isPericardEnabled(gfc));
+            boolean enabled = isPericardEnabled(gfc);
+            if (Boolean.getBoolean("fluid.test.pericard.required")) {
+                TestCase.assertTrue("Pericard CI requires Pericard to be enabled", enabled);
+            }
+            Assume.assumeTrue("Pericard is not enabled", enabled);
         }
     }
 
@@ -1975,8 +1982,15 @@ character to be even.
         frmHost.setFieldValue("Alias", hostAlias, Field.Type.Text);
         frmHost.setFieldValue("Organisation", new MultiChoice(existingOrg), Field.Type.MultipleChoice);
         frmHost.setFieldValue("HSM Command Type", new MultiChoice(
-                HSM_COMMAND_TYPES[(int) (Math.random() * HSM_COMMAND_TYPES.length)]
+                System.getProperty("fluid.test.pericard.hsm.commandType",
+                        HSM_COMMAND_TYPES[(int) (Math.random() * HSM_COMMAND_TYPES.length)])
         ), Field.Type.MultipleChoice);
+
+        String lmkMode = System.getProperty("fluid.test.pericard.hsm.lmkMode");
+        if (lmkMode != null) {
+            frmHost.setFieldValue("LMK Mode", new MultiChoice(lmkMode), Field.Type.MultipleChoice);
+            frmHost.setFieldValue("Message Header Length", 4, Field.Type.Decimal);
+        }
 
         Form createdHostForm = this.createFormContainer(
                 derClient,
@@ -2008,8 +2022,8 @@ character to be even.
 
         // TB - Host Endpoint
         Form tbFormHostEndpoint = new Form("HSM Host Endpoint", "Host Endpoint "+new Date().toString());
-        tbFormHostEndpoint.setFieldValue("HSM Host", "127.0.0.1", Field.Type.Text);
-        tbFormHostEndpoint.setFieldValue("HSM Port", 21121, Field.Type.Decimal);
+        tbFormHostEndpoint.setFieldValue("HSM Host", System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1"), Field.Type.Text);
+        tbFormHostEndpoint.setFieldValue("HSM Port", Integer.getInteger("fluid.test.pericard.hsm.port", 21121), Field.Type.Decimal);
         createdHostForm.setFieldValue(
                 "Host Endpoint Entries", this.createTableRecord(
                         derClient,
