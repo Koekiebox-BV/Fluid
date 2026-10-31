@@ -114,7 +114,7 @@ public class GlobalFieldClient extends ABaseFieldClient {
         }
 
         return new Field(this.putJson(
-                globalField, WS.Path.FormField.Version1.formFieldCreate())
+                globalField, WS.Path.GlobalField.Version1.globalFieldCreate())
         );
     }
 

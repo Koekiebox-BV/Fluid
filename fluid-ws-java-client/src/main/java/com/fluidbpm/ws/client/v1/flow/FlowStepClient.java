@@ -192,7 +192,7 @@ public class FlowStepClient extends ABaseClientWS {
 				flowStepNameParam, new Flow(flowNameParam));
 
 		JobView returnVal = null;
-		if (jobViewListing.getListingCount().intValue() > 1) {
+		if (jobViewListing.getListing() != null) {
 			for (JobView jobView : jobViewListing.getListing()) {
 				if (ViewType.STANDARD.equals(jobView.getViewType()) &&
 						jobView.getViewName().equalsIgnoreCase(flowViewNameParam)) {
