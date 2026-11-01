@@ -2080,7 +2080,8 @@ character to be even.
                         + ", active=" + active;
                 if (latest.getFlowState() == FluidItem.FlowState.NotInFlow
                         && FluidItem.FlowState.NotInFlow.name().equals(form.getFlowState())
-                        && "Open".equals(form.getState()) && Boolean.TRUE.equals(active)) {
+                        && "Open".equals(form.getState())
+                        && ("Software Data Encryption Key".equals(formType) || Boolean.TRUE.equals(active))) {
                     return latest;
                 }
             }
