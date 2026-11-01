@@ -130,6 +130,7 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
             Object qualifyObj = handler.doesHandlerQualifyForProcessing(message);
             if (qualifyObj instanceof Error) {
                 handler.handleMessage(qualifyObj);
+                handlerFoundForMsg = true;
             } else if (qualifyObj instanceof JsonObject) {
                 handler.handleMessage(qualifyObj);
                 handlerFoundForMsg = true;
