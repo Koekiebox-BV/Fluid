@@ -1881,16 +1881,10 @@ character to be even.
         FluidItem byId = this.fluidItemByFormId(derClient, id, false);
         TestCase.assertNotNull(byId);
 
-        Form form = byId.getForm();
-        // Lock and approve.
-        form = this.lockFormContainer(derClient, form, viewChecker, null);
-        form.setFieldValue(
-                "User Checker Decision",
-                new MultiChoice("Approve")
-                , Field.Type.MultipleChoice
-        );
-        form = this.updateFormContainer(derClient, form);
-        byId.setForm(form);
+        // Approval updates use REST so dynamic choices are not round-tripped through
+        // the ASN.1 dictionary. Lock/update responses are not authoritative snapshots.
+        Form form = approveRequest(fcClient, id, viewChecker);
+        byId.setForm(new Form(id));
 
         // Approved to be processed!
         this.sendOn(derClient, byId);
@@ -1929,6 +1923,25 @@ character to be even.
 
         // Clear the PI before we clean-up:
         clearPI(derClient, uc.getLoggedInUserInformation());
+    }
+
+    static Form approveRequest(FormContainerClient forms, Long id, JobView checker) {
+        forms.lockFormContainer(new Form(id), checker);
+        Form form = forms.getFormContainerById(id);
+        TestCase.assertNotNull("Approval request not found: " + id, form);
+        String organisation = form.getFieldValueAsString("Organisation");
+        form.setFieldValue("User Checker Decision", new MultiChoice("Approve"), Field.Type.MultipleChoice);
+        forms.updateFormContainer(form);
+
+        // Verify persistence before advancing the workflow. Do not use an update echo
+        // as the source for another write or silently repair a lost business field.
+        Form saved = forms.getFormContainerById(id);
+        TestCase.assertNotNull("Approved request not found: " + id, saved);
+        TestCase.assertEquals("Approval was not persisted for request " + id,
+                "Approve", saved.getFieldValueAsString("User Checker Decision"));
+        TestCase.assertEquals("Approval changed Organisation on request " + id,
+                organisation, saved.getFieldValueAsString("Organisation"));
+        return saved;
     }
 
     public static final String[] COUNTRIES = {"ZA", "NL", "AD", "FR"};
