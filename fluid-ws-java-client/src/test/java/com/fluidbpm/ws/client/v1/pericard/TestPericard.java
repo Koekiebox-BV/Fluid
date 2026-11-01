@@ -1568,7 +1568,17 @@ character to be even.
             TestCase.assertEquals("Open", keyPairForm.getState());
             TestCase.assertTrue("Expected key pair to be active.", keyPairForm.getFieldValueAsBoolean("Is Active"));
             TestCase.assertNotNull("Expected Asymmetric Public Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Public Key"));
-            TestCase.assertNotNull("Expected HSM-protected asymmetric private key!", keyPairForm.getFieldValueAsString("Asymmetric Private Key"));
+            Field privateKeyField = keyPairForm.getField("Asymmetric Private Key");
+            TestCase.assertNotNull("Expected HSM-protected asymmetric private key!", privateKeyField);
+            TestCase.assertEquals("LMK-protected key blobs require ParagraphText storage",
+                    Field.Type.ParagraphText, privateKeyField.getTypeAsEnum());
+            String protectedPrivateKey = keyPairForm.getFieldValueAsString("Asymmetric Private Key");
+            TestCase.assertFalse("Expected a non-empty LMK-protected key blob", UtilGlobal.isBlank(protectedPrivateKey));
+            TestCase.assertFalse("An HSM RSA private key must not be returned as clear PEM",
+                    protectedPrivateKey.contains("-----BEGIN"));
+            Form persistedKeyPair = fcc.getFormContainerById(keyPairForm.getId());
+            TestCase.assertEquals("REST and ASN.1 must return the same complete protected key blob",
+                    protectedPrivateKey, persistedKeyPair.getFieldValueAsString("Asymmetric Private Key"));
             TestCase.assertEquals(this.lastKeystoreOrg, keyPairForm.getFieldValueAsString("Organisation"));
 
             List<Form> descAfter = sqlUtl.getDescendants(reqForm, true, true, true);
