@@ -1883,22 +1883,29 @@ character to be even.
 
         Form form = byId.getForm();
         // Lock and approve.
-        this.lockFormContainer(derClient, form, viewChecker, null);
+        form = this.lockFormContainer(derClient, form, viewChecker, null);
         form.setFieldValue(
                 "User Checker Decision",
                 new MultiChoice("Approve")
                 , Field.Type.MultipleChoice
         );
-        this.updateFormContainer(derClient, form);
+        form = this.updateFormContainer(derClient, form);
+        byId.setForm(form);
 
         // Approved to be processed!
         this.sendOn(derClient, byId);
 
         // Check if processed:
-        int waitTimeSec = 10;
-        List<FluidItem> processedItems = this.executeUntilOrTOFromView(
-                derClient, viewProcResult, 1, waitTimeSec
-        );
+        int waitTimeSec = 30;
+        List<FluidItem> processedItems = null;
+        for (int attempt = 0; attempt < 10; attempt++) {
+            List<FluidItem> candidates = this.executeUntilOrTOFromView(derClient, viewProcResult, 1, 1);
+            if (candidates != null && candidates.stream().anyMatch(item ->
+                    item.getForm() != null && id.equals(item.getForm().getId()))) {
+                processedItems = candidates;
+                break;
+            }
+        }
         if (processedItems == null) {
             List<FormHistoricData> getHistory = this.getHistory(derClient, form, true);
             List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(form);
@@ -1913,6 +1920,12 @@ character to be even.
             });
         }
         TestCase.assertNotNull("Processed items is not set after '"+waitTimeSec+"s'!", processedItems);
+
+        derClient.requestFullPayloadPopulate();
+        FluidItem result = this.fluidItemByFormId(derClient, id, true);
+        String processingResult = result.getRouteFieldValueAsString("Processed Description");
+        TestCase.assertFalse("Pericard request " + id + " failed: " + processingResult,
+                processingResult != null && processingResult.startsWith("Error:"));
 
         // Clear the PI before we clean-up:
         clearPI(derClient, uc.getLoggedInUserInformation());
@@ -1994,31 +2007,31 @@ character to be even.
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(31)
         ), Field.Type.DateTime);
 
-        createdHostForm.setFieldValue(
-                "Host Communication Keystore Entries",
-                this.createTableRecord(
-                        derClient,
-                        payPop,
-                        new TableRecord(
-                                tbFormHostCommsKs,
-                                parentForm,
-                                new Field("Host Communication Keystore Entries")
-                        )
-                ),
-                Field.Type.Table
-        );
+        // Persist fixtures through REST and read them back. Dynamic keystore choices
+        // must not be lost through an out-of-date ASN.1 choice dictionary.
+        try (FormContainerClient forms = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
+            TableRecord keystore = forms.createTableRecord(new TableRecord(
+                    tbFormHostCommsKs, parentForm, new Field("Host Communication Keystore Entries")));
+            Form storedKeystore = forms.getFormContainerById(keystore.getFormContainer().getId());
+            TestCase.assertEquals("HSM host keystore alias was not persisted", existingKSAlias,
+                    storedKeystore.getFieldValueAsString("Keystore Alias"));
+            createdHostForm.setFieldValue("Host Communication Keystore Entries",
+                    new TableField(java.util.Collections.singletonList(storedKeystore)), Field.Type.Table);
 
-        // TB - Host Endpoint
-        Form tbFormHostEndpoint = new Form("HSM Host Endpoint", "Host Endpoint "+new Date().toString());
-        tbFormHostEndpoint.setFieldValue("HSM Host", System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1"), Field.Type.Text);
-        tbFormHostEndpoint.setFieldValue("HSM Port", Integer.getInteger("fluid.test.pericard.hsm.port", 21121), Field.Type.Decimal);
-        createdHostForm.setFieldValue(
-                "Host Endpoint Entries", this.createTableRecord(
-                        derClient,
-                        payPop,
-                        new TableRecord(tbFormHostEndpoint, parentForm, new Field("Host Endpoint Entries"))
-                ), Field.Type.Table
-        );
+            Form endpoint = new Form("HSM Host Endpoint", "Host Endpoint " + new Date());
+            String host = System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1");
+            int port = Integer.getInteger("fluid.test.pericard.hsm.port", 21121);
+            endpoint.setFieldValue("HSM Host", host, Field.Type.Text);
+            endpoint.setFieldValue("HSM Port", port, Field.Type.Decimal);
+            TableRecord savedEndpoint = forms.createTableRecord(new TableRecord(
+                    endpoint, parentForm, new Field("Host Endpoint Entries")));
+            Form storedEndpoint = forms.getFormContainerById(savedEndpoint.getFormContainer().getId());
+            TestCase.assertEquals(host, storedEndpoint.getFieldValueAsString("HSM Host"));
+            TestCase.assertEquals(port, storedEndpoint.getFieldValueAsInt("HSM Port").intValue());
+            createdHostForm.setFieldValue("Host Endpoint Entries",
+                    new TableField(java.util.Collections.singletonList(storedEndpoint)), Field.Type.Table);
+        }
+        payPop = derClient.requestFullPayloadPopulate();
 
         // 3. Save to create the alias.
         CustomWebAction cwAct = this.execCustomAction(
