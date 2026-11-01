@@ -1269,35 +1269,44 @@ public class TestPericard extends ABaseTestASNDER {
             );
             Form emailFormCreated = emailReqById.getForm();
 
-            // Wait for the new forms to be created...
-            sleepForSeconds(4);
-
             TestCase.assertEquals("Email", emailFormCreated.getFormType());
-            List<Form> descImportTMKReqs = sqlUtl.getDescendants(
-                    emailFormCreated,
-                    true,
-                    true,
-                    true
-            );
-            TestCase.assertNotNull(descImportTMKReqs);
-            TestCase.assertEquals("No '"+formDefTMKImportReq+"'!",1, descImportTMKReqs.size());
-            Form descImportTMKReqForm = descImportTMKReqs.get(0);
-
-            TestCase.assertEquals(formDefTMKImportReq, descImportTMKReqForm.getFormType());
-            // 2. ENSURE EMAIL IS IMPORTED AND CONVERTED TO TMK REQUEST:
-            FluidItem tmkImpReqByIdForRecords = this.fluidItemByFormId(
-                    derClient, descImportTMKReqForm.getId(),
-                    true// Include route fields.
-            );
-            TestCase.assertNotNull(tmkImpReqByIdForRecords);
-            Form tmkImpReqByIdReqForm = tmkImpReqByIdForRecords.getForm();
-            TestCase.assertNotNull(tmkImpReqByIdReqForm);
-
-            TestCase.assertEquals(FluidItem.FlowState.WorkInProgress, tmkImpReqByIdForRecords.getFlowState());
-            TestCase.assertEquals("Open", tmkImpReqByIdReqForm.getState());
-            // TMK records from CSV:
+            // The parent email can finish before the child has parsed its CSV and reached maker review.
             int cntRecords = 2;
-            TestCase.assertEquals(cntRecords, descImportTMKReqForm.getFieldValueAsInt("Number of Unique Records").intValue());
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(60);
+            List<Form> descImportTMKReqs;
+            FluidItem tmkImpReqByIdForRecords = null;
+            String lastState = "child not created";
+            boolean ready = false;
+            do {
+                descImportTMKReqs = sqlUtl.getDescendants(emailFormCreated, true, true, true);
+                if (descImportTMKReqs != null && !descImportTMKReqs.isEmpty()) {
+                    TestCase.assertEquals("Expected one '" + formDefTMKImportReq + "'", 1, descImportTMKReqs.size());
+                    Form child = descImportTMKReqs.get(0);
+                    TestCase.assertEquals(formDefTMKImportReq, child.getFormType());
+                    derClient.requestFullPayloadPopulate();
+                    tmkImpReqByIdForRecords = this.fluidItemByFormId(derClient, child.getId(), true);
+                    Form current = tmkImpReqByIdForRecords.getForm();
+                    TableField entries = current.getFieldValueAsTableField("Import Terminal Master Key Request Entries");
+                    int recordCount = entries == null || entries.getTableRecords() == null
+                            ? 0 : entries.getTableRecords().size();
+                    lastState = "formId=" + child.getId() + ", step=" + tmkImpReqByIdForRecords.getStep()
+                            + ", flowState=" + tmkImpReqByIdForRecords.getFlowState()
+                            + ", state=" + current.getState() + ", records=" + recordCount;
+                    ready = tmkImpReqByIdForRecords.getFlowState() == FluidItem.FlowState.WorkInProgress
+                            && "Key Provisioning Maker".equals(tmkImpReqByIdForRecords.getStep())
+                            && "Open".equals(current.getState())
+                            && Integer.valueOf(cntRecords).equals(current.getFieldValueAsInt("Number of Unique Records"))
+                            && recordCount == cntRecords;
+                    if (ready) break;
+                }
+                if (System.nanoTime() >= deadline) break;
+                sleepForSeconds(1);
+            } while (System.nanoTime() < deadline);
+            TestCase.assertTrue("Timed out after 60s waiting for TMK maker review. Last state: " + lastState, ready);
+
+            // Assert against the refreshed child, not the earlier descendant snapshot.
+            Form descImportTMKReqForm = tmkImpReqByIdForRecords.getForm();
+            Form tmkImpReqByIdReqForm = descImportTMKReqForm;
             TableField tblTmks = descImportTMKReqForm.getFieldValueAsTableField("Import Terminal Master Key Request Entries");
             TestCase.assertNotNull(tblTmks);
             TestCase.assertNotNull(tblTmks.getTableRecords());
