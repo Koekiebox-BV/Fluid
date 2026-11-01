@@ -453,17 +453,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No ZMK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            // Wait for the workflow to create the ZMK:
-            FluidItem zmk = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem zmk = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, keyReqType);
             TestCase.assertNotNull(zmk);
             Form zmkForm = zmk.getForm();
             TestCase.assertNotNull(zmkForm);
@@ -568,16 +558,7 @@ public class TestPericard extends ABaseTestASNDER {
             });
 
             // Wait for the DEK to be created:
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No DEK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem dekItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem dekItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, keyReqType);
             TestCase.assertNotNull(dekItm);
             Form dekForm = dekItm.getForm();
             TestCase.assertNotNull(dekForm);
@@ -879,16 +860,7 @@ public class TestPericard extends ABaseTestASNDER {
             });
 
             // Wait for the BDK to be created:
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No BDK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem bdkItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem bdkItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, keyReqType);
             TestCase.assertNotNull(bdkItm);
             Form bdkForm = bdkItm.getForm();
             TestCase.assertNotNull(bdkForm);
@@ -1617,21 +1589,12 @@ character to be even.
             // Approve to trigger key pair generation:
             createdIds.forEach(id -> this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey));
 
-            sleepForSeconds(3);
-
-            List<FluidItem> keyPairsWithAlias = formsByAliasAndType(uqc, keyAlias, resultFormType);
-            TestCase.assertNotNull(keyPairsWithAlias);
-            TestCase.assertEquals("No HSM Asymmetric Key Pair on alias " + keyAlias + "!", 1, keyPairsWithAlias.size());
-
-            FluidItem keyPairItm = this.fluidItemByFormId(
-                    derClient, keyPairsWithAlias.get(0).getForm().getId(), false
-            );
+            FluidItem keyPairItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, resultFormType);
             TestCase.assertNotNull(keyPairItm);
             Form keyPairForm = keyPairItm.getForm();
             TestCase.assertNotNull(keyPairForm);
             TestCase.assertEquals(resultFormType, keyPairForm.getFormType());
-            // No need to test for flow, since it would be in processed.
-            //TestCase.assertEquals(FluidItem.FlowState.NotInFlow, keyPairItm.getFlowState());
+            TestCase.assertEquals(FluidItem.FlowState.NotInFlow, keyPairItm.getFlowState());
             TestCase.assertEquals("Open", keyPairForm.getState());
             TestCase.assertTrue("Expected key pair to be active.", keyPairForm.getFieldValueAsBoolean("Is Active"));
             TestCase.assertNotNull("Expected Asymmetric Public Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Public Key"));
@@ -2104,6 +2067,59 @@ character to be even.
             }
         }
         return null;
+    }
+
+    /** The parent request can finish before its generated child's introduction rules run. */
+    private FluidItem awaitGeneratedKey(
+            WebSocketASNDERClient derClient,
+            UserQueryClient queries,
+            FormContainerClient forms,
+            String alias,
+            String formType
+    ) {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(60);
+        FluidItem latest = null;
+        String state = "not created";
+        do {
+            List<FluidItem> matches = null;
+            try {
+                matches = formsByAliasAndType(queries, alias, formType);
+            } catch (FluidClientException error) {
+                // A child may not exist yet; authentication/server errors must still fail immediately.
+                if (error.getErrorCode() != NO_RESULT) throw error;
+            }
+            if (matches != null && !matches.isEmpty()) {
+                TestCase.assertEquals("Multiple " + formType + " records for alias " + alias, 1, matches.size());
+                // Refresh on every attempt; the query result alone is not a completion signal.
+                derClient.requestFullPayloadPopulate();
+                latest = this.fluidItemByFormId(derClient, matches.get(0).getForm().getId(), false);
+                Form form = latest.getForm();
+                Boolean active = form.getFieldValueAsBoolean("Is Active");
+                state = "formId=" + form.getId() + ", itemFlowState=" + latest.getFlowState()
+                        + ", formFlowState=" + form.getFlowState() + ", state=" + form.getState()
+                        + ", active=" + active;
+                if (latest.getFlowState() == FluidItem.FlowState.NotInFlow
+                        && FluidItem.FlowState.NotInFlow.name().equals(form.getFlowState())
+                        && "Open".equals(form.getState()) && Boolean.TRUE.equals(active)) {
+                    return latest;
+                }
+            }
+            if (System.nanoTime() >= deadline) break;
+            sleepForSeconds(1);
+        } while (System.nanoTime() < deadline);
+
+        AssertionError failure = new AssertionError("Timed out after 60s waiting for " + formType
+                + " with alias " + alias + " to activate and exit its workflow. Last state: " + state);
+        if (latest != null) {
+            try {
+                List<FormFlowHistoricData> history = forms.getFormFlowHistoricData(latest.getForm());
+                System.out.println("Generated key workflow history for form " + latest.getForm().getId() + ":");
+                if (history != null) history.forEach(entry -> System.out.println(entry.toString()));
+            } catch (RuntimeException diagnosticError) {
+                failure.addSuppressed(diagnosticError);
+            }
+        }
+        throw failure;
     }
 
     private List<FluidItem> formsByAliasAndType(
