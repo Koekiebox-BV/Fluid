@@ -1310,12 +1310,17 @@ public class TestPericard extends ABaseTestASNDER {
             TableField tblTmks = descImportTMKReqForm.getFieldValueAsTableField("Import Terminal Master Key Request Entries");
             TestCase.assertNotNull(tblTmks);
             TestCase.assertNotNull(tblTmks.getTableRecords());
-            List<Form> tblRecords = tblTmks.getTableRecords();
+            // The item response contains row references; fetch their field values explicitly.
+            List<Form> tblRecords = this.tableRecords(derClient, descImportTMKReqForm, null);
+            TestCase.assertNotNull("Expected populated TMK table records", tblRecords);
             TestCase.assertEquals(cntRecords, tblRecords.size());
             tblRecords.forEach(tblRcrd -> {
-                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Key Check Value"));
-                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Terminal Serial Number"));
-                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Key Under ZMK"));
+                TestCase.assertNotNull("Missing KCV on TMK row " + tblRcrd.getId(),
+                        tblRcrd.getFieldValueAsString("Key Check Value"));
+                TestCase.assertNotNull("Missing serial number on TMK row " + tblRcrd.getId(),
+                        tblRcrd.getFieldValueAsString("Terminal Serial Number"));
+                TestCase.assertNotNull("Missing wrapped key on TMK row " + tblRcrd.getId(),
+                        tblRcrd.getFieldValueAsString("Key Under ZMK"));
             });
 
             JobView viewMakerKeyProv = flowStepClient.getStandardJobViewBy(
