@@ -96,6 +96,8 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
             this.formDef = createFormDef(fdClient, ffClient, "Employee", flows, employeeFields());
 
             // update the rules to send to the assignment step and from assignment to exit:
+            // Zero is treated as empty by the rule engine; keep this workflow fixture deterministic.
+            final int employeeAge = 37;
             String employeeName = UUID.randomUUID().toString(),
                     employeeSurname = UUID.randomUUID().toString(),
                     employeeSecret = UUID.randomUUID().toString(),
@@ -121,7 +123,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                     new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Gender TO '[%s]'", "Male"))
             );
             fsrClient.createFlowStepExitRule(
-                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", (int)(Math.random()* 90)))
+                    new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", employeeAge))
             );
             fsrClient.createFlowStepExitRule(
                     new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Is Director TO '%s'", "true"))
@@ -225,7 +227,7 @@ public class TestIntroductionStep extends ABaseTestFlowStep {
                 TestCase.assertEquals("Male", form.getFieldValueAsMultiChoice("JUnit Employee Gender").getSelectedMultiChoice());
                 TestCase.assertEquals(Boolean.TRUE, form.getFieldValueAsBoolean("JUnit Employee Is Director"));
                 TestCase.assertNotNull(form.getFieldValueAsString("JUnit Employee Bio"));
-                TestCase.assertNotNull(form.getFieldValueAsDouble("JUnit Employee Age"));
+                TestCase.assertEquals(Double.valueOf(employeeAge), form.getFieldValueAsDouble("JUnit Employee Age"));
 
                 long timeTakenMillis = (end.getTime() - start.getTime());
                 long avgTimePerRule = (timeTakenMillis / ruleIndex);

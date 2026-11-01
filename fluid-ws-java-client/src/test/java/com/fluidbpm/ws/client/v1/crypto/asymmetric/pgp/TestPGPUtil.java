@@ -34,6 +34,22 @@ public class TestPGPUtil {
     private static final String USER_ID = "Test User <test@example.com>";
     private static final char[] PASSPHRASE = "test-passphrase-123".toCharArray();
 
+    @Test
+    public void testGenerationPreservesPassphraseAndUnlocksEverySecretKey() throws Exception {
+        for (PGPUtil.KeyType type : PGPUtil.KeyType.values()) {
+            char[] password = "persist-this-passphrase".toCharArray();
+            PGPUtil.PGPKeyPairResult result = PGPUtil.generateKeyPair(type, USER_ID, password);
+            org.junit.Assert.assertArrayEquals("Generation must preserve the persisted passphrase",
+                    "persist-this-passphrase".toCharArray(), password);
+            Iterator<PGPSecretKey> keys = result.getSecretKeyRing().getSecretKeys();
+            while (keys.hasNext()) {
+                assertNotNull(keys.next().extractPrivateKey(
+                        new org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder()
+                                .setProvider("BC").build(password.clone())));
+            }
+        }
+    }
+
     // --------- RSA key pair ---------
 
     @Test

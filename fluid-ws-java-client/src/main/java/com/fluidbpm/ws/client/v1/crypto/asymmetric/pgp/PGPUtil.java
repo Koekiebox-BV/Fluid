@@ -135,17 +135,18 @@ public class PGPUtil {
             }
         };
 
+        // Bouncy Castle clears the array supplied to build; preserve the caller's passphrase.
         OpenPGPKey key;
         if (keyType == KeyType.RSA) {
             key = gen.withPrimaryKey(g -> g.generateRsaKeyPair(RSA_KEY_SIZE), primaryKeySignFlags)
                     .addUserId(userId)
                     .addEncryptionSubkey(g -> g.generateRsaKeyPair(RSA_KEY_SIZE))
-                    .build(passphrase);
+                    .build(passphrase == null ? null : passphrase.clone());
         } else {
             key = gen.withPrimaryKey(PGPKeyPairGenerator::generateEd25519KeyPair, primaryKeySignFlags)
                     .addUserId(userId)
                     .addEncryptionSubkey(PGPKeyPairGenerator::generateX25519KeyPair)
-                    .build(passphrase);
+                    .build(passphrase == null ? null : passphrase.clone());
         }
 
         return new PGPKeyPairResult(key.getPGPSecretKeyRing(), key.getPGPPublicKeyRing(), key);

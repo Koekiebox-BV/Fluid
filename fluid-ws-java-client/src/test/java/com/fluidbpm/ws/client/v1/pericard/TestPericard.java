@@ -453,17 +453,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No ZMK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            // Wait for the workflow to create the ZMK:
-            FluidItem zmk = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem zmk = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, keyReqType);
             TestCase.assertNotNull(zmk);
             Form zmkForm = zmk.getForm();
             TestCase.assertNotNull(zmkForm);
@@ -568,16 +558,7 @@ public class TestPericard extends ABaseTestASNDER {
             });
 
             // Wait for the DEK to be created:
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No DEK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem dekItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem dekItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, keyReqType);
             TestCase.assertNotNull(dekItm);
             Form dekForm = dekItm.getForm();
             TestCase.assertNotNull(dekForm);
@@ -691,17 +672,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            // Wait for the DEK to be created:
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, resultSoftKeyFrmType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No SDEK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem dekItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem dekItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, resultSoftKeyFrmType);
             TestCase.assertNotNull(dekItm);
             Form sdekForm = dekItm.getForm();
             TestCase.assertNotNull(sdekForm);
@@ -879,16 +850,7 @@ public class TestPericard extends ABaseTestASNDER {
             });
 
             // Wait for the BDK to be created:
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, keyReqType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No BDK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem bdkItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem bdkItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, keyReqType);
             TestCase.assertNotNull(bdkItm);
             Form bdkForm = bdkItm.getForm();
             TestCase.assertNotNull(bdkForm);
@@ -1000,17 +962,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            // Wait for the PGP to be created:
-            sleepForSeconds(5);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, "PGP Keypair");
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No PGP on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem pgpItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem pgpItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, "PGP Keypair");
             TestCase.assertNotNull(pgpItm);
             Form pgpForm = pgpItm.getForm();
             TestCase.assertNotNull(pgpForm);
@@ -1169,17 +1121,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            // Wait for the PGP to be created:
-            sleepForSeconds(6);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, pgpTrustPub);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No PGP Public Key on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem pgpItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem pgpItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, pgpTrustPub);
             TestCase.assertNotNull(pgpItm);
             Form pgpForm = pgpItm.getForm();
             TestCase.assertNotNull(pgpForm);
@@ -1300,8 +1242,8 @@ public class TestPericard extends ABaseTestASNDER {
 
             String identifier = UUID.randomUUID().toString();
             Form frmEmail = new Form(emailType, new Date().toString()+ " "+identifier);
-            frmEmail.setFieldValue("Email From Address", "test@example.com", Field.Type.Text);
-            frmEmail.setFieldValue("Email To Address", "recipient@example.com", Field.Type.Text);
+            frmEmail.setFieldValue("Email From Address", "peter.pan@neverland.com", Field.Type.Text);
+            frmEmail.setFieldValue("Email To Address", "roger@floyd.org", Field.Type.Text);
             frmEmail.setFieldValue("Email Subject", "Test Email Subject", Field.Type.Text);
             frmEmail.setFieldValue("Email Sent Date", new Date(), Field.Type.DateTime);
             frmEmail.setFieldValue("Email Received Date", new Date(), Field.Type.DateTime);
@@ -1327,44 +1269,58 @@ public class TestPericard extends ABaseTestASNDER {
             );
             Form emailFormCreated = emailReqById.getForm();
 
-            // Wait for the new forms to be created...
-            sleepForSeconds(4);
-
             TestCase.assertEquals("Email", emailFormCreated.getFormType());
-            List<Form> descImportTMKReqs = sqlUtl.getDescendants(
-                    emailFormCreated,
-                    true,
-                    true,
-                    true
-            );
-            TestCase.assertNotNull(descImportTMKReqs);
-            TestCase.assertEquals("No '"+formDefTMKImportReq+"'!",1, descImportTMKReqs.size());
-            Form descImportTMKReqForm = descImportTMKReqs.get(0);
-
-            TestCase.assertEquals(formDefTMKImportReq, descImportTMKReqForm.getFormType());
-            // 2. ENSURE EMAIL IS IMPORTED AND CONVERTED TO TMK REQUEST:
-            FluidItem tmkImpReqByIdForRecords = this.fluidItemByFormId(
-                    derClient, descImportTMKReqForm.getId(),
-                    true// Include route fields.
-            );
-            TestCase.assertNotNull(tmkImpReqByIdForRecords);
-            Form tmkImpReqByIdReqForm = tmkImpReqByIdForRecords.getForm();
-            TestCase.assertNotNull(tmkImpReqByIdReqForm);
-
-            TestCase.assertEquals(FluidItem.FlowState.WorkInProgress, tmkImpReqByIdForRecords.getFlowState());
-            TestCase.assertEquals("Open", tmkImpReqByIdReqForm.getState());
-            // TMK records from CSV:
+            // The parent email can finish before the child has parsed its CSV and reached maker review.
             int cntRecords = 2;
-            TestCase.assertEquals(cntRecords, descImportTMKReqForm.getFieldValueAsInt("Number of Unique Records").intValue());
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(60);
+            List<Form> descImportTMKReqs;
+            FluidItem tmkImpReqByIdForRecords = null;
+            String lastState = "child not created";
+            boolean ready = false;
+            do {
+                descImportTMKReqs = sqlUtl.getDescendants(emailFormCreated, true, true, true);
+                if (descImportTMKReqs != null && !descImportTMKReqs.isEmpty()) {
+                    TestCase.assertEquals("Expected one '" + formDefTMKImportReq + "'", 1, descImportTMKReqs.size());
+                    Form child = descImportTMKReqs.get(0);
+                    TestCase.assertEquals(formDefTMKImportReq, child.getFormType());
+                    derClient.requestFullPayloadPopulate();
+                    tmkImpReqByIdForRecords = this.fluidItemByFormId(derClient, child.getId(), true);
+                    Form current = tmkImpReqByIdForRecords.getForm();
+                    TableField entries = current.getFieldValueAsTableField("Import Terminal Master Key Request Entries");
+                    int recordCount = entries == null || entries.getTableRecords() == null
+                            ? 0 : entries.getTableRecords().size();
+                    lastState = "formId=" + child.getId() + ", step=" + tmkImpReqByIdForRecords.getStep()
+                            + ", flowState=" + tmkImpReqByIdForRecords.getFlowState()
+                            + ", state=" + current.getState() + ", records=" + recordCount;
+                    ready = tmkImpReqByIdForRecords.getFlowState() == FluidItem.FlowState.WorkInProgress
+                            && "Key Provisioning Maker".equals(tmkImpReqByIdForRecords.getStep())
+                            && "Open".equals(current.getState())
+                            && Integer.valueOf(cntRecords).equals(current.getFieldValueAsInt("Number of Unique Records"))
+                            && recordCount == cntRecords;
+                    if (ready) break;
+                }
+                if (System.nanoTime() >= deadline) break;
+                sleepForSeconds(1);
+            } while (System.nanoTime() < deadline);
+            TestCase.assertTrue("Timed out after 60s waiting for TMK maker review. Last state: " + lastState, ready);
+
+            // Assert against the refreshed child, not the earlier descendant snapshot.
+            Form descImportTMKReqForm = tmkImpReqByIdForRecords.getForm();
+            Form tmkImpReqByIdReqForm = descImportTMKReqForm;
             TableField tblTmks = descImportTMKReqForm.getFieldValueAsTableField("Import Terminal Master Key Request Entries");
             TestCase.assertNotNull(tblTmks);
             TestCase.assertNotNull(tblTmks.getTableRecords());
-            List<Form> tblRecords = tblTmks.getTableRecords();
+            // The item response contains row references; fetch their field values explicitly.
+            List<Form> tblRecords = this.tableRecords(derClient, descImportTMKReqForm, null);
+            TestCase.assertNotNull("Expected populated TMK table records", tblRecords);
             TestCase.assertEquals(cntRecords, tblRecords.size());
             tblRecords.forEach(tblRcrd -> {
-                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Key Check Value"));
-                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Terminal Serial Number"));
-                TestCase.assertNotNull(tblRcrd.getFieldValueAsString("Key Under ZMK"));
+                TestCase.assertNotNull("Missing KCV on TMK row " + tblRcrd.getId(),
+                        tblRcrd.getFieldValueAsString("Key Check Value"));
+                TestCase.assertNotNull("Missing serial number on TMK row " + tblRcrd.getId(),
+                        tblRcrd.getFieldValueAsString("Terminal Serial Number"));
+                TestCase.assertNotNull("Missing wrapped key on TMK row " + tblRcrd.getId(),
+                        tblRcrd.getFieldValueAsString("Key Under ZMK"));
             });
 
             JobView viewMakerKeyProv = flowStepClient.getStandardJobViewBy(
@@ -1617,25 +1573,26 @@ character to be even.
             // Approve to trigger key pair generation:
             createdIds.forEach(id -> this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey));
 
-            sleepForSeconds(3);
-
-            List<FluidItem> keyPairsWithAlias = formsByAliasAndType(uqc, keyAlias, resultFormType);
-            TestCase.assertNotNull(keyPairsWithAlias);
-            TestCase.assertEquals("No HSM Asymmetric Key Pair on alias " + keyAlias + "!", 1, keyPairsWithAlias.size());
-
-            FluidItem keyPairItm = this.fluidItemByFormId(
-                    derClient, keyPairsWithAlias.get(0).getForm().getId(), false
-            );
+            FluidItem keyPairItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, resultFormType);
             TestCase.assertNotNull(keyPairItm);
             Form keyPairForm = keyPairItm.getForm();
             TestCase.assertNotNull(keyPairForm);
             TestCase.assertEquals(resultFormType, keyPairForm.getFormType());
-            // No need to test for flow, since it would be in processed.
-            //TestCase.assertEquals(FluidItem.FlowState.NotInFlow, keyPairItm.getFlowState());
+            TestCase.assertEquals(FluidItem.FlowState.NotInFlow, keyPairItm.getFlowState());
             TestCase.assertEquals("Open", keyPairForm.getState());
             TestCase.assertTrue("Expected key pair to be active.", keyPairForm.getFieldValueAsBoolean("Is Active"));
             TestCase.assertNotNull("Expected Asymmetric Public Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Public Key"));
-            TestCase.assertNotNull("Expected Asymmetric Private Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Private Key"));
+            Field privateKeyField = keyPairForm.getField("Asymmetric Private Key");
+            TestCase.assertNotNull("Expected HSM-protected asymmetric private key!", privateKeyField);
+            TestCase.assertEquals("LMK-protected key blobs require ParagraphText storage",
+                    Field.Type.ParagraphText, privateKeyField.getTypeAsEnum());
+            String protectedPrivateKey = keyPairForm.getFieldValueAsString("Asymmetric Private Key");
+            TestCase.assertFalse("Expected a non-empty LMK-protected key blob", UtilGlobal.isBlank(protectedPrivateKey));
+            TestCase.assertFalse("An HSM RSA private key must not be returned as clear PEM",
+                    protectedPrivateKey.contains("-----BEGIN"));
+            Form persistedKeyPair = fcc.getFormContainerById(keyPairForm.getId());
+            TestCase.assertEquals("REST and ASN.1 must return the same complete protected key blob",
+                    protectedPrivateKey, persistedKeyPair.getFieldValueAsString("Asymmetric Private Key"));
             TestCase.assertEquals(this.lastKeystoreOrg, keyPairForm.getFieldValueAsString("Organisation"));
 
             List<Form> descAfter = sqlUtl.getDescendants(reqForm, true, true, true);
@@ -1881,24 +1838,25 @@ character to be even.
         FluidItem byId = this.fluidItemByFormId(derClient, id, false);
         TestCase.assertNotNull(byId);
 
-        Form form = byId.getForm();
-        // Lock and approve.
-        this.lockFormContainer(derClient, form, viewChecker, null);
-        form.setFieldValue(
-                "User Checker Decision",
-                new MultiChoice("Approve")
-                , Field.Type.MultipleChoice
-        );
-        this.updateFormContainer(derClient, form);
+        // Approval updates use REST so dynamic choices are not round-tripped through
+        // the ASN.1 dictionary. Lock/update responses are not authoritative snapshots.
+        Form form = approveRequest(fcClient, id, viewChecker);
+        byId.setForm(new Form(id));
 
         // Approved to be processed!
         this.sendOn(derClient, byId);
 
         // Check if processed:
-        int waitTimeSec = 10;
-        List<FluidItem> processedItems = this.executeUntilOrTOFromView(
-                derClient, viewProcResult, 1, waitTimeSec
-        );
+        int waitTimeSec = 30;
+        List<FluidItem> processedItems = null;
+        for (int attempt = 0; attempt < 10; attempt++) {
+            List<FluidItem> candidates = this.executeUntilOrTOFromView(derClient, viewProcResult, 1, 1);
+            if (candidates != null && candidates.stream().anyMatch(item ->
+                    item.getForm() != null && id.equals(item.getForm().getId()))) {
+                processedItems = candidates;
+                break;
+            }
+        }
         if (processedItems == null) {
             List<FormHistoricData> getHistory = this.getHistory(derClient, form, true);
             List<FormFlowHistoricData> flowHistoryData = fcClient.getFormFlowHistoricData(form);
@@ -1914,8 +1872,33 @@ character to be even.
         }
         TestCase.assertNotNull("Processed items is not set after '"+waitTimeSec+"s'!", processedItems);
 
+        derClient.requestFullPayloadPopulate();
+        FluidItem result = this.fluidItemByFormId(derClient, id, true);
+        String processingResult = result.getRouteFieldValueAsString("Processed Description");
+        TestCase.assertFalse("Pericard request " + id + " failed: " + processingResult,
+                processingResult != null && processingResult.startsWith("Error:"));
+
         // Clear the PI before we clean-up:
         clearPI(derClient, uc.getLoggedInUserInformation());
+    }
+
+    static Form approveRequest(FormContainerClient forms, Long id, JobView checker) {
+        forms.lockFormContainer(new Form(id), checker);
+        Form form = forms.getFormContainerById(id);
+        TestCase.assertNotNull("Approval request not found: " + id, form);
+        String organisation = form.getFieldValueAsString("Organisation");
+        form.setFieldValue("User Checker Decision", new MultiChoice("Approve"), Field.Type.MultipleChoice);
+        forms.updateFormContainer(form);
+
+        // Verify persistence before advancing the workflow. Do not use an update echo
+        // as the source for another write or silently repair a lost business field.
+        Form saved = forms.getFormContainerById(id);
+        TestCase.assertNotNull("Approved request not found: " + id, saved);
+        TestCase.assertEquals("Approval was not persisted for request " + id,
+                "Approve", saved.getFieldValueAsString("User Checker Decision"));
+        TestCase.assertEquals("Approval changed Organisation on request " + id,
+                organisation, saved.getFieldValueAsString("Organisation"));
+        return saved;
     }
 
     public static final String[] COUNTRIES = {"ZA", "NL", "AD", "FR"};
@@ -1994,31 +1977,31 @@ character to be even.
                 System.currentTimeMillis() + TimeUnit.DAYS.toMillis(31)
         ), Field.Type.DateTime);
 
-        createdHostForm.setFieldValue(
-                "Host Communication Keystore Entries",
-                this.createTableRecord(
-                        derClient,
-                        payPop,
-                        new TableRecord(
-                                tbFormHostCommsKs,
-                                parentForm,
-                                new Field("Host Communication Keystore Entries")
-                        )
-                ),
-                Field.Type.Table
-        );
+        // Persist fixtures through REST and read them back. Dynamic keystore choices
+        // must not be lost through an out-of-date ASN.1 choice dictionary.
+        try (FormContainerClient forms = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
+            TableRecord keystore = forms.createTableRecord(new TableRecord(
+                    tbFormHostCommsKs, parentForm, new Field("Host Communication Keystore Entries")));
+            Form storedKeystore = forms.getFormContainerById(keystore.getFormContainer().getId());
+            TestCase.assertEquals("HSM host keystore alias was not persisted", existingKSAlias,
+                    storedKeystore.getFieldValueAsString("Keystore Alias"));
+            createdHostForm.setFieldValue("Host Communication Keystore Entries",
+                    new TableField(java.util.Collections.singletonList(storedKeystore)), Field.Type.Table);
 
-        // TB - Host Endpoint
-        Form tbFormHostEndpoint = new Form("HSM Host Endpoint", "Host Endpoint "+new Date().toString());
-        tbFormHostEndpoint.setFieldValue("HSM Host", System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1"), Field.Type.Text);
-        tbFormHostEndpoint.setFieldValue("HSM Port", Integer.getInteger("fluid.test.pericard.hsm.port", 21121), Field.Type.Decimal);
-        createdHostForm.setFieldValue(
-                "Host Endpoint Entries", this.createTableRecord(
-                        derClient,
-                        payPop,
-                        new TableRecord(tbFormHostEndpoint, parentForm, new Field("Host Endpoint Entries"))
-                ), Field.Type.Table
-        );
+            Form endpoint = new Form("HSM Host Endpoint", "Host Endpoint " + new Date());
+            String host = System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1");
+            int port = Integer.getInteger("fluid.test.pericard.hsm.port", 21121);
+            endpoint.setFieldValue("HSM Host", host, Field.Type.Text);
+            endpoint.setFieldValue("HSM Port", port, Field.Type.Decimal);
+            TableRecord savedEndpoint = forms.createTableRecord(new TableRecord(
+                    endpoint, parentForm, new Field("Host Endpoint Entries")));
+            Form storedEndpoint = forms.getFormContainerById(savedEndpoint.getFormContainer().getId());
+            TestCase.assertEquals(host, storedEndpoint.getFieldValueAsString("HSM Host"));
+            TestCase.assertEquals(port, storedEndpoint.getFieldValueAsInt("HSM Port").intValue());
+            createdHostForm.setFieldValue("Host Endpoint Entries",
+                    new TableField(java.util.Collections.singletonList(storedEndpoint)), Field.Type.Table);
+        }
+        payPop = derClient.requestFullPayloadPopulate();
 
         // 3. Save to create the alias.
         CustomWebAction cwAct = this.execCustomAction(
@@ -2078,6 +2061,60 @@ character to be even.
             }
         }
         return null;
+    }
+
+    /** The parent request can finish before its generated child's introduction rules run. */
+    private FluidItem awaitGeneratedKey(
+            WebSocketASNDERClient derClient,
+            UserQueryClient queries,
+            FormContainerClient forms,
+            String alias,
+            String formType
+    ) {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(60);
+        FluidItem latest = null;
+        String state = "not created";
+        do {
+            List<FluidItem> matches = null;
+            try {
+                matches = formsByAliasAndType(queries, alias, formType);
+            } catch (FluidClientException error) {
+                // A child may not exist yet; authentication/server errors must still fail immediately.
+                if (error.getErrorCode() != NO_RESULT) throw error;
+            }
+            if (matches != null && !matches.isEmpty()) {
+                TestCase.assertEquals("Multiple " + formType + " records for alias " + alias, 1, matches.size());
+                // Refresh on every attempt; the query result alone is not a completion signal.
+                derClient.requestFullPayloadPopulate();
+                latest = this.fluidItemByFormId(derClient, matches.get(0).getForm().getId(), false);
+                Form form = latest.getForm();
+                Boolean active = form.getFieldValueAsBoolean("Is Active");
+                state = "formId=" + form.getId() + ", itemFlowState=" + latest.getFlowState()
+                        + ", formFlowState=" + form.getFlowState() + ", state=" + form.getState()
+                        + ", active=" + active;
+                if (latest.getFlowState() == FluidItem.FlowState.NotInFlow
+                        && FluidItem.FlowState.NotInFlow.name().equals(form.getFlowState())
+                        && "Open".equals(form.getState())
+                        && ("Software Data Encryption Key".equals(formType) || Boolean.TRUE.equals(active))) {
+                    return latest;
+                }
+            }
+            if (System.nanoTime() >= deadline) break;
+            sleepForSeconds(1);
+        } while (System.nanoTime() < deadline);
+
+        AssertionError failure = new AssertionError("Timed out after 60s waiting for " + formType
+                + " with alias " + alias + " to activate and exit its workflow. Last state: " + state);
+        if (latest != null) {
+            try {
+                List<FormFlowHistoricData> history = forms.getFormFlowHistoricData(latest.getForm());
+                System.out.println("Generated key workflow history for form " + latest.getForm().getId() + ":");
+                if (history != null) history.forEach(entry -> System.out.println(entry.toString()));
+            } catch (RuntimeException diagnosticError) {
+                failure.addSuppressed(diagnosticError);
+            }
+        }
+        throw failure;
     }
 
     private List<FluidItem> formsByAliasAndType(
