@@ -672,17 +672,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            // Wait for the DEK to be created:
-            sleepForSeconds(3);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, resultSoftKeyFrmType);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No SDEK on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem dekItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem dekItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, resultSoftKeyFrmType);
             TestCase.assertNotNull(dekItm);
             Form sdekForm = dekItm.getForm();
             TestCase.assertNotNull(sdekForm);
@@ -972,17 +962,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            // Wait for the PGP to be created:
-            sleepForSeconds(5);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, "PGP Keypair");
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No PGP on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem pgpItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem pgpItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, "PGP Keypair");
             TestCase.assertNotNull(pgpItm);
             Form pgpForm = pgpItm.getForm();
             TestCase.assertNotNull(pgpForm);
@@ -1141,17 +1121,7 @@ public class TestPericard extends ABaseTestASNDER {
                 this.approveFormId(derClient, uc, fcc, id, viewCheckerGenKey, viewProcResultGenKey);
             });
 
-            // Wait for the PGP to be created:
-            sleepForSeconds(6);
-
-            List<FluidItem> keysWithAlias = formsByAliasAndType(uqc, keyAlias, pgpTrustPub);
-            TestCase.assertNotNull(keysWithAlias);
-            TestCase.assertEquals("No PGP Public Key on alias "+keyAlias+"!",1, keysWithAlias.size());
-
-            FluidItem pgpItm = this.fluidItemByFormId(
-                    derClient, keysWithAlias.get(0).getForm().getId(),
-                    false// No route fields.
-            );
+            FluidItem pgpItm = awaitGeneratedKey(derClient, uqc, fcc, keyAlias, pgpTrustPub);
             TestCase.assertNotNull(pgpItm);
             Form pgpForm = pgpItm.getForm();
             TestCase.assertNotNull(pgpForm);
@@ -1272,8 +1242,8 @@ public class TestPericard extends ABaseTestASNDER {
 
             String identifier = UUID.randomUUID().toString();
             Form frmEmail = new Form(emailType, new Date().toString()+ " "+identifier);
-            frmEmail.setFieldValue("Email From Address", "test@example.com", Field.Type.Text);
-            frmEmail.setFieldValue("Email To Address", "recipient@example.com", Field.Type.Text);
+            frmEmail.setFieldValue("Email From Address", "peter.pan@neverland.com", Field.Type.Text);
+            frmEmail.setFieldValue("Email To Address", "roger@floyd.org", Field.Type.Text);
             frmEmail.setFieldValue("Email Subject", "Test Email Subject", Field.Type.Text);
             frmEmail.setFieldValue("Email Sent Date", new Date(), Field.Type.DateTime);
             frmEmail.setFieldValue("Email Received Date", new Date(), Field.Type.DateTime);
@@ -1598,7 +1568,7 @@ character to be even.
             TestCase.assertEquals("Open", keyPairForm.getState());
             TestCase.assertTrue("Expected key pair to be active.", keyPairForm.getFieldValueAsBoolean("Is Active"));
             TestCase.assertNotNull("Expected Asymmetric Public Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Public Key"));
-            TestCase.assertNotNull("Expected Asymmetric Private Key PEM!", keyPairForm.getFieldValueAsString("Asymmetric Private Key"));
+            TestCase.assertNotNull("Expected HSM-protected asymmetric private key!", keyPairForm.getFieldValueAsString("Asymmetric Private Key"));
             TestCase.assertEquals(this.lastKeystoreOrg, keyPairForm.getFieldValueAsString("Organisation"));
 
             List<Form> descAfter = sqlUtl.getDescendants(reqForm, true, true, true);
