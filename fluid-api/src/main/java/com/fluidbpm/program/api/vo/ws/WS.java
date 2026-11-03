@@ -2678,6 +2678,10 @@ public class WS {
                 public static final String GET_GRAVATAR_BY_EMAIL = ("/get_gravatar_by_email");
                 public static final String GET_GRAVATAR_BY_USER = ("/get_gravatar_by_user");
 
+                //Email login...
+                public static final String REQUEST_LOGIN_URL = "/request_login_url";
+                public static final String REDEEM_LOGIN_URL = "/redeem_login_url";
+
                 /**
                  * Mapping for frequently used HTTP parameters.
                  */
@@ -3034,6 +3038,30 @@ public class WS {
                     returnVal.append(size);
 
                     return returnVal.toString();
+                }
+
+                /**
+                 * Constructs and returns the complete URL string for requesting a login.
+                 *
+                 * The URL is formed by concatenating the version string, root path,
+                 * and the login request endpoint.
+                 *
+                 * @return the fully constructed login request URL as a string.
+                 */
+                public static final String requestLoginUrl() {
+                    return Version.VERSION_1.concat(ROOT).concat(REQUEST_LOGIN_URL);
+                }
+
+                /**
+                 * Constructs and returns the full URL string for redeeming login credentials.
+                 *
+                 * The URL is formed by concatenating a predefined version constant, root path,
+                 * and the redeem login endpoint.
+                 *
+                 * @return the complete redeem login URL as a string
+                 */
+                public static final String redeemLoginUrl() {
+                    return Version.VERSION_1.concat(ROOT).concat(REDEEM_LOGIN_URL);
                 }
             }
         }
