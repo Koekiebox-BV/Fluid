@@ -46,7 +46,8 @@ public class Configuration extends ABaseFluidGSONObject {
         WhiteLabel,
         WebKit,
         WebKitPersonalInventory,
-        CustomPermissionMapping
+        CustomPermissionMapping,
+        EmailLoginEnabled
     }
 
     /**
