@@ -110,6 +110,7 @@
   {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "createFlowItem", "types": ["FluidItem", "String"], "verbs": ["PUT"], "paths": ["/v1/flow_item/"]},
   {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "getFluidItemsInError", "types": [], "verbs": ["POST"], "paths": ["/v1/flow_item/get_all_error"]},
   {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "getFluidItemsForView", "types": ["JobView", "int", "int", "String", "String"], "verbs": ["POST"], "paths": ["/v1/flow_item/get_by_job_view"]},
+  {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "getFluidItemsForView", "types": ["JobView", "int", "int", "String", "String", "boolean"], "verbs": ["POST"], "paths": ["/v1/flow_item/get_by_job_view"]},
   {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "getFluidItemsForView", "types": ["JobView", "int", "int"], "verbs": ["POST"], "paths": ["/v1/flow_item/get_by_job_view"]},
   {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "sendFlowItemOn", "types": ["FluidItem"], "verbs": ["POST"], "paths": ["/v1/flow_item/send_on"]},
   {"client": "com.fluidbpm.ws.client.v1.flowitem.FlowItemClient", "method": "sendFlowItemOn", "types": ["FluidItem", "boolean"], "verbs": ["POST"], "paths": ["/v1/flow_item/send_on"]},
