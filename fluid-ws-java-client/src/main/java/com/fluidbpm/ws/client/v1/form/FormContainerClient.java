@@ -601,9 +601,11 @@ public class FormContainerClient extends ABaseClientWS {
      * @param form To sanitise prior to sending through REST interface.
      */
     private Form clearForRestCreateUpdate(Form form) {
-        if (form == null || form.getFormFields() == null) return form;
+        if (form == null) return null;
 
         form.setServiceTicket(this.serviceTicket);
+        if (form.getFormFields() == null) return form;
+
         form.getFormFields().stream()
                 .filter(itm -> (itm.getTypeAsEnum() != null && itm.getTypeAsEnum() == Field.Type.MultipleChoice) &&
                     itm.getFieldValueAsMultiChoice() != null)
