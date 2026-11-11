@@ -96,7 +96,8 @@ public class TestTableRecordEndpoints extends ABaseTestCase {
         String configuredUrl = System.getProperty("FLUID_WS_URL");
         Assume.assumeTrue("Set -DFLUID_WS_URL to a disposable Fluid test server",
                 configuredUrl != null && !configuredUrl.trim().isEmpty());
-        prefix = "JUnit Table Page " + UUID.randomUUID().toString();
+        // Field and form-definition names allow letters, digits and spaces, but not UUID hyphens.
+        prefix = "JUnit Table Page " + UUID.randomUUID().toString().replace("-", "");
         try (LoginClient login = new LoginClient(BASE_URL)) {
             ticket = login.login(USERNAME, PASSWORD).getServiceTicket();
         }
