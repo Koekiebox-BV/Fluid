@@ -40,6 +40,31 @@ import static com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper.seqBytes;
 public class TestASNFormListingMapper extends ABaseTestCase {
 
     @Test
+    public void preservesEmptyPagesAndTheirMetadata() {
+        ASNMapperFormListing mapper = new ASNMapperFormListing(new ASNMapperForm(new PayloadPopulate()));
+        for (int total : new int[]{5, 0}) {
+            FormListing page = new FormListing();
+            page.setListing(new ArrayList<>());
+            page.setListingCount(total);
+            page.setListingIndex(20);
+            page.setListingPage(10);
+            FormListing decoded = mapper.decode(seqBytes(mapper.encode(page)));
+            Assert.assertNotNull("An explicitly empty page must remain a list", decoded.getListing());
+            Assert.assertTrue(decoded.getListing().isEmpty());
+            Assert.assertEquals(page.getListingCount(), decoded.getListingCount());
+            Assert.assertEquals(page.getListingIndex(), decoded.getListingIndex());
+            Assert.assertEquals(page.getListingPage(), decoded.getListingPage());
+        }
+    }
+
+    @Test
+    public void preservesAbsentListing() {
+        ASNMapperFormListing mapper = new ASNMapperFormListing(new ASNMapperForm(new PayloadPopulate()));
+        FormListing decoded = mapper.decode(seqBytes(mapper.encode(new FormListing())));
+        Assert.assertNull(decoded.getListing());
+    }
+
+    @Test
     public void testEncodeDecode() {
         FormListing listing = new FormListing();
         listing.setId(789L);
