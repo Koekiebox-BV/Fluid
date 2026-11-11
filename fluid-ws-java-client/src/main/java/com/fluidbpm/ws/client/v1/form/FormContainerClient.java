@@ -22,6 +22,7 @@ import com.fluidbpm.program.api.vo.flow.JobView;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.form.TableRecord;
+import com.fluidbpm.program.api.vo.form.TableRecordListing;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormFlowHistoricDataListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
@@ -128,6 +129,31 @@ public class FormContainerClient extends ABaseClientWS {
         }
 
         return new FormHistoricData(this.putJson(formHistory, WS.Path.FormHistory.Version1.formHistoryCreate()));
+    }
+
+    /**
+     * Creates a bounded, synchronous batch of table records.
+     * A lost response must be reconciled before retrying.
+     *
+     * @param request The table records to create.
+     * @return Created records in input order.
+     * @see TableRecordListing
+     */
+    public TableRecordListing createTableRecordsBatch(TableRecordListing request) {
+        if (request == null || request.getListing() == null || request.getListing().isEmpty()
+                || request.getListing().size() > TableRecordListing.MAX_BATCH_SIZE) {
+            throw new IllegalArgumentException("A batch must contain 1..250 records.");
+        }
+        request.setServiceTicket(this.serviceTicket);
+        for (TableRecord record : request.getListing()) {
+            if (record == null) {
+                throw new IllegalArgumentException("Null table record.");
+            }
+            record.setFormContainer(this.clearForRestCreateUpdate(record.getFormContainer()));
+            record.setParentFormContainer(this.clearForRestIdOnly(record.getParentFormContainer()));
+        }
+        return new TableRecordListing(this.putJson(request,
+                WS.Path.FormContainerTableRecord.Version1.formContainerTableRecordCreate() + "/batch"));
     }
 
     /**

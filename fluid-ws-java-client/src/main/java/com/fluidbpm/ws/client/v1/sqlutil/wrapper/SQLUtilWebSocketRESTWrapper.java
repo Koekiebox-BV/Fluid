@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.form.TableRecordPage;
 import com.fluidbpm.program.api.vo.historic.FormHistoricData;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
@@ -259,6 +260,42 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             }
             return returnVal;
         }
+    }
+
+    /**
+     * Retrieves a database-backed page of table records.
+     * Count and page are separate reads and may differ during concurrent modifications.
+     *
+     * @param parent The parent form containing the ID.
+     * @param includeFields Whether to populate field data for the returned records.
+     * @param definitionId Form definition filter; nonpositive values include all definitions.
+     * @param limit Maximum number of records to retrieve.
+     * @param offset Zero-based offset of the first record.
+     * @return The requested page and total matching record count.
+     */
+    public FormListing getTableFormsPage(
+            Form parent,
+            boolean includeFields,
+            long definitionId,
+            int limit,
+            int offset
+    ) {
+        TableRecordPage.validate(limit, offset);
+        this.clearClientsIfRest();
+        if (!DISABLE_WS && this.mode != Mode.RESTfulActive) {
+            try (SQLUtilWebSocketGetTableFormsPageClient client =
+                         new SQLUtilWebSocketGetTableFormsPageClient(
+                                 this.baseURL, this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                                 includeFields, definitionId, limit, offset)) {
+                return client.getTableFormsPage(parent);
+            } catch (FluidClientException error) {
+                if (error.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
+                    throw error;
+                }
+                this.mode = Mode.RESTfulActive;
+            }
+        }
+        return this.sqlUtilClient.getTableFormsPage(parent, includeFields, definitionId, limit, offset);
     }
 
     /**

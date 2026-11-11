@@ -53,6 +53,8 @@ public interface ISyntax {
          * @see com.fluidbpm.program.api.vo.form.Form
          */
         public static final class Form {
+            public static final String GetTableFormsPage = "Fluid_GetTableFormsPage";
+            public static final String GetTableFormsCount = "Fluid_GetTableFormsCount";
             public static final String GetFormContainersTableFieldFormContainers =
                     "Fluid_GetFormContainersTableFieldFormContainers";
 
@@ -133,6 +135,8 @@ public interface ISyntax {
         public static String[] allAliases() {
             return new String[]{
                     FormDefinition.GetFormDefinitions,
+                    Form.GetTableFormsPage,
+                    Form.GetTableFormsCount,
                     Form.GetFormContainersTableFieldFormContainers,
                     Form.GetFormContainersChildFormContainers,
                     Form.GetFormContainersChildFormContainersWithStates,
@@ -154,49 +158,44 @@ public interface ISyntax {
         }
 
         /**
-         * Gets the parameter count for Stored Procedure {@code aliasParam}.
+         * Gets the parameter count for stored procedure {@code alias}.
          *
-         * @param alias The Stored Procedure.
-         * @return Number of parameters for Stored Procedure {@code aliasParam}.
+         * @param alias The stored procedure alias.
+         * @return Number of parameters, or zero for a null or unknown alias.
          */
         public static int getParamCountForAlias(String alias) {
-            if (Form.GetFormContainersTableFieldFormContainers.equals(alias)) {//Forms...
-                return 1;
-            } else if (Form.GetFormContainersChildFormContainers.equals(alias)) {
-                return 1;
-            } else if (Form.GetFormContainersChildFormContainersWithStates.equals(alias)) {
-                return 1;
-            } else if (Form.GetFormContainersParentFormContainer.equals(alias)) {
-                return 1;
-            } else if (Form.GetFormContainerInfo.equals(alias)) {
-                return 1;
-            } else if (Field.GetFormFieldsForFormContainer.equals(alias)) {//Fields...
-                return 1;
-            } else if (Field.GetFormFieldsForFormDefinition.equals(alias)) {
-                return 1;
-            } else if (Field.GetFormDefinitionForFormContainer.equals(alias)) {//Form Definition by Container...
-                return 1;
-            } else if (Field.GetFormFieldValue_1_Text.equals(alias)) {//Specific Values...
-                return 3;
-            } else if (Field.GetFormFieldValue_2_TrueFalse.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldValue_3_ParagraphText.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldValue_4_MultiChoice.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldMultipleValue_4_MultiChoice.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldValue_5_DateTime.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldValue_6_Decimal.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldValue_7_TableField.equals(alias)) {
-                return 3;
-            } else if (Field.GetFormFieldValue_8_TextEncrypted.equals(alias)) {
-                return 3;
+            if (alias == null) return 0;
+
+            switch (alias) {
+                case Form.GetTableFormsPage:
+                    return 4;
+                case Form.GetTableFormsCount:
+                    return 2;
+                case Form.GetFormContainersTableFieldFormContainers:
+                case Form.GetFormContainersChildFormContainers:
+                case Form.GetFormContainersChildFormContainersWithStates:
+                case Form.GetFormContainersParentFormContainer:
+                case Form.GetFormContainerInfo:
+                case Field.GetFormFieldsForFormContainer:
+                case Field.GetFormFieldsForFormDefinition:
+                case Field.GetFormDefinitionForFormContainer:
+                    return 1;
+                case Field.GetFormFieldValue_1_Text:
+                case Field.GetFormFieldValue_2_TrueFalse:
+                case Field.GetFormFieldValue_3_ParagraphText:
+                case Field.GetFormFieldValue_4_MultiChoice:
+                case Field.GetFormFieldMultipleValue_4_MultiChoice:
+                case Field.GetFormFieldValue_5_DateTime:
+                case Field.GetFormFieldValue_6_Decimal:
+                case Field.GetFormFieldValue_7_TableField:
+                case Field.GetFormFieldValue_8_TextEncrypted:
+                    return 3;
+                case FormDefinition.GetFormDefinitions:
+                default:
+                    return 0;
             }
-            return 0;
         }
+
     }
 
     /**

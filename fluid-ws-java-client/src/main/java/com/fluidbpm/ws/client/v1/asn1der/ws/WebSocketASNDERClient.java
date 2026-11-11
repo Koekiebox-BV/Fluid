@@ -17,12 +17,18 @@ package com.fluidbpm.ws.client.v1.asn1der.ws;
 
 import com.fluidbpm.program.api.util.UtilGlobal;
 import com.fluidbpm.program.api.vo.attachment.Attachment;
+import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.form.TableRecordListing;
+import com.fluidbpm.program.api.vo.form.TableRecordPage;
+import com.fluidbpm.program.api.vo.ws.WS;
 import com.fluidbpm.ws.client.FluidClientException;
 import com.fluidbpm.ws.client.v1.asn1der.ASNBaseMapper;
 import com.fluidbpm.ws.client.v1.asn1der.ASNGlobal;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperError;
 import com.fluidbpm.ws.client.v1.asn1der.ASNMapperFactory;
 import com.fluidbpm.ws.client.v1.asn1der.vo.RequestObject;
+import com.fluidbpm.ws.client.v1.asn1der.vo.RequestParameter;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.BaseTransmission;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.PayloadPopulate;
 import com.fluidbpm.ws.client.v1.asn1der.vo.transmission.ServerProcessStats;
@@ -36,6 +42,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.asn1.ASN1Sequence;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -189,6 +196,73 @@ public class WebSocketASNDERClient extends
             long timeoutInMillis
     ) {
         this(endpointBase, null, serviceTicketAsHex, timeoutInMillis, null);
+    }
+
+    /**
+     * Creates a bounded, synchronous batch of table records.
+     * A lost response must be reconciled before retrying.
+     *
+     * @param batch The table records to create.
+     * @return Created records in input order.
+     * @see TableRecordListing
+     */
+    public TableRecordListing createTableRecordsBatch(
+            TableRecordListing batch) {
+        if (batch == null || batch.getListing() == null || batch.getListing().isEmpty()
+                || batch.getListing().size() > TableRecordListing.MAX_BATCH_SIZE) {
+            throw new IllegalArgumentException("A batch must contain 1..250 records.");
+        }
+        BaseTransmission request = new BaseTransmission(ASNGlobal.Type.TABLE_RECORD_LISTING);
+        request.setPayloadPopulate(this.payloadPopulate);
+        request.setTransmissionObject(batch);
+        request.setRequestObject(new RequestObject(
+                ASNGlobal.Path.FormContainer.FORM_CONT_CREATE_TABLE_RECORDS_BATCH));
+        BaseTransmission response = this.request(request);
+        if (response == null || !(response.getTransmissionObject() instanceof TableRecordListing)) {
+            throw new FluidClientException(
+                    "Missing batch response; reconcile before retrying.", FluidClientException.ErrorCode.IO_ERROR);
+        }
+        return (TableRecordListing) response.getTransmissionObject();
+    }
+
+    /**
+     * Retrieves a database-backed page of table records.
+     * Count and page are separate reads and may differ during concurrent modifications.
+     *
+     * @param parent The parent form containing the ID.
+     * @param includeFields Whether to populate field data for the returned records.
+     * @param definitionId Form definition filter; nonpositive values include all definitions.
+     * @param limit Maximum number of records to retrieve.
+     * @param offset Zero-based offset of the first record.
+     * @return The requested page and total matching record count.
+     */
+    public FormListing getTableFormsPage(
+            Form parent,
+            boolean includeFields,
+            long definitionId,
+            int limit,
+            int offset
+    ) {
+        TableRecordPage.validate(limit, offset);
+        BaseTransmission request = new BaseTransmission(ASNGlobal.Type.FORM);
+        if (parent == null || parent.getId() == null || parent.getId() <= 0) {
+            throw new IllegalArgumentException("Parent form ID required.");
+        }
+        request.setPayloadPopulate(this.payloadPopulate);
+        request.setTransmissionObject(parent);
+        request.setRequestObject(new RequestObject(
+                ASNGlobal.Path.FormContainer.FORM_CONT_GET_TABLE_FORMS_PAGE,
+                Arrays.asList(
+                        new RequestParameter(WS.Path.SQLUtil.Version1.QueryParam.INCLUDE_FIELD_DATA, includeFields),
+                        new RequestParameter(WS.Path.SQLUtil.Version1.QueryParam.FORM_DEFINITION, definitionId),
+                        new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.QUERY_LIMIT, limit),
+                        new RequestParameter(WS.Path.FlowItem.Version1.QueryParam.OFFSET, offset))));
+        BaseTransmission response = this.request(request);
+        if (response == null || !(response.getTransmissionObject() instanceof FormListing)) {
+            throw new FluidClientException(
+                    "Missing table page response.", FluidClientException.ErrorCode.IO_ERROR);
+        }
+        return (FormListing) response.getTransmissionObject();
     }
 
     /**

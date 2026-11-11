@@ -30,13 +30,15 @@ public class TestSQLUtilPostgreSQLSyntax {
         result.put(ISyntax.ProcedureMapping.Field.GetFormFieldValue_7_TableField, 3);
         result.put(ISyntax.ProcedureMapping.Field.GetFormFieldValue_8_TextEncrypted, 3);
         result.put(ISyntax.ProcedureMapping.Field.GetFormFieldMultipleValue_4_MultiChoice, 3);
+        result.put(ISyntax.ProcedureMapping.Form.GetTableFormsPage, 4);
+        result.put(ISyntax.ProcedureMapping.Form.GetTableFormsCount, 2);
         return result;
     }
 
     @Test
     public void allAliasesUseTheCorrectDatabaseCallAndParameterCount() {
         Map<String, Integer> expected = routines();
-        assertEquals(18, expected.size());
+        assertEquals(20, expected.size());
         assertEquals(expected.keySet(), new java.util.HashSet<>(
                 java.util.Arrays.asList(ISyntax.ProcedureMapping.allAliases())));
         for (Map.Entry<String, Integer> entry : expected.entrySet()) {
@@ -60,6 +62,13 @@ public class TestSQLUtilPostgreSQLSyntax {
                 else assertNull(query.getQuery());
             }
         }
+    }
+
+    @Test
+    public void nullAndUnknownAliasesHaveNoParameters() {
+        assertEquals(0, ISyntax.ProcedureMapping.getParamCountForAlias(null));
+        assertEquals(0, ISyntax.ProcedureMapping.getParamCountForAlias(""));
+        assertEquals(0, ISyntax.ProcedureMapping.getParamCountForAlias("unknown"));
     }
 
     @Test

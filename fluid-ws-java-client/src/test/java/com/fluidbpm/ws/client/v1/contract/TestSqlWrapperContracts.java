@@ -43,6 +43,7 @@ public class TestSqlWrapperContracts {
             switch (method.getName()) {
                 case "getAncestor": path = "sql_util/form/get_ancestor_by_electronic_form_id"; break;
                 case "getDescendants": path = "sql_util/form/get_descendants_by_electronic_form_id"; break;
+                case "getTableFormsPage": path = "sql_util/form/get_table_forms_by_electronic_form_id_paging"; break;
                 case "getTableForms": path = "sql_util/form/get_table_forms_by_electronic_form_id"; break;
                 case "getFormFields": case "massPopulateFormFields": path = "sql_util/form_field/get_fields_by_electronic_form_id"; break;
                 case "getFormHistoryByForm": path = "form_history/get_by_form_container"; break;
@@ -56,6 +57,7 @@ public class TestSqlWrapperContracts {
                 Form form = forms instanceof List ? (Form)((List<?>)forms).get(0) : ((Form[])forms)[0];
                 assertEquals("response", form.getFormFields().get(0).getFieldName());
             } else if (response instanceof List) assertEquals(1, ((List<?>)response).size());
+            else if (response instanceof com.fluidbpm.program.api.vo.form.FormListing) assertEquals(1, ((com.fluidbpm.program.api.vo.form.FormListing)response).getListing().size());
             else assertEquals(Long.valueOf(917), ((Form)response).getId());
         } finally { SQLUtilWebSocketRESTWrapper.DISABLE_WS = previous; }
     }

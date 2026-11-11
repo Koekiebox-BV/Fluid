@@ -23,6 +23,8 @@ import com.fluidbpm.program.api.util.sql.syntax.ISyntax;
 import com.fluidbpm.program.api.util.sql.syntax.SyntaxFactory;
 import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
+import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.form.TableRecordPage;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.user.User;
 
@@ -85,6 +87,70 @@ public class SQLFormUtil extends ABaseSQLUtil implements IFormAction {
      */
     public SQLFormUtil(Connection connectionParam) {
         this(connectionParam, null);
+    }
+
+    /**
+     * Retrieves a database-backed page of table records.
+     * Count and page are separate reads and may differ during concurrent modifications.
+     *
+     * @param parentId The parent form ID.
+     * @param includeFieldData Whether to populate field data for the returned records.
+     * @param definitionId Form definition filter; nonpositive values include all definitions.
+     * @param limit Maximum number of records to retrieve.
+     * @param offset Zero-based offset of the first record.
+     * @return The requested page and total matching record count.
+     */
+    public FormListing getFormTableFormsPage(
+            Long parentId,
+            boolean includeFieldData,
+            long definitionId,
+            int limit,
+            int offset
+    ) {
+        TableRecordPage.validate(limit, offset);
+        if (parentId == null || parentId <= 0) {
+            throw new IllegalArgumentException("Parent form ID is required.");
+        }
+        FormListing page = new FormListing();
+        List<Form> forms = new ArrayList<>();
+        try {
+            ISyntax countSyntax = SyntaxFactory.getInstance().getSyntaxFor(
+                    this.getSQLTypeFromConnection(),
+                    ISyntax.ProcedureMapping.Form.GetTableFormsCount);
+            try (PreparedStatement count = this.getConnection().prepareStatement(countSyntax.getPreparedStatement())) {
+                count.setLong(1, parentId);
+                count.setLong(2, definitionId);
+                try (ResultSet rs = count.executeQuery()) {
+                    page.setListingCount(rs.next() ? Math.toIntExact(rs.getLong(1)) : 0);
+                }
+            }
+            ISyntax pageSyntax = SyntaxFactory.getInstance().getSyntaxFor(
+                    this.getSQLTypeFromConnection(),
+                    ISyntax.ProcedureMapping.Form.GetTableFormsPage);
+            Map<Long, String> definitions = this.formDefUtil.getFormDefinitionIdAndTitle();
+            try (PreparedStatement query = this.getConnection().prepareStatement(pageSyntax.getPreparedStatement())) {
+                query.setLong(1, parentId);
+                query.setLong(2, definitionId);
+                query.setInt(3, limit);
+                query.setInt(4, offset);
+                try (ResultSet rs = query.executeQuery()) {
+                    while (rs.next()) {
+                        forms.add(this.mapFormContainerTo(definitions, rs));
+                    }
+                }
+            }
+            if (includeFieldData) {
+                for (Form form : forms) {
+                    form.setFormFields(this.fieldUtil.getFormFields(form.getId(), false, false));
+                }
+            }
+        } catch (SQLException error) {
+            throw new FluidSQLException(error);
+        }
+        page.setListing(forms);
+        page.setListingIndex(offset);
+        page.setListingPage(offset / limit);
+        return page;
     }
 
     /**

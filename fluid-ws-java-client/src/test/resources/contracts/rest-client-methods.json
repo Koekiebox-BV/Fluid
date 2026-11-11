@@ -317,5 +317,7 @@
   {"client": "com.fluidbpm.ws.client.v1.userquery.UserQueryClient", "method": "executeUserQuery", "types": ["UserQuery", "boolean", "int", "int"], "verbs": ["POST"], "paths": ["/v1/user_query/execute"]},
   {"client": "com.fluidbpm.ws.client.v1.userquery.UserQueryClient", "method": "executeUserQuery", "types": ["UserQuery", "boolean", "int", "int", "boolean"], "verbs": ["POST"], "paths": ["/v1/user_query/execute"]},
   {"client": "com.fluidbpm.ws.client.v1.userquery.UserQueryClient", "method": "executeUserQuery", "types": ["UserQuery", "boolean", "boolean", "int", "int", "boolean"], "verbs": ["POST"], "paths": ["/v1/user_query/execute"]},
-  {"client": "com.fluidbpm.ws.client.v1.userquery.UserQueryClient", "method": "executeUserQueryReturnListing", "types": ["UserQuery", "boolean", "boolean", "int", "int", "boolean"], "verbs": ["POST"], "paths": ["/v1/user_query/execute"]}
+  {"client": "com.fluidbpm.ws.client.v1.userquery.UserQueryClient", "method": "executeUserQueryReturnListing", "types": ["UserQuery", "boolean", "boolean", "int", "int", "boolean"], "verbs": ["POST"], "paths": ["/v1/user_query/execute"]},
+  {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "createTableRecordsBatch", "types": ["TableRecordListing"], "verbs": ["PUT"], "paths": ["/v1/form_container/table_record/batch"]},
+  {"client": "com.fluidbpm.ws.client.v1.sqlutil.SQLUtilClient", "method": "getTableFormsPage", "types": ["Form", "boolean", "long", "int", "int"], "verbs": ["POST"], "paths": ["/v1/sql_util/form/get_table_forms_by_electronic_form_id_paging"]}
 ]

@@ -138,6 +138,12 @@ public class TestRestClientContracts {
         if (c == byte[].class) return new byte[]{1, 2, 3};
         if (c == Object[].class) return new Object[0];
         if (c.isArray()) { Object a = Array.newInstance(c.getComponentType(), 1); Array.set(a, 0, fixture(c.getComponentType())); return a; }
+        if (c == com.fluidbpm.program.api.vo.form.TableRecordListing.class) {
+            com.fluidbpm.program.api.vo.form.TableRecordListing listing = new com.fluidbpm.program.api.vo.form.TableRecordListing();
+            listing.setListing(Collections.singletonList(new com.fluidbpm.program.api.vo.form.TableRecord(
+                new com.fluidbpm.program.api.vo.form.Form(7L), new com.fluidbpm.program.api.vo.form.Form(8L), new Field(9L))));
+            return listing;
+        }
         Object value = c.getConstructor().newInstance();
         for (String name : Arrays.asList("setId", "setFieldName", "setName", "setFormType", "setUsername", "setEmail", "setQuery", "setTitle", "setDatasourceName")) {
             try { c.getMethod(name, name.equals("setId") ? Long.class : String.class).invoke(value, name.equals("setId") ? 7L : "sample"); }
