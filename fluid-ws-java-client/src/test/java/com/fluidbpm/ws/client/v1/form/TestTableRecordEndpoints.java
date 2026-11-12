@@ -33,6 +33,7 @@ import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilClient;
 import com.fluidbpm.ws.client.v1.sqlutil.SQLUtilWebSocketGetTableFormsPageClient;
 import com.fluidbpm.ws.client.v1.user.LoginClient;
 import com.google.gson.JsonObject;
+import lombok.extern.java.Log;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
@@ -46,7 +47,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -57,6 +60,7 @@ import static org.junit.Assert.*;
  * tests are skipped; with one, authentication, connectivity and endpoint failures fail the test.
  * Run only against a disposable test installation: each case creates and removes its own data.
  */
+@Log
 @RunWith(Parameterized.class)
 public class TestTableRecordEndpoints extends ABaseTestCase {
     private enum Protocol { REST, JSON_WEB_SOCKET, ASN1_DER }
@@ -184,6 +188,89 @@ public class TestTableRecordEndpoints extends ABaseTestCase {
         assertEquals(Integer.valueOf(1), page(otherParent, true, -1, 2, 0).getListingCount());
         // An independent REST fetch confirms that WebSocket results are persisted.
         assertEquals(expectedIds.get(0), sql.getTableFormsPage(parent, true, -1, 1, 0).getListing().get(0).getId());
+    }
+
+    /**
+     * Measures four creation batches of 250 records, followed by ten pages of 100 records.
+     * Timings cover client calls only, excluding fixture setup, record construction, assertions,
+     * logging and cleanup. JSON WebSocket paging includes opening and closing each page connection.
+     * Results are informational; no environment-dependent performance threshold is asserted.
+     * Select with '-Dtest=TestTableRecordEndpoints#measuresBatchCreationAndPagedFetchPerformance*'.
+     */
+    @Test(timeout = 600000)
+    public void measuresBatchCreationAndPagedFetchPerformance() {
+        final int batchCount = 4;
+        final int batchSize = 250;
+        final int pageSize = 100;
+        final int totalRecords = batchCount * batchSize;
+        final int pageCount = totalRecords / pageSize;
+        List<Long> expectedIds = new ArrayList<>(totalRecords);
+        long createNanos = 0;
+
+        log.info(String.format(Locale.ROOT,
+                "Table record performance [%s]: create %d batches of %d, then fetch %d pages of %d "
+                        + "with field data. Timings exclude fixture setup, assertions and cleanup; "
+                        + "JSON WebSocket page timings include connection setup and close.",
+                protocol, batchCount, batchSize, pageCount, pageSize)
+        );
+        for (int batchIndex = 0; batchIndex < batchCount; batchIndex++) {
+            int offset = batchIndex * batchSize;
+            List<TableRecord> records = new ArrayList<>(batchSize);
+            for (int index = 0; index < batchSize; index++) records.add(row(parent, offset + index));
+            TableRecordListing request = batch(records);
+
+            long startedAt = System.nanoTime();
+            TableRecordListing created = create(request);
+            long elapsedNanos = System.nanoTime() - startedAt;
+            createNanos += elapsedNanos;
+
+            assertEquals(Integer.valueOf(batchSize), created.getListingCount());
+            assertEquals(batchSize, created.getListing().size());
+            for (int index = 0; index < batchSize; index++) {
+                TableRecord saved = created.getListing().get(index);
+                assertNotNull(saved.getFormContainer().getId());
+                assertEquals(parent.getId(), saved.getParentFormContainer().getId());
+                assertEquals(tableField.getId(), saved.getParentFormField().getId());
+                assertValues(saved.getFormContainer(), offset + index);
+                expectedIds.add(saved.getFormContainer().getId());
+            }
+            logPerformance("create batch " + (batchIndex + 1) + "/" + batchCount,
+                    1, batchSize, elapsedNanos);
+        }
+        assertEquals("Each created record must have a distinct ID", totalRecords, new HashSet<>(expectedIds).size());
+        logPerformance("Create total", batchCount, totalRecords, createNanos);
+
+        List<Long> fetchedIds = new ArrayList<>(totalRecords);
+        long fetchNanos = 0;
+        for (int offset = 0; offset < totalRecords; offset += pageSize) {
+            long startedAt = System.nanoTime();
+            FormListing fetched = page(parent, true, childDefinition.getId(), pageSize, offset);
+            long elapsedNanos = System.nanoTime() - startedAt;
+            fetchNanos += elapsedNanos;
+
+            assertEquals(Integer.valueOf(totalRecords), fetched.getListingCount());
+            assertEquals(Integer.valueOf(offset), fetched.getListingIndex());
+            assertEquals(Integer.valueOf(offset / pageSize), fetched.getListingPage());
+            assertEquals(pageSize, fetched.getListing().size());
+            for (int index = 0; index < pageSize; index++) {
+                Form saved = fetched.getListing().get(index);
+                fetchedIds.add(saved.getId());
+                assertValues(saved, offset + index);
+            }
+            logPerformance("Fetch page " + (offset / pageSize + 1) + "/" + pageCount + " offset=" + offset,
+                    1, pageSize, elapsedNanos);
+        }
+        assertEquals("No omitted, repeated or reordered records", expectedIds, fetchedIds);
+        logPerformance("Fetch total", pageCount, totalRecords, fetchNanos);
+    }
+
+    private void logPerformance(String operation, int calls, int records, long elapsedNanos) {
+        double elapsedMillis = elapsedNanos / 1_000_000.0;
+        double recordsPerSecond = records * 1_000_000_000.0 / Math.max(1L, elapsedNanos);
+        log.info(String.format(Locale.ROOT,
+                "Table record performance [%s] %s: calls=%d, records=%d, elapsed=%.3f ms, "
+                        + "mean=%.3f ms/call, throughput=%.2f records/s",
+                protocol, operation, calls, records, elapsedMillis, elapsedMillis / calls, recordsPerSecond));
     }
 
     @Test(timeout = 120000)

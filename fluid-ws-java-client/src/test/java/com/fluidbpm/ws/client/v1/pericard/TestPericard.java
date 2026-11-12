@@ -72,7 +72,16 @@ import static com.fluidbpm.ws.client.FluidClientException.ErrorCode.NO_RESULT;
 import static org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
 
 /**
+ * Integration test suite for Pericard request workflows that are executed through the ASNDER
+ * client stack.
  *
+ * The tests cover organization and keystore onboarding, HSM host configuration, generation and
+ * import of cryptographic material, PGP key handling, terminal master key import, asymmetric HSM
+ * key pair generation, and HSM-backed certificate provisioning.
+ *
+ * The suite exercises maker/checker approval flows, generated child requests, query-based polling,
+ * and form mutation to validate that Pericard-related request types can be created, processed,
+ * approved, and resolved as expected.
  */
 @Log
 public class TestPericard extends ABaseTestASNDER {
