@@ -129,6 +129,7 @@
   {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "executeCustomWebAction", "types": ["String", "boolean", "Long", "Form"], "verbs": ["POST"], "paths": ["/v1/form_container/execute_custom_web_action"]},
   {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "deleteFormContainer", "types": ["Form"], "verbs": ["POST"], "paths": ["/v1/form_container/delete"]},
   {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "getFormFlowHistoricData", "types": ["Form"], "verbs": ["POST"], "paths": ["/v1/flow_item_history/get_by_form_container"]},
+  {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "getFormFlowTimelineData", "types": ["Form"], "verbs": ["POST"], "paths": ["/v1/flow_item_history/get_by_form_container"]},
   {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "getFormAndFieldHistoricData", "types": ["Form", "boolean"], "verbs": ["POST"], "paths": ["/v1/form_history/get_by_form_container"]},
   {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "getFormAndFieldHistoricData", "types": ["Form", "boolean", "boolean"], "verbs": ["POST"], "paths": ["/v1/form_history/get_by_form_container"]},
   {"client": "com.fluidbpm.ws.client.v1.form.FormContainerClient", "method": "getMostRecentFormAndFieldHistoricData", "types": ["Form"], "verbs": ["POST"], "paths": ["/v1/form_history/get_most_recent_by_form_container"]},
