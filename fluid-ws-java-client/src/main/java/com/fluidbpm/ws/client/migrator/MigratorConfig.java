@@ -53,6 +53,8 @@ public class MigratorConfig {
         private String privateLabel;
         private WebKitGlobal webKitGlobal;
         private WebKitPersonalInventory webKitPersonalInventory;
+        /** Enable the inbox while preserving existing personal inventory preferences. */
+        private boolean enableInbox;
 
         private String companyLogoClasspath;
         private String companyLogoFilepath;
@@ -142,8 +144,9 @@ public class MigratorConfig {
 
             copyJSONFieldsNotSet(existingJson, wkPIJson);
 
-            if (!wkPIJson.isEmpty()) setConfigIfNotBlank(cc, Configuration.Key.WebKit, wkPIJson.toString());
+            if (!wkPIJson.isEmpty()) setConfigIfNotBlank(cc, Configuration.Key.WebKitPersonalInventory, wkPIJson.toString());
         }
+        if (opts.enableInbox) enableInbox(cc);
 
         // Custom Permissions:
         if (opts.customPermissions != null) {
@@ -166,6 +169,21 @@ public class MigratorConfig {
                 }
             }
         }
+    }
+
+    /**
+     * Enable the inbox, retaining saved preferences and filling in missing defaults.
+     *
+     * @param cc Configuration client used to read and persist personal inventory settings.
+     */
+    public static void enableInbox(ConfigurationClient cc) {
+        Configuration existing = getConfigurationSafe(cc, Configuration.Key.WebKitPersonalInventory);
+        JsonObject inbox = existing == null || UtilGlobal.isBlank(existing.getValue())
+                ? new JsonObject()
+                : JsonParser.parseString(existing.getValue()).getAsJsonObject();
+        copyJSONFieldsNotSet(new WebKitPersonalInventory(null).toJsonObject(), inbox);
+        inbox.addProperty(WebKitPersonalInventory.JSONMapping.PERSONAL_INVENTORY_ENABLED, true);
+        setConfigIfNotBlank(cc, Configuration.Key.WebKitPersonalInventory, inbox.toString());
     }
 
     private static void setConfigIfNotBlank(
