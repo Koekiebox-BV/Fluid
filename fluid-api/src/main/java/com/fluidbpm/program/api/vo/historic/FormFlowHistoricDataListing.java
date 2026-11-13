@@ -16,9 +16,13 @@
 package com.fluidbpm.program.api.vo.historic;
 
 import com.fluidbpm.program.api.vo.ABaseGSONListing;
+import com.fluidbpm.program.api.vo.flow.FlowStep;
 import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.Date;
 
 /**
  * <p>
@@ -31,6 +35,11 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 public class FormFlowHistoricDataListing extends ABaseGSONListing<FormFlowHistoricData> {
     private static final long serialVersionUID = 1L;
+
+    // Optional UTC timeline snapshot. Null currentStep means the item has left workflow.
+    @Getter @Setter private FlowStep currentStep;
+    @Getter @Setter private Date currentStepEntered;
+    @Getter @Setter private Date snapshotTime;
 
     /**
      * Default constructor.
@@ -46,6 +55,19 @@ public class FormFlowHistoricDataListing extends ABaseGSONListing<FormFlowHistor
      */
     public FormFlowHistoricDataListing(JsonObject jsonObjectParam) {
         super(jsonObjectParam);
+        if (this.jsonObject == null) return;
+        this.currentStep = this.extractObject("currentStep", FlowStep::new);
+        this.currentStepEntered = this.getDateFieldValueFromFieldWithName("currentStepEntered");
+        this.snapshotTime = this.getDateFieldValueFromFieldWithName("snapshotTime");
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+        JsonObject json = super.toJsonObject();
+        this.setAsObj("currentStep", json, this::getCurrentStep);
+        this.setAsProperty("currentStepEntered", json, this.currentStepEntered);
+        this.setAsProperty("snapshotTime", json, this.snapshotTime);
+        return json;
     }
 
     /**

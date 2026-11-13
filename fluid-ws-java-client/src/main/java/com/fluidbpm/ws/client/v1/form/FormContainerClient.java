@@ -320,9 +320,17 @@ public class FormContainerClient extends ABaseClientWS {
      */
     public List<FormFlowHistoricData> getFormFlowHistoricData(Form form) {
         return new FormFlowHistoricDataListing(this.postJson(
+            this.clearForRestIdOnly(form), WS.Path.FlowItemHistory.Version1.getByFormContainer())).getListing();
+    }
+
+    /**
+     * Retrieves UTC workflow history together with the current step and snapshot time.
+     * Requires audit-history permission. The standard history method retains its legacy timezone behavior.
+     */
+    public FormFlowHistoricDataListing getFormFlowTimelineData(Form form) {
+        return new FormFlowHistoricDataListing(this.postJson(
             this.clearForRestIdOnly(form),
-            WS.Path.FlowItemHistory.Version1.getByFormContainer())
-        ).getListing();
+            WS.Path.FlowItemHistory.Version1.getByFormContainer() + "?utc=true"));
     }
 
     /**
