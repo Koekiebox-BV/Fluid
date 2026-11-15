@@ -66,6 +66,7 @@ public class ASNGlobal {
         public static final int USER_QUERY_LISTING = -16;
         public static final int ROLE = -17;
         public static final int USER = -18;
+        public static final int TABLE_RECORD_LISTING = -19;
     }
 
     /**
@@ -126,6 +127,8 @@ public class ASNGlobal {
             public static final String FORM_CONT_UPDATE = "form_container/update";
             public static final String FORM_CONT_DELETE = "form_container/delete";
             public static final String FORM_CONT_EXEC_CUSTOM_ACTION = "form_container/exec_custom_action";
+            public static final String FORM_CONT_CREATE_TABLE_RECORDS_BATCH = "form_container/create_table_records_batch";
+            public static final String FORM_CONT_GET_TABLE_FORMS_PAGE = "form_container/get_table_forms_page";
             public static final String FORM_CONT_CREATE_TABLE_RECORD = "form_container/create_table_record";
 
             public static final String FORM_CONT_GET_TABLE_FORMS = "form_container/get_table_forms";

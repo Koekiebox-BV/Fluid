@@ -80,6 +80,7 @@ public class WebKitForm extends ABaseFluidGSONObject {
     private String createNewInstanceGroup = DEF_GROUP;
 
     private boolean enableFormFieldHistory;
+    private boolean showWorkflowProgress;
 
     public static final String EMAIL_FORM_TYPE = "Email";
     public static final int DIALOG_WIDTH_MIN_AUTO = 19;
@@ -158,6 +159,7 @@ public class WebKitForm extends ABaseFluidGSONObject {
 
         public static final String ENABLE_CALCULATED_LABELS = "enableCalculatedLabels";
         public static final String ENABLE_FORM_FIELD_HISTORY = "enableFormFieldHistory";
+        public static final String SHOW_WORKFLOW_PROGRESS = "showWorkflowProgress";
         public static final String LAYOUT_ADVANCES = "layoutAdvances";
     }
 
@@ -220,6 +222,7 @@ public class WebKitForm extends ABaseFluidGSONObject {
         this.setSendToWorkflowAfterCreate(this.getAsBooleanNullSafe(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE));
         this.setEnableCalculatedLabels(this.getAsBooleanNullSafe(JSONMapping.ENABLE_CALCULATED_LABELS));
         this.setEnableFormFieldHistory(this.getAsBooleanNullSafe(JSONMapping.ENABLE_FORM_FIELD_HISTORY));
+        this.setShowWorkflowProgress(this.getAsBooleanNullSafe(JSONMapping.SHOW_WORKFLOW_PROGRESS));
         this.setNewFormTitleFormula(this.getAsStringNullSafe(JSONMapping.NEW_FORM_TITLE_FORMULA));
         this.setCreateNewInstanceIcon(this.getAsStringNullSafe(JSONMapping.CREATE_NEW_INSTANCE_ICON, DEF_NEW_INSTANCE));
         this.setCreateNewInstanceGroup(this.getAsStringNullSafe(JSONMapping.CREATE_NEW_INSTANCE_GROUP, DEF_GROUP));
@@ -322,6 +325,7 @@ public class WebKitForm extends ABaseFluidGSONObject {
         this.setAsProperty(JSONMapping.SEND_TO_WORKFLOW_AFTER_CREATE, returnVal, this.isSendToWorkflowAfterCreate());
         this.setAsProperty(JSONMapping.ENABLE_CALCULATED_LABELS, returnVal, this.isEnableCalculatedLabels());
         this.setAsProperty(JSONMapping.ENABLE_FORM_FIELD_HISTORY, returnVal, this.isEnableFormFieldHistory());
+        this.setAsProperty(JSONMapping.SHOW_WORKFLOW_PROGRESS, returnVal, this.isShowWorkflowProgress());
 
         return returnVal;
     }

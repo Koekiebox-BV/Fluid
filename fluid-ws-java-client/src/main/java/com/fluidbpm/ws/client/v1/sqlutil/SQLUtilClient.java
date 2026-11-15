@@ -19,6 +19,7 @@ import com.fluidbpm.program.api.vo.field.Field;
 import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
+import com.fluidbpm.program.api.vo.form.TableRecordPage;
 import com.fluidbpm.program.api.vo.item.FluidItem;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.NativeSQLQuery;
 import com.fluidbpm.program.api.vo.sqlutil.sqlnative.SQLResultSet;
@@ -50,6 +51,32 @@ public class SQLUtilClient extends ABaseClientWS {
     public SQLUtilClient(String endpointBaseUrlParam, String serviceTicketParam) {
         super(endpointBaseUrlParam);
         this.setServiceTicket(serviceTicketParam);
+    }
+
+    /**
+     * Retrieves a database-backed page of table records.
+     * Count and page are separate reads and may differ during concurrent modifications.
+     *
+     * @param parent The parent form containing the ID.
+     * @param includeFieldData Whether to populate field data for the returned records.
+     * @param definitionId Form definition filter; nonpositive values include all definitions.
+     * @param limit Maximum number of records to retrieve.
+     * @param offset Zero-based offset of the first record.
+     * @return The requested page and total matching record count.
+     */
+    public FormListing getTableFormsPage(
+            Form parent,
+            boolean includeFieldData,
+            long definitionId,
+            int limit,
+            int offset
+    ) {
+        TableRecordPage.validate(limit, offset);
+        Form request = new Form(parent == null ? null : parent.getId());
+        request.setServiceTicket(this.serviceTicket);
+        return new FormListing(this.postJson(request,
+                WS.Path.SQLUtil.Version1.getTableFormsPage(
+                        includeFieldData, definitionId, limit, offset)));
     }
 
     /**

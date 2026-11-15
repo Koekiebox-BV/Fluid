@@ -40,6 +40,11 @@ public class TestRestContractInventory {
                 }
             }
         }
-        assertEquals("REST contract inventory must match the public API", actual, expected);
+        Set<String> missingContracts = new TreeSet<>(actual);
+        missingContracts.removeAll(expected);
+        Set<String> staleContracts = new TreeSet<>(expected);
+        staleContracts.removeAll(actual);
+        assertTrue("REST contract inventory must match the public API. Missing contracts: " + missingContracts
+                + "; stale contracts: " + staleContracts, missingContracts.isEmpty() && staleContracts.isEmpty());
     }
 }

@@ -146,7 +146,7 @@ public class TestSendToFlowWebSocketClient extends ABaseTestFlowStep {
             fsrClient.createFlowStepExitRule(
                     new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Gender TO '[%s]'", "Male"))
             );
-            int ageValue = (int)(Math.random()* 90);
+            int ageValue = 1 + (int)(Math.random() * 89);
             fsrClient.createFlowStepExitRule(
                     new FlowStepRule(this.flow, introductionStep, String.format("SET FORM.JUnit Employee Age TO '%s'", ageValue))
             );

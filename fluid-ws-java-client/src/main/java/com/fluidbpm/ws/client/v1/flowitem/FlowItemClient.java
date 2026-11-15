@@ -143,17 +143,37 @@ public class FlowItemClient extends ABaseClientWS {
             String sortFieldParam,
             String sortOrderParam
     ) {
+        return this.getFluidItemsForView(jobViewParam, queryLimitParam, offsetParam, sortFieldParam, sortOrderParam, false);
+    }
+
+    /**
+     * Retrieves items for the provided JobView, with optional flow progress population.
+     *
+     * @param jobViewParam         The JobView to retrieve items from.
+     * @param queryLimitParam      The maximum number of items to retrieve.
+     * @param offsetParam          The offset from which to retrieve items.
+     * @param sortFieldParam       The field to sort the returned items by.
+     * @param sortOrderParam       The sort order to apply to the returned items.
+     * @param populateFlowProgress Whether to populate flow progress information for each item.
+     * @return The Fluid items for the provided JobView.
+     */
+    public FluidItemListing getFluidItemsForView(
+            JobView jobViewParam,
+            int queryLimitParam,
+            int offsetParam,
+            String sortFieldParam,
+            String sortOrderParam,
+            boolean populateFlowProgress
+    ) {
         if (jobViewParam != null) jobViewParam.setServiceTicket(this.serviceTicket);
 
-        return new FluidItemListing(this.postJson(
-                jobViewParam,
-                WS.Path.FlowItem.Version1.getByJobView(
-                        queryLimitParam,
-                        offsetParam,
-                        sortFieldParam,
-                        sortOrderParam
-                ))
-        );
+        String path = WS.Path.FlowItem.Version1.getByJobView(
+                queryLimitParam, offsetParam, sortFieldParam, sortOrderParam);
+        if (populateFlowProgress) {
+            path += (path.contains("?") ? "&" : "?")
+                    + WS.Path.FlowItem.Version1.QueryParam.POPULATE_FLOW_PROGRESS + "=true";
+        }
+        return new FluidItemListing(this.postJson(jobViewParam, path));
     }
 
     /**

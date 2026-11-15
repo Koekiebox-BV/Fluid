@@ -26,6 +26,7 @@ import com.fluidbpm.program.api.vo.form.Form;
 import com.fluidbpm.program.api.vo.form.FormFieldListing;
 import com.fluidbpm.program.api.vo.form.FormListing;
 import com.fluidbpm.program.api.vo.form.TableRecord;
+import com.fluidbpm.program.api.vo.form.TableRecordListing;
 import com.fluidbpm.program.api.vo.historic.FormHistoricDataListing;
 import com.fluidbpm.program.api.vo.item.CustomWebAction;
 import com.fluidbpm.program.api.vo.item.FluidItem;
@@ -332,6 +333,10 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 case JOB_VIEW_LISTING:
                     ASNMapperJobViewListing asnMapJobViewList = new ASNMapperJobViewListing(new ASNMapperJobView());
                     seqTransObj = asnMapJobViewList.encode((JobViewListing) transObj);
+                    break;
+                case TABLE_RECORD_LISTING:
+                    seqTransObj = new ASNMapperTableRecordListing(new ASNMapperTableRecord(this.asnMapForm, this.asnMapField))
+                            .encode((TableRecordListing) transObj);
                     break;
                 case TABLE_RECORD:
                     seqTransObj = new ASNMapperTableRecord(this.asnMapForm, this.asnMapField).encode(
@@ -769,6 +774,9 @@ public class ASNMapperBaseTransmission extends ASNBaseTaggedMapper<BaseTransmiss
                 break;
             case JOB_VIEW_LISTING:
                 mapper = new ASNMapperJobViewListing(new ASNMapperJobView());
+                break;
+            case TABLE_RECORD_LISTING:
+                mapper = new ASNMapperTableRecordListing(new ASNMapperTableRecord(this.asnMapForm, this.asnMapField));
                 break;
             case TABLE_RECORD:
                 mapper = new ASNMapperTableRecord(this.asnMapForm, this.asnMapField);

@@ -18,6 +18,7 @@ final class LocalWebSocketFixture implements AutoCloseable {
     private final Channel server;
     private final List<Channel> connections = Collections.synchronizedList(new ArrayList<>());
     final List<JsonObject> requests = Collections.synchronizedList(new ArrayList<>());
+    volatile java.util.function.Function<byte[], byte[]> binaryResponse;
     volatile String uri;
     volatile boolean error;
     volatile Throwable failure;
@@ -45,7 +46,12 @@ final class LocalWebSocketFixture implements AutoCloseable {
                                     if (error) { response.addProperty("errorCode", 1001); response.addProperty("errorMessage", "fixture failure"); }
                                     ctx.writeAndFlush(new TextWebSocketFrame(response.toString()));
                                 } else if (frame instanceof BinaryWebSocketFrame) {
-                                    ctx.writeAndFlush(new BinaryWebSocketFrame(frame.content().retain()));
+                                    if (binaryResponse == null) ctx.writeAndFlush(new BinaryWebSocketFrame(frame.content().retain()));
+                                    else {
+                                        byte[] bytes = new byte[frame.content().readableBytes()];
+                                        frame.content().getBytes(frame.content().readerIndex(), bytes);
+                                        ctx.writeAndFlush(new BinaryWebSocketFrame(io.netty.buffer.Unpooled.wrappedBuffer(binaryResponse.apply(bytes))));
+                                    }
                                 }
                             }
                             @Override public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { failure = cause; ctx.close(); }

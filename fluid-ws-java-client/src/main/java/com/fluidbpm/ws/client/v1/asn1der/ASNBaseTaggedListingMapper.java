@@ -20,6 +20,7 @@ import com.fluidbpm.program.api.vo.ABaseGSONListing;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 
 /**
@@ -125,7 +126,12 @@ public abstract class ASNBaseTaggedListingMapper<
         assert item != null && vect != null : "Arguments cannot be null.";
         assert vect.size() > 0 : "Vector size should be greater than zero.";
 
-        this.mapper.setAsList(item.getListing(), vect, Map.LISTING);
+        // An empty page is present data; omitting its tag would decode it as null.
+        if (item.getListing() != null && item.getListing().isEmpty()) {
+            vect.add(new DERTaggedObject(true, Map.LISTING, new DERSequence()));
+        } else {
+            this.mapper.setAsList(item.getListing(), vect, Map.LISTING);
+        }
 
         if (item.getListingCount() != null) {
             vect.add(new DERTaggedObject(true, Map.LISTING_COUNT, new ASN1Integer(item.getListingCount())));

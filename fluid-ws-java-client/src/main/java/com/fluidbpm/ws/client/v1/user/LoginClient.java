@@ -392,4 +392,28 @@ public class LoginClient extends ABaseClientWS {
                     unsEncExcept, FluidClientException.ErrorCode.IO_ERROR);
         }
     }
+
+    /**
+     * Sends a request to obtain a login URL for the specified email address.
+     *
+     * @param email The email address for which a login URL is requested.
+     */
+    public void requestLoginUrl(String email) {
+        User request = new User();
+        request.setUsername(email);
+        this.postJson(true, request, WS.Path.User.Version1.requestLoginUrl());
+    }
+
+    /**
+     * Redeems a provided login URL token and returns the associated {@code User} object.
+     * The token is used to authenticate and retrieve user details from the endpoint.
+     *
+     * @param token The token provided in the login URL used for authentication.
+     * @return The {@code User} object containing authenticated user data.
+     */
+    public User redeemLoginUrl(String token) {
+        User request = new User();
+        request.setPasswordClear(token);
+        return new User(this.postJson(true, request, WS.Path.User.Version1.redeemLoginUrl()));
+    }
 }
