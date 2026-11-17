@@ -63,12 +63,24 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             Mode mode,
             int requestAsn1Type
     ) {
+        this(endpointURIParam, messageHandlersParam, mode, requestAsn1Type, 30000);
+    }
+
+    /** Constructor with a bounded connection and handshake timeout. */
+    public WebSocketClient(
+            URI endpointURIParam,
+            Map<String, RespHandler> messageHandlersParam,
+            Mode mode,
+            int requestAsn1Type,
+            long timeoutMillis
+    ) {
         this.mode = mode;
         this.nettyClient = new com.fluidbpm.ws.client.v1.netty.websocket.WebSocketClient<>(
                 endpointURIParam,
                 messageHandlersParam,
                 com.fluidbpm.ws.client.v1.netty.websocket.WebSocketClient.Mode.valueOf(mode.name()),
-                requestAsn1Type
+                requestAsn1Type,
+                timeoutMillis
         );
     }
 

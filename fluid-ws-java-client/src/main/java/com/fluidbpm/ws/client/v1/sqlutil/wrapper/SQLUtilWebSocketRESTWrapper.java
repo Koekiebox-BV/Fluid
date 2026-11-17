@@ -33,11 +33,15 @@ import com.fluidbpm.ws.client.v1.form.WebSocketGetFormHistoryByFormClient;
 import com.fluidbpm.ws.client.v1.sqlutil.*;
 import com.fluidbpm.ws.client.v1.sqlutil.sqlnative.SQLUtilWebSocketExecuteNativeSQLClient;
 import com.fluidbpm.ws.client.v1.websocket.WebSocketClient;
+import com.fluidbpm.ws.client.v1.websocket.ABaseClientWebSocket;
 
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Arrays;
+import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * Wrapper class used for when WebSockets is not a
@@ -53,11 +57,11 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
     private final long timeoutMillis;
 
     //Clients...
-    private SQLUtilWebSocketGetAncestorClient getAncestorClient = null;
-    private SQLUtilWebSocketGetDescendantsClient getDescendantsClient = null;
-    private SQLUtilWebSocketGetTableFormsClient getTableFormsClient = null;
-    private SQLUtilWebSocketGetFormFieldsClient getFormFieldsClient = null;
-    private WebSocketGetFormHistoryByFormClient getFormHistoryByFormClient = null;
+    private final ReadClient<SQLUtilWebSocketGetAncestorClient> getAncestorClient = new ReadClient<>();
+    private final ReadClient<SQLUtilWebSocketGetDescendantsClient> getDescendantsClient = new ReadClient<>();
+    private final ReadClient<SQLUtilWebSocketGetTableFormsClient> getTableFormsClient = new ReadClient<>();
+    private final ReadClient<SQLUtilWebSocketGetFormFieldsClient> getFormFieldsClient = new ReadClient<>();
+    private final ReadClient<WebSocketGetFormHistoryByFormClient> getFormHistoryByFormClient = new ReadClient<>();
 
     private SQLUtilWebSocketExecuteNativeSQLClient sqlUtilWebSocketExecNativeClient = null;
 
@@ -68,7 +72,7 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
     public static String COMPRESS_RSP_CHARSET = UtilGlobal.EMPTY;
 
     //Mode...
-    private Mode mode = null;
+    private volatile Mode mode = null;
     private WebSocketClient.Mode wsClientMode = null;
 
     public static boolean DISABLE_WS;
@@ -160,36 +164,14 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
      * @return The {@code formToGetAncestorForParam} Ancestor as {@code Form}'s.
      */
     public Form getAncestor(Form formToGetAncestorFor, boolean includeFieldData, boolean includeTableFields) {
-        this.clearClientsIfRest();
-
-        //ANCESTOR...
-        try {
-            //When mode is null or [WebSocketActive]...
-            if (this.getAncestorClient == null && Mode.RESTfulActive != this.mode) {
-                this.getAncestorClient = new SQLUtilWebSocketGetAncestorClient(
-                        this.baseURL,
-                        null,
-                        this.loggedInUser.getServiceTicketAsHexUpper(),
-                        this.timeoutMillis,
-                        includeFieldData,
-                        includeTableFields,
-                        COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET
-                );
-                this.mode = Mode.WebSocketActive;
-            }
-        } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() !=
-                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                throw clientExcept;
-            }
-            this.mode = Mode.RESTfulActive;
-        }
-
-        Form formToUse = (formToGetAncestorFor == null) ? null: new Form(formToGetAncestorFor.getId());
-        return (this.getAncestorClient == null) ?
-                this.sqlUtilClient.getAncestor(formToUse, includeFieldData, includeTableFields) :
-                this.getAncestorClient.getAncestorSynchronized(formToUse);
+        Form form = formToGetAncestorFor == null ? null : new Form(formToGetAncestorFor.getId());
+        return this.readWithRecovery(this.getAncestorClient,
+                Arrays.asList(includeFieldData, includeTableFields, COMPRESS_RSP, COMPRESS_RSP_CHARSET),
+                () -> new SQLUtilWebSocketGetAncestorClient(this.baseURL, null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                        includeFieldData, includeTableFields, COMPRESS_RSP, COMPRESS_RSP_CHARSET),
+                client -> client.getAncestorSynchronized(form),
+                () -> this.sqlUtilClient.getAncestor(form, includeFieldData, includeTableFields));
     }
 
     /**
@@ -210,56 +192,24 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             boolean massFetch,
             Form ... formsToGetDescFor
     ) {
-        this.clearClientsIfRest();
-
-        //DESCENDANTS...
-        try {
-            //When mode is null or [WebSocketActive]...
-            if (this.getDescendantsClient == null && Mode.RESTfulActive != this.mode) {
-                this.getDescendantsClient = new SQLUtilWebSocketGetDescendantsClient(
-                        this.baseURL,
-                        null,
-                        this.loggedInUser.getServiceTicketAsHexUpper(),
-                        this.timeoutMillis,
-                        includeFieldData,
-                        includeTableFields,
-                        includeTableFieldFormRecordInfo,
-                        massFetch,
-                        COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET
-                );
-                this.mode = Mode.WebSocketActive;
-            }
-        } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() !=
-                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                throw clientExcept;
-            }
-            this.mode = Mode.RESTfulActive;
-        }
-
-        if (formsToGetDescFor == null || formsToGetDescFor.length < 1) return null;
-
-        Form[] formsToFetchFor =
-                new Form[formsToGetDescFor.length];
-        for (int index = 0;index < formsToFetchFor.length;index++) {
-            formsToFetchFor[index] = new Form(formsToGetDescFor[index].getId());
-        }
-
-        if (this.getDescendantsClient != null) {
-            return this.getDescendantsClient.getDescendantsSynchronized(formsToFetchFor);
-        } else {
-            List<FormListing> returnVal = new ArrayList<>();
-            for (Form formToFetchFor : formsToFetchFor) {
-                List<Form> listOfForms = this.sqlUtilClient.getDescendants(
-                        formToFetchFor, includeFieldData, includeTableFields, includeTableFieldFormRecordInfo);
-                FormListing toAdd = new FormListing();
-                toAdd.setListing(listOfForms);
-                toAdd.setListingCount((listOfForms == null) ? 0 : listOfForms.size());
-                returnVal.add(toAdd);
-            }
-            return returnVal;
-        }
+        if (formsToGetDescFor == null || formsToGetDescFor.length == 0) return null;
+        Form[] forms = minimalForms(formsToGetDescFor);
+        return this.readWithRecovery(this.getDescendantsClient,
+                Arrays.asList(includeFieldData, includeTableFields, includeTableFieldFormRecordInfo,
+                        massFetch, COMPRESS_RSP, COMPRESS_RSP_CHARSET),
+                () -> new SQLUtilWebSocketGetDescendantsClient(this.baseURL, null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                        includeFieldData, includeTableFields, includeTableFieldFormRecordInfo, massFetch,
+                        COMPRESS_RSP, COMPRESS_RSP_CHARSET),
+                client -> client.getDescendantsSynchronized(forms),
+                () -> {
+                    List<FormListing> result = new ArrayList<>();
+                    for (Form form : forms) {
+                        result.add(listing(this.sqlUtilClient.getDescendants(form, includeFieldData,
+                                includeTableFields, includeTableFieldFormRecordInfo)));
+                    }
+                    return result;
+                });
     }
 
     /**
@@ -281,21 +231,18 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             int offset
     ) {
         TableRecordPage.validate(limit, offset);
-        this.clearClientsIfRest();
-        if (!DISABLE_WS && this.mode != Mode.RESTfulActive) {
-            try (SQLUtilWebSocketGetTableFormsPageClient client =
-                         new SQLUtilWebSocketGetTableFormsPageClient(
-                                 this.baseURL, this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
-                                 includeFields, definitionId, limit, offset)) {
-                return client.getTableFormsPage(parent);
-            } catch (FluidClientException error) {
-                if (error.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                    throw error;
-                }
-                this.mode = Mode.RESTfulActive;
-            }
+        // Page options are part of the endpoint, so this client lives for one operation.
+        ReadClient<SQLUtilWebSocketGetTableFormsPageClient> page = new ReadClient<>();
+        try {
+            return this.readWithRecovery(page, Arrays.asList(includeFields, definitionId, limit, offset),
+                    () -> new SQLUtilWebSocketGetTableFormsPageClient(this.baseURL,
+                            this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                            includeFields, definitionId, limit, offset),
+                    client -> client.getTableFormsPage(parent),
+                    () -> this.sqlUtilClient.getTableFormsPage(parent, includeFields, definitionId, limit, offset));
+        } finally {
+            page.clear();
         }
-        return this.sqlUtilClient.getTableFormsPage(parent, includeFields, definitionId, limit, offset);
     }
 
     /**
@@ -351,58 +298,23 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             Long formDefFilter,
             Form ... formsToGetTableFormsFor
     ) {
-        this.clearClientsIfRest();
-
-        //TABLE FORMS...
-        try {
-            //When mode is null or [WebSocketActive]...
-            if (this.getTableFormsClient == null && Mode.RESTfulActive != this.mode) {
-                this.getTableFormsClient = new SQLUtilWebSocketGetTableFormsClient(
-                        this.baseURL,
-                        null,
-                        this.loggedInUser.getServiceTicketAsHexUpper(),
-                        this.timeoutMillis,
-                        includeFieldData,
-                        formDefFilter,
-                        COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET,
-                        this.wsClientMode
-                );
-                this.mode = Mode.WebSocketActive;
-            }
-        } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() !=
-                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                throw clientExcept;
-            }
-            this.mode = Mode.RESTfulActive;
-        }
-
-        if (formsToGetTableFormsFor == null || formsToGetTableFormsFor.length < 1) return null;
-
-        Form[] formsToFetchFor = new Form[formsToGetTableFormsFor.length];
-        for (int index = 0;index < formsToFetchFor.length;index++) {
-            formsToFetchFor[index] = new Form(formsToGetTableFormsFor[index].getId());
-        }
-
-        if (this.getTableFormsClient != null) {
-            return this.getTableFormsClient.getTableFormsSynchronized(formsToFetchFor);
-        } else {
-            List<FormListing> returnVal = new ArrayList<>();
-            for (Form formToFetchFor : formsToFetchFor) {
-                List<Form> listOfForms = this.sqlUtilClient.getTableForms(
-                    formToFetchFor,
-                    includeFieldData,
-                    Optional.ofNullable(formDefFilter)
-                );
-                FormListing toAdd = new FormListing();
-                toAdd.setListing(listOfForms);
-                toAdd.setListingCount((listOfForms == null) ? 0 : listOfForms.size());
-                returnVal.add(toAdd);
-            }
-
-            return returnVal;
-        }
+        if (formsToGetTableFormsFor == null || formsToGetTableFormsFor.length == 0) return null;
+        Form[] forms = minimalForms(formsToGetTableFormsFor);
+        WebSocketClient.Mode socketMode = readSocketMode();
+        return this.readWithRecovery(this.getTableFormsClient,
+                Arrays.asList(includeFieldData, formDefFilter, COMPRESS_RSP, COMPRESS_RSP_CHARSET, socketMode),
+                () -> new SQLUtilWebSocketGetTableFormsClient(this.baseURL, null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                        includeFieldData, formDefFilter, COMPRESS_RSP, COMPRESS_RSP_CHARSET, socketMode),
+                client -> client.getTableFormsSynchronized(forms),
+                () -> {
+                    List<FormListing> result = new ArrayList<>();
+                    for (Form form : forms) {
+                        result.add(listing(this.sqlUtilClient.getTableForms(form,
+                                includeFieldData, Optional.ofNullable(formDefFilter))));
+                    }
+                    return result;
+                });
     }
 
     /**
@@ -427,52 +339,27 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
      * @return The {@code formsToGetFieldsForParam} Fields as {@code Field}'s.
      */
     public List<FormFieldListing> getFormFields(boolean includeTableFieldData, Form ... formsToGetFieldsFor) {
-        this.clearClientsIfRest();
-
-        //FORM FIELDS...
-        try {
-            //When mode is null or [WebSocketActive]...
-            if (this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode) {
-                this.getFormFieldsClient = new SQLUtilWebSocketGetFormFieldsClient(
-                        this.baseURL,
-                        null,
-                        this.loggedInUser.getServiceTicketAsHexUpper(),
-                        this.timeoutMillis,
-                        includeTableFieldData,
-                        COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET,
-                        this.wsClientMode
-                );
-                this.mode = Mode.WebSocketActive;
-            }
-        } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                throw clientExcept;
-            }
-            this.mode = Mode.RESTfulActive;
-        }
-
-        if (formsToGetFieldsFor == null || formsToGetFieldsFor.length < 1) return null;
-
-        Form[] formsToFetchFor =
-                new Form[formsToGetFieldsFor.length];
-        for (int index = 0;index < formsToFetchFor.length;index++) {
-            formsToFetchFor[index] = new Form(formsToGetFieldsFor[index].getId());
-        }
-
-        if (this.getFormFieldsClient != null) {
-            return this.getFormFieldsClient.getFormFieldsSynchronized(formsToFetchFor);
-        } else {
-            List<FormFieldListing> returnVal = new ArrayList<>();
-            for (Form formToFetchFor : formsToFetchFor) {
-                List<Field> listOfFields = this.sqlUtilClient.getFormFields(formToFetchFor, includeTableFieldData);
-                FormFieldListing toAdd = new FormFieldListing();
-                toAdd.setListing(listOfFields);
-                toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
-                returnVal.add(toAdd);
-            }
-            return returnVal;
-        }
+        if (formsToGetFieldsFor == null || formsToGetFieldsFor.length == 0) return null;
+        Form[] forms = minimalForms(formsToGetFieldsFor);
+        WebSocketClient.Mode socketMode = readSocketMode();
+        return this.readWithRecovery(this.getFormFieldsClient,
+                Arrays.asList(includeTableFieldData, COMPRESS_RSP, COMPRESS_RSP_CHARSET, socketMode),
+                () -> new SQLUtilWebSocketGetFormFieldsClient(this.baseURL, null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                        includeTableFieldData, COMPRESS_RSP, COMPRESS_RSP_CHARSET, socketMode),
+                client -> client.getFormFieldsSynchronized(forms),
+                () -> {
+                    List<FormFieldListing> result = new ArrayList<>();
+                    for (Form form : forms) {
+                        List<Field> fields = this.sqlUtilClient.getFormFields(form, includeTableFieldData);
+                        FormFieldListing entry = new FormFieldListing();
+                        entry.setEcho(form.getEcho());
+                        entry.setListing(fields);
+                        entry.setListingCount(fields == null ? 0 : fields.size());
+                        result.add(entry);
+                    }
+                    return result;
+                });
     }
 
     /**
@@ -507,54 +394,27 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             boolean labelFieldName,
             Form ... formsToGetHistoryFor
     ) {
-        this.clearClientsIfRest();
-
-        //FORM FIELDS...
-        try {
-            //When mode is null or [WebSocketActive]...
-            if (this.getFormHistoryByFormClient == null && Mode.RESTfulActive != this.mode) {
-                this.getFormHistoryByFormClient = new WebSocketGetFormHistoryByFormClient(
-                        this.baseURL,
-                        null,
-                        this.loggedInUser.getServiceTicketAsHexUpper(),
-                        this.timeoutMillis,
-                        includeCurrent,
-                        labelFieldName,
-                        this.wsClientMode
-                );
-                this.mode = Mode.WebSocketActive;
-            }
-        } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() != FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                throw clientExcept;
-            }
-            this.mode = Mode.RESTfulActive;
-        }
-
-        if (formsToGetHistoryFor == null || formsToGetHistoryFor.length < 1) return null;
-
-        Form[] formsToFetchFor = new Form[formsToGetHistoryFor.length];
-        for (int index = 0;index < formsToFetchFor.length; index++) {
-            formsToFetchFor[index] = new Form(formsToGetHistoryFor[index].getId());
-        }
-
-        if (this.getFormHistoryByFormClient != null) {
-            return this.getFormHistoryByFormClient.getByFormSynchronized(formsToFetchFor);
-        } else {
-            List<FormHistoricDataListing> returnVal = new ArrayList<>();
-            for (Form formToFetchFor : formsToFetchFor) {
-                List<FormHistoricData> listOfFields = this.fcClient.getFormAndFieldHistoricData(
-                        formToFetchFor,
-                        includeCurrent,
-                        labelFieldName
-                );
-                FormHistoricDataListing toAdd = new FormHistoricDataListing();
-                toAdd.setListing(listOfFields);
-                toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
-                returnVal.add(toAdd);
-            }
-            return returnVal;
-        }
+        if (formsToGetHistoryFor == null || formsToGetHistoryFor.length == 0) return null;
+        Form[] forms = minimalForms(formsToGetHistoryFor);
+        WebSocketClient.Mode socketMode = readSocketMode();
+        return this.readWithRecovery(this.getFormHistoryByFormClient,
+                Arrays.asList(includeCurrent, labelFieldName, socketMode),
+                () -> new WebSocketGetFormHistoryByFormClient(this.baseURL, null,
+                        this.loggedInUser.getServiceTicketAsHexUpper(), this.timeoutMillis,
+                        includeCurrent, labelFieldName, socketMode),
+                client -> client.getByFormSynchronized(forms),
+                () -> {
+                    List<FormHistoricDataListing> result = new ArrayList<>();
+                    for (Form form : forms) {
+                        List<FormHistoricData> values = this.fcClient.getFormAndFieldHistoricData(
+                                form, includeCurrent, labelFieldName);
+                        FormHistoricDataListing entry = new FormHistoricDataListing();
+                        entry.setListing(values);
+                        entry.setListingCount(values == null ? 0 : values.size());
+                        result.add(entry);
+                    }
+                    return result;
+                });
     }
 
     /**
@@ -654,32 +514,6 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
      * @param formsToPopulateFormFieldsFor The Fluid Form to get Descendants for.
      */
     public void massPopulateFormFields(boolean includeFieldData, Form ... formsToPopulateFormFieldsFor) {
-        this.clearClientsIfRest();
-
-        //FORM FIELDS...
-        try {
-            //When mode is null or [WebSocketActive]...
-            if (this.getFormFieldsClient == null && Mode.RESTfulActive != this.mode) {
-                this.getFormFieldsClient = new SQLUtilWebSocketGetFormFieldsClient(
-                        this.baseURL,
-                        null,
-                        this.loggedInUser.getServiceTicketAsHexUpper(),
-                        this.timeoutMillis,
-                        includeFieldData,
-                        COMPRESS_RSP,
-                        COMPRESS_RSP_CHARSET,
-                        this.wsClientMode
-                );
-                this.mode = Mode.WebSocketActive;
-            }
-        } catch (FluidClientException clientExcept) {
-            if (clientExcept.getErrorCode() !=
-                    FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR) {
-                throw clientExcept;
-            }
-            this.mode = Mode.RESTfulActive;
-        }
-
         //Nothing to do...
         if (formsToPopulateFormFieldsFor == null || formsToPopulateFormFieldsFor.length < 1) return;
 
@@ -690,22 +524,8 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
             formsToFetchForLocalCacheArr[index].setEcho(UtilGlobal.randomUUID());
         }
 
-        List<FormFieldListing> listingReturnFieldValsPopulated = new ArrayList<>();
-        // Fetch all the values in a single go:
-        if (this.getFormFieldsClient != null) {
-            listingReturnFieldValsPopulated =
-                    this.getFormFieldsClient.getFormFieldsSynchronized(formsToFetchForLocalCacheArr);
-        } else {
-            // Old Rest way of fetching all the values:
-            for (Form formToFetchFor : formsToFetchForLocalCacheArr) {
-                List<Field> listOfFields = this.sqlUtilClient.getFormFields(formToFetchFor, includeFieldData);
-                FormFieldListing toAdd = new FormFieldListing();
-                toAdd.setListing(listOfFields);
-                toAdd.setListingCount((listOfFields == null) ? 0 : listOfFields.size());
-                toAdd.setEcho(formToFetchFor.getEcho());
-                listingReturnFieldValsPopulated.add(toAdd);
-            }
-        }
+        List<FormFieldListing> listingReturnFieldValsPopulated =
+                this.getFormFields(includeFieldData, formsToFetchForLocalCacheArr);
 
         // Populate each of the form from the param:
         for (Form formToSetFieldsOn : formsToPopulateFormFieldsFor) {
@@ -749,6 +569,90 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
         return null;
     }
 
+    /** One lock per read endpoint protects replacement without serializing unrelated reads. */
+    private static final class ReadClient<C extends ABaseClientWebSocket<?, ?>> {
+        private C client;
+        private List<?> options;
+        private boolean restOnly;
+
+        private void discard() {
+            if (client != null) client.closeAndClean();
+            client = null;
+            options = null;
+        }
+
+        private synchronized void clear() {
+            discard();
+            restOnly = false;
+        }
+    }
+
+    /** Recovery is used only by form-data reads, never by native SQL or writes. */
+    private <C extends ABaseClientWebSocket<?, ?>, T> T readWithRecovery(
+            ReadClient<C> cached, List<?> options, Supplier<C> connect,
+            Function<C, T> read, Supplier<T> rest) {
+        synchronized (cached) {
+            if (DISABLE_WS || this.mode == Mode.RESTfulActive || cached.restOnly) {
+                cached.discard();
+                return rest.get();
+            }
+            FluidClientException transportFailure = null;
+            for (int attempt = 0; attempt < 2; attempt++) {
+                try {
+                    if (cached.client != null && (!cached.client.isConnectionValid()
+                            || !options.equals(cached.options))) cached.discard();
+                    if (cached.client == null) {
+                        cached.client = connect.get();
+                        cached.options = options;
+                    }
+                    return read.apply(cached.client);
+                } catch (FluidClientException failure) {
+                    if (Thread.currentThread().isInterrupted() || !isTransportFailure(failure, cached.client)) {
+                        throw failure;
+                    }
+                    transportFailure = failure;
+                    cached.discard();
+                }
+            }
+            // Avoid repeatedly reconnecting to an unavailable endpoint for this client's lifetime.
+            cached.restOnly = true;
+            try {
+                return rest.get();
+            } catch (RuntimeException failure) {
+                failure.addSuppressed(transportFailure);
+                throw failure;
+            }
+        }
+    }
+
+    private static boolean isTransportFailure(FluidClientException failure, ABaseClientWebSocket<?, ?> client) {
+        int code = failure.getErrorCode();
+        return code == FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR
+                || code == FluidClientException.ErrorCode.WEB_SOCKET_DEPLOY_ERROR
+                || (code == FluidClientException.ErrorCode.IO_ERROR
+                    && client != null && !client.isConnectionValid());
+    }
+
+    private static WebSocketClient.Mode readSocketMode() {
+        return IS_MODE_WS_BINARY ? WebSocketClient.Mode.Binary : WebSocketClient.Mode.Text;
+    }
+
+    private static Form[] minimalForms(Form[] forms) {
+        Form[] result = new Form[forms.length];
+        for (int index = 0; index < forms.length; index++) {
+            result[index] = new Form(forms[index].getId());
+            result[index].setEcho(forms[index].getEcho());
+        }
+        return result;
+    }
+
+    private static FormListing listing(List<Form> forms) {
+        FormListing result = new FormListing();
+        result.setListing(forms);
+        result.setListingCount(forms == null ? 0 : forms.size());
+        return result;
+    }
+
     /**
      * When mode is disabled WebSockets, the clients will be closed and cleared ({@code null}).
      */
@@ -770,18 +674,13 @@ public class SQLUtilWebSocketRESTWrapper extends ABaseClientWS implements Closea
         if (this.fcClient != null) this.fcClient.closeAndClean();
 
         // WebSocket clients:
-        if (this.getAncestorClient != null) this.getAncestorClient.closeAndClean();
-        this.getAncestorClient = null;
-        if (this.getDescendantsClient != null) this.getDescendantsClient.closeAndClean();
-        this.getDescendantsClient = null;
-        if (this.getTableFormsClient != null) this.getTableFormsClient.closeAndClean();
-        this.getTableFormsClient = null;
-        if (this.getFormFieldsClient != null) this.getFormFieldsClient.closeAndClean();
-        this.getFormFieldsClient = null;
+        this.getAncestorClient.clear();
+        this.getDescendantsClient.clear();
+        this.getTableFormsClient.clear();
+        this.getFormFieldsClient.clear();
         if (this.sqlUtilWebSocketExecNativeClient != null) this.sqlUtilWebSocketExecNativeClient.closeAndClean();
         this.sqlUtilWebSocketExecNativeClient = null;
-        if (this.getFormHistoryByFormClient != null) this.getFormHistoryByFormClient.closeAndClean();
-        this.getFormHistoryByFormClient = null;
+        this.getFormHistoryByFormClient.clear();
     }
 
     /**
