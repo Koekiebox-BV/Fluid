@@ -10,6 +10,10 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.nio.charset.StandardCharsets;
+import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
 
 /** Real loopback WebSocket handshake and frames, with deterministic application replies. */
 final class LocalWebSocketFixture implements AutoCloseable {
@@ -18,6 +22,14 @@ final class LocalWebSocketFixture implements AutoCloseable {
     private final Channel server;
     private final List<Channel> connections = Collections.synchronizedList(new ArrayList<>());
     final List<JsonObject> requests = Collections.synchronizedList(new ArrayList<>());
+    final List<JsonObject> restRequests = Collections.synchronizedList(new ArrayList<>());
+    final List<String> restUris = Collections.synchronizedList(new ArrayList<>());
+    final AtomicInteger handshakes = new AtomicInteger();
+    final AtomicInteger disconnectReads = new AtomicInteger();
+    volatile int handshakeStatus = 101;
+    volatile boolean stallHandshake;
+    volatile boolean closeDuringHandshake;
+    volatile Integer errorCode;
     volatile java.util.function.Function<byte[], byte[]> binaryResponse;
     volatile String uri;
     volatile boolean error;
@@ -30,7 +42,31 @@ final class LocalWebSocketFixture implements AutoCloseable {
                         ch.pipeline().addLast(new HttpServerCodec(), new HttpObjectAggregator(65536));
                         ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                             @Override public void channelRead(ChannelHandlerContext ctx, Object msg) {
-                                if (msg instanceof FullHttpRequest) uri = ((FullHttpRequest)msg).uri();
+                                if (msg instanceof FullHttpRequest) {
+                                    FullHttpRequest request = (FullHttpRequest) msg;
+                                    uri = request.uri();
+                                    if ("websocket".equalsIgnoreCase(request.headers().get(HttpHeaderNames.UPGRADE))) {
+                                        handshakes.incrementAndGet();
+                                        if (closeDuringHandshake || stallHandshake) {
+                                            ReferenceCountUtil.release(msg);
+                                            if (closeDuringHandshake) ctx.close();
+                                            return;
+                                        }
+                                        if (handshakeStatus != 101) {
+                                            respondHttp(ctx, handshakeStatus, "{}");
+                                            ReferenceCountUtil.release(msg);
+                                            return;
+                                        }
+                                    } else {
+                                        restUris.add(request.uri());
+                                        JsonObject body = JsonParser.parseString(request.content().toString(StandardCharsets.UTF_8)).getAsJsonObject();
+                                        restRequests.add(body);
+                                        JsonObject response = response(body);
+                                        respondHttp(ctx, 200, response.toString());
+                                        ReferenceCountUtil.release(msg);
+                                        return;
+                                    }
+                                }
                                 ctx.fireChannelRead(msg);
                             }
                         });
@@ -41,9 +77,11 @@ final class LocalWebSocketFixture implements AutoCloseable {
                                 if (frame instanceof TextWebSocketFrame) {
                                     JsonObject request = JsonParser.parseString(((TextWebSocketFrame)frame).text()).getAsJsonObject();
                                     requests.add(request);
-                                    JsonObject response = JsonParser.parseString("{\"id\":917,\"listing\":[{\"id\":918}],\"listingCount\":1}").getAsJsonObject();
-                                    response.add("echo", request.get("echo"));
-                                    if (error) { response.addProperty("errorCode", 1001); response.addProperty("errorMessage", "fixture failure"); }
+                                    if (disconnectReads.getAndUpdate(count -> Math.max(0, count - 1)) > 0) {
+                                        ctx.close();
+                                        return;
+                                    }
+                                    JsonObject response = response(request);
                                     ctx.writeAndFlush(new TextWebSocketFrame(response.toString()));
                                 } else if (frame instanceof BinaryWebSocketFrame) {
                                     if (binaryResponse == null) ctx.writeAndFlush(new BinaryWebSocketFrame(frame.content().retain()));
@@ -59,10 +97,37 @@ final class LocalWebSocketFixture implements AutoCloseable {
                     }
                 }).bind("127.0.0.1", 0).sync().channel();
     }
+
+    private JsonObject response(JsonObject request) {
+        JsonObject response = JsonParser.parseString("{\"id\":917,\"listing\":[{\"id\":918,\"fieldName\":\"response\"}],\"listingCount\":1}").getAsJsonObject();
+        response.add("echo", request.get("echo"));
+        if (error || errorCode != null) {
+            response.addProperty("errorCode", errorCode == null ? 1001 : errorCode);
+            response.addProperty("errorMessage", "fixture failure");
+        }
+        return response;
+    }
+
+    private void respondHttp(ChannelHandlerContext ctx, int status, String body) {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+                HttpResponseStatus.valueOf(status), Unpooled.wrappedBuffer(bytes));
+        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
+        response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    void disconnectAll() {
+        List<Channel> snapshot;
+        synchronized (connections) { snapshot = new ArrayList<>(connections); }
+        for (Channel connection : snapshot) connection.close().syncUninterruptibly();
+    }
     String endpoint() { return "http://127.0.0.1:" + ((InetSocketAddress)server.localAddress()).getPort() + "/"; }
+
     @Override public void close() {
         server.close().syncUninterruptibly();
-        for (Channel connection : connections) connection.closeFuture().awaitUninterruptibly(3000);
+        disconnectAll();
         worker.shutdownGracefully(100, 2000, java.util.concurrent.TimeUnit.MILLISECONDS).syncUninterruptibly();
         boss.shutdownGracefully(100, 2000, java.util.concurrent.TimeUnit.MILLISECONDS).syncUninterruptibly();
         if (failure != null) throw new AssertionError("WebSocket fixture failed", failure);

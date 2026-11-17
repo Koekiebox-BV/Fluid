@@ -166,7 +166,7 @@ public abstract class ABaseClientWebSocket
 
         try {
             this.webSocketClient = new WebSocketClient<>(
-                    new URI(completeUrl), this.messageHandlerByEcho, mode, this.getASNReqType()
+                    new URI(completeUrl), this.messageHandlerByEcho, mode, this.getASNReqType(), timeoutInMillisParam
             );
         }  catch (URISyntaxException e) {
             //URI Syntax...
@@ -205,7 +205,13 @@ public abstract class ABaseClientWebSocket
             }
             this.registerEchoHandler(requestIdParam, vo.getEcho(), handler);
         }
-        this.webSocketClient.sendMessage(vo);
+        try {
+            this.webSocketClient.sendMessage(vo);
+        } catch (RuntimeException failure) {
+            // Several clients send before entering their response-wait try/finally.
+            this.removeHandler(requestIdParam);
+            throw failure;
+        }
     }
 
     /**

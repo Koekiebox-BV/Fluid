@@ -13,6 +13,7 @@ import com.fluidbpm.ws.client.v1.websocket.IMessageResponseHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -28,6 +29,8 @@ import lombok.Getter;
 import javax.net.ssl.SSLException;
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Netty-based WebSocket client for managing communication with a WebSocket server.
@@ -42,6 +45,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     private Channel channel;
     private final EventLoopGroup group;
     private final NettyWebSocketClientHandler handler;
+    private final long timeoutMillis;
 
     @Getter
     private final Mode mode;
@@ -85,6 +89,19 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             Mode mode,
             int requestAsn1Type
     ) {
+        this(endpointURIParam, messageHandlersParam, mode, requestAsn1Type, 30000);
+    }
+
+    /** Connect and complete the WebSocket handshake within the supplied timeout. */
+    public WebSocketClient(
+            URI endpointURIParam,
+            Map<String, RespHandler> messageHandlersParam,
+            Mode mode,
+            int requestAsn1Type,
+            long timeoutMillis
+    ) {
+        if (timeoutMillis <= 0) throw new IllegalArgumentException("WebSocket timeout must be positive.");
+        this.timeoutMillis = timeoutMillis;
         this.mode = mode;
         this.asnMapperFactory = new ASNMapperFactory(requestAsn1Type);
 
@@ -124,6 +141,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         } else sslCtx = null;
 
         group = new NioEventLoopGroup();
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMillis);
 
         try {
             HttpHeaders customHeaders = new DefaultHttpHeaders();
@@ -144,19 +162,43 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) Math.min(timeoutMillis, Integer.MAX_VALUE))
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .handler(new NettyWebSocketClientInitializer(sslCtx, handshaker, handler));
 
-            this.channel = bootstrap.connect(host, port).sync().channel();
-            this.handler.handshakeFuture().sync();
+            ChannelFuture connected = bootstrap.connect(host, port);
+            this.channel = connected.channel();
+            awaitConnection(connected, deadline);
+            awaitConnection(this.handler.handshakeFuture(), deadline);
         } catch (Exception e) {
-            this.group.shutdownGracefully();
+            if (this.channel != null) this.channel.close();
+            this.group.shutdownGracefully(0, timeoutMillis, TimeUnit.MILLISECONDS);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+                throw new FluidClientException("WebSocket connection interrupted.", e,
+                        FluidClientException.ErrorCode.STATEMENT_EXECUTION_ERROR);
+            }
+            if (e instanceof FluidClientException) throw (FluidClientException) e;
             throw new FluidClientException(
-                    "Failed to connect to WebSocket ("+ endpointURIParam+"): " + e.getMessage(),
+                    // The full URI includes the service ticket; do not include it in errors.
+                    "Failed to connect to WebSocket at " + host + ":" + port + ".",
                     e,
-                    FluidClientException.ErrorCode.IO_ERROR
+                    FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR
             );
+        }
+    }
+
+    private static void awaitConnection(ChannelFuture future, long deadline) throws Exception {
+        long remaining = deadline - System.nanoTime();
+        if (remaining <= 0 || !future.await(remaining, TimeUnit.NANOSECONDS)) {
+            throw new TimeoutException("WebSocket connection/handshake timed out.");
+        }
+        if (!future.isSuccess()) {
+            Throwable cause = future.cause();
+            if (cause instanceof Exception) throw (Exception) cause;
+            throw new FluidClientException("WebSocket connection failed.", cause,
+                    FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
         }
     }
 
@@ -211,11 +253,11 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         if (channel == null || !channel.isActive()) {
             throw new FluidClientException(
                     "Channel is not set or not active. Verify if connection is open.",
-                    FluidClientException.ErrorCode.SESSION_EXPIRED
+                    FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR
             );
         }
 
-        channel.writeAndFlush(new TextWebSocketFrame(messageToSend));
+        observeWrite(channel.writeAndFlush(new TextWebSocketFrame(messageToSend)));
         handler.incrementSentMessages();
     }
 
@@ -228,13 +270,21 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
         if (channel == null || !channel.isActive()) {
             throw new FluidClientException(
                     "(send-binary) Channel is not set or not active. Verify if connection is open.",
-                    FluidClientException.ErrorCode.SESSION_EXPIRED
+                    FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR
             );
         }
 
         PerfStats.increment(PerfStats.Label.Asn1Der_BytesSent, messageToSend.length);
-        channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(messageToSend)));
+        observeWrite(channel.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(messageToSend))));
         handler.incrementSentMessages();
+    }
+
+    private void observeWrite(ChannelFuture written) {
+        written.addListener(future -> {
+            if (!future.isSuccess()) {
+                written.channel().pipeline().fireExceptionCaught(future.cause());
+            }
+        });
     }
 
     /**
@@ -242,11 +292,15 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      */
     public void closeSession() {
         if (channel != null && channel.isActive()) {
-            channel.writeAndFlush(new CloseWebSocketFrame());
-            channel.closeFuture().awaitUninterruptibly();
+            // Closing must also complete when the peer never acknowledges the close frame.
+            channel.writeAndFlush(new CloseWebSocketFrame()).addListener(future -> channel.close());
+            if (!channel.eventLoop().inEventLoop()
+                    && !channel.closeFuture().awaitUninterruptibly(Math.min(timeoutMillis, 1000))) {
+                channel.close();
+            }
         }
         if (group != null) {
-            group.shutdownGracefully();
+            group.shutdownGracefully(0, Math.min(timeoutMillis, 1000), TimeUnit.MILLISECONDS);
         }
     }
 

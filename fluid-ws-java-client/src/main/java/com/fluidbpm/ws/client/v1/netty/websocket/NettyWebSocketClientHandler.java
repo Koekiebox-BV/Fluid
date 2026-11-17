@@ -76,6 +76,7 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
+        handshakeFuture.tryFailure(new java.nio.channels.ClosedChannelException());
         if (this.messageHandlers != null) {
             this.messageHandlers.values().forEach(IMessageResponseHandler::connectionClosed);
         }
@@ -85,11 +86,20 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel ch = ctx.channel();
         if (!handshaker.isHandshakeComplete()) {
+            int status = ((FullHttpResponse) msg).status().code();
+            if (status == 401 || status == 403) {
+                handshakeFuture.tryFailure(new FluidClientException("WebSocket handshake authorization rejected.",
+                        status == 401 ? FluidClientException.ErrorCode.LOGIN_FAILURE
+                                : FluidClientException.ErrorCode.PERMISSION_DENIED));
+                ctx.close();
+                return;
+            }
             try {
                 handshaker.finishHandshake(ch, (FullHttpResponse) msg);
-                handshakeFuture.setSuccess();
+                handshakeFuture.trySuccess();
             } catch (WebSocketHandshakeException e) {
-                handshakeFuture.setFailure(e);
+                handshakeFuture.tryFailure(e);
+                ctx.close();
             }
             return;
         }
@@ -203,7 +213,7 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (!handshakeFuture.isDone()) {
-            handshakeFuture.setFailure(cause);
+            handshakeFuture.tryFailure(cause);
         }
 
         System.err.println("WS error: " + ctx.channel().id() + " -> ");
