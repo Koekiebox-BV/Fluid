@@ -157,7 +157,8 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
                     1024 * 1024 * 1024 // 1GB max frame size
             );
 
-            this.handler = new NettyWebSocketClientHandler(handshaker, messageHandlersParam, mode);
+            this.handler = new NettyWebSocketClientHandler(
+                    handshaker, messageHandlersParam, mode, Math.min(timeoutMillis, 1000));
 
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
@@ -169,6 +170,9 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
 
             ChannelFuture connected = bootstrap.connect(host, port);
             this.channel = connected.channel();
+            // Shutdown only after the channel closes, including peer-initiated disconnects.
+            this.channel.closeFuture().addListener(future ->
+                    group.shutdownGracefully(0, Math.min(timeoutMillis, 1000), TimeUnit.MILLISECONDS));
             awaitConnection(connected, deadline);
             awaitConnection(this.handler.handshakeFuture(), deadline);
         } catch (Exception e) {
@@ -250,7 +254,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param messageToSend The text message to send.
      */
     public void sendMessage(String messageToSend) {
-        if (channel == null || !channel.isActive()) {
+        if (channel == null || !channel.isActive() || handler.isClosing()) {
             throw new FluidClientException(
                     "Channel is not set or not active. Verify if connection is open.",
                     FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR
@@ -267,7 +271,7 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
      * @param messageToSend The binary message to send.
      */
     public void sendMessage(byte[] messageToSend) {
-        if (channel == null || !channel.isActive()) {
+        if (channel == null || !channel.isActive() || handler.isClosing()) {
             throw new FluidClientException(
                     "(send-binary) Channel is not set or not active. Verify if connection is open.",
                     FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR
@@ -288,19 +292,17 @@ public class WebSocketClient<RespHandler extends IMessageResponseHandler> {
     }
 
     /**
-     * Closes the WebSocket connection.
+     * Starts a WebSocket closing handshake and allows up to one second for peer shutdown
+     * (or the configured timeout, if shorter). Calls on the event loop never block.
      */
     public void closeSession() {
-        if (channel != null && channel.isActive()) {
-            // Closing must also complete when the peer never acknowledges the close frame.
-            channel.writeAndFlush(new CloseWebSocketFrame()).addListener(future -> channel.close());
-            if (!channel.eventLoop().inEventLoop()
-                    && !channel.closeFuture().awaitUninterruptibly(Math.min(timeoutMillis, 1000))) {
-                channel.close();
+        Channel closingChannel = channel;
+        if (closingChannel != null) {
+            handler.closeSession(closingChannel);
+            if (!closingChannel.eventLoop().inEventLoop()
+                    && !closingChannel.closeFuture().awaitUninterruptibly(Math.min(timeoutMillis, 1000))) {
+                closingChannel.close();
             }
-        }
-        if (group != null) {
-            group.shutdownGracefully(0, Math.min(timeoutMillis, 1000), TimeUnit.MILLISECONDS);
         }
     }
 

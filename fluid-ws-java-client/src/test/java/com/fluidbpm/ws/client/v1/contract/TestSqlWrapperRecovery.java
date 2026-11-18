@@ -176,7 +176,11 @@ public class TestSqlWrapperRecovery {
             query.setQuery("SELECT 1");
             try { client.executeNativeSQL(query); fail("Expected disconnect"); }
             catch (FluidClientException expected) {
-                assertEquals(FluidClientException.ErrorCode.IO_ERROR, expected.getErrorCode());
+                // An abrupt socket close can surface as EOF or a reset, depending on OS/timing.
+                int code = expected.getErrorCode();
+                assertTrue("Expected a transport failure, got " + code,
+                        code == FluidClientException.ErrorCode.IO_ERROR
+                                || code == FluidClientException.ErrorCode.WEB_SOCKET_IO_ERROR);
             }
             assertEquals(1, server.handshakes.get());
             assertEquals(1, server.requests.size());
