@@ -19,6 +19,8 @@ import org.bouncycastle.asn1.ASN1Sequence;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Netty WebSocket client handler for processing WebSocket frames.
@@ -32,6 +34,9 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
     private final Map<String, ? extends IMessageResponseHandler> messageHandlers;
     private ChannelPromise handshakeFuture;
     private final WebSocketClient.Mode mode;
+    private final long closeTimeoutMillis;
+    // Written only on the channel's event loop; senders may inspect it from other threads.
+    private volatile boolean closing;
 
     @Getter
     private int sentMessages = 0;
@@ -50,9 +55,53 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
             Map<String, ? extends IMessageResponseHandler> messageHandlers,
             WebSocketClient.Mode mode
     ) {
+        this(handshaker, messageHandlers, mode, 1000);
+    }
+
+    NettyWebSocketClientHandler(
+            WebSocketClientHandshaker handshaker,
+            Map<String, ? extends IMessageResponseHandler> messageHandlers,
+            WebSocketClient.Mode mode,
+            long closeTimeoutMillis
+    ) {
         this.handshaker = handshaker;
         this.messageHandlers = messageHandlers;
         this.mode = mode;
+        this.closeTimeoutMillis = closeTimeoutMillis;
+    }
+
+    boolean isClosing() {
+        return closing;
+    }
+
+    /** Initiate once on the event loop so a concurrent peer close cannot race our close frame. */
+    void closeSession(Channel channel) {
+        if (!channel.isActive()) return;
+        Runnable close = () -> sendClose(channel, new CloseWebSocketFrame(WebSocketCloseStatus.NORMAL_CLOSURE));
+        if (channel.eventLoop().inEventLoop()) {
+            close.run();
+        } else {
+            try {
+                channel.eventLoop().execute(close);
+            } catch (RejectedExecutionException alreadyStopped) {
+                channel.close();
+            }
+        }
+    }
+
+    private void sendClose(Channel channel, CloseWebSocketFrame frame) {
+        if (closing || !channel.isActive()) {
+            frame.release();
+            return;
+        }
+        closing = true;
+        // Keep reading until the server closes TCP. Bound both a stalled write and a missing reply.
+        io.netty.util.concurrent.ScheduledFuture<?> timeout = channel.eventLoop().schedule(
+                () -> channel.close(), closeTimeoutMillis, TimeUnit.MILLISECONDS);
+        channel.closeFuture().addListener(future -> timeout.cancel(false));
+        channel.writeAndFlush(frame).addListener(future -> {
+            if (!future.isSuccess()) channel.close();
+        });
     }
 
     /**
@@ -123,7 +172,8 @@ public class NettyWebSocketClientHandler extends SimpleChannelInboundHandler<Obj
         } else if (frame instanceof PongWebSocketFrame) {
             // Pong frame received
         } else if (frame instanceof CloseWebSocketFrame) {
-            ch.close();
+            // Echo a server-initiated close; a reply to our own close must not send a second frame.
+            sendClose(ch, ((CloseWebSocketFrame) frame).retain());
         }
     }
 

@@ -1,19 +1,25 @@
 package com.fluidbpm.ws.client.v1.contract;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
-import java.net.InetSocketAddress;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.nio.charset.StandardCharsets;
-import io.netty.buffer.Unpooled;
 import io.netty.util.ReferenceCountUtil;
+
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /** Real loopback WebSocket handshake and frames, with deterministic application replies. */
 final class LocalWebSocketFixture implements AutoCloseable {
@@ -26,11 +32,12 @@ final class LocalWebSocketFixture implements AutoCloseable {
     final List<String> restUris = Collections.synchronizedList(new ArrayList<>());
     final AtomicInteger handshakes = new AtomicInteger();
     final AtomicInteger disconnectReads = new AtomicInteger();
+    volatile BiConsumer<ChannelHandlerContext, CloseWebSocketFrame> closeHandler;
     volatile int handshakeStatus = 101;
     volatile boolean stallHandshake;
     volatile boolean closeDuringHandshake;
     volatile Integer errorCode;
-    volatile java.util.function.Function<byte[], byte[]> binaryResponse;
+    volatile Function<byte[], byte[]> binaryResponse;
     volatile String uri;
     volatile boolean error;
     volatile Throwable failure;
@@ -42,6 +49,14 @@ final class LocalWebSocketFixture implements AutoCloseable {
                         ch.pipeline().addLast(new HttpServerCodec(), new HttpObjectAggregator(65536));
                         ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                             @Override public void channelRead(ChannelHandlerContext ctx, Object msg) {
+                                if (msg instanceof CloseWebSocketFrame && closeHandler != null) {
+                                    try {
+                                        closeHandler.accept(ctx, (CloseWebSocketFrame) msg);
+                                    } finally {
+                                        ReferenceCountUtil.release(msg);
+                                    }
+                                    return;
+                                }
                                 if (msg instanceof FullHttpRequest) {
                                     FullHttpRequest request = (FullHttpRequest) msg;
                                     uri = request.uri();
@@ -116,6 +131,14 @@ final class LocalWebSocketFixture implements AutoCloseable {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    void sendClose(int status, String reason) {
+        synchronized (connections) {
+            for (Channel connection : connections) {
+                connection.writeAndFlush(new CloseWebSocketFrame(status, reason)).syncUninterruptibly();
+            }
+        }
     }
 
     void disconnectAll() {
