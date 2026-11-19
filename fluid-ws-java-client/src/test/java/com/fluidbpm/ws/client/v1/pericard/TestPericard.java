@@ -361,7 +361,12 @@ public class TestPericard extends ABaseTestASNDER {
             TestCase.assertEquals("Open", hsmHostForm.getState());
             TestCase.assertNull(hsmHostForm.getCurrentUser());
             TestCase.assertNotNull(hsmHostForm.getFieldValueAsString("HSM Command Type"));
-            TestCase.assertEquals(1, hsmHostForm.getFieldValueAsTableField("Host Communication Keystore Entries").getTableRecords().size());
+            TableField communicationKeystores = hsmHostForm.getFieldValueAsTableField("Host Communication Keystore Entries");
+            int communicationKeystoreCount = communicationKeystores == null
+                    || communicationKeystores.getTableRecords() == null
+                    ? 0 : communicationKeystores.getTableRecords().size();
+            TestCase.assertEquals(Boolean.getBoolean("fluid.test.pericard.hsm.loopbackSimulator") ? 0 : 1,
+                    communicationKeystoreCount);
             TestCase.assertEquals(1, hsmHostForm.getFieldValueAsTableField("Host Endpoint Entries").getTableRecords().size());
         }
     }
@@ -1989,16 +1994,23 @@ character to be even.
         // Persist fixtures through REST and read them back. Dynamic keystore choices
         // must not be lost through an out-of-date ASN.1 choice dictionary.
         try (FormContainerClient forms = new FormContainerClient(BASE_URL, ADMIN_SERVICE_TICKET)) {
-            TableRecord keystore = forms.createTableRecord(new TableRecord(
-                    tbFormHostCommsKs, parentForm, new Field("Host Communication Keystore Entries")));
-            Form storedKeystore = forms.getFormContainerById(keystore.getFormContainer().getId());
-            TestCase.assertEquals("HSM host keystore alias was not persisted", existingKSAlias,
-                    storedKeystore.getFieldValueAsString("Keystore Alias"));
-            createdHostForm.setFieldValue("Host Communication Keystore Entries",
-                    new TableField(java.util.Collections.singletonList(storedKeystore)), Field.Type.Table);
+            // A communication keystore opts the runner into TLS, even without Use TLS.
+            // Only the explicitly selected loopback CI simulator uses plain TCP.
+            boolean loopbackSimulator = Boolean.getBoolean("fluid.test.pericard.hsm.loopbackSimulator");
+            String host = System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1");
+            if (loopbackSimulator) {
+                TestCase.assertEquals("The plain TCP simulator must remain on loopback", "127.0.0.1", host);
+            } else {
+                TableRecord keystore = forms.createTableRecord(new TableRecord(
+                        tbFormHostCommsKs, parentForm, new Field("Host Communication Keystore Entries")));
+                Form storedKeystore = forms.getFormContainerById(keystore.getFormContainer().getId());
+                TestCase.assertEquals("HSM host keystore alias was not persisted", existingKSAlias,
+                        storedKeystore.getFieldValueAsString("Keystore Alias"));
+                createdHostForm.setFieldValue("Host Communication Keystore Entries",
+                        new TableField(java.util.Collections.singletonList(storedKeystore)), Field.Type.Table);
+            }
 
             Form endpoint = new Form("HSM Host Endpoint", "Host Endpoint " + new Date());
-            String host = System.getProperty("fluid.test.pericard.hsm.host", "127.0.0.1");
             int port = Integer.getInteger("fluid.test.pericard.hsm.port", 21121);
             endpoint.setFieldValue("HSM Host", host, Field.Type.Text);
             endpoint.setFieldValue("HSM Port", port, Field.Type.Decimal);
